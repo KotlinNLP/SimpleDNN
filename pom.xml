@@ -15,9 +15,10 @@
         <jblas.version>1.2.4</jblas.version>
         <jsoniter.version>0.9.2</jsoniter.version>
         <fasterxml.jackson.version>2.7.1</fasterxml.jackson.version>
-        <fasterxml.jackson.databind>${fasterxml.jackson.version}-1</fasterxml.jackson.databind>
-        <fasterxml.jackson.module-kotlin>${fasterxml.jackson.version}-2</fasterxml.jackson.module-kotlin>
+        <fasterxml.jackson.databind.version>${fasterxml.jackson.version}-1</fasterxml.jackson.databind.version>
+        <fasterxml.jackson-module-kotlin.version>${fasterxml.jackson.version}-2</fasterxml.jackson-module-kotlin.version>
         <mockit-kotlin.version>1.4.0</mockit-kotlin.version>
+        <surfire.version>2.12.4</surfire.version>
         <spek.version>1.1.0</spek.version>
         <dokka.version>0.9.13</dokka.version>
     </properties>
@@ -49,6 +50,7 @@
                 <executions>
                     <execution>
                         <id>compile</id>
+                        <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
@@ -56,6 +58,7 @@
 
                     <execution>
                         <id>test-compile</id>
+                        <phase>test-compile</phase>
                         <goals>
                             <goal>test-compile</goal>
                         </goals>
@@ -80,7 +83,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12.4</version>
+                <version>${surfire.version}</version>
                 <configuration>
                     <includes>
                         <include>**/*Spec.*</include>
@@ -124,13 +127,13 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${fasterxml.jackson.databind}</version>
+            <version>${fasterxml.jackson.databind.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
-            <version>${fasterxml.jackson.module-kotlin}</version>
+            <version>${fasterxml.jackson-module-kotlin.version}</version>
         </dependency>
 
         <dependency>
