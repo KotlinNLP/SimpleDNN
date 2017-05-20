@@ -32,8 +32,8 @@
     </pluginRepositories>
 
     <build>
-        <sourceDirectory>src/kotlin</sourceDirectory>
-        <testSourceDirectory>test/kotlin</testSourceDirectory>
+        <sourceDirectory>${project.basedir}/src/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/test/kotlin</testSourceDirectory>
 
         <testResources>
             <testResource>
