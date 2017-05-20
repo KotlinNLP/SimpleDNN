@@ -18,7 +18,7 @@
         <fasterxml.jackson.databind.version>${fasterxml.jackson.version}-1</fasterxml.jackson.databind.version>
         <fasterxml.jackson-module-kotlin.version>${fasterxml.jackson.version}-2</fasterxml.jackson-module-kotlin.version>
         <mockit-kotlin.version>1.4.0</mockit-kotlin.version>
-        <surfire.version>2.12.4</surfire.version>
+        <surfire.version>2.19.1</surfire.version>
         <spek.version>1.1.0</spek.version>
         <dokka.version>0.9.13</dokka.version>
     </properties>
