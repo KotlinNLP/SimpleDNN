@@ -1,4 +1,4 @@
-# SimpleDNN
+# SimpleDNN [![Build Status](https://travis-ci.org/KotlinNLP/SimpleDNN.svg?branch=master)](https://travis-ci.org/KotlinNLP/SimpleDNN)
 
 SimpleDNN is a machine learning lightweight open-source library written in Kotlin whose purpose is to support the 
 development of [feed-forward](https://en.wikipedia.org/wiki/Feedforward_neural_network "Feedforward Neural Network") 
