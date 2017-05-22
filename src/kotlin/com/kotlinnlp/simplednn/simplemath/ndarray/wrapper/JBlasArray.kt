@@ -511,11 +511,28 @@ class JBlasArray(private val storage: DoubleMatrix) : NDArrayInterface {
     return JBlasArray(MatrixFunctions.sqrt(this.storage))
   }
 
+
   /**
+   * Power
    *
+   * @param power the exponent
+   *
+   * @return a new [JBlasArray] containing the values of this to the power of [power]
    */
   override fun pow(power: Double): JBlasArray {
     return JBlasArray(MatrixFunctions.pow(this.storage, power))
+  }
+
+  /**
+   * In-place power
+   *
+   * @param power the exponent
+   *
+   * @return this [JBlasArray] to the power of [power]
+   */
+  override fun assignPow(power: Double): JBlasArray {
+    MatrixFunctions.powi(this.storage, power)
+    return this
   }
 
   /**

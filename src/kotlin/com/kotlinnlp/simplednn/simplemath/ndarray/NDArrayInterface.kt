@@ -288,9 +288,22 @@ interface NDArrayInterface: Serializable {
   fun sqrt(): NDArrayInterface
 
   /**
+   * Power
    *
+   * @param power the exponent
+   *
+   * @return a new [NDArrayInterface] containing the values of this to the power of [power]
    */
   fun pow(power: Double): NDArrayInterface
+
+  /**
+   * In-place power
+   *
+   * @param power the exponent
+   *
+   * @return this [NDArrayInterface] to the power of [power]
+   */
+  fun assignPow(power: Double): NDArrayInterface
 
   /**
    * Euclidean norm of this NDArrayInterface
