@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
+import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardNetworkStructure
 import com.kotlinnlp.simplednn.simplemath.NDArray
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
@@ -26,9 +26,9 @@ import kotlin.test.assertEquals
 /**
  *
  */
-class NetworkStructureSpec : Spek({
+class FeedforwardNetworkStructureSpec : Spek({
 
-  describe("a NetworkStructure") {
+  describe("a FeedforwardNetworkStructure") {
 
     val layersConfiguration = arrayOf(
       LayerConfiguration(size = 4),
@@ -36,7 +36,7 @@ class NetworkStructureSpec : Spek({
       LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
     ).toList()
 
-    val structure = NetworkStructure(
+    val structure = FeedforwardNetworkStructure(
       layersConfiguration = layersConfiguration,
       params = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration))
 
