@@ -119,6 +119,10 @@ abstract class NetworkStructure(
                            outputConfiguration: LayerConfiguration,
                            params: LayerParameters): LayerStructure {
 
+    require(outputConfiguration.connectionType != null) {
+      "Output layer configurations must have a not null connectionType"
+    }
+
     return this.layerFactory(
       inputArray = AugmentedArray(inputConfiguration.size),
       outputConfiguration = outputConfiguration,
