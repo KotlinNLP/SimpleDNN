@@ -17,7 +17,7 @@ import com.kotlinnlp.simplednn.simplemath.NDArray
  * @param layersConfiguration layers layersConfiguration
  * @param params the network parameters per layer
  */
-open class NetworkStructure(
+abstract class NetworkStructure(
   val layersConfiguration: List<LayerConfiguration>,
   val params: NetworkParameters) {
 
@@ -135,17 +135,8 @@ open class NetworkStructure(
    *
    * @return a new LayerStructure
    */
-  open protected fun layerFactory(inputArray: AugmentedArray,
-                                  outputConfiguration: LayerConfiguration,
-                                  params: LayerParameters,
-                                  dropout: Double): LayerStructure {
-
-    return LayerStructureFactory(
-      inputArray = inputArray,
-      outputArray = AugmentedArray(outputConfiguration.size),
-      params = params,
-      activationFunction = outputConfiguration.activationFunction,
-      connectionType = outputConfiguration.connectionType,
-      dropout = dropout)
-  }
+  abstract protected fun layerFactory(inputArray: AugmentedArray,
+                                      outputConfiguration: LayerConfiguration,
+                                      params: LayerParameters,
+                                      dropout: Double): LayerStructure
 }
