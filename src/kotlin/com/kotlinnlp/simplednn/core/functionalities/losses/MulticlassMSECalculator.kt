@@ -16,9 +16,12 @@ import com.kotlinnlp.simplednn.simplemath.*
 class MulticlassMSECalculator : MSECalculator() {
 
   /**
-   * @param output  current output layer
+   * Calculate the errors within an output and its gold.
+   *
+   * @param output current output layer
    * @param outputGold expected binary output
-   * @return calculated avgLoss
+   *
+   * @return the derivative of the loss within [output] and [outputGold]
    */
   override fun calculateErrors(output: NDArray, outputGold: NDArray): NDArray {
 

@@ -10,26 +10,29 @@ package com.kotlinnlp.simplednn.core.functionalities.losses
 import com.kotlinnlp.simplednn.simplemath.*
 
 /**
- *
  * MeanSquaredErrorCalculator
  */
 open class MSECalculator : LossCalculator {
 
   /**
-   * Loss Derivative
+   * Calculate the loss within an output and its gold.
    *
    * @param output  current output layer
    * @param outputGold expected binary output
-   * @return calculated avgLoss
+   *
+   * @return the loss within [output] and [outputGold]
    */
   override fun calculateLoss(output: NDArray, outputGold: NDArray): NDArray {
     return output.sub(outputGold).pow(2.0).prod(0.5)
   }
 
   /**
-   * @param output  current output layer
+   * Calculate the errors within an output and its gold.
+   *
+   * @param output current output layer
    * @param outputGold expected binary output
-   * @return calculated avgLoss
+   *
+   * @return the derivative of the loss within [output] and [outputGold]
    */
   override fun calculateErrors(output: NDArray, outputGold: NDArray): NDArray {
     return output.sub(outputGold)
