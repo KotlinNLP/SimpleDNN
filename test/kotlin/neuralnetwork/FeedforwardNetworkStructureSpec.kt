@@ -21,7 +21,9 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import layers.structure.utils.FeedforwardLayerStructureUtils
 import neuralnetwork.utils.FeedforwardNetworkStructureUtils
+import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 
 /**
  *
@@ -30,69 +32,91 @@ class FeedforwardNetworkStructureSpec : Spek({
 
   describe("a FeedforwardNetworkStructure") {
 
-    val layersConfiguration = arrayOf(
-      LayerConfiguration(size = 4),
-      LayerConfiguration(size = 5, activationFunction = Tanh(), connectionType = LayerType.Connection.Feedforward),
-      LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
-    ).toList()
+    context("configuration with connection types not allowed") {
 
-    val structure = FeedforwardNetworkStructure(
-      layersConfiguration = layersConfiguration,
-      params = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration))
+      val layersConfiguration = arrayOf(
+        LayerConfiguration(size = 4),
+        LayerConfiguration(size = 5, activationFunction = Tanh(), connectionType = LayerType.Connection.GRU),
+        LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
+      ).toList()
 
-    context("architecture") {
-
-      it("should have the expected number of layers") {
-        assertEquals(true, structure.layers.size == 2)
+      on("initialization") {
+        it("should throw an exception") {
+          assertFails {
+            FeedforwardNetworkStructure(
+              layersConfiguration = layersConfiguration,
+              params = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration))
+          }
+        }
       }
+    }
 
-      it("should have interconnected layers") {
-        for (i in 0 until structure.layers.size - 1) {
-          assertEquals(true, structure.layers[i].outputArray == structure.layers[i + 1].inputArray)
+    context("correct configuration") {
+
+      val layersConfiguration = arrayOf(
+        LayerConfiguration(size = 4),
+        LayerConfiguration(size = 5, activationFunction = Tanh(), connectionType = LayerType.Connection.Feedforward),
+        LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
+      ).toList()
+
+      val structure = FeedforwardNetworkStructure(
+        layersConfiguration = layersConfiguration,
+        params = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration))
+
+      on("architecture") {
+
+        it("should have the expected number of layers") {
+          assertEquals(true, structure.layers.size == 2)
+        }
+
+        it("should have interconnected layers") {
+          for (i in 0 until structure.layers.size - 1) {
+            assertEquals(true, structure.layers[i].outputArray == structure.layers[i + 1].inputArray)
+          }
+        }
+
+        it("should contain the expected input layer") {
+          assertEquals(true, structure.inputLayer == structure.layers[0])
+        }
+
+        it("should contain the expected output layer") {
+          assertEquals(true, structure.outputLayer== structure.layers[1])
         }
       }
 
-      it("should contain the expected input layer") {
-        assertEquals(true, structure.inputLayer == structure.layers[0])
+      on("layers factory") {
+
+        it("should contain layers of the expected type") {
+          structure.layers.forEach { assertEquals(true, it is FeedforwardLayerStructure) }
+        }
       }
 
-      it("should contain the expected output layer") {
-        assertEquals(true, structure.outputLayer== structure.layers[1])
-      }
-    }
+      on("methods usage") {
 
-    context("layers factory") {
+        val features = NDArray.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))
+        val output = structure.forward(features)
+        val expectedOutput = NDArray.arrayOf(doubleArrayOf(0.19, 0.29, 0.53))
 
-      it("should contain layers of the expected type") {
-        structure.layers.forEach { assertEquals(true, it is FeedforwardLayerStructure) }
-      }
-    }
+        it("should return the expected output after a call of the forward method") {
+          assertEquals(true, output.equals(expectedOutput, tolerance = 0.005))
+        }
 
-    context("methods usage") {
+        val outputGold = FeedforwardLayerStructureUtils.getOutputGold3()
+        val errors = MSECalculator().calculateErrors(
+          output = structure.outputLayer.outputArray.values,
+          outputGold = outputGold)
 
-      val features = NDArray.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))
-      val output = structure.forward(features)
-      val expectedOutput = NDArray.arrayOf(doubleArrayOf(0.19, 0.29, 0.53))
+        structure.backward(
+          outputErrors = errors,
+          paramsErrors = NetworkParameters(layersConfiguration),
+          propagateToInput = true)
 
-      it("should return the expected output after a call of the forward method") {
-        assertEquals(true, output.equals(expectedOutput, tolerance = 0.005))
-      }
+        val inputErrors = structure.inputLayer.inputArray.errors
+        val expectedInputErrors = NDArray.arrayOf(doubleArrayOf(0.32, -0.14, -0.06, 0.07))
 
-      val outputGold = FeedforwardLayerStructureUtils.getOutputGold3()
-      val errors = MSECalculator().calculateErrors(
-        output = structure.outputLayer.outputArray.values,
-        outputGold = outputGold)
-
-      structure.backward(
-        outputErrors = errors,
-        paramsErrors = NetworkParameters(layersConfiguration),
-        propagateToInput = true)
-
-      val inputErrors = structure.inputLayer.inputArray.errors
-      val expectedInputErrors = NDArray.arrayOf(doubleArrayOf(0.32, -0.14, -0.06, 0.07))
-
-      it("should contain the expected input error after a call of the backward method") {
-        assertEquals(true, inputErrors.equals(expectedInputErrors, tolerance = 0.005))
+        it("should contain the expected input error after a call of the backward method") {
+          assertEquals(true, inputErrors.equals(expectedInputErrors, tolerance = 0.005))
+        }
       }
     }
   }
