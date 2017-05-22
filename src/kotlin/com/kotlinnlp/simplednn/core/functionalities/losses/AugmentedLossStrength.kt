@@ -10,9 +10,9 @@ package com.kotlinnlp.simplednn.core.functionalities.losses
 /**
  *
  */
-enum class AugmentedLossStrength(val value: Int, val description: String, val weight: Double) {
-  NONE(1, "none", 0.0),
-  SOFT(2, "soft", 0.01),
-  MEDIUM(3, "medium", 0.1),
-  HARD(4, "hard", 1.0)
+enum class AugmentedLossStrength(val value: Int, val weight: Double) {
+  NONE(1, 0.0),
+  SOFT(2, 0.01),
+  MEDIUM(3, 0.1),
+  HARD(4, 1.0)
 }
