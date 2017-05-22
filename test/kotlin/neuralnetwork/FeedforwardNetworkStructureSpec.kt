@@ -32,15 +32,33 @@ class FeedforwardNetworkStructureSpec : Spek({
 
   describe("a FeedforwardNetworkStructure") {
 
-    context("configuration with connection types not allowed") {
+    context("invalid configurations") {
 
-      val layersConfiguration = arrayOf(
-        LayerConfiguration(size = 4),
-        LayerConfiguration(size = 5, activationFunction = Tanh(), connectionType = LayerType.Connection.GRU),
-        LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
-      ).toList()
+      on("initialization with null output connection types") {
 
-      on("initialization") {
+        val layersConfiguration = arrayOf(
+          LayerConfiguration(size = 4),
+          LayerConfiguration(size = 5, activationFunction = Tanh()),
+          LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
+        ).toList()
+
+        it("should throw an exception") {
+          assertFails {
+            FeedforwardNetworkStructure(
+              layersConfiguration = layersConfiguration,
+              params = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration))
+          }
+        }
+      }
+
+      on("initialization with connection types not allowed") {
+
+        val layersConfiguration = arrayOf(
+          LayerConfiguration(size = 4),
+          LayerConfiguration(size = 5, activationFunction = Tanh(), connectionType = LayerType.Connection.GRU),
+          LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
+        ).toList()
+
         it("should throw an exception") {
           assertFails {
             FeedforwardNetworkStructure(
