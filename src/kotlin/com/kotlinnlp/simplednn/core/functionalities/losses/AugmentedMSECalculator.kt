@@ -46,7 +46,7 @@ class AugmentedMSECalculator(val pi: Double = 0.1, val c: Double = 10.0) : LossC
       return output.sub(outputGold).assignPow(2.0).assignProd(0.5)
 
     } else {
-      val lossContribute = outputGold.sum(output).assignPow(2.0)
+      val lossContribute = outputGold.sub(output).assignPow(2.0)
       val injectedContribute = output.prod(this.calculateRegularization()).assignPow(2.0)
 
       // 0.5 * ((1 - pi) * (g - o)^2 + pi * (o * reg)^2)
