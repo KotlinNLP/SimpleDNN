@@ -23,7 +23,7 @@ import java.io.Serializable
  *
  * @property layersConfiguration a list of configurations, one per layer
  */
-open class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Serializable {
+class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Serializable {
 
   /**
    * Secondary constructor
