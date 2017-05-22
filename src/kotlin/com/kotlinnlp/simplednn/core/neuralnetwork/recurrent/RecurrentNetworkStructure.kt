@@ -14,7 +14,10 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkStructure
 
 /**
+ * The FeedforwardNetworkStructure.
  *
+ * @param layersConfiguration layers layersConfiguration
+ * @param params the network parameters per layer
  */
 class RecurrentNetworkStructure(
   layersConfiguration: List<LayerConfiguration>,
@@ -47,7 +50,7 @@ class RecurrentNetworkStructure(
    * @param outputConfiguration the layersConfiguration of the output array
    * @param params the network parameters of the current layer
    *
-   * @return the i-th layer
+   * @return a new LayerStructure
    */
   override fun layerFactory(inputArray: AugmentedArray,
                             outputConfiguration: LayerConfiguration,

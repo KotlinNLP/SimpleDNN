@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.simplemath.NDArray
 
 /**
- * The NeuralStructure.
+ * The NetworkStructure.
  *
  * @param layersConfiguration layers layersConfiguration
  * @param params the network parameters per layer
@@ -112,7 +112,7 @@ open class NetworkStructure(
    * @param outputConfiguration the layersConfiguration of the output array
    * @param params the network parameters of the current layer
    *
-   * @return the i-th layer
+   * @return a new LayerStructure
    */
   private fun layerFactory(inputConfiguration: LayerConfiguration,
                            outputConfiguration: LayerConfiguration,
@@ -133,7 +133,7 @@ open class NetworkStructure(
    * @param outputConfiguration the layersConfiguration of the output array
    * @param params the network parameters of the current layer
    *
-   * @return the i-th layer
+   * @return a new LayerStructure
    */
   open protected fun layerFactory(inputArray: AugmentedArray,
                                   outputConfiguration: LayerConfiguration,
