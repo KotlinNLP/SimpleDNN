@@ -745,6 +745,21 @@ class NDArraySpec : Spek({
         }
       }
 
+      on("assignPow(number) method") {
+
+        val array = NDArray.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
+        val expectedArray = NDArray.arrayOf(doubleArrayOf(0.2399, 0.3687, 0.4740, 0.0))
+        val res = array.assignPow(0.62)
+
+        it("should return the same NDArray") {
+          assertEquals(true, array === res)
+        }
+
+        it("should assign the expected values") {
+          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+        }
+      }
+
       on("assignRoundInt(threshold) method") {
 
         val array = NDArray.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
