@@ -80,7 +80,7 @@ class LearningRateMethod(
 
     when(decayMethod){
       is HyperbolicDecay ->
-        this.alpha = decayMethod.update(learningRate, this.epochCount)
+        this.alpha = decayMethod.update(this.learningRate, this.epochCount)
 
       is ExponentialDecay ->
         this.alpha = decayMethod.update(this.alpha, this.epochCount)
