@@ -48,7 +48,7 @@ class FeedforwardNetworkStructure(
       outputArray = AugmentedArray(outputConfiguration.size),
       params = params,
       activationFunction = outputConfiguration.activationFunction,
-      connectionType = outputConfiguration.connectionType,
+      connectionType = outputConfiguration.connectionType!!,
       dropout = dropout)
   }
 }

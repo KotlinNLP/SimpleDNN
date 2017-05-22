@@ -25,7 +25,7 @@ object LayerStructureFactory {
                       outputArray: AugmentedArray,
                       params: LayerParameters,
                       activationFunction: ActivationFunction?,
-                      connectionType: LayerType.Connection?,
+                      connectionType: LayerType.Connection,
                       dropout: Double = 0.0,
                       contextWindow: LayerContextWindow? = null): LayerStructure =
 
