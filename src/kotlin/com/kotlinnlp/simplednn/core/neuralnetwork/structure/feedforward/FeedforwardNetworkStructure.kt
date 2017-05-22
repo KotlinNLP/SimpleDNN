@@ -8,10 +8,7 @@
 package com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
-import com.kotlinnlp.simplednn.core.layers.LayerStructureFactory
+import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
 
@@ -40,6 +37,8 @@ class FeedforwardNetworkStructure(
                             outputConfiguration: LayerConfiguration,
                             params: LayerParameters,
                             dropout: Double): LayerStructure {
+
+    require(outputConfiguration.connectionType == LayerType.Connection.Feedforward)
 
     return LayerStructureFactory(
       inputArray = inputArray,
