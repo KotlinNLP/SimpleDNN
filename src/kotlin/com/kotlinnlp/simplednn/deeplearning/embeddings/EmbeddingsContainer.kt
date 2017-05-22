@@ -65,7 +65,7 @@ class EmbeddingsContainer(val count: Int, val size: Int) {
    * @return the embedding at the given index
    */
   fun getEmbedding(index: Int?): Embedding {
-    require(index in 0 .. this.lookupTable.size)
+    require(index == null || index in 0 .. this.lookupTable.size)
     return this.lookupTable[index ?: this.nullEmbeddingsId]
   }
 
