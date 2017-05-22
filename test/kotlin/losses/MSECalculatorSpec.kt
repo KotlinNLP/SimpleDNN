@@ -11,7 +11,6 @@ import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
@@ -39,10 +38,6 @@ class MSECalculatorSpec : Spek({
 
       it("should calculate the pre-computed avgLoss"){
         assertTrue(NDArray.arrayOf(doubleArrayOf(0.045, 0.005, 0.005, 0.045)).equals(outputLoss))
-      }
-
-      it("should calculate the pre-computed scalar avgLoss") {
-        assertEquals(0.025, outputLoss.avg())
       }
     }
   }
