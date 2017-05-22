@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkStructure
+import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
 import com.kotlinnlp.simplednn.simplemath.NDArray
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context

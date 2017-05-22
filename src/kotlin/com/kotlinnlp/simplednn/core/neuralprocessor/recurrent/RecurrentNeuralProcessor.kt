@@ -10,8 +10,8 @@ package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.core.neuralnetwork.recurrent.RecurrentNetworkStructure
-import com.kotlinnlp.simplednn.core.neuralnetwork.recurrent.StructureContextWindow
+import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.RecurrentNetworkStructure
+import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.StructureContextWindow
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape

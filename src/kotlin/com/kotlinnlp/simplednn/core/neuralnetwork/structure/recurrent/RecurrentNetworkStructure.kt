@@ -5,15 +5,13 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.neuralnetwork.feedforward
+package com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
-import com.kotlinnlp.simplednn.core.layers.LayerStructureFactory
+import com.kotlinnlp.simplednn.core.layers.*
+import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkStructure
+import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
 
 /**
  * The FeedforwardNetworkStructure.
@@ -21,10 +19,28 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkStructure
  * @param layersConfiguration layers layersConfiguration
  * @param params the network parameters per layer
  */
-class FeedforwardNetworkStructure(
+class RecurrentNetworkStructure(
   layersConfiguration: List<LayerConfiguration>,
-  params: NetworkParameters
-) : NetworkStructure(layersConfiguration = layersConfiguration, params = params) {
+  params: NetworkParameters,
+  val structureContextWindow: StructureContextWindow
+) : LayerContextWindow,
+  NetworkStructure(layersConfiguration = layersConfiguration, params = params) {
+
+  /**
+   *
+   */
+  override fun getPrevStateLayer(): LayerStructure? {
+    val prevStateStructure = this.structureContextWindow.getPrevStateStructure()
+    return prevStateStructure?.layers?.get(this.curLayerIndex)
+  }
+
+  /**
+   *
+   */
+  override fun getNextStateLayer(): LayerStructure? {
+    val nextStateStructure = this.structureContextWindow.getNextStateStructure()
+    return nextStateStructure?.layers?.get(this.curLayerIndex)
+  }
 
   /**
    * LayerStructure factory used to concatV two layers, given the input array (referenced from
@@ -47,6 +63,7 @@ class FeedforwardNetworkStructure(
       params = params,
       activationFunction = outputConfiguration.activationFunction,
       connectionType = outputConfiguration.connectionType,
-      dropout = dropout)
+      dropout = dropout,
+      contextWindow = this)
   }
 }

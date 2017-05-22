@@ -14,8 +14,8 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.recurrent.RecurrentNetworkStructure
-import com.kotlinnlp.simplednn.core.neuralnetwork.recurrent.StructureContextWindow
+import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.RecurrentNetworkStructure
+import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.StructureContextWindow
 import layers.structure.utils.FeedforwardLayerStructureUtils
 import layers.structure.utils.SimpleRecurrentLayerStructureUtils
 

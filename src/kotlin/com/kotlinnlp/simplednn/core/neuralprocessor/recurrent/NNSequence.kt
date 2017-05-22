@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
-import com.kotlinnlp.simplednn.core.neuralnetwork.recurrent.*
+import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.*
 
 /**
  *

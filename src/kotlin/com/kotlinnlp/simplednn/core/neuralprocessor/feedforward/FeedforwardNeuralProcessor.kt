@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.core.neuralprocessor.feedforward
 
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkStructure
+import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.NDArray
