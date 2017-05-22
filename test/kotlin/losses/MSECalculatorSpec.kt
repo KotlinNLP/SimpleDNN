@@ -26,18 +26,18 @@ class MSECalculatorSpec : Spek({
     val goldValues = NDArray.arrayOf(doubleArrayOf(0.3, 0.2, 0.1, 0.0))
 
     on("calculateErrors") {
-      val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
+      val errors = lossCalculator.calculateErrors(outputValues, goldValues)
 
-      it("should calculate the pre-computed output errors"){
-        assertTrue(NDArray.arrayOf(doubleArrayOf(-0.3, -0.1, 0.1, 0.3)).equals(outputErrors))
+      it("should calculate the expected errors"){
+        assertTrue(NDArray.arrayOf(doubleArrayOf(-0.3, -0.1, 0.1, 0.3)).equals(errors))
       }
     }
 
     on("calculateLoss") {
-      val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
+      val loss = lossCalculator.calculateLoss(outputValues, goldValues)
 
-      it("should calculate the pre-computed avgLoss"){
-        assertTrue(NDArray.arrayOf(doubleArrayOf(0.045, 0.005, 0.005, 0.045)).equals(outputLoss))
+      it("should calculate the expected loss"){
+        assertTrue(NDArray.arrayOf(doubleArrayOf(0.045, 0.005, 0.005, 0.045)).equals(loss))
       }
     }
   }

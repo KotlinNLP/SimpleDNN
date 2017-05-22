@@ -26,10 +26,10 @@ class MulticlassMSECalculatorSpec : Spek({
     val goldValues = NDArray.arrayOf(doubleArrayOf(1.0, 0.0, 0.0, 0.0))
 
     on("calculateErrors") {
-      val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
+      val errors = lossCalculator.calculateErrors(outputValues, goldValues)
 
-      it("should calculate the pre-computed output errors"){
-        assertTrue(NDArray.arrayOf(doubleArrayOf(-1.0, 0.7, 0.2, 0.1)).equals(outputErrors))
+      it("should calculate the pre-computed output errors") {
+        assertTrue(NDArray.arrayOf(doubleArrayOf(-1.0, 0.7, 0.2, 0.1)).equals(errors))
       }
     }
   }
