@@ -28,7 +28,7 @@ class MulticlassMSECalculatorSpec : Spek({
     on("calculateErrors") {
       val errors = lossCalculator.calculateErrors(outputValues, goldValues)
 
-      it("should calculate the pre-computed output errors") {
+      it("should calculate the expected errors") {
         assertTrue(NDArray.arrayOf(doubleArrayOf(-1.0, 0.7, 0.2, 0.1)).equals(errors))
       }
     }
