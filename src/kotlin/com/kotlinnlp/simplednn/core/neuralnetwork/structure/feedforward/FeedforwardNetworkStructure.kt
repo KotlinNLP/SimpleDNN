@@ -38,7 +38,10 @@ class FeedforwardNetworkStructure(
                             params: LayerParameters,
                             dropout: Double): LayerStructure {
 
-    require(outputConfiguration.connectionType == LayerType.Connection.Feedforward)
+    require(outputConfiguration.connectionType == LayerType.Connection.Feedforward) {
+      "Layer connection of type %s not allowed [only %s]".format(
+        outputConfiguration.connectionType, LayerType.Connection.Feedforward)
+    }
 
     return LayerStructureFactory(
       inputArray = inputArray,
