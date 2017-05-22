@@ -8,20 +8,19 @@
 package com.kotlinnlp.simplednn.core.functionalities.losses
 
 import com.kotlinnlp.simplednn.simplemath.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
+ * Augmented Mean Squared Error calculator
  *
- * AugmentedMeanSquaredErrorCalculator
- * @param pi pi (0.1 default value)
- * @param c c (10 default value)
+ * @property pi pi (0.1 by default)
+ * @property c c (10 by default)
  */
 class AugmentedMSECalculator(val pi: Double = 0.1, val c: Double = 10.0) : LossCalculator {
 
   /**
    *
    */
-  var augmentedError: Double = 0.0
+  var injectedError: Double = 0.0
 
   /**
    *
@@ -34,72 +33,55 @@ class AugmentedMSECalculator(val pi: Double = 0.1, val c: Double = 10.0) : LossC
   private val lossPartition: Double = 1.0 - pi
 
   /**
+   * Calculate the loss within an output and its gold.
    *
-   */
-  private fun calculateRegularization(): Double = 1.0 - Math.exp(- c * this.augmentedError)
-
-  /**
    * @param output  current output layer
    * @param outputGold expected binary output
-   * @return calculated avgLoss
+   *
+   * @return the loss within [output] and [outputGold]
    */
   override fun calculateLoss(output: NDArray, outputGold: NDArray): NDArray {
 
-    val loss: NDArray = NDArray.emptyArray(Shape(output.length))
-
     if (!this.isLossPartitionEnabled) {
-
-      loss.assignValues(output.sub(outputGold).pow(2.0).prod(0.5))
+      return output.sub(outputGold).assignPow(2.0).assignProd(0.5)
 
     } else {
+      val lossContribute = outputGold.sum(output).assignPow(2.0)
+      val injectedContribute = output.prod(this.calculateRegularization()).assignPow(2.0)
 
+      // 0.5 * ((1 - pi) * (g - o)^2 + pi * (o * reg)^2)
+      return lossContribute.assignProd(this.lossPartition)
+        .assignSum(injectedContribute.assignProd(this.pi))
+        .assignProd(0.5)
+    }
+  }
+
+  /**
+   * Calculate the errors within an output and its gold.
+   *
+   * @param output current output layer
+   * @param outputGold expected binary output
+   *
+   * @return the derivative of the loss within [output] and [outputGold]
+   */
+  override fun calculateErrors(output: NDArray, outputGold: NDArray): NDArray {
+
+    if (!this.isLossPartitionEnabled) {
+      return output.sub(outputGold)
+
+    } else {
       val regularization: Double = this.calculateRegularization()
 
-      for (i in 0 until output.length) {
-        val o: Double = output[i].toDouble()
-        val g: Double = outputGold[i].toDouble()
-
-        val lossContribute: Double = Math.pow(g - o, 2.0)
-        val augmentedContribute: Double = Math.pow(regularization * o, 2.0)
-
-        loss[i] = 0.5 * (this.lossPartition * lossContribute + pi * augmentedContribute)
-      }
-
+      // (1 - pi) * (o - g) + pi * (o * reg)
+      return output.sub(outputGold).assignProd(this.lossPartition)
+        .assignSum(
+          output.prod(regularization).assignProd(pi))
     }
-
-    return loss
   }
 
   /**
    *
-   * Loss Derivative
-   *
-   * @param output  current output layer
-   * @param outputGold expected binary output
-   * @return calculated avgLoss
    */
-  override fun calculateErrors(output: NDArray, outputGold: NDArray): NDArray {
-
-    val lossDerivative: NDArray = NDArray.emptyArray(Shape(output.length))
-
-    if (!this.isLossPartitionEnabled) {
-
-      lossDerivative.assignValues(output.sub(outputGold))
-
-    } else {
-
-      val regularization: Double = this.calculateRegularization()
-
-      for (i in 0 until output.length) {
-        val o: Double = output[i].toDouble()
-        val g: Double = outputGold[i].toDouble()
-
-        lossDerivative[i] = (this.lossPartition * (o - g)) + (pi * o * regularization)
-      }
-    }
-
-    return lossDerivative
-  }
-
+  private fun calculateRegularization(): Double = 1.0 - Math.exp(- c * this.injectedError)
 }
 
