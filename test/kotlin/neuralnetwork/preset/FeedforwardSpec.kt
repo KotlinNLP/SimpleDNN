@@ -71,7 +71,7 @@ class FeedforwardSpec : Spek({
           assertEquals(hiddenActivation, hiddenLayerConfig.activationFunction)
         }
 
-        it("should a Feedforward connection type") {
+        it("should have a Feedforward connection type") {
           assertEquals(LayerType.Connection.Feedforward, hiddenLayerConfig.connectionType)
         }
 
