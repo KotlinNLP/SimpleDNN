@@ -27,34 +27,44 @@ class AugmentedMSECalculatorSpec : Spek({
 
     context("without augmented errors") {
 
-      on("calculateErrors") {
-
-        val lossCalculator = AugmentedMSECalculator()
-
-        val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
-
-        it("should calculate the pre-computed output errors") {
-          assertTrue(NDArray.arrayOf(doubleArrayOf(-0.27, -0.09, 0.09, 0.27)).equals(outputErrors))
-        }
-      }
-
       on("calculateLoss") {
 
         val lossCalculator = AugmentedMSECalculator()
 
-        val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
+        val loss = lossCalculator.calculateLoss(outputValues, goldValues)
 
-        it("should calculate the pre-computed avgLoss") {
-          assertTrue(true)
+        it("should calculate the expected loss") {
+          assertTrue(NDArray.arrayOf(doubleArrayOf(0.0405, 0.0045, 0.0045, 0.0405)).equals(loss))
         }
+      }
 
-        it("should calculate the pre-computed scalar avgLoss") {
-          assertTrue(true)
+      on("calculateErrors") {
+
+        val lossCalculator = AugmentedMSECalculator()
+
+        val errors = lossCalculator.calculateErrors(outputValues, goldValues)
+
+        it("should calculate the expected errors") {
+          assertTrue(NDArray.arrayOf(doubleArrayOf(-0.27, -0.09, 0.09, 0.27)).equals(errors))
         }
       }
     }
 
     context("with hard augmented errors") {
+
+      on("calculateLoss") {
+
+        val lossCalculator = AugmentedMSECalculator()
+
+        lossCalculator.injectedError = AugmentedLossStrength.HARD.weight
+
+        val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
+        val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0405, 0.00499995, 0.00649982, 0.04499959))
+
+        it("should calculate the expected loss") {
+          assertTrue(expectedLoss.equals(outputLoss, tolerance = 1.0e-08))
+        }
+      }
 
       on("calculateErrors") {
 
@@ -63,14 +73,29 @@ class AugmentedMSECalculatorSpec : Spek({
         lossCalculator.injectedError = AugmentedLossStrength.HARD.weight
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
+        val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.27, -0.08000045, 0.10999909, 0.29999864))
 
-        it("should calculate the pre-computed output errors"){
-          assertTrue(NDArray.arrayOf(doubleArrayOf(-0.27, -0.08, 0.109999, 0.299999)).equals(outputErrors))
+        it("should calculate the expected errors") {
+          assertTrue(expectedErrors.equals(outputErrors, tolerance = 1.0e-08))
         }
       }
     }
 
     context("with medium augmented errors") {
+
+      on("calculateLoss") {
+
+        val lossCalculator = AugmentedMSECalculator()
+
+        lossCalculator.injectedError = AugmentedLossStrength.MEDIUM.weight
+
+        val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
+        val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0405, 0.00469979, 0.00529915, 0.04229809))
+
+        it("should calculate the expected loss") {
+          assertTrue(expectedLoss.equals(outputLoss, tolerance = 1.0e-08))
+        }
+      }
 
       on("calculateErrors") {
 
@@ -79,14 +104,29 @@ class AugmentedMSECalculatorSpec : Spek({
         lossCalculator.injectedError = AugmentedLossStrength.MEDIUM.weight
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
+        val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.27, -0.08367879, 0.10264241, 0.28896362))
 
-        it("should calculate the pre-computed output errors"){
-          assertTrue(NDArray.arrayOf(doubleArrayOf(-0.27, -0.083679, 0.102642, 0.288964)).equals(outputErrors))
+        it("should calculate the expected errors") {
+          assertTrue(expectedErrors.equals(outputErrors, tolerance = 1.0e-08))
         }
       }
     }
 
-    context("with soft augmented errors") {
+    context("with low augmented errors") {
+
+      on("calculateLoss") {
+
+        val lossCalculator = AugmentedMSECalculator()
+
+        lossCalculator.injectedError = AugmentedLossStrength.SOFT.weight
+
+        val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
+        val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0405, 0.00450453, 0.00451811, 0.04054075))
+
+        it("should calculate the expected loss") {
+          assertTrue(expectedLoss.equals(outputLoss, tolerance = 1.0e-08))
+        }
+      }
 
       on("calculateErrors") {
 
@@ -95,9 +135,10 @@ class AugmentedMSECalculatorSpec : Spek({
         lossCalculator.injectedError = AugmentedLossStrength.SOFT.weight
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
+        val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.27, -0.08904837, 0.09190325, 0.27285488))
 
-        it("should calculate the pre-computed output errors"){
-          assertTrue(NDArray.arrayOf(doubleArrayOf(-0.27, -0.089048, 0.091903, 0.272855)).equals(outputErrors))
+        it("should calculate the expected errors") {
+          assertTrue(expectedErrors.equals(outputErrors, tolerance = 1.0e-08))
         }
       }
     }
