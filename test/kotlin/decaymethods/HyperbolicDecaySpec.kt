@@ -8,11 +8,12 @@
 package decaymethods
 
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
+import com.kotlinnlp.simplednn.simplemath.equals
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  *
@@ -25,25 +26,25 @@ class HyperbolicDecaySpec : Spek({
 
     on("update with t=1") {
       it("should return the expected value") {
-        assertEquals(0.01, decayMethod.update(learningRate = 0.01, timeStep = 1))
+        assertTrue(equals(0.01, decayMethod.update(learningRate = 0.01, timeStep = 1), tolerance = 1.0e-08))
       }
     }
 
     on("update with t=2") {
       it("should return the expected value") {
-        assertEquals(0.005, decayMethod.update(learningRate = 0.01, timeStep = 2))
+        assertTrue(equals(0.005, decayMethod.update(learningRate = 0.01, timeStep = 2), tolerance = 1.0e-08))
       }
     }
 
     on("update with t=3") {
       it("should return the expected value") {
-        assertEquals(0.004, decayMethod.update(learningRate = 0.007742636826811276, timeStep = 3))
+        assertTrue(equals(0.004, decayMethod.update(learningRate = 0.00774263682, timeStep = 3), tolerance = 1.0e-08))
       }
     }
 
     on("update with t>1 and learningRate = finalLearningRate") {
       it("should return the expected value") {
-        assertEquals(0.001, decayMethod.update(learningRate = 0.001, timeStep = 10))
+        assertTrue(equals(0.001, decayMethod.update(learningRate = 0.001, timeStep = 10), tolerance = 1.0e-08))
       }
     }
   }

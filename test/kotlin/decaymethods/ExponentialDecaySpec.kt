@@ -8,11 +8,12 @@
 package decaymethods
 
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.ExponentialDecay
+import com.kotlinnlp.simplednn.simplemath.equals
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  *
@@ -25,25 +26,25 @@ class ExponentialDecaySpec : Spek({
 
     on("update with t=1") {
       it("should return the expected value") {
-        assertEquals(0.01, decayMethod.update(learningRate = 0.01, t = 1))
+        assertTrue(equals(0.01, decayMethod.update(learningRate = 0.01, t = 1), tolerance = 1.0e-08))
       }
     }
 
     on("update with t=2") {
       it("should return the expected value") {
-        assertEquals(0.007742636826811276, decayMethod.update(learningRate = 0.01, t = 2))
+        assertTrue(equals(0.00774264, decayMethod.update(learningRate = 0.01, t = 2), tolerance = 1.0e-08))
       }
     }
 
     on("update with t=3") {
       it("should return the expected value") {
-        assertEquals(0.005994842503189416, decayMethod.update(learningRate = 0.007742636826811276, t = 3))
+        assertTrue(equals(0.00599484, decayMethod.update(learningRate = 0.0077426368, t = 3), tolerance = 1.0e-08))
       }
     }
 
     on("update with t>1 and learningRate = finalLearningRate") {
       it("should return the expected value") {
-        assertEquals(0.001, decayMethod.update(learningRate = 0.001, t = 10))
+        assertTrue(equals(0.001, decayMethod.update(learningRate = 0.001, t = 10), tolerance = 1.0e-08))
       }
     }
   }
