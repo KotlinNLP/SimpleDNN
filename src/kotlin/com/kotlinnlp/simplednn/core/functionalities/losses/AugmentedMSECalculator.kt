@@ -20,7 +20,7 @@ class AugmentedMSECalculator(val pi: Double = 0.1, val c: Double = 10.0) : LossC
   /**
    *
    */
-  var injectedError: Double = 0.0
+  var injectedErrorStrength: Double = 0.0
 
   /**
    *
@@ -82,6 +82,6 @@ class AugmentedMSECalculator(val pi: Double = 0.1, val c: Double = 10.0) : LossC
   /**
    *
    */
-  private fun calculateRegularization(): Double = 1.0 - Math.exp(- c * this.injectedError)
+  private fun calculateRegularization(): Double = 1.0 - Math.exp(- c * this.injectedErrorStrength)
 }
 

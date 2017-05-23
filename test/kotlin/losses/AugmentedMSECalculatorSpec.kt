@@ -56,7 +56,7 @@ class AugmentedMSECalculatorSpec : Spek({
 
         val lossCalculator = AugmentedMSECalculator()
 
-        lossCalculator.injectedError = AugmentedLossStrength.HARD.weight
+        lossCalculator.injectedErrorStrength = AugmentedLossStrength.HARD.weight
 
         val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
         val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0405, 0.00499995, 0.00649982, 0.04499959))
@@ -70,7 +70,7 @@ class AugmentedMSECalculatorSpec : Spek({
 
         val lossCalculator = AugmentedMSECalculator()
 
-        lossCalculator.injectedError = AugmentedLossStrength.HARD.weight
+        lossCalculator.injectedErrorStrength = AugmentedLossStrength.HARD.weight
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
         val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.27, -0.08000045, 0.10999909, 0.29999864))
@@ -87,7 +87,7 @@ class AugmentedMSECalculatorSpec : Spek({
 
         val lossCalculator = AugmentedMSECalculator()
 
-        lossCalculator.injectedError = AugmentedLossStrength.MEDIUM.weight
+        lossCalculator.injectedErrorStrength = AugmentedLossStrength.MEDIUM.weight
 
         val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
         val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0405, 0.00469979, 0.00529915, 0.04229809))
@@ -101,7 +101,7 @@ class AugmentedMSECalculatorSpec : Spek({
 
         val lossCalculator = AugmentedMSECalculator()
 
-        lossCalculator.injectedError = AugmentedLossStrength.MEDIUM.weight
+        lossCalculator.injectedErrorStrength = AugmentedLossStrength.MEDIUM.weight
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
         val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.27, -0.08367879, 0.10264241, 0.28896362))
@@ -118,7 +118,7 @@ class AugmentedMSECalculatorSpec : Spek({
 
         val lossCalculator = AugmentedMSECalculator()
 
-        lossCalculator.injectedError = AugmentedLossStrength.SOFT.weight
+        lossCalculator.injectedErrorStrength = AugmentedLossStrength.SOFT.weight
 
         val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
         val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0405, 0.00450453, 0.00451811, 0.04054075))
@@ -132,7 +132,7 @@ class AugmentedMSECalculatorSpec : Spek({
 
         val lossCalculator = AugmentedMSECalculator()
 
-        lossCalculator.injectedError = AugmentedLossStrength.SOFT.weight
+        lossCalculator.injectedErrorStrength = AugmentedLossStrength.SOFT.weight
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
         val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.27, -0.08904837, 0.09190325, 0.27285488))
