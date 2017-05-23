@@ -9,7 +9,7 @@ package neuralnetwork
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.*
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
-import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.LayerType.Connection
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
@@ -23,7 +23,7 @@ import layers.structure.utils.FeedforwardLayerStructureUtils
 import neuralnetwork.utils.FeedforwardNetworkStructureUtils
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
-import kotlin.test.assertFails
+import kotlin.test.assertFailsWith
 
 /**
  *
@@ -36,17 +36,23 @@ class FeedforwardNetworkStructureSpec : Spek({
 
       on("initialization with null output connection types") {
 
-        val layersConfiguration = arrayOf(
+        val correctLayersConfiguration = arrayOf(
+          LayerConfiguration(size = 4),
+          LayerConfiguration(size = 5, activationFunction = Tanh(), connectionType = Connection.Feedforward),
+          LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
+        ).toList()
+
+        val wrongLayersConfiguration = arrayOf(
           LayerConfiguration(size = 4),
           LayerConfiguration(size = 5, activationFunction = Tanh()),
-          LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
+          LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
         ).toList()
 
         it("should throw an exception") {
-          assertFails {
+          assertFailsWith<IllegalArgumentException> {
             FeedforwardNetworkStructure(
-              layersConfiguration = layersConfiguration,
-              params = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration))
+              layersConfiguration = wrongLayersConfiguration,
+              params = NetworkParameters(correctLayersConfiguration))
           }
         }
       }
@@ -55,15 +61,15 @@ class FeedforwardNetworkStructureSpec : Spek({
 
         val layersConfiguration = arrayOf(
           LayerConfiguration(size = 4),
-          LayerConfiguration(size = 5, activationFunction = Tanh(), connectionType = LayerType.Connection.GRU),
-          LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
+          LayerConfiguration(size = 5, activationFunction = Tanh(), connectionType = Connection.GRU),
+          LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
         ).toList()
 
         it("should throw an exception") {
-          assertFails {
+          assertFailsWith<IllegalArgumentException> {
             FeedforwardNetworkStructure(
               layersConfiguration = layersConfiguration,
-              params = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration))
+              params = NetworkParameters(layersConfiguration))
           }
         }
       }
@@ -73,8 +79,8 @@ class FeedforwardNetworkStructureSpec : Spek({
 
       val layersConfiguration = arrayOf(
         LayerConfiguration(size = 4),
-        LayerConfiguration(size = 5, activationFunction = Tanh(), connectionType = LayerType.Connection.Feedforward),
-        LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
+        LayerConfiguration(size = 5, activationFunction = Tanh(), connectionType = Connection.Feedforward),
+        LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
       ).toList()
 
       val structure = FeedforwardNetworkStructure(
