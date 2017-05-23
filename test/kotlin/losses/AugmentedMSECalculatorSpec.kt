@@ -25,11 +25,11 @@ class AugmentedMSECalculatorSpec : Spek({
     val outputValues = NDArray.arrayOf(doubleArrayOf(0.0, 0.1, 0.2, 0.3))
     val goldValues = NDArray.arrayOf(doubleArrayOf(0.3, 0.2, 0.1, 0.0))
 
-    context("without augmented errors") {
+    context("without injected errors") {
+
+      val lossCalculator = AugmentedMSECalculator()
 
       on("calculateLoss") {
-
-        val lossCalculator = AugmentedMSECalculator()
 
         val loss = lossCalculator.calculateLoss(outputValues, goldValues)
 
@@ -40,8 +40,6 @@ class AugmentedMSECalculatorSpec : Spek({
 
       on("calculateErrors") {
 
-        val lossCalculator = AugmentedMSECalculator()
-
         val errors = lossCalculator.calculateErrors(outputValues, goldValues)
 
         it("should calculate the expected errors") {
@@ -50,13 +48,12 @@ class AugmentedMSECalculatorSpec : Spek({
       }
     }
 
-    context("with hard augmented errors") {
+    context("with hard injected errors") {
+
+      val lossCalculator = AugmentedMSECalculator()
+      lossCalculator.injectedErrorStrength = InjectedErrorStrength.HARD.weight
 
       on("calculateLoss") {
-
-        val lossCalculator = AugmentedMSECalculator()
-
-        lossCalculator.injectedErrorStrength = InjectedErrorStrength.HARD.weight
 
         val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
         val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0405, 0.00499995, 0.00649982, 0.04499959))
@@ -68,10 +65,6 @@ class AugmentedMSECalculatorSpec : Spek({
 
       on("calculateErrors") {
 
-        val lossCalculator = AugmentedMSECalculator()
-
-        lossCalculator.injectedErrorStrength = InjectedErrorStrength.HARD.weight
-
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
         val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.27, -0.08000045, 0.10999909, 0.29999864))
 
@@ -81,13 +74,12 @@ class AugmentedMSECalculatorSpec : Spek({
       }
     }
 
-    context("with medium augmented errors") {
+    context("with medium injected errors") {
+
+      val lossCalculator = AugmentedMSECalculator()
+      lossCalculator.injectedErrorStrength = InjectedErrorStrength.MEDIUM.weight
 
       on("calculateLoss") {
-
-        val lossCalculator = AugmentedMSECalculator()
-
-        lossCalculator.injectedErrorStrength = InjectedErrorStrength.MEDIUM.weight
 
         val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
         val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0405, 0.00469979, 0.00529915, 0.04229809))
@@ -99,10 +91,6 @@ class AugmentedMSECalculatorSpec : Spek({
 
       on("calculateErrors") {
 
-        val lossCalculator = AugmentedMSECalculator()
-
-        lossCalculator.injectedErrorStrength = InjectedErrorStrength.MEDIUM.weight
-
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
         val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.27, -0.08367879, 0.10264241, 0.28896362))
 
@@ -112,13 +100,12 @@ class AugmentedMSECalculatorSpec : Spek({
       }
     }
 
-    context("with low augmented errors") {
+    context("with low injected errors") {
+
+      val lossCalculator = AugmentedMSECalculator()
+      lossCalculator.injectedErrorStrength = InjectedErrorStrength.SOFT.weight
 
       on("calculateLoss") {
-
-        val lossCalculator = AugmentedMSECalculator()
-
-        lossCalculator.injectedErrorStrength = InjectedErrorStrength.SOFT.weight
 
         val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
         val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0405, 0.00450453, 0.00451811, 0.04054075))
@@ -129,10 +116,6 @@ class AugmentedMSECalculatorSpec : Spek({
       }
 
       on("calculateErrors") {
-
-        val lossCalculator = AugmentedMSECalculator()
-
-        lossCalculator.injectedErrorStrength = InjectedErrorStrength.SOFT.weight
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
         val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.27, -0.08904837, 0.09190325, 0.27285488))
