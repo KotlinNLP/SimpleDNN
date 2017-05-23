@@ -20,7 +20,17 @@ class AugmentedMSECalculator(val pi: Double = 0.1, val c: Double = 10.0) : LossC
   /**
    *
    */
-  var injectedErrorStrength: Double = 0.0
+  enum class InjectedErrorStrength(internal val weight: Double) {
+    NONE(0.0),
+    SOFT(0.01),
+    MEDIUM(0.1),
+    HARD(1.0)
+  }
+
+  /**
+   *
+   */
+  var injectedErrorStrength = InjectedErrorStrength.NONE
 
   /**
    *
@@ -70,18 +80,17 @@ class AugmentedMSECalculator(val pi: Double = 0.1, val c: Double = 10.0) : LossC
       return output.sub(outputGold)
 
     } else {
-      val regularization: Double = this.calculateRegularization()
+      val injectedContribute = output.prod(this.calculateRegularization())
 
       // (1 - pi) * (o - g) + pi * (o * reg)
       return output.sub(outputGold).assignProd(this.lossPartition)
-        .assignSum(
-          output.prod(regularization).assignProd(pi))
+        .assignSum(injectedContribute.assignProd(pi))
     }
   }
 
   /**
    *
    */
-  private fun calculateRegularization(): Double = 1.0 - Math.exp(- c * this.injectedErrorStrength)
+  private fun calculateRegularization(): Double = 1.0 - Math.exp(- c * this.injectedErrorStrength.weight)
 }
 
