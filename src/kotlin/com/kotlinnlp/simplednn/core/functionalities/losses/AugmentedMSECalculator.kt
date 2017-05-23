@@ -25,7 +25,7 @@ class AugmentedMSECalculator(val pi: Double = 0.1, val c: Double = 10.0) : LossC
   /**
    *
    */
-  private val isLossPartitionEnabled: Boolean = pi != 0.0
+  private val isLossPartitionDisabled: Boolean = pi == 0.0
 
   /**
    *
@@ -42,7 +42,7 @@ class AugmentedMSECalculator(val pi: Double = 0.1, val c: Double = 10.0) : LossC
    */
   override fun calculateLoss(output: NDArray, outputGold: NDArray): NDArray {
 
-    if (!this.isLossPartitionEnabled) {
+    if (this.isLossPartitionDisabled) {
       return output.sub(outputGold).assignPow(2.0).assignProd(0.5)
 
     } else {
@@ -66,7 +66,7 @@ class AugmentedMSECalculator(val pi: Double = 0.1, val c: Double = 10.0) : LossC
    */
   override fun calculateErrors(output: NDArray, outputGold: NDArray): NDArray {
 
-    if (!this.isLossPartitionEnabled) {
+    if (this.isLossPartitionDisabled) {
       return output.sub(outputGold)
 
     } else {
