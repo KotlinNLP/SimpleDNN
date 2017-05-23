@@ -8,10 +8,11 @@
 package com.kotlinnlp.simplednn.core.functionalities.decaymethods
 
 /**
+ * HyperbolicDecay defines an hyperbolic decay depending on the time step => LR = LRinit / (1 + decay * t).
  *
- * @param decay                Double >= 0. Learning rate decay over each update.
- * @param initLearningRate     Double >= 0. Initial Learning rate
- * @param finalLearningRate    Double >= 0. Learning rate beyond which it is no longer applied the decay
+ * @property decay the learning rate decay applied at each time step (must be >= 0)
+ * @property initLearningRate the initial learning rate (must be >= [finalLearningRate])
+ * @property finalLearningRate the final value which the learning rate will reach (must be >= 0)
  */
 class HyperbolicDecay(
   val decay: Double,
@@ -22,13 +23,15 @@ class HyperbolicDecay(
   /**
    *
    */
-  init { require(initLearningRate > finalLearningRate) }
+  init { require(this.initLearningRate > this.finalLearningRate) }
 
   /**
+   * Update the learning rate given a time step.
    *
-   * @param learningRate current learning rate
-   * @param timeStep time step
-   * @return decayed learning rate
+   * @param learningRate the learning rate to decrease
+   * @param timeStep the current time step
+   *
+   * @return the updated learning rate
    */
   override fun update(learningRate: Double, timeStep: Int): Double {
     return if (learningRate > this.finalLearningRate && this.decay > 0.0 && timeStep > 1) {

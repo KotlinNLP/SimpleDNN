@@ -8,27 +8,31 @@
 package com.kotlinnlp.simplednn.core.functionalities.decaymethods
 
 /**
+ * ExponentialDecay defines an exponential decay depending on the time step
+ * => LR = exp((iterations - t) * log(LR) + log(LRfinal))
  *
- * @param initLearningRate Double >= 0. Initial Learning rate
- * @param finalLearningRate Double >= 0. Learning rate beyond which it is no longer applied the decay
- * @param totalIterations Double >= 0. Total of iterations
+ * @property initLearningRate the initial Learning rate (must be >= [finalLearningRate])
+ * @property finalLearningRate the final value which the learning rate will reach (must be >= 0)
+ * @property totalIterations total amount of iterations (must be >= 0)
  */
 class ExponentialDecay(
-  val totalIterations: Int,
   val initLearningRate: Double = 0.0,
-  val finalLearningRate: Double = 0.0
+  val finalLearningRate: Double = 0.0,
+  val totalIterations: Int
 ) : DecayMethod {
 
   /**
    *
    */
-  init { require(initLearningRate > finalLearningRate) }
+  init { require(this.initLearningRate > this.finalLearningRate) }
 
   /**
+   * Update the learning rate given a time step.
    *
-   * @param learningRate learningRate
-   * @param timeStep time step
-   * @return decayed learning rate
+   * @param learningRate the learning rate to decrease
+   * @param timeStep the current time step
+   *
+   * @return the updated learning rate
    */
   override fun update(learningRate: Double, timeStep: Int): Double {
     return if (learningRate > this.finalLearningRate && timeStep > 1) {
