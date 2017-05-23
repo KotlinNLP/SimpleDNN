@@ -27,15 +27,15 @@ class ExponentialDecay(
   /**
    *
    * @param learningRate learningRate
-   * @param t time step
+   * @param timeStep time step
    * @return decayed learning rate
    */
-  fun update(learningRate: Double, t: Int): Double {
-    return if (learningRate > this.finalLearningRate && t > 1) {
+  fun update(learningRate: Double, timeStep: Int): Double {
+    return if (learningRate > this.finalLearningRate && timeStep > 1) {
       Math.exp(
-        ((this.totalIterations - t) * Math.log(learningRate) + Math.log(this.finalLearningRate))
+        ((this.totalIterations - timeStep) * Math.log(learningRate) + Math.log(this.finalLearningRate))
           /
-          (this.totalIterations - t + 1))
+          (this.totalIterations - timeStep + 1))
     } else {
       learningRate
     }
