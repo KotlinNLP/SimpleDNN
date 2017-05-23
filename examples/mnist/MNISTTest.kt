@@ -96,36 +96,37 @@ object MNISTTest {
    */
   fun JSONFileReader(filename: String): ArrayList<SimpleExample> {
 
-    val examples: ArrayList<SimpleExample> = ArrayList()
+    val examples = ArrayList<SimpleExample>()
+    val iterator = JsonIterator.parse(BufferedInputStream(FileInputStream(filename)), 2048)
 
-    val iter: JsonIterator = JsonIterator.parse(BufferedInputStream(FileInputStream(filename)), 2048)
-
-    // loop samples
-    while(iter.readArray()) {
-
-      val outputGold = NDArray.zeros(Shape(1, 10))
-
-      var goldIndex: Int
-
-      var features: NDArray? = null
-
-      // Single Example
-      while (iter.readArray()) {
-        if (iter.whatIsNext() == ValueType.ARRAY) {
-          features = iter.readNDArray()
-        } else if (iter.whatIsNext() == ValueType.NUMBER) {
-          goldIndex = iter.readInt() // - 1
-          outputGold[goldIndex] = 1.0
-        }
-      }
-
-      val example = SimpleExample(features!!, outputGold)
-
-      examples.add(example)
-
+    while(iterator.readArray()) {
+      examples.add(this.extractExample(iterator))
     }
 
     return examples
+  }
+
+  /**
+   *
+   */
+  fun extractExample(iterator: JsonIterator): SimpleExample {
+
+    val outputGold = NDArray.zeros(Shape(1, 10))
+    var goldIndex: Int
+    var features: NDArray? = null
+
+    while (iterator.readArray()) {
+
+      if (iterator.whatIsNext() == ValueType.ARRAY) {
+        features = iterator.readNDArray()
+
+      } else if (iterator.whatIsNext() == ValueType.NUMBER) {
+        goldIndex = iterator.readInt() // - 1
+        outputGold[goldIndex] = 1.0
+      }
+    }
+
+    return SimpleExample(features!!, outputGold)
   }
 
   /**

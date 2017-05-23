@@ -97,10 +97,7 @@ object MNISTSequenceTest {
     val examples: ArrayList<SequenceExampleWithFinalOutput> = ArrayList()
 
     file.forEachLine {
-      val iterator: JsonIterator = JsonIterator.parse(it)
-      val (featuresList, outputGold) = this.extractExampleData(iterator)
-
-      examples.add(SequenceExampleWithFinalOutput(featuresList, outputGold))
+      examples.add(this.extractExample(iterator = JsonIterator.parse(it)))
     }
 
     return examples
@@ -109,7 +106,7 @@ object MNISTSequenceTest {
   /**
    *
    */
-  fun extractExampleData(iterator: JsonIterator): Pair<ArrayList<NDArray>, NDArray> {
+  fun extractExample(iterator: JsonIterator): SequenceExampleWithFinalOutput {
 
     val featuresList = ArrayList<NDArray>()
     val outputGold = NDArray.zeros(Shape(10))
@@ -134,7 +131,7 @@ object MNISTSequenceTest {
       }
     }
 
-    return Pair(featuresList, outputGold)
+    return SequenceExampleWithFinalOutput(featuresList, outputGold)
   }
 
   /**
