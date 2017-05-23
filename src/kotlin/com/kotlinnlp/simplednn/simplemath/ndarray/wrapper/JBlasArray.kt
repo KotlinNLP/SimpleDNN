@@ -25,6 +25,12 @@ class JBlasArray(private val storage: DoubleMatrix) : NDArrayInterface {
   companion object: NDArrayFactory {
 
     /**
+     * Private val used to serialize the class (needed from Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+
+    /**
      * @param shape shape
      * @return a new empty JBlasArray
      */

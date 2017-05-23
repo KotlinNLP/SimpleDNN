@@ -12,15 +12,6 @@ import java.io.Serializable
 
 interface NDArrayInterface: Serializable {
 
-  companion object {
-
-    /**
-     * Private val used to serialize the class (needed from Serializable)
-     */
-    @Suppress("unused")
-    private const val serialVersionUID: Long = 1L
-  }
-
   /**
    *
    */
