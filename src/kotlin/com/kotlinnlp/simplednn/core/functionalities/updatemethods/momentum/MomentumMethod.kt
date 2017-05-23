@@ -11,7 +11,6 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupport
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
-import com.kotlinnlp.simplednn.core.functionalities.decaymethods.ExponentialDecay
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.simplemath.NDArray
@@ -77,14 +76,11 @@ open class MomentumMethod(
    */
   override fun newEpoch() {
 
-    this.epochCount += 1
-
-    when(decayMethod) {
-      is HyperbolicDecay ->
-        this.alpha = decayMethod.update(learningRate, this.epochCount)
-
-      is ExponentialDecay ->
-        this.alpha = decayMethod.update(this.alpha, this.epochCount)
+    if (decayMethod != null) {
+      this.alpha = decayMethod.update(
+        learningRate = if (decayMethod is HyperbolicDecay) this.learningRate else this.alpha,
+        timeStep = ++this.epochCount
+      )
     }
   }
 }
