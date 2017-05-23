@@ -14,6 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerStructure
+import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerStructure
 
 /**
@@ -67,6 +68,15 @@ object LayerStructureFactory {
       )
 
       LayerType.Connection.CFN -> CFNLayerStructure(
+        inputArray = inputArray,
+        outputArray = outputArray,
+        params = params,
+        activationFunction = activationFunction,
+        dropout = dropout,
+        layerContextWindow = contextWindow!!
+      )
+
+      LayerType.Connection.RAN -> RANLayerStructure(
         inputArray = inputArray,
         outputArray = outputArray,
         params = params,

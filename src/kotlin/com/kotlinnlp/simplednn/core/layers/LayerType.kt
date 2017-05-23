@@ -28,6 +28,7 @@ sealed class LayerType {
     SimpleRecurrent(property = Property.Recurrent),
     GRU(property = Property.Recurrent),
     LSTM(property = Property.Recurrent),
-    CFN(property = Property.Recurrent)
+    CFN(property = Property.Recurrent),
+    RAN(property = Property.Recurrent)
   }
 }

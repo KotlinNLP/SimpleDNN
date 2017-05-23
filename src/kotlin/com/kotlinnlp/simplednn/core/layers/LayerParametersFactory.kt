@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameter
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerParameters
+import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
 
 /**
@@ -41,6 +42,10 @@ object LayerParametersFactory {
         outputSize = outputSize)
 
       LayerType.Connection.CFN -> CFNLayerParameters(
+        inputSize = inputSize,
+        outputSize = outputSize)
+
+      LayerType.Connection.RAN -> RANLayerParameters(
         inputSize = inputSize,
         outputSize = outputSize)
 
