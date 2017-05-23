@@ -10,28 +10,33 @@ package com.kotlinnlp.simplednn.core.functionalities.outputevaluation
 import com.kotlinnlp.simplednn.simplemath.NDArray
 
 /**
- *
+ * Evaluation function which returns true if all the binary outputs are equal to the gold binary outputs.
  */
 class MulticlassEvaluation : OutputEvaluationFunction {
+
   /**
+   * The evaluation function.
    *
-   * @param output current output
-   * @param outputGold outputGold
-   * @return Boolean
+   * @param output the output of a NeuralNetwork
+   * @param outputGold the expected gold output
+   *
+   * @return a Boolean indicating whether the output must be considered equal to the gold or not
    */
   override fun invoke(output: NDArray, outputGold: NDArray): Boolean {
-    require(outputGold.length == outputGold.length) { "outputLayer and outputGold must have the same dimension" }
-
-    val binaryOutput: NDArray = output.roundInt()
+    require(output.length == outputGold.length) { "output and outputGold must have the same dimension" }
 
     for (i in 0 until outputGold.length) {
-      require(binaryOutput[i].toInt() == 1 || binaryOutput[i].toInt() == 0) { "non-binary output value" }
-      require(outputGold[i].toInt() == 1 || outputGold[i].toInt() == 0) { "non-binary gold output value" }
+      val outputInt = output[i].toInt()
+      val outputGoldInt = outputGold[i].toInt()
 
-      if (binaryOutput[i].toInt() != outputGold[i].toInt()) return false
+      require(outputInt == 0 || outputInt == 1) { "non-binary output value" }
+      require(outputGoldInt == 0 || outputGoldInt == 1) { "non-binary gold output value" }
+
+      if (outputInt != outputGoldInt) {
+        return false
+      }
     }
 
     return true
   }
-
 }
