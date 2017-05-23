@@ -26,25 +26,25 @@ class ExponentialDecaySpec : Spek({
 
     on("update with t=1") {
       it("should return the expected value") {
-        assertTrue(equals(0.01, decayMethod.update(learningRate = 0.01, t = 1), tolerance = 1.0e-08))
+        assertTrue(equals(0.01, decayMethod.update(learningRate = 0.01, timeStep = 1), tolerance = 1.0e-08))
       }
     }
 
     on("update with t=2") {
       it("should return the expected value") {
-        assertTrue(equals(0.00774264, decayMethod.update(learningRate = 0.01, t = 2), tolerance = 1.0e-08))
+        assertTrue(equals(0.00774264, decayMethod.update(learningRate = 0.01, timeStep = 2), tolerance = 1.0e-08))
       }
     }
 
     on("update with t=3") {
       it("should return the expected value") {
-        assertTrue(equals(0.00599484, decayMethod.update(learningRate = 0.0077426368, t = 3), tolerance = 1.0e-08))
+        assertTrue(equals(0.00599484, decayMethod.update(learningRate = 0.0077426368, timeStep = 3), tolerance = 1.0e-08))
       }
     }
 
     on("update with t>1 and learningRate = finalLearningRate") {
       it("should return the expected value") {
-        assertTrue(equals(0.001, decayMethod.update(learningRate = 0.001, t = 10), tolerance = 1.0e-08))
+        assertTrue(equals(0.001, decayMethod.update(learningRate = 0.001, timeStep = 10), tolerance = 1.0e-08))
       }
     }
   }
