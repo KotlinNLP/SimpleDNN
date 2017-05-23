@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.core.functionalities.losses
 /**
  *
  */
-enum class AugmentedLossStrength(val value: Int, val weight: Double) {
+enum class InjectedErrorStrength(val value: Int, val weight: Double) {
   NONE(1, 0.0),
   SOFT(2, 0.01),
   MEDIUM(3, 0.1),
