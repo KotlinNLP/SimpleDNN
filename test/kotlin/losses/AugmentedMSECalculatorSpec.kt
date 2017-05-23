@@ -5,7 +5,6 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-import com.kotlinnlp.simplednn.core.functionalities.losses.InjectedErrorStrength
 import com.kotlinnlp.simplednn.core.functionalities.losses.AugmentedMSECalculator
 import com.kotlinnlp.simplednn.simplemath.NDArray
 import org.jetbrains.spek.api.Spek
@@ -25,7 +24,30 @@ class AugmentedMSECalculatorSpec : Spek({
     val outputValues = NDArray.arrayOf(doubleArrayOf(0.0, 0.1, 0.2, 0.3))
     val goldValues = NDArray.arrayOf(doubleArrayOf(0.3, 0.2, 0.1, 0.0))
 
-    context("without injected errors") {
+    context("with loss partition disabled") {
+
+      val lossCalculator = AugmentedMSECalculator(pi = 0.0)
+
+      on("calculateLoss") {
+
+        val loss = lossCalculator.calculateLoss(outputValues, goldValues)
+
+        it("should calculate the expected loss") {
+          assertTrue(NDArray.arrayOf(doubleArrayOf(0.045, 0.005, 0.005, 0.045)).equals(loss))
+        }
+      }
+
+      on("calculateErrors") {
+
+        val errors = lossCalculator.calculateErrors(outputValues, goldValues)
+
+        it("should calculate the expected errors") {
+          assertTrue(NDArray.arrayOf(doubleArrayOf(-0.3, -0.1, 0.1, 0.3)).equals(errors))
+        }
+      }
+    }
+
+    context("with none injected errors") {
 
       val lossCalculator = AugmentedMSECalculator()
 
@@ -50,13 +72,13 @@ class AugmentedMSECalculatorSpec : Spek({
 
     context("with hard injected errors") {
 
-      val lossCalculator = AugmentedMSECalculator()
-      lossCalculator.injectedErrorStrength = InjectedErrorStrength.HARD.weight
+      val lossCalculator = AugmentedMSECalculator(pi = 0.9, c = 15.0)
+      lossCalculator.injectedErrorStrength = AugmentedMSECalculator.InjectedErrorStrength.HARD
 
       on("calculateLoss") {
 
         val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
-        val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0405, 0.00499995, 0.00649982, 0.04499959))
+        val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0045, 0.005, 0.01849999, 0.04499998))
 
         it("should calculate the expected loss") {
           assertTrue(expectedLoss.equals(outputLoss, tolerance = 1.0e-08))
@@ -66,7 +88,7 @@ class AugmentedMSECalculatorSpec : Spek({
       on("calculateErrors") {
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
-        val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.27, -0.08000045, 0.10999909, 0.29999864))
+        val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.03, 0.07999997, 0.18999995, 0.29999992))
 
         it("should calculate the expected errors") {
           assertTrue(expectedErrors.equals(outputErrors, tolerance = 1.0e-08))
@@ -76,13 +98,13 @@ class AugmentedMSECalculatorSpec : Spek({
 
     context("with medium injected errors") {
 
-      val lossCalculator = AugmentedMSECalculator()
-      lossCalculator.injectedErrorStrength = InjectedErrorStrength.MEDIUM.weight
+      val lossCalculator = AugmentedMSECalculator(pi = 0.9, c = 15.0)
+      lossCalculator.injectedErrorStrength = AugmentedMSECalculator.InjectedErrorStrength.MEDIUM
 
       on("calculateLoss") {
 
         val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
-        val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0405, 0.00469979, 0.00529915, 0.04229809))
+        val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0045, 0.00321587, 0.01136348, 0.02894283))
 
         it("should calculate the expected loss") {
           assertTrue(expectedLoss.equals(outputLoss, tolerance = 1.0e-08))
@@ -92,7 +114,7 @@ class AugmentedMSECalculatorSpec : Spek({
       on("calculateErrors") {
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
-        val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.27, -0.08367879, 0.10264241, 0.28896362))
+        val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.03, 0.05991829, 0.14983657, 0.23975486))
 
         it("should calculate the expected errors") {
           assertTrue(expectedErrors.equals(outputErrors, tolerance = 1.0e-08))
@@ -102,13 +124,13 @@ class AugmentedMSECalculatorSpec : Spek({
 
     context("with low injected errors") {
 
-      val lossCalculator = AugmentedMSECalculator()
-      lossCalculator.injectedErrorStrength = InjectedErrorStrength.SOFT.weight
+      val lossCalculator = AugmentedMSECalculator(pi = 0.9, c = 15.0)
+      lossCalculator.injectedErrorStrength = AugmentedMSECalculator.InjectedErrorStrength.SOFT
 
       on("calculateLoss") {
 
         val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
-        val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0405, 0.00450453, 0.00451811, 0.04054075))
+        val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0045, 0.00058731, 0.00084924, 0.00528579))
 
         it("should calculate the expected loss") {
           assertTrue(expectedLoss.equals(outputLoss, tolerance = 1.0e-08))
@@ -118,7 +140,7 @@ class AugmentedMSECalculatorSpec : Spek({
       on("calculateErrors") {
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
-        val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.27, -0.08904837, 0.09190325, 0.27285488))
+        val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.03, 0.00253628, 0.03507256, 0.06760885))
 
         it("should calculate the expected errors") {
           assertTrue(expectedErrors.equals(outputErrors, tolerance = 1.0e-08))
