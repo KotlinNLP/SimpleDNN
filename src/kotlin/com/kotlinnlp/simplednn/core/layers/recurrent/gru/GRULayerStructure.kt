@@ -252,6 +252,10 @@ class GRULayerStructure(
     val gr = this.resetGate.errors
 
     gx.assignValues(gp.T.dot(wp)).assignSum(gc.T.dot(wc)).assignSum(gr.T.dot(wr))
+
+    if (this.inputArray.hasActivation) {
+      gx.assignProd(this.inputArray.calculateActivationDeriv())
+    }
   }
 
   /**

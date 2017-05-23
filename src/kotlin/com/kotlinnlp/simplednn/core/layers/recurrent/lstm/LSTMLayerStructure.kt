@@ -299,6 +299,10 @@ class LSTMLayerStructure(
       .assignSum(gOutG.T.dot(wOutG))
       .assignSum(gForG.T.dot(wForG))
       .assignSum(gCand.T.dot(wCand))
+
+    if (this.inputArray.hasActivation) {
+      gx.assignProd(this.inputArray.calculateActivationDeriv())
+    }
   }
 
   /**

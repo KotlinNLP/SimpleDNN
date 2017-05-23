@@ -245,6 +245,10 @@ class CFNLayerStructure(
     val gC = this.candidate.errors
 
     gx.assignValues(gForG.T.dot(wForG)).assignSum(gC.T.dot(wC)).assignSum(gInG.T.dot(wInG))
+
+    if (this.inputArray.hasActivation) {
+      gx.assignProd(this.inputArray.calculateActivationDeriv())
+    }
   }
 
   /**

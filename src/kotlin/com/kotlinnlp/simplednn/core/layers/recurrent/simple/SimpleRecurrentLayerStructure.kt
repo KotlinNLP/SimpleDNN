@@ -137,8 +137,7 @@ class SimpleRecurrentLayerStructure(
 
     // gx *= xDeriv
     if (this.inputArray.hasActivation) {
-      val xDeriv = this.inputArray.calculateActivationDeriv()
-      gx.assignProd(xDeriv)
+      gx.assignProd(this.inputArray.calculateActivationDeriv())
     }
   }
 
