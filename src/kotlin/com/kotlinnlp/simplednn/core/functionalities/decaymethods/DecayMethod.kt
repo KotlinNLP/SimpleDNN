@@ -10,4 +10,7 @@ package com.kotlinnlp.simplednn.core.functionalities.decaymethods
 /**
  * Learning rate scheduling decrease the rate as a function of the number of observed minibatches.
  */
-interface DecayMethod
+interface DecayMethod {
+
+  fun update(learningRate: Double, timeStep: Int): Double
+}

@@ -30,7 +30,7 @@ class ExponentialDecay(
    * @param timeStep time step
    * @return decayed learning rate
    */
-  fun update(learningRate: Double, timeStep: Int): Double {
+  override fun update(learningRate: Double, timeStep: Int): Double {
     return if (learningRate > this.finalLearningRate && timeStep > 1) {
       Math.exp(
         ((this.totalIterations - timeStep) * Math.log(learningRate) + Math.log(this.finalLearningRate))

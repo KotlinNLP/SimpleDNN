@@ -30,7 +30,7 @@ class HyperbolicDecay(
    * @param timeStep time step
    * @return decayed learning rate
    */
-  fun update(learningRate: Double, timeStep: Int): Double {
+  override fun update(learningRate: Double, timeStep: Int): Double {
     return if (learningRate > this.finalLearningRate && this.decay > 0.0 && timeStep > 1) {
       this.initLearningRate / (1.0 + this.decay * timeStep)
     } else {
