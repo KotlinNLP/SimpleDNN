@@ -60,8 +60,7 @@ class RMSPropMethod(
 
     val secondOrderMoments = helperStructure.secondOrderMoments
 
-    secondOrderMoments.assignValues(
-      secondOrderMoments.prod(this.decay).assignSum(errors.prod(errors).assignProd(1.0 - this.decay)))
+    secondOrderMoments.assignSum(secondOrderMoments.prod(this.decay), errors.prod(errors).assignProd(1.0 - this.decay))
 
     return errors.div(secondOrderMoments.sqrt().assignSum(this.epsilon)).assignProd(this.learningRate)
   }
