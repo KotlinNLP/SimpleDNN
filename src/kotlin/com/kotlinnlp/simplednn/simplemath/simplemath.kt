@@ -31,7 +31,7 @@ fun concatVectorsV(vararg vectors: NDArray): NDArray {
 
   require(vectors.all { it.isVector && it.columns == 1 })
 
-  val array = JBlasArray.zeros(Shape(vectors.sumBy { it.length }))
+  val array = NDArray.zeros(Shape(vectors.sumBy { it.length }))
 
   var i = 0
 
