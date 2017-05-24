@@ -7,10 +7,9 @@
 
 package com.kotlinnlp.simplednn.simplemath
 
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-import com.kotlinnlp.simplednn.simplemath.ndarray.wrapper.JBlasArray
-
-typealias NDArray = JBlasArray
 
 /**
  * @param a a [Double] number
@@ -27,11 +26,11 @@ fun equals(a: Double, b: Double, tolerance: Double = 10e-4): Boolean {
   return a in lower..upper
 }
 
-fun concatVectorsV(vararg vectors: NDArray): NDArray {
+fun concatVectorsV(vararg vectors: DenseNDArray): DenseNDArray {
 
   require(vectors.all { it.isVector && it.columns == 1 })
 
-  val array = NDArray.zeros(Shape(vectors.sumBy { it.length }))
+  val array = NDArrayFactory.zeros(Shape(vectors.sumBy { it.length }))
 
   var i = 0
 
@@ -40,5 +39,4 @@ fun concatVectorsV(vararg vectors: NDArray): NDArray {
   }
 
   return array
-
 }
