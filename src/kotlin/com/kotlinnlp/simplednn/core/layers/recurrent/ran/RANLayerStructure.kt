@@ -185,7 +185,7 @@ class RANLayerStructure(
   private fun assignParamsGradients(prevStateOutput: AugmentedArray?): Unit {
 
     val x = this.inputArray.values
-    val yPrev = prevStateOutput?.values
+    val yPrev = prevStateOutput?.valuesNotActivated
 
     this.setGateParamsGradients(this.inputGate, this.paramsErrors!!.inputGate, x, yPrev = yPrev)
     this.setGateParamsGradients(this.forgetGate, this.paramsErrors!!.forgetGate, x, yPrev = yPrev)
