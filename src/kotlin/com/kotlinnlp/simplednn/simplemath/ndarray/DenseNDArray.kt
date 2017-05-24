@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.simplemath.ndarray
 
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.simplemath.equals
 import org.jblas.DoubleMatrix
 import org.jblas.DoubleMatrix.concatHorizontally
 import org.jblas.DoubleMatrix.concatVertically
@@ -73,9 +74,9 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray {
 
     if (this.isVector) {
       (0 until this.length)
-        .filter { this[it].toDouble() != 0.0 }
+        .filter { this[it] != 0.0 }
         .forEach {
-          if (this[it].toDouble() == 1.0 && !isTrue) {
+          if (this[it] == 1.0 && !isTrue) {
             isTrue = true
           } else {
             return false
@@ -89,22 +90,22 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray {
   /**
    *
    */
-  override operator fun get(i: Int): Number = this.storage.get(i)
+  override operator fun get(i: Int): Double = this.storage.get(i)
 
   /**
    *
    */
-  override operator fun get(i: Int, j: Int): Number = this.storage.get(i, j)
+  override operator fun get(i: Int, j: Int): Double = this.storage.get(i, j)
 
   /**
    *
    */
-  override operator fun set(i: Int, value: Number) { this.storage.put(i, value.toDouble()) }
+  override operator fun set(i: Int, value: Double) { this.storage.put(i, value) }
 
   /**
    *
    */
-  override operator fun set(i: Int, j: Int, value: Number) { this.storage.put(i, j, value.toDouble()) }
+  override operator fun set(i: Int, j: Int, value: Double) { this.storage.put(i, j, value) }
 
   /**
    * Get the i-th row
@@ -151,8 +152,8 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray {
   /**
    *
    */
-  override fun assignValues(n: Number): NDArray {
-    this.storage.fill(n.toDouble())
+  override fun assignValues(n: Double): NDArray {
+    this.storage.fill(n)
     return this
   }
 
@@ -171,8 +172,8 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray {
   /**
    *
    */
-  override fun sum(n: Number): NDArray {
-    return DenseNDArray(this.storage.add(n.toDouble()))
+  override fun sum(n: Double): NDArray {
+    return DenseNDArray(this.storage.add(n))
   }
 
   /**
@@ -190,16 +191,16 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray {
   /**
    *
    */
-  override fun assignSum(n: Number): NDArray {
-    this.storage.addi(n.toDouble())
+  override fun assignSum(n: Double): NDArray {
+    this.storage.addi(n)
     return this
   }
 
   /**
    *
    */
-  override fun assignSum(a: NDArray, n: Number): NDArray { (a as DenseNDArray)
-    a.storage.addi(n.toDouble(), this.storage)
+  override fun assignSum(a: NDArray, n: Double): NDArray { (a as DenseNDArray)
+    a.storage.addi(n, this.storage)
     return this
   }
 
@@ -222,8 +223,8 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray {
   /**
    *
    */
-  override fun sub(n: Number): NDArray {
-    return DenseNDArray(this.storage.sub(n.toDouble()))
+  override fun sub(n: Double): NDArray {
+    return DenseNDArray(this.storage.sub(n))
   }
 
   /**
@@ -236,8 +237,8 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray {
   /**
    * In-place subtraction by number
    */
-  override fun assignSub(n: Number): NDArray {
-    this.storage.subi(n.toDouble())
+  override fun assignSub(n: Double): NDArray {
+    this.storage.subi(n)
     return this
   }
 
@@ -252,8 +253,8 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray {
   /**
    *
    */
-  override fun reverseSub(n: Number): NDArray {
-    return DenseNDArray(this.storage.rsub(n.toDouble()))
+  override fun reverseSub(n: Double): NDArray {
+    return DenseNDArray(this.storage.rsub(n))
   }
 
   /**
@@ -275,8 +276,8 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray {
   /**
    *
    */
-  override fun prod(n: Number): NDArray {
-    return DenseNDArray(this.storage.mul(n.toDouble()))
+  override fun prod(n: Double): NDArray {
+    return DenseNDArray(this.storage.mul(n))
   }
 
   /**
@@ -289,8 +290,8 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray {
   /**
    *
    */
-  override fun assignProd(a: NDArray, n: Number): NDArray { (a as DenseNDArray)
-    a.storage.muli(n.toDouble(), this.storage)
+  override fun assignProd(a: NDArray, n: Double): NDArray { (a as DenseNDArray)
+    a.storage.muli(n, this.storage)
     return this
   }
 
@@ -313,16 +314,16 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray {
   /**
    *
    */
-  override fun assignProd(n: Number): NDArray {
-    this.storage.muli(n.toDouble())
+  override fun assignProd(n: Double): NDArray {
+    this.storage.muli(n)
     return this
   }
 
   /**
    *
    */
-  override fun div(n: Number): NDArray {
-    return DenseNDArray(this.storage.div(n.toDouble()))
+  override fun div(n: Double): NDArray {
+    return DenseNDArray(this.storage.div(n))
   }
 
   /**
@@ -335,8 +336,8 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray {
   /**
    *
    */
-  override fun assignDiv(n: Number): NDArray {
-    this.storage.divi(n.toDouble())
+  override fun assignDiv(n: Double): NDArray {
+    this.storage.divi(n)
     return this
   }
 
@@ -408,7 +409,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray {
     var maxValue: Double? = null
 
     (0 until this.length).forEach { i ->
-      val value = this[i].toDouble()
+      val value = this[i]
 
       if (maxValue == null || value > maxValue!!) {
         maxValue = value
