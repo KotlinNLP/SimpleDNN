@@ -27,7 +27,8 @@ class TreeRNNOptimizer(
   network: TreeRNN,
   leftUpdateMethod: UpdateMethod = LearningRateMethod(learningRate = 0.0001),
   rightUpdateMethod: UpdateMethod = LearningRateMethod(learningRate = 0.0001),
-  concatUpdateMethod: UpdateMethod = LearningRateMethod(learningRate = 0.0001)) : Optimizer {
+  concatUpdateMethod: UpdateMethod = LearningRateMethod(learningRate = 0.0001)
+) : Optimizer {
 
   /**
    * The [Optimizer] used for the left recurrent network

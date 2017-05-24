@@ -14,10 +14,16 @@ import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvalu
 /**
  *
  */
-class FeedforwardValidationHelper(override val neuralProcessor: FeedforwardNeuralProcessor,
-                                  outputEvaluationFunction: OutputEvaluationFunction): ValidationHelper<SimpleExample>(
-  neuralProcessor, outputEvaluationFunction) {
+class FeedforwardValidationHelper(
+  override val neuralProcessor: FeedforwardNeuralProcessor,
+  outputEvaluationFunction: OutputEvaluationFunction
+) : ValidationHelper<SimpleExample>(
+  neuralProcessor = neuralProcessor,
+  outputEvaluationFunction = outputEvaluationFunction) {
 
+  /**
+   *
+   */
   override fun validate(example: SimpleExample): Boolean {
 
     val output = this.neuralProcessor.forward(example.features)

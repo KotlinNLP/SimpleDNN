@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.dataset.Shuffler
 /**
  *
  */
-class ExamplesIndices(val size: Int, val shuffler: Shuffler?): Iterable<Int> {
+class ExamplesIndices(val size: Int, val shuffler: Shuffler?) : Iterable<Int> {
 
   private inner class IndicesIterator : Iterator<Int> {
     /**

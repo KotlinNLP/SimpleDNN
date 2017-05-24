@@ -14,9 +14,12 @@ import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvalu
 /**
  *
  */
-class SequenceWithFinalOutputValidationHelper(override val neuralProcessor: RecurrentNeuralProcessor,
-                                              outputEvaluationFunction: OutputEvaluationFunction):
-  ValidationHelper<SequenceExampleWithFinalOutput>(neuralProcessor, outputEvaluationFunction) {
+class SequenceWithFinalOutputValidationHelper(
+  override val neuralProcessor: RecurrentNeuralProcessor,
+  outputEvaluationFunction: OutputEvaluationFunction
+) : ValidationHelper<SequenceExampleWithFinalOutput>(
+  neuralProcessor = neuralProcessor,
+  outputEvaluationFunction = outputEvaluationFunction) {
 
   override fun validate(example: SequenceExampleWithFinalOutput): Boolean {
 

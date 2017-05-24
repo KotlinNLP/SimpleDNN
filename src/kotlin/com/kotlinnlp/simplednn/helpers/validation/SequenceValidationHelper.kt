@@ -14,10 +14,16 @@ import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvalu
 /**
  *
  */
-class SequenceValidationHelper(override val neuralProcessor: RecurrentNeuralProcessor,
-                               outputEvaluationFunction: OutputEvaluationFunction): ValidationHelper<SequenceExample>(
-  neuralProcessor, outputEvaluationFunction) {
+class SequenceValidationHelper(
+  override val neuralProcessor: RecurrentNeuralProcessor,
+  outputEvaluationFunction: OutputEvaluationFunction
+) : ValidationHelper<SequenceExample>(
+  neuralProcessor = neuralProcessor,
+  outputEvaluationFunction = outputEvaluationFunction) {
 
+  /**
+   *
+   */
   override fun validate(example: SequenceExample): Boolean {
     val output = this.neuralProcessor.forward(example.sequenceFeatures)
 

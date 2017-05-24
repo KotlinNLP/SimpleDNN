@@ -27,7 +27,8 @@ class BiRNNOptimizer(
   network: BiRNN,
   leftToRightUpdateMethod: UpdateMethod = ADAMMethod(stepSize = 0.0001),
   rightToLeftUpdateMethod: UpdateMethod = ADAMMethod(stepSize = 0.0001),
-  outputUpdateMethod: UpdateMethod = ADAMMethod(stepSize = 0.0001)) : Optimizer {
+  outputUpdateMethod: UpdateMethod = ADAMMethod(stepSize = 0.0001)
+) : Optimizer {
 
   /**
    * The [Optimizer] used for the left-to-right network

@@ -15,11 +15,16 @@ import com.kotlinnlp.simplednn.dataset.SimpleExample
 /**
  *
  */
-class FeedforwardTrainingHelper(override val neuralProcessor: FeedforwardNeuralProcessor,
-                                optimizer: ParamsOptimizer,
-                                lossCalculator: LossCalculator,
-                                verbose: Boolean = false): TrainingHelper<SimpleExample>(
-  neuralProcessor, optimizer, lossCalculator, verbose) {
+class FeedforwardTrainingHelper(
+  override val neuralProcessor: FeedforwardNeuralProcessor,
+  optimizer: ParamsOptimizer,
+  lossCalculator: LossCalculator,
+  verbose: Boolean = false
+) : TrainingHelper<SimpleExample>(
+  neuralProcessor = neuralProcessor,
+  optimizer = optimizer,
+  lossCalculator = lossCalculator,
+  verbose = verbose) {
 
   /**
    * Learn from an example (forward + backward)

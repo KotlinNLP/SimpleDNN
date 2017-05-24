@@ -15,8 +15,9 @@ import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvalu
  *
  * @param neuralProcessor neuralProcessor
  */
-abstract class ValidationHelper<ExampleType: Example>(open val neuralProcessor: NeuralProcessor,
-                                                      val outputEvaluationFunction: OutputEvaluationFunction) {
+abstract class ValidationHelper<ExampleType: Example>(
+  open val neuralProcessor: NeuralProcessor,
+  val outputEvaluationFunction: OutputEvaluationFunction) {
 
   /**
    *

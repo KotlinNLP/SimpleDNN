@@ -15,11 +15,16 @@ import com.kotlinnlp.simplednn.dataset.*
 /**
  *
  */
-class SequenceWithFinalOutputTrainingHelper(override val neuralProcessor: RecurrentNeuralProcessor,
-                             optimizer: ParamsOptimizer,
-                             lossCalculator: LossCalculator,
-                             verbose: Boolean = false): TrainingHelper<SequenceExampleWithFinalOutput>(
-  neuralProcessor, optimizer, lossCalculator, verbose) {
+class SequenceWithFinalOutputTrainingHelper(
+  override val neuralProcessor: RecurrentNeuralProcessor,
+  optimizer: ParamsOptimizer,
+  lossCalculator: LossCalculator,
+  verbose: Boolean = false
+) : TrainingHelper<SequenceExampleWithFinalOutput>(
+  neuralProcessor = neuralProcessor,
+  optimizer = optimizer,
+  lossCalculator = lossCalculator,
+  verbose = verbose) {
 
   /**
    * Learn from an example (forward + backward)

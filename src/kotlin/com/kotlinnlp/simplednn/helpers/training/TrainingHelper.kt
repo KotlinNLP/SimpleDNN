@@ -20,10 +20,11 @@ import com.kotlinnlp.simplednn.utils.progressindicator.ProgressIndicatorBar
 /**
  *
  */
-abstract class TrainingHelper<ExampleType: Example>(open val neuralProcessor: NeuralProcessor,
-                                                    val optimizer: ParamsOptimizer,
-                                                    val lossCalculator: LossCalculator,
-                                                    val verbose: Boolean = false) {
+abstract class TrainingHelper<ExampleType: Example>(
+  open val neuralProcessor: NeuralProcessor,
+  val optimizer: ParamsOptimizer,
+  val lossCalculator: LossCalculator,
+  val verbose: Boolean = false) {
 
   /**
    *

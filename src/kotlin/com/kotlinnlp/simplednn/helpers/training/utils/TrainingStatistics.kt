@@ -15,7 +15,7 @@ data class TrainingStatistics(
   var batchCount: Int = 0,
   var exampleCount: Int = 0,
   var lastLoss: Double = 0.0,
-  var lastAccuracy: Double = 0.0){
+  var lastAccuracy: Double = 0.0) {
 
   /**
    *
