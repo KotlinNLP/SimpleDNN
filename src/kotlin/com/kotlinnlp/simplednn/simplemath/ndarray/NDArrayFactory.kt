@@ -18,14 +18,14 @@ object NDArrayFactory {
    * @param shape shape
    * @return a new empty DenseNDArray
    */
-  fun emptyArray(shape: Shape): NDArray {
+  fun emptyArray(shape: Shape): DenseNDArray {
     return DenseNDArray(DoubleMatrix.zeros(shape.dim1, shape.dim2))
   }
 
   /**
    *
    */
-  fun arrayOf(vector: DoubleArray): NDArray {
+  fun arrayOf(vector: DoubleArray): DenseNDArray {
     val m = DoubleMatrix(vector.size, 1)
 
     (0 until vector.size).forEach { i -> m.put(i, vector[i]) }
@@ -36,7 +36,7 @@ object NDArrayFactory {
   /**
    *
    */
-  fun arrayOf(matrix: Array<DoubleArray>): NDArray {
+  fun arrayOf(matrix: Array<DoubleArray>): DenseNDArray {
     val rows = matrix.size
     val columns = matrix[0].size
     val m = DoubleMatrix(rows, columns)
@@ -56,7 +56,7 @@ object NDArrayFactory {
    * @param shape shape
    * @return a new DenseNDArray filled with zeros
    */
-  fun zeros(shape: Shape): NDArray {
+  fun zeros(shape: Shape): DenseNDArray {
     return this.emptyArray(shape)
   }
 
@@ -67,7 +67,7 @@ object NDArrayFactory {
    * @param oneAt the index of the one element
    * @return a oneHotEncoder DenseNDArray
    */
-  fun oneHotEncoder(length: Int, oneAt: Int): NDArray {
+  fun oneHotEncoder(length: Int, oneAt: Int): DenseNDArray {
     require(oneAt in 0 until length)
 
     val array = this.emptyArray(Shape(length))
@@ -85,7 +85,7 @@ object NDArrayFactory {
    * @param to inclusive upper bound of random values range
    * @return a new DenseNDArray filled with random values
    */
-  fun random(shape: Shape, from: Double, to: Double): NDArray {
+  fun random(shape: Shape, from: Double, to: Double): DenseNDArray {
 
     val m = DoubleMatrix.rand(shape.dim1, shape.dim2)
     val rangeSize = to - from
