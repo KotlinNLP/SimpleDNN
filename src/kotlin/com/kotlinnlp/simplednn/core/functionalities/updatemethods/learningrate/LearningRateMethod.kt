@@ -75,9 +75,9 @@ class LearningRateMethod(
    */
   override fun newEpoch() {
 
-    if (decayMethod != null) {
-      this.alpha = decayMethod.update(
-        learningRate = if (decayMethod is HyperbolicDecay) this.learningRate else this.alpha,
+    if (this.decayMethod != null) {
+      this.alpha = this.decayMethod.update(
+        learningRate = if (this.decayMethod is HyperbolicDecay) this.learningRate else this.alpha,
         timeStep = ++this.epochCount
       )
     }
