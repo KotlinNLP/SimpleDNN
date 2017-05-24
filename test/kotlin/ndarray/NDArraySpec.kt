@@ -518,6 +518,21 @@ class NDArraySpec : Spek({
       val b = NDArray.arrayOf(doubleArrayOf(0.7, 0.8, 0.1, 0.4))
       val n = 0.9
 
+      on("assignSum(number) method") {
+
+        val array = NDArray.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
+        val expectedArray = NDArray.arrayOf(doubleArrayOf(1.0, 1.1, 1.2, 0.9))
+        val res = array.assignSum(n)
+
+        it("should return the same NDArray") {
+          assertEquals(true, array === res)
+        }
+
+        it("should assign the expected values") {
+          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+        }
+      }
+
       on("assignSum(array, number) method") {
 
         val array = NDArray.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
