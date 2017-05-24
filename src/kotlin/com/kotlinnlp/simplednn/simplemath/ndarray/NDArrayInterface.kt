@@ -136,6 +136,11 @@ interface NDArrayInterface: Serializable {
   /**
    *
    */
+  fun assignSum(n: Number): NDArrayInterface
+
+  /**
+   *
+   */
   fun assignSum(a: NDArrayInterface, n: Number): NDArrayInterface
 
   /**

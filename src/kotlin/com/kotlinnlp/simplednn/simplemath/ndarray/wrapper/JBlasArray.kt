@@ -281,6 +281,14 @@ class JBlasArray(private val storage: DoubleMatrix) : NDArrayInterface {
   /**
    *
    */
+  override fun assignSum(n: Number): JBlasArray {
+    this.storage.addi(n.toDouble())
+    return this
+  }
+
+  /**
+   *
+   */
   override fun assignSum(a: NDArrayInterface, n: Number): JBlasArray { (a as JBlasArray)
     a.storage.addi(n.toDouble(), this.storage)
     return this
