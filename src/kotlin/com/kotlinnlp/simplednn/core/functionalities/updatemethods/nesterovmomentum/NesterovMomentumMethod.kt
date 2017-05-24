@@ -58,8 +58,8 @@ class NesterovMomentumMethod(
     helperStructure.vPrev.assignValues(helperStructure.v) // backup previous velocity
 
     // update velocity with adapted learning rates
-    helperStructure.v.assignValues(errors.prod(this.alpha).sum(helperStructure.v.prod(this.momentum)))
+    helperStructure.v.assignValues(errors.prod(this.alpha).assignSum(helperStructure.v.prod(this.momentum)))
 
-    return helperStructure.vPrev.prod(-this.momentum).sum(helperStructure.v.prod(1.0 + this.momentum))
+    return helperStructure.vPrev.prod(-this.momentum).assignSum(helperStructure.v.prod(1.0 + this.momentum))
   }
 }
