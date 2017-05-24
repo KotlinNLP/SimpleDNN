@@ -40,7 +40,7 @@ class ADAMMethod(
   /**
    *
    */
-  private var exampleCount: Int = 0
+  private var exampleCount: Double = 0.0
 
   /**
    *
@@ -66,24 +66,28 @@ class ADAMMethod(
   override fun optimizeErrors(errors: NDArray, array: UpdatableArray): NDArray {
     val helperStructure = this.getSupportStructure(array) as ADAMStructure
 
-    helperStructure.firstOrderMoments.assignProd(beta1).assignSum(errors.prod(1.0 - beta1))
-    helperStructure.secondOrderMoments.assignProd(beta2).assignSum(errors.prod(errors).prod(1.0 - beta2))
+    helperStructure.firstOrderMoments.assignProd(this.beta1).assignSum(errors.prod(1.0 - this.beta1))
+    helperStructure.secondOrderMoments.assignProd(this.beta2).assignSum(
+      errors.prod(errors).assignProd(1.0 - this.beta2))
 
-    return helperStructure.firstOrderMoments.div(helperStructure.secondOrderMoments.sqrt().sum(epsilon)).prod(this.alpha)
-  }
-
-  /**
-   *
-   */
-  fun updateAlpha() {
-    this.alpha = this.stepSize * Math.sqrt(1.0 - Math.pow(this.beta2, this.exampleCount.toDouble())) / (1.0 - Math.pow(this.beta1, this.exampleCount.toDouble()))
+    return helperStructure.firstOrderMoments.div(
+      helperStructure.secondOrderMoments.sqrt().assignSum(this.epsilon)).assignProd(this.alpha)
   }
 
   /**
    * Method to call every new example
    */
   override fun newExample() {
-    this.exampleCount += 1
+    this.exampleCount++
     this.updateAlpha()
+  }
+
+  /**
+   *
+   */
+  private fun updateAlpha() {
+    this.alpha = this.stepSize *
+      Math.sqrt(1.0 - Math.pow(this.beta2, this.exampleCount)) /
+      (1.0 - Math.pow(this.beta1, this.exampleCount))
   }
 }
