@@ -66,7 +66,7 @@ open class MomentumMethod(
     val helperStructure = this.getSupportStructure(array) as MomentumStructure
 
     // update velocity with adapted learning rates
-    helperStructure.v.assignValues(errors.prod(this.alpha).assignSum(helperStructure.v.prod(this.momentum)))
+    helperStructure.v.assignSum(errors.prod(this.alpha), helperStructure.v.prod(this.momentum))
 
     return helperStructure.v
   }
