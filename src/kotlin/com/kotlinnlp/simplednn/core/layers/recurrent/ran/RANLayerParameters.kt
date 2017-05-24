@@ -9,10 +9,8 @@ package com.kotlinnlp.simplednn.core.layers.recurrent.ran
 
 import com.kotlinnlp.simplednn.core.layers.recurrent.GateParametersUnit
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  *
