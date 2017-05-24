@@ -59,23 +59,23 @@ interface NDArray : Serializable {
   /**
    *
    */
-  operator fun get(i: Int): Number
+  operator fun get(i: Int): Double
 
   /**
    *
    */
-  operator fun get(i: Int, j: Int): Number
+  operator fun get(i: Int, j: Int): Double
 
 
   /**
    *
    */
-  operator fun set(i: Int, value: Number)
+  operator fun set(i: Int, value: Double)
 
   /**
    *
    */
-  operator fun set(i: Int, j: Int, value: Number)
+  operator fun set(i: Int, j: Int, value: Double)
 
   /**
    * Get the i-th row
@@ -119,12 +119,12 @@ interface NDArray : Serializable {
   /**
    *
    */
-  fun assignValues(n: Number): NDArray
+  fun assignValues(n: Double): NDArray
 
   /**
    *
    */
-  fun sum(n: Number): NDArray
+  fun sum(n: Double): NDArray
 
   /**
    *
@@ -139,12 +139,12 @@ interface NDArray : Serializable {
   /**
    *
    */
-  fun assignSum(n: Number): NDArray
+  fun assignSum(n: Double): NDArray
 
   /**
    *
    */
-  fun assignSum(a: NDArray, n: Number): NDArray
+  fun assignSum(a: NDArray, n: Double): NDArray
 
   /**
    *
@@ -159,7 +159,7 @@ interface NDArray : Serializable {
   /**
    *
    */
-  fun sub(n: Number): NDArray
+  fun sub(n: Double): NDArray
 
   /**
    *
@@ -169,7 +169,7 @@ interface NDArray : Serializable {
   /**
    * In-place subtraction by number
    */
-  fun assignSub(n: Number): NDArray
+  fun assignSub(n: Double): NDArray
 
   /**
    *
@@ -179,7 +179,7 @@ interface NDArray : Serializable {
   /**
    *
    */
-  fun reverseSub(n: Number): NDArray
+  fun reverseSub(n: Double): NDArray
 
   /**
    *
@@ -194,7 +194,7 @@ interface NDArray : Serializable {
   /**
    *
    */
-  fun prod(n: Number): NDArray
+  fun prod(n: Double): NDArray
 
   /**
    *
@@ -204,12 +204,12 @@ interface NDArray : Serializable {
   /**
    *
    */
-  fun assignProd(n: Number): NDArray
+  fun assignProd(n: Double): NDArray
 
   /**
    *
    */
-  fun assignProd(a: NDArray, n: Number): NDArray
+  fun assignProd(a: NDArray, n: Double): NDArray
 
   /**
    *
@@ -224,7 +224,7 @@ interface NDArray : Serializable {
   /**
    *
    */
-  fun div(n: Number): NDArray
+  fun div(n: Double): NDArray
 
   /**
    *
@@ -234,7 +234,7 @@ interface NDArray : Serializable {
   /**
    *
    */
-  fun assignDiv(n: Number): NDArray
+  fun assignDiv(n: Double): NDArray
 
   /**
    *

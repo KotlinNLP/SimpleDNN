@@ -13,18 +13,18 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.wrapper.JBlasArray
 typealias NDArray = JBlasArray
 
 /**
- * @param a a number
- * @param b a number
- * @param tolerance a must be in the range [b - tolerance, b + tolerance] to return True
+ * @param a a [Double] number
+ * @param b a [Double] number
+ * @param tolerance it defines the range [[b] - [tolerance], [b] + [tolerance]]
  *
- * @return a Boolean which indicates if a is equal to be within the tolerance
+ * @return a [Boolean] which indicates if [a] is within the range of [b] with [tolerance]
  */
-fun equals(a: Number, b: Number, tolerance: Double = 10e-4): Boolean {
+fun equals(a: Double, b: Double, tolerance: Double = 10e-4): Boolean {
 
-  val lower = b.toDouble() - tolerance
-  val upper = b.toDouble() + tolerance
+  val lower = b - tolerance
+  val upper = b + tolerance
 
-  return a.toDouble() in lower..upper
+  return a in lower..upper
 }
 
 fun concatVectorsV(vararg vectors: NDArray): NDArray {
