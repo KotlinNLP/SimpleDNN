@@ -10,7 +10,10 @@ package com.kotlinnlp.simplednn.simplemath.ndarray
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import java.io.Serializable
 
-interface NDArrayInterface: Serializable {
+/**
+ *
+ */
+interface NDArray : Serializable {
 
   /**
    *
@@ -79,54 +82,54 @@ interface NDArrayInterface: Serializable {
    *
    * @param i the index of the row to be returned
    *
-   * @return the selected row as a new NDArrayInterface
+   * @return the selected row as a new NDArray
    */
-  fun getRow(i: Int): NDArrayInterface
+  fun getRow(i: Int): NDArray
 
   /**
    * Get the i-th column
    *
    * @param i the index of the column to be returned
    *
-   * @return the selected column as a new NDArrayInterface
+   * @return the selected column as a new NDArray
    */
-  fun getColumn(i: Int): NDArrayInterface
+  fun getColumn(i: Int): NDArray
 
   /**
    * transpose
    */
-  val T: NDArrayInterface
+  val T: NDArray
     get
 
   /**
    *
    */
-  fun copy(): NDArrayInterface
+  fun copy(): NDArray
 
   /**
    *
    */
-  fun zeros(): NDArrayInterface
+  fun zeros(): NDArray
 
   /**
    *
    */
-  fun assignValues(a: NDArrayInterface): NDArrayInterface
+  fun assignValues(a: NDArray): NDArray
 
   /**
    *
    */
-  fun assignValues(n: Number): NDArrayInterface
+  fun assignValues(n: Number): NDArray
 
   /**
    *
    */
-  fun sum(n: Number): NDArrayInterface
+  fun sum(n: Number): NDArray
 
   /**
    *
    */
-  fun sum(a: NDArrayInterface): NDArrayInterface
+  fun sum(a: NDArray): NDArray
 
   /**
    *
@@ -136,125 +139,125 @@ interface NDArrayInterface: Serializable {
   /**
    *
    */
-  fun assignSum(n: Number): NDArrayInterface
+  fun assignSum(n: Number): NDArray
 
   /**
    *
    */
-  fun assignSum(a: NDArrayInterface, n: Number): NDArrayInterface
+  fun assignSum(a: NDArray, n: Number): NDArray
 
   /**
    *
    */
-  fun assignSum(a: NDArrayInterface, b: NDArrayInterface): NDArrayInterface
+  fun assignSum(a: NDArray, b: NDArray): NDArray
 
   /**
    *
    */
-  fun assignSum(a: NDArrayInterface): NDArrayInterface
+  fun assignSum(a: NDArray): NDArray
 
   /**
    *
    */
-  fun sub(n: Number): NDArrayInterface
+  fun sub(n: Number): NDArray
 
   /**
    *
    */
-  fun sub(a: NDArrayInterface): NDArrayInterface
+  fun sub(a: NDArray): NDArray
 
   /**
    * In-place subtraction by number
    */
-  fun assignSub(n: Number): NDArrayInterface
+  fun assignSub(n: Number): NDArray
 
   /**
    *
    */
-  fun assignSub(a: NDArrayInterface): NDArrayInterface
+  fun assignSub(a: NDArray): NDArray
 
   /**
    *
    */
-  fun reverseSub(n: Number): NDArrayInterface
+  fun reverseSub(n: Number): NDArray
 
   /**
    *
    */
-  fun dot(a: NDArrayInterface): NDArrayInterface
+  fun dot(a: NDArray): NDArray
 
   /**
    *
    */
-  fun assignDot(a: NDArrayInterface, b: NDArrayInterface): NDArrayInterface
+  fun assignDot(a: NDArray, b: NDArray): NDArray
 
   /**
    *
    */
-  fun prod(n: Number): NDArrayInterface
+  fun prod(n: Number): NDArray
 
   /**
    *
    */
-  fun prod(a: NDArrayInterface): NDArrayInterface
+  fun prod(a: NDArray): NDArray
 
   /**
    *
    */
-  fun assignProd(n: Number): NDArrayInterface
+  fun assignProd(n: Number): NDArray
 
   /**
    *
    */
-  fun assignProd(a: NDArrayInterface, n: Number): NDArrayInterface
+  fun assignProd(a: NDArray, n: Number): NDArray
 
   /**
    *
    */
-  fun assignProd(a: NDArrayInterface, b: NDArrayInterface): NDArrayInterface
+  fun assignProd(a: NDArray, b: NDArray): NDArray
 
   /**
    *
    */
-  fun assignProd(a: NDArrayInterface): NDArrayInterface
+  fun assignProd(a: NDArray): NDArray
 
   /**
    *
    */
-  fun div(n: Number): NDArrayInterface
+  fun div(n: Number): NDArray
 
   /**
    *
    */
-  fun div(a: NDArrayInterface): NDArrayInterface
+  fun div(a: NDArray): NDArray
 
   /**
    *
    */
-  fun assignDiv(n: Number): NDArrayInterface
+  fun assignDiv(n: Number): NDArray
 
   /**
    *
    */
-  fun assignDiv(a: NDArrayInterface): NDArrayInterface
+  fun assignDiv(a: NDArray): NDArray
 
   /**
    * Round values to Int
    *
    * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
    *
-   * @return a new NDArrayInterface with the values of the current one rounded to Int
+   * @return a new NDArray with the values of the current one rounded to Int
    */
-  fun roundInt(threshold: Double = 0.5): NDArrayInterface
+  fun roundInt(threshold: Double = 0.5): NDArray
 
   /**
    * Round values to Int in-place
    *
    * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
    *
-   * @return this NDArrayInterface
+   * @return this NDArray
    */
-  fun assignRoundInt(threshold: Double = 0.5): NDArrayInterface
+  fun assignRoundInt(threshold: Double = 0.5): NDArray
 
   /**
    *
@@ -264,9 +267,9 @@ interface NDArrayInterface: Serializable {
   /**
    * Sign function
    *
-   * @return a new NDArrayInterface containing the results of the function sign() applied element-wise
+   * @return a new NDArray containing the results of the function sign() applied element-wise
    */
-  fun sign(): NDArrayInterface
+  fun sign(): NDArray
 
   /**
    * @return the index of the maximum value (-1 if empty)
@@ -276,33 +279,33 @@ interface NDArrayInterface: Serializable {
   /**
    *
    */
-  fun randomize(randomGenerator: RandomGenerator): NDArrayInterface
+  fun randomize(randomGenerator: RandomGenerator): NDArray
 
   /**
    *
    */
-  fun sqrt(): NDArrayInterface
+  fun sqrt(): NDArray
 
   /**
    * Power
    *
    * @param power the exponent
    *
-   * @return a new [NDArrayInterface] containing the values of this to the power of [power]
+   * @return a new [NDArray] containing the values of this to the power of [power]
    */
-  fun pow(power: Double): NDArrayInterface
+  fun pow(power: Double): NDArray
 
   /**
    * In-place power
    *
    * @param power the exponent
    *
-   * @return this [NDArrayInterface] to the power of [power]
+   * @return this [NDArray] to the power of [power]
    */
-  fun assignPow(power: Double): NDArrayInterface
+  fun assignPow(power: Double): NDArray
 
   /**
-   * Euclidean norm of this NDArrayInterface
+   * Euclidean norm of this NDArray
    *
    * @return the euclidean norm
    */
@@ -311,27 +314,27 @@ interface NDArrayInterface: Serializable {
   /**
    *
    */
-  fun equals(a: NDArrayInterface, tolerance: Double = 10e-4): Boolean
+  fun equals(a: DenseNDArray, tolerance: Double = 10e-4): Boolean
 
   /**
    *
    */
-  fun zerosLike(): NDArrayInterface
+  fun zerosLike(): NDArray
 
   /**
    *
    */
-  fun concatH(a: NDArrayInterface): NDArrayInterface
+  fun concatH(a: NDArray): NDArray
 
   /**
    *
    */
-  fun concatV(a: NDArrayInterface): NDArrayInterface
+  fun concatV(a: NDArray): NDArray
 
   /**
-   * Return a one-dimensional NDArrayInterface sub-vector of a vertical vector
+   * Return a one-dimensional NDArray sub-vector of a vertical vector
    */
-  fun getRange(a: Int, b: Int): NDArrayInterface
+  fun getRange(a: Int, b: Int): NDArray
 
   /**
    *
