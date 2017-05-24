@@ -66,7 +66,7 @@ open class MomentumMethod(
     val helperStructure = this.getSupportStructure(array) as MomentumStructure
 
     // update velocity with adapted learning rates
-    helperStructure.v.assignValues(errors.prod(this.alpha).sum(helperStructure.v.prod(this.momentum)))
+    helperStructure.v.assignValues(errors.prod(this.alpha).assignSum(helperStructure.v.prod(this.momentum)))
 
     return helperStructure.v
   }
@@ -76,9 +76,9 @@ open class MomentumMethod(
    */
   override fun newEpoch() {
 
-    if (decayMethod != null) {
-      this.alpha = decayMethod.update(
-        learningRate = if (decayMethod is HyperbolicDecay) this.learningRate else this.alpha,
+    if (this.decayMethod != null) {
+      this.alpha = this.decayMethod.update(
+        learningRate = if (this.decayMethod is HyperbolicDecay) this.learningRate else this.alpha,
         timeStep = ++this.epochCount
       )
     }
