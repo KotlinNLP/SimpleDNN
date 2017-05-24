@@ -57,6 +57,6 @@ class AdaGradMethod(
 
     helperStructure.secondOrderMoments.assignSum(errors.prod(errors))
 
-    return errors.div(helperStructure.secondOrderMoments.sqrt().sum(epsilon)).prod(this.learningRate)
+    return errors.div(helperStructure.secondOrderMoments.sqrt().assignSum(this.epsilon)).assignProd(this.learningRate)
   }
 }
