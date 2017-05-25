@@ -12,31 +12,49 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 
 /**
+ * The parameters of the layer of type LSTM.
  *
- * @param inputSize input size
- * @param outputSize output size
+ * @property inputSize input size
+ * @property outputSize output size
+ * @property sparseInput whether the weights connected to the input are sparse or not
  */
-class LSTMLayerParameters(inputSize: Int, outputSize: Int) : LayerParameters(inputSize, outputSize) {
+class LSTMLayerParameters(
+  inputSize: Int,
+  outputSize: Int,
+  private val sparseInput: Boolean = false
+) : LayerParameters(inputSize = inputSize, outputSize = outputSize) {
 
   /**
    *
    */
-  val inputGate = GateParametersUnit(inputSize, outputSize)
+  val inputGate = GateParametersUnit(
+    inputSize = this.inputSize,
+    outputSize = this.outputSize,
+    sparseInput = this.sparseInput)
 
   /**
    *
    */
-  val outputGate = GateParametersUnit(inputSize, outputSize)
+  val outputGate = GateParametersUnit(
+    inputSize = this.inputSize,
+    outputSize = this.outputSize,
+    sparseInput = this.sparseInput)
 
   /**
    *
    */
-  val forgetGate = GateParametersUnit(inputSize, outputSize)
+  val forgetGate = GateParametersUnit(
+    inputSize = this.inputSize,
+    outputSize = this.outputSize,
+    sparseInput = this.sparseInput)
 
   /**
    *
    */
-  val candidate = GateParametersUnit(inputSize, outputSize)
+  val candidate = GateParametersUnit(
+    inputSize = this.inputSize,
+    outputSize = this.outputSize,
+    sparseInput = this.sparseInput)
 
   /**
    *

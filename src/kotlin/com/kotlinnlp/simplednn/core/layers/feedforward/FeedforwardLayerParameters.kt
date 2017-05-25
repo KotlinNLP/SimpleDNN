@@ -10,24 +10,32 @@ package com.kotlinnlp.simplednn.core.layers.feedforward
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
+ * The parameters of the layer of type Feedforward.
  *
- * @param inputSize input size
- * @param outputSize output size
+ * @property inputSize input size
+ * @property outputSize output size
+ * @property sparseInput whether the weights connected to the input are sparse or not
  */
-class FeedforwardLayerParameters(inputSize: Int, outputSize: Int) : LayerParameters(inputSize, outputSize) {
+class FeedforwardLayerParameters(
+  inputSize: Int,
+  outputSize: Int,
+  private val sparseInput: Boolean = false
+) : LayerParameters(inputSize = inputSize, outputSize = outputSize) {
 
   /**
    *
    */
-  val weights: UpdatableArray = UpdatableArray(Shape(outputSize, inputSize))
+  val weights: UpdatableArray = this.buildUpdatableArray(
+    dim1 = this.outputSize,
+    dim2 = this.inputSize,
+    sparseInput = this.sparseInput)
 
   /**
    *
    */
-  val biases: UpdatableArray = UpdatableArray(Shape(outputSize))
+  val biases: UpdatableArray = this.buildDenseArray(this.outputSize)
 
   /**
    *

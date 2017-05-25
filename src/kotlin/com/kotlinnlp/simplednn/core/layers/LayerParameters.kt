@@ -8,16 +8,24 @@
 package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableSparseBinaryArray
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import java.io.Serializable
 
 /**
+ * The parameters of a layer
  *
- * @param inputSize input size
- * @param outputSize output size
+ * @property inputSize input size
+ * @property outputSize output size
  */
-abstract class LayerParameters(val inputSize: Int, val outputSize: Int) : Serializable, Iterable<UpdatableArray> {
+abstract class LayerParameters(
+  val inputSize: Int,
+  val outputSize: Int
+) : Serializable,
+    Iterable<UpdatableArray> {
 
   companion object {
 
@@ -67,4 +75,25 @@ abstract class LayerParameters(val inputSize: Int, val outputSize: Int) : Serial
   abstract fun initialize(
     randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
     biasesInitValue: Double = 0.01)
+
+  /**
+   *
+   */
+  protected fun buildUpdatableArray(dim1: Int, dim2: Int = 1, sparseInput: Boolean = false) =
+    if (sparseInput)
+      this.buildSparseBinaryArray(dim1, dim2)
+    else
+      this.buildDenseArray(dim1, dim2)
+
+  /**
+   *
+   */
+  protected fun buildDenseArray(dim1: Int, dim2: Int = 1) =
+    UpdatableDenseArray(Shape(dim1, dim2))
+
+  /**
+   *
+   */
+  protected fun buildSparseBinaryArray(dim1: Int, dim2: Int = 1) =
+    UpdatableSparseBinaryArray(Shape(dim1, dim2))
 }

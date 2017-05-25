@@ -7,26 +7,48 @@
 
 package com.kotlinnlp.simplednn.core.layers.recurrent
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableSparseBinaryArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  *
  */
-data class GateParametersUnit(val layerSize: Int, val nextLayerSize: Int) {
+data class GateParametersUnit(val inputSize: Int, val outputSize: Int, private val sparseInput: Boolean = false) {
 
   /**
    *
    */
-  val biases = UpdatableArray(Shape(this.nextLayerSize))
+  val biases = this.buildDenseArray(this.outputSize)
 
   /**
    *
    */
-  val weights = UpdatableArray(Shape(this.nextLayerSize, this.layerSize))
+  val weights = this.buildUpdatableArray(dim1 = this.outputSize, dim2 = this.inputSize, sparseInput = this.sparseInput)
 
   /**
    *
    */
-  val recurrentWeights = UpdatableArray(Shape(this.nextLayerSize, this.nextLayerSize))
+  val recurrentWeights = this.buildDenseArray(dim1 = this.outputSize, dim2 = this.outputSize)
+
+  /**
+   *
+   */
+  private fun buildUpdatableArray(dim1: Int, dim2: Int = 1, sparseInput: Boolean = false) =
+    if (sparseInput)
+      this.buildSparseBinaryArray(dim1, dim2)
+    else
+      this.buildDenseArray(dim1, dim2)
+
+  /**
+   *
+   */
+  private fun buildDenseArray(dim1: Int, dim2: Int = 1) =
+    UpdatableDenseArray(Shape(dim1, dim2))
+
+  /**
+   *
+   */
+  private fun buildSparseBinaryArray(dim1: Int, dim2: Int = 1) =
+    UpdatableSparseBinaryArray(Shape(dim1, dim2))
 }

@@ -12,26 +12,41 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 
 /**
+ * The parameters of the layer of type GRU.
  *
- * @param inputSize input size
- * @param outputSize output size
+ * @property inputSize input size
+ * @property outputSize output size
+ * @property sparseInput whether the weights connected to the input are sparse or not
  */
-class GRULayerParameters(inputSize: Int, outputSize: Int) : LayerParameters(inputSize, outputSize) {
+class GRULayerParameters(
+  inputSize: Int,
+  outputSize: Int,
+  private val sparseInput: Boolean = false
+) : LayerParameters(inputSize = inputSize, outputSize = outputSize) {
 
   /**
    *
    */
-  val candidate = GateParametersUnit(inputSize, outputSize)
+  val candidate = GateParametersUnit(
+    inputSize = this.inputSize,
+    outputSize = this.outputSize,
+    sparseInput = this.sparseInput)
 
   /**
    *
    */
-  val resetGate = GateParametersUnit(inputSize, outputSize)
+  val resetGate = GateParametersUnit(
+    inputSize = this.inputSize,
+    outputSize = this.outputSize,
+    sparseInput = this.sparseInput)
 
   /**
    *
    */
-  val partitionGate = GateParametersUnit(inputSize, outputSize)
+  val partitionGate = GateParametersUnit(
+    inputSize = this.inputSize,
+    outputSize = this.outputSize,
+    sparseInput = this.sparseInput)
 
   /**
    *

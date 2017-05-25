@@ -7,31 +7,39 @@
 
 package com.kotlinnlp.simplednn.core.layers.recurrent.simple
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
+ * The parameters of the layer of type SimpleRecurrent.
  *
- * @param inputSize input size
- * @param outputSize output size
+ * @property inputSize input size
+ * @property outputSize output size
+ * @property sparseInput whether the weights connected to the input are sparse or not
  */
-class SimpleRecurrentLayerParameters(inputSize: Int, outputSize: Int) : LayerParameters(inputSize, outputSize) {
-  /**
-   *
-   */
-  val weights = UpdatableArray(Shape(outputSize, inputSize))
+class SimpleRecurrentLayerParameters(
+  inputSize: Int,
+  outputSize: Int,
+  private val sparseInput: Boolean = false
+) : LayerParameters(inputSize = inputSize, outputSize = outputSize) {
 
   /**
    *
    */
-  val biases = UpdatableArray(Shape(outputSize))
+  val weights =this.buildUpdatableArray(
+    dim1 = this.outputSize,
+    dim2 = this.inputSize,
+    sparseInput = this.sparseInput)
 
   /**
    *
    */
-  val recurrentWeights = UpdatableArray(Shape(outputSize, outputSize))
+  val biases = this.buildUpdatableArray(this.outputSize)
+
+  /**
+   *
+   */
+  val recurrentWeights = this.buildUpdatableArray(dim1 = this.outputSize, dim2 = this.inputSize)
 
   /**
    *
