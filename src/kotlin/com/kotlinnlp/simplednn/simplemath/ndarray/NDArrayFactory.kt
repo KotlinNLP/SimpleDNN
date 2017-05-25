@@ -43,5 +43,5 @@ interface NDArrayFactory<NDArrayType : NDArray<NDArrayType>> {
    * @param to inclusive upper bound of random values range
    * @return a new [NDArrayType] filled with random values
    */
-  fun random(shape: Shape, from: Double, to: Double): NDArrayType
+  fun random(shape: Shape, from: Double = 0.0, to: Double = 1.0): NDArrayType
 }
