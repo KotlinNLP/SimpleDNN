@@ -9,7 +9,8 @@ package layers.structure
 
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -34,7 +35,7 @@ class FeedforwardLayerStructureSpec : Spek({
 
         it("should match the expected output values") {
           assertEquals(true, layer.outputArray.values.equals(
-            NDArray.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.19)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.19)),
             tolerance = 0.005))
         }
       }
@@ -47,7 +48,7 @@ class FeedforwardLayerStructureSpec : Spek({
         it("should match the expected output values") {
 
           assertEquals(true, layer.outputArray.values.equals(
-            NDArray.arrayOf(doubleArrayOf(0.19, 0.29, 0.53)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.19, 0.29, 0.53)),
             tolerance = 0.005))
         }
       }
@@ -60,7 +61,7 @@ class FeedforwardLayerStructureSpec : Spek({
         it("should match the expected output values") {
 
           assertEquals(true, layer.outputArray.values.equals(
-            NDArray.arrayOf(doubleArrayOf(-0.82, -0.52, 0.19)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.82, -0.52, 0.19)),
             tolerance = 0.005))
         }
       }
@@ -84,19 +85,19 @@ class FeedforwardLayerStructureSpec : Spek({
 
         it("should match the expected errors of the outputArray") {
           assertEquals(true, layer.outputArray.errors.equals(
-            NDArray.arrayOf(doubleArrayOf(-0.38, 0.3, -0.37, 0.5, 0.4)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.38, 0.3, -0.37, 0.5, 0.4)),
             tolerance = 0.005))
         }
 
         it("should match the expected errors of the biases") {
           assertEquals(true, paramsErrors.biases.values.equals(
-            NDArray.arrayOf(doubleArrayOf(-0.38, 0.3, -0.37, 0.5, 0.4)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.38, 0.3, -0.37, 0.5, 0.4)),
             tolerance = 0.005))
         }
 
         it("should match the expected errors of the weights") {
-          assertEquals(true, paramsErrors.weights.values.equals(
-            NDArray.arrayOf(arrayOf(
+          assertEquals(true, (paramsErrors.weights.values as DenseNDArray).equals(
+            DenseNDArrayFactory.arrayOf(arrayOf(
               doubleArrayOf(0.3, 0.34, 0.34, -0.38),
               doubleArrayOf(-0.24, -0.27, -0.27, 0.3),
               doubleArrayOf(0.3, 0.34, 0.34, -0.37),
@@ -109,7 +110,7 @@ class FeedforwardLayerStructureSpec : Spek({
         it("should match the expected errors of the inputArray") {
 
           assertEquals(true, layer.inputArray.errors.equals(
-            NDArray.arrayOf(doubleArrayOf(0.32, -0.14, -0.06, 0.07)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.32, -0.14, -0.06, 0.07)),
             tolerance = 0.010))
         }
       }
@@ -128,19 +129,19 @@ class FeedforwardLayerStructureSpec : Spek({
 
         it("should match the expected errors of the outputArray") {
           assertEquals(true, layer.outputArray.errors.equals(
-            NDArray.arrayOf(doubleArrayOf(-0.81, 0.29, 0.53)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.81, 0.29, 0.53)),
             tolerance = 0.005))
         }
 
         it("should match the expected errors of the biases") {
           assertEquals(true, paramsErrors.biases.values.equals(
-            NDArray.arrayOf(doubleArrayOf(-0.81, 0.29, 0.53)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.81, 0.29, 0.53)),
             tolerance = 0.005))
         }
 
         it("should match the expected errors of the weights") {
-          assertEquals(true, paramsErrors.weights.values.equals(
-            NDArray.arrayOf(arrayOf(
+          assertEquals(true, (paramsErrors.weights.values as DenseNDArray).equals(
+            DenseNDArrayFactory.arrayOf(arrayOf(
               doubleArrayOf(0.32, 0.65, 0.0, -0.57, 0.15),
               doubleArrayOf(-0.11, -0.23, 0.0, 0.2, -0.05),
               doubleArrayOf(-0.21, -0.42, 0.0, 0.37, -0.1)
@@ -151,7 +152,7 @@ class FeedforwardLayerStructureSpec : Spek({
         it("should match the expected errors of the inputArray") {
 
           assertEquals(true, layer.inputArray.errors.equals(
-            NDArray.arrayOf(doubleArrayOf(-0.38, 0.3, -0.37, 0.5, 0.4)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.38, 0.3, -0.37, 0.5, 0.4)),
             tolerance = 0.005))
         }
       }
@@ -170,19 +171,19 @@ class FeedforwardLayerStructureSpec : Spek({
 
         it("should match the expected errors of the outputArray") {
           assertEquals(true, layer.outputArray.errors.equals(
-            NDArray.arrayOf(doubleArrayOf(-1.82, -0.52, 0.19)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.82, -0.52, 0.19)),
             tolerance = 0.006))
         }
 
         it("should match the expected errors of the biases") {
           assertEquals(true, paramsErrors.biases.values.equals(
-            NDArray.arrayOf(doubleArrayOf(-1.82, -0.52, 0.19)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.82, -0.52, 0.19)),
             tolerance = 0.006))
         }
 
         it("should match the expected errors of the weights") {
-          assertEquals(true, paramsErrors.weights.values.equals(
-            NDArray.arrayOf(arrayOf(
+          assertEquals(true, (paramsErrors.weights.values as DenseNDArray).equals(
+            DenseNDArrayFactory.arrayOf(arrayOf(
               doubleArrayOf(0.76, 1.98, 0.0, -1.58, 0.34),
               doubleArrayOf(0.22, 0.57, 0.0, -0.46, 0.1),
               doubleArrayOf(-0.08, -0.2, 0.0, 0.16, -0.04)
@@ -193,7 +194,7 @@ class FeedforwardLayerStructureSpec : Spek({
         it("should match the expected errors of the inputArray") {
 
           assertEquals(true, layer.inputArray.errors.equals(
-            NDArray.arrayOf(doubleArrayOf(-1.94, 1.14, -1.94, 1.5, -0.08)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.94, 1.14, -1.94, 1.5, -0.08)),
             tolerance = 0.005))
         }
       }
