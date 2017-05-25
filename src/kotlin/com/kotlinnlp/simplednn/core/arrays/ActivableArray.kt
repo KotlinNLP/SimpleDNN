@@ -50,7 +50,7 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
   /**
    * An [NDArray] containing the values not activated of this [ActivableArray] (respect on the last call of activate())
    */
-  val valuesNotActivated: NDArray<NDArrayType> get() =
+  val valuesNotActivated: NDArrayType get() =
     if (this._valuesNotActivated != null)
       this._valuesNotActivated!!
     else
