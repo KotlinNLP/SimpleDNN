@@ -7,97 +7,41 @@
 
 package com.kotlinnlp.simplednn.simplemath.ndarray
 
-import org.jblas.DoubleMatrix
-
 /**
  *
  */
-object NDArrayFactory {
+interface NDArrayFactory<NDArrayType : NDArray<NDArrayType>> {
 
   /**
    * @param shape shape
-   * @return a new empty DenseNDArray
-   */
-  fun emptyArray(shape: Shape): DenseNDArray {
-    return DenseNDArray(DoubleMatrix.zeros(shape.dim1, shape.dim2))
-  }
-
-  /**
    *
+   * @return a new empty [NDArrayType]
    */
-  fun arrayOf(vector: DoubleArray): DenseNDArray {
-    val m = DoubleMatrix(vector.size, 1)
-
-    (0 until vector.size).forEach { i -> m.put(i, vector[i]) }
-
-    return DenseNDArray(m)
-  }
-
-  /**
-   *
-   */
-  fun arrayOf(matrix: Array<DoubleArray>): DenseNDArray {
-    val rows = matrix.size
-    val columns = matrix[0].size
-    val m = DoubleMatrix(rows, columns)
-
-    (0 until rows * columns).forEach { linearIndex ->
-      // linear indexing: loop rows before, column by column
-      val row = linearIndex % rows
-      val column = linearIndex / rows
-      m.put(linearIndex, matrix[row][column])
-    }
-
-    return DenseNDArray(m)
-  }
+  fun emptyArray(shape: Shape): NDArrayType
 
   /**
    *
    * @param shape shape
-   * @return a new DenseNDArray filled with zeros
+   * @return a new [NDArrayType] filled with zeros
    */
-  fun zeros(shape: Shape): DenseNDArray {
-    return this.emptyArray(shape)
-  }
+  fun zeros(shape: Shape): NDArrayType
 
   /**
-   * Build a new DenseNDArray filled with zeros but one with 1.0
+   * Build a new [NDArrayType] filled with zeros but one with 1.0
    *
    * @param length the length of the array
    * @param oneAt the index of the one element
-   * @return a oneHotEncoder DenseNDArray
+   * @return a oneHotEncoder [NDArrayType]
    */
-  fun oneHotEncoder(length: Int, oneAt: Int): DenseNDArray {
-    require(oneAt in 0 until length)
-
-    val array = this.emptyArray(Shape(length))
-
-    array[oneAt] = 1.0
-
-    return array
-  }
+  fun oneHotEncoder(length: Int, oneAt: Int): NDArrayType
 
   /**
-   * Build a new DenseNDArray filled with random values uniformly distributed in range [[from], [to]]
+   * Build a new [NDArrayType] filled with random values uniformly distributed in range [[from], [to]]
    *
    * @param shape shape
    * @param from inclusive lower bound of random values range
    * @param to inclusive upper bound of random values range
-   * @return a new DenseNDArray filled with random values
+   * @return a new [NDArrayType] filled with random values
    */
-  fun random(shape: Shape, from: Double, to: Double): DenseNDArray {
-
-    val m = DoubleMatrix.rand(shape.dim1, shape.dim2)
-    val rangeSize = to - from
-
-    if (rangeSize != 1.0) {
-      m.muli(rangeSize)
-    }
-
-    if (from != 0.0) {
-      m.addi(from)
-    }
-
-    return DenseNDArray(m)
-  }
+  fun random(shape: Shape, from: Double, to: Double): NDArrayType
 }
