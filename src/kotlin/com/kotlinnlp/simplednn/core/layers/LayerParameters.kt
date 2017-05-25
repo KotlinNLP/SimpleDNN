@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.core.arrays.UpdatableSparseBinaryArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableSparseArray
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
@@ -81,7 +81,7 @@ abstract class LayerParameters(
    */
   protected fun buildUpdatableArray(dim1: Int, dim2: Int = 1, sparseInput: Boolean = false) =
     if (sparseInput)
-      this.buildSparseBinaryArray(dim1, dim2)
+      this.buildSparseArray(dim1, dim2)
     else
       this.buildDenseArray(dim1, dim2)
 
@@ -94,6 +94,6 @@ abstract class LayerParameters(
   /**
    *
    */
-  protected fun buildSparseBinaryArray(dim1: Int, dim2: Int = 1) =
-    UpdatableSparseBinaryArray(Shape(dim1, dim2))
+  private fun buildSparseArray(dim1: Int, dim2: Int = 1) =
+    UpdatableSparseArray(Shape(dim1, dim2))
 }
