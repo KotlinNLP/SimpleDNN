@@ -13,7 +13,7 @@ import java.io.Serializable
 /**
  *
  */
-interface NDArray : Serializable {
+interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
 
   /**
    *
@@ -25,6 +25,12 @@ interface NDArray : Serializable {
    *
    */
   val isMatrix: Boolean
+    get
+
+  /**
+   *
+   */
+  val isOneHotEncoder: Boolean
     get
 
   /**
@@ -52,9 +58,10 @@ interface NDArray : Serializable {
     get
 
   /**
-   *
+   * Transpose
    */
-  val isOneHotEncoder: Boolean
+  val T: SelfType
+    get
 
   /**
    *
@@ -84,7 +91,7 @@ interface NDArray : Serializable {
    *
    * @return the selected row as a new NDArray
    */
-  fun getRow(i: Int): NDArray
+  fun getRow(i: Int): SelfType
 
   /**
    * Get the i-th column
@@ -93,43 +100,27 @@ interface NDArray : Serializable {
    *
    * @return the selected column as a new NDArray
    */
-  fun getColumn(i: Int): NDArray
-
-  /**
-   * transpose
-   */
-  val T: NDArray
-    get
+  fun getColumn(i: Int): SelfType
 
   /**
    *
    */
-  fun copy(): NDArray
+  fun copy(): SelfType
 
   /**
    *
    */
-  fun zeros(): NDArray
+  fun zeros(): SelfType
 
   /**
    *
    */
-  fun assignValues(a: NDArray): NDArray
+  fun assignValues(a: SelfType): SelfType
 
   /**
    *
    */
-  fun assignValues(n: Double): NDArray
-
-  /**
-   *
-   */
-  fun sum(n: Double): NDArray
-
-  /**
-   *
-   */
-  fun sum(a: NDArray): NDArray
+  fun assignValues(n: Double): SelfType
 
   /**
    *
@@ -139,107 +130,122 @@ interface NDArray : Serializable {
   /**
    *
    */
-  fun assignSum(n: Double): NDArray
+  fun sum(n: Double): SelfType
 
   /**
    *
    */
-  fun assignSum(a: NDArray, n: Double): NDArray
+  fun sum(a: SelfType): SelfType
 
   /**
    *
    */
-  fun assignSum(a: NDArray, b: NDArray): NDArray
+  fun assignSum(n: Double): SelfType
 
   /**
    *
    */
-  fun assignSum(a: NDArray): NDArray
+  fun assignSum(a: SelfType, n: Double): SelfType
 
   /**
    *
    */
-  fun sub(n: Double): NDArray
+  fun assignSum(a: SelfType, b: SelfType): SelfType
 
   /**
    *
    */
-  fun sub(a: NDArray): NDArray
+  fun assignSum(a: SelfType): SelfType
+
+  /**
+   *
+   */
+  fun sub(n: Double): SelfType
+
+  /**
+   *
+   */
+  fun sub(a: SelfType): SelfType
 
   /**
    * In-place subtraction by number
    */
-  fun assignSub(n: Double): NDArray
+  fun assignSub(n: Double): SelfType
 
   /**
    *
    */
-  fun assignSub(a: NDArray): NDArray
+  fun assignSub(a: SelfType): SelfType
 
   /**
    *
    */
-  fun reverseSub(n: Double): NDArray
+  fun reverseSub(n: Double): SelfType
 
   /**
    *
    */
-  fun dot(a: NDArray): NDArray
+  fun dot(a: SelfType): SelfType
 
   /**
    *
    */
-  fun assignDot(a: NDArray, b: NDArray): NDArray
+  fun assignDot(a: SelfType, b: SelfType): SelfType
 
   /**
    *
    */
-  fun prod(n: Double): NDArray
+  fun prod(n: Double): SelfType
 
   /**
    *
    */
-  fun prod(a: NDArray): NDArray
+  fun prod(a: SelfType): SelfType
 
   /**
    *
    */
-  fun assignProd(n: Double): NDArray
+  fun assignProd(n: Double): SelfType
 
   /**
    *
    */
-  fun assignProd(a: NDArray, n: Double): NDArray
+  fun assignProd(a: SelfType, n: Double): SelfType
 
   /**
    *
    */
-  fun assignProd(a: NDArray, b: NDArray): NDArray
+  fun assignProd(a: SelfType, b: SelfType): SelfType
 
   /**
    *
    */
-  fun assignProd(a: NDArray): NDArray
+  fun assignProd(a: SelfType): SelfType
 
   /**
    *
    */
-  fun div(n: Double): NDArray
+  fun div(n: Double): SelfType
 
   /**
    *
    */
-  fun div(a: NDArray): NDArray
+  fun div(a: SelfType): SelfType
 
   /**
    *
    */
-  fun assignDiv(n: Double): NDArray
+  fun assignDiv(n: Double): SelfType
 
   /**
    *
    */
-  fun assignDiv(a: NDArray): NDArray
+  fun assignDiv(a: SelfType): SelfType
+
+  /**
+   *
+   */
+  fun avg(): Double
 
   /**
    * Round values to Int
@@ -248,7 +254,7 @@ interface NDArray : Serializable {
    *
    * @return a new NDArray with the values of the current one rounded to Int
    */
-  fun roundInt(threshold: Double = 0.5): NDArray
+  fun roundInt(threshold: Double = 0.5): SelfType
 
   /**
    * Round values to Int in-place
@@ -257,34 +263,24 @@ interface NDArray : Serializable {
    *
    * @return this NDArray
    */
-  fun assignRoundInt(threshold: Double = 0.5): NDArray
-
-  /**
-   *
-   */
-  fun avg(): Double
+  fun assignRoundInt(threshold: Double = 0.5): SelfType
 
   /**
    * Sign function
    *
    * @return a new NDArray containing the results of the function sign() applied element-wise
    */
-  fun sign(): NDArray
-
-  /**
-   * @return the index of the maximum value (-1 if empty)
-   **/
-  fun argMaxIndex(): Int
+  fun sign(): SelfType
 
   /**
    *
    */
-  fun randomize(randomGenerator: RandomGenerator): NDArray
+  fun randomize(randomGenerator: RandomGenerator): SelfType
 
   /**
    *
    */
-  fun sqrt(): NDArray
+  fun sqrt(): SelfType
 
   /**
    * Power
@@ -293,7 +289,7 @@ interface NDArray : Serializable {
    *
    * @return a new [NDArray] containing the values of this to the power of [power]
    */
-  fun pow(power: Double): NDArray
+  fun pow(power: Double): SelfType
 
   /**
    * In-place power
@@ -302,7 +298,12 @@ interface NDArray : Serializable {
    *
    * @return this [NDArray] to the power of [power]
    */
-  fun assignPow(power: Double): NDArray
+  fun assignPow(power: Double): SelfType
+
+  /**
+   * @return the index of the maximum value (-1 if empty)
+   **/
+  fun argMaxIndex(): Int
 
   /**
    * Euclidean norm of this NDArray
@@ -314,27 +315,27 @@ interface NDArray : Serializable {
   /**
    *
    */
-  fun equals(a: DenseNDArray, tolerance: Double = 10e-4): Boolean
+  fun equals(a: SelfType, tolerance: Double = 10e-4): Boolean
 
   /**
    *
    */
-  fun zerosLike(): NDArray
+  fun zerosLike(): SelfType
 
   /**
    *
    */
-  fun concatH(a: NDArray): NDArray
+  fun concatH(a: SelfType): SelfType
 
   /**
    *
    */
-  fun concatV(a: NDArray): NDArray
+  fun concatV(a: SelfType): SelfType
 
   /**
    * Return a one-dimensional NDArray sub-vector of a vertical vector
    */
-  fun getRange(a: Int, b: Int): NDArray
+  fun getRange(a: Int, b: Int): SelfType
 
   /**
    *
