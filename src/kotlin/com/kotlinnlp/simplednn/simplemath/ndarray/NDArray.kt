@@ -120,7 +120,7 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
-  fun assignValues(a: SelfType): SelfType
+  fun assignValues(a: NDArray<*>): SelfType
 
   /**
    *
@@ -193,9 +193,26 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun dot(a: SelfType): SelfType
 
   /**
+   * Dot product between this [NDArray] and a [DenseNDArray] masked by [mask]
+   *
+   * @param a the [DenseNDArray] by which is calculated the dot product
+   * @param mask the mask applied to a
+   *
+   * @return a [SparseNDArray]
+   */
+  fun dot(a: DenseNDArray, mask: NDArrayMask): SparseNDArray
+
+  /**
    *
    */
   fun assignDot(a: SelfType, b: SelfType): SelfType
+
+  /**
+   *
+   */
+  fun assignDot(a: DenseNDArray, b: NDArray<*>): SelfType {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
 
   /**
    *

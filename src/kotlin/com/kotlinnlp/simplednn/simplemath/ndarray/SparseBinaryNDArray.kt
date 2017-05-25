@@ -136,7 +136,7 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
   /**
    *
    */
-  override fun assignValues(a: SparseBinaryNDArray): SparseBinaryNDArray {
+  override fun assignValues(a: NDArray<*>): SparseBinaryNDArray {
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
@@ -144,13 +144,6 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
    *
    */
   override fun assignValues(n: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-  }
-
-  /**
-   * Assign values to this only for elements with active indices
-   */
-  fun assignMaskedValues(a: DenseNDArray): SparseBinaryNDArray {
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
@@ -297,9 +290,28 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
   }
 
   /**
+   * Dot product between this [SparseBinaryNDArray] and a [DenseNDArray] masked by [mask]
+   *
+   * @param a the [DenseNDArray] by which is calculated the dot product
+   * @param mask the mask applied to a
+   *
+   * @return a [SparseNDArray]
+   */
+  override fun dot(a: DenseNDArray, mask: NDArrayMask): SparseNDArray {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  /**
    *
    */
   override fun assignDot(a: SparseBinaryNDArray, b: SparseBinaryNDArray): SparseBinaryNDArray {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  /**
+   *
+   */
+  override fun assignDot(a: DenseNDArray, b: NDArray<*>): SparseBinaryNDArray {
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 

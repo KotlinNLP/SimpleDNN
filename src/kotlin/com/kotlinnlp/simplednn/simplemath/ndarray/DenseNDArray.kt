@@ -165,11 +165,13 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    * Assign the values of a to this DenseNDArray (it works also among rows and columns vectors)
    */
-  override fun assignValues(a: DenseNDArray): DenseNDArray {
+  override fun assignValues(a: NDArray<*>): DenseNDArray {
     require(this.shape == a.shape ||
       (this.isVector && a.isVector && this.length == a.length))
 
-    System.arraycopy(a.storage.data, 0, this.storage.data, 0, this.length)
+    when(a) {
+      is DenseNDArray -> System.arraycopy(a.storage.data, 0, this.storage.data, 0, this.length)
+    }
 
     return this
   }
@@ -270,12 +272,31 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   * Dot product between this [DenseNDArray] and a [DenseNDArray] masked by [mask]
+   *
+   * @param a the [DenseNDArray] by which is calculated the dot product
+   * @param mask the mask applied to a
+   *
+   * @return a [SparseNDArray]
+   */
+  override fun dot(a: DenseNDArray, mask: NDArrayMask): SparseNDArray {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  /**
    *
    */
   override fun assignDot(a: DenseNDArray, b: DenseNDArray): DenseNDArray {
     require(a.rows == this.rows && b.columns == this.columns)
     a.storage.mmuli(b.storage, this.storage)
     return this
+  }
+
+  /**
+   *
+   */
+  override fun assignDot(a: DenseNDArray, b: NDArray<*>): DenseNDArray {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
   /**
