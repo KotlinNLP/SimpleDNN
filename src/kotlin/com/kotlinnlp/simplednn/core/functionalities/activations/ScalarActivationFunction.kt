@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.activations
 
-import com.kotlinnlp.simplednn.simplemath.*
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 
 /**
  * ActivationsFunction can either be used through an [com.kotlinnlp.simplednn.core.arrays.ActivableArray],
@@ -39,8 +39,8 @@ abstract class ScalarActivationFunction : ActivationFunction {
    * @param array the input NDArray
    * @param out the NDArray in which the result is written
    */
-  override fun f(array: NDArray, out: NDArray) {
-    (0 until array.length).forEach { i -> out[i] = this.f(array[i].toDouble()) }
+  override fun f(array: DenseNDArray, out: DenseNDArray) {
+    (0 until array.length).forEach { i -> out[i] = this.f(array[i]) }
   }
 
   /**
@@ -49,7 +49,7 @@ abstract class ScalarActivationFunction : ActivationFunction {
    * @param fxArray the input NDArray (WARNING: it must be f(x) for optimization)
    * @param out the NDArray in which the result is written
    */
-  override fun dfOptimized(fxArray: NDArray, out: NDArray) {
-    (0 until fxArray.length).forEach { i -> out[i] = this.dfOptimized(fxArray[i].toDouble()) }
+  override fun dfOptimized(fxArray: DenseNDArray, out: DenseNDArray) {
+    (0 until fxArray.length).forEach { i -> out[i] = this.dfOptimized(fxArray[i]) }
   }
 }

@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.activations
 
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import java.io.Serializable
 
 /**
@@ -32,8 +32,8 @@ interface ActivationFunction : Serializable {
    *
    * @return a new NDArray containing the result
    */
-  fun f(array: NDArray): NDArray {
-    val out: NDArray = NDArray.emptyArray(array.shape)
+  fun f(array: DenseNDArray): DenseNDArray {
+    val out: DenseNDArray = array.factory.emptyArray(array.shape)
     this.f(array, out)
     return out
   }
@@ -44,7 +44,7 @@ interface ActivationFunction : Serializable {
    * @param array the input NDArray
    * @param out the NDArray in which the result is written
    */
-  fun f(array: NDArray, out: NDArray)
+  fun f(array: DenseNDArray, out: DenseNDArray)
 
   /**
    * Apply the activation function derivative to [fxArray].
@@ -53,8 +53,8 @@ interface ActivationFunction : Serializable {
    *
    * @return a new NDArray containing the result
    */
-  fun dfOptimized(fxArray: NDArray): NDArray {
-    val out: NDArray = NDArray.emptyArray(fxArray.shape)
+  fun dfOptimized(fxArray: DenseNDArray): DenseNDArray {
+    val out: DenseNDArray = fxArray.factory.emptyArray(fxArray.shape)
     this.dfOptimized(fxArray, out)
     return out
   }
@@ -65,5 +65,5 @@ interface ActivationFunction : Serializable {
    * @param fxArray the input NDArray (WARNING: it must be f(x) for optimization)
    * @param out the NDArray in which the result is written
    */
-  fun dfOptimized(fxArray: NDArray, out: NDArray)
+  fun dfOptimized(fxArray: DenseNDArray, out: DenseNDArray)
 }

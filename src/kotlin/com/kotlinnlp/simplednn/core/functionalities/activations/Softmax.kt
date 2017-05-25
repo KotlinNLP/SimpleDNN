@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.activations
 
-import com.kotlinnlp.simplednn.simplemath.*
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 
 /**
  * The softmax function transforms a vector in non-negative real numbers that
@@ -23,13 +23,13 @@ class Softmax : ActivationFunction {
    * @param array the input NDArray
    * @param out the NDArray in which the result is written
    */
-  override fun f(array: NDArray, out: NDArray) {
+  override fun f(array: DenseNDArray, out: DenseNDArray) {
 
-    val max: Double = array[array.argMaxIndex()].toDouble()
+    val max: Double = array[array.argMaxIndex()]
     var sum: Double = 0.0
 
     for (i in 0 until array.length) {
-      val e: Double = Math.exp(array[i].toDouble() - max)
+      val e: Double = Math.exp(array[i] - max)
       out[i] = e
       sum += e
     }
@@ -44,7 +44,7 @@ class Softmax : ActivationFunction {
    *
    * @return a new NDArray containing the result
    */
-  override fun dfOptimized(fxArray: NDArray): NDArray = fxArray.copy()
+  override fun dfOptimized(fxArray: DenseNDArray): DenseNDArray = fxArray.copy()
 
   /**
    * Assign to [out] the Softmax function derivative calculated in [fxArray].
@@ -52,7 +52,7 @@ class Softmax : ActivationFunction {
    * @param fxArray the input NDArray (WARNING: it must be f(x) for optimization)
    * @param out the NDArray in which the result is written
    */
-  override fun dfOptimized(fxArray: NDArray, out: NDArray) {
+  override fun dfOptimized(fxArray: DenseNDArray, out: DenseNDArray) {
     out.assignValues(fxArray)
   }
 }
