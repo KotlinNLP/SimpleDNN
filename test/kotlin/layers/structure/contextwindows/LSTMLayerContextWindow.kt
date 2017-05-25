@@ -12,12 +12,13 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerStructure
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 
 /**
  *
  */
-sealed class LSTMLayerContextWindow: LayerContextWindow {
+sealed class LSTMLayerContextWindow: LayerContextWindow<DenseNDArray> {
 
   /**
    *
@@ -34,7 +35,7 @@ sealed class LSTMLayerContextWindow: LayerContextWindow {
    */
   class Back: LSTMLayerContextWindow() {
 
-    override fun getPrevStateLayer(): LSTMLayerStructure = buildPrevStateLayer()
+    override fun getPrevStateLayer(): LSTMLayerStructure<DenseNDArray> = buildPrevStateLayer()
 
     override fun getNextStateLayer() = null
   }
@@ -46,7 +47,7 @@ sealed class LSTMLayerContextWindow: LayerContextWindow {
 
     override fun getPrevStateLayer() = null
 
-    override fun getNextStateLayer(): LSTMLayerStructure = buildNextStateLayer()
+    override fun getNextStateLayer(): LSTMLayerStructure<DenseNDArray> = buildNextStateLayer()
   }
 
   /**
@@ -54,18 +55,18 @@ sealed class LSTMLayerContextWindow: LayerContextWindow {
    */
   class Bilateral: LSTMLayerContextWindow() {
 
-    override fun getPrevStateLayer(): LSTMLayerStructure = buildPrevStateLayer()
+    override fun getPrevStateLayer(): LSTMLayerStructure<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextStateLayer(): LSTMLayerStructure = buildNextStateLayer()
+    override fun getNextStateLayer(): LSTMLayerStructure<DenseNDArray> = buildNextStateLayer()
   }
 }
 
 /**
  *
  */
-private fun buildPrevStateLayer(): LSTMLayerStructure {
+private fun buildPrevStateLayer(): LSTMLayerStructure<DenseNDArray> {
 
-  val outputArray = AugmentedArray(NDArray.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
+  val outputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
   outputArray.activate()
 
   val layer = LSTMLayerStructure(
@@ -75,7 +76,7 @@ private fun buildPrevStateLayer(): LSTMLayerStructure {
     activationFunction = Tanh(),
     layerContextWindow = LSTMLayerContextWindow.Empty())
 
-  layer.cell.assignValues(NDArray.arrayOf(doubleArrayOf(0.8, -0.6, 1.0, 0.1, 0.1)))
+  layer.cell.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, -0.6, 1.0, 0.1, 0.1)))
   layer.cell.activate()
 
   return layer
@@ -84,10 +85,10 @@ private fun buildPrevStateLayer(): LSTMLayerStructure {
 /**
  *
  */
-private fun buildNextStateLayer(): LSTMLayerStructure {
+private fun buildNextStateLayer(): LSTMLayerStructure<DenseNDArray> {
 
-  val outputArray = AugmentedArray(size = 5)
-  outputArray.assignErrors(NDArray.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
+  val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray(size = 5)
+  outputArray.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
   val layer = LSTMLayerStructure(
     inputArray = AugmentedArray(size = 4),
@@ -96,12 +97,12 @@ private fun buildNextStateLayer(): LSTMLayerStructure {
     activationFunction = Tanh(),
     layerContextWindow = LSTMLayerContextWindow.Empty())
 
-  layer.inputGate.assignErrors(NDArray.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))
-  layer.outputGate.assignErrors(NDArray.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5, 1.0)))
-  layer.forgetGate.assignValues(NDArray.arrayOf(doubleArrayOf(-0.3, -0.4, 0.9, -0.8, -0.4)))
-  layer.forgetGate.assignErrors(NDArray.arrayOf(doubleArrayOf(-0.4, 0.6, -0.1, 0.3, 0.0)))
-  layer.candidate.assignErrors(NDArray.arrayOf(doubleArrayOf(-0.4, 0.2, -1.0, 0.7, -0.3)))
-  layer.cell.assignErrors(NDArray.arrayOf(doubleArrayOf(-0.3, 0.8, 1.0, -0.4, 0.6)))
+  layer.inputGate.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))
+  layer.outputGate.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5, 1.0)))
+  layer.forgetGate.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, -0.4, 0.9, -0.8, -0.4)))
+  layer.forgetGate.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.6, -0.1, 0.3, 0.0)))
+  layer.candidate.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.2, -1.0, 0.7, -0.3)))
+  layer.cell.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, 0.8, 1.0, -0.4, 0.6)))
 
   return layer
 }

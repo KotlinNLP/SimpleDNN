@@ -12,12 +12,13 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerStructure
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 
 /**
  *
  */
-sealed class CFNLayerContextWindow: LayerContextWindow {
+sealed class CFNLayerContextWindow: LayerContextWindow<DenseNDArray> {
 
   /**
    *
@@ -34,7 +35,7 @@ sealed class CFNLayerContextWindow: LayerContextWindow {
    */
   class Back: CFNLayerContextWindow() {
 
-    override fun getPrevStateLayer(): CFNLayerStructure = buildPrevStateLayer()
+    override fun getPrevStateLayer(): CFNLayerStructure<DenseNDArray> = buildPrevStateLayer()
 
     override fun getNextStateLayer() = null
   }
@@ -42,30 +43,30 @@ sealed class CFNLayerContextWindow: LayerContextWindow {
   /**
    *
    */
-  class Front(val currentLayerOutput: NDArray): CFNLayerContextWindow() {
+  class Front(val currentLayerOutput: DenseNDArray): CFNLayerContextWindow() {
 
     override fun getPrevStateLayer() = null
 
-    override fun getNextStateLayer(): CFNLayerStructure = buildNextStateLayer(currentLayerOutput)
+    override fun getNextStateLayer(): CFNLayerStructure<DenseNDArray> = buildNextStateLayer(currentLayerOutput)
   }
 
   /**
    *
    */
-  class Bilateral(val currentLayerOutput: NDArray): CFNLayerContextWindow() {
+  class Bilateral(val currentLayerOutput: DenseNDArray): CFNLayerContextWindow() {
 
-    override fun getPrevStateLayer(): CFNLayerStructure = buildPrevStateLayer()
+    override fun getPrevStateLayer(): CFNLayerStructure<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextStateLayer(): CFNLayerStructure = buildNextStateLayer(currentLayerOutput)
+    override fun getNextStateLayer(): CFNLayerStructure<DenseNDArray> = buildNextStateLayer(currentLayerOutput)
   }
 }
 
 /**
  *
  */
-private fun buildPrevStateLayer(): CFNLayerStructure {
+private fun buildPrevStateLayer(): CFNLayerStructure<DenseNDArray> {
 
-  val outputArray = AugmentedArray(NDArray.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
+  val outputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
   outputArray.activate()
 
   return CFNLayerStructure(
@@ -80,10 +81,10 @@ private fun buildPrevStateLayer(): CFNLayerStructure {
 /**
  *
  */
-private fun buildNextStateLayer(currentLayerOutput: NDArray): CFNLayerStructure {
+private fun buildNextStateLayer(currentLayerOutput: DenseNDArray): CFNLayerStructure<DenseNDArray> {
 
-  val outputArray = AugmentedArray(size = 5)
-  outputArray.assignErrors(NDArray.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
+  val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray(size = 5)
+  outputArray.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
   val layer = CFNLayerStructure(
     inputArray = AugmentedArray(size = 4),
@@ -92,10 +93,10 @@ private fun buildNextStateLayer(currentLayerOutput: NDArray): CFNLayerStructure 
     activationFunction = Tanh(),
     layerContextWindow = CFNLayerContextWindow.Empty())
 
-  layer.inputGate.assignValues(NDArray.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0, 0.1)))
-  layer.inputGate.assignErrors(NDArray.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))
-  layer.forgetGate.assignErrors(NDArray.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5, 1.0)))
-  layer.forgetGate.assignValues(NDArray.arrayOf(doubleArrayOf(-0.2, -0.1, 0.6, -0.8, 0.5)))
+  layer.inputGate.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0, 0.1)))
+  layer.inputGate.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))
+  layer.forgetGate.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5, 1.0)))
+  layer.forgetGate.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, -0.1, 0.6, -0.8, 0.5)))
   layer.activatedPrevOutput = currentLayerOutput
 
   return layer

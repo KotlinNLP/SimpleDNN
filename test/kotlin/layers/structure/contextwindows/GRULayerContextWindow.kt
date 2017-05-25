@@ -12,12 +12,13 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerStructure
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 
 /**
  *
  */
-sealed class GRULayerContextWindow: LayerContextWindow {
+sealed class GRULayerContextWindow: LayerContextWindow<DenseNDArray> {
 
   /**
    *
@@ -34,7 +35,7 @@ sealed class GRULayerContextWindow: LayerContextWindow {
    */
   class Back: GRULayerContextWindow() {
 
-    override fun getPrevStateLayer(): GRULayerStructure = buildPrevStateLayer()
+    override fun getPrevStateLayer(): GRULayerStructure<DenseNDArray> = buildPrevStateLayer()
 
     override fun getNextStateLayer() = null
   }
@@ -46,7 +47,7 @@ sealed class GRULayerContextWindow: LayerContextWindow {
 
     override fun getPrevStateLayer() = null
 
-    override fun getNextStateLayer(): GRULayerStructure = buildNextStateLayer()
+    override fun getNextStateLayer(): GRULayerStructure<DenseNDArray> = buildNextStateLayer()
   }
 
   /**
@@ -54,18 +55,18 @@ sealed class GRULayerContextWindow: LayerContextWindow {
    */
   class Bilateral: GRULayerContextWindow() {
 
-    override fun getPrevStateLayer(): GRULayerStructure = buildPrevStateLayer()
+    override fun getPrevStateLayer(): GRULayerStructure<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextStateLayer(): GRULayerStructure = buildNextStateLayer()
+    override fun getNextStateLayer(): GRULayerStructure<DenseNDArray> = buildNextStateLayer()
   }
 }
 
 /**
  *
  */
-private fun buildPrevStateLayer(): GRULayerStructure {
+private fun buildPrevStateLayer(): GRULayerStructure<DenseNDArray> {
 
-  val outputArray = AugmentedArray(NDArray.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
+  val outputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
   outputArray.activate()
 
   return GRULayerStructure(
@@ -80,10 +81,10 @@ private fun buildPrevStateLayer(): GRULayerStructure {
 /**
  *
  */
-private fun buildNextStateLayer(): GRULayerStructure {
+private fun buildNextStateLayer(): GRULayerStructure<DenseNDArray> {
 
-  val outputArray = AugmentedArray(size = 5)
-  outputArray.assignErrors(NDArray.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
+  val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray(size = 5)
+  outputArray.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
   val layer = GRULayerStructure(
     inputArray = AugmentedArray(size = 4),
@@ -92,11 +93,11 @@ private fun buildNextStateLayer(): GRULayerStructure {
     activationFunction = Tanh(),
     layerContextWindow = GRULayerContextWindow.Empty())
 
-  layer.resetGate.assignValues(NDArray.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0, 0.1)))
-  layer.resetGate.assignErrors(NDArray.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))
-  layer.partitionGate.assignErrors(NDArray.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5, 1.0)))
-  layer.partitionGate.assignValues(NDArray.arrayOf(doubleArrayOf(-0.2, -0.1, 0.6, -0.8, 0.5)))
-  layer.candidate.assignErrors(NDArray.arrayOf(doubleArrayOf(-0.4, 0.6, -0.1, 0.3, 0.0)))
+  layer.resetGate.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0, 0.1)))
+  layer.resetGate.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))
+  layer.partitionGate.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5, 1.0)))
+  layer.partitionGate.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, -0.1, 0.6, -0.8, 0.5)))
+  layer.candidate.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.6, -0.1, 0.3, 0.0)))
 
   return layer
 }

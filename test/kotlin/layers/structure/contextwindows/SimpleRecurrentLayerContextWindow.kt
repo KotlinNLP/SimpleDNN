@@ -12,12 +12,13 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerStructure
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 
 /**
  *
  */
-sealed class SimpleRecurrentLayerContextWindow: LayerContextWindow {
+sealed class SimpleRecurrentLayerContextWindow: LayerContextWindow<DenseNDArray> {
 
   /**
    *
@@ -34,7 +35,7 @@ sealed class SimpleRecurrentLayerContextWindow: LayerContextWindow {
    */
   class Back: SimpleRecurrentLayerContextWindow() {
 
-    override fun getPrevStateLayer(): SimpleRecurrentLayerStructure = buildPrevStateLayer()
+    override fun getPrevStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> = buildPrevStateLayer()
 
     override fun getNextStateLayer() = null
   }
@@ -46,16 +47,16 @@ sealed class SimpleRecurrentLayerContextWindow: LayerContextWindow {
 
     override fun getPrevStateLayer() = null
 
-    override fun getNextStateLayer(): SimpleRecurrentLayerStructure = buildNextStateLayer()
+    override fun getNextStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> = buildNextStateLayer()
   }
 }
 
 /**
  *
  */
-private fun buildPrevStateLayer(): SimpleRecurrentLayerStructure {
+private fun buildPrevStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> {
 
-  val outputArray = com.kotlinnlp.simplednn.core.arrays.AugmentedArray(NDArray.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
+  val outputArray = com.kotlinnlp.simplednn.core.arrays.AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
   outputArray.activate()
 
   return SimpleRecurrentLayerStructure(
@@ -69,10 +70,10 @@ private fun buildPrevStateLayer(): SimpleRecurrentLayerStructure {
 /**
  *
  */
-private fun buildNextStateLayer(): SimpleRecurrentLayerStructure {
+private fun buildNextStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> {
 
-  val outputArray = com.kotlinnlp.simplednn.core.arrays.AugmentedArray(size = 5)
-  outputArray.assignErrors(NDArray.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
+  val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray(size = 5)
+  outputArray.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
   val layer = SimpleRecurrentLayerStructure(
     inputArray = AugmentedArray(size = 4),
