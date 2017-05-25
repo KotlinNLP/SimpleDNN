@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.simplemath
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
@@ -30,7 +30,7 @@ fun concatVectorsV(vararg vectors: DenseNDArray): DenseNDArray {
 
   require(vectors.all { it.isVector && it.columns == 1 })
 
-  val array = NDArrayFactory.zeros(Shape(vectors.sumBy { it.length }))
+  val array = DenseNDArrayFactory.zeros(Shape(vectors.sumBy { it.length }))
 
   var i = 0
 
