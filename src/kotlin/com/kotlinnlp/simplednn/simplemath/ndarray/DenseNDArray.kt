@@ -171,6 +171,8 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
 
     when(a) {
       is DenseNDArray -> System.arraycopy(a.storage.data, 0, this.storage.data, 0, this.length)
+      is SparseNDArray -> TODO("not implemented")
+      is SparseBinaryNDArray -> TODO("not implemented")
     }
 
     return this
@@ -204,6 +206,20 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   * Assign a to this DenseNDArray (it works also among rows and columns vectors)
+   */
+  override fun assignSum(a: NDArray<*>): DenseNDArray {
+
+    when(a) {
+      is DenseNDArray -> this.storage.addi(a.storage)
+      is SparseNDArray -> TODO("not implemented")
+      is SparseBinaryNDArray-> TODO("not implemented")
+    }
+
+    return this
+  }
+
+  /**
    *
    */
   override fun assignSum(a: DenseNDArray, n: Double): DenseNDArray {
@@ -216,14 +232,6 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   override fun assignSum(a: DenseNDArray, b: DenseNDArray): DenseNDArray {
     a.storage.addi(b.storage, this.storage)
-    return this
-  }
-
-  /**
-   * Assign a to this DenseNDArray (it works also among rows and columns vectors)
-   */
-  override fun assignSum(a: DenseNDArray): DenseNDArray {
-    this.storage.addi(a.storage)
     return this
   }
 
@@ -280,7 +288,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    * @return a [SparseNDArray]
    */
   override fun dot(a: DenseNDArray, mask: NDArrayMask): SparseNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -296,7 +304,14 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    *
    */
   override fun assignDot(a: DenseNDArray, b: NDArray<*>): DenseNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+    when(b) {
+      is DenseNDArray -> return this.assignDot(a, b)
+      is SparseNDArray -> TODO("not implemented")
+      is SparseBinaryNDArray -> TODO("not implemented")
+    }
+
+    return this
   }
 
   /**

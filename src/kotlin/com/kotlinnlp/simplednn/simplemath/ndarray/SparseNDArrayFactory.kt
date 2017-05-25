@@ -18,7 +18,7 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
    * @return a new empty [SparseNDArray]
    */
   override fun emptyArray(shape: Shape): SparseNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -27,7 +27,7 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
    * @return a new [SparseNDArray] filled with zeros
    */
   override fun zeros(shape: Shape): SparseNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -38,7 +38,7 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
    * @return a oneHotEncoder [SparseNDArray]
    */
   override fun oneHotEncoder(length: Int, oneAt: Int): SparseNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -50,7 +50,7 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
    * @return a new [SparseNDArray] filled with random values
    */
   override fun random(shape: Shape, from: Double, to: Double): SparseNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
 }

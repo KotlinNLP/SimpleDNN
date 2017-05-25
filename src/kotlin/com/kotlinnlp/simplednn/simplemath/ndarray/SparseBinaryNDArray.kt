@@ -80,7 +80,7 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
    *
    */
   override fun get(i: Int): Double {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -91,7 +91,7 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
    * @return the selected row as a new [SparseBinaryNDArray]
    */
   override fun getRow(i: Int): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -102,98 +102,119 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
    * @return the selected column as a new [SparseBinaryNDArray]
    */
   override fun getColumn(i: Int): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun get(i: Int, j: Int): Double {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun set(i: Int, value: Double) {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun copy(): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun set(i: Int, j: Int, value: Double) {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun assignValues(a: NDArray<*>): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun assignValues(n: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun zeros(): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun sum(): Double {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun avg(): Double {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun sum(n: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    * @return the index of the maximum value (-1 if empty)
    */
   override fun argMaxIndex(): Int {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun sum(a: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun assignSum(a: NDArray<*>): SparseBinaryNDArray {
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun assignSum(n: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun assignSum(a: SparseBinaryNDArray, n: Double): SparseBinaryNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun assignSum(a: SparseBinaryNDArray, b: SparseBinaryNDArray): SparseBinaryNDArray {
+    TODO("not implemented")
   }
 
   /**
@@ -202,91 +223,63 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
    * @return the euclidean norm
    */
   override fun norm2(): Double {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-  }
-
-  /**
-   *
-   */
-  override fun assignSum(a: SparseBinaryNDArray, n: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-  }
-
-  /**
-   *
-   */
-  override fun toString(): String {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-  }
-
-  /**
-   *
-   */
-  override fun assignSum(a: SparseBinaryNDArray, b: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun equals(other: Any?): Boolean {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun hashCode(): Int {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-  }
-
-  /**
-   *
-   */
-  override fun assignSum(a: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun sub(n: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun sub(a: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    * In-place subtraction by number
    */
   override fun assignSub(n: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun assignSub(a: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun reverseSub(n: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun dot(a: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -298,91 +291,91 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
    * @return a [SparseNDArray]
    */
   override fun dot(a: DenseNDArray, mask: NDArrayMask): SparseNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun assignDot(a: SparseBinaryNDArray, b: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun assignDot(a: DenseNDArray, b: NDArray<*>): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun prod(n: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun prod(a: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun assignProd(n: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun assignProd(a: SparseBinaryNDArray, n: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun assignProd(a: SparseBinaryNDArray, b: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun assignProd(a: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun div(n: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun div(a: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun assignDiv(n: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun assignDiv(a: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -393,7 +386,7 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
    * @return a new NDArray with the values of the current one rounded to Int
    */
   override fun roundInt(threshold: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -404,7 +397,7 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
    * @return this [SparseBinaryNDArray]
    */
   override fun assignRoundInt(threshold: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -413,21 +406,21 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
    * @return a new [SparseBinaryNDArray] containing the results of the function sign() applied element-wise
    */
   override fun sign(): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun randomize(randomGenerator: RandomGenerator): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun sqrt(): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -438,7 +431,7 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
    * @return a new [SparseBinaryNDArray] containing the values of this to the power of [power]
    */
   override fun pow(power: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -449,41 +442,48 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
    * @return this [SparseBinaryNDArray] to the power of [power]
    */
   override fun assignPow(power: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun equals(a: SparseBinaryNDArray, tolerance: Double): Boolean {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun zerosLike(): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun concatH(a: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    *
    */
   override fun concatV(a: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
    * Return a one-dimensional NDArray sub-vector of a vertical vector
    */
   override fun getRange(a: Int, b: Int): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun toString(): String {
+    TODO("not implemented")
   }
 }

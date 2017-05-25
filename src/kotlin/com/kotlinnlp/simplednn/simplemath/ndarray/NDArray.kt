@@ -150,18 +150,18 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
+  fun assignSum(a: NDArray<*>): SelfType
+
+
+  /**
+   *
+   */
   fun assignSum(a: SelfType, n: Double): SelfType
 
   /**
    *
    */
   fun assignSum(a: SelfType, b: SelfType): SelfType
-
-  /**
-   *
-   */
-  fun assignSum(a: SelfType): SelfType
-
   /**
    *
    */
