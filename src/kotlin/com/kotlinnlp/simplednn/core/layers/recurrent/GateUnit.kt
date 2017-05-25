@@ -8,12 +8,13 @@
 package com.kotlinnlp.simplednn.core.layers.recurrent
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  *
  */
-class GateUnit(size: Int) : AugmentedArray(size) {
+class GateUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : AugmentedArray<DenseNDArray>(size) {
 
   /**
    *
@@ -22,9 +23,9 @@ class GateUnit(size: Int) : AugmentedArray(size) {
    *
    * g = w (dot) x + b
    */
-  fun forward(gateParams: GateParametersUnit, x: NDArray) {
+  fun forward(gateParams: GateParametersUnit, x: InputNDArrayType) {
 
-    val w = gateParams.weights.values
+    val w = gateParams.weights.values as DenseNDArray
     val b = gateParams.biases.values
 
     this.values.assignDot(w, x).assignSum(b)
@@ -37,10 +38,38 @@ class GateUnit(size: Int) : AugmentedArray(size) {
    *
    * g += wRec (dot) prevContribute
    */
-  fun addRecurrentContribute(gateParams: GateParametersUnit, prevContribute: NDArray) {
+  fun addRecurrentContribute(gateParams: GateParametersUnit, prevContribute: DenseNDArray) {
 
     val wRec = gateParams.recurrentWeights.values
 
     this.values.assignSum(wRec.dot(prevContribute))
+  }
+
+  /**
+   * Assign errors gradients to the [paramsErrors] associated to this gate
+   *
+   * @param paramsErrors a [GateParametersUnit] associated to this gate
+   * @param x the input [NDArray] of the gate
+   * @param yPrev the output [NDArray] of the gate in the previous state
+   *
+   * gb = gGate * 1
+   * gw = gGate (dot) x
+   * gwRec = gGate (dot) yPrev
+   */
+  fun assignParamsGradients(paramsErrors: GateParametersUnit,
+                            x: InputNDArrayType,
+                            yPrev: DenseNDArray? = null) {
+
+    val gGate: DenseNDArray = this.errors
+    val gb: DenseNDArray = paramsErrors.biases.values
+    val gw: NDArray<*> = paramsErrors.weights.values
+    val gwRec: DenseNDArray = paramsErrors.recurrentWeights.values
+
+    gb.assignValues(gGate)
+    gw.assignDot(gGate, x.T)
+
+    if (yPrev != null) {
+      gwRec.assignDot(gGate, yPrev.T)
+    }
   }
 }
