@@ -27,6 +27,6 @@ class UpdatableDenseArray(override val values: DenseNDArray) : UpdatableArray(va
     /**
      *
      */
-    operator fun invoke(shape: Shape) = UpdatableArray(DenseNDArrayFactory.zeros(shape))
+    operator fun invoke(shape: Shape) = UpdatableDenseArray(DenseNDArrayFactory.zeros(shape))
   }
 }

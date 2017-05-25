@@ -27,6 +27,6 @@ class UpdatableSparseBinaryArray(override val values: SparseBinaryNDArray) : Upd
     /**
      *
      */
-    operator fun invoke(shape: Shape) = UpdatableArray(SparseBinaryNDArrayFactory.zeros(shape))
+    operator fun invoke(shape: Shape) = UpdatableSparseBinaryArray(SparseBinaryNDArrayFactory.zeros(shape))
   }
 }
