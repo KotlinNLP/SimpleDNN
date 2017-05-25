@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.losses
 
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 
 /**
  * Augmented Mean Squared Error calculator
@@ -50,7 +50,7 @@ class AugmentedMSECalculator(val pi: Double = 0.1, val c: Double = 10.0) : LossC
    *
    * @return the loss within [output] and [outputGold]
    */
-  override fun calculateLoss(output: NDArray, outputGold: NDArray): NDArray {
+  override fun calculateLoss(output: DenseNDArray, outputGold: DenseNDArray): DenseNDArray {
 
     if (this.isLossPartitionDisabled) {
       return output.sub(outputGold).assignPow(2.0).assignProd(0.5)
@@ -74,7 +74,7 @@ class AugmentedMSECalculator(val pi: Double = 0.1, val c: Double = 10.0) : LossC
    *
    * @return the derivative of the loss within [output] and [outputGold]
    */
-  override fun calculateErrors(output: NDArray, outputGold: NDArray): NDArray {
+  override fun calculateErrors(output: DenseNDArray, outputGold: DenseNDArray): DenseNDArray {
 
     if (this.isLossPartitionDisabled) {
       return output.sub(outputGold)

@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.losses
 
-import com.kotlinnlp.simplednn.simplemath.*
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 
 /**
  *
@@ -23,11 +23,11 @@ class MulticlassMSECalculator : MSECalculator() {
    *
    * @return the derivative of the loss within [output] and [outputGold]
    */
-  override fun calculateErrors(output: NDArray, outputGold: NDArray): NDArray {
+  override fun calculateErrors(output: DenseNDArray, outputGold: DenseNDArray): DenseNDArray {
 
     val lossDerivative = output.copy()
 
-    (0 until output.length).forEach { i -> if (outputGold[i] == 1.0) lossDerivative[i] = output[i].toDouble() - 1.0 }
+    (0 until output.length).forEach { i -> if (outputGold[i] == 1.0) lossDerivative[i] = output[i] - 1.0 }
 
     return lossDerivative
   }

@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.losses
 
-import com.kotlinnlp.simplednn.simplemath.*
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 
 /**
  * MeanSquaredErrorCalculator
@@ -22,7 +22,7 @@ open class MSECalculator : LossCalculator {
    *
    * @return the loss within [output] and [outputGold]
    */
-  override fun calculateLoss(output: NDArray, outputGold: NDArray): NDArray {
+  override fun calculateLoss(output: DenseNDArray, outputGold: DenseNDArray): DenseNDArray {
     return output.sub(outputGold).pow(2.0).prod(0.5)
   }
 
@@ -34,7 +34,7 @@ open class MSECalculator : LossCalculator {
    *
    * @return the derivative of the loss within [output] and [outputGold]
    */
-  override fun calculateErrors(output: NDArray, outputGold: NDArray): NDArray {
+  override fun calculateErrors(output: DenseNDArray, outputGold: DenseNDArray): DenseNDArray {
     return output.sub(outputGold)
   }
 

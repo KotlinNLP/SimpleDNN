@@ -7,7 +7,8 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.losses
 
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+
 
 /**
  *
@@ -22,7 +23,7 @@ interface LossCalculator {
    *
    * @return the loss within [output] and [outputGold]
    */
-  fun calculateLoss(output: NDArray, outputGold: NDArray): NDArray
+  fun calculateLoss(output: DenseNDArray, outputGold: DenseNDArray): DenseNDArray
 
   /**
    * Calculate the errors within an output and its gold.
@@ -32,7 +33,7 @@ interface LossCalculator {
    *
    * @return the derivative of the loss within [output] and [outputGold]
    */
-  fun calculateErrors(output: NDArray, outputGold: NDArray): NDArray
+  fun calculateErrors(output: DenseNDArray, outputGold: DenseNDArray): DenseNDArray
 
   /**
    * Calculate the errors of a sequence.
@@ -42,8 +43,8 @@ interface LossCalculator {
    *
    * @return an array containing the errors for each example of the sequence
    */
-  fun calculateErrors(outputSequence: Array<NDArray>,
-                      outputGoldSequence: Array<NDArray>): Array<NDArray> {
+  fun calculateErrors(outputSequence: Array<DenseNDArray>,
+                      outputGoldSequence: Array<DenseNDArray>): Array<DenseNDArray> {
 
     require(outputSequence.size == outputGoldSequence.size)
 
@@ -60,8 +61,8 @@ interface LossCalculator {
    *
    * @return the mean loss of the sequence
    */
-  fun calculateMeanLoss(outputSequence: Array<NDArray>,
-                        outputGoldSequence: Array<NDArray>): Double {
+  fun calculateMeanLoss(outputSequence: Array<DenseNDArray>,
+                        outputGoldSequence: Array<DenseNDArray>): Double {
 
     var lossesSum: Double = 0.0
 
