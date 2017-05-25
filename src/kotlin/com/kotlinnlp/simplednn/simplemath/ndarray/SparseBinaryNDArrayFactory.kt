@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.simplemath.ndarray
 /**
  *
  */
-class SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
+object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
 
   /**
    * @param shape shape
