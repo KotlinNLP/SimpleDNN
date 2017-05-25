@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.outputevaluation
 
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 
 /**
  * Evaluation function which returns true if all the binary outputs are equal to the gold binary outputs.
@@ -22,7 +22,7 @@ class MulticlassEvaluation : OutputEvaluationFunction {
    *
    * @return a Boolean indicating whether the output must be considered equal to the gold or not
    */
-  override fun invoke(output: NDArray, outputGold: NDArray): Boolean {
+  override fun invoke(output: DenseNDArray, outputGold: DenseNDArray): Boolean {
     require(output.length == outputGold.length) { "output and outputGold must have the same dimension" }
 
     for (i in 0 until outputGold.length) {

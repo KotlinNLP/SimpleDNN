@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.outputevaluation
 
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 
 /**
  * An interface which defines a function to evaluate whether the output of a network must be considered correct or not.
@@ -22,5 +22,5 @@ interface OutputEvaluationFunction {
    *
    * @return a Boolean indicating whether the output must be considered equal to the gold or not
    */
-  operator fun invoke(output: NDArray, outputGold: NDArray): Boolean
+  operator fun invoke(output: DenseNDArray, outputGold: DenseNDArray): Boolean
 }

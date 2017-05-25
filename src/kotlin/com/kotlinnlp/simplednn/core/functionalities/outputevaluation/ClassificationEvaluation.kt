@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.outputevaluation
 
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 
 /**
  * Evaluation function which compares output and output gold as one hot encoders
@@ -22,7 +22,7 @@ class ClassificationEvaluation : OutputEvaluationFunction {
    *
    * @return a Boolean indicating whether the output must be considered equal to the gold or not
    */
-  override fun invoke(output: NDArray, outputGold: NDArray): Boolean {
+  override fun invoke(output: DenseNDArray, outputGold: DenseNDArray): Boolean {
     require(outputGold.isOneHotEncoder) { "outputGold should be a one hot encoder"}
     return outputGold[output.argMaxIndex()] == 1.0
   }
