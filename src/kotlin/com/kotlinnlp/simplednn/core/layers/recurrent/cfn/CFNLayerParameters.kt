@@ -44,7 +44,7 @@ class CFNLayerParameters(
   /**
    *
    */
-  val candidateWeights: UpdatableArray = this.buildUpdatableArray(
+  val candidateWeights: UpdatableArray<*> = this.buildUpdatableArray(
     dim1 = this.outputSize,
     dim2 = this.inputSize,
     sparseInput = this.sparseInput)

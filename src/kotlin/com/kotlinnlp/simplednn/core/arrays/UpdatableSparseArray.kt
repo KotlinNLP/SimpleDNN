@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 /**
  * The [UpdatableSparseArray] is a wrapper of a [SparseNDArray]
  */
-class UpdatableSparseArray(override val values: SparseNDArray) : UpdatableArray(values = values) {
+class UpdatableSparseArray(override val values: SparseNDArray) : UpdatableArray<SparseNDArray>(values = values) {
 
   companion object {
 

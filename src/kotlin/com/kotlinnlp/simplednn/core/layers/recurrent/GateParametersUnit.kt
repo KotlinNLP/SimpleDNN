@@ -25,7 +25,7 @@ data class GateParametersUnit(val inputSize: Int, val outputSize: Int, private v
   /**
    *
    */
-  val weights: UpdatableArray = this.buildUpdatableArray(
+  val weights: UpdatableArray<*> = this.buildUpdatableArray(
     dim1 = this.outputSize, dim2 = this.inputSize, sparseInput = this.sparseInput)
 
   /**
@@ -36,7 +36,7 @@ data class GateParametersUnit(val inputSize: Int, val outputSize: Int, private v
   /**
    *
    */
-  private fun buildUpdatableArray(dim1: Int, dim2: Int = 1, sparseInput: Boolean = false): UpdatableArray =
+  private fun buildUpdatableArray(dim1: Int, dim2: Int = 1, sparseInput: Boolean = false): UpdatableArray<*> =
     if (sparseInput)
       this.buildSparseBinaryArray(dim1, dim2)
     else

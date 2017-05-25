@@ -25,7 +25,7 @@ abstract class LayerParameters(
   val inputSize: Int,
   val outputSize: Int
 ) : Serializable,
-    Iterable<UpdatableArray> {
+    Iterable<UpdatableArray<*>> {
 
   companion object {
 
@@ -39,12 +39,12 @@ abstract class LayerParameters(
   /**
    *
    */
-  lateinit protected var paramsList: ArrayList<UpdatableArray>
+  lateinit protected var paramsList: ArrayList<UpdatableArray<*>>
 
   /**
    *
    */
-  private inner class LayerParametersIterator: Iterator<UpdatableArray> {
+  private inner class LayerParametersIterator: Iterator<UpdatableArray<*>> {
     /**
      *
      */
@@ -58,13 +58,13 @@ abstract class LayerParameters(
     /**
      *
      */
-    override fun next(): UpdatableArray = this@LayerParameters.paramsList[nextParamsIndex++]
+    override fun next(): UpdatableArray<*> = this@LayerParameters.paramsList[nextParamsIndex++]
   }
 
   /**
    *
    */
-  override fun iterator(): Iterator<UpdatableArray> = this.LayerParametersIterator()
+  override fun iterator(): Iterator<UpdatableArray<*>> = this.LayerParametersIterator()
 
   /**
    *
@@ -79,7 +79,7 @@ abstract class LayerParameters(
   /**
    *
    */
-  protected fun buildUpdatableArray(dim1: Int, dim2: Int = 1, sparseInput: Boolean = false): UpdatableArray =
+  protected fun buildUpdatableArray(dim1: Int, dim2: Int = 1, sparseInput: Boolean = false): UpdatableArray<*> =
     if (sparseInput)
       this.buildSparseArray(dim1, dim2)
     else

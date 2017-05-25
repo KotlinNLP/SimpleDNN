@@ -28,7 +28,7 @@ class FeedforwardLayerParameters(
   /**
    *
    */
-  val weights: UpdatableArray = this.buildUpdatableArray(
+  val weights: UpdatableArray<*> = this.buildUpdatableArray(
     dim1 = this.outputSize,
     dim2 = this.inputSize,
     sparseInput = this.sparseInput)

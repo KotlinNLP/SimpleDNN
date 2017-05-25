@@ -14,7 +14,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 /**
  * The [UpdatableSparseBinaryArray] is a wrapper of a [SparseBinaryNDArray]
  */
-class UpdatableSparseBinaryArray(override val values: SparseBinaryNDArray) : UpdatableArray(values = values) {
+class UpdatableSparseBinaryArray(
+  override val values: SparseBinaryNDArray
+) : UpdatableArray<SparseBinaryNDArray>(values = values) {
 
   companion object {
 

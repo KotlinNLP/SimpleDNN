@@ -15,7 +15,7 @@ import java.io.Serializable
  * The [UpdatableArray] is a wrapper of an [NDArray] extending it with an [updaterSupportStructure]
  *
  */
-open class UpdatableArray(open val values: NDArray<*>) : Serializable {
+open class UpdatableArray<NDArrayType: NDArray<NDArrayType>>(open val values: NDArrayType) : Serializable {
 
   companion object {
 
