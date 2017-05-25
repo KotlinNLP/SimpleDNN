@@ -10,6 +10,8 @@ package com.kotlinnlp.simplednn.core.layers.recurrent
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.*
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * @param inputArray the input array of the layer
@@ -20,14 +22,14 @@ import com.kotlinnlp.simplednn.core.layers.*
  * @param dropout The probability of dropout (default 0.0).
  *                If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
-abstract class RecurrentLayerStructure(
-  inputArray: AugmentedArray,
-  outputArray: AugmentedArray,
+abstract class RecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+  inputArray: AugmentedArray<InputNDArrayType>,
+  outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters,
-  val layerContextWindow: LayerContextWindow,
+  val layerContextWindow: LayerContextWindow<InputNDArrayType>,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
-) : LayerStructure(
+) : LayerStructure<InputNDArrayType>(
   inputArray = inputArray,
   outputArray = outputArray,
   params = params,

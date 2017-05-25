@@ -12,7 +12,8 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.layers.recurrent.*
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * @param inputArray the input array of the layer
@@ -23,14 +24,14 @@ import com.kotlinnlp.simplednn.simplemath.NDArray
  * @param dropout The probability of dropout (default 0.0).
  *                If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
-class GRULayerStructure(
-  inputArray: AugmentedArray,
-  outputArray: AugmentedArray,
+class GRULayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+  inputArray: AugmentedArray<InputNDArrayType>,
+  outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters,
-  layerContextWindow: LayerContextWindow,
+  layerContextWindow: LayerContextWindow<InputNDArrayType>,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
-) : RecurrentLayerStructure(
+) : RecurrentLayerStructure<InputNDArrayType>(
   inputArray = inputArray,
   outputArray = outputArray,
   params = params,
@@ -46,17 +47,17 @@ class GRULayerStructure(
   /**
    *
    */
-  val candidate = GateUnit(outputArray.size)
+  val candidate = GateUnit<InputNDArrayType>(outputArray.size)
 
   /**
    *
    */
-  val resetGate = GateUnit(outputArray.size)
+  val resetGate = GateUnit<InputNDArrayType>(outputArray.size)
 
   /**
    *
    */
-  val partitionGate = GateUnit(outputArray.size)
+  val partitionGate = GateUnit<InputNDArrayType>(outputArray.size)
 
   /**
    * Initialization: set the activation function of the gates
@@ -80,17 +81,17 @@ class GRULayerStructure(
 
     this.setGates(prevStateLayer) // must be called before accessing to the activated values of the gates
 
-    val y = this.outputArray.values
-    val c = this.candidate.values
-    val p = this.partitionGate.values
+    val y: DenseNDArray = this.outputArray.values
+    val c: DenseNDArray = this.candidate.values
+    val p: DenseNDArray = this.partitionGate.values
 
     // y = p * c
     y.assignProd(p, c)
 
     // y += (1 - p) * yPrev
     if (prevStateLayer != null) {
-      val yPrev: NDArray = prevStateLayer.outputArray.values
-      y.assignSum(p.reverseSub(1).prod(yPrev))
+      val yPrev: DenseNDArray = prevStateLayer.outputArray.values
+      y.assignSum(p.reverseSub(1.0).prod(yPrev))
     }
   }
 
@@ -101,9 +102,9 @@ class GRULayerStructure(
    * p = sigmoid(wp (dot) x + bp + wpRec (dot) yPrev)
    * c = f(wc (dot) x + bc + wcRec (dot) (yPrev * r))
    */
-  private fun setGates(prevStateLayer: LayerStructure?) { this.params as GRULayerParameters
+  private fun setGates(prevStateLayer: LayerStructure<InputNDArrayType>?) { this.params as GRULayerParameters
 
-    val x = this.inputArray.values
+    val x: InputNDArrayType = this.inputArray.values
 
     this.resetGate.forward(this.params.resetGate, x)
     this.partitionGate.forward(this.params.partitionGate, x)
@@ -137,7 +138,7 @@ class GRULayerStructure(
     val prevStateOutput = this.layerContextWindow.getPrevStateLayer()?.outputArray
     val nextStateLayer = this.layerContextWindow.getNextStateLayer()
 
-    this.addOutputRecurrentGradients(nextStateLayer as? GRULayerStructure)
+    this.addOutputRecurrentGradients(nextStateLayer as? GRULayerStructure<InputNDArrayType>)
 
     this.assignGatesGradients(prevStateOutput)
     this.assignParamsGradients(prevStateOutput)
@@ -151,24 +152,25 @@ class GRULayerStructure(
    *
    * @param prevStateOutput the outputArray in the previous state
    */
-  private fun assignGatesGradients(prevStateOutput: AugmentedArray?) { this.params as GRULayerParameters
+  private fun assignGatesGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
+    this.params as GRULayerParameters
 
-    val gy = this.outputArray.errors
+    val gy: DenseNDArray = this.outputArray.errors
 
     val resetGate = this.resetGate
     val partitionGate = this.partitionGate
     val candidate = this.candidate
 
-    val p = partitionGate.values
-    val c = candidate.values
+    val p: DenseNDArray = partitionGate.values
+    val c: DenseNDArray = candidate.values
 
-    val rDeriv = resetGate.calculateActivationDeriv()
-    val pDeriv = partitionGate.calculateActivationDeriv()
-    val cDeriv = candidate.calculateActivationDeriv()
+    val rDeriv: DenseNDArray = resetGate.calculateActivationDeriv()
+    val pDeriv: DenseNDArray = partitionGate.calculateActivationDeriv()
+    val cDeriv: DenseNDArray = candidate.calculateActivationDeriv()
 
-    val gr = this.resetGate.errors
-    val gp = this.partitionGate.errors
-    val gc = this.candidate.errors
+    val gr: DenseNDArray = this.resetGate.errors
+    val gp: DenseNDArray = this.partitionGate.errors
+    val gc: DenseNDArray = this.candidate.errors
 
     gc.assignProd(p, cDeriv).assignProd(gy)  // gc must be calculated before gr and gp
 
@@ -178,8 +180,8 @@ class GRULayerStructure(
 
     } else { // recurrent contribute
 
-      val yPrev = prevStateOutput.values
-      val wcr = this.params.candidate.recurrentWeights.values
+      val yPrev: DenseNDArray = prevStateOutput.values
+      val wcr: DenseNDArray = this.params.candidate.recurrentWeights.values
 
       gr.assignValues(gc.T.dot(wcr)).assignProd(rDeriv).assignProd(yPrev)
       gp.assignProd(c.sub(yPrev), pDeriv).assignProd(gy)
@@ -190,49 +192,20 @@ class GRULayerStructure(
    *
    * @param prevStateOutput the outputArray in the previous state
    */
-  private fun assignParamsGradients(prevStateOutput: AugmentedArray?) {
+  private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
 
-    val x = this.inputArray.values
-    val yPrev = prevStateOutput?.values
+    val x: InputNDArrayType = this.inputArray.values
+    val yPrev: DenseNDArray? = prevStateOutput?.values
 
-    this.setGateParamsGradients(this.resetGate, this.paramsErrors!!.resetGate, x, yPrev = yPrev)
-    this.setGateParamsGradients(this.partitionGate, this.paramsErrors!!.partitionGate, x, yPrev = yPrev)
-    this.setGateParamsGradients(this.candidate, this.paramsErrors!!.candidate, x)
+    this.resetGate.assignParamsGradients(paramsErrors = this.paramsErrors!!.resetGate, x = x, yPrev = yPrev)
+    this.partitionGate.assignParamsGradients(paramsErrors = this.paramsErrors!!.partitionGate, x = x, yPrev = yPrev)
+    this.candidate.assignParamsGradients(paramsErrors = this.paramsErrors!!.candidate, x = x)
 
     if (yPrev != null) { // add recurrent contribute to the recurrent weights of the candidate
-      val r = this.resetGate.values
-      val gwcr = this.paramsErrors!!.candidate.recurrentWeights.values
-      val gc = this.candidate.errors
+      val r: DenseNDArray = this.resetGate.values
+      val gwcr: DenseNDArray = this.paramsErrors!!.candidate.recurrentWeights.values
+      val gc: DenseNDArray = this.candidate.errors
       gwcr.assignDot(gc, r.prod(yPrev).T)
-    }
-  }
-
-  /**
-   *
-   * @param gate the gate unit
-   * @param gateParams the gate unit parameters
-   * @param x the input NDArray of the gate
-   * @param yPrev the output NDArray of the gate in the previous state
-   *
-   * gb = gGate * 1
-   * gw = gGate (dot) x
-   * gwRec = gGate (dot) yPrev
-   */
-  private fun setGateParamsGradients(gate: GateUnit,
-                                     gateParams: GateParametersUnit,
-                                     x: NDArray,
-                                     yPrev: NDArray? = null) {
-
-    val gGate = gate.errors
-    val gb = gateParams.biases.values
-    val gw = gateParams.weights.values
-    val gwRec = gateParams.recurrentWeights.values
-
-    gb.assignValues(gGate)
-    gw.assignDot(gGate, x.T)
-
-    if (yPrev != null) {
-      gwRec.assignDot(gGate, yPrev.T)
     }
   }
 
@@ -241,15 +214,15 @@ class GRULayerStructure(
    */
   private fun assignLayerGradients() { this.params as GRULayerParameters
 
-    val gx = this.inputArray.errors
+    val gx: InputNDArrayType = this.inputArray.errors
 
-    val wp = this.params.partitionGate.weights.values
-    val wc = this.params.candidate.weights.values
-    val wr = this.params.resetGate.weights.values
+    val wp: DenseNDArray = this.params.partitionGate.weights.values as DenseNDArray
+    val wc: DenseNDArray = this.params.candidate.weights.values as DenseNDArray
+    val wr: DenseNDArray = this.params.resetGate.weights.values as DenseNDArray
 
-    val gp = this.partitionGate.errors
-    val gc = this.candidate.errors
-    val gr = this.resetGate.errors
+    val gp: DenseNDArray = this.partitionGate.errors
+    val gc: DenseNDArray = this.candidate.errors
+    val gr: DenseNDArray = this.resetGate.errors
 
     gx.assignValues(gp.T.dot(wp)).assignSum(gc.T.dot(wc)).assignSum(gr.T.dot(wr))
 
@@ -262,11 +235,11 @@ class GRULayerStructure(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun addOutputRecurrentGradients(nextStateLayer: GRULayerStructure?) {
+  private fun addOutputRecurrentGradients(nextStateLayer: GRULayerStructure<InputNDArrayType>?) {
 
     if (nextStateLayer != null) {
-      val gy = this.outputArray.errors
-      val gyRec = this.getLayerRecurrentContribute(nextStateLayer)
+      val gy: DenseNDArray = this.outputArray.errors
+      val gyRec: DenseNDArray = this.getLayerRecurrentContribute(nextStateLayer)
 
       gy.assignSum(gyRec)
     }
@@ -276,30 +249,30 @@ class GRULayerStructure(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getLayerRecurrentContribute(nextStateLayer: GRULayerStructure): NDArray {
+  private fun getLayerRecurrentContribute(nextStateLayer: GRULayerStructure<InputNDArrayType>): DenseNDArray {
     this.params as GRULayerParameters
 
     val resetGate = nextStateLayer.resetGate
     val partitionGate = nextStateLayer.partitionGate
     val candidate = nextStateLayer.candidate
 
-    val gy = nextStateLayer.outputArray.errors
+    val gy: DenseNDArray = nextStateLayer.outputArray.errors
 
-    val r = resetGate.values
-    val p = partitionGate.values
+    val r: DenseNDArray = resetGate.values
+    val p: DenseNDArray = partitionGate.values
 
-    val gr = resetGate.errors
-    val gp = partitionGate.errors
-    val gc = candidate.errors
+    val gr: DenseNDArray = resetGate.errors
+    val gp: DenseNDArray = partitionGate.errors
+    val gc: DenseNDArray = candidate.errors
 
-    val wrr = this.params.resetGate.recurrentWeights.values
-    val wpr = this.params.partitionGate.recurrentWeights.values
-    val wcr = this.params.candidate.recurrentWeights.values
+    val wrr: DenseNDArray = this.params.resetGate.recurrentWeights.values
+    val wpr: DenseNDArray = this.params.partitionGate.recurrentWeights.values
+    val wcr: DenseNDArray = this.params.candidate.recurrentWeights.values
 
-    val gRec1 = gr.T.dot(wrr)
-    val gRec2 = gp.T.dot(wpr)
-    val gRec3 = gc.T.dot(wcr).prod(r)
-    val gRec4 = p.reverseSub(1).prod(gy).T
+    val gRec1: DenseNDArray = gr.T.dot(wrr)
+    val gRec2: DenseNDArray = gp.T.dot(wpr)
+    val gRec3: DenseNDArray = gc.T.dot(wcr).prod(r)
+    val gRec4: DenseNDArray = p.reverseSub(1.0).prod(gy).T
 
     return gRec1.assignSum(gRec2).assignSum(gRec3).assignSum(gRec4)
   }

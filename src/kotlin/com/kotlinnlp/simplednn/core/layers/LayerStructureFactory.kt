@@ -16,19 +16,21 @@ import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerStructure
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  *
  */
 object LayerStructureFactory {
 
-  operator fun invoke(inputArray: AugmentedArray,
-                      outputArray: AugmentedArray,
+  operator fun <InputNDArrayType : NDArray<InputNDArrayType>> invoke(inputArray: AugmentedArray<InputNDArrayType>,
+                      outputArray: AugmentedArray<DenseNDArray>,
                       params: LayerParameters,
                       activationFunction: ActivationFunction?,
                       connectionType: LayerType.Connection,
                       dropout: Double = 0.0,
-                      contextWindow: LayerContextWindow? = null): LayerStructure =
+                      contextWindow: LayerContextWindow<InputNDArrayType>? = null): LayerStructure<InputNDArrayType> =
 
     when(connectionType) {
 

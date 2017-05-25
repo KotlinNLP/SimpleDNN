@@ -8,19 +8,20 @@
 package com.kotlinnlp.simplednn.core.layers.recurrent
 
 import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  *
  */
-interface LayerContextWindow {
+interface LayerContextWindow<InputNDArrayType : NDArray<InputNDArrayType>> {
   
   /**
    *
    */
-  fun getPrevStateLayer(): LayerStructure?
+  fun getPrevStateLayer(): LayerStructure<InputNDArrayType>?
 
   /**
    *
    */
-  fun getNextStateLayer(): LayerStructure?
+  fun getNextStateLayer(): LayerStructure<InputNDArrayType>?
 }

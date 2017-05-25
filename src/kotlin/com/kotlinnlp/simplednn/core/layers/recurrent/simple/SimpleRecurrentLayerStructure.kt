@@ -11,7 +11,8 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.layers.recurrent.*
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * @param inputArray the input array of the layer
@@ -22,14 +23,14 @@ import com.kotlinnlp.simplednn.simplemath.NDArray
  * @param dropout The probability of dropout (default 0.0).
  *                If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
-class SimpleRecurrentLayerStructure(
-  inputArray: AugmentedArray,
-  outputArray: AugmentedArray,
+class SimpleRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+  inputArray: AugmentedArray<InputNDArrayType>,
+  outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters,
-  layerContextWindow: LayerContextWindow,
+  layerContextWindow: LayerContextWindow<InputNDArrayType>,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
-) : RecurrentLayerStructure(
+) : RecurrentLayerStructure<InputNDArrayType>(
   inputArray = inputArray,
   outputArray = outputArray,
   params = params,
@@ -56,11 +57,11 @@ class SimpleRecurrentLayerStructure(
    */
   override fun forwardInput() { this.params as SimpleRecurrentLayerParameters
 
-    val w: NDArray = this.params.weights.values
-    val b: NDArray = this.params.biases.values
+    val w: DenseNDArray = this.params.weights.values as DenseNDArray
+    val b: DenseNDArray = this.params.biases.values
 
-    val x: NDArray = this.inputArray.values
-    val y: NDArray = this.outputArray.values
+    val x: NDArray<*> = this.inputArray.values
+    val y: DenseNDArray = this.outputArray.values
 
     // y = w (dot) x + b
     y.assignDot(w, x).assignSum(b)
@@ -69,8 +70,8 @@ class SimpleRecurrentLayerStructure(
     val prevStateLayer = this.layerContextWindow.getPrevStateLayer()
     if (prevStateLayer != null) { // recurrent contribute
 
-      val wRec: NDArray = this.params.recurrentWeights.values
-      val yPrev: NDArray = prevStateLayer.outputArray.values
+      val wRec: DenseNDArray = this.params.recurrentWeights.values
+      val yPrev: DenseNDArray = prevStateLayer.outputArray.values
 
       y.assignSum(wRec.dot(yPrev))
     }
@@ -103,20 +104,20 @@ class SimpleRecurrentLayerStructure(
    * gw = gb (dot) x
    * gwRec = gyNext (dot) y
    */
-  private fun assignParamsGradients(nextStateLayer: LayerStructure?) {
+  private fun assignParamsGradients(nextStateLayer: LayerStructure<InputNDArrayType>?) {
 
-    val x = this.inputArray.values
-    val gb = this.paramsErrors!!.biases.values
-    val gw = this.paramsErrors!!.weights.values
-    val gy = this.outputArray.errors
+    val x: InputNDArrayType = this.inputArray.values
+    val gb: DenseNDArray = this.paramsErrors!!.biases.values
+    val gw: DenseNDArray = this.paramsErrors!!.weights.values as DenseNDArray
+    val gy: DenseNDArray = this.outputArray.errors
 
     gb.assignValues(gy)
     gw.assignDot(gb, x.T)
 
     if (nextStateLayer != null) { // recurrent errors
-      val gyNext = nextStateLayer.outputArray.errors
-      val y: NDArray = this.outputArray.values
-      val gwRec: NDArray = this.paramsErrors!!.recurrentWeights.values
+      val gyNext: DenseNDArray = nextStateLayer.outputArray.errors
+      val y: DenseNDArray = this.outputArray.values
+      val gwRec: DenseNDArray = this.paramsErrors!!.recurrentWeights.values
 
       gwRec.assignDot(gyNext, y.T)
     }
@@ -127,10 +128,10 @@ class SimpleRecurrentLayerStructure(
    */
   private fun assignLayerGradients() { this.params as SimpleRecurrentLayerParameters
 
-    val gb = this.paramsErrors!!.biases.values
-    val w = this.params.weights.values
+    val gb: DenseNDArray = this.paramsErrors!!.biases.values
+    val w: DenseNDArray = this.params.weights.values as DenseNDArray
 
-    val gx = this.inputArray.errors
+    val gx: InputNDArrayType = this.inputArray.errors
 
     // gx = gb (dot) w
     gx.assignValues(gb.T.dot(w))
@@ -144,19 +145,19 @@ class SimpleRecurrentLayerStructure(
   /**
    * gy += (gyNext (dot) wRec) * yDeriv
    */
-  private fun addLayerRecurrentGradients(nextStateLayer: LayerStructure) {
+  private fun addLayerRecurrentGradients(nextStateLayer: LayerStructure<InputNDArrayType>) {
     this.params as SimpleRecurrentLayerParameters
 
-    val gy = this.outputArray.errors
-    val gyNext: NDArray = nextStateLayer.outputArray.errors
-    val wRec: NDArray = this.params.recurrentWeights.values
+    val gy: DenseNDArray = this.outputArray.errors
+    val gyNext: DenseNDArray = nextStateLayer.outputArray.errors
+    val wRec: DenseNDArray = this.params.recurrentWeights.values
 
-    // gRec = gyNext (dot) wRec
-    val gRec = gyNext.T.dot(wRec)
+    // gRec: com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray = gyNext (dot) wRec
+    val gRec: DenseNDArray = gyNext.T.dot(wRec)
 
     // gRec *= yDeriv
     if (this.outputArray.hasActivation) {
-      val yDeriv = this.outputArray.calculateActivationDeriv()
+      val yDeriv: DenseNDArray = this.outputArray.calculateActivationDeriv()
       gRec.assignProd(yDeriv)
     }
 

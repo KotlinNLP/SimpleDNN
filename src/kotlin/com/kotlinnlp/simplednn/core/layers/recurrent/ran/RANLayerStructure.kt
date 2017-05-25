@@ -12,7 +12,8 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.layers.recurrent.*
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * @param inputArray the input array of the layer
@@ -23,14 +24,14 @@ import com.kotlinnlp.simplednn.simplemath.NDArray
  * @param dropout The probability of dropout (default 0.0).
  *                If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
-class RANLayerStructure(
-  inputArray: AugmentedArray,
-  outputArray: AugmentedArray,
+class RANLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+  inputArray: AugmentedArray<InputNDArrayType>,
+  outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters,
-  layerContextWindow: LayerContextWindow,
+  layerContextWindow: LayerContextWindow<InputNDArrayType>,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
-) : RecurrentLayerStructure(
+) : RecurrentLayerStructure<InputNDArrayType>(
   inputArray = inputArray,
   outputArray = outputArray,
   params = params,
@@ -46,17 +47,17 @@ class RANLayerStructure(
   /**
    *
    */
-  val candidate = AugmentedArray(outputArray.size)
+  val candidate = AugmentedArray<DenseNDArray>(outputArray.size)
 
   /**
    *
    */
-  val inputGate = GateUnit(outputArray.size)
+  val inputGate = GateUnit<InputNDArrayType>(outputArray.size)
 
   /**
    *
    */
-  val forgetGate = GateUnit(outputArray.size)
+  val forgetGate = GateUnit<InputNDArrayType>(outputArray.size)
 
   /**
    * Initialization: set the activation function of the gates
@@ -80,17 +81,17 @@ class RANLayerStructure(
 
     this.setGates(prevStateLayer) // must be called before accessing to the activated values of the gates
 
-    val y = this.outputArray.values
-    val c = this.candidate.values
-    val inG = this.inputGate.values
-    val forG = this.forgetGate.values
+    val y: DenseNDArray = this.outputArray.values
+    val c: DenseNDArray = this.candidate.values
+    val inG: DenseNDArray = this.inputGate.values
+    val forG: DenseNDArray = this.forgetGate.values
 
     // y = inG * c
     y.assignProd(inG, c)
 
     // y += yPrev * forG
     if (prevStateLayer != null) {
-      val yPrev = prevStateLayer.outputArray.valuesNotActivated
+      val yPrev: DenseNDArray = prevStateLayer.outputArray.valuesNotActivated
       y.assignSum(yPrev.prod(forG))
     }
 
@@ -105,12 +106,12 @@ class RANLayerStructure(
    * forG = sigmoid(wForG (dot) x + bForG + wrForG (dot) yPrev)
    * c = wc (dot) x + bc
    */
-  private fun setGates(prevStateLayer: LayerStructure?): Unit { this.params as RANLayerParameters
+  private fun setGates(prevStateLayer: LayerStructure<InputNDArrayType>?) { this.params as RANLayerParameters
 
-    val x = this.inputArray.values
-    val c = this.candidate.values
-    val wc = this.params.candidate.weights.values
-    val bc = this.params.candidate.biases.values
+    val x: InputNDArrayType = this.inputArray.values
+    val c: DenseNDArray = this.candidate.values
+    val wc: DenseNDArray = this.params.candidate.weights.values as DenseNDArray
+    val bc: DenseNDArray = this.params.candidate.biases.values
 
     this.inputGate.forward(this.params.inputGate, x)
     this.forgetGate.forward(this.params.forgetGate, x)
@@ -150,29 +151,30 @@ class RANLayerStructure(
    *
    * @param prevStateLayer the layer in the previous state
    */
-  private fun assignGatesGradients(prevStateLayer: RANLayerStructure?): Unit { this.params as RANLayerParameters
+  private fun assignGatesGradients(prevStateLayer: RANLayerStructure<InputNDArrayType>?) {
+    this.params as RANLayerParameters
 
-    val gy = this.outputArray.errors
+    val gy: DenseNDArray = this.outputArray.errors
 
     val inputGate = this.inputGate
     val forgetGate = this.forgetGate
     val candidate = this.candidate
 
-    val inG = inputGate.values
-    val c = candidate.values
+    val inG: DenseNDArray = inputGate.values
+    val c: DenseNDArray = candidate.values
 
-    val inGDeriv = inputGate.calculateActivationDeriv()
+    val inGDeriv: DenseNDArray = inputGate.calculateActivationDeriv()
 
-    val gInG = this.inputGate.errors
-    val gc = this.candidate.errors
+    val gInG: DenseNDArray = this.inputGate.errors
+    val gc: DenseNDArray = this.candidate.errors
 
     gInG.assignProd(c, inGDeriv).assignProd(gy)
     gc.assignProd(inG, gy)
 
     if (prevStateLayer != null) {
-      val yPrev = prevStateLayer.outputArray.values
-      val forGDeriv = forgetGate.calculateActivationDeriv()
-      val gForG = this.forgetGate.errors
+      val yPrev: DenseNDArray = prevStateLayer.outputArray.values
+      val forGDeriv: DenseNDArray = forgetGate.calculateActivationDeriv()
+      val gForG: DenseNDArray = this.forgetGate.errors
 
       gForG.assignProd(yPrev, forGDeriv).assignProd(gy)
     }
@@ -182,48 +184,19 @@ class RANLayerStructure(
    *
    * @param prevStateOutput the outputArray in the previous state
    */
-  private fun assignParamsGradients(prevStateOutput: AugmentedArray?): Unit {
+  private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
 
-    val x = this.inputArray.values
-    val yPrev = prevStateOutput?.valuesNotActivated
+    val x: InputNDArrayType = this.inputArray.values
+    val yPrev: DenseNDArray? = prevStateOutput?.valuesNotActivated
 
-    this.setGateParamsGradients(this.inputGate, this.paramsErrors!!.inputGate, x, yPrev = yPrev)
-    this.setGateParamsGradients(this.forgetGate, this.paramsErrors!!.forgetGate, x, yPrev = yPrev)
+    this.inputGate.assignParamsGradients(paramsErrors = this.paramsErrors!!.inputGate, x = x, yPrev = yPrev)
+    this.forgetGate.assignParamsGradients(paramsErrors = this.paramsErrors!!.forgetGate, x = x, yPrev = yPrev)
 
-    val gc = this.candidate.errors
-    val gwc = this.paramsErrors!!.candidate.weights.values
-    val gbc = this.paramsErrors!!.candidate.biases.values
+    val gc: DenseNDArray = this.candidate.errors
+    val gwc: NDArray<*> = this.paramsErrors!!.candidate.weights.values
+    val gbc: DenseNDArray = this.paramsErrors!!.candidate.biases.values
     gwc.assignDot(gc, x.T)
     gbc.assignValues(gc)
-  }
-
-  /**
-   *
-   * @param gate the gate unit
-   * @param gateParams the gate unit parameters
-   * @param x the input NDArray of the gate
-   * @param yPrev the output NDArray of the gate in the previous state
-   *
-   * gb = gGate * 1
-   * gw = gGate (dot) x
-   * gwRec = gGate (dot) yPrev
-   */
-  private fun setGateParamsGradients(gate: GateUnit,
-                                     gateParams: GateParametersUnit,
-                                     x: NDArray,
-                                     yPrev: NDArray? = null): Unit {
-
-    val gGate = gate.errors
-    val gb = gateParams.biases.values
-    val gw = gateParams.weights.values
-    val gwRec = gateParams.recurrentWeights.values
-
-    gb.assignValues(gGate)
-    gw.assignDot(gGate, x.T)
-
-    if (yPrev != null) {
-      gwRec.assignDot(gGate, yPrev.T)
-    }
   }
 
   /**
@@ -231,15 +204,15 @@ class RANLayerStructure(
    */
   private fun assignLayerGradients() { this.params as RANLayerParameters
 
-    val gx = this.inputArray.errors
+    val gx: InputNDArrayType = this.inputArray.errors
 
-    val wInG = this.params.inputGate.weights.values
-    val wForG = this.params.forgetGate.weights.values
-    val wC = this.params.candidate.weights.values
+    val wInG: DenseNDArray = this.params.inputGate.weights.values as DenseNDArray
+    val wForG: DenseNDArray = this.params.forgetGate.weights.values as DenseNDArray
+    val wC: DenseNDArray = this.params.candidate.weights.values as DenseNDArray
 
-    val gInG = this.inputGate.errors
-    val gForG = this.forgetGate.errors
-    val gC = this.candidate.errors
+    val gInG: DenseNDArray = this.inputGate.errors
+    val gForG: DenseNDArray = this.forgetGate.errors
+    val gC: DenseNDArray = this.candidate.errors
 
     gx.assignValues(gForG.T.dot(wForG)).assignSum(gC.T.dot(wC)).assignSum(gInG.T.dot(wInG))
 
@@ -252,11 +225,11 @@ class RANLayerStructure(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun addOutputRecurrentGradients(nextStateLayer: RANLayerStructure?) {
+  private fun addOutputRecurrentGradients(nextStateLayer: RANLayerStructure<InputNDArrayType>?) {
 
     if (nextStateLayer != null) {
-      val gy = this.outputArray.errors
-      val gyRec = this.getLayerRecurrentContribute(nextStateLayer)
+      val gy: DenseNDArray = this.outputArray.errors
+      val gyRec: DenseNDArray = this.getLayerRecurrentContribute(nextStateLayer)
 
       gy.assignSum(gyRec)
     }
@@ -266,25 +239,25 @@ class RANLayerStructure(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getLayerRecurrentContribute(nextStateLayer: RANLayerStructure): NDArray {
+  private fun getLayerRecurrentContribute(nextStateLayer: RANLayerStructure<InputNDArrayType>): DenseNDArray {
     this.params as RANLayerParameters
 
     val inputGate = nextStateLayer.inputGate
     val forgetGate = nextStateLayer.forgetGate
 
-    val gyNext = nextStateLayer.outputArray.errors
+    val gyNext: DenseNDArray = nextStateLayer.outputArray.errors
 
-    val forG = forgetGate.values
+    val forG: DenseNDArray = forgetGate.values
 
-    val gInG = inputGate.errors
-    val gForG = forgetGate.errors
+    val gInG: DenseNDArray = inputGate.errors
+    val gForG: DenseNDArray = forgetGate.errors
 
-    val wrInG = this.params.inputGate.recurrentWeights.values
-    val wrForG = this.params.forgetGate.recurrentWeights.values
+    val wrInG: DenseNDArray = this.params.inputGate.recurrentWeights.values
+    val wrForG: DenseNDArray = this.params.forgetGate.recurrentWeights.values
 
-    val gRec1 = forG.assignProd(gyNext)
-    val gRec2 = gInG.T.dot(wrInG)
-    val gRec3 = gForG.T.dot(wrForG)
+    val gRec1: DenseNDArray = forG.assignProd(gyNext)
+    val gRec2: DenseNDArray = gInG.T.dot(wrInG)
+    val gRec3: DenseNDArray = gForG.T.dot(wrForG)
 
     return gRec1.assignSum(gRec2).assignSum(gRec3)
   }
