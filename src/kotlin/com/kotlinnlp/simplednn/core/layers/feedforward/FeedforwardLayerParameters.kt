@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers.feedforward
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 
@@ -35,7 +36,7 @@ class FeedforwardLayerParameters(
   /**
    *
    */
-  val biases: UpdatableArray = this.buildDenseArray(this.outputSize)
+  val biases: UpdatableDenseArray = this.buildDenseArray(this.outputSize)
 
   /**
    *

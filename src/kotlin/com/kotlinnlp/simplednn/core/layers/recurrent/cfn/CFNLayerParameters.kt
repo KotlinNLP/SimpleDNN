@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.recurrent.cfn
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.layers.recurrent.GateParametersUnit
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
@@ -43,7 +44,7 @@ class CFNLayerParameters(
   /**
    *
    */
-  val candidateWeights = this.buildUpdatableArray(
+  val candidateWeights: UpdatableArray = this.buildUpdatableArray(
     dim1 = this.outputSize,
     dim2 = this.inputSize,
     sparseInput = this.sparseInput)

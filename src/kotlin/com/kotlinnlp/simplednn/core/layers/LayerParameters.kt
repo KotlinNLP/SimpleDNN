@@ -79,7 +79,7 @@ abstract class LayerParameters(
   /**
    *
    */
-  protected fun buildUpdatableArray(dim1: Int, dim2: Int = 1, sparseInput: Boolean = false) =
+  protected fun buildUpdatableArray(dim1: Int, dim2: Int = 1, sparseInput: Boolean = false): UpdatableArray =
     if (sparseInput)
       this.buildSparseArray(dim1, dim2)
     else
@@ -88,12 +88,10 @@ abstract class LayerParameters(
   /**
    *
    */
-  protected fun buildDenseArray(dim1: Int, dim2: Int = 1) =
-    UpdatableDenseArray(Shape(dim1, dim2))
+  protected fun buildDenseArray(dim1: Int, dim2: Int = 1) = UpdatableDenseArray(Shape(dim1, dim2))
 
   /**
    *
    */
-  private fun buildSparseArray(dim1: Int, dim2: Int = 1) =
-    UpdatableSparseArray(Shape(dim1, dim2))
+  private fun buildSparseArray(dim1: Int, dim2: Int = 1) = UpdatableSparseArray(Shape(dim1, dim2))
 }
