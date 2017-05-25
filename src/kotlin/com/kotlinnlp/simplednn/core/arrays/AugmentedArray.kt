@@ -7,15 +7,14 @@
 
 package com.kotlinnlp.simplednn.core.arrays
 
-import com.kotlinnlp.simplednn.simplemath.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
- * The AugmentedArray extends an ActivableArray with [errors] properties.
+ * The [AugmentedArray] extends the [ActivableArray] with the errors.
  *
  * @property size the length of the array
  */
-open class AugmentedArray(size: Int) : ActivableArray(size) {
+open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : ActivableArray<NDArrayType>(size) {
 
   /**
    *
@@ -23,13 +22,15 @@ open class AugmentedArray(size: Int) : ActivableArray(size) {
   companion object {
 
     /**
+     * [AugmentedArray] factory by values.
      *
-     * @param values the initial values to assign to the AugmentedArray
-     * @return an AugmentedArray with the array already initialized
+     * @param values the initial values to assign to the [AugmentedArray]
+     *
+     * @return an [AugmentedArray] with the values already initialized
      */
-    operator fun invoke(values: NDArray): AugmentedArray {
+    operator fun <T : NDArray<T>> invoke(values: T): AugmentedArray<T> {
 
-      val array = AugmentedArray(size = values.length)
+      val array = AugmentedArray<T>(size = values.length)
 
       array.assignValues(values)
 
@@ -38,34 +39,43 @@ open class AugmentedArray(size: Int) : ActivableArray(size) {
   }
 
   /**
-   * Contains the errors on the current values
+   * Contains the errors of the current values
    */
-  val errors: NDArray = NDArray.zeros(Shape(size))
+  val errors: NDArrayType get() = this._errors
+
+  /**
+   * Contains the errors of the current values
+   */
+  lateinit protected var _errors: NDArrayType
 
   /**
    * Assign errors to the array
    *
-   * @param errors errors to assign to this AugmentedArray.
+   * @param errors errors to assign to this [AugmentedArray].
    *               The errors must have the same size of the array values.
    */
-  fun assignErrors(errors: NDArray) { this.errors.assignValues(errors) }
+  fun assignErrors(errors: NDArrayType) { this._errors.assignValues(errors) }
 
   /**
+   * Clone this [AugmentedArray].
    *
-   * @return a clone of this AugmentedArray
+   * @return a clone of this [AugmentedArray]
    */
-  override fun clone(): AugmentedArray {
+  override fun clone(): AugmentedArray<NDArrayType> {
 
-    val clonedArray = AugmentedArray(this.size)
-
+    val clonedArray = AugmentedArray<NDArrayType>(this.size)
     clonedArray._values.assignValues(this._values)
 
     if (this.hasActivation) {
-      clonedArray._valuesNotActivated = this.valuesNotActivated.copy()
+
+      if (this._valuesNotActivated != this._values) {
+        clonedArray._valuesNotActivated = this._valuesNotActivated!!.copy()
+      }
+
       clonedArray.setActivation(this.activationFunction!!)
     }
 
-    clonedArray.errors.assignValues(this.errors)
+    clonedArray.errors.assignValues(this._errors)
 
     return clonedArray
   }

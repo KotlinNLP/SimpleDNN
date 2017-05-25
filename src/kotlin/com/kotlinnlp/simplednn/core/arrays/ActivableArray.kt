@@ -8,27 +8,28 @@
 package com.kotlinnlp.simplednn.core.arrays
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
-import com.kotlinnlp.simplednn.simplemath.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.*
 
 /**
- * The ActivableArray is a superstructure of an NDArray on which values
- * are modified according to the activation function being used (e.g. Tanh, Sigmoid, ReLU, ELU).
+ * The [ActivableArray] is a wrapper of an [NDArray] in which values are modified according
+ * to the activation function being used (e.g. Tanh, Sigmoid, ReLU, ELU).
  *
- * @property size the length of the array
+ * @property size the size of the [values]
  */
-open class ActivableArray(val size: Int) {
+open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
 
   companion object {
 
     /**
+     * [ActivableArray] factory by values.
      *
-     * @param values the initial values to assign to the ActivableArray
-     * @return an ActivableArray with the values already initialized
+     * @param values the initial values to assign to the [ActivableArray]
+     *
+     * @return an [ActivableArray] with the values already initialized
      */
-    operator fun invoke(values: NDArray): ActivableArray {
+    operator fun <T : NDArray<T>> invoke(values: T): ActivableArray<T> {
 
-      val array = ActivableArray(size = values.length)
+      val array = ActivableArray<T>(size = values.length)
 
       array.assignValues(values)
 
@@ -37,21 +38,26 @@ open class ActivableArray(val size: Int) {
   }
 
   /**
-   * An NDArray containing the values of this ActivableArray
+   * An [NDArray] containing the values of this [ActivableArray]
    */
-  val values: NDArray get() = this._values
+  val values get() = this._values
 
   /**
-   * An NDArray containing the values not activated of this ActivableArray (respect on the last call of activate())
+   * An [NDArray] containing the values of this [ActivableArray]
    */
-  val valuesNotActivated: NDArray get() =
+  lateinit protected var _values: NDArrayType
+
+  /**
+   * An [NDArray] containing the values not activated of this [ActivableArray] (respect on the last call of activate())
+   */
+  val valuesNotActivated: NDArray<NDArrayType> get() =
     if (this._valuesNotActivated != null)
       this._valuesNotActivated!!
     else
       this._values
 
   /**
-   * The function used to activate this ActivableArray (e.g. Tanh, Sigmoid, ReLU, ELU)
+   * The function used to activate this [ActivableArray] (e.g. Tanh, Sigmoid, ReLU, ELU)
    */
   var activationFunction: ActivationFunction? = null
 
@@ -61,26 +67,25 @@ open class ActivableArray(val size: Int) {
   val hasActivation: Boolean get() = this.activationFunction != null
 
   /**
-   * An NDArray containing the values of this ActivableArray
+   * An [NDArray] containing the values not activated of this [ActivableArray] (respect on the last call of activate())
    */
-  protected var _values: NDArray = NDArray.zeros(Shape(size))
-
-  /**
-   * An NDArray containing the values not activated of this ActivableArray (respect on the last call of activate())
-   */
-  protected var _valuesNotActivated: NDArray? = null
+  protected var _valuesNotActivated: NDArrayType? = null
 
   /**
    * Assign values to the array
-   * @param values values to assign to this ActivableArray
+   * @param values values to assign to this [ActivableArray]
    */
-  fun assignValues(values: NDArray) {
-    this._values.assignValues(values)
+  fun assignValues(values: NDArrayType) {
+    try {
+      this._values.assignValues(values)
+    } catch (e: UninitializedPropertyAccessException) {
+      this._values = values.copy()
+    }
   }
 
   /**
    *
-   * @return set the activation function of this ActivableArray
+   * @return set the activation function of this [ActivableArray]
    */
   open fun setActivation(activationFunction: ActivationFunction) {
     this.activationFunction = activationFunction
@@ -94,12 +99,12 @@ open class ActivableArray(val size: Int) {
     if (this.hasActivation) {
 
       if (this._valuesNotActivated == null) {
-        this._valuesNotActivated = NDArray.emptyArray(this._values.shape)
+        this._valuesNotActivated = this._values.copy()
+      } else {
+        this._valuesNotActivated!!.assignValues(this._values)
       }
 
-      this._valuesNotActivated!!.assignValues(this._values)
-
-      this._values = this.activationFunction!!.f(this.valuesNotActivated)
+      this._values.assignValues(this.activationFunction!!.f(this._valuesNotActivated))
     }
   }
 
@@ -107,9 +112,9 @@ open class ActivableArray(val size: Int) {
    * Activate the array without modifying it, but only returning the values
    * @return the activated values
    */
-  fun getActivatedValues(): NDArray {
+  fun getActivatedValues(): NDArrayType {
     require(this.hasActivation)
-    return this.activationFunction!!.f(this.valuesNotActivated)
+    return this.activationFunction!!.f(this._valuesNotActivated)
   }
 
   /**
@@ -118,22 +123,25 @@ open class ActivableArray(val size: Int) {
    *         optimized function because all the common functions used as activation contain
    *         the activated values themselves in their derivative)
    */
-  fun calculateActivationDeriv(): NDArray {
+  fun calculateActivationDeriv(): NDArrayType {
     return this.activationFunction!!.dfOptimized(this._values)
   }
 
   /**
    *
-   * @return a clone of this ActivableArray
+   * @return a clone of this [ActivableArray]
    */
-  open fun clone(): ActivableArray {
+  open fun clone(): ActivableArray<NDArrayType> {
 
-    val clonedArray = ActivableArray(this.size)
-
-    clonedArray._values.assignValues(this._values)
+    val clonedArray = ActivableArray<NDArrayType>(size = this._values.length)
+    clonedArray.assignValues(this.values)
 
     if (this.hasActivation) {
-      clonedArray._valuesNotActivated = this.valuesNotActivated.copy()
+
+      if (this._valuesNotActivated != this._values) {
+        clonedArray._valuesNotActivated = this._valuesNotActivated!!.copy()
+      }
+
       clonedArray.setActivation(this.activationFunction!!)
     }
 

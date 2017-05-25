@@ -8,34 +8,23 @@
 package com.kotlinnlp.simplednn.core.arrays
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
-import com.kotlinnlp.simplednn.simplemath.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import java.io.Serializable
 
 /**
- * The ActivableArray is a superstructure of an NDArray
+ * The [UpdatableArray] is a wrapper of an [NDArray] extending it with an [updaterSupportStructure]
  *
  */
-open class UpdatableArray(val shape: Shape) : Serializable {
+open class UpdatableArray(open val values: NDArray<*>) : Serializable {
 
   companion object {
 
     /**
-     * Private val used to serialize the class (needed from Serializable)
+     * Private val used to serialize the class (needed from [Serializable])
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
   }
-
-  /**
-   * Secondary constructor to create a vector of the type UpdatableArray
-   */
-  constructor(length: Int): this(Shape(length))
-
-  /**
-   * An NDArray containing the values of this UpdatableArray
-   */
-  val values: NDArray = NDArray.zeros(shape)
 
   /**
    * The updater support structure to be used in combination with [com.kotlinnlp.simplednn.core.functionalities.updatemethods]
