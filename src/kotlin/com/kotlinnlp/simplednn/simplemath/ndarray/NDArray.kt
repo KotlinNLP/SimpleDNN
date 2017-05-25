@@ -18,6 +18,11 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
+  val factory: NDArrayFactory<SelfType>
+
+  /**
+   *
+   */
   val isVector: Boolean
     get
 

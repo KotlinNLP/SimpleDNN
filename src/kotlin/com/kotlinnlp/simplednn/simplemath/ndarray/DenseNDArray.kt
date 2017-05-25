@@ -65,6 +65,11 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
+  override val factory = DenseNDArrayFactory
+
+  /**
+   *
+   */
   override val length: Int
     get() = this.storage.length
 

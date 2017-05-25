@@ -17,6 +17,11 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
   /**
    *
    */
+  override val factory = SparseBinaryNDArrayFactory
+
+  /**
+   *
+   */
   override val isVector: Boolean
     get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
