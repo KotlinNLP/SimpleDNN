@@ -9,8 +9,8 @@ package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
-import com.kotlinnlp.simplednn.simplemath.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * @param inputArray the input array of the layer
@@ -20,9 +20,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  * @param dropout The probability of dropout (default 0.0).
  *                If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
-abstract class LayerStructure(
-  val inputArray: AugmentedArray,
-  val outputArray: AugmentedArray,
+abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+  val inputArray: AugmentedArray<InputNDArrayType>,
+  val outputArray: AugmentedArray<DenseNDArray>,
   open val params: LayerParameters,
   val activationFunction: ActivationFunction? = null,
   val dropout: Double = 0.0) {
@@ -33,21 +33,16 @@ abstract class LayerStructure(
   private val p = 1.0 - this.dropout
 
   /**
-   * Contains the relevance of the input for the output after a forward
-   */
-  val inputRelevance: NDArray = NDArray.zeros(Shape(this.inputArray.size))
-
-  /**
    * Set the errors of the inputArray
    * @param values the errors to set into the inputArray
    */
-  fun setInput(values: NDArray) = this.inputArray.assignValues(values)
+  fun setInput(values: InputNDArrayType) = this.inputArray.assignValues(values)
 
   /**
    * Set the errors of the outputArray
    * @param errors the errors to set into the outputArray
    */
-  fun setErrors(errors: NDArray) = this.outputArray.assignErrors(errors)
+  fun setErrors(errors: DenseNDArray) = this.outputArray.assignErrors(errors)
 
   /**
    * Forward the input to the output combining it with the parameters and apply dropout
@@ -78,7 +73,9 @@ abstract class LayerStructure(
 
     if (this.dropout > 0.0) {
       val inputShape = this.inputArray.values.shape
-      val mask = NDArray.random(inputShape).roundInt(threshold = this.dropout) // mask of zeros and ones
+      val mask = this.inputArray.values.factory // mask of zeros and ones
+        .random(inputShape)
+        .roundInt(threshold = this.dropout)
 
       mask.assignDiv(this.p) // mask of zeros and [this.p]
 
