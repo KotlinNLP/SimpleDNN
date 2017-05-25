@@ -12,7 +12,8 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 
 /**
  *
@@ -22,10 +23,10 @@ object FeedforwardLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer45(): FeedforwardLayerStructure {
+  fun buildLayer45(): FeedforwardLayerStructure<DenseNDArray> {
 
     return FeedforwardLayerStructure(
-      inputArray = AugmentedArray(NDArray.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
+      inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
       outputArray = AugmentedArray(5),
       params = this.getParams45(),
       activationFunction = Tanh())
@@ -39,7 +40,7 @@ object FeedforwardLayerStructureUtils {
     val params = FeedforwardLayerParameters(inputSize = 4, outputSize = 5)
 
     params.weights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
         doubleArrayOf(0.7, -0.7, 0.3, 0.5),
@@ -48,7 +49,7 @@ object FeedforwardLayerStructureUtils {
       )))
 
     params.biases.values.assignValues(
-      NDArray.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
     )
 
     return params
@@ -57,14 +58,14 @@ object FeedforwardLayerStructureUtils {
   /**
    *
    */
-  fun getOutputGold5(): NDArray =  NDArray.arrayOf(doubleArrayOf(-0.02, -1.1, 0.37, 0.2, -0.59))
+  fun getOutputGold5(): DenseNDArray =  DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.02, -1.1, 0.37, 0.2, -0.59))
 
   /**
    *
    */
-  fun buildLayer53(): FeedforwardLayerStructure {
+  fun buildLayer53(): FeedforwardLayerStructure<DenseNDArray> {
 
-    val inputArray = AugmentedArray(NDArray.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.19)))
+    val inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.19)))
     inputArray.setActivation(Tanh())
 
     return FeedforwardLayerStructure(
@@ -78,7 +79,7 @@ object FeedforwardLayerStructureUtils {
    *
    */
   fun buildLayer53NoActivation() = FeedforwardLayerStructure(
-    inputArray = AugmentedArray(NDArray.arrayOf(doubleArrayOf(-0.42, -1.09, 0.0, 0.87, -0.19))),
+    inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.42, -1.09, 0.0, 0.87, -0.19))),
     outputArray = AugmentedArray(3),
     params = this.getParams53(),
     activationFunction = null)
@@ -91,14 +92,14 @@ object FeedforwardLayerStructureUtils {
     val params = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
 
     params.weights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.8, -0.8, 0.9, -1.0, -0.1),
         doubleArrayOf(0.9, 0.6, 0.7, 0.6, 0.6),
         doubleArrayOf(-0.1, 0.0, 0.3, 0.0, 0.3)
       )))
 
     params.biases.values.assignValues(
-      NDArray.arrayOf(doubleArrayOf(-0.5, 0.1, 0.2)))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.5, 0.1, 0.2)))
 
     return params
   }
@@ -106,5 +107,5 @@ object FeedforwardLayerStructureUtils {
   /**
    *
    */
-  fun getOutputGold3(): NDArray =  NDArray.arrayOf(doubleArrayOf(1.0, 0.0, 0.0))
+  fun getOutputGold3(): DenseNDArray =  DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.0, 0.0))
 }

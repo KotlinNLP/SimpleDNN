@@ -12,7 +12,8 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerStructure
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 
 /**
  *
@@ -22,8 +23,8 @@ object LSTMLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow): LSTMLayerStructure = LSTMLayerStructure(
-    inputArray = AugmentedArray(NDArray.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
+  fun buildLayer(layerContextWindow: LayerContextWindow<DenseNDArray>): LSTMLayerStructure<DenseNDArray> = LSTMLayerStructure(
+    inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
     outputArray = AugmentedArray(size = 5),
     params = this.buildParams(),
     activationFunction = Tanh(),
@@ -37,7 +38,7 @@ object LSTMLayerStructureUtils {
     val params = LSTMLayerParameters(inputSize = 4, outputSize = 5)
 
     params.inputGate.weights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
         doubleArrayOf(0.7, -0.7, 0.3, 0.5),
@@ -46,7 +47,7 @@ object LSTMLayerStructureUtils {
       )))
 
     params.outputGate.weights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.1, 0.4, -1.0, 0.4),
         doubleArrayOf(0.7, -0.2, 0.1, 0.0),
         doubleArrayOf(0.7, 0.8, -0.5, -0.3),
@@ -55,7 +56,7 @@ object LSTMLayerStructureUtils {
       )))
 
     params.forgetGate.weights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(-1.0, 0.2, 0.0, 0.2),
         doubleArrayOf(-0.7, 0.7, -0.3, -0.3),
         doubleArrayOf(0.3, -0.6, 0.0, 0.7),
@@ -64,7 +65,7 @@ object LSTMLayerStructureUtils {
       )))
 
     params.candidate.weights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.2, 0.6, 0.0, 0.1),
       doubleArrayOf(0.1, -0.3, -0.8, -0.5),
       doubleArrayOf(-0.1, 0.0, 0.4, -0.4),
@@ -73,21 +74,21 @@ object LSTMLayerStructureUtils {
       )))
 
     params.inputGate.biases.values.assignValues(
-      NDArray.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
     )
 
     params.outputGate.biases.values.assignValues(
-      NDArray.arrayOf(doubleArrayOf(0.9, 0.2, -0.9, 0.2, -0.9))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.9, 0.2, -0.9, 0.2, -0.9))
     )
 
     params.forgetGate.biases.values.assignValues(
-      NDArray.arrayOf(doubleArrayOf(0.5, -0.5, 1.0, 0.4, 0.9)))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.5, 1.0, 0.4, 0.9)))
 
     params.candidate.biases.values.assignValues(
-      NDArray.arrayOf(doubleArrayOf(0.2, -0.9, -0.9, 0.5, 0.1)))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, -0.9, -0.9, 0.5, 0.1)))
 
     params.inputGate.recurrentWeights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7),
         doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7),
         doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5),
@@ -96,7 +97,7 @@ object LSTMLayerStructureUtils {
       )))
 
     params.outputGate.recurrentWeights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.1, -0.6, -1.0, -0.1, -0.4),
         doubleArrayOf(0.5, -0.9, 0.0, 0.8, 0.3),
         doubleArrayOf(-0.3, -0.9, 0.3, 1.0, -0.2),
@@ -105,7 +106,7 @@ object LSTMLayerStructureUtils {
       )))
 
     params.forgetGate.recurrentWeights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.2, -0.3, -0.3, -0.5, -0.7),
         doubleArrayOf(0.4, -0.1, -0.6, -0.4, -0.8),
         doubleArrayOf(0.6, 0.6, 0.1, 0.7, -0.4),
@@ -114,7 +115,7 @@ object LSTMLayerStructureUtils {
       )))
 
     params.candidate.recurrentWeights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(-0.3, 0.3, -0.1, 0.6, -0.7),
         doubleArrayOf(-0.2, -0.8, -0.6, -0.5, -0.4),
         doubleArrayOf(-0.4, 0.8, -0.5, -0.1, 0.9),
@@ -128,6 +129,6 @@ object LSTMLayerStructureUtils {
   /**
    *
    */
-  fun getOutputGold() = NDArray.arrayOf(doubleArrayOf(0.57, 0.75, -0.15, 1.64, 0.45))
+  fun getOutputGold() = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.57, 0.75, -0.15, 1.64, 0.45))
 
 }

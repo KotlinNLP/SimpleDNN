@@ -12,7 +12,8 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerStructure
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 
 
 /**
@@ -23,8 +24,8 @@ object RANLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow): RANLayerStructure = RANLayerStructure(
-    inputArray = AugmentedArray(NDArray.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
+  fun buildLayer(layerContextWindow: LayerContextWindow<DenseNDArray>): RANLayerStructure<DenseNDArray> = RANLayerStructure(
+    inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
     outputArray = AugmentedArray(size = 5),
     params = this.buildParams(),
     activationFunction = Tanh(),
@@ -38,7 +39,7 @@ object RANLayerStructureUtils {
     val params = RANLayerParameters(inputSize = 4, outputSize = 5)
 
     params.inputGate.weights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
         doubleArrayOf(0.7, -0.7, 0.3, 0.5),
@@ -47,7 +48,7 @@ object RANLayerStructureUtils {
       )))
 
     params.forgetGate.weights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.1, 0.4, -1.0, 0.4),
         doubleArrayOf(0.7, -0.2, 0.1, 0.0),
         doubleArrayOf(0.7, 0.8, -0.5, -0.3),
@@ -56,7 +57,7 @@ object RANLayerStructureUtils {
       )))
 
     params.candidate.weights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(-1.0, 0.2, 0.0, 0.2),
         doubleArrayOf(-0.7, 0.7, -0.3, -0.3),
         doubleArrayOf(0.3, -0.6, 0.0, 0.7),
@@ -65,19 +66,19 @@ object RANLayerStructureUtils {
       )))
 
     params.inputGate.biases.values.assignValues(
-      NDArray.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
     )
 
     params.forgetGate.biases.values.assignValues(
-      NDArray.arrayOf(doubleArrayOf(0.9, 0.2, -0.9, 0.2, -0.9))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.9, 0.2, -0.9, 0.2, -0.9))
     )
 
     params.candidate.biases.values.assignValues(
-      NDArray.arrayOf(doubleArrayOf(0.2, 0.0, -0.9, 0.7, -0.3))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, 0.0, -0.9, 0.7, -0.3))
     )
 
     params.inputGate.recurrentWeights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7),
         doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7),
         doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5),
@@ -86,7 +87,7 @@ object RANLayerStructureUtils {
       )))
 
     params.forgetGate.recurrentWeights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.1, -0.6, -1.0, -0.1, -0.4),
         doubleArrayOf(0.5, -0.9, 0.0, 0.8, 0.3),
         doubleArrayOf(-0.3, -0.9, 0.3, 1.0, -0.2),
@@ -100,5 +101,5 @@ object RANLayerStructureUtils {
   /**
    *
    */
-  fun getOutputGold() = NDArray.arrayOf(doubleArrayOf(0.57, 0.75, -0.15, 1.64, 0.45))
+  fun getOutputGold() = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.57, 0.75, -0.15, 1.64, 0.45))
 }

@@ -12,7 +12,8 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerStructure
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 
 
 /**
@@ -23,8 +24,8 @@ object CFNLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow): CFNLayerStructure = CFNLayerStructure(
-    inputArray = AugmentedArray(NDArray.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
+  fun buildLayer(layerContextWindow: LayerContextWindow<DenseNDArray>): CFNLayerStructure<DenseNDArray> = CFNLayerStructure(
+    inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
     outputArray = AugmentedArray(size = 5),
     params = this.buildParams(),
     activationFunction = Tanh(),
@@ -38,7 +39,7 @@ object CFNLayerStructureUtils {
     val params = CFNLayerParameters(inputSize = 4, outputSize = 5)
 
     params.inputGate.weights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
         doubleArrayOf(0.7, -0.7, 0.3, 0.5),
@@ -47,7 +48,7 @@ object CFNLayerStructureUtils {
       )))
 
     params.forgetGate.weights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.1, 0.4, -1.0, 0.4),
         doubleArrayOf(0.7, -0.2, 0.1, 0.0),
         doubleArrayOf(0.7, 0.8, -0.5, -0.3),
@@ -56,7 +57,7 @@ object CFNLayerStructureUtils {
       )))
 
     params.candidateWeights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(-1.0, 0.2, 0.0, 0.2),
         doubleArrayOf(-0.7, 0.7, -0.3, -0.3),
         doubleArrayOf(0.3, -0.6, 0.0, 0.7),
@@ -65,15 +66,15 @@ object CFNLayerStructureUtils {
       )))
 
     params.inputGate.biases.values.assignValues(
-      NDArray.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
     )
 
     params.forgetGate.biases.values.assignValues(
-      NDArray.arrayOf(doubleArrayOf(0.9, 0.2, -0.9, 0.2, -0.9))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.9, 0.2, -0.9, 0.2, -0.9))
     )
 
     params.inputGate.recurrentWeights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7),
         doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7),
         doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5),
@@ -82,7 +83,7 @@ object CFNLayerStructureUtils {
       )))
 
     params.forgetGate.recurrentWeights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.1, -0.6, -1.0, -0.1, -0.4),
         doubleArrayOf(0.5, -0.9, 0.0, 0.8, 0.3),
         doubleArrayOf(-0.3, -0.9, 0.3, 1.0, -0.2),
@@ -96,6 +97,6 @@ object CFNLayerStructureUtils {
   /**
    *
    */
-  fun getOutputGold() = NDArray.arrayOf(doubleArrayOf(0.57, 0.75, -0.15, 1.64, 0.45))
+  fun getOutputGold() = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.57, 0.75, -0.15, 1.64, 0.45))
 
 }

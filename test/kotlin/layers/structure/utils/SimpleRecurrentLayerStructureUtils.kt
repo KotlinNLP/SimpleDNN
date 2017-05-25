@@ -12,7 +12,8 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerStructure
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 
 /**
  *
@@ -22,8 +23,8 @@ object SimpleRecurrentLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow): SimpleRecurrentLayerStructure = SimpleRecurrentLayerStructure(
-    inputArray = AugmentedArray(NDArray.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
+  fun buildLayer(layerContextWindow: LayerContextWindow<DenseNDArray>): SimpleRecurrentLayerStructure<DenseNDArray> = SimpleRecurrentLayerStructure(
+    inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
     outputArray = AugmentedArray(size = 5),
     params = this.buildParams(),
     activationFunction = Tanh(),
@@ -37,7 +38,7 @@ object SimpleRecurrentLayerStructureUtils {
     val params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5)
 
     params.weights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
         doubleArrayOf(0.7, -0.7, 0.3, 0.5),
@@ -46,11 +47,11 @@ object SimpleRecurrentLayerStructureUtils {
       )))
 
     params.biases.values.assignValues(
-      NDArray.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
     )
 
     params.recurrentWeights.values.assignValues(
-      NDArray.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7),
         doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7),
         doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5),
@@ -64,6 +65,6 @@ object SimpleRecurrentLayerStructureUtils {
   /**
    *
    */
-  fun getOutputGold() = NDArray.arrayOf(doubleArrayOf(0.57, 0.75, -0.15, 1.64, 0.45))
+  fun getOutputGold() = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.57, 0.75, -0.15, 1.64, 0.45))
 
 }
