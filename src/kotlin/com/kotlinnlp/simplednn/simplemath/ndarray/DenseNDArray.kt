@@ -620,4 +620,11 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   override fun hashCode(): Int {
     return this.storage.hashCode()
   }
+
+  /**
+   *
+   */
+  fun maskBy(mask: NDArrayMask): SparseNDArray {
+    TODO("not implemented")
+  }
 }
