@@ -7,9 +7,9 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
@@ -24,17 +24,17 @@ abstract class UpdateMethod(val regularization: WeightsRegularization?) {
    * @param array parameter
    * @return the update neuralnetwork for the parameter
    */
-  fun getSupportStructure(array: UpdatableArray): UpdaterSupportStructure {
+  fun getSupportStructure(array: UpdatableDenseArray): UpdaterSupportStructure {
 
     if (array.updaterSupportStructure == null) {
-      array.updaterSupportStructure = this.supportStructureFactory(array.shape)
+      array.updaterSupportStructure = this.supportStructureFactory(array.values.shape)
     }
 
-    require(isSupportStructureCompatible(array.updaterSupportStructure as UpdaterSupportStructure)){
+    require(isSupportStructureCompatible(array.updaterSupportStructure!!)){
       "Incompatible updaterSupportStructure"
     }
 
-    return array.updaterSupportStructure as UpdaterSupportStructure
+    return array.updaterSupportStructure!!
   }
 
   /**
@@ -42,9 +42,9 @@ abstract class UpdateMethod(val regularization: WeightsRegularization?) {
    * @param array the inputArray to update
    * @param errors errors to subtract to the inputArray, after being optimized
    */
-  fun update(array: UpdatableArray, errors: NDArray) {
+  fun <NDArrayType: NDArray<NDArrayType>> update(array: UpdatableDenseArray, errors: NDArrayType) {
 
-    val optimizedErrors = this.optimizeErrors(errors, array)
+    val optimizedErrors: NDArrayType = this.optimizeErrors(errors, array)
 
     this.regularization?.apply(array)
 
@@ -57,7 +57,10 @@ abstract class UpdateMethod(val regularization: WeightsRegularization?) {
    * @param array parameter
    * @return
    */
-  abstract protected fun optimizeErrors(errors: NDArray, array: UpdatableArray): NDArray
+  abstract protected fun <NDArrayType: NDArray<NDArrayType>> optimizeErrors(
+    errors: NDArrayType,
+    array: UpdatableDenseArray
+  ): NDArrayType
 
   /**
    *
