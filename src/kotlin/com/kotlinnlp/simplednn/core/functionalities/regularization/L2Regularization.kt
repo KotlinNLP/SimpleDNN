@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.functionalities.regularization
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * Regularize weights before the update
@@ -21,7 +22,7 @@ class L2Regularization(override val lambda: Double) : WeightsRegularization {
    *
    * @param weights the weights to regularize
    */
-  override fun apply(weights: UpdatableArray) {
+  override fun <NDArrayType: NDArray<NDArrayType>> apply(weights: UpdatableArray<NDArrayType>) {
     weights.values.assignProd(1 - lambda)
   }
 }

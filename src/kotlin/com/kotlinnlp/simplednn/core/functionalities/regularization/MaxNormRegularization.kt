@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.functionalities.regularization
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * Regularize weights before the update
@@ -19,12 +20,12 @@ class MaxNormRegularization(override val lambda: Double) : WeightsRegularization
   /**
    * @param weights the weights to regularize
    */
-  override fun apply(weights: UpdatableArray) {
+  override fun <NDArrayType: NDArray<NDArrayType>> apply(weights: UpdatableArray<NDArrayType>) {
 
     val norm2 = weights.values.norm2()
 
     (0 until weights.values.length)
-      .filter { weights.values[it].toDouble() > norm2 }
+      .filter { weights.values[it] > norm2 }
       .forEach { weights.values[it] = norm2 }
   }
 }
