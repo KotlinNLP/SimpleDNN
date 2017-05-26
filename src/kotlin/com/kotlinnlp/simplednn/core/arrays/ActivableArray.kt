@@ -59,7 +59,7 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
   /**
    * The function used to activate this [ActivableArray] (e.g. Tanh, Sigmoid, ReLU, ELU)
    */
-  var activationFunction: ActivationFunction? = null
+  protected var activationFunction: ActivationFunction? = null
 
   /**
    * Whether this array has an activation function
@@ -88,6 +88,7 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
    * @return set the activation function of this [ActivableArray]
    */
   open fun setActivation(activationFunction: ActivationFunction) {
+    require(this.values is DenseNDArray) { "Cannot activate NDArrays not dense" }
     this.activationFunction = activationFunction
   }
 
@@ -104,7 +105,7 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
         this._valuesNotActivated!!.assignValues(this._values)
       }
 
-      this._values.assignValues(this.activationFunction!!.f(this._valuesNotActivated))
+      this._values.assignValues(this.activationFunction!!.f(this._valuesNotActivated as DenseNDArray))
     }
   }
 
@@ -112,9 +113,9 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
    * Activate the array without modifying it, but only returning the values
    * @return the activated values
    */
-  fun getActivatedValues(): NDArrayType {
+  fun getActivatedValues(): DenseNDArray {
     require(this.hasActivation)
-    return this.activationFunction!!.f(this._valuesNotActivated)
+    return this.activationFunction!!.f(this._valuesNotActivated as DenseNDArray)
   }
 
   /**
@@ -123,8 +124,8 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
    *         optimized function because all the common functions used as activation contain
    *         the activated values themselves in their derivative)
    */
-  fun calculateActivationDeriv(): NDArrayType {
-    return this.activationFunction!!.dfOptimized(this._values)
+  fun calculateActivationDeriv(): DenseNDArray {
+    return this.activationFunction!!.dfOptimized(this._values as DenseNDArray)
   }
 
   /**
