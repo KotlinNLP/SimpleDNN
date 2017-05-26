@@ -136,6 +136,13 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
   /**
    *
    */
+  override fun assignValues(n: Double): SparseBinaryNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
   override fun assignValues(a: NDArray<*>): SparseBinaryNDArray {
     TODO("not implemented")
   }
@@ -143,7 +150,7 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
   /**
    *
    */
-  override fun assignValues(n: Double): SparseBinaryNDArray {
+  override fun assignValues(a: NDArray<*>, mask: NDArrayMask): SparseBinaryNDArray {
     TODO("not implemented")
   }
 

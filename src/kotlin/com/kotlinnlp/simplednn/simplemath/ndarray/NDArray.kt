@@ -120,12 +120,17 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
+  fun assignValues(n: Double): SelfType
+
+  /**
+   *
+   */
   fun assignValues(a: NDArray<*>): SelfType
 
   /**
    *
    */
-  fun assignValues(n: Double): SelfType
+  fun assignValues(a: NDArray<*>, mask: NDArrayMask): SelfType
 
   /**
    *

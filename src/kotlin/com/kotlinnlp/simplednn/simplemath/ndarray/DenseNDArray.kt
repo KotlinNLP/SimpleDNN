@@ -181,6 +181,13 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
+  override fun assignValues(a: NDArray<*>, mask: NDArrayMask): DenseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
   override fun sum(n: Double): DenseNDArray {
     return DenseNDArray(this.storage.add(n))
   }
