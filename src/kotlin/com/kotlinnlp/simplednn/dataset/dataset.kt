@@ -7,7 +7,8 @@
 
 package com.kotlinnlp.simplednn.dataset
 
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  *
@@ -19,33 +20,35 @@ interface Example
  * @param features features
  * @param outputGold outputGold
  */
-data class SimpleExample(
-  val features: NDArray,
-  val outputGold: NDArray
+data class SimpleExample<NDArrayType: NDArray<NDArrayType>>(
+  val features: NDArrayType,
+  val outputGold: NDArrayType
 ): Example {
   /**
    *
    */
-  constructor(features: DoubleArray, outputGold: DoubleArray): this(
-    features = NDArray.arrayOf(features),
-    outputGold = NDArray.arrayOf(outputGold)
-  )
+  companion object {
+    operator fun invoke(features: DoubleArray, outputGold: DoubleArray) = SimpleExample(
+      features = DenseNDArrayFactory.arrayOf(features),
+      outputGold = DenseNDArrayFactory.arrayOf(outputGold)
+    )
+  }
 }
 
 /**
  *
  */
-data class SequenceExampleWithFinalOutput(
-  val sequenceFeatures: ArrayList<NDArray>,
-  val outputGold: NDArray
+data class SequenceExampleWithFinalOutput<NDArrayType: NDArray<NDArrayType>>(
+  val sequenceFeatures: ArrayList<NDArrayType>,
+  val outputGold: NDArrayType
 ): Example
 
 /**
  *
  */
-data class SequenceExample(
-  val sequenceFeatures: ArrayList<NDArray>,
-  val sequenceOutputGold: ArrayList<NDArray>
+data class SequenceExample<NDArrayType: NDArray<NDArrayType>>(
+  val sequenceFeatures: ArrayList<NDArrayType>,
+  val sequenceOutputGold: ArrayList<NDArrayType>
 ): Example
 
 /**
@@ -53,8 +56,8 @@ data class SequenceExample(
  * @param features features
  * @param goldOutcomeIndex goldOutcomeIndex
  */
-data class ExampleBinaryOutput(
-  val features: NDArray,
+data class ExampleBinaryOutputSequenceExample<NDArrayType: NDArray<NDArrayType>>(
+  val features: NDArrayType,
   val goldOutcomeIndex: Int
 ): Example
 
