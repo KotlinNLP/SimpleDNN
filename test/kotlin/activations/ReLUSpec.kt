@@ -8,7 +8,7 @@
 package activations
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
@@ -24,12 +24,12 @@ class ReLUSpec : Spek({
   describe("a ReLU activation function") {
 
     val activationFunction = ReLU()
-    val array = NDArray.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
+    val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
     val activatedArray = activationFunction.f(array)
 
     on("f") {
 
-      val expectedArray = NDArray.arrayOf(doubleArrayOf(
+      val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(
         0.0, 0.1, 0.01, 0.0, 0.0, 1.0, 10.0, 0.0, 0.0
       ))
 
@@ -41,7 +41,7 @@ class ReLUSpec : Spek({
     on("df") {
 
       val dfArray = activationFunction.dfOptimized(activatedArray)
-      val expectedArray = NDArray.arrayOf(doubleArrayOf(
+      val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(
         0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0
       ))
 

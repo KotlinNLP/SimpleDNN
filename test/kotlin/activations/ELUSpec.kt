@@ -8,7 +8,7 @@
 package activations
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -24,7 +24,7 @@ class ELUSpec : Spek({
 
   describe("an ELU activation function") {
 
-    val array = NDArray.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
+    val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
 
     context("alpha = 1.0") {
 
@@ -33,7 +33,7 @@ class ELUSpec : Spek({
 
       on("f") {
 
-        val expectedArray = NDArray.arrayOf(doubleArrayOf(
+        val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(
           0.0, 0.1, 0.01, -0.095162582, -0.009950166, 1.0, 10.0, -0.632120559, -0.9999546
         ))
 
@@ -45,7 +45,7 @@ class ELUSpec : Spek({
       on("df") {
 
         val dfArray = activationFunction.dfOptimized(activatedArray)
-        val expectedArray = NDArray.arrayOf(doubleArrayOf(
+        val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(
           1.0, 1.0, 1.0, 0.904837418, 0.990049834, 1.0, 1.0, 0.367879441, 0.0000454
         ))
 

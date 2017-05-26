@@ -8,7 +8,7 @@
 package activations
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softsign
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
@@ -24,12 +24,12 @@ class SoftsignSpec : Spek({
   describe("a Softsign activation function") {
 
     val activationFunction = Softsign()
-    val array = NDArray.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
+    val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
     val activatedArray = activationFunction.f(array)
 
     on("f") {
 
-      val expectedArray = NDArray.arrayOf(doubleArrayOf(
+      val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(
         0.0, 0.09090909, 0.00990099, -0.09090909, -0.00990099, 0.5, 0.90909090, -0.5, -0.9090909
       ))
 
@@ -41,7 +41,7 @@ class SoftsignSpec : Spek({
     on("df") {
 
       val dfArray = activationFunction.dfOptimized(activatedArray)
-      val expectedArray = NDArray.arrayOf(doubleArrayOf(
+      val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(
         1.0, 0.82644628, 0.98029605, 0.82644628, 0.98029605, 0.25, 0.00826446, 0.25, 0.00826446
       ))
 

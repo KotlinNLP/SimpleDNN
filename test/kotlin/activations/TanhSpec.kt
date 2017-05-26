@@ -8,7 +8,7 @@
 package activations
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
@@ -24,12 +24,12 @@ class TanhSpec : Spek({
   describe("a Tanh activation function") {
 
     val activationFunction = Tanh()
-    val array = NDArray.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
+    val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
     val activatedArray = activationFunction.f(array)
 
     on("f") {
 
-      val expectedArray = NDArray.arrayOf(doubleArrayOf(
+      val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(
           0.0, 0.099668, 0.00999967, -0.099668, -0.00999967, 0.76159416, 1.0, -0.76159416, -1.0
       ))
 
@@ -41,7 +41,7 @@ class TanhSpec : Spek({
     on("df") {
 
       val dfArray = activationFunction.dfOptimized(activatedArray)
-      val expectedArray = NDArray.arrayOf(doubleArrayOf(
+      val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(
           1.0, 0.99006629, 0.99990001, 0.99006629, 0.999900007, 0.41997434, 8.2e-09, 0.41997434, 8.2e-09
       ))
 
