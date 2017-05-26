@@ -6,7 +6,7 @@
  * ------------------------------------------------------------------*/
 
 import com.kotlinnlp.simplednn.core.functionalities.losses.AugmentedMSECalculator
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -21,8 +21,8 @@ class AugmentedMSECalculatorSpec : Spek({
 
   describe("an AugmentedMSECalculator") {
 
-    val outputValues = NDArray.arrayOf(doubleArrayOf(0.0, 0.1, 0.2, 0.3))
-    val goldValues = NDArray.arrayOf(doubleArrayOf(0.3, 0.2, 0.1, 0.0))
+    val outputValues = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.2, 0.3))
+    val goldValues = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.2, 0.1, 0.0))
 
     context("with loss partition disabled") {
 
@@ -33,7 +33,7 @@ class AugmentedMSECalculatorSpec : Spek({
         val loss = lossCalculator.calculateLoss(outputValues, goldValues)
 
         it("should calculate the expected loss") {
-          assertTrue(NDArray.arrayOf(doubleArrayOf(0.045, 0.005, 0.005, 0.045)).equals(loss))
+          assertTrue(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.045, 0.005, 0.005, 0.045)).equals(loss))
         }
       }
 
@@ -42,7 +42,7 @@ class AugmentedMSECalculatorSpec : Spek({
         val errors = lossCalculator.calculateErrors(outputValues, goldValues)
 
         it("should calculate the expected errors") {
-          assertTrue(NDArray.arrayOf(doubleArrayOf(-0.3, -0.1, 0.1, 0.3)).equals(errors))
+          assertTrue(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, -0.1, 0.1, 0.3)).equals(errors))
         }
       }
     }
@@ -56,7 +56,7 @@ class AugmentedMSECalculatorSpec : Spek({
         val loss = lossCalculator.calculateLoss(outputValues, goldValues)
 
         it("should calculate the expected loss") {
-          assertTrue(NDArray.arrayOf(doubleArrayOf(0.0405, 0.0045, 0.0045, 0.0405)).equals(loss))
+          assertTrue(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0405, 0.0045, 0.0045, 0.0405)).equals(loss))
         }
       }
 
@@ -65,7 +65,7 @@ class AugmentedMSECalculatorSpec : Spek({
         val errors = lossCalculator.calculateErrors(outputValues, goldValues)
 
         it("should calculate the expected errors") {
-          assertTrue(NDArray.arrayOf(doubleArrayOf(-0.27, -0.09, 0.09, 0.27)).equals(errors))
+          assertTrue(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.27, -0.09, 0.09, 0.27)).equals(errors))
         }
       }
     }
@@ -78,7 +78,7 @@ class AugmentedMSECalculatorSpec : Spek({
       on("calculateLoss") {
 
         val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
-        val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0045, 0.005, 0.01849999, 0.04499998))
+        val expectedLoss = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0045, 0.005, 0.01849999, 0.04499998))
 
         it("should calculate the expected loss") {
           assertTrue(expectedLoss.equals(outputLoss, tolerance = 1.0e-08))
@@ -88,7 +88,7 @@ class AugmentedMSECalculatorSpec : Spek({
       on("calculateErrors") {
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
-        val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.03, 0.07999997, 0.18999995, 0.29999992))
+        val expectedErrors = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03, 0.07999997, 0.18999995, 0.29999992))
 
         it("should calculate the expected errors") {
           assertTrue(expectedErrors.equals(outputErrors, tolerance = 1.0e-08))
@@ -104,7 +104,7 @@ class AugmentedMSECalculatorSpec : Spek({
       on("calculateLoss") {
 
         val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
-        val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0045, 0.00321587, 0.01136348, 0.02894283))
+        val expectedLoss = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0045, 0.00321587, 0.01136348, 0.02894283))
 
         it("should calculate the expected loss") {
           assertTrue(expectedLoss.equals(outputLoss, tolerance = 1.0e-08))
@@ -114,7 +114,7 @@ class AugmentedMSECalculatorSpec : Spek({
       on("calculateErrors") {
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
-        val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.03, 0.05991829, 0.14983657, 0.23975486))
+        val expectedErrors = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03, 0.05991829, 0.14983657, 0.23975486))
 
         it("should calculate the expected errors") {
           assertTrue(expectedErrors.equals(outputErrors, tolerance = 1.0e-08))
@@ -130,7 +130,7 @@ class AugmentedMSECalculatorSpec : Spek({
       on("calculateLoss") {
 
         val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
-        val expectedLoss = NDArray.arrayOf(doubleArrayOf(0.0045, 0.00058731, 0.00084924, 0.00528579))
+        val expectedLoss = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0045, 0.00058731, 0.00084924, 0.00528579))
 
         it("should calculate the expected loss") {
           assertTrue(expectedLoss.equals(outputLoss, tolerance = 1.0e-08))
@@ -140,7 +140,7 @@ class AugmentedMSECalculatorSpec : Spek({
       on("calculateErrors") {
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
-        val expectedErrors = NDArray.arrayOf(doubleArrayOf(-0.03, 0.00253628, 0.03507256, 0.06760885))
+        val expectedErrors = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03, 0.00253628, 0.03507256, 0.06760885))
 
         it("should calculate the expected errors") {
           assertTrue(expectedErrors.equals(outputErrors, tolerance = 1.0e-08))

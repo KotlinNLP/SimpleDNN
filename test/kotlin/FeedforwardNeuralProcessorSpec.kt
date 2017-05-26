@@ -9,7 +9,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.on
@@ -32,7 +32,7 @@ class FeedforwardNeuralProcessorSpec : Spek({
 
     val processor = FeedforwardNeuralProcessor(MLP)
 
-    val features = NDArray.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))
+    val features = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))
 
     on("forward") {
       processor.forward(features)

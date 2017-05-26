@@ -14,7 +14,8 @@ import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardNetworkStructure
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -111,15 +112,15 @@ class FeedforwardNetworkStructureSpec : Spek({
       on("layers factory") {
 
         it("should contain layers of the expected type") {
-          structure.layers.forEach { assertEquals(true, it is FeedforwardLayerStructure) }
+          structure.layers.forEach { assertEquals(true, it is FeedforwardLayerStructure<DenseNDArray>) }
         }
       }
 
       on("methods usage") {
 
-        val features = NDArray.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))
+        val features = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))
         val output = structure.forward(features)
-        val expectedOutput = NDArray.arrayOf(doubleArrayOf(0.19, 0.29, 0.53))
+        val expectedOutput = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.19, 0.29, 0.53))
 
         it("should return the expected output after a call of the forward method") {
           assertEquals(true, output.equals(expectedOutput, tolerance = 0.005))
@@ -136,7 +137,7 @@ class FeedforwardNetworkStructureSpec : Spek({
           propagateToInput = true)
 
         val inputErrors = structure.inputLayer.inputArray.errors
-        val expectedInputErrors = NDArray.arrayOf(doubleArrayOf(0.32, -0.14, -0.06, 0.07))
+        val expectedInputErrors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.32, -0.14, -0.06, 0.07))
 
         it("should contain the expected input error after a call of the backward method") {
           assertEquals(true, inputErrors.equals(expectedInputErrors, tolerance = 0.005))

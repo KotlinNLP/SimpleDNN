@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.RecurrentNetworkStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.StructureContextWindow
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import neuralnetwork.utils.RecurrentNetworkStructureUtils
@@ -34,11 +35,11 @@ class RecurrentNetworkStructureSpec : Spek({
       val structure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
 
       it("should contain an input layer of the expected type") {
-        assertEquals(true, structure.inputLayer is SimpleRecurrentLayerStructure)
+        assertEquals(true, structure.inputLayer is SimpleRecurrentLayerStructure<DenseNDArray>)
       }
 
       it("should contain an output layer of the expected type") {
-        assertEquals(true, structure.outputLayer is FeedforwardLayerStructure)
+        assertEquals(true, structure.outputLayer is FeedforwardLayerStructure<DenseNDArray>)
       }
     }
 

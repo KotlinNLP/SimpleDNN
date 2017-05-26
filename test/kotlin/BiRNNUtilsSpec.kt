@@ -6,7 +6,8 @@
  * ------------------------------------------------------------------*/
 
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNUtils
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
@@ -23,29 +24,29 @@ class BiRNNUtilsSpec: Spek({
   describe("a BiRNNUtilsSpec") {
 
     val array1 = arrayOf(
-      NDArray.arrayOf(doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7)),
-      NDArray.arrayOf(doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7)),
-      NDArray.arrayOf(doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5)),
-      NDArray.arrayOf(doubleArrayOf(0.0, -0.1, 0.5, -0.2, -0.8)),
-      NDArray.arrayOf(doubleArrayOf(-0.6, 0.6, 0.8, -0.1, -0.3)))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7)),
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7)),
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5)),
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, -0.1, 0.5, -0.2, -0.8)),
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.6, 0.6, 0.8, -0.1, -0.3)))
 
     val array2 = arrayOf(
-      NDArray.arrayOf(doubleArrayOf(0.1, -0.6, -1.0, -0.1, -0.4)),
-      NDArray.arrayOf(doubleArrayOf(0.5, -0.9, 0.0, 0.8, 0.3)),
-      NDArray.arrayOf(doubleArrayOf(-0.3, -0.9, 0.3, 1.0, -0.2)),
-      NDArray.arrayOf(doubleArrayOf(0.7, 0.2, 0.3, -0.4, -0.6)),
-      NDArray.arrayOf(doubleArrayOf(-0.2, 0.5, -0.2, -0.9, 0.4)))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, -0.6, -1.0, -0.1, -0.4)),
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.9, 0.0, 0.8, 0.3)),
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, -0.9, 0.3, 1.0, -0.2)),
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, 0.2, 0.3, -0.4, -0.6)),
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.5, -0.2, -0.9, 0.4)))
 
     on("concatenate") {
 
-      val result: Array<NDArray> = BiRNNUtils.concatenate(array1, array2)
+      val result: Array<DenseNDArray> = BiRNNUtils.concatenate(array1, array2)
 
       val expectedResult = arrayOf(
-        NDArray.arrayOf(doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7, 0.1, -0.6, -1.0, -0.1, -0.4)),
-        NDArray.arrayOf(doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7, 0.5, -0.9, 0.0, 0.8, 0.3)),
-        NDArray.arrayOf(doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5, -0.3, -0.9, 0.3, 1.0, -0.2)),
-        NDArray.arrayOf(doubleArrayOf(0.0, -0.1, 0.5, -0.2, -0.8, 0.7, 0.2, 0.3, -0.4, -0.6)),
-        NDArray.arrayOf(doubleArrayOf(-0.6, 0.6, 0.8, -0.1, -0.3, -0.2, 0.5, -0.2, -0.9, 0.4)))
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7, 0.1, -0.6, -1.0, -0.1, -0.4)),
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7, 0.5, -0.9, 0.0, 0.8, 0.3)),
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5, -0.3, -0.9, 0.3, 1.0, -0.2)),
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, -0.1, 0.5, -0.2, -0.8, 0.7, 0.2, 0.3, -0.4, -0.6)),
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.6, 0.6, 0.8, -0.1, -0.3, -0.2, 0.5, -0.2, -0.9, 0.4)))
 
       it("should return an array of the expected size") {
         assertEquals(expectedResult.size, result.size)
@@ -66,14 +67,14 @@ class BiRNNUtilsSpec: Spek({
     }
 
     on("sumBidirectionalErrors"){
-      val result: Array<NDArray> = BiRNNUtils.sumBidirectionalErrors(array1, array2)
+      val result: Array<DenseNDArray> = BiRNNUtils.sumBidirectionalErrors(array1, array2)
 
       val expectedResult = arrayOf(
-        NDArray.arrayOf(doubleArrayOf(-0.2, 1.3, 0.6, -1.9, -0.3)),
-        NDArray.arrayOf(doubleArrayOf(0.0, -0.6, 0.5, -1.1, 0.1)),
-        NDArray.arrayOf(doubleArrayOf(-1.2, 0.0, 1.0, 0.5, 0.3)),
-        NDArray.arrayOf(doubleArrayOf(0.5, -1.0, 0.5, 0.6, -0.5)),
-        NDArray.arrayOf(doubleArrayOf(-0.5, 0.0, -0.2, -0.2, -0.7)))
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 1.3, 0.6, -1.9, -0.3)),
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, -0.6, 0.5, -1.1, 0.1)),
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.2, 0.0, 1.0, 0.5, 0.3)),
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -1.0, 0.5, 0.6, -0.5)),
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.5, 0.0, -0.2, -0.2, -0.7)))
 
       it("should return an array of the expected size") {
         assertEquals(expectedResult.size, result.size)
@@ -95,12 +96,12 @@ class BiRNNUtilsSpec: Spek({
 
     on("splitBidirectionalErrors"){
 
-      val array = NDArray.arrayOf(doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7, 0.1, -0.6, -1.0, -0.1, -0.4))
+      val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7, 0.1, -0.6, -1.0, -0.1, -0.4))
 
       val (result1, result2) = BiRNNUtils.splitErrors(array)
 
-      val expectedResult1 = NDArray.arrayOf(doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7))
-      val expectedResult2 = NDArray.arrayOf(doubleArrayOf(0.1, -0.6, -1.0, -0.1, -0.4))
+      val expectedResult1 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7))
+      val expectedResult2 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, -0.6, -1.0, -0.1, -0.4))
 
       it("should return the pre-calculated values on ") {
         assertEquals(true, expectedResult1.equals(result1))
@@ -112,11 +113,11 @@ class BiRNNUtilsSpec: Spek({
     on("splitErrorsSequence"){
 
       val array = arrayOf(
-        NDArray.arrayOf(doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7, 0.1, -0.6, -1.0, -0.1, -0.4)),
-        NDArray.arrayOf(doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7, 0.5, -0.9, 0.0, 0.8, 0.3)),
-        NDArray.arrayOf(doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5, -0.3, -0.9, 0.3, 1.0, -0.2)),
-        NDArray.arrayOf(doubleArrayOf(0.0, -0.1, 0.5, -0.2, -0.8, 0.7, 0.2, 0.3, -0.4, -0.6)),
-        NDArray.arrayOf(doubleArrayOf(-0.6, 0.6, 0.8, -0.1, -0.3, -0.2, 0.5, -0.2, -0.9, 0.4)))
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7, 0.1, -0.6, -1.0, -0.1, -0.4)),
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7, 0.5, -0.9, 0.0, 0.8, 0.3)),
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5, -0.3, -0.9, 0.3, 1.0, -0.2)),
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, -0.1, 0.5, -0.2, -0.8, 0.7, 0.2, 0.3, -0.4, -0.6)),
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.6, 0.6, 0.8, -0.1, -0.3, -0.2, 0.5, -0.2, -0.9, 0.4)))
 
       val (result1, result2) = BiRNNUtils.splitErrorsSequence(array)
 

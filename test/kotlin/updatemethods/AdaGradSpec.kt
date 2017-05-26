@@ -9,7 +9,6 @@ package updatemethods
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGradMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGradStructure
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
@@ -45,7 +44,7 @@ class AdaGradSpec: Spek({
       updateHelper.update(array = updateableArray, errors = Utils.buildErrors())
 
       it("should match the expected updated array") {
-        assertEquals(true, (updateableArray.values as DenseNDArray).equals(
+        assertEquals(true, updateableArray.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39933, 0.39926, 0.49957, 0.999, 0.79978)),
           tolerance = 1.0e-5))
       }

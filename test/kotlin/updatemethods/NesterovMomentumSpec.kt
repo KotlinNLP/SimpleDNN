@@ -9,7 +9,6 @@ package updatemethods
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.nesterovmomentum.NesterovMomentumMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.nesterovmomentum.NesterovMomentumStructure
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
@@ -45,7 +44,7 @@ class NesterovMomentumSpec: Spek({
       updateHelper.update(array = updateableArray, errors = Utils.buildErrors())
 
       it("should match the expected updated array") {
-        assertEquals(true, (updateableArray.values as DenseNDArray).equals(
+        assertEquals(true, updateableArray.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.16871, -0.24933, 0.09424, 0.75548, 0.63781)),
           tolerance = 1.0e-6))
       }

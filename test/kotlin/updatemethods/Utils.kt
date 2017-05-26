@@ -19,9 +19,9 @@ object Utils {
   /**
    *
    */
-  fun buildUpdateableArray(): UpdatableArray {
+  fun buildUpdateableArray(): UpdatableArray<DenseNDArray> {
     val values: DenseNDArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.4, 0.5, 1.0, 0.8))
-    val array: UpdatableArray = UpdatableArray(DenseNDArrayFactory.zeros(values.shape))
+    val array: UpdatableArray<DenseNDArray> = UpdatableArray(DenseNDArrayFactory.zeros(values.shape))
 
     array.values.assignValues(values)
 

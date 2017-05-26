@@ -10,8 +10,8 @@ package deeplearning
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.deeplearning.treernn.TreeEncoder
 import com.kotlinnlp.simplednn.deeplearning.treernn.TreeRNN
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-import com.kotlinnlp.simplednn.simplemath.ndarray.wrapper.JBlasArray
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
@@ -41,7 +41,7 @@ class TreeRNNSpec : Spek({
 
     on("addNode") {
       sequence.forEach {
-        treeEncoder.addNode(id = it, vector = JBlasArray.zeros(Shape(inputLayerSize)))
+        treeEncoder.addNode(id = it, vector = DenseNDArrayFactory.zeros(Shape(inputLayerSize)))
       }
 
       it("should return the expected number of root nodes") {

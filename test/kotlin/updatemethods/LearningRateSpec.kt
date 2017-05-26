@@ -10,7 +10,6 @@ package updatemethods
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateStructure
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.eq
@@ -48,7 +47,7 @@ class LearningRateSpec: Spek({
       updateHelper.update(array = updateableArray, errors = Utils.buildErrors())
 
       it("should match the expected updated array") {
-        assertEquals(true, (updateableArray.values as DenseNDArray).equals(
+        assertEquals(true, updateableArray.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3991, 0.3993, 0.4996, 0.9992, 0.7999)),
           tolerance = 1.0e-5))
       }
