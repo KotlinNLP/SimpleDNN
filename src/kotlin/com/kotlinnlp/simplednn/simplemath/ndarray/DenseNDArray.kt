@@ -396,6 +396,13 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
+  override fun div(a: NDArray<*>, mask: NDArrayMask): SparseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
   override fun assignDiv(n: Double): DenseNDArray {
     this.storage.divi(n)
     return this
