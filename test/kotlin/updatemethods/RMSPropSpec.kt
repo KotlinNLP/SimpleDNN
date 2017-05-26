@@ -9,7 +9,8 @@ package updatemethods
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop.RMSPropMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop.RMSPropStructure
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
@@ -44,8 +45,8 @@ class RMSPropSpec: Spek({
       updateHelper.update(array = updateableArray, errors = Utils.buildErrors())
 
       it("should match the expected updated array") {
-        assertEquals(true, updateableArray.values.equals(
-            NDArray.arrayOf(doubleArrayOf(0.399091, 0.398905, 0.499502, 0.996838, 0.799765)),
+        assertEquals(true, (updateableArray.values as DenseNDArray).equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.399091, 0.398905, 0.499502, 0.996838, 0.799765)),
           tolerance = 1.0e-6))
       }
     }

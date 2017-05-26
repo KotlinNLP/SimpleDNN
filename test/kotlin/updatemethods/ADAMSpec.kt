@@ -9,8 +9,9 @@ package updatemethods
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMStructure
-import com.kotlinnlp.simplednn.simplemath.NDArray
 import com.kotlinnlp.simplednn.simplemath.equals
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
@@ -46,8 +47,8 @@ class ADAMSpec : Spek({
       updateHelper.update(array = updateableArray, errors = Utils.buildErrors())
 
       it("should match the expected updated array") {
-        assertEquals(true, updateableArray.values.equals(
-          NDArray.arrayOf(doubleArrayOf(0.39928, 0.39875, 0.49941, 0.98617, 0.79958)),
+        assertEquals(true, (updateableArray.values as DenseNDArray).equals(
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39928, 0.39875, 0.49941, 0.98617, 0.79958)),
           tolerance = 10e-5))
       }
     }

@@ -8,7 +8,8 @@
 package updatemethods
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 
 /**
  *
@@ -19,8 +20,8 @@ object Utils {
    *
    */
   fun buildUpdateableArray(): UpdatableArray {
-    val values = NDArray.arrayOf(doubleArrayOf(0.4, 0.4, 0.5, 1.0, 0.8))
-    val array = UpdatableArray(values.shape)
+    val values: DenseNDArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.4, 0.5, 1.0, 0.8))
+    val array: UpdatableArray = UpdatableArray(DenseNDArrayFactory.zeros(values.shape))
 
     array.values.assignValues(values)
 
@@ -30,15 +31,15 @@ object Utils {
   /**
    *
    */
-  fun supportArray1() = NDArray.arrayOf(doubleArrayOf(0.7, 0.8, 0.5, 0.3, 0.2))
+  fun supportArray1() = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, 0.8, 0.5, 0.3, 0.2))
 
   /**
    *
    */
-  fun supportArray2() = NDArray.arrayOf(doubleArrayOf(1.0, 0.4, 0.7, 0.0, 0.2))
+  fun supportArray2() = DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.4, 0.7, 0.0, 0.2))
 
   /**
    *
    */
-  fun buildErrors() = NDArray.arrayOf(doubleArrayOf(0.9, 0.7, 0.4, 0.8, 0.1))
+  fun buildErrors() = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.9, 0.7, 0.4, 0.8, 0.1))
 }
