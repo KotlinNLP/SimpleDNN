@@ -232,6 +232,11 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
+  fun assignProd(n: Double, mask: NDArrayMask): SelfType
+
+  /**
+   *
+   */
   fun assignProd(a: SelfType, n: Double): SelfType
 
   /**
