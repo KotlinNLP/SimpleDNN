@@ -8,7 +8,7 @@
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import com.jsoniter.*
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
@@ -20,6 +20,7 @@ import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.helpers.validation.SequenceValidationHelper
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -40,7 +41,7 @@ object ProgressiveSumTest {
   fun start(): Unit {
 
     val configuration = Configuration.loadFromFile()
-    val dataset: Corpus<SequenceExample> = this.readCorpus(configuration.progressive_sum.datasets_paths)
+    val dataset = this.readCorpus(configuration.progressive_sum.datasets_paths)
 
     val nn = this.buildNetwork()
 
@@ -54,7 +55,7 @@ object ProgressiveSumTest {
    * @param corpus corpus
    * @return
    */
-  fun readCorpus(corpus: CorpusPaths): Corpus<SequenceExample> {
+  fun readCorpus(corpus: CorpusPaths): Corpus<SequenceExample<DenseNDArray>> {
 
     println("\n-- CORPUS READING")
 
@@ -78,10 +79,10 @@ object ProgressiveSumTest {
   /**
    *
    */
-  fun JsonIterator.readNDArray(): NDArray {
+  fun JsonIterator.readNDArray(): DenseNDArray {
     val array = ArrayList<Double>()
     while (this.readArray()) array.add(this.readDouble())
-    return NDArray.arrayOf(array.toDoubleArray())
+    return DenseNDArrayFactory.arrayOf(array.toDoubleArray())
   }
 
   /**
@@ -89,10 +90,10 @@ object ProgressiveSumTest {
    * @param filename
    * @return
    */
-  fun JSONLFileReader(filename: String): ArrayList<SequenceExample> {
+  fun JSONLFileReader(filename: String): ArrayList<SequenceExample<DenseNDArray>> {
 
     val file = File(filename)
-    val examples = ArrayList<SequenceExample>()
+    val examples = ArrayList<SequenceExample<DenseNDArray>>()
 
     file.forEachLine {
       val iterator: JsonIterator = JsonIterator.parse(it)
@@ -107,16 +108,16 @@ object ProgressiveSumTest {
   /**
    *
    */
-  fun extractExampleData(iterator: JsonIterator): Pair<ArrayList<NDArray>, ArrayList<NDArray>> {
+  fun extractExampleData(iterator: JsonIterator): Pair<ArrayList<DenseNDArray>, ArrayList<DenseNDArray>> {
 
-    val featuresList = ArrayList<NDArray>()
-    val outputGoldList = ArrayList<NDArray>()
+    val featuresList = ArrayList<DenseNDArray>()
+    val outputGoldList = ArrayList<DenseNDArray>()
 
     while (iterator.readArray()) {
       if (iterator.whatIsNext() == ValueType.ARRAY) {
         val singleExample = iterator.readNDArray()
-        val features = NDArray.arrayOf(doubleArrayOf(singleExample[0].toDouble()))
-        val outputGold = NDArray.zeros(Shape(11))
+        val features = DenseNDArrayFactory.arrayOf(doubleArrayOf(singleExample[0]))
+        val outputGold = DenseNDArrayFactory.zeros(Shape(11))
 
         outputGold[singleExample[1].toInt()] = 1.0
 
@@ -148,7 +149,7 @@ object ProgressiveSumTest {
   /**
    *
    */
-  fun initialValidation(neuralNetwork: NeuralNetwork, dataset: Corpus<SequenceExample>): Unit {
+  fun initialValidation(neuralNetwork: NeuralNetwork, dataset: Corpus<SequenceExample<DenseNDArray>>): Unit {
 
     println("\n-- VALIDATION BEFORE TRAINING")
 
@@ -164,7 +165,7 @@ object ProgressiveSumTest {
   /**
    *
    */
-  fun train(neuralNetwork: NeuralNetwork, dataset: Corpus<SequenceExample>): Unit {
+  fun train(neuralNetwork: NeuralNetwork, dataset: Corpus<SequenceExample<DenseNDArray>>): Unit {
 
     println("\n-- TRAINING")
 

@@ -12,7 +12,6 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
-import com.kotlinnlp.simplednn.simplemath.NDArray
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
@@ -25,6 +24,8 @@ import com.kotlinnlp.simplednn.helpers.validation.FeedforwardValidationHelper
 import com.jsoniter.*
 import Configuration
 import CorpusPaths
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import java.io.BufferedInputStream
 import java.io.FileInputStream
 import java.util.concurrent.TimeUnit
@@ -47,7 +48,7 @@ object MNISTTest {
   fun start(): Unit {
 
     val configuration = Configuration.Companion.loadFromFile()
-    val dataset: Corpus<SimpleExample> = readCorpus(configuration.mnist.datasets_paths)
+    val dataset: Corpus<SimpleExample<DenseNDArray>> = readCorpus(configuration.mnist.datasets_paths)
 
     val nn = buildNetwork()
 
@@ -59,7 +60,7 @@ object MNISTTest {
    * @param corpus corpus
    * @return
    */
-  fun readCorpus(corpus: CorpusPaths): Corpus<SimpleExample> {
+  fun readCorpus(corpus: CorpusPaths): Corpus<SimpleExample<DenseNDArray>> {
 
     println("\n-- CORPUS READING")
 
@@ -83,10 +84,10 @@ object MNISTTest {
   /**
    *
    */
-  fun JsonIterator.readNDArray(): NDArray {
+  fun JsonIterator.readNDArray(): DenseNDArray {
     val array = ArrayList<Double>()
     while (this.readArray()) array.add(this.readDouble())
-    return NDArray.arrayOf(array.toDoubleArray())
+    return DenseNDArrayFactory.arrayOf(array.toDoubleArray())
   }
 
   /**
@@ -94,9 +95,9 @@ object MNISTTest {
    * @param filename
    * @return
    */
-  fun JSONFileReader(filename: String): ArrayList<SimpleExample> {
+  fun JSONFileReader(filename: String): ArrayList<SimpleExample<DenseNDArray>> {
 
-    val examples = ArrayList<SimpleExample>()
+    val examples = ArrayList<SimpleExample<DenseNDArray>>()
     val iterator = JsonIterator.parse(BufferedInputStream(FileInputStream(filename)), 2048)
 
     while(iterator.readArray()) {
@@ -109,11 +110,11 @@ object MNISTTest {
   /**
    *
    */
-  fun extractExample(iterator: JsonIterator): SimpleExample {
+  fun extractExample(iterator: JsonIterator): SimpleExample<DenseNDArray> {
 
-    val outputGold = NDArray.zeros(Shape(1, 10))
+    val outputGold = DenseNDArrayFactory.zeros(Shape(1, 10))
     var goldIndex: Int
-    var features: NDArray? = null
+    var features: DenseNDArray? = null
 
     while (iterator.readArray()) {
 
@@ -149,7 +150,7 @@ object MNISTTest {
   /**
    *
    */
-  fun train(neuralNetwork: NeuralNetwork, dataset: Corpus<SimpleExample>): Unit {
+  fun train(neuralNetwork: NeuralNetwork, dataset: Corpus<SimpleExample<DenseNDArray>>): Unit {
 
     println("\n-- TRAINING")
 

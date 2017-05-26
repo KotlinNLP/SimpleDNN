@@ -24,13 +24,14 @@ import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.Classificat
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.MulticlassEvaluation
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvaluationFunction
 import com.kotlinnlp.simplednn.helpers.validation.FeedforwardValidationHelper
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 
 object GateTestUtils {
 
   /**
    *
    */
-  fun testAccuracyWithSoftmax(inputSize: Int, examples: ArrayList<SimpleExample>, epochs: Int): Double {
+  fun testAccuracyWithSoftmax(inputSize: Int, examples: ArrayList<SimpleExample<DenseNDArray>>, epochs: Int): Double {
 
     val neuralNetwork = this.buildSoftmaxNetwork(inputSize)
 
@@ -44,7 +45,7 @@ object GateTestUtils {
   /**
    *
    */
-  fun testAccuracyWithSigmoid(inputSize: Int, examples: ArrayList<SimpleExample>, epochs: Int): Double {
+  fun testAccuracyWithSigmoid(inputSize: Int, examples: ArrayList<SimpleExample<DenseNDArray>>, epochs: Int): Double {
 
     val neuralNetwork = this.buildSigmoidNetwork(inputSize)
 
@@ -93,7 +94,7 @@ object GateTestUtils {
    *
    */
   private fun testAccuracy(neuralNetwork: NeuralNetwork,
-                           examples: ArrayList<SimpleExample>,
+                           examples: ArrayList<SimpleExample<DenseNDArray>>,
                            evaluationFunction: OutputEvaluationFunction,
                            epochs: Int): Double {
 

@@ -17,13 +17,14 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
-import com.kotlinnlp.simplednn.simplemath.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.helpers.training.SequenceWithFinalOutputTrainingHelper
 import com.kotlinnlp.simplednn.helpers.validation.SequenceWithFinalOutputValidationHelper
 import com.jsoniter.*
 import Configuration
 import CorpusPaths
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
 
@@ -44,7 +45,7 @@ object MNISTSequenceTest {
   fun start(): Unit {
 
     val configuration = Configuration.loadFromFile()
-    val dataset: Corpus<SequenceExampleWithFinalOutput> = this.readCorpus(configuration.mnist_sequence.datasets_paths)
+    val dataset = this.readCorpus(configuration.mnist_sequence.datasets_paths)
 
     val nn = this.buildNetwork()
 
@@ -56,7 +57,7 @@ object MNISTSequenceTest {
    * @param corpus corpus
    * @return
    */
-  fun readCorpus(corpus: CorpusPaths): Corpus<SequenceExampleWithFinalOutput> {
+  fun readCorpus(corpus: CorpusPaths): Corpus<SequenceExampleWithFinalOutput<DenseNDArray>> {
 
     println("\n-- CORPUS READING")
 
@@ -80,10 +81,10 @@ object MNISTSequenceTest {
   /**
    *
    */
-  fun JsonIterator.readNDArray(): NDArray {
+  fun JsonIterator.readNDArray(): DenseNDArray {
     val array = ArrayList<Double>()
     while (this.readArray()) array.add(this.readDouble())
-    return NDArray.arrayOf(array.toDoubleArray())
+    return DenseNDArrayFactory.arrayOf(array.toDoubleArray())
   }
 
   /**
@@ -91,10 +92,10 @@ object MNISTSequenceTest {
    * @param filename
    * @return
    */
-  fun JSONLFileReader(filename: String): ArrayList<SequenceExampleWithFinalOutput> {
+  fun JSONLFileReader(filename: String): ArrayList<SequenceExampleWithFinalOutput<DenseNDArray>> {
 
     val file = File(filename)
-    val examples: ArrayList<SequenceExampleWithFinalOutput> = ArrayList()
+    val examples: ArrayList<SequenceExampleWithFinalOutput<DenseNDArray>> = ArrayList()
 
     file.forEachLine {
       examples.add(this.extractExample(iterator = JsonIterator.parse(it)))
@@ -106,10 +107,10 @@ object MNISTSequenceTest {
   /**
    *
    */
-  fun extractExample(iterator: JsonIterator): SequenceExampleWithFinalOutput {
+  fun extractExample(iterator: JsonIterator): SequenceExampleWithFinalOutput<DenseNDArray> {
 
-    val featuresList = ArrayList<NDArray>()
-    val outputGold = NDArray.zeros(Shape(10))
+    val featuresList = ArrayList<DenseNDArray>()
+    val outputGold = DenseNDArrayFactory.zeros(Shape(10))
 
     // read "digit"
     iterator.readObject()
@@ -125,9 +126,9 @@ object MNISTSequenceTest {
     while (iterator.readArray()) {
       if (iterator.whatIsNext() == ValueType.ARRAY) {
         val features = iterator.readNDArray()
-        val deltaX = features[0].toDouble()
-        val deltaY = features[1].toDouble()
-        featuresList.add(NDArray.arrayOf(doubleArrayOf(deltaX, deltaY)))
+        val deltaX = features[0]
+        val deltaY = features[1]
+        featuresList.add(DenseNDArrayFactory.arrayOf(doubleArrayOf(deltaX, deltaY)))
       }
     }
 
@@ -155,7 +156,7 @@ object MNISTSequenceTest {
   /**
    *
    */
-  fun train(neuralNetwork: NeuralNetwork, dataset: Corpus<SequenceExampleWithFinalOutput>): Unit {
+  fun train(neuralNetwork: NeuralNetwork, dataset: Corpus<SequenceExampleWithFinalOutput<DenseNDArray>>): Unit {
 
     println("\n-- TRAINING")
 

@@ -8,6 +8,7 @@
 package logicgates
 
 import com.kotlinnlp.simplednn.dataset.SimpleExample
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 
 fun main(args: Array<String>) {
   println("Start 'NOT Gate Test'")
@@ -23,7 +24,7 @@ object NOTGate {
    */
   fun testAccuracyWithSoftmax(): Double {
 
-    val examples: ArrayList<SimpleExample> = ArrayList()
+    val examples: ArrayList<SimpleExample<DenseNDArray>> = ArrayList()
 
     examples.addAll(listOf(
       SimpleExample(doubleArrayOf(0.0), doubleArrayOf(0.0, 1.0)),
@@ -38,7 +39,7 @@ object NOTGate {
    */
   fun testAccuracyWithSigmoid(): Double {
 
-    val examples: ArrayList<SimpleExample> = ArrayList()
+    val examples: ArrayList<SimpleExample<DenseNDArray>> = ArrayList()
 
     examples.addAll(listOf(
       SimpleExample(doubleArrayOf(0.0), doubleArrayOf(1.0)),
