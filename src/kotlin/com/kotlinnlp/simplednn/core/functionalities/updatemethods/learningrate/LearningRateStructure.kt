@@ -8,7 +8,8 @@
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
@@ -20,5 +21,5 @@ class LearningRateStructure(shape: Shape) : UpdaterSupportStructure(shape) {
   /**
    *
    */
-  val errors: NDArray = NDArray.zeros(shape)
+  val errors: DenseNDArray = DenseNDArrayFactory.zeros(shape)
 }
