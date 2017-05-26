@@ -360,7 +360,7 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
   /**
    *
    */
-  override fun div(a: SparseBinaryNDArray): SparseBinaryNDArray {
+  override fun div(a: NDArray<*>): SparseBinaryNDArray {
     TODO("not implemented")
   }
 

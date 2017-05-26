@@ -252,7 +252,7 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
-  fun div(a: SelfType): SelfType
+  fun div(a: NDArray<*>): SelfType
 
   /**
    *
