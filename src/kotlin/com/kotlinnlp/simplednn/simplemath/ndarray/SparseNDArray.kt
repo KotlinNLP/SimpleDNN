@@ -338,6 +338,13 @@ class SparseNDArray : NDArray<SparseNDArray> {
   /**
    *
    */
+  override fun prod(n: Double, mask: NDArrayMask): SparseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
   override fun assignProd(n: Double): SparseNDArray {
     TODO("not implemented")
   }

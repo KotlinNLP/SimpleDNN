@@ -337,6 +337,13 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
+  override fun prod(n: Double, mask: NDArrayMask): SparseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
   override fun assignProd(n: Double): DenseNDArray {
     this.storage.muli(n)
     return this

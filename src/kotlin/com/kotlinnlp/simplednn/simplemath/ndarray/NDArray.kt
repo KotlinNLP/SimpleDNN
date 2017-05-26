@@ -227,6 +227,11 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
+  fun prod(n: Double, mask: NDArrayMask): SparseNDArray
+
+  /**
+   *
+   */
   fun assignProd(n: Double): SelfType
 
   /**
