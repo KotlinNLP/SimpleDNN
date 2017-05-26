@@ -9,10 +9,9 @@ package com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
-import com.kotlinnlp.simplednn.simplemath.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
@@ -63,15 +62,25 @@ class ADAMMethod(
    * @param errors errors
    * @return optimized errors
    */
-  override fun optimizeErrors(errors: NDArray, array: UpdatableArray): NDArray {
-    val helperStructure = this.getSupportStructure(array) as ADAMStructure
+  override fun <NDArrayType: NDArray<NDArrayType>> optimizeErrors(
+    errors: NDArrayType,
+    array: UpdatableDenseArray
+  ): NDArrayType {
 
-    helperStructure.firstOrderMoments.assignProd(this.beta1).assignSum(errors.prod(1.0 - this.beta1))
-    helperStructure.secondOrderMoments.assignProd(this.beta2).assignSum(
-      errors.prod(errors).assignProd(1.0 - this.beta2))
+    return when (errors) {
 
-    return helperStructure.firstOrderMoments.div(
-      helperStructure.secondOrderMoments.sqrt().assignSum(this.epsilon)).assignProd(this.alpha)
+      is SparseNDArray -> { // errors are Sparse when the input is SparseBinary
+        @Suppress("UNCHECKED_CAST")
+        this.optimizeSparseErrors(errors = errors, array = array) as NDArrayType
+      }
+
+      is DenseNDArray -> { // errors are Dense when the input is Dense
+        @Suppress("UNCHECKED_CAST")
+        this.optimizeDenseErrors(errors = errors, array = array) as NDArrayType
+      }
+
+      else -> throw RuntimeException("Invalid errors type")
+    }
   }
 
   /**
@@ -89,5 +98,39 @@ class ADAMMethod(
     this.alpha = this.stepSize *
       Math.sqrt(1.0 - Math.pow(this.beta2, this.exampleCount)) /
       (1.0 - Math.pow(this.beta1, this.exampleCount))
+  }
+
+  /**
+   *
+   */
+  private fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
+
+    val helperStructure = this.getSupportStructure(array) as ADAMStructure
+    val v = helperStructure.firstOrderMoments
+    val m = helperStructure.secondOrderMoments
+    val mask = errors.mask
+
+    v.assignProd(this.beta1, mask = mask).assignSum(errors.prod(1.0 - this.beta1))
+    m.assignProd(this.beta2, mask = mask).assignSum(errors.prod(errors).assignProd(1.0 - this.beta2))
+
+    return v.div(m.sqrt(mask = mask).assignSum(this.epsilon), mask = mask).assignProd(this.alpha)
+  }
+
+  /**
+   *
+   */
+  private fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
+
+    val helperStructure = this.getSupportStructure(array) as ADAMStructure
+    val v = helperStructure.firstOrderMoments
+    val m = helperStructure.secondOrderMoments
+
+    v.assignProd(this.beta1).assignSum(errors.prod(1.0 - this.beta1))
+    m.assignProd(this.beta2).assignSum(errors.prod(errors).assignProd(1.0 - this.beta2))
+
+    v.assignSum(errors.prod(1.0 - this.beta1))
+    m.assignSum(errors.prod(errors).assignProd(1.0 - this.beta2))
+
+    return v.div(m.sqrt().assignSum(this.epsilon)).assignProd(this.alpha)
   }
 }

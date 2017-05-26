@@ -9,10 +9,9 @@ package com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
-import com.kotlinnlp.simplednn.simplemath.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.*
 
 /**
  * The AdaGrad method assigns a different learning rate to each parameter
@@ -52,11 +51,23 @@ class AdaGradMethod(
    * @param errors errors
    * @return optimized errors
    */
-  override fun optimizeErrors(errors: NDArray, array: UpdatableArray): NDArray {
+  override fun <NDArrayType: NDArray<NDArrayType>> optimizeErrors(
+    errors: NDArrayType, array: UpdatableDenseArray
+  ): NDArrayType {
+
     val helperStructure = this.getSupportStructure(array) as AdaGradStructure
+    val m = helperStructure.secondOrderMoments
 
-    helperStructure.secondOrderMoments.assignSum(errors.prod(errors))
+    m.assignSum(errors.prod(errors))
 
-    return errors.div(helperStructure.secondOrderMoments.sqrt().assignSum(this.epsilon)).assignProd(this.learningRate)
+    val sqrt: NDArray<*>
+
+    when (errors) {
+      is SparseNDArray -> sqrt = m.sqrt(mask = errors.mask) // errors are Sparse when the input is SparseBinary
+      is DenseNDArray -> sqrt = m.sqrt() // errors are Dense when the input is Dense
+      else -> throw RuntimeException("Invalid errors type")
+    }
+
+    return errors.div(sqrt.assignSum(this.epsilon)).assignProd(this.learningRate)
   }
 }

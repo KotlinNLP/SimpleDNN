@@ -9,10 +9,9 @@ package com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
-import com.kotlinnlp.simplednn.simplemath.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.*
 
 /**
  * The RMSProp method is a variant of [com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGradMethod]
@@ -50,18 +49,61 @@ class RMSPropMethod(
   }
 
   /**
+   * Optimize
    *
-   * @param errors errors
+   * @param errors the errors to optimize
+   * @param array an [UpdatableDenseArray]
+   *
    * @return optimized errors
    */
-  override fun optimizeErrors(errors: NDArray, array: UpdatableArray): NDArray {
+  override fun <NDArrayType: NDArray<NDArrayType>> optimizeErrors(
+    errors: NDArrayType,
+    array: UpdatableDenseArray
+  ): NDArrayType {
+
+    return when (errors) {
+
+      is SparseNDArray -> { // errors are Sparse when the input is SparseBinary
+        @Suppress("UNCHECKED_CAST")
+        this.optimizeSparseErrors(errors = errors, array = array) as NDArrayType
+      }
+
+      is DenseNDArray -> { // errors are Dense when the input is Dense
+        @Suppress("UNCHECKED_CAST")
+        this.optimizeDenseErrors(errors = errors, array = array) as NDArrayType
+      }
+
+      else -> throw RuntimeException("Invalid errors type")
+    }
+  }
+
+  /**
+   *
+   */
+  private fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
 
     val helperStructure = this.getSupportStructure(array) as RMSPropStructure
+    val m = helperStructure.secondOrderMoments
 
-    val secondOrderMoments = helperStructure.secondOrderMoments
+    val mask: NDArrayMask = errors.mask
+    val mUpdate: SparseNDArray =
+      m.prod(this.decay, mask = mask).assignSum(errors.prod(errors).assignProd(1.0 - this.decay))
 
-    secondOrderMoments.assignSum(secondOrderMoments.prod(this.decay), errors.prod(errors).assignProd(1.0 - this.decay))
+    m.assignValues(mUpdate)
 
-    return errors.div(secondOrderMoments.sqrt().assignSum(this.epsilon)).assignProd(this.learningRate)
+    return errors.div(m.sqrt(mask = mask).assignSum(this.epsilon)).assignProd(this.learningRate)
+  }
+
+  /**
+   *
+   */
+  private fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
+
+    val helperStructure = this.getSupportStructure(array) as RMSPropStructure
+    val m = helperStructure.secondOrderMoments
+
+    m.assignSum(m.prod(this.decay), errors.prod(errors).assignProd(1.0 - this.decay))
+
+    return errors.div(m.sqrt().assignSum(this.epsilon)).assignProd(this.learningRate)
   }
 }

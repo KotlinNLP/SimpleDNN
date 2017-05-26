@@ -8,12 +8,14 @@
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.nesterovmomentum
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum.MomentumMethod
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.SparseNDArray
 
 /**
  * @param learningRate Double >= 0. Learning rate
@@ -51,15 +53,58 @@ class NesterovMomentumMethod(
    * @param errors errors
    * @return optimized errors
    */
-  override fun optimizeErrors(errors: NDArray, array: UpdatableArray): NDArray {
+  override fun <NDArrayType: NDArray<NDArrayType>> optimizeErrors(
+    errors: NDArrayType,
+    array: UpdatableDenseArray
+  ): NDArrayType {
+
+    return when (errors) {
+
+      is SparseNDArray -> { // errors are Sparse when the input is SparseBinary
+        @Suppress("UNCHECKED_CAST")
+        this.optimizeSparseErrors(errors = errors, array = array) as NDArrayType
+      }
+
+      is DenseNDArray -> { // errors are Dense when the input is Dense
+        @Suppress("UNCHECKED_CAST")
+        this.optimizeDenseErrors(errors = errors, array = array) as NDArrayType
+      }
+
+      else -> throw RuntimeException("Invalid errors type")
+    }
+  }
+
+  /**
+   *
+   */
+  private fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
 
     val helperStructure = this.getSupportStructure(array) as NesterovMomentumStructure
+    val v = helperStructure.v
+    val vPrev = helperStructure.vPrev
 
-    helperStructure.vPrev.assignValues(helperStructure.v) // backup previous velocity
+    val mask = errors.mask
 
-    // update velocity with adapted learning rates
-    helperStructure.v.assignSum(errors.prod(this.alpha), helperStructure.v.prod(this.momentum))
+    vPrev.assignValues(v, mask = mask) // backup previous velocity
 
-    return helperStructure.vPrev.prod(-this.momentum).assignSum(helperStructure.v.prod(1.0 + this.momentum))
+    v.assignValues(errors.prod(this.alpha).assignSum(v.prod(this.momentum, mask = mask)))
+
+    return vPrev.prod(-this.momentum, mask = mask).assignSum(v.prod(1.0 + this.momentum, mask = mask))
+  }
+
+  /**
+   *
+   */
+  private fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
+
+    val helperStructure = this.getSupportStructure(array) as NesterovMomentumStructure
+    val v = helperStructure.v
+    val vPrev = helperStructure.vPrev
+
+    vPrev.assignValues(v) // backup previous velocity
+
+    v.assignSum(errors.prod(this.alpha), v.prod(this.momentum))
+
+    return vPrev.prod(-this.momentum).assignSum(v.prod(1.0 + this.momentum))
   }
 }

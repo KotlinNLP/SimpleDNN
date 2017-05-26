@@ -9,12 +9,14 @@ package com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 
 /**
@@ -27,7 +29,7 @@ open class MomentumMethod(
   val decayMethod: DecayMethod? = null,
   regularization: WeightsRegularization? = null
 ) : EpochScheduling,
-    UpdateMethod(regularization) {
+  UpdateMethod(regularization) {
 
   /**
    *
@@ -61,14 +63,26 @@ open class MomentumMethod(
    * @param errors errors
    * @return optimized errors
    */
-  override fun optimizeErrors(errors: NDArray, array: UpdatableArray): NDArray {
+  override fun <NDArrayType: NDArray<NDArrayType>> optimizeErrors(
+    errors: NDArrayType,
+    array: UpdatableDenseArray
+  ): NDArrayType {
 
-    val helperStructure = this.getSupportStructure(array) as MomentumStructure
+    return when (errors) {
 
-    // update velocity with adapted learning rates
-    helperStructure.v.assignSum(errors.prod(this.alpha), helperStructure.v.prod(this.momentum))
+      is SparseNDArray -> { // errors are Sparse when the input is SparseBinary
+        @Suppress("UNCHECKED_CAST")
+        this.optimizeSparseErrors(errors = errors, array = array) as NDArrayType
 
-    return helperStructure.v
+      }
+
+      is DenseNDArray -> { // errors are Dense when the input is Dense
+        @Suppress("UNCHECKED_CAST")
+        this.optimizeDenseErrors(errors = errors, array = array) as NDArrayType
+      }
+
+      else -> throw RuntimeException("Invalid errors type")
+    }
   }
 
   /**
@@ -82,5 +96,36 @@ open class MomentumMethod(
         timeStep = ++this.epochCount
       )
     }
+  }
+
+  /**
+   * Update velocity with adapted learning rate.
+   *
+   * @return the optimized errors
+   */
+  private fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
+
+    val helperStructure = this.getSupportStructure(array) as MomentumStructure
+    val v = helperStructure.v
+
+    val mask = errors.mask
+    v.assignValues(errors.prod(this.alpha).assignSum(v.prod(this.momentum, mask = mask)), mask = mask)
+
+    return v.maskBy(mask)
+  }
+
+  /**
+   * Update velocity with adapted learning rate.
+   *
+   * @return the optimized errors
+   */
+  private fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
+
+    val helperStructure = this.getSupportStructure(array) as MomentumStructure
+    val v = helperStructure.v
+
+    v.assignSum(errors.prod(this.alpha), v.prod(this.momentum))
+
+    return v
   }
 }

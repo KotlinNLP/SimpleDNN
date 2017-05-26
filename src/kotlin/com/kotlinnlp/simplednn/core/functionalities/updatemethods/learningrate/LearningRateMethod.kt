@@ -11,10 +11,12 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupport
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 
 /**
@@ -61,13 +63,25 @@ class LearningRateMethod(
    * @param errors errors
    * @return optimized errors
    */
-  override fun optimizeErrors(errors: NDArray, array: UpdatableArray): NDArray {
+  override fun <NDArrayType: NDArray<NDArrayType>> optimizeErrors(
+    errors: NDArrayType,
+    array: UpdatableDenseArray
+  ): NDArrayType {
 
-    val helperStructure = this.getSupportStructure(array) as LearningRateStructure
+    return when (errors) {
 
-    helperStructure.errors.assignProd(errors, this.alpha)
+      is SparseNDArray -> { // errors are Sparse when the input is SparseBinary
+        @Suppress("UNCHECKED_CAST")
+        errors.prod(this.alpha) as NDArrayType
+      }
 
-    return helperStructure.errors
+      is DenseNDArray -> { // errors are Dense when the input is Dense
+        @Suppress("UNCHECKED_CAST")
+        this.optimizeDenseErrors(errors = errors, array = array) as NDArrayType
+      }
+
+      else -> throw RuntimeException("Invalid errors type")
+    }
   }
 
   /**
@@ -81,5 +95,16 @@ class LearningRateMethod(
         timeStep = ++this.epochCount
       )
     }
+  }
+
+  /**
+   *
+   */
+  private fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
+
+    val helperStructure = this.getSupportStructure(array) as LearningRateStructure
+    helperStructure.errors.assignProd(errors, this.alpha)
+
+    return helperStructure.errors
   }
 }
