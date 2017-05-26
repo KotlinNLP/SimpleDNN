@@ -13,21 +13,24 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.RecurrentNetworkStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.StructureContextWindow
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  *
  * @param neuralNetwork neuralNetwork
  */
-class RecurrentNeuralProcessor(override val neuralNetwork: NeuralNetwork) :
-  StructureContextWindow,
-  NeuralProcessor {
+class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val neuralNetwork: NeuralNetwork
+) : StructureContextWindow<InputNDArrayType>,
+    NeuralProcessor {
 
   /**
    * sequence
    */
-  private val sequence: NNSequence = NNSequence(neuralNetwork)
+  private val sequence = NNSequence<InputNDArrayType>(neuralNetwork)
 
   /**
    * Set each time a single forward or a single backward are called
@@ -47,19 +50,21 @@ class RecurrentNeuralProcessor(override val neuralNetwork: NeuralNetwork) :
   /**
    *
    */
-  private val zeroErrors: NDArray = NDArray.zeros(Shape(this.neuralNetwork.layersConfiguration.last().size))
+  private val zeroErrors: DenseNDArray = DenseNDArrayFactory.zeros(
+    Shape(this.neuralNetwork.layersConfiguration.last().size)
+  )
 
   /**
    *
    */
-  override fun getPrevStateStructure(): RecurrentNetworkStructure? {
+  override fun getPrevStateStructure(): RecurrentNetworkStructure<InputNDArrayType>? {
     return this.sequence.getStateStructure(this.curStateIndex - 1)
   }
 
   /**
    *
    */
-  override fun getNextStateStructure(): RecurrentNetworkStructure? {
+  override fun getNextStateStructure(): RecurrentNetworkStructure<InputNDArrayType>? {
     return this.sequence.getStateStructure(this.curStateIndex + 1)
   }
 
@@ -75,7 +80,7 @@ class RecurrentNeuralProcessor(override val neuralNetwork: NeuralNetwork) :
   /**
    * reset
    */
-  override fun getOutput(copy: Boolean): NDArray{
+  override fun getOutput(copy: Boolean): DenseNDArray {
     return if (copy) {
       this.sequence.lastStructure!!.outputLayer.outputArray.values.copy()
     } else {
@@ -101,7 +106,7 @@ class RecurrentNeuralProcessor(override val neuralNetwork: NeuralNetwork) :
   /**
    *
    */
-  private fun forwardCurrentState(featuresArray: NDArray, useDropout: Boolean = false) {
+  private fun forwardCurrentState(featuresArray: InputNDArrayType, useDropout: Boolean = false) {
     this.sequence.lastStructure!!.forward(features = featuresArray, useDropout = useDropout)
   }
 
@@ -117,19 +122,28 @@ class RecurrentNeuralProcessor(override val neuralNetwork: NeuralNetwork) :
    *
    * @return
    */
-  fun getInputSequenceErrors(copy: Boolean = true): Array<NDArray> = Array(size = this.sequence.length, init = {
-    if (copy) {
-      this.sequence.states[it].structure.inputLayer.inputArray.errors.copy()
-    } else {
-      this.sequence.states[it].structure.inputLayer.inputArray.errors
+  fun getInputSequenceErrors(copy: Boolean = true) = Array(
+    size = this.sequence.length,
+    init = {
+      val inputErrors = this.sequence.states[it].structure.inputLayer.inputArray.errors
+
+      require(inputErrors is DenseNDArray) {
+        "Input errors available only if input is dense"
+      }
+
+      if (copy) {
+        inputErrors.copy() as DenseNDArray
+      } else {
+        inputErrors as DenseNDArray
+      }
     }
-  })
+  )
 
   /**
    *
    * @return
    */
-  fun getOutputSequence(copy: Boolean = true): Array<NDArray> =
+  fun getOutputSequence(copy: Boolean = true): Array<DenseNDArray> =
     Array(size = this.sequence.length, init = {
       if (copy) {
         this.sequence.states[it].structure.outputLayer.outputArray.values.copy()
@@ -143,7 +157,7 @@ class RecurrentNeuralProcessor(override val neuralNetwork: NeuralNetwork) :
    * @param sequenceFeaturesArray features for each item of the sequence
    * @return the last output of the network after the whole sequence is been forwarded
    */
-  fun forward(sequenceFeaturesArray: ArrayList<NDArray>): NDArray {
+  fun forward(sequenceFeaturesArray: ArrayList<InputNDArrayType>): DenseNDArray {
 
     sequenceFeaturesArray.forEachIndexed { i, features ->
       this.forward(features, firstState = (i == 0))
@@ -156,7 +170,7 @@ class RecurrentNeuralProcessor(override val neuralNetwork: NeuralNetwork) :
    *
    * @param featuresArray features
    */
-  fun forward(featuresArray: NDArray, firstState: Boolean, useDropout: Boolean = false): NDArray {
+  fun forward(featuresArray: InputNDArrayType, firstState: Boolean, useDropout: Boolean = false): DenseNDArray {
 
     if (firstState) {
       this.reset()
@@ -172,7 +186,7 @@ class RecurrentNeuralProcessor(override val neuralNetwork: NeuralNetwork) :
    *
    * @param outputErrors output error
    */
-  fun backward(outputErrors: NDArray, propagateToInput: Boolean = false) {
+  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false) {
 
     val outputErrorsSequence = Array(
       size = this.sequence.length,
@@ -185,7 +199,7 @@ class RecurrentNeuralProcessor(override val neuralNetwork: NeuralNetwork) :
    *
    * @param outputErrorsSequence output errors for each item of the sequence
    */
-  fun backward(outputErrorsSequence: Array<NDArray>, propagateToInput: Boolean = false) {
+  fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean = false) {
 
     require(outputErrorsSequence.size == this.sequence.length) {
       "Number of errors (${outputErrorsSequence.size}) does not " +

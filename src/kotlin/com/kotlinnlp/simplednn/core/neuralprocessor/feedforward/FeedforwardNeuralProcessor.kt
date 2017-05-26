@@ -7,24 +7,26 @@
 
 package com.kotlinnlp.simplednn.core.neuralprocessor.feedforward
 
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardNetworkStructure
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  *
- * @param neuralNetwork neuralNetwork
+ * @param neuralNetwork a neuralNetwork
  */
-class FeedforwardNeuralProcessor(override val neuralNetwork: NeuralNetwork) : NeuralProcessor {
+class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val neuralNetwork: NeuralNetwork
+) : NeuralProcessor {
 
   /**
    *
    */
-  var structure = FeedforwardNetworkStructure(
-    layersConfiguration = this.neuralNetwork.layersConfiguration,
-    params = this.neuralNetwork.model)
+  private val inputType = this.neuralNetwork.layersConfiguration.first().inputType
 
   /**
    * The errors of the network model parameters
@@ -33,9 +35,16 @@ class FeedforwardNeuralProcessor(override val neuralNetwork: NeuralNetwork) : Ne
 
   /**
    *
+   */
+  var structure = FeedforwardNetworkStructure<InputNDArrayType>(
+    layersConfiguration = this.neuralNetwork.layersConfiguration,
+    params = this.neuralNetwork.model)
+
+  /**
+   *
    * @return
    */
-  override fun getOutput(copy: Boolean): NDArray {
+  override fun getOutput(copy: Boolean): DenseNDArray {
     return if (copy) {
       this.structure.outputLayer.outputArray.values.copy()
     } else {
@@ -54,13 +63,14 @@ class FeedforwardNeuralProcessor(override val neuralNetwork: NeuralNetwork) : Ne
 
   /**
    *
-   * @return
    */
-  fun getInputErrors(copy: Boolean = true): NDArray {
+  fun getInputErrors(copy: Boolean = true): DenseNDArray {
+    require(this.inputType == LayerType.Input.Dense) { "Input errors available only if input is dense" }
+
     return if (copy) {
-      this.structure.inputLayer.inputArray.errors.copy()
+      this.structure.inputLayer.inputArray.errors.copy() as DenseNDArray
     } else {
-      this.structure.inputLayer.inputArray.errors
+      this.structure.inputLayer.inputArray.errors as DenseNDArray
     }
   }
 
@@ -68,7 +78,7 @@ class FeedforwardNeuralProcessor(override val neuralNetwork: NeuralNetwork) : Ne
    *
    * @param featuresArray features
    */
-  fun forward(featuresArray: NDArray, useDropout: Boolean = false): NDArray {
+  fun forward(featuresArray: InputNDArrayType, useDropout: Boolean = false): DenseNDArray {
 
     this.structure.forward(featuresArray, useDropout = useDropout)
 
@@ -81,12 +91,11 @@ class FeedforwardNeuralProcessor(override val neuralNetwork: NeuralNetwork) : Ne
    * @param propagateToInput propagateErrorsToInput
    * @return the avgLoss respect to the output of the network
    */
-  fun backward(outputErrors: NDArray,
+  fun backward(outputErrors: DenseNDArray,
                propagateToInput: Boolean = false) {
     this.structure.backward(
       outputErrors = outputErrors,
       paramsErrors = this.backwardParamsErrors,
       propagateToInput = propagateToInput)
   }
-
 }

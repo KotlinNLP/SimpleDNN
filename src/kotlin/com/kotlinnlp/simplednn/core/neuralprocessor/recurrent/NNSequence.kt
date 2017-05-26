@@ -11,17 +11,18 @@ package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.*
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  *
  */
-class NNSequence(val neuralNetwork: NeuralNetwork) {
+class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork: NeuralNetwork) {
 
   /**
    *
    * @param structure neural network
    */
-  inner class NNState(val structure: RecurrentNetworkStructure)
+  inner class NNState(val structure: RecurrentNetworkStructure<InputNDArrayType>)
 
   /**
    * Sequence of RNNStates
@@ -74,21 +75,21 @@ class NNSequence(val neuralNetwork: NeuralNetwork) {
    *
    * @return
    */
-  val lastStructure: RecurrentNetworkStructure?
+  val lastStructure: RecurrentNetworkStructure<InputNDArrayType>?
     get() = if (this.states.isNotEmpty()) this.states.last().structure else null
 
   /**
    *
    * @return states last index
    */
-  fun getStateStructure(stateIndex: Int): RecurrentNetworkStructure? {
+  fun getStateStructure(stateIndex: Int): RecurrentNetworkStructure<InputNDArrayType>? {
     return if (stateIndex in 0 .. this.lastIndex) this.states[stateIndex].structure else null
   }
 
   /**
    *
    */
-  fun add(structure: RecurrentNetworkStructure) = this.states.add(NNState(structure))
+  fun add(structure: RecurrentNetworkStructure<InputNDArrayType>) = this.states.add(NNState(structure))
 
   /**
    *

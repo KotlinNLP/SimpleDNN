@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.core.neuralprocessor
 
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 
 /**
  *
@@ -29,6 +29,5 @@ interface NeuralProcessor {
   /**
    *
    */
-  fun getOutput(copy: Boolean = true): NDArray
-
+  fun getOutput(copy: Boolean = true): DenseNDArray
 }
