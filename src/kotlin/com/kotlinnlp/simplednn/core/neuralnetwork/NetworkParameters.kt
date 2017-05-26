@@ -20,7 +20,7 @@ import java.io.Serializable
  */
 class NetworkParameters(val layersConfiguration: List<LayerConfiguration>) :
   Serializable,
-  Iterable<UpdatableArray> {
+  Iterable<UpdatableArray<*>> {
 
   companion object {
 
@@ -34,7 +34,7 @@ class NetworkParameters(val layersConfiguration: List<LayerConfiguration>) :
   /**
    * The iterator inner class which iterates over all the parameters of all the layers
    */
-  private inner class LayerParametersIterator: Iterator<UpdatableArray> {
+  private inner class LayerParametersIterator: Iterator<UpdatableArray<*>> {
     /**
      *
      */
@@ -43,7 +43,7 @@ class NetworkParameters(val layersConfiguration: List<LayerConfiguration>) :
     /**
      *
      */
-    private var layerParamsIterator: Iterator<UpdatableArray> = this@NetworkParameters.paramsPerLayer.first().iterator()
+    private var layerParamsIterator: Iterator<UpdatableArray<*>> = this@NetworkParameters.paramsPerLayer.first().iterator()
 
     /**
      *
@@ -55,7 +55,7 @@ class NetworkParameters(val layersConfiguration: List<LayerConfiguration>) :
     /**
      *
      */
-    override fun next(): UpdatableArray {
+    override fun next(): UpdatableArray<*> {
 
       if (!this.layerParamsIterator.hasNext()) {
         this.layerParamsIterator = this@NetworkParameters.paramsPerLayer[++this.curLayerIndex].iterator()
@@ -84,7 +84,7 @@ class NetworkParameters(val layersConfiguration: List<LayerConfiguration>) :
    *
    * @return the iterator of all the parameters
    */
-  override fun iterator(): Iterator<UpdatableArray> = this.LayerParametersIterator()
+  override fun iterator(): Iterator<UpdatableArray<*>> = this.LayerParametersIterator()
 
   /**
    * Assign the values of each parameter of [assigningParameters] to the parameters of this [NetworkParameters].
@@ -114,7 +114,10 @@ class NetworkParameters(val layersConfiguration: List<LayerConfiguration>) :
    * @param n an integer number
    */
   fun assignDiv(n: Int) {
-    if (n > 1) this.forEach { it.values.assignDiv(n) }
+    if (n > 1) {
+      val nDouble = n.toDouble()
+      this.forEach { it.values.assignDiv(nDouble) }
+    }
   }
 
   /**
