@@ -28,7 +28,7 @@ class CFNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters,
-  layerContextWindow: LayerContextWindow<InputNDArrayType>,
+  layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
 ) : RecurrentLayerStructure<InputNDArrayType>(
@@ -110,7 +110,7 @@ class CFNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * forG = sigmoid(wForG (dot) x + bForG + wrForG (dot) yPrev)
    * c = f(wc (dot) x)
    */
-  private fun setGates(prevStateLayer: LayerStructure<InputNDArrayType>?) { this.params as CFNLayerParameters
+  private fun setGates(prevStateLayer: LayerStructure<*>?) { this.params as CFNLayerParameters
 
     val x: InputNDArrayType = this.inputArray.values
     val c: DenseNDArray = this.candidate.values
@@ -155,7 +155,7 @@ class CFNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param prevStateLayer the layer in the previous state
    */
-  private fun assignGatesGradients(prevStateLayer: CFNLayerStructure<InputNDArrayType>?) {
+  private fun assignGatesGradients(prevStateLayer: CFNLayerStructure<*>?) {
     this.params as CFNLayerParameters
 
     val gy: DenseNDArray = this.outputArray.errors
@@ -228,7 +228,7 @@ class CFNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun addOutputRecurrentGradients(nextStateLayer: CFNLayerStructure<InputNDArrayType>?) {
+  private fun addOutputRecurrentGradients(nextStateLayer: CFNLayerStructure<*>?) {
 
     if (nextStateLayer != null) {
       val gy: DenseNDArray = this.outputArray.errors
@@ -242,7 +242,7 @@ class CFNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getLayerRecurrentContribute(nextStateLayer: CFNLayerStructure<InputNDArrayType>): DenseNDArray {
+  private fun getLayerRecurrentContribute(nextStateLayer: CFNLayerStructure<*>): DenseNDArray {
     this.params as CFNLayerParameters
 
     val inputGate = nextStateLayer.inputGate

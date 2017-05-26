@@ -28,7 +28,7 @@ class GRULayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters,
-  layerContextWindow: LayerContextWindow<InputNDArrayType>,
+  layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
 ) : RecurrentLayerStructure<InputNDArrayType>(
@@ -102,7 +102,7 @@ class GRULayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * p = sigmoid(wp (dot) x + bp + wpRec (dot) yPrev)
    * c = f(wc (dot) x + bc + wcRec (dot) (yPrev * r))
    */
-  private fun setGates(prevStateLayer: LayerStructure<InputNDArrayType>?) { this.params as GRULayerParameters
+  private fun setGates(prevStateLayer: LayerStructure<*>?) { this.params as GRULayerParameters
 
     val x: InputNDArrayType = this.inputArray.values
 
@@ -138,7 +138,7 @@ class GRULayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     val prevStateOutput = this.layerContextWindow.getPrevStateLayer()?.outputArray
     val nextStateLayer = this.layerContextWindow.getNextStateLayer()
 
-    this.addOutputRecurrentGradients(nextStateLayer as? GRULayerStructure<InputNDArrayType>)
+    this.addOutputRecurrentGradients(nextStateLayer as? GRULayerStructure<*>)
 
     this.assignGatesGradients(prevStateOutput)
     this.assignParamsGradients(prevStateOutput)
@@ -235,7 +235,7 @@ class GRULayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun addOutputRecurrentGradients(nextStateLayer: GRULayerStructure<InputNDArrayType>?) {
+  private fun addOutputRecurrentGradients(nextStateLayer: GRULayerStructure<*>?) {
 
     if (nextStateLayer != null) {
       val gy: DenseNDArray = this.outputArray.errors
@@ -249,7 +249,7 @@ class GRULayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getLayerRecurrentContribute(nextStateLayer: GRULayerStructure<InputNDArrayType>): DenseNDArray {
+  private fun getLayerRecurrentContribute(nextStateLayer: GRULayerStructure<*>): DenseNDArray {
     this.params as GRULayerParameters
 
     val resetGate = nextStateLayer.resetGate

@@ -28,7 +28,7 @@ class RANLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters,
-  layerContextWindow: LayerContextWindow<InputNDArrayType>,
+  layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
 ) : RecurrentLayerStructure<InputNDArrayType>(
@@ -106,7 +106,7 @@ class RANLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * forG = sigmoid(wForG (dot) x + bForG + wrForG (dot) yPrev)
    * c = wc (dot) x + bc
    */
-  private fun setGates(prevStateLayer: LayerStructure<InputNDArrayType>?) { this.params as RANLayerParameters
+  private fun setGates(prevStateLayer: LayerStructure<*>?) { this.params as RANLayerParameters
 
     val x: InputNDArrayType = this.inputArray.values
     val c: DenseNDArray = this.candidate.values
@@ -151,7 +151,7 @@ class RANLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param prevStateLayer the layer in the previous state
    */
-  private fun assignGatesGradients(prevStateLayer: RANLayerStructure<InputNDArrayType>?) {
+  private fun assignGatesGradients(prevStateLayer: RANLayerStructure<*>?) {
     this.params as RANLayerParameters
 
     val gy: DenseNDArray = this.outputArray.errors
@@ -225,7 +225,7 @@ class RANLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun addOutputRecurrentGradients(nextStateLayer: RANLayerStructure<InputNDArrayType>?) {
+  private fun addOutputRecurrentGradients(nextStateLayer: RANLayerStructure<*>?) {
 
     if (nextStateLayer != null) {
       val gy: DenseNDArray = this.outputArray.errors
@@ -239,7 +239,7 @@ class RANLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getLayerRecurrentContribute(nextStateLayer: RANLayerStructure<InputNDArrayType>): DenseNDArray {
+  private fun getLayerRecurrentContribute(nextStateLayer: RANLayerStructure<*>): DenseNDArray {
     this.params as RANLayerParameters
 
     val inputGate = nextStateLayer.inputGate

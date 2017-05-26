@@ -26,7 +26,7 @@ abstract class RecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayTy
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters,
-  val layerContextWindow: LayerContextWindow<InputNDArrayType>,
+  val layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
 ) : LayerStructure<InputNDArrayType>(

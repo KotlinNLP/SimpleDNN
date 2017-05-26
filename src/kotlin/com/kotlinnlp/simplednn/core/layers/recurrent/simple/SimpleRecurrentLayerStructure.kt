@@ -27,7 +27,7 @@ class SimpleRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters,
-  layerContextWindow: LayerContextWindow<InputNDArrayType>,
+  layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
 ) : RecurrentLayerStructure<InputNDArrayType>(
@@ -104,7 +104,7 @@ class SimpleRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>
    * gw = gb (dot) x
    * gwRec = gyNext (dot) y
    */
-  private fun assignParamsGradients(nextStateLayer: LayerStructure<InputNDArrayType>?) {
+  private fun assignParamsGradients(nextStateLayer: LayerStructure<*>?) {
 
     val x: InputNDArrayType = this.inputArray.values
     val gb: DenseNDArray = this.paramsErrors!!.biases.values
@@ -145,7 +145,7 @@ class SimpleRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>
   /**
    * gy += (gyNext (dot) wRec) * yDeriv
    */
-  private fun addLayerRecurrentGradients(nextStateLayer: LayerStructure<InputNDArrayType>) {
+  private fun addLayerRecurrentGradients(nextStateLayer: LayerStructure<*>) {
     this.params as SimpleRecurrentLayerParameters
 
     val gy: DenseNDArray = this.outputArray.errors

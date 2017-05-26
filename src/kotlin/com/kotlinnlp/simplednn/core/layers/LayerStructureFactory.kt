@@ -24,13 +24,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  */
 object LayerStructureFactory {
 
-  operator fun <InputNDArrayType : NDArray<InputNDArrayType>> invoke(inputArray: AugmentedArray<InputNDArrayType>,
-                      outputArray: AugmentedArray<DenseNDArray>,
-                      params: LayerParameters,
-                      activationFunction: ActivationFunction?,
-                      connectionType: LayerType.Connection,
-                      dropout: Double = 0.0,
-                      contextWindow: LayerContextWindow<InputNDArrayType>? = null): LayerStructure<InputNDArrayType> =
+  operator fun <InputNDArrayType : NDArray<InputNDArrayType>> invoke(
+    inputArray: AugmentedArray<InputNDArrayType>,
+    outputArray: AugmentedArray<DenseNDArray>,
+    params: LayerParameters,
+    activationFunction: ActivationFunction?,
+    connectionType: LayerType.Connection,
+    dropout: Double = 0.0,
+    contextWindow: LayerContextWindow? = null): LayerStructure<InputNDArrayType> =
 
     when(connectionType) {
 

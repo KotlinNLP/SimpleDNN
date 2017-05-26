@@ -28,7 +28,7 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters,
-  layerContextWindow: LayerContextWindow<InputNDArrayType>,
+  layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
 ) : RecurrentLayerStructure<InputNDArrayType>(
@@ -107,7 +107,7 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * cand = f(wCand (dot) x + bC + wCandRec (dot) yPrev)
    * cell = inG * cand + forG * cellPrev
    */
-  private fun setGates(prevStateLayer: LayerStructure<InputNDArrayType>?) {
+  private fun setGates(prevStateLayer: LayerStructure<*>?) {
 
     this.forwardGates()
 
@@ -147,7 +147,7 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  private fun addGatesRecurrentContribute(prevStateLayer: LayerStructure<InputNDArrayType>) {
+  private fun addGatesRecurrentContribute(prevStateLayer: LayerStructure<*>) {
     this.params as LSTMLayerParameters
 
     val yPrev: DenseNDArray = prevStateLayer.outputArray.values
@@ -193,8 +193,7 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param prevStateLayer the layer in the previous state
    * @param nextStateLayer the layer in the next state
    */
-  private fun assignGatesGradients(prevStateLayer: LSTMLayerStructure<InputNDArrayType>?,
-                                   nextStateLayer: LSTMLayerStructure<InputNDArrayType>?) {
+  private fun assignGatesGradients(prevStateLayer: LSTMLayerStructure<*>?, nextStateLayer: LSTMLayerStructure<*>?) {
 
     val gy: DenseNDArray = this.outputArray.errors
 
@@ -281,7 +280,7 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun addOutputRecurrentGradients(nextStateLayer: LSTMLayerStructure<InputNDArrayType>?) {
+  private fun addOutputRecurrentGradients(nextStateLayer: LSTMLayerStructure<*>?) {
 
     if (nextStateLayer != null) {
       val gy: DenseNDArray = this.outputArray.errors
@@ -298,7 +297,7 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getLayerRecurrentContribute(nextStateLayer: LSTMLayerStructure<InputNDArrayType>): DenseNDArray {
+  private fun getLayerRecurrentContribute(nextStateLayer: LSTMLayerStructure<*>): DenseNDArray {
     this.params as LSTMLayerParameters
 
     val gInGNext: DenseNDArray = nextStateLayer.inputGate.errors
@@ -323,7 +322,7 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getCellRecurrentContribute(nextStateLayer: LSTMLayerStructure<InputNDArrayType>): DenseNDArray {
+  private fun getCellRecurrentContribute(nextStateLayer: LSTMLayerStructure<*>): DenseNDArray {
 
     val gCellNext: DenseNDArray = nextStateLayer.cell.errors
     val forGNext: DenseNDArray = nextStateLayer.forgetGate.values
