@@ -79,6 +79,12 @@ class SparseNDArray : NDArray<SparseNDArray> {
   /**
    *
    */
+  val mask: NDArrayMask
+    get() = TODO("not implemented")
+
+  /**
+   *
+   */
   override fun get(i: Int): Double {
     TODO("not implemented")
   }
