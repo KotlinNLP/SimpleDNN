@@ -47,8 +47,11 @@ class AdaGradMethod(
   }
 
   /**
+   * Optimize the errors.
    *
-   * @param errors errors
+   * @param errors the errors to optimize
+   * @param array an [UpdatableDenseArray]
+   *
    * @return optimized errors
    */
   override fun <NDArrayType: NDArray<NDArrayType>> optimizeErrors(

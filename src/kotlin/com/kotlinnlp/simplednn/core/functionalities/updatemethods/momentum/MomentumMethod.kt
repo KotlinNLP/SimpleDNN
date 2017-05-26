@@ -59,8 +59,11 @@ open class MomentumMethod(
   }
 
   /**
+   * Optimize the errors.
    *
-   * @param errors errors
+   * @param errors the errors to optimize
+   * @param array an [UpdatableDenseArray]
+   *
    * @return optimized errors
    */
   override fun <NDArrayType: NDArray<NDArrayType>> optimizeErrors(
@@ -99,9 +102,13 @@ open class MomentumMethod(
   }
 
   /**
+   * Optimize sparse errors.
    * Update velocity with adapted learning rate.
    *
-   * @return the optimized errors
+   * @param errors the sparse errors to optimize
+   * @param array an [UpdatableDenseArray]
+   *
+   * @return optimized sparse errors
    */
   private fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
 
@@ -115,9 +122,13 @@ open class MomentumMethod(
   }
 
   /**
+   * Optimize dense errors.
    * Update velocity with adapted learning rate.
    *
-   * @return the optimized errors
+   * @param errors the dense errors to optimize
+   * @param array an [UpdatableDenseArray]
+   *
+   * @return optimized dense errors
    */
   private fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
 

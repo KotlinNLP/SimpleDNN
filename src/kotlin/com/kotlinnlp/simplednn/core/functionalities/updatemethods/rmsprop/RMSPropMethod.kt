@@ -49,7 +49,7 @@ class RMSPropMethod(
   }
 
   /**
-   * Optimize
+   * Optimize the errors.
    *
    * @param errors the errors to optimize
    * @param array an [UpdatableDenseArray]
@@ -78,7 +78,12 @@ class RMSPropMethod(
   }
 
   /**
+   * Optimize sparse errors.
    *
+   * @param errors the sparse errors to optimize
+   * @param array an [UpdatableDenseArray]
+   *
+   * @return optimized sparse errors
    */
   private fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
 
@@ -95,7 +100,12 @@ class RMSPropMethod(
   }
 
   /**
+   * Optimize dense errors.
    *
+   * @param errors the dense errors to optimize
+   * @param array an [UpdatableDenseArray]
+   *
+   * @return optimized dense errors
    */
   private fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
 
