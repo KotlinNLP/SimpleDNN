@@ -137,7 +137,7 @@ class SimpleRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>
     gx.assignValues(gb.T.dot(w))
 
     // gx *= xDeriv
-    if (this.inputArray.hasActivation) {
+    if (this.inputArray.hasActivation && gx is DenseNDArray) {
       gx.assignProd(this.inputArray.calculateActivationDeriv())
     }
   }

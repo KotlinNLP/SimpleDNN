@@ -272,7 +272,7 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
       .assignSum(gForG.T.dot(wForG))
       .assignSum(gCand.T.dot(wCand))
 
-    if (this.inputArray.hasActivation) {
+    if (this.inputArray.hasActivation && gx is DenseNDArray) {
       gx.assignProd(this.inputArray.calculateActivationDeriv())
     }
   }

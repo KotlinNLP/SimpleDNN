@@ -219,7 +219,7 @@ class CFNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     gx.assignValues(gForG.T.dot(wForG)).assignSum(gC.T.dot(wC)).assignSum(gInG.T.dot(wInG))
 
-    if (this.inputArray.hasActivation) {
+    if (this.inputArray.hasActivation && gx is DenseNDArray) {
       gx.assignProd(this.inputArray.calculateActivationDeriv())
     }
   }

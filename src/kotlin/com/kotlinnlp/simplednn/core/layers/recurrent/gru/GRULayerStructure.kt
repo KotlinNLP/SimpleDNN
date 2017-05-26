@@ -226,7 +226,7 @@ class GRULayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     gx.assignValues(gp.T.dot(wp)).assignSum(gc.T.dot(wc)).assignSum(gr.T.dot(wr))
 
-    if (this.inputArray.hasActivation) {
+    if (this.inputArray.hasActivation && gx is DenseNDArray) {
       gx.assignProd(this.inputArray.calculateActivationDeriv())
     }
   }
