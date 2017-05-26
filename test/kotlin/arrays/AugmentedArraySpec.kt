@@ -9,7 +9,7 @@ package arrays
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
@@ -25,8 +25,8 @@ class AugmentedArraySpec : Spek({
 
   describe("an AugmentedArray") {
 
-    val initArray = NDArray.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
-    val errors = NDArray.arrayOf(doubleArrayOf(0.4, 0.8, 0.1, 0.8, 0.4, 0.1, 0.2, 0.9, 0.2))
+    val initArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
+    val errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.8, 0.1, 0.8, 0.4, 0.1, 0.2, 0.9, 0.2))
 
     context("initialization with an NDArray") {
 
@@ -46,7 +46,7 @@ class AugmentedArraySpec : Spek({
       on("before assignment") {
 
         val augmentedArray = AugmentedArray(initArray)
-        val zeros = NDArray.zeros(shape = Shape(9))
+        val zeros = DenseNDArrayFactory.zeros(shape = Shape(9))
 
         it("should have zeros errors") {
           assertEquals(true, augmentedArray.errors.equals(zeros, tolerance = 1.0e-08))

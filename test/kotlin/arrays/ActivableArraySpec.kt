@@ -9,7 +9,8 @@ package arrays
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.*
 import com.kotlinnlp.simplednn.core.arrays.ActivableArray
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -24,12 +25,12 @@ class ActivableArraySpec : Spek({
 
   describe("an ActivableArray") {
 
-    val initArray = NDArray.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
+    val initArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
     val activationFunction = ELU(alpha = 1.0)
-    val expectedActivatedValues = NDArray.arrayOf(doubleArrayOf(
+    val expectedActivatedValues = DenseNDArrayFactory.arrayOf(doubleArrayOf(
       0.0, 0.1, 0.01, -0.095162582, -0.009950166, 1.0, 10.0, -0.632120559, -0.9999546
     ))
-    val activatedValuesDeriv = NDArray.arrayOf(doubleArrayOf(
+    val activatedValuesDeriv = DenseNDArrayFactory.arrayOf(doubleArrayOf(
       1.0, 1.0, 1.0, 0.90483742, 0.99004983, 1.0, 1.0, 0.36787944, 0.0000454
     ))
 
@@ -37,7 +38,7 @@ class ActivableArraySpec : Spek({
 
       on("with the size, assigning values after") {
 
-        val activableArray = ActivableArray(size = 9)
+        val activableArray: ActivableArray<DenseNDArray> = ActivableArray(size = 9)
         activableArray.assignValues(initArray)
 
         it("should contain values with the expected number of rows") {

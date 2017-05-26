@@ -8,6 +8,7 @@
 package arrays
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
@@ -28,7 +29,7 @@ class UpdatableArraySpec : Spek({
 
       on("with the length") {
 
-        val updatableArray = UpdatableArray(length = 5)
+        val updatableArray = UpdatableArray(DenseNDArrayFactory.zeros(Shape(5)))
 
         it("should contain values with the expected number of rows") {
           assertEquals(5, updatableArray.values.rows)
@@ -45,7 +46,7 @@ class UpdatableArraySpec : Spek({
 
       on("with the shape") {
 
-        val updatableArray = UpdatableArray(shape = Shape(3, 7))
+        val updatableArray = UpdatableArray(DenseNDArrayFactory.zeros(Shape(3, 7)))
 
         it("should contain values with the expected number of rows") {
           assertEquals(3, updatableArray.values.rows)
