@@ -271,7 +271,7 @@ class SparseNDArray : NDArray<SparseNDArray> {
   /**
    *
    */
-  override fun assignSub(a: SparseNDArray): SparseNDArray {
+  override fun assignSub(a: NDArray<*>): SparseNDArray {
     TODO("not implemented")
   }
 

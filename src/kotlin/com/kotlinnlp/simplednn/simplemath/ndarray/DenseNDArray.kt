@@ -260,8 +260,14 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override fun assignSub(a: DenseNDArray): DenseNDArray {
-    this.storage.subi(a.storage)
+  override fun assignSub(a: NDArray<*>): DenseNDArray {
+
+    when(a) {
+      is DenseNDArray -> this.storage.subi(a.storage)
+      is SparseNDArray -> TODO("not implemented")
+      is SparseBinaryNDArray -> TODO("not implemented")
+    }
+
     return this
   }
 

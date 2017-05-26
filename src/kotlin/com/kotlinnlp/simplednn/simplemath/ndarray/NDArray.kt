@@ -180,7 +180,7 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
-  fun assignSub(a: SelfType): SelfType
+  fun assignSub(a: NDArray<*>): SelfType
 
   /**
    *
