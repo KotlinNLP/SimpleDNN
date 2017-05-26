@@ -31,4 +31,13 @@ sealed class LayerType {
     CFN(property = Property.Recurrent),
     RAN(property = Property.Recurrent)
   }
+
+  /**
+   *
+   */
+  enum class Input {
+    Dense,
+    Sparse,
+    SparseBinary
+  }
 }

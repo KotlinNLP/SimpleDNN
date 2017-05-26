@@ -15,6 +15,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
  */
 data class LayerConfiguration(
   val size: Int,
+  val inputType: LayerType.Input = LayerType.Input.Dense,
   val connectionType: LayerType.Connection? = null,
   val activationFunction: ActivationFunction? = null,
   val dropout: Double = 0.0
