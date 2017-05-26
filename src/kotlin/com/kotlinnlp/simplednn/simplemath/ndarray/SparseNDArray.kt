@@ -431,6 +431,17 @@ class SparseNDArray : NDArray<SparseNDArray> {
   }
 
   /**
+   * Square root of this [SparseNDArray] masked by [mask]
+   *
+   * @param mask the mask to apply
+   *
+   * @return a [SparseNDArray]
+   */
+  override fun sqrt(mask: NDArrayMask): SparseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
    * Power
    *
    * @param power the exponent

@@ -305,6 +305,15 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun sqrt(): SelfType
 
   /**
+   * Square root of this [NDArray] masked by [mask]
+   *
+   * @param mask the mask to apply
+   *
+   * @return a [SparseNDArray]
+   */
+  fun sqrt(mask: NDArrayMask): SparseNDArray
+
+  /**
    * Power
    *
    * @param power the exponent

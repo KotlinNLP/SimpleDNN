@@ -482,6 +482,17 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
     return DenseNDArray(MatrixFunctions.sqrt(this.storage))
   }
 
+  /**
+   * Square root of this [DenseNDArray] masked by [mask]
+   *
+   * @param mask the mask to apply
+   *
+   * @return a [SparseNDArray]
+   */
+  override fun sqrt(mask: NDArrayMask): SparseNDArray {
+    TODO("not implemented")
+  }
+
 
   /**
    * Power
