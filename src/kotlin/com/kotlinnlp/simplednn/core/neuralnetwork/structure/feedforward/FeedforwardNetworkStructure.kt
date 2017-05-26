@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * The FeedforwardNetworkStructure.
@@ -18,10 +19,10 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
  * @param layersConfiguration layers layersConfiguration
  * @param params the network parameters per layer
  */
-class FeedforwardNetworkStructure(
+class FeedforwardNetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   layersConfiguration: List<LayerConfiguration>,
   params: NetworkParameters
-) : NetworkStructure(layersConfiguration = layersConfiguration, params = params) {
+) : NetworkStructure<InputNDArrayType>(layersConfiguration = layersConfiguration, params = params) {
 
   /**
    * LayerStructure factory used to concatV two layers, given the input array (referenced from
@@ -33,10 +34,11 @@ class FeedforwardNetworkStructure(
    *
    * @return a new LayerStructure
    */
-  override fun layerFactory(inputArray: AugmentedArray,
-                            outputConfiguration: LayerConfiguration,
-                            params: LayerParameters,
-                            dropout: Double): LayerStructure {
+  override fun <InputNDArrayType : NDArray<InputNDArrayType>> layerFactory(
+    inputArray: AugmentedArray<InputNDArrayType>,
+    outputConfiguration: LayerConfiguration,
+    params: LayerParameters,
+    dropout: Double): LayerStructure<InputNDArrayType> {
 
     require(outputConfiguration.connectionType == LayerType.Connection.Feedforward) {
       "Layer connection of type %s not allowed [only %s]".format(

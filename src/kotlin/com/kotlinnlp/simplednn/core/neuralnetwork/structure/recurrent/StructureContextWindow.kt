@@ -7,18 +7,20 @@
 
 package com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent
 
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+
 /**
  *
  */
-interface StructureContextWindow {
+interface StructureContextWindow<InputNDArrayType : NDArray<InputNDArrayType>> {
 
   /**
    *
    */
-  fun getPrevStateStructure(): RecurrentNetworkStructure?
+  fun getPrevStateStructure(): RecurrentNetworkStructure<InputNDArrayType>?
 
   /**
    *
    */
-  fun getNextStateStructure(): RecurrentNetworkStructure?
+  fun getNextStateStructure(): RecurrentNetworkStructure<InputNDArrayType>?
 }

@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * The RecurrentNetworkStructure.
@@ -19,17 +20,17 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
  * @param layersConfiguration layers layersConfiguration
  * @param params the network parameters per layer
  */
-class RecurrentNetworkStructure(
+class RecurrentNetworkStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
   layersConfiguration: List<LayerConfiguration>,
   params: NetworkParameters,
-  val structureContextWindow: StructureContextWindow
+  val structureContextWindow: StructureContextWindow<InputNDArrayType>
 ) : LayerContextWindow,
-  NetworkStructure(layersConfiguration = layersConfiguration, params = params) {
+    NetworkStructure<InputNDArrayType>(layersConfiguration = layersConfiguration, params = params) {
 
   /**
    *
    */
-  override fun getPrevStateLayer(): LayerStructure? {
+  override fun getPrevStateLayer(): LayerStructure<*>? {
     val prevStateStructure = this.structureContextWindow.getPrevStateStructure()
     return prevStateStructure?.layers?.get(this.curLayerIndex)
   }
@@ -37,7 +38,7 @@ class RecurrentNetworkStructure(
   /**
    *
    */
-  override fun getNextStateLayer(): LayerStructure? {
+  override fun getNextStateLayer(): LayerStructure<*>? {
     val nextStateStructure = this.structureContextWindow.getNextStateStructure()
     return nextStateStructure?.layers?.get(this.curLayerIndex)
   }
@@ -52,12 +53,13 @@ class RecurrentNetworkStructure(
    *
    * @return a new LayerStructure
    */
-  override fun layerFactory(inputArray: AugmentedArray,
-                            outputConfiguration: LayerConfiguration,
-                            params: LayerParameters,
-                            dropout: Double): LayerStructure {
+  override fun <InputNDArrayType : NDArray<InputNDArrayType>> layerFactory(
+    inputArray: AugmentedArray<InputNDArrayType>,
+    outputConfiguration: LayerConfiguration,
+    params: LayerParameters,
+    dropout: Double): LayerStructure<InputNDArrayType> {
 
-    return LayerStructureFactory(
+    return LayerStructureFactory<InputNDArrayType>(
       inputArray = inputArray,
       outputArray = AugmentedArray(outputConfiguration.size),
       params = params,

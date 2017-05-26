@@ -10,7 +10,10 @@ package com.kotlinnlp.simplednn.core.neuralnetwork.structure
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.SparseBinaryNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.SparseNDArray
 
 /**
  * The NetworkStructure.
@@ -18,14 +21,14 @@ import com.kotlinnlp.simplednn.simplemath.NDArray
  * @param layersConfiguration layers layersConfiguration
  * @param params the network parameters per layer
  */
-abstract class NetworkStructure(
+abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   val layersConfiguration: List<LayerConfiguration>,
   val params: NetworkParameters) {
 
   /**
    * Contains the layers of the neural network
    */
-  val layers: Array<LayerStructure>
+  val layers: Array<LayerStructure<*>>
 
   /**
    * Used to track the loop over the layers during the forward and the backward
@@ -35,12 +38,14 @@ abstract class NetworkStructure(
   /**
    * The first layer
    */
-  val inputLayer: LayerStructure get() = layers.first()
+  @Suppress("UNCHECKED_CAST")
+  val inputLayer: LayerStructure<InputNDArrayType> get() = layers.first() as LayerStructure<InputNDArrayType>
 
   /**
    * The last layer
    */
-  val outputLayer: LayerStructure get() = layers.last()
+  @Suppress("UNCHECKED_CAST")
+  val outputLayer: LayerStructure<DenseNDArray> get() = layers.last() as LayerStructure<DenseNDArray>
 
   /**
    * In the layersConfiguration layers are defined as a list [x, y, z].
@@ -48,25 +53,28 @@ abstract class NetworkStructure(
    * The output of a layer is a reference of the input of the next layer.
    */
   init {
+    require(layersConfiguration.subList(1, layersConfiguration.lastIndex).all {
+      it.inputType == LayerType.Input.Dense
+    })
 
-    val initLayer = arrayOfNulls<LayerStructure>(layersConfiguration.size - 1)
+    val initLayers = arrayOfNulls<LayerStructure<*>>(layersConfiguration.size - 1)
 
-    initLayer[0] = this.layerFactory(
+    initLayers[0] = this.layerFactory(
       inputConfiguration = layersConfiguration[0],
       outputConfiguration = layersConfiguration[1],
       params = this.params.paramsPerLayer[0]
     )
 
     for (i in 1 until layersConfiguration.size - 1) {
-      initLayer[i] = this.layerFactory(
-        inputArray = initLayer[i - 1]!!.outputArray,
+      initLayers[i] = this.layerFactory(
+        inputArray = initLayers[i - 1]!!.outputArray,
         outputConfiguration = layersConfiguration[i + 1],
         params = this.params.paramsPerLayer[i],
         dropout = layersConfiguration[i].dropout
       )
     }
 
-    this.layers = initLayer.requireNoNulls()
+    this.layers = initLayers.requireNoNulls()
   }
 
   /**
@@ -75,7 +83,7 @@ abstract class NetworkStructure(
    * @param features features to forward
    * @param useDropout whether to use the dropout
    */
-  fun forward(features: NDArray, useDropout: Boolean = false): NDArray {
+  fun forward(features: InputNDArrayType, useDropout: Boolean = false): DenseNDArray {
 
     this.inputLayer.setInput(features)
 
@@ -94,7 +102,7 @@ abstract class NetworkStructure(
    * @param paramsErrors the error on the network parameters
    * @param propagateToInput whether to propagate the errors to the input
    */
-  fun backward(outputErrors: NDArray,
+  fun backward(outputErrors: DenseNDArray,
                paramsErrors: NetworkParameters,
                propagateToInput: Boolean = false) {
 
@@ -115,19 +123,37 @@ abstract class NetworkStructure(
    *
    * @return a new LayerStructure
    */
-  private fun layerFactory(inputConfiguration: LayerConfiguration,
-                           outputConfiguration: LayerConfiguration,
-                           params: LayerParameters): LayerStructure {
+  private fun layerFactory(
+    inputConfiguration: LayerConfiguration,
+    outputConfiguration: LayerConfiguration,
+    params: LayerParameters): LayerStructure<*> {
 
     require(outputConfiguration.connectionType != null) {
       "Output layer configurations must have a not null connectionType"
     }
 
-    return this.layerFactory(
-      inputArray = AugmentedArray(inputConfiguration.size),
-      outputConfiguration = outputConfiguration,
-      params = params,
-      dropout = inputConfiguration.dropout)
+    return when (inputConfiguration.inputType) {
+
+      LayerType.Input.Dense -> this.layerFactory(
+        inputArray = AugmentedArray<DenseNDArray>(size = inputConfiguration.size),
+        outputConfiguration = outputConfiguration,
+        params = params,
+        dropout = inputConfiguration.dropout)
+
+      LayerType.Input.Sparse -> this.layerFactory(
+        inputArray = AugmentedArray<SparseNDArray>(size = inputConfiguration.size),
+        outputConfiguration = outputConfiguration,
+        params = params,
+        dropout = inputConfiguration.dropout)
+
+      LayerType.Input.SparseBinary -> this.layerFactory(
+        inputArray = AugmentedArray<SparseBinaryNDArray>(size = inputConfiguration.size),
+        outputConfiguration = outputConfiguration,
+        params = params,
+        dropout = inputConfiguration.dropout)
+
+      else -> throw RuntimeException("Invalid input type: %s".format(inputConfiguration.inputType))
+    }
   }
 
   /**
@@ -140,8 +166,9 @@ abstract class NetworkStructure(
    *
    * @return a new LayerStructure
    */
-  abstract protected fun layerFactory(inputArray: AugmentedArray,
-                                      outputConfiguration: LayerConfiguration,
-                                      params: LayerParameters,
-                                      dropout: Double): LayerStructure
+  abstract protected fun <InputNDArrayType : NDArray<InputNDArrayType>> layerFactory(
+    inputArray: AugmentedArray<InputNDArrayType>,
+    outputConfiguration: LayerConfiguration,
+    params: LayerParameters,
+    dropout: Double): LayerStructure<InputNDArrayType>
 }
