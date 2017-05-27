@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.birnn
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNUtils.sumBidirectionalErrors
+import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNUtils
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
@@ -100,7 +100,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @return the errors of the sequence
    */
   fun getInputSequenceErrors(): Array<DenseNDArray> {
-    return sumBidirectionalErrors(
+    return BiRNNUtils.sumBidirectionalErrors(
       leftToRightInputErrors = this.leftToRightProcessor.getInputSequenceErrors(),
       rightToLeftInputErrors = this.rightToLeftProcessor.getInputSequenceErrors()
     )
