@@ -10,13 +10,13 @@ package arrays
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 /**
  *
@@ -46,10 +46,11 @@ class AugmentedArraySpec : Spek({
       on("before assignment") {
 
         val augmentedArray = AugmentedArray(initArray)
-        val zeros = DenseNDArrayFactory.zeros(shape = Shape(9))
 
-        it("should have zeros errors") {
-          assertEquals(true, augmentedArray.errors.equals(zeros, tolerance = 1.0e-08))
+        it("should throw an Exception when getting errors") {
+          assertFailsWith<UninitializedPropertyAccessException> {
+            augmentedArray.errors
+          }
         }
       }
 
@@ -68,6 +69,7 @@ class AugmentedArraySpec : Spek({
 
       val augmentedArray = AugmentedArray(initArray)
       augmentedArray.setActivation(ELU())
+      augmentedArray.activate()
       augmentedArray.assignErrors(errors)
 
       val cloneArray = augmentedArray.clone()
