@@ -88,7 +88,6 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
    * @return set the activation function of this [ActivableArray]
    */
   open fun setActivation(activationFunction: ActivationFunction) {
-    require(this.values is DenseNDArray) { "Cannot activate NDArrays not dense" }
     this.activationFunction = activationFunction
   }
 
