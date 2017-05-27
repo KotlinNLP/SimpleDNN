@@ -292,6 +292,7 @@ class SparseBinaryNDArray(
       is SparseNDArray -> TODO("not implemented")
       is SparseBinaryNDArray ->{
         this.activeIndicesByRow.clear()
+        this.activeIndicesByColumn.clear()
         for ((i, j) in a) {
           this.set(i, j)
         }
