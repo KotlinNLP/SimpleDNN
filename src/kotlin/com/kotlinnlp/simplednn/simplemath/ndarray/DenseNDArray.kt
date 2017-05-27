@@ -333,10 +333,10 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   fun assignDot(a: DenseNDArray, b: SparseBinaryNDArray): DenseNDArray {
     require(a.rows == this.rows && b.columns == this.columns && a.columns == b.rows)
 
+    this.zeros()
+
     if (b.rows == 1) {
       // Column vector (dot) row vector
-      this.zeros()
-
       for (j in b.activeIndicesByColumn.keys) {
         for (i in 0 until a.rows) {
           this.storage.put(i, j, a[i])
