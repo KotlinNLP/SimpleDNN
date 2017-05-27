@@ -7,6 +7,8 @@
 
 package com.kotlinnlp.simplednn.core.arrays
 
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
@@ -41,12 +43,12 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Contains the errors of the current values
    */
-  val errors: NDArrayType get() = this._errors
+  val errors: DenseNDArray get() = this._errors
 
   /**
    * Contains the errors of the current values
    */
-  lateinit protected var _errors: NDArrayType
+  lateinit protected var _errors: DenseNDArray
 
   /**
    * Assign errors to the array
@@ -54,12 +56,21 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    * @param errors errors to assign to this [AugmentedArray].
    *               The errors must have the same size of the array values.
    */
-  fun assignErrors(errors: NDArrayType) {
+  fun assignErrors(errors: DenseNDArray) {
     try {
       this._errors.assignValues(errors)
     } catch (e: UninitializedPropertyAccessException) {
       this._errors = errors.copy()
     }
+  }
+
+  /**
+   * Assign values to the array
+   * @param values values to assign to this [ActivableArray]
+   */
+  override fun assignValues(values: NDArrayType) {
+    super.assignValues(values)
+    this._errors = DenseNDArrayFactory.emptyArray(values.shape)
   }
 
   /**

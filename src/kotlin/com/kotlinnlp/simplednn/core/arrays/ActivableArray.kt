@@ -75,7 +75,7 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
    * Assign values to the array
    * @param values values to assign to this [ActivableArray]
    */
-  fun assignValues(values: NDArrayType) {
+  open fun assignValues(values: NDArrayType) {
     try {
       this._values.assignValues(values)
     } catch (e: UninitializedPropertyAccessException) {
