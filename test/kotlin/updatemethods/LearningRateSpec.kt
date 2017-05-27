@@ -7,6 +7,7 @@
 
 package updatemethods
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateStructure
@@ -32,22 +33,22 @@ class LearningRateSpec: Spek({
     on("get support structure") {
 
       val updateHelper = LearningRateMethod(learningRate = 0.001)
-      val updateableArray = Utils.buildUpdateableArray()
+      val updatableArray = Utils.buildUpdateableArray()
 
       it("should return a support structure of the expected type") {
-        assertEquals(true, updateHelper.getSupportStructure(updateableArray) is LearningRateStructure)
+        assertEquals(true, updateHelper.getSupportStructure(updatableArray) is LearningRateStructure)
       }
     }
 
     on("update") {
 
       val updateHelper = LearningRateMethod(learningRate = 0.001)
-      val updateableArray = Utils.buildUpdateableArray()
+      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
 
-      updateHelper.update(array = updateableArray, errors = Utils.buildErrors())
+      updateHelper.update(array = updatableArray, errors = Utils.buildErrors())
 
       it("should match the expected updated array") {
-        assertEquals(true, updateableArray.values.equals(
+        assertEquals(true, updatableArray.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3991, 0.3993, 0.4996, 0.9992, 0.7999)),
           tolerance = 1.0e-5))
       }

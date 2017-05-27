@@ -7,6 +7,7 @@
 
 package updatemethods
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum.MomentumMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum.MomentumStructure
@@ -32,25 +33,25 @@ class MomentumSpec: Spek({
     on("get support structure") {
 
       val updateHelper = MomentumMethod(learningRate = 0.001, momentum = 0.9)
-      val updateableArray = Utils.buildUpdateableArray()
+      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
 
       it("should return a support structure of the expected type") {
-        assertEquals(true, updateHelper.getSupportStructure(updateableArray) is MomentumStructure)
+        assertEquals(true, updateHelper.getSupportStructure(updatableArray) is MomentumStructure)
       }
     }
 
     on("update") {
 
       val updateHelper = MomentumMethod(learningRate = 0.001, momentum = 0.9)
-      val updateableArray = Utils.buildUpdateableArray()
-      val supportStructure = updateHelper.getSupportStructure(updateableArray) as MomentumStructure
+      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+      val supportStructure = updateHelper.getSupportStructure(updatableArray) as MomentumStructure
 
       supportStructure.v.assignValues(Utils.supportArray1())
 
-      updateHelper.update(array = updateableArray, errors = Utils.buildErrors())
+      updateHelper.update(array = updatableArray, errors = Utils.buildErrors())
 
       it("should match the expected updated array") {
-        assertEquals(true, updateableArray.values.equals(
+        assertEquals(true, updatableArray.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2309, -0.3207, 0.0496, 0.7292, 0.6199)),
           tolerance = 1.0e-5))
       }

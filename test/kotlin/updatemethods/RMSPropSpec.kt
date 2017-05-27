@@ -7,6 +7,7 @@
 
 package updatemethods
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop.RMSPropMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop.RMSPropStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
@@ -26,25 +27,25 @@ class RMSPropSpec: Spek({
     on("get support structure") {
 
       val updateHelper = RMSPropMethod(learningRate = 0.001, epsilon = 1e-06, decay = 0.9)
-      val updateableArray = Utils.buildUpdateableArray()
+      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
 
       it("should return a support structure of the expected type") {
-        assertEquals(true, updateHelper.getSupportStructure(updateableArray) is RMSPropStructure)
+        assertEquals(true, updateHelper.getSupportStructure(updatableArray) is RMSPropStructure)
       }
     }
 
     on("update") {
 
       val updateHelper = RMSPropMethod(learningRate = 0.001, epsilon = 1e-06, decay = 0.9)
-      val updateableArray = Utils.buildUpdateableArray()
-      val supportStructure = updateHelper.getSupportStructure(updateableArray) as RMSPropStructure
+      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+      val supportStructure = updateHelper.getSupportStructure(updatableArray) as RMSPropStructure
 
       supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
 
-      updateHelper.update(array = updateableArray, errors = Utils.buildErrors())
+      updateHelper.update(array = updatableArray, errors = Utils.buildErrors())
 
       it("should match the expected updated array") {
-        assertEquals(true, updateableArray.values.equals(
+        assertEquals(true, updatableArray.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(0.399091, 0.398905, 0.499502, 0.996838, 0.799765)),
           tolerance = 1.0e-6))
       }

@@ -7,7 +7,7 @@
 
 package updatemethods
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 
@@ -19,9 +19,9 @@ object Utils {
   /**
    *
    */
-  fun buildUpdateableArray(): UpdatableArray<DenseNDArray> {
+  fun buildUpdateableArray(): UpdatableDenseArray {
     val values: DenseNDArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.4, 0.5, 1.0, 0.8))
-    val array: UpdatableArray<DenseNDArray> = UpdatableArray(DenseNDArrayFactory.zeros(values.shape))
+    val array: UpdatableDenseArray = UpdatableDenseArray(DenseNDArrayFactory.zeros(values.shape))
 
     array.values.assignValues(values)
 

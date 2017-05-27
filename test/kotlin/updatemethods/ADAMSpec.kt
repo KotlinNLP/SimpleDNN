@@ -7,6 +7,7 @@
 
 package updatemethods
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMStructure
 import com.kotlinnlp.simplednn.simplemath.equals
@@ -27,26 +28,26 @@ class ADAMSpec : Spek({
     on("get support structure") {
 
       val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
-      val updateableArray = Utils.buildUpdateableArray()
+      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
 
       it("should return a support structure of the expected type") {
-        assertEquals(true, updateHelper.getSupportStructure(updateableArray) is ADAMStructure)
+        assertEquals(true, updateHelper.getSupportStructure(updatableArray) is ADAMStructure)
       }
     }
 
     on("update") {
 
       val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
-      val updateableArray = Utils.buildUpdateableArray()
-      val supportStructure = updateHelper.getSupportStructure(updateableArray) as ADAMStructure
+      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+      val supportStructure = updateHelper.getSupportStructure(updatableArray) as ADAMStructure
 
       supportStructure.firstOrderMoments.assignValues(Utils.supportArray1())
       supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
 
-      updateHelper.update(array = updateableArray, errors = Utils.buildErrors())
+      updateHelper.update(array = updatableArray, errors = Utils.buildErrors())
 
       it("should match the expected updated array") {
-        assertEquals(true, updateableArray.values.equals(
+        assertEquals(true, updatableArray.values.equals(
           DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39928, 0.39875, 0.49941, 0.98617, 0.79958)),
           tolerance = 10e-5))
       }
