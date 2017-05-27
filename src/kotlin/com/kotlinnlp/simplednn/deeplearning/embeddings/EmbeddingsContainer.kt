@@ -7,9 +7,10 @@
 
 package com.kotlinnlp.simplednn.deeplearning.embeddings
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  * The EmbeddingsContainer
@@ -25,7 +26,7 @@ class EmbeddingsContainer(val count: Int, val size: Int) {
    * @property index the index of the Embedding in the lookupTable
    * @property array the values of the Embedding
    */
-  data class Embedding(val index: Int, val array: UpdatableArray)
+  data class Embedding(val index: Int, val array: UpdatableDenseArray)
 
   /**
    * Out-of-vocabulary embeddings used to represent unknown-item
@@ -43,7 +44,7 @@ class EmbeddingsContainer(val count: Int, val size: Int) {
    */
   val lookupTable = Array(
     size = count + 2,
-    init = { Embedding(index = it, array = UpdatableArray(length = this.size)) }
+    init = { Embedding(index = it, array = UpdatableDenseArray(Shape(this.size))) }
   )
 
   /**
