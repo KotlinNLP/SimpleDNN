@@ -207,7 +207,7 @@ class CFNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignLayerGradients() { this.params as CFNLayerParameters
 
-    val gx: InputNDArrayType = this.inputArray.errors
+    val gx: DenseNDArray = this.inputArray.errors
 
     val wInG: DenseNDArray = this.params.inputGate.weights.values as DenseNDArray
     val wForG: DenseNDArray = this.params.forgetGate.weights.values as DenseNDArray

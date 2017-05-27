@@ -254,7 +254,7 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignLayerGradients() { this.params as LSTMLayerParameters
 
-    val gx: InputNDArrayType = this.inputArray.errors
+    val gx: DenseNDArray = this.inputArray.errors
 
     val wInG: DenseNDArray = this.params.inputGate.weights.values as DenseNDArray
     val wOutG: DenseNDArray = this.params.outputGate.weights.values as DenseNDArray

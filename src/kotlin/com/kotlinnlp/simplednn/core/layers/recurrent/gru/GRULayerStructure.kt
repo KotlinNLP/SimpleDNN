@@ -214,7 +214,7 @@ class GRULayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignLayerGradients() { this.params as GRULayerParameters
 
-    val gx: InputNDArrayType = this.inputArray.errors
+    val gx: DenseNDArray = this.inputArray.errors
 
     val wp: DenseNDArray = this.params.partitionGate.weights.values as DenseNDArray
     val wc: DenseNDArray = this.params.candidate.weights.values as DenseNDArray

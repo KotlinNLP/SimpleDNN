@@ -105,7 +105,7 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gy: DenseNDArray = this.outputArray.errors
     val w: DenseNDArray = this.params.weights.values as DenseNDArray
 
-    val gx: InputNDArrayType = this.inputArray.errors
+    val gx: DenseNDArray = this.inputArray.errors
 
     gx.assignValues(gy.T.dot(w))
 
