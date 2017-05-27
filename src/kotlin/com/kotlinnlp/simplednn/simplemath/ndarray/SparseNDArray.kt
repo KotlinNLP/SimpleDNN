@@ -90,6 +90,27 @@ class SparseNDArray : NDArray<SparseNDArray> {
   }
 
   /**
+   *
+   */
+  override fun get(i: Int, j: Int): Double {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun set(i: Int, value: Number) {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun set(i: Int, j: Int, value: Number) {
+    TODO("not implemented")
+  }
+
+  /**
    * Get the i-th row
    *
    * @param i the index of the row to be returned
@@ -114,28 +135,7 @@ class SparseNDArray : NDArray<SparseNDArray> {
   /**
    *
    */
-  override fun get(i: Int, j: Int): Double {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
-  override fun set(i: Int, value: Double) {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
   override fun copy(): SparseNDArray {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
-  override fun set(i: Int, j: Int, value: Double) {
     TODO("not implemented")
   }
 
