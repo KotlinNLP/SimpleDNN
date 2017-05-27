@@ -7,9 +7,12 @@
 
 package com.kotlinnlp.simplednn.core.optimizer
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
@@ -90,8 +93,15 @@ class ParamsOptimizer(
    */
   private fun updateParams() {
 
-    this.neuralNetwork.model.zip(this.paramsErrorsAccumulator.getParamsErrors()).forEach {
-      (params, errors) -> this.updateMethod.update(params, errors.values)
+    this.neuralNetwork.model.zip(this.paramsErrorsAccumulator.getParamsErrors()).forEach { (params, errors) ->
+
+      val e = errors.values
+
+      when (e) {
+        is DenseNDArray -> this.updateMethod.update(array = params as UpdatableDenseArray, errors = e)
+        is SparseNDArray -> this.updateMethod.update(array = params as UpdatableDenseArray, errors = e)
+        else -> throw RuntimeException("Invalide errors type")
+      }
     }
   }
 }
