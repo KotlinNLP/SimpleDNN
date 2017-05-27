@@ -114,8 +114,7 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
    * @return the activated values
    */
   fun getActivatedValues(): DenseNDArray {
-    require(this.hasActivation)
-    return this.activationFunction!!.f(this._valuesNotActivated as DenseNDArray)
+    return this.activationFunction!!.f(this.valuesNotActivated as DenseNDArray)
   }
 
   /**
