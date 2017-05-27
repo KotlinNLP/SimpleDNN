@@ -11,7 +11,9 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  * The FeedforwardNetworkStructure.
@@ -47,7 +49,7 @@ class FeedforwardNetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     return LayerStructureFactory(
       inputArray = inputArray,
-      outputArray = AugmentedArray(outputConfiguration.size),
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputConfiguration.size))),
       params = params,
       activationFunction = outputConfiguration.activationFunction,
       connectionType = outputConfiguration.connectionType!!,
