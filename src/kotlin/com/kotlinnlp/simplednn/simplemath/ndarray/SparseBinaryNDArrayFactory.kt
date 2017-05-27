@@ -85,40 +85,12 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
    */
   fun arrayOf(activeIndicesPairs: Array<Pair<Long, Long>>, shape: Shape): SparseBinaryNDArray {
 
-    val activeIndicesByRow = mutableMapOf<Long, MutableSet<Long>?>()
-    val activeIndicesByColumn = mutableMapOf<Long, MutableSet<Long>?>()
+    val res = SparseBinaryNDArray(shape = shape)
 
     for ((i, j) in activeIndicesPairs) {
-      this.addElement(activeIndicesByRow, key = i, element = j)
-      this.addElement(activeIndicesByColumn, key = j, element = i)
+      res.set(i, j)
     }
 
-    return SparseBinaryNDArray(
-      activeIndicesByRow = activeIndicesByRow,
-      activeIndicesByColumn = activeIndicesByColumn,
-      shape = shape)
-  }
-
-  /**
-   *
-   */
-  private fun addElement(indicesMap: MutableMap<Long, MutableSet<Long>?>, key: Long, element: Long) {
-
-    if (indicesMap.containsKey(key)) {
-      // Key already existing
-      if (indicesMap[key] != null) {
-        indicesMap[key]!!.add(element)
-      } else {
-        indicesMap[key] = mutableSetOf(0L, element)
-      }
-
-    } else {
-      // New key
-      if (element == 0L) {
-        indicesMap[key] = null
-      } else {
-        indicesMap[key] = mutableSetOf(element)
-      }
-    }
+    return res
   }
 }
