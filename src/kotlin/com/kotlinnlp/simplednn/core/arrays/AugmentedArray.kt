@@ -54,7 +54,13 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    * @param errors errors to assign to this [AugmentedArray].
    *               The errors must have the same size of the array values.
    */
-  fun assignErrors(errors: NDArrayType) { this._errors.assignValues(errors) }
+  fun assignErrors(errors: NDArrayType) {
+    try {
+      this._errors.assignValues(errors)
+    } catch (e: UninitializedPropertyAccessException) {
+      this._errors = errors.copy()
+    }
+  }
 
   /**
    * Clone this [AugmentedArray].
@@ -64,7 +70,10 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   override fun clone(): AugmentedArray<NDArrayType> {
 
     val clonedArray = AugmentedArray<NDArrayType>(this.size)
-    clonedArray._values.assignValues(this._values)
+
+    try {
+      clonedArray.assignValues(this._values)
+    } catch (e: UninitializedPropertyAccessException) {}
 
     if (this.hasActivation) {
 
@@ -75,7 +84,9 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
       clonedArray.setActivation(this.activationFunction!!)
     }
 
-    clonedArray.errors.assignValues(this._errors)
+    try {
+      clonedArray.assignErrors(this._errors)
+    } catch (e: UninitializedPropertyAccessException) {}
 
     return clonedArray
   }
