@@ -289,11 +289,13 @@ class SparseBinaryNDArray(
 
     when(a) {
       is DenseNDArray -> TODO("not implemented")
-      is SparseNDArray -> {
+      is SparseNDArray -> TODO("not implemented")
+      is SparseBinaryNDArray ->{
         this.activeIndicesByRow.clear()
-        this.activeIndicesByRow
+        for ((i, j) in a) {
+          this.set(i, j)
+        }
       }
-      is SparseBinaryNDArray -> TODO("not implemented")
       else -> throw RuntimeException("Invalid NDArray type")
     }
 
