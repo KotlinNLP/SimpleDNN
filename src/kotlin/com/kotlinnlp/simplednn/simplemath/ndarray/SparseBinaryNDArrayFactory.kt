@@ -59,4 +59,66 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
     TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
   }
 
+  /**
+   *
+   */
+  fun arrayOf(activeIndices: LongArray, shape: Shape): SparseBinaryNDArray {
+    require(shape.dim1 == 1 || shape.dim2 == 1) {
+      "Invalid shape (only a 1-dim SparseBinaryNDArray can be created given a list of active indices)"
+    }
+
+    val vectorMap = mutableMapOf<Long, MutableSet<Long>?>(Pair(0, activeIndices.toMutableSet()))
+    val indicesMap = mutableMapOf<Long, MutableSet<Long>?>()
+
+    for (index in activeIndices) {
+      indicesMap[index] = null
+    }
+
+    return if (shape.dim1 == 1)
+      SparseBinaryNDArray(activeIndicesByRow = vectorMap, activeIndicesByColumn = indicesMap, shape = shape)
+    else
+      SparseBinaryNDArray(activeIndicesByRow = indicesMap, activeIndicesByColumn = vectorMap, shape = shape)
+  }
+
+  /**
+   *
+   */
+  fun arrayOf(activeIndicesPairs: Array<Pair<Long, Long>>, shape: Shape): SparseBinaryNDArray {
+
+    val activeIndicesByRow = mutableMapOf<Long, MutableSet<Long>?>()
+    val activeIndicesByColumn = mutableMapOf<Long, MutableSet<Long>?>()
+
+    for ((i, j) in activeIndicesPairs) {
+      this.addElement(activeIndicesByRow, key = i, element = j)
+      this.addElement(activeIndicesByColumn, key = j, element = i)
+    }
+
+    return SparseBinaryNDArray(
+      activeIndicesByRow = activeIndicesByRow,
+      activeIndicesByColumn = activeIndicesByColumn,
+      shape = shape)
+  }
+
+  /**
+   *
+   */
+  private fun addElement(indicesMap: MutableMap<Long, MutableSet<Long>?>, key: Long, element: Long) {
+
+    if (indicesMap.containsKey(key)) {
+      // Key already existing
+      if (indicesMap[key] != null) {
+        indicesMap[key]!!.add(element)
+      } else {
+        indicesMap[key] = mutableSetOf(0L, element)
+      }
+
+    } else {
+      // New key
+      if (element == 0L) {
+        indicesMap[key] = null
+      } else {
+        indicesMap[key] = mutableSetOf(element)
+      }
+    }
+  }
 }
