@@ -7,8 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.regularization
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 
 /**
  *
@@ -25,5 +24,5 @@ interface WeightsRegularization {
    *
    * @param weights the weights to update
    */
-  fun <NDArrayType: NDArray<NDArrayType>> apply(weights: UpdatableArray<NDArrayType>)
+  fun apply(weights: UpdatableDenseArray)
 }

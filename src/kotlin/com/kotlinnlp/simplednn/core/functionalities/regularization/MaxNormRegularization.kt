@@ -7,8 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.regularization
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 
 /**
  * Regularize weights before the update
@@ -20,7 +19,7 @@ class MaxNormRegularization(override val lambda: Double) : WeightsRegularization
   /**
    * @param weights the weights to regularize
    */
-  override fun <NDArrayType: NDArray<NDArrayType>> apply(weights: UpdatableArray<NDArrayType>) {
+  override fun apply(weights: UpdatableDenseArray) {
 
     val norm2 = weights.values.norm2()
 
