@@ -169,29 +169,65 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  override fun get(i: Int): Double {
+  override fun get(i: Int): Int {
     TODO("not implemented")
   }
 
   /**
    *
    */
-  override fun get(i: Int, j: Int): Double {
+  override fun get(i: Int, j: Int): Int {
     TODO("not implemented")
   }
 
   /**
    *
    */
-  override fun set(i: Int, value: Double) {
+  override fun set(i: Int, value: Number) {
     TODO("not implemented")
   }
 
   /**
    *
    */
-  override fun set(i: Int, j: Int, value: Double) {
-    TODO("not implemented")
+  override fun set(i: Int, j: Int, value: Number) {
+    require(value is Int && (value == 0 || value == 1) && i < this.rows && j < this.columns)
+
+    if (value == 1) {
+      this.addElement(activeIndicesByRow, key = i, element = j)
+      this.addElement(activeIndicesByColumn, key = j, element = i)
+
+    } else {
+      TODO("not implemented")
+    }
+  }
+
+  /**
+   *
+   */
+  fun set(i: Int, j: Int) = this.set(i, j, 1)
+
+  /**
+   *
+   */
+  private fun addElement(indicesMap: MutableMap<Long, MutableSet<Long>?>, key: Long, element: Long) {
+
+    if (indicesMap.containsKey(key)) {
+      // Key already existing
+      if (indicesMap[key] != null) {
+        indicesMap[key]!!.add(element)
+      } else {
+        indicesMap[key] = mutableSetOf(0L, element)
+      }
+
+    } else {
+      // New key
+      if (element == 0L) {
+        indicesMap[key] = null
+      } else {
+        indicesMap[key] = mutableSetOf(element)
+      }
+    }
   }
 
   /**
