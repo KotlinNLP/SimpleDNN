@@ -25,9 +25,9 @@ import kotlin.test.*
 /**
  *
  */
-class NDArraySpec : Spek({
+class DenseNDArraySpec : Spek({
 
-  describe("an NDArray") {
+  describe("a DenseNDArray") {
 
     context("class factory methods") {
 
@@ -304,7 +304,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 1.1, 1.2, 0.9))
         val res = array.sum(n)
 
-        it("should return a new NDArray") {
+        it("should return a new DenseNDArray") {
           assertEquals(false, array === res)
         }
 
@@ -318,7 +318,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, 0.5, 0.8, 0.7))
         val res = array.sum(a)
 
-        it("should return a new NDArray") {
+        it("should return a new DenseNDArray") {
           assertEquals(false, array === res)
         }
 
@@ -332,7 +332,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.7, -0.6, -0.9))
         val res = array.sub(n)
 
-        it("should return a new NDArray") {
+        it("should return a new DenseNDArray") {
           assertEquals(false, array === res)
         }
 
@@ -346,7 +346,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 0.7, 0.6, 0.9))
         val res = array.reverseSub(n)
 
-        it("should return a new NDArray") {
+        it("should return a new DenseNDArray") {
           assertEquals(false, array === res)
         }
 
@@ -365,7 +365,7 @@ class NDArraySpec : Spek({
         ))
         val res = array.dot(a.T)
 
-        it("should return a new NDArray") {
+        it("should return a new DenseNDArray") {
           assertEquals(false, array === res)
         }
 
@@ -383,7 +383,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.09, 0.18, 0.27, 0.0))
         val res = array.prod(n)
 
-        it("should return a new NDArray") {
+        it("should return a new DenseNDArray") {
           assertEquals(false, array === res)
         }
 
@@ -397,7 +397,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.04, 0.06, 0.15, 0.0))
         val res = array.prod(a)
 
-        it("should return a new NDArray") {
+        it("should return a new DenseNDArray") {
           assertEquals(false, array === res)
         }
 
@@ -411,7 +411,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1111, 0.2222, 0.3333, 0.0))
         val res = array.div(n)
 
-        it("should return a new NDArray") {
+        it("should return a new DenseNDArray") {
           assertEquals(false, array === res)
         }
 
@@ -425,7 +425,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.25, 0.6667, 0.6, 0.0))
         val res = array.div(a)
 
-        it("should return a new NDArray") {
+        it("should return a new DenseNDArray") {
           assertEquals(false, array === res)
         }
 
@@ -439,7 +439,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 1.0, 1.0, 0.0))
         val res = array.roundInt(threshold = 0.2)
 
-        it("should return a new NDArray") {
+        it("should return a new DenseNDArray") {
           assertEquals(false, array === res)
         }
 
@@ -461,7 +461,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, 0.0, 1.0, -1.0))
         val res = signedArray.sign()
 
-        it("should return a new NDArray") {
+        it("should return a new DenseNDArray") {
           assertEquals(false, signedArray === res)
         }
 
@@ -475,7 +475,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3162, 0.4472, 0.5478, 0.0))
         val res = array.sqrt()
 
-        it("should return a new NDArray") {
+        it("should return a new DenseNDArray") {
           assertEquals(false, array === res)
         }
 
@@ -489,7 +489,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2399, 0.3687, 0.4740, 0.0))
         val res = array.pow(0.62)
 
-        it("should return a new NDArray") {
+        it("should return a new DenseNDArray") {
           assertEquals(false, array === res)
         }
 
@@ -525,7 +525,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 1.1, 1.2, 0.9))
         val res = array.assignSum(n)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -540,7 +540,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(1.3, 1.2, 1.4, 1.6))
         val res = array.assignSum(a, n)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -555,7 +555,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(1.1, 1.1, 0.6, 1.1))
         val res = array.assignSum(a, b)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -570,7 +570,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, 0.5, 0.8, 0.7))
         val res = array.assignSum(a)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -585,7 +585,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.7, -0.6, -0.9))
         val res = array.assignSub(n)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -600,7 +600,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, -0.1, -0.2, -0.7))
         val res = array.assignSub(a)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -621,7 +621,7 @@ class NDArraySpec : Spek({
         ))
         val res = array.assignDot(a, a1)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -652,7 +652,7 @@ class NDArraySpec : Spek({
         ))
         val res = array.assignDot(m, v)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -677,7 +677,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.09, 0.18, 0.27, 0.0))
         val res = array.assignProd(n)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -692,7 +692,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.36, 0.27, 0.45, 0.63))
         val res = array.assignProd(a, n)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -707,7 +707,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.28, 0.24, 0.05, 0.28))
         val res = array.assignProd(a, b)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -722,7 +722,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.04, 0.06, 0.15, 0.0))
         val res = array.assignProd(a)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -737,7 +737,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1111, 0.2222, 0.3333, 0.0))
         val res = array.assignDiv(n)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -752,7 +752,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.25, 0.6667, 0.6, 0.0))
         val res = array.assignDiv(a)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -767,7 +767,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2399, 0.3687, 0.4740, 0.0))
         val res = array.assignPow(0.62)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -782,7 +782,7 @@ class NDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 1.0, 1.0, 0.0))
         val res = array.assignRoundInt(threshold = 0.2)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -801,7 +801,7 @@ class NDArraySpec : Spek({
 
         val res = array.randomize(randomGeneratorMock)
 
-        it("should return the same NDArray") {
+        it("should return the same DenseNDArray") {
           assertEquals(true, array === res)
         }
 
@@ -920,7 +920,7 @@ class NDArraySpec : Spek({
       }
     }
 
-    context("converting a NDArray to zeros") {
+    context("converting a DenseNDArray to zeros") {
 
       val array = DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.1, 0.2, 0.3, 0.4),
@@ -931,7 +931,7 @@ class NDArraySpec : Spek({
 
         array.zeros()
 
-        it("should return an NDArray filled with zeros") {
+        it("should return an DenseNDArray filled with zeros") {
           (0 until array.length).forEach { i -> assertEquals(0.0, array[i]) }
         }
       }
@@ -940,7 +940,7 @@ class NDArraySpec : Spek({
 
     context("values assignment") {
 
-      on("assignment through another NDArray") {
+      on("assignment through another DenseNDArray") {
 
         val array = DenseNDArrayFactory.emptyArray(Shape(3, 2))
         val arrayToAssign = DenseNDArrayFactory.arrayOf(arrayOf(
