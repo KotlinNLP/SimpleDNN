@@ -68,9 +68,9 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     require(this.inputType == LayerType.Input.Dense) { "Input errors available only if input is dense" }
 
     return if (copy) {
-      this.structure.inputLayer.inputArray.errors.copy() as DenseNDArray
+      this.structure.inputLayer.inputArray.errors.copy()
     } else {
-      this.structure.inputLayer.inputArray.errors as DenseNDArray
+      this.structure.inputLayer.inputArray.errors
     }
   }
 

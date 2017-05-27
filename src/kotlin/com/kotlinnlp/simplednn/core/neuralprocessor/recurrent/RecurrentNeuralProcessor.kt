@@ -132,9 +132,9 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
       }
 
       if (copy) {
-        inputErrors.copy() as DenseNDArray
+        inputErrors.copy()
       } else {
-        inputErrors as DenseNDArray
+        inputErrors
       }
     }
   )
