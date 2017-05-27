@@ -28,19 +28,19 @@ class SparseBinaryNDArraySpec : Spek({
 
       on("row vector") {
 
-        val array = SparseBinaryNDArrayFactory.arrayOf(activeIndices = longArrayOf(1, 3, 19), shape = Shape(1, 20))
+        val array = SparseBinaryNDArrayFactory.arrayOf(activeIndices = intArrayOf(1, 3, 19), shape = Shape(1, 20))
         val iterator = array.iterator()
 
         it("should return the expected first indices Pair") {
-          assertEquals(Pair<Long, Long>(0, 1), iterator.next())
+          assertEquals(Pair(0, 1), iterator.next())
         }
 
         it("should return the expected second indices Pair") {
-          assertEquals(Pair<Long, Long>(0, 3), iterator.next())
+          assertEquals(Pair(0, 3), iterator.next())
         }
 
         it("should return the expected third indices Pair") {
-          assertEquals(Pair<Long, Long>(0, 19), iterator.next())
+          assertEquals(Pair(0, 19), iterator.next())
         }
 
         it("should return false calling hasNext() at the fourth iteration") {
@@ -50,19 +50,19 @@ class SparseBinaryNDArraySpec : Spek({
 
       on("column vector") {
 
-        val array = SparseBinaryNDArrayFactory.arrayOf(activeIndices = longArrayOf(1, 3, 19), shape = Shape(20))
+        val array = SparseBinaryNDArrayFactory.arrayOf(activeIndices = intArrayOf(1, 3, 19), shape = Shape(20))
         val iterator = array.iterator()
 
         it("should return the expected first indices Pair") {
-          assertEquals(Pair(1L, 0L), iterator.next())
+          assertEquals(Pair(1, 0), iterator.next())
         }
 
         it("should return the expected second indices Pair") {
-          assertEquals(Pair(3L, 0L), iterator.next())
+          assertEquals(Pair(3, 0), iterator.next())
         }
 
         it("should return the expected third indices Pair") {
-          assertEquals(Pair(19L, 0L), iterator.next())
+          assertEquals(Pair(19, 0), iterator.next())
         }
 
         it("should return false calling hasNext() at the fourth iteration") {
@@ -73,20 +73,20 @@ class SparseBinaryNDArraySpec : Spek({
       on("a 2-dim array") {
 
         val array = SparseBinaryNDArrayFactory.arrayOf(
-          activeIndicesPairs = arrayOf(Pair(1L, 0L), Pair(5L, 19L), Pair(12L, 6L)),
+          activeIndicesPairs = arrayOf(Pair(1, 0), Pair(5, 19), Pair(12, 6)),
           shape = Shape(15, 20))
         val iterator = array.iterator()
 
         it("should return the expected first indices Pair") {
-          assertEquals(Pair(1L, 0L), iterator.next())
+          assertEquals(Pair(1, 0), iterator.next())
         }
 
         it("should return the expected second indices Pair") {
-          assertEquals(Pair(5L, 19L), iterator.next())
+          assertEquals(Pair(5, 19), iterator.next())
         }
 
         it("should return the expected third indices Pair") {
-          assertEquals(Pair(12L, 6L), iterator.next())
+          assertEquals(Pair(12, 6), iterator.next())
         }
 
         it("should return false calling hasNext() at the fourth iteration") {
