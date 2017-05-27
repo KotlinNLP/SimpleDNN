@@ -51,7 +51,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   lateinit protected var _errors: DenseNDArray
 
   /**
-   * Assign errors to the array
+   * Assign errors to the array.
    *
    * @param errors errors to assign to this [AugmentedArray].
    *               The errors must have the same size of the array values.
@@ -65,7 +65,8 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   }
 
   /**
-   * Assign values to the array
+   * Assign values to the array. WARNING: this operation resets the errors too!
+   *
    * @param values values to assign to this [ActivableArray]
    */
   override fun assignValues(values: NDArrayType) {
