@@ -20,8 +20,8 @@ import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGener
  */
 class SparseBinaryNDArray(
   override val shape: Shape,
-  val activeIndicesByRow: MutableMap<Long, MutableSet<Long>?>,
-  val activeIndicesByColumn: MutableMap<Long, MutableSet<Long>?>
+  val activeIndicesByRow: MutableMap<Long, MutableSet<Long>?> = mutableMapOf<Long, MutableSet<Long>?>(),
+  val activeIndicesByColumn: MutableMap<Long, MutableSet<Long>?> = mutableMapOf<Long, MutableSet<Long>?>()
 ) : NDArray<SparseBinaryNDArray>,
     Iterable<Pair<Long, Long>> {
 
@@ -160,13 +160,37 @@ class SparseBinaryNDArray(
   /**
    * Transpose
    */
-  override val T: SparseBinaryNDArray
-    get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+  override val T: SparseBinaryNDArray get() = SparseBinaryNDArray(
+    activeIndicesByRow = this.copyIndices(this.activeIndicesByColumn),
+    activeIndicesByColumn = this.copyIndices(this.activeIndicesByRow),
+    shape = this.shape.inverse
+  )
 
   /**
    *
    */
   override fun get(i: Int): Double {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun get(i: Int, j: Int): Double {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun set(i: Int, value: Double) {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun set(i: Int, j: Int, value: Double) {
     TODO("not implemented")
   }
 
@@ -189,20 +213,6 @@ class SparseBinaryNDArray(
    * @return the selected column as a new [SparseBinaryNDArray]
    */
   override fun getColumn(i: Int): SparseBinaryNDArray {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
-  override fun get(i: Int, j: Int): Double {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
-  override fun set(i: Int, value: Double) {
     TODO("not implemented")
   }
 
@@ -232,13 +242,6 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  override fun set(i: Int, j: Int, value: Double) {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
   override fun assignValues(n: Double): SparseBinaryNDArray {
     TODO("not implemented")
   }
@@ -247,7 +250,18 @@ class SparseBinaryNDArray(
    *
    */
   override fun assignValues(a: NDArray<*>): SparseBinaryNDArray {
-    TODO("not implemented")
+
+    when(a) {
+      is DenseNDArray -> TODO("not implemented")
+      is SparseNDArray -> {
+        this.activeIndicesByRow.clear()
+        this.activeIndicesByRow
+      }
+      is SparseBinaryNDArray -> TODO("not implemented")
+      else -> throw RuntimeException("Invalid NDArray type")
+    }
+
+    return this
   }
 
   /**
