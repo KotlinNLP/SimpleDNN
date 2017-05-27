@@ -9,12 +9,18 @@ package com.kotlinnlp.simplednn.core.layers.recurrent
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  *
  */
 class GateUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : AugmentedArray<DenseNDArray>(size) {
+
+  init {
+    this.assignValues(DenseNDArrayFactory.emptyArray(Shape(size)))
+  }
 
   /**
    *
