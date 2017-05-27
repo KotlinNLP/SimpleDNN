@@ -23,7 +23,7 @@ object LSTMLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow<DenseNDArray>): LSTMLayerStructure<DenseNDArray> = LSTMLayerStructure(
+  fun buildLayer(layerContextWindow: LayerContextWindow): LSTMLayerStructure<DenseNDArray> = LSTMLayerStructure(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
     outputArray = AugmentedArray(size = 5),
     params = this.buildParams(),

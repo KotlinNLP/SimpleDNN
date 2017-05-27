@@ -24,7 +24,7 @@ object RANLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow<DenseNDArray>): RANLayerStructure<DenseNDArray> = RANLayerStructure(
+  fun buildLayer(layerContextWindow: LayerContextWindow): RANLayerStructure<DenseNDArray> = RANLayerStructure(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
     outputArray = AugmentedArray(size = 5),
     params = this.buildParams(),

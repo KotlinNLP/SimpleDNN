@@ -24,7 +24,7 @@ object CFNLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow<DenseNDArray>): CFNLayerStructure<DenseNDArray> = CFNLayerStructure(
+  fun buildLayer(layerContextWindow: LayerContextWindow): CFNLayerStructure<DenseNDArray> = CFNLayerStructure(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
     outputArray = AugmentedArray(size = 5),
     params = this.buildParams(),

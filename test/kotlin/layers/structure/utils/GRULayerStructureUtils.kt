@@ -24,7 +24,7 @@ object GRULayerStructureUtils {
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow<DenseNDArray>): GRULayerStructure<DenseNDArray> = GRULayerStructure(
+  fun buildLayer(layerContextWindow: LayerContextWindow): GRULayerStructure<DenseNDArray> = GRULayerStructure(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
     outputArray = AugmentedArray(size = 5),
     params = this.buildParams(),
