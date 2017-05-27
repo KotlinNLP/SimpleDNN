@@ -9,6 +9,7 @@ package arrays
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
@@ -17,6 +18,7 @@ import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 /**
  *
@@ -39,13 +41,17 @@ class AugmentedArraySpec : Spek({
       it("should contain values with the expected number of columns") {
         assertEquals(1, augmentedArray.values.columns)
       }
+
+      it("should contain zeros errors") {
+        assertTrue(DenseNDArrayFactory.zeros(initArray.shape).equals(augmentedArray.errors))
+      }
     }
 
     context("errors") {
 
       on("before assignment") {
 
-        val augmentedArray = AugmentedArray(initArray)
+        val augmentedArray = AugmentedArray<DenseNDArray>(size = 5)
 
         it("should throw an Exception when getting errors") {
           assertFailsWith<UninitializedPropertyAccessException> {
