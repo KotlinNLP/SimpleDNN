@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.core.layers.recurrent
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.core.arrays.UpdatableSparseBinaryArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableSparseArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
@@ -38,7 +38,7 @@ data class GateParametersUnit(val inputSize: Int, val outputSize: Int, private v
    */
   private fun buildUpdatableArray(dim1: Int, dim2: Int = 1, sparseInput: Boolean = false): UpdatableArray<*> =
     if (sparseInput)
-      this.buildSparseBinaryArray(dim1, dim2)
+      this.buildSparseArray(dim1, dim2)
     else
       this.buildDenseArray(dim1, dim2)
 
@@ -50,5 +50,5 @@ data class GateParametersUnit(val inputSize: Int, val outputSize: Int, private v
   /**
    *
    */
-  private fun buildSparseBinaryArray(dim1: Int, dim2: Int = 1) = UpdatableSparseBinaryArray(Shape(dim1, dim2))
+  private fun buildSparseArray(dim1: Int, dim2: Int = 1) = UpdatableSparseArray(Shape(dim1, dim2))
 }
