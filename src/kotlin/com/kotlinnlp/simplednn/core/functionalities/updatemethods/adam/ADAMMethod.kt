@@ -141,9 +141,6 @@ class ADAMMethod(
     v.assignProd(this.beta1).assignSum(errors.prod(1.0 - this.beta1))
     m.assignProd(this.beta2).assignSum(errors.prod(errors).assignProd(1.0 - this.beta2))
 
-    v.assignSum(errors.prod(1.0 - this.beta1))
-    m.assignSum(errors.prod(errors).assignProd(1.0 - this.beta2))
-
     return v.div(m.sqrt().assignSum(this.epsilon)).assignProd(this.alpha)
   }
 }
