@@ -160,14 +160,14 @@ object MNISTTest {
         learningRate = 0.01,
         decayMethod = HyperbolicDecay(decay = 0.5, initLearningRate = 0.01)))
 
-    val trainingHelper = FeedforwardTrainingHelper(
+    val trainingHelper = FeedforwardTrainingHelper<DenseNDArray>(
       neuralProcessor = FeedforwardNeuralProcessor(neuralNetwork),
       optimizer = optimizer,
       lossCalculator = MSECalculator(),
       verbose = true)
 
-    val validationHelper = FeedforwardValidationHelper(
-      neuralProcessor = FeedforwardNeuralProcessor(neuralNetwork),
+    val validationHelper = FeedforwardValidationHelper<DenseNDArray>(
+      neuralProcessor = FeedforwardNeuralProcessor<DenseNDArray>(neuralNetwork),
       outputEvaluationFunction = ClassificationEvaluation())
 
     trainingHelper.train(
