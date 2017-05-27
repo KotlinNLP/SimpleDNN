@@ -63,16 +63,6 @@ class ActivableArraySpec : Spek({
           assertEquals(true, activableArray.values.equals(initArray))
         }
       }
-
-      on("activation function") {
-
-        val activableArray = ActivableArray(initArray)
-        activableArray.setActivation(activationFunction)
-
-        it("should have the expected Activation Function") {
-          assertEquals(true, activableArray.activationFunction is ELU)
-        }
-      }
     }
 
     on("before activation") {
@@ -129,10 +119,6 @@ class ActivableArraySpec : Spek({
       activableArray.activate()
 
       val cloneArray = activableArray.clone()
-
-      it("should have the same activation function values") {
-        assertEquals(activableArray.activationFunction, cloneArray.activationFunction)
-      }
 
       it("should have the same not activated values") {
         assertEquals(true, activableArray.valuesNotActivated.equals(cloneArray.valuesNotActivated))

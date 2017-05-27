@@ -72,10 +72,6 @@ class AugmentedArraySpec : Spek({
 
       val cloneArray = augmentedArray.clone()
 
-      it("should have the same activation function values") {
-        assertEquals(augmentedArray.activationFunction, cloneArray.activationFunction)
-      }
-
       it("should have the expected not activated values") {
         assertEquals(true, augmentedArray.valuesNotActivated.equals(cloneArray.valuesNotActivated))
       }
