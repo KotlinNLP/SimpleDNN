@@ -167,7 +167,7 @@ object MNISTTest {
       verbose = true)
 
     val validationHelper = FeedforwardValidationHelper<DenseNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor<DenseNDArray>(neuralNetwork),
+      neuralProcessor = FeedforwardNeuralProcessor(neuralNetwork),
       outputEvaluationFunction = ClassificationEvaluation())
 
     trainingHelper.train(
