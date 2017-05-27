@@ -23,6 +23,7 @@ import com.kotlinnlp.simplednn.helpers.validation.FeedforwardValidationHelper
 import com.jsoniter.*
 import Configuration
 import CorpusPaths
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import java.io.BufferedInputStream
 import java.io.FileInputStream
@@ -146,6 +147,7 @@ object MNISTSparseBinaryTest {
 
     val nn = FeedforwardNeuralNetwork(
       inputSize = 784,
+      inputType = LayerType.Input.SparseBinary,
       hiddenSize = 100,
       hiddenActivation = ELU(),
       outputSize = 10,
