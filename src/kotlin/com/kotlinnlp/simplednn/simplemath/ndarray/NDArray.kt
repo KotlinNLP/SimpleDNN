@@ -71,23 +71,23 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
-  operator fun get(i: Int): Double
+  operator fun get(i: Int): Number
 
   /**
    *
    */
-  operator fun get(i: Int, j: Int): Double
+  operator fun get(i: Int, j: Int): Number
 
 
   /**
    *
    */
-  operator fun set(i: Int, value: Double)
+  operator fun set(i: Int, value: Number)
 
   /**
    *
    */
-  operator fun set(i: Int, j: Int, value: Double)
+  operator fun set(i: Int, j: Int, value: Number)
 
   /**
    * Get the i-th row

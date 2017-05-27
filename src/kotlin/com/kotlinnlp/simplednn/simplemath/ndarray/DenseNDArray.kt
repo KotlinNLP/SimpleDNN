@@ -111,12 +111,12 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override operator fun set(i: Int, value: Double) { this.storage.put(i, value) }
+  override operator fun set(i: Int, value: Number) { this.storage.put(i, value.toDouble()) }
 
   /**
    *
    */
-  override operator fun set(i: Int, j: Int, value: Double) { this.storage.put(i, j, value) }
+  override operator fun set(i: Int, j: Int, value: Number) { this.storage.put(i, j, value.toDouble()) }
 
   /**
    * Get the i-th row
@@ -319,9 +319,40 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   override fun assignDot(a: DenseNDArray, b: NDArray<*>): DenseNDArray {
 
     when(b) {
-      is DenseNDArray -> return this.assignDot(a, b)
+      is DenseNDArray -> this.assignDot(a, b)
       is SparseNDArray -> TODO("not implemented")
-      is SparseBinaryNDArray -> TODO("not implemented")
+      is SparseBinaryNDArray -> this.assignDot(a, b)
+    }
+
+    return this
+  }
+
+  /**
+   *
+   */
+  fun assignDot(a: DenseNDArray, b: SparseBinaryNDArray): DenseNDArray {
+    require(a.rows == this.rows && b.columns == this.columns && a.columns == b.rows)
+
+    if (b.rows == 1) {
+      // Column vector (dot) row vector
+      this.zeros()
+
+      for (j in b.activeIndicesByColumn.keys) {
+        val jInt = j.toInt()
+        for (i in 0 until a.rows) {
+          this.storage.put(i, jInt, a[i])
+        }
+      }
+
+    } else if (b.columns == 1) {
+      // n-dim array (dot) row vector
+      for (i in 0 until a.rows) {
+        this.storage.put(i, b.activeIndicesByRow.keys.sumByDouble { a[i, it.toInt()] })
+      }
+
+    } else {
+      // n-dim array (dot) n-dim array
+      TODO("not implemented")
     }
 
     return this
