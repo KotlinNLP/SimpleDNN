@@ -41,7 +41,7 @@ class SimpleRecurrentLayerParameters(
   /**
    *
    */
-  val recurrentWeights: UpdatableDenseArray = this.buildDenseArray(dim1 = this.outputSize, dim2 = this.inputSize)
+  val recurrentWeights: UpdatableDenseArray = this.buildDenseArray(dim1 = this.outputSize, dim2 = this.outputSize)
 
   /**
    *
