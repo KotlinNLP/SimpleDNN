@@ -11,16 +11,17 @@ import com.kotlinnlp.simplednn.core.functionalities.losses.LossCalculator
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.dataset.*
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  *
  */
-class SequenceTrainingHelper(
-  override val neuralProcessor: RecurrentNeuralProcessor,
+class SequenceTrainingHelper<NDArrayType: NDArray<NDArrayType>>(
+  override val neuralProcessor: RecurrentNeuralProcessor<NDArrayType>,
   optimizer: ParamsOptimizer,
   lossCalculator: LossCalculator,
   verbose: Boolean = false
-) : TrainingHelper<SequenceExample>(
+) : TrainingHelper<SequenceExample<NDArrayType>>(
   neuralProcessor = neuralProcessor,
   optimizer = optimizer,
   lossCalculator = lossCalculator,
@@ -33,7 +34,7 @@ class SequenceTrainingHelper(
    *
    * @return the loss of the output respect to the gold
    */
-  override fun learnFromExample(example: SequenceExample): Double {
+  override fun learnFromExample(example: SequenceExample<NDArrayType>): Double {
 
     this.neuralProcessor.forward(example.sequenceFeatures)
 
