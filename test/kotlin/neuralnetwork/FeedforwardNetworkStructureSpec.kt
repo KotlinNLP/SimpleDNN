@@ -51,7 +51,7 @@ class FeedforwardNetworkStructureSpec : Spek({
 
         it("should throw an exception") {
           assertFailsWith<IllegalArgumentException> {
-            FeedforwardNetworkStructure(
+            FeedforwardNetworkStructure<DenseNDArray>(
               layersConfiguration = wrongLayersConfiguration,
               params = NetworkParameters(correctLayersConfiguration))
           }
@@ -68,7 +68,7 @@ class FeedforwardNetworkStructureSpec : Spek({
 
         it("should throw an exception") {
           assertFailsWith<IllegalArgumentException> {
-            FeedforwardNetworkStructure(
+            FeedforwardNetworkStructure<DenseNDArray>(
               layersConfiguration = layersConfiguration,
               params = NetworkParameters(layersConfiguration))
           }
@@ -84,7 +84,7 @@ class FeedforwardNetworkStructureSpec : Spek({
         LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
       ).toList()
 
-      val structure = FeedforwardNetworkStructure(
+      val structure = FeedforwardNetworkStructure<DenseNDArray>(
         layersConfiguration = layersConfiguration,
         params = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration))
 
@@ -112,7 +112,7 @@ class FeedforwardNetworkStructureSpec : Spek({
       on("layers factory") {
 
         it("should contain layers of the expected type") {
-          structure.layers.forEach { assertEquals(true, it is FeedforwardLayerStructure<DenseNDArray>) }
+          structure.layers.forEach { assertEquals(true, it is FeedforwardLayerStructure) }
         }
       }
 
