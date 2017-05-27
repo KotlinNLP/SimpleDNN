@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.deeplearning.embeddings
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import java.util.*
 
 /**
@@ -84,7 +84,7 @@ class EmbeddingsHelper(
    * @param embedding embedding to which propagate the [outputErrors]
    * @param outputErrors the errors to propagate on the [embedding]
    */
-  fun propagateErrors(embedding: EmbeddingsContainer.Embedding, outputErrors: NDArray) {
+  fun propagateErrors(embedding: EmbeddingsContainer.Embedding, outputErrors: DenseNDArray) {
     optimizer.accumulateErrors(embeddingIndex = embedding.index, errors = outputErrors)
   }
 

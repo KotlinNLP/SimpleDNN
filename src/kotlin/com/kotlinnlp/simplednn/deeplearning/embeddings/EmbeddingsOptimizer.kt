@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.deeplearning.embeddings
 
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.simplemath.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
@@ -27,10 +27,10 @@ class EmbeddingsOptimizer(
   /**
    * Support structure to store errors
    *
-   * @property array the array contains the accumulated errors
+   * @property errors the [DenseNDArray] which contains the accumulated errors
    * @property count how many times the errors has been accumulated
    */
-  private data class EmbeddingsErrors(val array: NDArray, var count: Int)
+  private data class EmbeddingsErrors(val errors: DenseNDArray, var count: Int)
 
   /**
    * Map an embeddings index with its errors
@@ -43,14 +43,14 @@ class EmbeddingsOptimizer(
    * @param embeddingIndex index of the embedding on which to accumulate the [errors]
    * @param errors errors to accumulate
    */
-  fun accumulateErrors(embeddingIndex: Int, errors: NDArray) {
+  fun accumulateErrors(embeddingIndex: Int, errors: DenseNDArray) {
 
     val embeddingsErrorsAccumulator: EmbeddingsErrors? = this.embeddingsErrorsAccumulator[embeddingIndex]
 
     if (embeddingsErrorsAccumulator == null){
-      this.embeddingsErrorsAccumulator[embeddingIndex] = EmbeddingsErrors(array = errors.copy(), count = 1)
+      this.embeddingsErrorsAccumulator[embeddingIndex] = EmbeddingsErrors(errors = errors.copy(), count = 1)
     } else {
-      embeddingsErrorsAccumulator.array.assignSum(errors)
+      embeddingsErrorsAccumulator.errors.assignSum(errors)
       embeddingsErrorsAccumulator.count += 1
     }
   }
@@ -60,9 +60,9 @@ class EmbeddingsOptimizer(
    */
   override fun update() {
 
-    for ((embeddingIndex, errors) in this.embeddingsErrorsAccumulator){
-      errors.array.assignDiv(errors.count) // average errors
-      this.updateMethod.update(this.embeddingsContainer.lookupTable[embeddingIndex].array, errors.array)
+    for ((embeddingIndex, embeddingsErrors) in this.embeddingsErrorsAccumulator) {
+      embeddingsErrors.errors.assignDiv(embeddingsErrors.count.toDouble()) // average errors
+      this.updateMethod.update(this.embeddingsContainer.lookupTable[embeddingIndex].array, embeddingsErrors.errors)
     }
 
     this.embeddingsErrorsAccumulator.clear()
