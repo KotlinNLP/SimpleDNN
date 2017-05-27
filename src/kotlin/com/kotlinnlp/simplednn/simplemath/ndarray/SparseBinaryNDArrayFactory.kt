@@ -62,13 +62,13 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
   /**
    *
    */
-  fun arrayOf(activeIndices: LongArray, shape: Shape): SparseBinaryNDArray {
+  fun arrayOf(activeIndices: IntArray, shape: Shape): SparseBinaryNDArray {
     require(shape.dim1 == 1 || shape.dim2 == 1) {
       "Invalid shape (only a 1-dim SparseBinaryNDArray can be created given a list of active indices)"
     }
 
-    val vectorMap = mutableMapOf<Long, MutableSet<Long>?>(Pair(0, activeIndices.toMutableSet()))
-    val indicesMap = mutableMapOf<Long, MutableSet<Long>?>()
+    val vectorMap = mutableMapOf<Int, MutableSet<Int>?>(Pair(0, activeIndices.toMutableSet()))
+    val indicesMap = mutableMapOf<Int, MutableSet<Int>?>()
 
     for (index in activeIndices) {
       indicesMap[index] = null
@@ -83,7 +83,7 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
   /**
    *
    */
-  fun arrayOf(activeIndicesPairs: Array<Pair<Long, Long>>, shape: Shape): SparseBinaryNDArray {
+  fun arrayOf(activeIndicesPairs: Array<Pair<Int, Int>>, shape: Shape): SparseBinaryNDArray {
 
     val res = SparseBinaryNDArray(shape = shape)
 

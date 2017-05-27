@@ -20,10 +20,10 @@ import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGener
  */
 class SparseBinaryNDArray(
   override val shape: Shape,
-  val activeIndicesByRow: MutableMap<Long, MutableSet<Long>?> = mutableMapOf<Long, MutableSet<Long>?>(),
-  val activeIndicesByColumn: MutableMap<Long, MutableSet<Long>?> = mutableMapOf<Long, MutableSet<Long>?>()
+  val activeIndicesByRow: MutableMap<Int, MutableSet<Int>?> = mutableMapOf<Int, MutableSet<Int>?>(),
+  val activeIndicesByColumn: MutableMap<Int, MutableSet<Int>?> = mutableMapOf<Int, MutableSet<Int>?>()
 ) : NDArray<SparseBinaryNDArray>,
-    Iterable<Pair<Long, Long>> {
+    Iterable<Pair<Int, Int>> {
 
   companion object {
 
@@ -37,7 +37,7 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  inner class LinearIndicesIterator: Iterator<Pair<Long, Long>> {
+  inner class LinearIndicesIterator: Iterator<Pair<Int, Int>> {
 
     /**
      * The iterator of the map entries by row index (rowIndex, rowActiveIndices)
@@ -52,24 +52,24 @@ class SparseBinaryNDArray(
     /**
      * The map entry (rowIndex, rowActiveIndices) of the current row
      */
-    var curRow: MutableMap.MutableEntry<Long, MutableSet<Long>?>? =
+    var curRow: MutableMap.MutableEntry<Int, MutableSet<Int>?>? =
       if (this.rowsIterator.hasNext()) this.rowsIterator.next() else null
 
     /**
      * The map entry (rowIndex, rowActiveIndices) of the current column
      */
-    var curColumn: MutableMap.MutableEntry<Long, MutableSet<Long>?>? =
+    var curColumn: MutableMap.MutableEntry<Int, MutableSet<Int>?>? =
       if (this.columnsIterator.hasNext()) this.columnsIterator.next() else null
 
     /**
      *
      */
-    var curRowIterator: Iterator<Long>? = this.curRow?.value?.iterator()
+    var curRowIterator: Iterator<Int>? = this.curRow?.value?.iterator()
 
     /**
      *
      */
-    var curColumnIterator: Iterator<Long>? = this.curColumn?.value?.iterator()
+    var curColumnIterator: Iterator<Int>? = this.curColumn?.value?.iterator()
 
     /**
      *
@@ -85,7 +85,7 @@ class SparseBinaryNDArray(
     /**
      *
      */
-    override fun next(): Pair<Long, Long> {
+    override fun next(): Pair<Int, Int> {
 
       return if (this@SparseBinaryNDArray.rows == 1) {
 
@@ -114,7 +114,7 @@ class SparseBinaryNDArray(
   /**
    * Iterator over active indices
    */
-  override fun iterator(): Iterator<Pair<Long, Long>> {
+  override fun iterator(): Iterator<Pair<Int, Int>> {
     return LinearIndicesIterator()
   }
 
@@ -210,19 +210,19 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  private fun addElement(indicesMap: MutableMap<Long, MutableSet<Long>?>, key: Long, element: Long) {
+  private fun addElement(indicesMap: MutableMap<Int, MutableSet<Int>?>, key: Int, element: Int) {
 
     if (indicesMap.containsKey(key)) {
       // Key already existing
       if (indicesMap[key] != null) {
         indicesMap[key]!!.add(element)
       } else {
-        indicesMap[key] = mutableSetOf(0L, element)
+        indicesMap[key] = mutableSetOf(0, element)
       }
 
     } else {
       // New key
-      if (element == 0L) {
+      if (element == 0) {
         indicesMap[key] = null
       } else {
         indicesMap[key] = mutableSetOf(element)
@@ -264,9 +264,9 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  private fun copyIndices(indicesMap: MutableMap<Long, MutableSet<Long>?>): MutableMap<Long, MutableSet<Long>?> {
+  private fun copyIndices(indicesMap: MutableMap<Int, MutableSet<Int>?>): MutableMap<Int, MutableSet<Int>?> {
 
-    val newMap = mutableMapOf<Long, MutableSet<Long>?>()
+    val newMap = mutableMapOf<Int, MutableSet<Int>?>()
 
     for ((key, indicesSet) in indicesMap.iterator()) {
       newMap[key] = indicesSet?.toMutableSet()

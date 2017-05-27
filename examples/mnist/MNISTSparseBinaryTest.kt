@@ -84,8 +84,8 @@ object MNISTSparseBinaryTest {
    */
   fun JsonIterator.readNDArray(): SparseBinaryNDArray {
 
-    val array = ArrayList<Long>()
-    var index: Long = 0
+    val array = ArrayList<Int>()
+    var index: Int = 0
 
     while (this.readArray()) {
 
@@ -96,7 +96,7 @@ object MNISTSparseBinaryTest {
       index++
     }
 
-    return SparseBinaryNDArrayFactory.arrayOf(activeIndices = array.toLongArray(), shape = Shape(784))
+    return SparseBinaryNDArrayFactory.arrayOf(activeIndices = array.toIntArray(), shape = Shape(784))
   }
 
   /**
