@@ -338,16 +338,15 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
       this.zeros()
 
       for (j in b.activeIndicesByColumn.keys) {
-        val jInt = j.toInt()
         for (i in 0 until a.rows) {
-          this.storage.put(i, jInt, a[i])
+          this.storage.put(i, j, a[i])
         }
       }
 
     } else if (b.columns == 1) {
       // n-dim array (dot) row vector
       for (i in 0 until a.rows) {
-        this.storage.put(i, b.activeIndicesByRow.keys.sumByDouble { a[i, it.toInt()] })
+        this.storage.put(i, b.activeIndicesByRow.keys.sumByDouble { a[i, it] })
       }
 
     } else {
