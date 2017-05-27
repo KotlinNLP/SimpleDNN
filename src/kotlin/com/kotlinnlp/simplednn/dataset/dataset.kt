@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.simplednn.dataset
 
+import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
@@ -20,9 +21,9 @@ interface Example
  * @param features features
  * @param outputGold outputGold
  */
-data class SimpleExample<NDArrayType: NDArray<NDArrayType>>(
-  val features: NDArrayType,
-  val outputGold: NDArrayType
+data class SimpleExample<FeaturesNDArrayType: NDArray<FeaturesNDArrayType>>(
+  val features: FeaturesNDArrayType,
+  val outputGold: DenseNDArray
 ): Example {
   /**
    *
@@ -38,17 +39,17 @@ data class SimpleExample<NDArrayType: NDArray<NDArrayType>>(
 /**
  *
  */
-data class SequenceExampleWithFinalOutput<NDArrayType: NDArray<NDArrayType>>(
-  val sequenceFeatures: ArrayList<NDArrayType>,
-  val outputGold: NDArrayType
+data class SequenceExampleWithFinalOutput<FeaturesNDArrayType: NDArray<FeaturesNDArrayType>>(
+  val sequenceFeatures: ArrayList<FeaturesNDArrayType>,
+  val outputGold: DenseNDArray
 ): Example
 
 /**
  *
  */
-data class SequenceExample<NDArrayType: NDArray<NDArrayType>>(
-  val sequenceFeatures: ArrayList<NDArrayType>,
-  val sequenceOutputGold: ArrayList<NDArrayType>
+data class SequenceExample<FeaturesNDArrayType: NDArray<FeaturesNDArrayType>>(
+  val sequenceFeatures: ArrayList<FeaturesNDArrayType>,
+  val sequenceOutputGold: ArrayList<DenseNDArray>
 ): Example
 
 /**
@@ -56,8 +57,8 @@ data class SequenceExample<NDArrayType: NDArray<NDArrayType>>(
  * @param features features
  * @param goldOutcomeIndex goldOutcomeIndex
  */
-data class ExampleBinaryOutputSequenceExample<NDArrayType: NDArray<NDArrayType>>(
-  val features: NDArrayType,
+data class ExampleBinaryOutputSequenceExample<FeaturesNDArrayType: NDArray<FeaturesNDArrayType>>(
+  val features: FeaturesNDArrayType,
   val goldOutcomeIndex: Int
 ): Example
 
