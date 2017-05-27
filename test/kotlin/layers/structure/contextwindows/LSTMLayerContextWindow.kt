@@ -14,6 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  *
@@ -66,7 +67,7 @@ sealed class LSTMLayerContextWindow: LayerContextWindow {
  */
 private fun buildPrevStateLayer(): LSTMLayerStructure<DenseNDArray> {
 
-  val outputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
+  val outputArray = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
   outputArray.activate()
 
   val layer = LSTMLayerStructure(
@@ -87,8 +88,8 @@ private fun buildPrevStateLayer(): LSTMLayerStructure<DenseNDArray> {
  */
 private fun buildNextStateLayer(): LSTMLayerStructure<DenseNDArray> {
 
-  val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray(size = 5)
-  outputArray.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
+  val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(5)))
+  outputArray.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
   val layer = LSTMLayerStructure(
     inputArray = AugmentedArray<DenseNDArray>(size = 4),

@@ -14,6 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  *
@@ -66,7 +67,7 @@ sealed class RANLayerContextWindow: LayerContextWindow {
  */
 private fun buildPrevStateLayer(): RANLayerStructure<DenseNDArray> {
 
-  val outputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
+  val outputArray = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
   outputArray.setActivation(Tanh())
   outputArray.activate()
 
@@ -84,8 +85,8 @@ private fun buildPrevStateLayer(): RANLayerStructure<DenseNDArray> {
  */
 private fun buildNextStateLayer(): RANLayerStructure<DenseNDArray> {
 
-  val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray(size = 5)
-  outputArray.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
+  val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(5)))
+  outputArray.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
   val layer = RANLayerStructure(
     inputArray = AugmentedArray<DenseNDArray>(size = 4),
