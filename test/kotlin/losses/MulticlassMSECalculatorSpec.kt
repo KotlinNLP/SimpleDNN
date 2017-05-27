@@ -5,6 +5,8 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
+package losses
+
 import com.kotlinnlp.simplednn.core.functionalities.losses.MulticlassMSECalculator
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
