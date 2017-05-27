@@ -13,6 +13,12 @@ package com.kotlinnlp.simplednn.simplemath.ndarray
 object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
 
   /**
+   * Private val used to serialize the class (needed from Serializable)
+   */
+  @Suppress("unused")
+  private const val serialVersionUID: Long = 1L
+
+  /**
    * @param shape shape
    *
    * @return a new empty [SparseBinaryNDArray]

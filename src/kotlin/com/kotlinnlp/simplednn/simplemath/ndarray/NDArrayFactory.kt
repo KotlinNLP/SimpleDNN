@@ -7,10 +7,12 @@
 
 package com.kotlinnlp.simplednn.simplemath.ndarray
 
+import java.io.Serializable
+
 /**
  *
  */
-interface NDArrayFactory<NDArrayType : NDArray<NDArrayType>> {
+interface NDArrayFactory<NDArrayType : NDArray<NDArrayType>> : Serializable {
 
   /**
    * @param shape shape
