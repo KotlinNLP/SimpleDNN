@@ -162,7 +162,7 @@ object MNISTSequenceTest {
 
     val optimizer = ParamsOptimizer(neuralNetwork, ADAMMethod(stepSize = 0.001))
 
-    val neuralProcessor = RecurrentNeuralProcessor(neuralNetwork)
+    val neuralProcessor = RecurrentNeuralProcessor<DenseNDArray>(neuralNetwork)
 
     val trainingHelper = SequenceWithFinalOutputTrainingHelper(
       neuralProcessor = neuralProcessor,

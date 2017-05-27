@@ -153,7 +153,7 @@ object ProgressiveSumTest {
 
     println("\n-- VALIDATION BEFORE TRAINING")
 
-    val validationHelper = SequenceValidationHelper(
+    val validationHelper = SequenceValidationHelper<DenseNDArray>(
       neuralProcessor = RecurrentNeuralProcessor(neuralNetwork),
       outputEvaluationFunction = ClassificationEvaluation())
 
@@ -173,13 +173,13 @@ object ProgressiveSumTest {
       neuralNetwork = neuralNetwork,
       updateMethod = LearningRateMethod(learningRate = 0.1))
 
-    val trainingHelper = SequenceTrainingHelper(
+    val trainingHelper = SequenceTrainingHelper<DenseNDArray>(
       neuralProcessor = RecurrentNeuralProcessor(neuralNetwork),
       optimizer = optimizer,
       lossCalculator = MSECalculator(),
       verbose = true)
 
-    val validationHelper = SequenceValidationHelper(
+    val validationHelper = SequenceValidationHelper<DenseNDArray>(
       neuralProcessor = RecurrentNeuralProcessor(neuralNetwork),
       outputEvaluationFunction = ClassificationEvaluation())
 
