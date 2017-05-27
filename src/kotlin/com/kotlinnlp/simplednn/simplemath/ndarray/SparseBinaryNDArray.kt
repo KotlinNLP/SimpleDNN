@@ -10,9 +10,20 @@ package com.kotlinnlp.simplednn.simplemath.ndarray
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 
 /**
+ * An [NDArray] of sparse binary values.
  *
+ * @property shape the shape of the array
+ * @property activeIndicesByRow a [MutableMap] which maps a row index with the set of active indices of that row
+ *                              (the set is null if the only active index in the row is 0)
+ * @property activeIndicesByColumn a [MutableMap] which maps a column index with the set of active indices of that
+ *                                 column (the set is null if the only active index in the column is 0)
  */
-class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
+class SparseBinaryNDArray(
+  override val shape: Shape,
+  val activeIndicesByRow: MutableMap<Long, MutableSet<Long>?>,
+  val activeIndicesByColumn: MutableMap<Long, MutableSet<Long>?>
+) : NDArray<SparseBinaryNDArray>,
+    Iterable<Pair<Long, Long>> {
 
   companion object {
 
@@ -21,6 +32,90 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
+  }
+
+  /**
+   *
+   */
+  inner class LinearIndicesIterator: Iterator<Pair<Long, Long>> {
+
+    /**
+     * The iterator of the map entries by row index (rowIndex, rowActiveIndices)
+     */
+    val rowsIterator = this@SparseBinaryNDArray.activeIndicesByRow.iterator()
+
+    /**
+     * The iterator of the map entries by column index (columnIndex, columnActiveIndices)
+     */
+    val columnsIterator = this@SparseBinaryNDArray.activeIndicesByColumn.iterator()
+
+    /**
+     * The map entry (rowIndex, rowActiveIndices) of the current row
+     */
+    var curRow: MutableMap.MutableEntry<Long, MutableSet<Long>?>? =
+      if (this.rowsIterator.hasNext()) this.rowsIterator.next() else null
+
+    /**
+     * The map entry (rowIndex, rowActiveIndices) of the current column
+     */
+    var curColumn: MutableMap.MutableEntry<Long, MutableSet<Long>?>? =
+      if (this.columnsIterator.hasNext()) this.columnsIterator.next() else null
+
+    /**
+     *
+     */
+    var curRowIterator: Iterator<Long>? = this.curRow?.value?.iterator()
+
+    /**
+     *
+     */
+    var curColumnIterator: Iterator<Long>? = this.curColumn?.value?.iterator()
+
+    /**
+     *
+     */
+    override fun hasNext(): Boolean {
+
+      return if (this@SparseBinaryNDArray.rows == 1)
+        this.curRowIterator != null && this.curRowIterator!!.hasNext()
+      else
+        this.columnsIterator.hasNext() || (this.curColumnIterator != null && this.curColumnIterator!!.hasNext())
+    }
+
+    /**
+     *
+     */
+    override fun next(): Pair<Long, Long> {
+
+      return if (this@SparseBinaryNDArray.rows == 1) {
+
+        Pair(this.curRow!!.key, this.curRowIterator!!.next())
+
+      } else {
+
+        this.updateColumnIterator()
+
+        Pair(this.curColumnIterator!!.next(), this.curColumn!!.key)
+      }
+    }
+
+    /**
+     *
+     */
+    private fun updateColumnIterator() {
+
+      if (this@SparseBinaryNDArray.columns > 1 && !this.curColumnIterator!!.hasNext()) {
+        this.curColumn = this.columnsIterator.next()
+        this.curColumnIterator = this.curColumn!!.value!!.iterator()
+      }
+    }
+  }
+
+  /**
+   * Iterator over active indices
+   */
+  override fun iterator(): Iterator<Pair<Long, Long>> {
+    return LinearIndicesIterator()
   }
 
   /**
@@ -49,20 +144,12 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
   /**
    *
    */
-  override val rows: Int
-    get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+  override val rows: Int = this.shape.dim1
 
   /**
    *
    */
-  override val columns: Int
-    get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-
-  /**
-   *
-   */
-  override val shape: Shape
-    get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+  override val columns: Int = this.shape.dim2
 
   /**
    *
@@ -122,8 +209,24 @@ class SparseBinaryNDArray : NDArray<SparseBinaryNDArray> {
   /**
    *
    */
-  override fun copy(): SparseBinaryNDArray {
-    TODO("not implemented")
+  override fun copy(): SparseBinaryNDArray = SparseBinaryNDArray(
+    activeIndicesByRow = this.copyIndices(this.activeIndicesByRow),
+    activeIndicesByColumn = this.copyIndices(this.activeIndicesByColumn),
+    shape = this.shape.copy()
+  )
+
+  /**
+   *
+   */
+  private fun copyIndices(indicesMap: MutableMap<Long, MutableSet<Long>?>): MutableMap<Long, MutableSet<Long>?> {
+
+    val newMap = mutableMapOf<Long, MutableSet<Long>?>()
+
+    for ((key, indicesSet) in indicesMap.iterator()) {
+      newMap[key] = indicesSet?.toMutableSet()
+    }
+
+    return newMap
   }
 
   /**
