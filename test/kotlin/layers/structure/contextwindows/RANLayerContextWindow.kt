@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 /**
  *
  */
-sealed class RANLayerContextWindow: LayerContextWindow<DenseNDArray> {
+sealed class RANLayerContextWindow: LayerContextWindow {
 
   /**
    *
@@ -71,7 +71,7 @@ private fun buildPrevStateLayer(): RANLayerStructure<DenseNDArray> {
   outputArray.activate()
 
   return RANLayerStructure(
-    inputArray = AugmentedArray(size = 4),
+    inputArray = AugmentedArray<DenseNDArray>(size = 4),
     outputArray = outputArray,
     params = RANLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),
@@ -88,7 +88,7 @@ private fun buildNextStateLayer(): RANLayerStructure<DenseNDArray> {
   outputArray.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
   val layer = RANLayerStructure(
-    inputArray = AugmentedArray(size = 4),
+    inputArray = AugmentedArray<DenseNDArray>(size = 4),
     outputArray = outputArray,
     params = RANLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),

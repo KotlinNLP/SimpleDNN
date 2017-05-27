@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 /**
  *
  */
-sealed class CFNLayerContextWindow: LayerContextWindow<DenseNDArray> {
+sealed class CFNLayerContextWindow: LayerContextWindow {
 
   /**
    *
@@ -87,7 +87,7 @@ private fun buildNextStateLayer(currentLayerOutput: DenseNDArray): CFNLayerStruc
   outputArray.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
   val layer = CFNLayerStructure(
-    inputArray = AugmentedArray(size = 4),
+    inputArray = AugmentedArray<DenseNDArray>(size = 4),
     outputArray = outputArray,
     params = CFNLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),

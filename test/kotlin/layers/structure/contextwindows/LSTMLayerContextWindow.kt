@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 /**
  *
  */
-sealed class LSTMLayerContextWindow: LayerContextWindow<DenseNDArray> {
+sealed class LSTMLayerContextWindow: LayerContextWindow {
 
   /**
    *
@@ -70,7 +70,7 @@ private fun buildPrevStateLayer(): LSTMLayerStructure<DenseNDArray> {
   outputArray.activate()
 
   val layer = LSTMLayerStructure(
-    inputArray = AugmentedArray(size = 4),
+    inputArray = AugmentedArray<DenseNDArray>(size = 4),
     outputArray = outputArray,
     params = LSTMLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),
@@ -91,7 +91,7 @@ private fun buildNextStateLayer(): LSTMLayerStructure<DenseNDArray> {
   outputArray.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
   val layer = LSTMLayerStructure(
-    inputArray = AugmentedArray(size = 4),
+    inputArray = AugmentedArray<DenseNDArray>(size = 4),
     outputArray = outputArray,
     params = LSTMLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),

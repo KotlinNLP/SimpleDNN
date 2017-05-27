@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
 /**
  *
  */
-sealed class SimpleRecurrentLayerContextWindow: LayerContextWindow<DenseNDArray> {
+sealed class SimpleRecurrentLayerContextWindow: LayerContextWindow {
 
   /**
    *
@@ -76,7 +76,7 @@ private fun buildNextStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> {
   outputArray.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
   val layer = SimpleRecurrentLayerStructure(
-    inputArray = AugmentedArray(size = 4),
+    inputArray = AugmentedArray<DenseNDArray>(size = 4),
     outputArray = outputArray,
     params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),
