@@ -22,9 +22,11 @@ object SimpleRecurrentNeuralNetwork {
                       hiddenActivation: ActivationFunction?,
                       outputSize: Int,
                       outputActivation: ActivationFunction?,
+                      inputType: LayerType.Input = LayerType.Input.Dense,
                       dropout: Double = 0.0) = NeuralNetwork(
     LayerConfiguration(
-      size = inputSize
+      size = inputSize,
+      inputType = inputType
     ),
     LayerConfiguration(
       size = hiddenSize,
