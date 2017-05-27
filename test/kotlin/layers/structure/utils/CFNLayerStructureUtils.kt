@@ -14,6 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 
 /**
@@ -26,7 +27,7 @@ object CFNLayerStructureUtils {
    */
   fun buildLayer(layerContextWindow: LayerContextWindow): CFNLayerStructure<DenseNDArray> = CFNLayerStructure(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
-    outputArray = AugmentedArray(size = 5),
+    outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))),
     params = this.buildParams(),
     activationFunction = Tanh(),
     layerContextWindow = layerContextWindow)

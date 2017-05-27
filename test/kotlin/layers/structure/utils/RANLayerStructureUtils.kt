@@ -14,6 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 
 /**
@@ -26,7 +27,7 @@ object RANLayerStructureUtils {
    */
   fun buildLayer(layerContextWindow: LayerContextWindow): RANLayerStructure<DenseNDArray> = RANLayerStructure(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
-    outputArray = AugmentedArray(size = 5),
+    outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))),
     params = this.buildParams(),
     activationFunction = Tanh(),
     layerContextWindow = layerContextWindow)

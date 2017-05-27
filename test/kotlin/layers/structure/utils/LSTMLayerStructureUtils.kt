@@ -14,6 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  *
@@ -25,7 +26,7 @@ object LSTMLayerStructureUtils {
    */
   fun buildLayer(layerContextWindow: LayerContextWindow): LSTMLayerStructure<DenseNDArray> = LSTMLayerStructure(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
-    outputArray = AugmentedArray(size = 5),
+    outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))),
     params = this.buildParams(),
     activationFunction = Tanh(),
     layerContextWindow = layerContextWindow)

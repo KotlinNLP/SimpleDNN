@@ -14,6 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayer
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  *
@@ -25,7 +26,7 @@ object SimpleRecurrentLayerStructureUtils {
    */
   fun buildLayer(layerContextWindow: LayerContextWindow): SimpleRecurrentLayerStructure<DenseNDArray> = SimpleRecurrentLayerStructure(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
-    outputArray = AugmentedArray(size = 5),
+    outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))),
     params = this.buildParams(),
     activationFunction = Tanh(),
     layerContextWindow = layerContextWindow)

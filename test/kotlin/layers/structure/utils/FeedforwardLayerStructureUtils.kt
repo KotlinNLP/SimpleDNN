@@ -14,6 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameter
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  *
@@ -27,7 +28,7 @@ object FeedforwardLayerStructureUtils {
 
     return FeedforwardLayerStructure(
       inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
-      outputArray = AugmentedArray(5),
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))),
       params = this.getParams45(),
       activationFunction = Tanh())
   }
@@ -70,7 +71,7 @@ object FeedforwardLayerStructureUtils {
 
     return FeedforwardLayerStructure(
       inputArray = inputArray,
-      outputArray = AugmentedArray(3),
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(3))),
       params = this.getParams53(),
       activationFunction = Softmax())
   }
@@ -80,7 +81,7 @@ object FeedforwardLayerStructureUtils {
    */
   fun buildLayer53NoActivation() = FeedforwardLayerStructure(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.42, -1.09, 0.0, 0.87, -0.19))),
-    outputArray = AugmentedArray(3),
+    outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(3))),
     params = this.getParams53(),
     activationFunction = null)
 
