@@ -36,7 +36,7 @@ class GRULayerStructureSpec : Spek({
         layer.forward()
 
         it("should match the expected reset gate") {
-          assertEquals(true, (layer.resetGate.values as DenseNDArray).equals(
+          assertEquals(true, layer.resetGate.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(0.40, 0.25, 0.50, 0.70, 0.45)),
             tolerance = 0.005))
         }
