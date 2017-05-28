@@ -74,10 +74,6 @@ class BiRNN(
     this.outputNetwork = NeuralNetwork(
       LayerConfiguration(size = this.hiddenLayerSize * 2),
       LayerConfiguration(
-        size = this.hiddenLayerSize,
-        activationFunction = Tanh(),
-        connectionType = LayerType.Connection.Feedforward),
-      LayerConfiguration(
         size = this.outputLayerSize,
         activationFunction = this.outputLayerActivation,
         connectionType = LayerType.Connection.Feedforward))
