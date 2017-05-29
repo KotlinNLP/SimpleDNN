@@ -14,6 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
 
+
 /**
  *
  */
@@ -21,33 +22,40 @@ object LayerParametersFactory {
 
   operator fun invoke(inputSize: Int,
                       outputSize: Int,
-                      connectionType: LayerType.Connection): LayerParameters =
+                      connectionType: LayerType.Connection,
+                      sparseInput: Boolean = false): LayerParameters =
 
     when(connectionType) {
 
       LayerType.Connection.Feedforward -> FeedforwardLayerParameters(
         inputSize = inputSize,
-        outputSize = outputSize)
+        outputSize = outputSize,
+        sparseInput = sparseInput)
 
       LayerType.Connection.SimpleRecurrent -> SimpleRecurrentLayerParameters(
         inputSize = inputSize,
-        outputSize = outputSize)
+        outputSize = outputSize,
+        sparseInput = sparseInput)
 
       LayerType.Connection.GRU -> GRULayerParameters(
         inputSize = inputSize,
-        outputSize = outputSize)
+        outputSize = outputSize,
+        sparseInput = sparseInput)
 
       LayerType.Connection.LSTM -> LSTMLayerParameters(
         inputSize = inputSize,
-        outputSize = outputSize)
+        outputSize = outputSize,
+        sparseInput = sparseInput)
 
       LayerType.Connection.CFN -> CFNLayerParameters(
         inputSize = inputSize,
-        outputSize = outputSize)
+        outputSize = outputSize,
+        sparseInput = sparseInput)
 
       LayerType.Connection.RAN -> RANLayerParameters(
         inputSize = inputSize,
-        outputSize = outputSize)
+        outputSize = outputSize,
+        sparseInput = sparseInput)
 
       else -> throw RuntimeException("Invalid connection type: " + connectionType)
     }

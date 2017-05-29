@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.optimizer
 
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 
@@ -25,7 +26,8 @@ class ParamsErrorsAccumulator(val neuralNetwork: NeuralNetwork) {
   /**
    *
    */
-  private val paramsErrors: NetworkParameters = this.neuralNetwork.parametersFactory()
+  private val paramsErrors: NetworkParameters = this.neuralNetwork.parametersFactory(
+    sparseInput = this.neuralNetwork.layersConfiguration.first().inputType == LayerType.Input.SparseBinary)
 
   /**
    *

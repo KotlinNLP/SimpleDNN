@@ -31,7 +31,8 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The errors of the network model parameters
    */
-  private val backwardParamsErrors: NetworkParameters = this.neuralNetwork.parametersFactory()
+  private val backwardParamsErrors: NetworkParameters = this.neuralNetwork.parametersFactory(
+    sparseInput = this.neuralNetwork.layersConfiguration.first().inputType == LayerType.Input.SparseBinary)
 
   /**
    *
@@ -56,8 +57,12 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    */
   override fun getParamsErrors(): NetworkParameters {
-    val paramsError = this.neuralNetwork.parametersFactory()
+
+    val paramsError = this.neuralNetwork.parametersFactory(
+      sparseInput = this.neuralNetwork.layersConfiguration.first().inputType == LayerType.Input.SparseBinary)
+
     paramsError.assignValues(this.backwardParamsErrors)
+
     return paramsError
   }
 

@@ -16,9 +16,10 @@ import java.io.Serializable
  * [NetworkParameters] contains all the parameters of the layers defined in [layersConfiguration],
  * grouped per layer.
  *
- * @param layersConfiguration a list of configurations, one per layer
+ * @property layersConfiguration a list of configurations, one per layer
+ * @property sparseInput whether the input is sparse or not
  */
-class NetworkParameters(val layersConfiguration: List<LayerConfiguration>) :
+class NetworkParameters(val layersConfiguration: List<LayerConfiguration>, private val sparseInput: Boolean = false) :
   Serializable,
   Iterable<UpdatableArray<*>> {
 
@@ -43,7 +44,8 @@ class NetworkParameters(val layersConfiguration: List<LayerConfiguration>) :
     /**
      *
      */
-    private var layerParamsIterator: Iterator<UpdatableArray<*>> = this@NetworkParameters.paramsPerLayer.first().iterator()
+    private var layerParamsIterator: Iterator<UpdatableArray<*>> =
+      this@NetworkParameters.paramsPerLayer.first().iterator()
 
     /**
      *
@@ -76,7 +78,8 @@ class NetworkParameters(val layersConfiguration: List<LayerConfiguration>) :
     LayerParametersFactory(
       inputSize = layersConfiguration[it].size,
       outputSize = layersConfiguration[it + 1].size,
-      connectionType = layersConfiguration[it + 1].connectionType!!)
+      connectionType = layersConfiguration[it + 1].connectionType!!,
+      sparseInput = this.sparseInput && it == 0)
   })
 
   /**
