@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGener
 /**
  *
  */
-class SparseNDArray : NDArray<SparseNDArray> {
+class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterable<Pair<Pair<Int, Int>, Double>>  {
 
   companion object {
 
@@ -21,7 +21,76 @@ class SparseNDArray : NDArray<SparseNDArray> {
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
+
+    operator fun invoke(shape: Shape, values: Array<Double>, rows: Array<Int>, columns: Array<Int>): SparseNDArray {
+
+      val array = SparseNDArray(shape = shape)
+
+      array.values = values
+      array.rowIndices = rows
+      array.colIndices = columns
+
+      return array
+    }
   }
+
+  /**
+   *
+   */
+  inner class LinearIterator : Iterator<Pair<Pair<Int, Int>, Double>>  {
+
+    /**
+     *
+     */
+    private var curIndex: Int = 0
+
+    /**
+     *
+     */
+    override fun hasNext(): Boolean = this.curIndex < this@SparseNDArray.values.size
+
+    /**
+     *
+     */
+    override fun next(): Pair<Pair<Int, Int>, Double> {
+
+      val value = this@SparseNDArray.values[this.curIndex]
+      val indices = Pair(
+        this@SparseNDArray.rowIndices[this.curIndex],
+        this@SparseNDArray.colIndices[this.curIndex]
+      )
+
+      this.curIndex++
+
+      return Pair(indices, value)
+    }
+  }
+
+  /**
+   * Iterator over active indices with the related values
+   */
+  override fun iterator(): Iterator<Pair<Pair<Int, Int>, Double>> {
+    return LinearIterator()
+  }
+
+  /**
+   *
+   */
+  var values = arrayOf<Double>()
+    private set
+
+  /**
+   *
+   */
+  var rowIndices = arrayOf<Int>()
+    private set
+
+  /**
+   *
+   */
+  var colIndices = arrayOf<Int>()
+    private set
+
 
   /**
    *
@@ -43,26 +112,17 @@ class SparseNDArray : NDArray<SparseNDArray> {
   /**
    *
    */
-  override val length: Int
-    get() = TODO("not implemented")
+  override val rows: Int = this.shape.dim1
 
   /**
    *
    */
-  override val rows: Int
-    get() = TODO("not implemented")
+  override val columns: Int = this.shape.dim2
 
   /**
    *
    */
-  override val columns: Int
-    get() = TODO("not implemented")
-
-  /**
-   *
-   */
-  override val shape: Shape
-    get() = TODO("not implemented")
+  override val length: Int = this.rows * this.columns
 
   /**
    *
@@ -73,8 +133,12 @@ class SparseNDArray : NDArray<SparseNDArray> {
   /**
    * Transpose
    */
-  override val T: SparseNDArray
-    get() = TODO("not implemented")
+  override val T: SparseNDArray get() = SparseNDArray(
+    shape = this.shape.inverse,
+    values = this.values.copyOf(),
+    rows = this.colIndices.copyOf(),
+    columns = this.rowIndices.copyOf()
+  )
 
   /**
    *
@@ -100,14 +164,49 @@ class SparseNDArray : NDArray<SparseNDArray> {
    *
    */
   override fun set(i: Int, value: Number) {
-    TODO("not implemented")
+    require(i < this.length)
+
+    if (this.rows == 1) {
+      this[0, i] = value
+
+    } else if (this.columns == 1) {
+      this[i, 0] = value
+
+    } else {
+      this[i / this.columns, i % this.columns] = value
+    }
   }
 
   /**
    *
    */
   override fun set(i: Int, j: Int, value: Number) {
-    TODO("not implemented")
+    require(i < this.rows && j < this.columns)
+
+    if (value != 0.0) {
+      this.setElement(row = i, col = j, value = value.toDouble())
+
+    } else {
+      TODO("not implemented")
+    }
+  }
+
+  /**
+   *
+   */
+  private fun setElement(row: Int, col: Int, value: Double) {
+
+    var index: Int = 0
+
+    while (index < this.values.size && this.colIndices[index] != col) index++
+    while (index < this.values.size && this.rowIndices[index] != row) index++
+
+    if (index > this.values.size) {
+      throw RuntimeException("Cannot set value at indices not already active")
+
+    } else {
+      this.values[index] = value
+    }
   }
 
   /**
@@ -135,9 +234,12 @@ class SparseNDArray : NDArray<SparseNDArray> {
   /**
    *
    */
-  override fun copy(): SparseNDArray {
-    TODO("not implemented")
-  }
+  override fun copy(): SparseNDArray = SparseNDArray(
+    shape = this.shape.copy(),
+    values = this.values.copyOf(),
+    rows = this.rowIndices.copyOf(),
+    columns = this.colIndices.copyOf()
+  )
 
   /**
    *
@@ -150,7 +252,20 @@ class SparseNDArray : NDArray<SparseNDArray> {
    *
    */
   override fun assignValues(a: NDArray<*>): SparseNDArray {
-    TODO("not implemented")
+    require(a.shape == this.shape)
+
+    when(a) {
+      is DenseNDArray -> TODO("not implemented")
+      is SparseNDArray -> {
+        this.values = a.values.copyOf()
+        this.rowIndices = a.rowIndices.copyOf()
+        this.colIndices = a.colIndices.copyOf()
+      }
+      is SparseBinaryNDArray -> TODO("not implemented")
+      else -> throw RuntimeException("Invalid NDArray type")
+    }
+
+    return this
   }
 
   /**
@@ -164,7 +279,10 @@ class SparseNDArray : NDArray<SparseNDArray> {
    *
    */
   override fun zeros(): SparseNDArray {
-    TODO("not implemented")
+    this.values = arrayOf()
+    this.rowIndices = arrayOf()
+    this.colIndices = arrayOf()
+    return this
   }
 
   /**
@@ -325,14 +443,71 @@ class SparseNDArray : NDArray<SparseNDArray> {
    *
    */
   override fun assignDot(a: DenseNDArray, b: NDArray<*>): SparseNDArray {
-    TODO("not implemented")
+
+    when(b) {
+      is DenseNDArray -> TODO("not implemented")
+      is SparseNDArray -> TODO("not implemented")
+      is SparseBinaryNDArray -> this.assignDot(a, b)
+    }
+
+    return this
+  }
+
+  /**
+   *
+   */
+  fun assignDot(a: DenseNDArray, b: SparseBinaryNDArray): SparseNDArray {
+    require(a.rows == this.rows && b.columns == this.columns && a.columns == b.rows)
+
+    if (b.rows == 1) {
+      // Column vector (dot) row vector
+      this.zeros()
+
+      val valuesCount = b.activeIndicesByColumn.keys.size * a.rows
+      val values = Array(size = valuesCount, init = { 0.0 })
+      val rows = Array(size = valuesCount, init = { 0 })
+      val columns = Array(size = valuesCount, init = { 0 })
+
+      var k = 0
+      for (j in b.activeIndicesByColumn.keys) {
+         for (i in 0 until a.rows) {
+           values[k] = a[i]
+           rows[k] = i
+           columns[k] = j
+           k++
+         }
+      }
+
+      this.values = values
+      this.rowIndices = rows
+      this.colIndices = columns
+
+    } else if (b.columns == 1) {
+      // n-dim array (dot) column vector
+      this.zeros()
+      this.values = Array(size = a.rows, init = { i -> b.activeIndicesByRow.keys.sumByDouble { a[i, it] } })
+      this.rowIndices = Array(size = a.rows, init = { it })
+      this.colIndices = Array(size = a.rows, init = { 0 })
+
+
+    } else {
+      // n-dim array (dot) n-dim array
+      TODO("not implemented")
+    }
+
+    return this
   }
 
   /**
    *
    */
   override fun prod(n: Double): SparseNDArray {
-    TODO("not implemented")
+
+    return SparseNDArray(
+      shape = this.shape,
+      values = Array(size = this.values.size, init = { this.values[it] * n }),
+      rows = this.rowIndices.copyOf(),
+      columns = this.colIndices.copyOf())
   }
 
   /**
