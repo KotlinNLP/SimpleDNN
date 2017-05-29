@@ -7,6 +7,9 @@
 
 package com.kotlinnlp.simplednn.simplemath.ndarray
 
+typealias Indices = Pair<Int, Int>
+typealias SparseEntry = Pair<Indices, Double>
+
 /**
  *
  */
@@ -32,10 +35,7 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
    * @param shape shape
    * @return a new [SparseNDArray] filled with zeros
    */
-  override fun zeros(shape: Shape): SparseNDArray {
-    TODO("not implemented")
-  }
-
+  override fun zeros(shape: Shape) = SparseNDArray(shape = shape)
   /**
    * Build a new [SparseNDArray] filled with zeros but one with 1.0
    *
@@ -57,6 +57,36 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
    */
   override fun random(shape: Shape, from: Double, to: Double): SparseNDArray {
     TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  fun arrayOf(activeIndicesValues: Array<SparseEntry>, shape: Shape): SparseNDArray {
+
+    val values = arrayListOf<Double>()
+    val rows = arrayListOf<Int>()
+    val columns = arrayListOf<Int>()
+
+    for ((indices, value) in activeIndicesValues.sortedWith(Comparator<SparseEntry> { (aIndices), (bIndices) ->
+      if (aIndices.second != bIndices.second) {
+        aIndices.second - bIndices.second
+      } else {
+        aIndices.first - bIndices.first
+      }
+    })) {
+      if (value != 0.0) {
+        values.add(value)
+        rows.add(indices.first)
+        columns.add(indices.second)
+      }
+    }
+
+    return SparseNDArray(
+      shape = shape,
+      rows = rows.toTypedArray(),
+      columns = columns.toTypedArray(),
+      values = values.toTypedArray())
   }
 
 }
