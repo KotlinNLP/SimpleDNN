@@ -171,7 +171,12 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
 
     when(a) {
       is DenseNDArray -> System.arraycopy(a.storage.data, 0, this.storage.data, 0, this.length)
-      is SparseNDArray -> TODO("not implemented")
+      is SparseNDArray -> {
+        this.zeros()
+        for (k in 0 until a.values.size) {
+          this[a.rowIndices[k], a.colIndices[k]] = a.values[k]
+        }
+      }
       is SparseBinaryNDArray -> TODO("not implemented")
     }
 
@@ -271,7 +276,11 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
 
     when(a) {
       is DenseNDArray -> this.storage.subi(a.storage)
-      is SparseNDArray -> TODO("not implemented")
+      is SparseNDArray -> {
+        for (k in 0 until a.values.size) {
+          this[a.rowIndices[k], a.colIndices[k]] -= a.values[k]
+        }
+      }
       is SparseBinaryNDArray -> TODO("not implemented")
     }
 
@@ -344,7 +353,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
       }
 
     } else if (b.columns == 1) {
-      // n-dim array (dot) row vector
+      // n-dim array (dot) column vector
       for (i in 0 until a.rows) {
         this.storage.put(i, b.activeIndicesByRow.keys.sumByDouble { a[i, it] })
       }
