@@ -10,11 +10,16 @@ package com.kotlinnlp.simplednn.simplemath.ndarray
 /**
  *
  */
-class NDArrayMask(val dim1: Array<Int>, val dim2: Array<Int>) : Iterable<Indices> {
+class NDArrayMask(val dim1: Array<Int>, val dim2: Array<Int>, val shape: Shape) : Iterable<Indices> {
 
   init {
     require(dim1.size == dim2.size)
   }
+
+  /**
+   *
+   */
+  val size = dim1.size
 
   /**
    *
