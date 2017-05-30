@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.deeplearning.birnn
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
-import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
@@ -21,6 +20,7 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
  * Reference:
  * Mike Schuster and Kuldip K. Paliwal. - Bidirectional recurrent neural networks
  *
+ * @property inputType the type of the input layer (Dense, Sparse, SparseBinary)
  * @property inputLayerSize size of the input layer
  * @property hiddenLayerSize size of the hidden layer
  * @property hiddenLayerActivation activation function of the hidden layer
@@ -29,10 +29,11 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
  * @property outputLayerActivation activation function of the output layer (could be null)
  */
 class BiRNN(
+  val inputType: LayerType.Input,
   val inputLayerSize: Int,
   val hiddenLayerSize: Int,
   val hiddenLayerActivation: ActivationFunction?,
-  val hiddenLayerConnectionType: LayerType.Connection = LayerType.Connection.GRU,
+  val hiddenLayerConnectionType: LayerType.Connection,
   val outputLayerSize: Int,
   val outputLayerActivation: ActivationFunction?) {
 
@@ -58,21 +59,26 @@ class BiRNN(
     }
 
     this.leftToRightNetwork = NeuralNetwork(
-      LayerConfiguration(size = this.inputLayerSize),
+      LayerConfiguration(
+        size = this.inputLayerSize,
+        inputType = this.inputType),
       LayerConfiguration(
         size = this.hiddenLayerSize,
         activationFunction = this.hiddenLayerActivation,
         connectionType = this.hiddenLayerConnectionType))
 
     this.rightToLeftNetwork = NeuralNetwork(
-      LayerConfiguration(size = this.inputLayerSize),
+      LayerConfiguration(
+        size = this.inputLayerSize,
+        inputType = this.inputType),
       LayerConfiguration(
         size = this.hiddenLayerSize,
         activationFunction = this.hiddenLayerActivation,
         connectionType = this.hiddenLayerConnectionType))
 
     this.outputNetwork = NeuralNetwork(
-      LayerConfiguration(size = this.hiddenLayerSize * 2),
+      LayerConfiguration(
+        size = this.hiddenLayerSize * 2),
       LayerConfiguration(
         size = this.outputLayerSize,
         activationFunction = this.outputLayerActivation,
