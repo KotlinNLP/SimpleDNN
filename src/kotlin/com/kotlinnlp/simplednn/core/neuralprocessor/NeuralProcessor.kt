@@ -12,22 +12,24 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
+ * The [NeuralProcessor] acts on the [neuralNetwork] performing predictions and training.
  *
+ * @property neuralNetwork a [NeuralNetwork]
  */
-interface NeuralProcessor {
+abstract class NeuralProcessor(val neuralNetwork: NeuralNetwork) {
 
   /**
    *
    */
-  val neuralNetwork: NeuralNetwork
+  protected val inputType = this.neuralNetwork.layersConfiguration.first().inputType
 
   /**
    *
    */
-  fun getParamsErrors(copy: Boolean = true): NetworkParameters
+  abstract fun getParamsErrors(copy: Boolean = true): NetworkParameters
 
   /**
    *
    */
-  fun getOutput(copy: Boolean = true): DenseNDArray
+  abstract fun getOutput(copy: Boolean = true): DenseNDArray
 }
