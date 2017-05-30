@@ -56,12 +56,20 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  override fun getParamsErrors(): NetworkParameters {
+  override fun getParamsErrors(copy: Boolean): NetworkParameters {
 
-    val paramsError = this.neuralNetwork.parametersFactory(
-      sparseInput = this.neuralNetwork.layersConfiguration.first().inputType == LayerType.Input.SparseBinary)
+    val paramsError: NetworkParameters
 
-    paramsError.assignValues(this.backwardParamsErrors)
+    if (copy) {
+
+      paramsError = this.neuralNetwork.parametersFactory(
+        sparseInput = this.neuralNetwork.layersConfiguration.first().inputType == LayerType.Input.SparseBinary)
+
+      paramsError.assignValues(this.backwardParamsErrors)
+
+    } else {
+      paramsError = this.backwardParamsErrors
+    }
 
     return paramsError
   }

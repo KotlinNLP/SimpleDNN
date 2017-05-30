@@ -24,7 +24,7 @@ interface NeuralProcessor {
   /**
    *
    */
-  fun getParamsErrors(): NetworkParameters
+  fun getParamsErrors(copy: Boolean = true): NetworkParameters
 
   /**
    *

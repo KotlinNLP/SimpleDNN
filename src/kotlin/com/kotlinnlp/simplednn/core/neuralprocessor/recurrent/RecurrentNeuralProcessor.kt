@@ -72,10 +72,21 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  override fun getParamsErrors(): NetworkParameters {
-    val paramsError = this.neuralNetwork.parametersFactory(
-      sparseInput = this.neuralNetwork.layersConfiguration.first().inputType == LayerType.Input.SparseBinary)
-    paramsError.assignValues(this.paramsErrorsAccumulator.getParamsErrors())
+  override fun getParamsErrors(copy: Boolean): NetworkParameters {
+
+    val paramsError: NetworkParameters
+
+    if (copy) {
+
+      paramsError = this.neuralNetwork.parametersFactory(
+        sparseInput = this.neuralNetwork.layersConfiguration.first().inputType == LayerType.Input.SparseBinary)
+
+      paramsError.assignValues(this.paramsErrorsAccumulator.getParamsErrors())
+
+    } else {
+      paramsError = this.paramsErrorsAccumulator.getParamsErrors()
+    }
+
     return paramsError
   }
 
