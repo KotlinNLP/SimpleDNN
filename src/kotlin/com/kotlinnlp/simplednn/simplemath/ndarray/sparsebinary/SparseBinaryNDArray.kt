@@ -516,7 +516,7 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  override fun div(a: NDArray<*>, mask: NDArrayMask): SparseNDArray {
+  override fun div(a: SparseNDArray): SparseNDArray {
     TODO("not implemented")
   }
 

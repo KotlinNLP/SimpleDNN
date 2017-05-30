@@ -282,7 +282,7 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
-  fun div(a: NDArray<*>, mask: NDArrayMask): SparseNDArray
+  fun div(a: SparseNDArray): SparseNDArray
 
   /**
    *
