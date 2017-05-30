@@ -14,7 +14,6 @@ import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
@@ -59,36 +58,6 @@ open class MomentumMethod(
   }
 
   /**
-   * Optimize the errors.
-   *
-   * @param errors the errors to optimize
-   * @param array an [UpdatableDenseArray]
-   *
-   * @return optimized errors
-   */
-  override fun <NDArrayType: NDArray<NDArrayType>> optimizeErrors(
-    errors: NDArrayType,
-    array: UpdatableDenseArray
-  ): NDArrayType {
-
-    return when (errors) {
-
-      is SparseNDArray -> { // errors are Sparse when the input is SparseBinary
-        @Suppress("UNCHECKED_CAST")
-        this.optimizeSparseErrors(errors = errors, array = array) as NDArrayType
-
-      }
-
-      is DenseNDArray -> { // errors are Dense when the input is Dense
-        @Suppress("UNCHECKED_CAST")
-        this.optimizeDenseErrors(errors = errors, array = array) as NDArrayType
-      }
-
-      else -> throw RuntimeException("Invalid errors type")
-    }
-  }
-
-  /**
    * Method to call every new epoch
    */
   override fun newEpoch() {
@@ -105,12 +74,12 @@ open class MomentumMethod(
    * Optimize sparse errors.
    * Update velocity with adapted learning rate.
    *
-   * @param errors the sparse errors to optimize
+   * @param errors the [SparseNDArray] errors to optimize
    * @param array an [UpdatableDenseArray]
    *
    * @return optimized sparse errors
    */
-  private fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
+  override fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
 
     val helperStructure = this.getSupportStructure(array) as MomentumStructure
     val v = helperStructure.v
@@ -125,12 +94,12 @@ open class MomentumMethod(
    * Optimize dense errors.
    * Update velocity with adapted learning rate.
    *
-   * @param errors the dense errors to optimize
+   * @param errors the [DenseNDArray] errors to optimize
    * @param array an [UpdatableDenseArray]
    *
    * @return optimized dense errors
    */
-  private fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
+  override fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
 
     val helperStructure = this.getSupportStructure(array) as MomentumStructure
     val v = helperStructure.v
