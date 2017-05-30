@@ -21,11 +21,6 @@ abstract class NeuralProcessor(val neuralNetwork: NeuralNetwork) {
   /**
    *
    */
-  protected val inputType = this.neuralNetwork.layersConfiguration.first().inputType
-
-  /**
-   *
-   */
   abstract fun getParamsErrors(copy: Boolean = true): NetworkParameters
 
   /**
