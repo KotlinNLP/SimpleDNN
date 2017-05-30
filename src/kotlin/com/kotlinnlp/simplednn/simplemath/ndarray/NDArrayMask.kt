@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.simplemath.ndarray
 /**
  *
  */
-class NDArrayMask(val dim1: Array<Int>, val dim2: Array<Int>) : Iterable<Pair<Int, Int>> {
+class NDArrayMask(val dim1: Array<Int>, val dim2: Array<Int>) : Iterable<Indices> {
 
   init {
     require(dim1.size == dim2.size)
@@ -19,7 +19,7 @@ class NDArrayMask(val dim1: Array<Int>, val dim2: Array<Int>) : Iterable<Pair<In
   /**
    *
    */
-  private inner class NDArrayMaskIterator : Iterator<Pair<Int, Int>> {
+  private inner class NDArrayMaskIterator : Iterator<Indices> {
 
     /**
      *
@@ -34,7 +34,7 @@ class NDArrayMask(val dim1: Array<Int>, val dim2: Array<Int>) : Iterable<Pair<In
     /**
      *
      */
-    override fun next(): Pair<Int, Int> {
+    override fun next(): Indices {
 
       val next = Pair(this@NDArrayMask.dim1[curIndex], this@NDArrayMask.dim2[curIndex])
 
@@ -48,5 +48,5 @@ class NDArrayMask(val dim1: Array<Int>, val dim2: Array<Int>) : Iterable<Pair<In
   /**
    *
    */
-  override fun iterator(): Iterator<Pair<Int, Int>> = this.NDArrayMaskIterator()
+  override fun iterator(): Iterator<Indices> = this.NDArrayMaskIterator()
 }
