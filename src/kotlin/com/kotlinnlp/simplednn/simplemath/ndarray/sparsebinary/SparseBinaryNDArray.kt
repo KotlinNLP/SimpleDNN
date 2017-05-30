@@ -26,7 +26,7 @@ class SparseBinaryNDArray(
   val activeIndicesByRow: VectorsMap = mutableMapOf<Int, VectorSet?>(),
   val activeIndicesByColumn: VectorsMap = mutableMapOf<Int, VectorSet?>()
 ) : NDArray<SparseBinaryNDArray>,
-    Iterable<Pair<Int, Int>> {
+    Iterable<Indices> {
 
   companion object {
 
@@ -40,7 +40,7 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  inner class LinearIndicesIterator: Iterator<Pair<Int, Int>> {
+  inner class LinearIndicesIterator: Iterator<Indices> {
 
     /**
      * The iterator of the map entries by row index (rowIndex, rowActiveIndices)
@@ -86,7 +86,7 @@ class SparseBinaryNDArray(
     /**
      *
      */
-    override fun next(): Pair<Int, Int> {
+    override fun next(): Indices {
 
       return if (this@SparseBinaryNDArray.rows == 1) {
 
@@ -115,7 +115,7 @@ class SparseBinaryNDArray(
   /**
    * Iterator over active indices
    */
-  override fun iterator(): Iterator<Pair<Int, Int>> {
+  override fun iterator(): Iterator<Indices> {
     return LinearIndicesIterator()
   }
 
