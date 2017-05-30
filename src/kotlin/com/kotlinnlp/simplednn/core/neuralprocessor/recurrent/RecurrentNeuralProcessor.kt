@@ -20,13 +20,15 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
+ * The [RecurrentNeuralProcessor] acts on the [neuralNetwork] performing predictions
+ * and training based on sequences of recurrent Examples.
  *
- * @param neuralNetwork neuralNetwork
+ * @property neuralNetwork a [NeuralNetwork]
  */
 class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val neuralNetwork: NeuralNetwork
+  neuralNetwork: NeuralNetwork
 ) : StructureContextWindow<InputNDArrayType>,
-    NeuralProcessor {
+    NeuralProcessor(neuralNetwork) {
 
   /**
    * sequence
