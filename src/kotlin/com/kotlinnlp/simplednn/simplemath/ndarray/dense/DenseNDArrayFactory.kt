@@ -5,8 +5,10 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.simplemath.ndarray
+package com.kotlinnlp.simplednn.simplemath.ndarray.dense
 
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import org.jblas.DoubleMatrix
 
 /**
@@ -34,7 +36,7 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
    * @return a new DenseNDArray filled with zeros
    */
   override fun zeros(shape: Shape): DenseNDArray {
-    return this.emptyArray(shape)
+    return emptyArray(shape)
   }
 
   /**
@@ -47,7 +49,7 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
   override fun oneHotEncoder(length: Int, oneAt: Int): DenseNDArray {
     require(oneAt in 0 until length)
 
-    val array = this.emptyArray(Shape(length))
+    val array = emptyArray(Shape(length))
 
     array[oneAt] = 1.0
 

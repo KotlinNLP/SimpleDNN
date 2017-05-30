@@ -5,7 +5,10 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.simplemath.ndarray
+package com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary
+
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  *
