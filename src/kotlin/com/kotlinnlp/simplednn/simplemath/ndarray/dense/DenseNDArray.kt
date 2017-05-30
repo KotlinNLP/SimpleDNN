@@ -248,6 +248,22 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
+  fun assignSum(a: SparseNDArray): DenseNDArray {
+
+    for (index in 0 until a.values.size) {
+      this.storage.put(
+        a.rowIndices[index],
+        a.colIndices[index],
+        this.storage[a.rowIndices[index], a.colIndices[index]] + a.values[index]
+      )
+    }
+
+    return this
+  }
+
+  /**
+   *
+   */
   override fun assignSum(a: DenseNDArray, n: Double): DenseNDArray {
     a.storage.addi(n, this.storage)
     return this
@@ -290,12 +306,21 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
 
     when(a) {
       is DenseNDArray -> this.storage.subi(a.storage)
-      is SparseNDArray -> {
-        for (k in 0 until a.values.size) {
-          this[a.rowIndices[k], a.colIndices[k]] -= a.values[k]
-        }
-      }
+      is SparseNDArray -> this.assignSub(a)
       is SparseBinaryNDArray -> TODO("not implemented")
+    }
+
+    return this
+  }
+
+  /**
+   *
+   */
+  fun assignSub(a: SparseNDArray): DenseNDArray {
+    require(a.shape == this.shape) { "Arrays with different size" }
+
+    for (k in 0 until a.values.size) {
+      this[a.rowIndices[k], a.colIndices[k]] -= a.values[k]
     }
 
     return this
@@ -398,7 +423,10 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    *
    */
   override fun prod(n: Double, mask: NDArrayMask): SparseNDArray {
-    TODO("not implemented")
+
+    val values = Array(size = mask.size, init = { this.storage[mask.dim1[it], mask.dim2[it]] * n })
+
+    return SparseNDArray(shape = mask.shape, values = values, rows = mask.dim1, columns = mask.dim2)
   }
 
   /**
@@ -413,7 +441,12 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    *
    */
   override fun assignProd(n: Double, mask: NDArrayMask): DenseNDArray {
-    TODO("not implemented")
+
+    for (index in 0 until mask.size) {
+      this.storage.put(mask.dim1[index], mask.dim2[index], this.storage[mask.dim1[index], mask.dim2[index]] * n)
+    }
+
+    return this
   }
 
   /**
@@ -463,8 +496,15 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override fun div(a: NDArray<*>, mask: NDArrayMask): SparseNDArray {
-    TODO("not implemented")
+  override fun div(a: SparseNDArray): SparseNDArray {
+    require(a.shape == this.shape) { "Arrays with different size" }
+
+    return SparseNDArray(
+      shape = this.shape.copy(),
+      values = Array(size = a.values.size, init = { i -> this[a.rowIndices[i], a.colIndices[i]] / a.values[i]}),
+      rows = a.rowIndices.copyOf(),
+      columns = a.colIndices.copyOf()
+    )
   }
 
   /**
@@ -512,7 +552,10 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    * @return a [SparseNDArray]
    */
   override fun sqrt(mask: NDArrayMask): SparseNDArray {
-    TODO("not implemented")
+
+    val values = Array(size = mask.size, init = { Math.sqrt(this.storage[mask.dim1[it], mask.dim2[it]]) })
+
+    return SparseNDArray(shape = mask.shape, values = values, rows = mask.dim1, columns = mask.dim2)
   }
 
 
