@@ -8,8 +8,12 @@
 package updatemethods
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.Indices
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.SparseEntry
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArrayFactory
 
 /**
  *
@@ -20,6 +24,7 @@ object Utils {
    *
    */
   fun buildUpdateableArray(): UpdatableDenseArray {
+
     val values: DenseNDArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.4, 0.5, 1.0, 0.8))
     val array: UpdatableDenseArray = UpdatableDenseArray(DenseNDArrayFactory.zeros(values.shape))
 
@@ -41,5 +46,16 @@ object Utils {
   /**
    *
    */
-  fun buildErrors() = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.9, 0.7, 0.4, 0.8, 0.1))
+  fun buildDenseErrors() = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.9, 0.7, 0.4, 0.8, 0.1))
+
+  /**
+   *
+   */
+  fun buildSparseErrors() = SparseNDArrayFactory.arrayOf(
+    activeIndicesValues = arrayOf(
+      SparseEntry(Indices(1, 0), 0.7),
+      SparseEntry(Indices(4, 0), 0.3)
+    ),
+    shape = Shape(5)
+  )
 }
