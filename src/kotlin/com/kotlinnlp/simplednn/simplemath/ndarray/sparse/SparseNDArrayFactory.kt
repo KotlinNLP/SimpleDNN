@@ -9,9 +9,7 @@ package com.kotlinnlp.simplednn.simplemath.ndarray.sparse
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-
-typealias Indices = Pair<Int, Int>
-typealias SparseEntry = Pair<Indices, Double>
+import com.kotlinnlp.simplednn.simplemath.ndarray.SparseEntry
 
 /**
  *
