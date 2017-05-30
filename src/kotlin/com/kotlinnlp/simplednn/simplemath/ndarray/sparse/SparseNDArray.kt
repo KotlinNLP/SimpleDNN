@@ -142,8 +142,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  val mask: NDArrayMask
-    get() = TODO("not implemented")
+  val mask: NDArrayMask get() = NDArrayMask(dim1 = this.rowIndices, dim2 = this.colIndices, shape = this.shape)
 
   /**
    *
@@ -274,21 +273,27 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override fun assignValues(a: NDArray<*>): SparseNDArray {
+  fun assignValues(a: SparseNDArray): SparseNDArray {
     require(a.shape == this.shape)
 
-    when(a) {
+    this.values = a.values.copyOf()
+    this.rowIndices = a.rowIndices.copyOf()
+    this.colIndices = a.colIndices.copyOf()
+
+    return this
+  }
+
+  /**
+   *
+   */
+  override fun assignValues(a: NDArray<*>): SparseNDArray {
+
+    return when(a) {
       is DenseNDArray -> TODO("not implemented")
-      is SparseNDArray -> {
-        this.values = a.values.copyOf()
-        this.rowIndices = a.rowIndices.copyOf()
-        this.colIndices = a.colIndices.copyOf()
-      }
+      is SparseNDArray -> this.assignValues(a)
       is SparseBinaryNDArray -> TODO("not implemented")
       else -> throw RuntimeException("Invalid NDArray type")
     }
-
-    return this
   }
 
   /**
@@ -323,7 +328,12 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    *
    */
   override fun assignSum(n: Double): SparseNDArray {
-    TODO("not implemented")
+
+    for (index in 0 until this.values.size) {
+      this.values[index] += n
+    }
+
+    return this
   }
 
   /**
@@ -411,22 +421,10 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override fun assignDot(a: DenseNDArray, b: NDArray<*>): SparseNDArray {
-
-    when(b) {
-      is DenseNDArray -> TODO("not implemented")
-      is SparseNDArray -> TODO("not implemented")
-      is SparseBinaryNDArray -> this.assignDot(a, b)
-    }
-
-    return this
-  }
-
-  /**
-   *
-   */
   fun assignDot(a: DenseNDArray, b: SparseBinaryNDArray): SparseNDArray {
-    require(a.rows == this.rows && b.columns == this.columns && a.columns == b.rows)
+    require(a.rows == this.rows) { "a.rows (%d) != this.rows (%d)".format(a.rows, this.rows) }
+    require(b.columns == this.columns) { "b.columns (%d) != this.columns (%d)".format(b.columns, this.columns) }
+    require(a.columns == b.rows) { "a.columns (%d) != b.rows (%d)".format(a.columns, b.rows) }
 
     if (b.rows == 1) {
       // Column vector (dot) row vector
@@ -470,11 +468,25 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
+  override fun assignDot(a: DenseNDArray, b: NDArray<*>): SparseNDArray {
+
+    when(b) {
+      is DenseNDArray -> TODO("not implemented")
+      is SparseNDArray -> TODO("not implemented")
+      is SparseBinaryNDArray -> this.assignDot(a, b)
+    }
+
+    return this
+  }
+
+  /**
+   *
+   */
   override fun prod(n: Double): SparseNDArray {
 
     return SparseNDArray(
       shape = this.shape,
-      values = Array(size = this.values.size, init = { this.values[it] * n }),
+      values = Array(size = this.values.size, init = { i -> this.values[i] * n }),
       rows = this.rowIndices.copyOf(),
       columns = this.colIndices.copyOf())
   }
@@ -483,7 +495,14 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    *
    */
   override fun prod(a: SparseNDArray): SparseNDArray {
-    TODO("not implemented")
+    require(a.shape == this.shape) { "Arrays with different size" }
+    require(a.values.size == this.values.size) { "Arrays with a different amount of active values" }
+
+    return SparseNDArray(
+      shape = this.shape,
+      values = Array(size = this.values.size, init = { i -> this.values[i] * a.values[i]}),
+      rows = this.rowIndices.copyOf(),
+      columns = this.colIndices.copyOf())
   }
 
   /**
@@ -497,7 +516,12 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    *
    */
   override fun assignProd(n: Double): SparseNDArray {
-    TODO("not implemented")
+
+    for (index in 0 until this.values.size) {
+      this.values[index] *= n
+    }
+
+    return this
   }
 
   /**
@@ -525,7 +549,14 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    *
    */
   override fun assignProd(a: SparseNDArray): SparseNDArray {
-    TODO("not implemented")
+    require(a.shape == this.shape) { "Arrays with different size" }
+    require(a.values.size == this.values.size) { "Arrays with a different amount of active values" }
+
+    for (index in 0 until this.values.size) {
+      this.values[index] *= a.values[index]
+    }
+
+    return this
   }
 
   /**
@@ -539,14 +570,27 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    *
    */
   override fun div(a: NDArray<*>): SparseNDArray {
-    TODO("not implemented")
+
+    return when(a) {
+      is DenseNDArray -> TODO("not implemented")
+      is SparseNDArray -> this.div(a)
+      is SparseBinaryNDArray -> TODO("not implemented")
+      else -> throw RuntimeException("Invalid NDArray type")
+    }
   }
 
   /**
    *
    */
-  override fun div(a: NDArray<*>, mask: NDArrayMask): SparseNDArray {
-    TODO("not implemented")
+  override fun div(a: SparseNDArray): SparseNDArray {
+    require(a.shape == this.shape) { "Arrays with different size" }
+    require(a.values.size == this.values.size) { "Arrays with a different amount of active values" }
+
+    return SparseNDArray(
+      shape = this.shape,
+      values = Array(size = this.values.size, init = { i -> this.values[i] / a.values[i]}),
+      rows = this.rowIndices.copyOf(),
+      columns = this.colIndices.copyOf())
   }
 
   /**
