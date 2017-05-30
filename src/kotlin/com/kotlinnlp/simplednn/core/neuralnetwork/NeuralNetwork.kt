@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.neuralnetwork
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream
@@ -52,6 +53,16 @@ class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Seriali
   }
 
   /**
+   *
+   */
+  val inputType: LayerType.Input = this.layersConfiguration.first().inputType
+
+  /**
+   *
+   */
+  val sparseInput: Boolean = this.inputType == LayerType.Input.SparseBinary
+
+  /**
    * Contains the parameters of each layer which can be trained
    */
   val model = this.parametersFactory()
@@ -84,7 +95,14 @@ class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Seriali
   /**
    * Generate [NetworkParameters] compatible with the configuration of this network
    */
-  fun parametersFactory(sparseInput: Boolean = false) = NetworkParameters(
+  fun parametersFactory() = NetworkParameters(
     layersConfiguration = this.layersConfiguration,
-    sparseInput = sparseInput)
+    sparseInput = false)
+
+  /**
+   * Generate [NetworkParameters] used to store errors, compatible with the configuration of this network
+   */
+  fun parametersErrorsFactory() = NetworkParameters(
+    layersConfiguration = this.layersConfiguration,
+    sparseInput = this.sparseInput)
 }
