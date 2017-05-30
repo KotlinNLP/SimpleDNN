@@ -8,7 +8,10 @@
 package com.kotlinnlp.simplednn.simplemath.ndarray
 
 /**
+ * A mask for [NDArray]s.
  *
+ * @property dim1 an array of Int which contains the indices of the active values in the first dimension
+ * @property dim2 an array of Int which contains the indices of the active values in the second dimension
  */
 class NDArrayMask(val dim1: Array<Int>, val dim2: Array<Int>, val shape: Shape) : Iterable<Indices> {
 
@@ -17,7 +20,7 @@ class NDArrayMask(val dim1: Array<Int>, val dim2: Array<Int>, val shape: Shape) 
   }
 
   /**
-   *
+   * The number of active values.
    */
   val size = dim1.size
 
