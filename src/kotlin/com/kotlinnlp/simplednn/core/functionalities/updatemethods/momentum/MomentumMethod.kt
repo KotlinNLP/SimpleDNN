@@ -13,10 +13,10 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-import com.kotlinnlp.simplednn.simplemath.ndarray.SparseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 
 /**

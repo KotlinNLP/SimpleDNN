@@ -8,7 +8,7 @@
 package logicgates
 
 import com.kotlinnlp.simplednn.dataset.SimpleExample
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 fun main(args: Array<String>) {
   println("Start 'XOR Gate Test'")

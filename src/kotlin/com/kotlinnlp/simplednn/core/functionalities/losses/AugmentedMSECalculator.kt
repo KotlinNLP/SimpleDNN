@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.losses
 
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * Augmented Mean Squared Error calculator

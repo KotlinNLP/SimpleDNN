@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum.MomentumMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum.MomentumStructure
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.mock

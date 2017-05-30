@@ -7,8 +7,8 @@
 
 package com.kotlinnlp.simplednn.core.arrays
 
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**

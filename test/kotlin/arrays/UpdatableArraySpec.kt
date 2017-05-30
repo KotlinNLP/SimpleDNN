@@ -8,7 +8,7 @@
 package arrays
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context

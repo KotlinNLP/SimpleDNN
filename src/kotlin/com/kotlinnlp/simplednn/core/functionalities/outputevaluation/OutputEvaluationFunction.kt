@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.outputevaluation
 
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * An interface which defines a function to evaluate whether the output of a network must be considered correct or not.

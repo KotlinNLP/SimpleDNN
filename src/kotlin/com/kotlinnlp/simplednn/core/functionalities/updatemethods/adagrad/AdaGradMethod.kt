@@ -12,6 +12,8 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.simplemath.ndarray.*
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 
 /**
  * The AdaGrad method assigns a different learning rate to each parameter

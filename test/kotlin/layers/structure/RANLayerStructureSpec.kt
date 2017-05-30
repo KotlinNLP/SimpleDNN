@@ -9,8 +9,8 @@ package layers.structure
 
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe

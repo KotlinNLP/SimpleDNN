@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.arrays
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.simplemath.ndarray.*
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The [ActivableArray] is a wrapper of an [NDArray] in which values are modified according

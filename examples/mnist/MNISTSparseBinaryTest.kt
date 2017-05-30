@@ -25,6 +25,9 @@ import Configuration
 import CorpusPaths
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.simplemath.ndarray.*
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArrayFactory
 import java.io.BufferedInputStream
 import java.io.FileInputStream
 import java.util.concurrent.TimeUnit

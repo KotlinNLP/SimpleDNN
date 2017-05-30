@@ -8,7 +8,7 @@
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.jsoniter.*
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.helpers.validation.SequenceValidationHelper
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import java.io.File
 import java.util.concurrent.TimeUnit
 

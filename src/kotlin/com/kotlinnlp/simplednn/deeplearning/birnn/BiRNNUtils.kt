@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.birnn
 
 import com.kotlinnlp.simplednn.simplemath.concatVectorsV
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * BiRNNUtils contains functions which help to split and concatenate

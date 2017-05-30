@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.activations
 
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import java.io.Serializable
 
 /**

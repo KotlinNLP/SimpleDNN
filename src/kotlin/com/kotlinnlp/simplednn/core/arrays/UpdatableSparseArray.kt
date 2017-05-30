@@ -7,8 +7,8 @@
 
 package com.kotlinnlp.simplednn.core.arrays
 
-import com.kotlinnlp.simplednn.simplemath.ndarray.SparseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.SparseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**

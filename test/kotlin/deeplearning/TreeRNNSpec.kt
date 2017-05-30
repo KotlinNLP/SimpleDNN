@@ -10,7 +10,7 @@ package deeplearning
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.deeplearning.treernn.TreeEncoder
 import com.kotlinnlp.simplednn.deeplearning.treernn.TreeRNN
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe

@@ -8,8 +8,8 @@
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**

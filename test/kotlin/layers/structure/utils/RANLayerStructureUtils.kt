@@ -12,8 +12,8 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerStructure
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 

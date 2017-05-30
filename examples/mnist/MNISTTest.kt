@@ -24,8 +24,8 @@ import com.kotlinnlp.simplednn.helpers.validation.FeedforwardValidationHelper
 import com.jsoniter.*
 import Configuration
 import CorpusPaths
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import java.io.BufferedInputStream
 import java.io.FileInputStream
 import java.util.concurrent.TimeUnit

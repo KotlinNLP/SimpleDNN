@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.deeplearning.embeddings
 
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling

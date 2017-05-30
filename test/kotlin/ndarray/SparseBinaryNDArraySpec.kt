@@ -8,7 +8,7 @@
 package ndarray
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-import com.kotlinnlp.simplednn.simplemath.ndarray.SparseBinaryNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe

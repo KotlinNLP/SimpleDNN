@@ -6,8 +6,8 @@
  * ------------------------------------------------------------------*/
 
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNUtils
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe

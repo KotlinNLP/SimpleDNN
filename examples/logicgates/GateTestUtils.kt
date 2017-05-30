@@ -24,7 +24,7 @@ import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.Classificat
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.MulticlassEvaluation
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvaluationFunction
 import com.kotlinnlp.simplednn.helpers.validation.FeedforwardValidationHelper
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 object GateTestUtils {
 

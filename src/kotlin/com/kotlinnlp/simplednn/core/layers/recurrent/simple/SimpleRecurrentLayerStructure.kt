@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.layers.recurrent.*
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
@@ -152,7 +152,7 @@ class SimpleRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>
     val gyNext: DenseNDArray = nextStateLayer.outputArray.errors
     val wRec: DenseNDArray = this.params.recurrentWeights.values
 
-    // gRec: com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray = gyNext (dot) wRec
+    // gRec = gyNext (dot) wRec
     val gRec: DenseNDArray = gyNext.T.dot(wRec)
 
     // gRec *= yDeriv

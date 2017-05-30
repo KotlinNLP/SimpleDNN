@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerStructure
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**

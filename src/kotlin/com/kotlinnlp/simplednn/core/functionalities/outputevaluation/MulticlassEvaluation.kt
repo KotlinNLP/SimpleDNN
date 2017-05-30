@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.outputevaluation
 
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * Evaluation function which returns true if all the binary outputs are equal to the gold binary outputs.

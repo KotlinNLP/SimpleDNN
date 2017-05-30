@@ -10,10 +10,10 @@ package com.kotlinnlp.simplednn.core.neuralnetwork.structure
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.SparseBinaryNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.SparseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 
 /**
  * The NetworkStructure.

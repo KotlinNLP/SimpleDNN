@@ -10,8 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.birnn
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNUtils
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**

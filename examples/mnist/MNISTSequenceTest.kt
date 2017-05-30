@@ -23,8 +23,8 @@ import com.kotlinnlp.simplednn.helpers.validation.SequenceWithFinalOutputValidat
 import com.jsoniter.*
 import Configuration
 import CorpusPaths
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
 
