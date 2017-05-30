@@ -24,7 +24,7 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  * @param epsilon epsilon
  */
 class ADAMMethod(
-  val stepSize:Double = 0.001,
+  val stepSize: Double = 0.001,
   val beta1: Double = 0.9,
   val beta2: Double = 0.9,
   val epsilon: Double = 1.0E-8,
@@ -85,7 +85,7 @@ class ADAMMethod(
     v.assignProd(this.beta1, mask = mask).assignSum(errors.prod(1.0 - this.beta1))
     m.assignProd(this.beta2, mask = mask).assignSum(errors.prod(errors).assignProd(1.0 - this.beta2))
 
-    return v.div(m.sqrt(mask = mask).assignSum(this.epsilon), mask = mask).assignProd(this.alpha)
+    return v.div(m.sqrt(mask = mask).assignSum(this.epsilon)).assignProd(this.alpha)
   }
 
   /**
