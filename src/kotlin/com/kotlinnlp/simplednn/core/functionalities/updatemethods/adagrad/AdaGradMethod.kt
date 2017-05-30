@@ -49,30 +49,38 @@ class AdaGradMethod(
   }
 
   /**
-   * Optimize the errors.
+   * Optimize sparse errors.
    *
-   * @param errors the errors to optimize
+   * @param errors the [SparseNDArray] errors to optimize
    * @param array an [UpdatableDenseArray]
    *
-   * @return optimized errors
+   * @return optimized sparse errors
    */
-  override fun <NDArrayType: NDArray<NDArrayType>> optimizeErrors(
-    errors: NDArrayType, array: UpdatableDenseArray
-  ): NDArrayType {
+  override fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
 
     val helperStructure = this.getSupportStructure(array) as AdaGradStructure
     val m = helperStructure.secondOrderMoments
 
     m.assignSum(errors.prod(errors))
 
-    val sqrt: NDArray<*>
+    return errors.div(m.sqrt(mask = errors.mask).assignSum(this.epsilon)).assignProd(this.learningRate)
+  }
 
-    when (errors) {
-      is SparseNDArray -> sqrt = m.sqrt(mask = errors.mask) // errors are Sparse when the input is SparseBinary
-      is DenseNDArray -> sqrt = m.sqrt() // errors are Dense when the input is Dense
-      else -> throw RuntimeException("Invalid errors type")
-    }
+  /**
+   * Optimize dense errors.
+   *
+   * @param errors the [DenseNDArray] errors to optimize
+   * @param array an [UpdatableDenseArray]
+   *
+   * @return optimized dense errors
+   */
+  override fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
 
-    return errors.div(sqrt.assignSum(this.epsilon)).assignProd(this.learningRate)
+    val helperStructure = this.getSupportStructure(array) as AdaGradStructure
+    val m = helperStructure.secondOrderMoments
+
+    m.assignSum(errors.prod(errors))
+
+    return errors.div(m.sqrt().assignSum(this.epsilon)).assignProd(this.learningRate)
   }
 }
