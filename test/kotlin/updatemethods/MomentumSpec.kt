@@ -30,30 +30,53 @@ class MomentumSpec: Spek({
 
   describe("the Momentum update method") {
 
-    on("get support structure") {
+    context("update with dense errors") {
 
-      val updateHelper = MomentumMethod(learningRate = 0.001, momentum = 0.9)
-      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+      on("get support structure") {
 
-      it("should return a support structure of the expected type") {
-        assertEquals(true, updateHelper.getSupportStructure(updatableArray) is MomentumStructure)
+        val updateHelper = MomentumMethod(learningRate = 0.001, momentum = 0.9)
+        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+
+        it("should return a support structure of the expected type") {
+          assertEquals(true, updateHelper.getSupportStructure(updatableArray) is MomentumStructure)
+        }
+      }
+
+      on("update") {
+
+        val updateHelper = MomentumMethod(learningRate = 0.001, momentum = 0.9)
+        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val supportStructure = updateHelper.getSupportStructure(updatableArray) as MomentumStructure
+
+        supportStructure.v.assignValues(Utils.supportArray1())
+
+        updateHelper.update(array = updatableArray, errors = Utils.buildDenseErrors())
+
+        it("should match the expected updated array") {
+          assertEquals(true, updatableArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2309, -0.3207, 0.0496, 0.7292, 0.6199)),
+            tolerance = 1.0e-5))
+        }
       }
     }
 
-    on("update") {
+    context("update with sparse errors") {
 
-      val updateHelper = MomentumMethod(learningRate = 0.001, momentum = 0.9)
-      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-      val supportStructure = updateHelper.getSupportStructure(updatableArray) as MomentumStructure
+      on("update") {
 
-      supportStructure.v.assignValues(Utils.supportArray1())
+        val updateHelper = MomentumMethod(learningRate = 0.001, momentum = 0.9)
+        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val supportStructure = updateHelper.getSupportStructure(updatableArray) as MomentumStructure
 
-      updateHelper.update(array = updatableArray, errors = Utils.buildErrors())
+        supportStructure.v.assignValues(Utils.supportArray1())
 
-      it("should match the expected updated array") {
-        assertEquals(true, updatableArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2309, -0.3207, 0.0496, 0.7292, 0.6199)),
-          tolerance = 1.0e-5))
+        updateHelper.update(array = updatableArray, errors = Utils.buildSparseErrors())
+
+        it("should match the expected updated array") {
+          assertEquals(true, updatableArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, -0.3207, 0.5, 1.0, 0.6197)),
+            tolerance = 1.0e-5))
+        }
       }
     }
 

@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop.RMSPro
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop.RMSPropStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
@@ -24,30 +25,53 @@ class RMSPropSpec: Spek({
 
   describe("the RMSProp update method") {
 
-    on("get support structure") {
+    context("update with dense errors") {
 
-      val updateHelper = RMSPropMethod(learningRate = 0.001, epsilon = 1e-06, decay = 0.9)
-      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+      on("get support structure") {
 
-      it("should return a support structure of the expected type") {
-        assertEquals(true, updateHelper.getSupportStructure(updatableArray) is RMSPropStructure)
+        val updateHelper = RMSPropMethod(learningRate = 0.001, epsilon = 1e-06, decay = 0.9)
+        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+
+        it("should return a support structure of the expected type") {
+          assertEquals(true, updateHelper.getSupportStructure(updatableArray) is RMSPropStructure)
+        }
+      }
+
+      on("update") {
+
+        val updateHelper = RMSPropMethod(learningRate = 0.001, epsilon = 1e-06, decay = 0.9)
+        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val supportStructure = updateHelper.getSupportStructure(updatableArray) as RMSPropStructure
+
+        supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
+
+        updateHelper.update(array = updatableArray, errors = Utils.buildDenseErrors())
+
+        it("should match the expected updated array") {
+          assertEquals(true, updatableArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.399091, 0.398905, 0.499502, 0.996838, 0.799765)),
+            tolerance = 1.0e-6))
+        }
       }
     }
 
-    on("update") {
+    context("update with sparse errors") {
 
-      val updateHelper = RMSPropMethod(learningRate = 0.001, epsilon = 1e-06, decay = 0.9)
-      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-      val supportStructure = updateHelper.getSupportStructure(updatableArray) as RMSPropStructure
+      on("update") {
 
-      supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
+        val updateHelper = RMSPropMethod(learningRate = 0.001, epsilon = 1e-06, decay = 0.9)
+        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val supportStructure = updateHelper.getSupportStructure(updatableArray) as RMSPropStructure
 
-      updateHelper.update(array = updatableArray, errors = Utils.buildErrors())
+        supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
 
-      it("should match the expected updated array") {
-        assertEquals(true, updatableArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.399091, 0.398905, 0.499502, 0.996838, 0.799765)),
-          tolerance = 1.0e-6))
+        updateHelper.update(array = updatableArray, errors = Utils.buildSparseErrors())
+
+        it("should match the expected updated array") {
+          assertEquals(true, updatableArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.39890545, 0.5, 1.0, 0.79930994)),
+            tolerance = 1.0e-8))
+        }
       }
     }
   }

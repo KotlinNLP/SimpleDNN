@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGra
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGradStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
@@ -24,30 +25,53 @@ class AdaGradSpec: Spek({
 
   describe("the AdaGrad update method") {
 
-    on("get support structure") {
+    context("update with dense errors") {
 
-      val updateHelper = AdaGradMethod(learningRate = 0.001, epsilon = 1.0e-8)
-      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+      on("get support structure") {
 
-      it("should return a support structure of the expected type") {
-        assertEquals(true, updateHelper.getSupportStructure(updatableArray) is AdaGradStructure)
+        val updateHelper = AdaGradMethod(learningRate = 0.001, epsilon = 1.0e-8)
+        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+
+        it("should return a support structure of the expected type") {
+          assertEquals(true, updateHelper.getSupportStructure(updatableArray) is AdaGradStructure)
+        }
+      }
+
+      on("update") {
+
+        val updateHelper = AdaGradMethod(learningRate = 0.001, epsilon = 1.0e-8)
+        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val supportStructure = updateHelper.getSupportStructure(updatableArray) as AdaGradStructure
+
+        supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
+
+        updateHelper.update(array = updatableArray, errors = Utils.buildDenseErrors())
+
+        it("should match the expected updated array") {
+          assertEquals(true, updatableArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39933, 0.39926, 0.49957, 0.999, 0.79978)),
+            tolerance = 1.0e-5))
+        }
       }
     }
 
-    on("update") {
+    context("update with sparse errors") {
 
-      val updateHelper = AdaGradMethod(learningRate = 0.001, epsilon = 1.0e-8)
-      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-      val supportStructure = updateHelper.getSupportStructure(updatableArray) as AdaGradStructure
+      on("update") {
 
-      supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
+        val updateHelper = AdaGradMethod(learningRate = 0.001, epsilon = 1.0e-8)
+        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val supportStructure = updateHelper.getSupportStructure(updatableArray) as AdaGradStructure
 
-      updateHelper.update(array = updatableArray, errors = Utils.buildErrors())
+        supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
 
-      it("should match the expected updated array") {
-        assertEquals(true, updatableArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39933, 0.39926, 0.49957, 0.999, 0.79978)),
-          tolerance = 1.0e-5))
+        updateHelper.update(array = updatableArray, errors = Utils.buildSparseErrors())
+
+        it("should match the expected updated array") {
+          assertEquals(true, updatableArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.399258, 0.5, 1.0, 0.799443)),
+            tolerance = 1.0e-6))
+        }
       }
     }
   }

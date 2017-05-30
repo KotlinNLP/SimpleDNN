@@ -13,6 +13,7 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMStruc
 import com.kotlinnlp.simplednn.simplemath.equals
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
@@ -25,31 +26,55 @@ class ADAMSpec : Spek({
 
   describe("the ADAM update method") {
 
-    on("get support structure") {
+    context("update with dense errors") {
 
-      val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
-      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+      on("get support structure") {
 
-      it("should return a support structure of the expected type") {
-        assertEquals(true, updateHelper.getSupportStructure(updatableArray) is ADAMStructure)
+        val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
+        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+
+        it("should return a support structure of the expected type") {
+          assertEquals(true, updateHelper.getSupportStructure(updatableArray) is ADAMStructure)
+        }
+      }
+
+      on("update") {
+
+        val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
+        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val supportStructure = updateHelper.getSupportStructure(updatableArray) as ADAMStructure
+
+        supportStructure.firstOrderMoments.assignValues(Utils.supportArray1())
+        supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
+
+        updateHelper.update(array = updatableArray, errors = Utils.buildDenseErrors())
+
+        it("should match the expected updated array") {
+          assertEquals(true, updatableArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39928, 0.39875, 0.49941, 0.98617, 0.79958)),
+            tolerance = 1.0e-5))
+        }
       }
     }
 
-    on("update") {
+    context("update with sparse errors") {
 
-      val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
-      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-      val supportStructure = updateHelper.getSupportStructure(updatableArray) as ADAMStructure
+      on("update") {
 
-      supportStructure.firstOrderMoments.assignValues(Utils.supportArray1())
-      supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
+        val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
+        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val supportStructure = updateHelper.getSupportStructure(updatableArray) as ADAMStructure
 
-      updateHelper.update(array = updatableArray, errors = Utils.buildErrors())
+        supportStructure.firstOrderMoments.assignValues(Utils.supportArray1())
+        supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
 
-      it("should match the expected updated array") {
-        assertEquals(true, updatableArray.values.equals(
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39928, 0.39875, 0.49941, 0.98617, 0.79958)),
-          tolerance = 10e-5))
+        updateHelper.update(array = updatableArray, errors = Utils.buildSparseErrors())
+
+        it("should match the expected updated array") {
+          assertEquals(true, updatableArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.398751, 0.5, 1.0, 0.79953)),
+            tolerance = 1.0e-6))
+        }
       }
     }
 

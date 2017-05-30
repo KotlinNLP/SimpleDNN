@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.nesterovmoment
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.nesterovmomentum.NesterovMomentumStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
@@ -24,30 +25,53 @@ class NesterovMomentumSpec: Spek({
 
   describe("the NesterovMomentum update method") {
 
-    on("get support structure") {
+    context("update with dense errors") {
 
-      val updateHelper = NesterovMomentumMethod(learningRate = 0.001, momentum = 0.9)
-      val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+      on("get support structure") {
 
-      it("should return a support structure of the expected type") {
-        assertEquals(true, updateHelper.getSupportStructure(updatableArray) is NesterovMomentumStructure)
+        val updateHelper = NesterovMomentumMethod(learningRate = 0.001, momentum = 0.9)
+        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+
+        it("should return a support structure of the expected type") {
+          assertEquals(true, updateHelper.getSupportStructure(updatableArray) is NesterovMomentumStructure)
+        }
+      }
+
+      on("update") {
+
+        val updateHelper = NesterovMomentumMethod(learningRate = 0.001, momentum = 0.9)
+        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val supportStructure = updateHelper.getSupportStructure(updatableArray) as NesterovMomentumStructure
+
+        supportStructure.v.assignValues(Utils.supportArray1())
+
+        updateHelper.update(array = updatableArray, errors = Utils.buildDenseErrors())
+
+        it("should match the expected updated array") {
+          assertEquals(true, updatableArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.16871, -0.24933, 0.09424, 0.75548, 0.63781)),
+            tolerance = 1.0e-6))
+        }
       }
     }
 
-    on("update") {
+    context("update with sparse errors") {
 
-      val updateHelper = NesterovMomentumMethod(learningRate = 0.001, momentum = 0.9)
-      val updatableArray = Utils.buildUpdateableArray()
-      val supportStructure = updateHelper.getSupportStructure(updatableArray) as NesterovMomentumStructure
+      on("update") {
 
-      supportStructure.v.assignValues(Utils.supportArray1())
+        val updateHelper = NesterovMomentumMethod(learningRate = 0.001, momentum = 0.9)
+        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val supportStructure = updateHelper.getSupportStructure(updatableArray) as NesterovMomentumStructure
 
-      updateHelper.update(array = updatableArray, errors = Utils.buildErrors())
+        supportStructure.v.assignValues(Utils.supportArray1())
 
-      it("should match the expected updated array") {
-        assertEquals(true, updatableArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.16871, -0.24933, 0.09424, 0.75548, 0.63781)),
-          tolerance = 1.0e-6))
+        updateHelper.update(array = updatableArray, errors = Utils.buildSparseErrors())
+
+        it("should match the expected updated array") {
+          assertEquals(true, updatableArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, -0.24933, 0.5, 1.0, 0.63743)),
+            tolerance = 1.0e-6))
+        }
       }
     }
   }
