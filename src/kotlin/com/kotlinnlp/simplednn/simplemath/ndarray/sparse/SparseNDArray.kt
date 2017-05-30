@@ -340,7 +340,27 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    *
    */
   override fun assignSum(a: NDArray<*>): SparseNDArray {
-    TODO("not implemented")
+
+    return when(a) {
+      is DenseNDArray -> TODO("not implemented")
+      is SparseNDArray -> this.assignSum(a)
+      is SparseBinaryNDArray -> TODO("not implemented")
+      else -> throw RuntimeException("Invalid NDArray type")
+    }
+  }
+
+  /**
+   *
+   */
+  fun assignSum(a: SparseNDArray): SparseNDArray {
+    require(a.shape == this.shape) { "Arrays with different size" }
+    require(a.values.size == this.values.size) { "Arrays with a different amount of active values" }
+
+    for (index in 0 until this.values.size) {
+      this.values[index] += a.values[index]
+    }
+
+    return this
   }
 
   /**
