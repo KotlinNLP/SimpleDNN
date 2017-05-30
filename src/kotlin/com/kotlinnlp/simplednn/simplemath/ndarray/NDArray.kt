@@ -29,21 +29,14 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
     get
 
   /**
-   *
+   * Whether the array is a bi-dimensional matrix
    */
-  val isMatrix: Boolean
-    get
+  val isMatrix: Boolean get() = !this.isVector
 
   /**
    *
    */
   val isOneHotEncoder: Boolean
-    get
-
-  /**
-   *
-   */
-  val length: Int
     get
 
   /**
@@ -56,6 +49,12 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
    *
    */
   val columns: Int
+    get
+
+  /**
+   *
+   */
+  val length: Int
     get
 
   /**
@@ -110,14 +109,24 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun getColumn(i: Int): SelfType
 
   /**
-   *
+   * Return a one-dimensional NDArray sub-vector of a vertical vector
    */
-  fun copy(): SelfType
+  fun getRange(a: Int, b: Int): SelfType
 
   /**
    *
    */
   fun zeros(): SelfType
+
+  /**
+   *
+   */
+  fun zerosLike(): SelfType
+
+  /**
+   *
+   */
+  fun copy(): SelfType
 
   /**
    *
@@ -158,7 +167,6 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
    *
    */
   fun assignSum(a: NDArray<*>): SelfType
-
 
   /**
    *
@@ -249,17 +257,17 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
+  fun assignProd(a: SelfType): SelfType
+
+  /**
+   *
+   */
   fun assignProd(a: SelfType, n: Double): SelfType
 
   /**
    *
    */
   fun assignProd(a: SelfType, b: SelfType): SelfType
-
-  /**
-   *
-   */
-  fun assignProd(a: SelfType): SelfType
 
   /**
    *
@@ -292,34 +300,11 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun avg(): Double
 
   /**
-   * Round values to Int
-   *
-   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
-   *
-   * @return a new NDArray with the values of the current one rounded to Int
-   */
-  fun roundInt(threshold: Double = 0.5): SelfType
-
-  /**
-   * Round values to Int in-place
-   *
-   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
-   *
-   * @return this NDArray
-   */
-  fun assignRoundInt(threshold: Double = 0.5): SelfType
-
-  /**
    * Sign function
    *
    * @return a new NDArray containing the results of the function sign() applied element-wise
    */
   fun sign(): SelfType
-
-  /**
-   *
-   */
-  fun randomize(randomGenerator: RandomGenerator): SelfType
 
   /**
    *
@@ -354,11 +339,6 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun assignPow(power: Double): SelfType
 
   /**
-   * @return the index of the maximum value (-1 if empty)
-   **/
-  fun argMaxIndex(): Int
-
-  /**
    * Euclidean norm of this NDArray
    *
    * @return the euclidean norm
@@ -366,14 +346,32 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun norm2(): Double
 
   /**
+   * @return the index of the maximum value (-1 if empty)
+   **/
+  fun argMaxIndex(): Int
+
+  /**
+   * Round values to Int
    *
+   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
+   *
+   * @return a new NDArray with the values of the current one rounded to Int
    */
-  fun equals(a: SelfType, tolerance: Double = 10e-4): Boolean
+  fun roundInt(threshold: Double = 0.5): SelfType
+
+  /**
+   * Round values to Int in-place
+   *
+   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
+   *
+   * @return this NDArray
+   */
+  fun assignRoundInt(threshold: Double = 0.5): SelfType
 
   /**
    *
    */
-  fun zerosLike(): SelfType
+  fun randomize(randomGenerator: RandomGenerator): SelfType
 
   /**
    *
@@ -386,9 +384,9 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun concatV(a: SelfType): SelfType
 
   /**
-   * Return a one-dimensional NDArray sub-vector of a vertical vector
+   *
    */
-  fun getRange(a: Int, b: Int): SelfType
+  fun equals(a: SelfType, tolerance: Double = 10e-4): Boolean
 
   /**
    *

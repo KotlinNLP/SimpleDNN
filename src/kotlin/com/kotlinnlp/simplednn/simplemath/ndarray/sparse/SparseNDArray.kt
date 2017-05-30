@@ -25,6 +25,9 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
 
+    /**
+     * Secondary Factory.
+     */
     operator fun invoke(shape: Shape, values: Array<Double>, rows: Array<Int>, columns: Array<Int>): SparseNDArray {
 
       val array = SparseNDArray(shape = shape)
@@ -94,7 +97,6 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   var colIndices = arrayOf<Int>()
     private set
 
-
   /**
    *
    */
@@ -109,7 +111,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override val isMatrix: Boolean
+  override val isOneHotEncoder: Boolean
     get() = TODO("not implemented")
 
   /**
@@ -126,12 +128,6 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    *
    */
   override val length: Int = this.rows * this.columns
-
-  /**
-   *
-   */
-  override val isOneHotEncoder: Boolean
-    get() = TODO("not implemented")
 
   /**
    * Transpose
@@ -235,6 +231,30 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
+   * Return a one-dimensional NDArray sub-vector of a vertical vector
+   */
+  override fun getRange(a: Int, b: Int): SparseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun zeros(): SparseNDArray {
+    this.values = arrayOf()
+    this.rowIndices = arrayOf()
+    this.colIndices = arrayOf()
+    return this
+  }
+
+  /**
+   *
+   */
+  override fun zerosLike(): SparseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
    *
    */
   override fun copy(): SparseNDArray = SparseNDArray(
@@ -281,16 +301,6 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override fun zeros(): SparseNDArray {
-    this.values = arrayOf()
-    this.rowIndices = arrayOf()
-    this.colIndices = arrayOf()
-    return this
-  }
-
-  /**
-   *
-   */
   override fun sum(): Double {
     TODO("not implemented")
   }
@@ -298,21 +308,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override fun avg(): Double {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
   override fun sum(n: Double): SparseNDArray {
-    TODO("not implemented")
-  }
-
-  /**
-   * @return the index of the maximum value (-1 if empty)
-   */
-  override fun argMaxIndex(): Int {
     TODO("not implemented")
   }
 
@@ -348,36 +344,6 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    *
    */
   override fun assignSum(a: SparseNDArray, b: SparseNDArray): SparseNDArray {
-    TODO("not implemented")
-  }
-
-  /**
-   * Euclidean norm of this NDArray
-   *
-   * @return the euclidean norm
-   */
-  override fun norm2(): Double {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
-  override fun toString(): String {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
-  override fun equals(other: Any?): Boolean {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
-  override fun hashCode(): Int {
     TODO("not implemented")
   }
 
@@ -598,24 +564,9 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
-   * Round values to Int
    *
-   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
-   *
-   * @return a new NDArray with the values of the current one rounded to Int
    */
-  override fun roundInt(threshold: Double): SparseNDArray {
-    TODO("not implemented")
-  }
-
-  /**
-   * Round values to Int in-place
-   *
-   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
-   *
-   * @return this [SparseNDArray]
-   */
-  override fun assignRoundInt(threshold: Double): SparseNDArray {
+  override fun avg(): Double {
     TODO("not implemented")
   }
 
@@ -625,13 +576,6 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    * @return a new [SparseNDArray] containing the results of the function sign() applied element-wise
    */
   override fun sign(): SparseNDArray {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
-  override fun randomize(randomGenerator: RandomGenerator): SparseNDArray {
     TODO("not implemented")
   }
 
@@ -676,16 +620,47 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
+   * Euclidean norm of this NDArray
    *
+   * @return the euclidean norm
    */
-  override fun equals(a: SparseNDArray, tolerance: Double): Boolean {
+  override fun norm2(): Double {
+    TODO("not implemented")
+  }
+
+  /**
+   * @return the index of the maximum value (-1 if empty)
+   */
+  override fun argMaxIndex(): Int {
+    TODO("not implemented")
+  }
+
+  /**
+   * Round values to Int
+   *
+   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
+   *
+   * @return a new NDArray with the values of the current one rounded to Int
+   */
+  override fun roundInt(threshold: Double): SparseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   * Round values to Int in-place
+   *
+   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
+   *
+   * @return this [SparseNDArray]
+   */
+  override fun assignRoundInt(threshold: Double): SparseNDArray {
     TODO("not implemented")
   }
 
   /**
    *
    */
-  override fun zerosLike(): SparseNDArray {
+  override fun randomize(randomGenerator: RandomGenerator): SparseNDArray {
     TODO("not implemented")
   }
 
@@ -704,9 +679,30 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
-   * Return a one-dimensional NDArray sub-vector of a vertical vector
+   *
    */
-  override fun getRange(a: Int, b: Int): SparseNDArray {
+  override fun equals(a: SparseNDArray, tolerance: Double): Boolean {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun toString(): String {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun equals(other: Any?): Boolean {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun hashCode(): Int {
     TODO("not implemented")
   }
 }

@@ -128,19 +128,19 @@ class SparseBinaryNDArray(
    *
    */
   override val isVector: Boolean
-    get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+    get() = TODO("not implemented")
 
   /**
    *
    */
-  override val isMatrix: Boolean
-    get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+  override val isOneHotEncoder: Boolean
+    get() = TODO("not implemented")
 
   /**
    *
    */
   override val length: Int
-    get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+    get() = TODO("not implemented")
 
   /**
    *
@@ -151,12 +151,6 @@ class SparseBinaryNDArray(
    *
    */
   override val columns: Int = this.shape.dim2
-
-  /**
-   *
-   */
-  override val isOneHotEncoder: Boolean
-    get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
   /**
    * Transpose
@@ -254,6 +248,27 @@ class SparseBinaryNDArray(
   }
 
   /**
+   * Return a one-dimensional NDArray sub-vector of a vertical vector
+   */
+  override fun getRange(a: Int, b: Int): SparseBinaryNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun zeros(): SparseBinaryNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun zerosLike(): SparseBinaryNDArray {
+    TODO("not implemented")
+  }
+
+  /**
    *
    */
   override fun copy(): SparseBinaryNDArray = SparseBinaryNDArray(
@@ -314,13 +329,6 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  override fun zeros(): SparseBinaryNDArray {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
   override fun sum(): Double {
     TODO("not implemented")
   }
@@ -328,21 +336,7 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  override fun avg(): Double {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
   override fun sum(n: Double): SparseBinaryNDArray {
-    TODO("not implemented")
-  }
-
-  /**
-   * @return the index of the maximum value (-1 if empty)
-   */
-  override fun argMaxIndex(): Int {
     TODO("not implemented")
   }
 
@@ -378,29 +372,6 @@ class SparseBinaryNDArray(
    *
    */
   override fun assignSum(a: SparseBinaryNDArray, b: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented")
-  }
-
-  /**
-   * Euclidean norm of this NDArray
-   *
-   * @return the euclidean norm
-   */
-  override fun norm2(): Double {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
-  override fun equals(other: Any?): Boolean {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
-  override fun hashCode(): Int {
     TODO("not implemented")
   }
 
@@ -564,24 +535,9 @@ class SparseBinaryNDArray(
   }
 
   /**
-   * Round values to Int
    *
-   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
-   *
-   * @return a new NDArray with the values of the current one rounded to Int
    */
-  override fun roundInt(threshold: Double): SparseBinaryNDArray {
-    TODO("not implemented")
-  }
-
-  /**
-   * Round values to Int in-place
-   *
-   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
-   *
-   * @return this [SparseBinaryNDArray]
-   */
-  override fun assignRoundInt(threshold: Double): SparseBinaryNDArray {
+  override fun avg(): Double {
     TODO("not implemented")
   }
 
@@ -591,13 +547,6 @@ class SparseBinaryNDArray(
    * @return a new [SparseBinaryNDArray] containing the results of the function sign() applied element-wise
    */
   override fun sign(): SparseBinaryNDArray {
-    TODO("not implemented")
-  }
-
-  /**
-   *
-   */
-  override fun randomize(randomGenerator: RandomGenerator): SparseBinaryNDArray {
     TODO("not implemented")
   }
 
@@ -642,16 +591,47 @@ class SparseBinaryNDArray(
   }
 
   /**
+   * Euclidean norm of this NDArray
    *
+   * @return the euclidean norm
    */
-  override fun equals(a: SparseBinaryNDArray, tolerance: Double): Boolean {
+  override fun norm2(): Double {
+    TODO("not implemented")
+  }
+
+  /**
+   * @return the index of the maximum value (-1 if empty)
+   */
+  override fun argMaxIndex(): Int {
+    TODO("not implemented")
+  }
+
+  /**
+   * Round values to Int
+   *
+   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
+   *
+   * @return a new NDArray with the values of the current one rounded to Int
+   */
+  override fun roundInt(threshold: Double): SparseBinaryNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   * Round values to Int in-place
+   *
+   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
+   *
+   * @return this [SparseBinaryNDArray]
+   */
+  override fun assignRoundInt(threshold: Double): SparseBinaryNDArray {
     TODO("not implemented")
   }
 
   /**
    *
    */
-  override fun zerosLike(): SparseBinaryNDArray {
+  override fun randomize(randomGenerator: RandomGenerator): SparseBinaryNDArray {
     TODO("not implemented")
   }
 
@@ -670,9 +650,9 @@ class SparseBinaryNDArray(
   }
 
   /**
-   * Return a one-dimensional NDArray sub-vector of a vertical vector
+   *
    */
-  override fun getRange(a: Int, b: Int): SparseBinaryNDArray {
+  override fun equals(a: SparseBinaryNDArray, tolerance: Double): Boolean {
     TODO("not implemented")
   }
 
@@ -680,6 +660,20 @@ class SparseBinaryNDArray(
    *
    */
   override fun toString(): String {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun equals(other: Any?): Boolean {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun hashCode(): Int {
     TODO("not implemented")
   }
 }

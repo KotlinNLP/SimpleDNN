@@ -34,16 +34,15 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   *
+   */
+  override val factory = DenseNDArrayFactory
+
+  /**
    * Whether the array is a row or a column vector
    */
   override val isVector: Boolean
     get() = this.storage.rows == 1 || this.storage.columns == 1
-
-  /**
-   * Whether the array is a bi-dimensional matrix
-   */
-  override val isMatrix: Boolean
-    get() = !this.isVector
 
   /**
    *
@@ -70,17 +69,6 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override val factory = DenseNDArrayFactory
-
-  /**
-   *
-   */
-  override val length: Int
-    get() = this.storage.length
-
-  /**
-   *
-   */
   override val rows: Int
     get() = this.storage.rows
 
@@ -89,6 +77,12 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   override val columns: Int
     get() = this.storage.columns
+
+  /**
+   *
+   */
+  override val length: Int
+    get() = this.storage.length
 
   /**
    *
@@ -147,9 +141,12 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
-   *
+   * Return a one-dimensional DenseNDArray sub-vector of a vertical vector
    */
-  override fun copy(): DenseNDArray = DenseNDArray(this.storage.dup())
+  override fun getRange(a: Int, b: Int): DenseNDArray {
+    require(this.shape.dim2 == 1)
+    return DenseNDArray(this.storage.getRange(a, b))
+  }
 
   /**
    *
@@ -158,6 +155,18 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
     this.storage.fill(0.0)
     return this
   }
+
+  /**
+   *
+   */
+  override fun zerosLike(): DenseNDArray {
+    return DenseNDArray(DoubleMatrix.zeros(this.shape.dim1, shape.dim2))
+  }
+
+  /**
+   *
+   */
+  override fun copy(): DenseNDArray = DenseNDArray(this.storage.dup())
 
   /**
    *
@@ -198,6 +207,11 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
+  override fun sum(): Double = this.storage.sum()
+
+  /**
+   *
+   */
   override fun sum(n: Double): DenseNDArray {
     return DenseNDArray(this.storage.add(n))
   }
@@ -208,11 +222,6 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   override fun sum(a: DenseNDArray): DenseNDArray {
     return DenseNDArray(this.storage.add(a.storage))
   }
-
-  /**
-   *
-   */
-  override fun sum(): Double = this.storage.sum()
 
   /**
    *
@@ -475,43 +484,6 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
-   * Round values to Int
-   *
-   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
-   *
-   * @return a new DenseNDArray with the values of the current one rounded to Int
-   */
-  override fun roundInt(threshold: Double): DenseNDArray {
-
-    val out = DenseNDArrayFactory.emptyArray(this.shape)
-    val floorValues = MatrixFunctions.floor(this.storage)
-
-    for (i in 0 until this.length) {
-      out[i] = if (this.storage[i] < threshold) floorValues[i] else floorValues[i] + 1
-    }
-
-    return out
-  }
-
-  /**
-   * Round values to Int in-place
-   *
-   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
-   *
-   * @return this DenseNDArray
-   */
-  override fun assignRoundInt(threshold: Double): DenseNDArray {
-
-    val floorValues = MatrixFunctions.floor(this.storage)
-
-    for (i in 0 until this.length) {
-      this[i] = if (this.storage[i] < threshold) floorValues[i] else floorValues[i] + 1
-    }
-
-    return this
-  }
-
-  /**
    *
    */
   override fun avg(): Double = this.storage.mean()
@@ -523,34 +495,6 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   override fun sign(): DenseNDArray {
     return DenseNDArray(MatrixFunctions.signum(this.storage))
-  }
-
-  /**
-   * @return the index of the maximum value (-1 if empty)
-   **/
-  override fun argMaxIndex(): Int {
-
-    var maxIndex: Int = -1
-    var maxValue: Double? = null
-
-    (0 until this.length).forEach { i ->
-      val value = this[i]
-
-      if (maxValue == null || value > maxValue!!) {
-        maxValue = value
-        maxIndex = i
-      }
-    }
-
-    return maxIndex
-  }
-
-  /**
-   *
-   */
-  override fun randomize(randomGenerator: RandomGenerator): DenseNDArray {
-    for (i in 0 until this.length) this[i] = randomGenerator.next() // i: linear index
-    return this
   }
 
   /**
@@ -606,6 +550,71 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   * @return the index of the maximum value (-1 if empty)
+   **/
+  override fun argMaxIndex(): Int {
+
+    var maxIndex: Int = -1
+    var maxValue: Double? = null
+
+    (0 until this.length).forEach { i ->
+      val value = this[i]
+
+      if (maxValue == null || value > maxValue!!) {
+        maxValue = value
+        maxIndex = i
+      }
+    }
+
+    return maxIndex
+  }
+
+  /**
+   * Round values to Int
+   *
+   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
+   *
+   * @return a new DenseNDArray with the values of the current one rounded to Int
+   */
+  override fun roundInt(threshold: Double): DenseNDArray {
+
+    val out = DenseNDArrayFactory.emptyArray(this.shape)
+    val floorValues = MatrixFunctions.floor(this.storage)
+
+    for (i in 0 until this.length) {
+      out[i] = if (this.storage[i] < threshold) floorValues[i] else floorValues[i] + 1
+    }
+
+    return out
+  }
+
+  /**
+   * Round values to Int in-place
+   *
+   * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
+   *
+   * @return this DenseNDArray
+   */
+  override fun assignRoundInt(threshold: Double): DenseNDArray {
+
+    val floorValues = MatrixFunctions.floor(this.storage)
+
+    for (i in 0 until this.length) {
+      this[i] = if (this.storage[i] < threshold) floorValues[i] else floorValues[i] + 1
+    }
+
+    return this
+  }
+
+  /**
+   *
+   */
+  override fun randomize(randomGenerator: RandomGenerator): DenseNDArray {
+    for (i in 0 until this.length) this[i] = randomGenerator.next() // i: linear index
+    return this
+  }
+
+  /**
    *
    */
   override fun concatH(a: DenseNDArray): DenseNDArray {
@@ -617,21 +626,6 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   override fun concatV(a: DenseNDArray): DenseNDArray {
     return DenseNDArray(concatVertically(this.storage, a.storage))
-  }
-
-  /**
-   * Return a one-dimensional DenseNDArray sub-vector of a vertical vector
-   */
-  override fun getRange(a: Int, b: Int): DenseNDArray {
-    require(this.shape.dim2 == 1)
-    return DenseNDArray(this.storage.getRange(a, b))
-  }
-
-  /**
-   *
-   */
-  override fun zerosLike(): DenseNDArray {
-    return DenseNDArray(DoubleMatrix.zeros(this.shape.dim1, shape.dim2))
   }
 
   /**
