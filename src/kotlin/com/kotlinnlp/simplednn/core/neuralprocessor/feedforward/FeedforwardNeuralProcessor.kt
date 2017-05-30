@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.core.neuralprocessor.feedforward
 
-import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardNetworkStructure
@@ -28,8 +27,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The errors of the network model parameters
    */
-  private val backwardParamsErrors: NetworkParameters = this.neuralNetwork.parametersFactory(
-    sparseInput = this.neuralNetwork.layersConfiguration.first().inputType == LayerType.Input.SparseBinary)
+  private val backwardParamsErrors: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
 
   /**
    *
@@ -58,10 +56,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     val paramsError: NetworkParameters
 
     if (copy) {
-
-      paramsError = this.neuralNetwork.parametersFactory(
-        sparseInput = this.neuralNetwork.layersConfiguration.first().inputType == LayerType.Input.SparseBinary)
-
+      paramsError = this.neuralNetwork.parametersErrorsFactory()
       paramsError.assignValues(this.backwardParamsErrors)
 
     } else {
@@ -75,7 +70,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    */
   fun getInputErrors(copy: Boolean = true): DenseNDArray {
-    require(this.inputType == LayerType.Input.Dense) { "Input errors available only if input is dense" }
+    require(!this.neuralNetwork.sparseInput) { "Input errors available only if input is dense" }
 
     return if (copy) {
       this.structure.inputLayer.inputArray.errors.copy()

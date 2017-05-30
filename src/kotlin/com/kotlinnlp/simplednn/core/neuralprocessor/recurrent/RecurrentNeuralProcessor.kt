@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 
-import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
@@ -43,7 +42,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The errors of the network model parameters calculated during a single backward
    */
-  private var backwardParamsErrors: NetworkParameters = NetworkParameters(this.neuralNetwork.layersConfiguration)
+  private var backwardParamsErrors: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
 
   /**
    *
@@ -79,10 +78,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     val paramsError: NetworkParameters
 
     if (copy) {
-
-      paramsError = this.neuralNetwork.parametersFactory(
-        sparseInput = this.neuralNetwork.layersConfiguration.first().inputType == LayerType.Input.SparseBinary)
-
+      paramsError = this.neuralNetwork.parametersErrorsFactory()
       paramsError.assignValues(this.paramsErrorsAccumulator.getParamsErrors())
 
     } else {
