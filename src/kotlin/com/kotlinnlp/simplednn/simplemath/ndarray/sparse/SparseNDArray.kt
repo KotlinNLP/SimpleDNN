@@ -8,16 +8,14 @@
 package com.kotlinnlp.simplednn.simplemath.ndarray.sparse
 
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  *
  */
-class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterable<Pair<Pair<Int, Int>, Double>>  {
+class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterable<SparseEntry>  {
 
   companion object {
 
@@ -42,7 +40,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  inner class LinearIterator : Iterator<Pair<Pair<Int, Int>, Double>>  {
+  inner class LinearIterator : Iterator<SparseEntry>  {
 
     /**
      *
@@ -57,7 +55,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
     /**
      *
      */
-    override fun next(): Pair<Pair<Int, Int>, Double> {
+    override fun next(): SparseEntry {
 
       val value = this@SparseNDArray.values[this.curIndex]
       val indices = Pair(
@@ -74,7 +72,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    * Iterator over active indices with the related values
    */
-  override fun iterator(): Iterator<Pair<Pair<Int, Int>, Double>> {
+  override fun iterator(): Iterator<SparseEntry> {
     return LinearIterator()
   }
 

@@ -8,9 +8,7 @@
 package com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary
 
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
+import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 
@@ -25,8 +23,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
  */
 class SparseBinaryNDArray(
   override val shape: Shape,
-  val activeIndicesByRow: MutableMap<Int, MutableSet<Int>?> = mutableMapOf<Int, MutableSet<Int>?>(),
-  val activeIndicesByColumn: MutableMap<Int, MutableSet<Int>?> = mutableMapOf<Int, MutableSet<Int>?>()
+  val activeIndicesByRow: VectorsMap = mutableMapOf<Int, VectorSet?>(),
+  val activeIndicesByColumn: VectorsMap = mutableMapOf<Int, VectorSet?>()
 ) : NDArray<SparseBinaryNDArray>,
     Iterable<Pair<Int, Int>> {
 
@@ -57,14 +55,12 @@ class SparseBinaryNDArray(
     /**
      * The map entry (rowIndex, rowActiveIndices) of the current row
      */
-    var curRow: MutableMap.MutableEntry<Int, MutableSet<Int>?>? =
-      if (this.rowsIterator.hasNext()) this.rowsIterator.next() else null
+    var curRow: VectorsMapEntry? = if (this.rowsIterator.hasNext()) this.rowsIterator.next() else null
 
     /**
      * The map entry (rowIndex, rowActiveIndices) of the current column
      */
-    var curColumn: MutableMap.MutableEntry<Int, MutableSet<Int>?>? =
-      if (this.columnsIterator.hasNext()) this.columnsIterator.next() else null
+    var curColumn: VectorsMapEntry? = if (this.columnsIterator.hasNext()) this.columnsIterator.next() else null
 
     /**
      *
@@ -215,7 +211,7 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  private fun addElement(indicesMap: MutableMap<Int, MutableSet<Int>?>, key: Int, element: Int) {
+  private fun addElement(indicesMap: VectorsMap, key: Int, element: Int) {
 
     if (indicesMap.containsKey(key)) {
       // Key already existing
@@ -269,9 +265,9 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  private fun copyIndices(indicesMap: MutableMap<Int, MutableSet<Int>?>): MutableMap<Int, MutableSet<Int>?> {
+  private fun copyIndices(indicesMap: VectorsMap): VectorsMap {
 
-    val newMap = mutableMapOf<Int, MutableSet<Int>?>()
+    val newMap = mutableMapOf<Int, VectorSet?>()
 
     for ((key, indicesSet) in indicesMap.iterator()) {
       newMap[key] = indicesSet?.toMutableSet()
