@@ -108,7 +108,7 @@ class SimpleRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>
 
     val x: InputNDArrayType = this.inputArray.values
     val gb: DenseNDArray = this.paramsErrors!!.biases.values
-    val gw: DenseNDArray = this.paramsErrors!!.weights.values as DenseNDArray
+    val gw: NDArray<*> = this.paramsErrors!!.weights.values
     val gy: DenseNDArray = this.outputArray.errors
 
     gb.assignValues(gy)
