@@ -12,11 +12,13 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
+ * Equals within tolerance.
+ *
  * @param a a [Double] number
  * @param b a [Double] number
  * @param tolerance it defines the range [[b] - [tolerance], [b] + [tolerance]]
  *
- * @return a [Boolean] which indicates if [a] is within the range of [b] with [tolerance]
+ * @return a [Boolean] which indicates if [a] is equal to [b] within the [tolerance]
  */
 fun equals(a: Double, b: Double, tolerance: Double = 10e-4): Boolean {
 
@@ -26,6 +28,23 @@ fun equals(a: Double, b: Double, tolerance: Double = 10e-4): Boolean {
   return a in lower..upper
 }
 
+/**
+ * Equals within tolerance.
+ *
+ * @param a an array of [Double] numbers
+ * @param b an array of [Double] numbers
+ * @param tolerance it defines the range [elm - [tolerance], elm + [tolerance]]
+ *
+ * @return a [Boolean] which indicates if all the elements of [a] are equal to the
+ * corresponding elements of [b] within the [tolerance]
+ */
+fun equals(a: Array<Double>, b: Array<Double>, tolerance: Double = 10e-4): Boolean {
+  return a.zip(b).all { equals(it.first, it.second, tolerance = tolerance) }
+}
+
+/**
+ * Concatenate vertical 1-dim [DenseNDArray]s vertically.
+ */
 fun concatVectorsV(vararg vectors: DenseNDArray): DenseNDArray {
 
   require(vectors.all { it.isVector && it.columns == 1 })
