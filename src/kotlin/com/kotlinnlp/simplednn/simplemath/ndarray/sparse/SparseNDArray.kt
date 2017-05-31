@@ -667,7 +667,12 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    *
    */
   override fun assignDiv(n: Double): SparseNDArray {
-    TODO("not implemented")
+
+    for (index in 0 until this.values.size) {
+      this.values[index] /= n
+    }
+
+    return this
   }
 
   /**
