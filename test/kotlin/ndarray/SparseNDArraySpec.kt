@@ -16,6 +16,7 @@ import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  *
@@ -61,6 +62,54 @@ class SparseNDArraySpec : Spek({
 
         it("should return false calling hasNext() on the last iteration") {
           assertFalse { iterator.hasNext() }
+        }
+      }
+    }
+
+    context("assignSumMerging()") {
+
+      on("2-dim arrays") {
+
+        val array1 = SparseNDArrayFactory.arrayOf(
+          activeIndicesValues = arrayOf(
+            Pair(Pair(0, 1), 0.1),
+            Pair(Pair(1, 0), 0.5),
+            Pair(Pair(1, 2), 0.1),
+            Pair(Pair(2, 2), 0.2),
+            Pair(Pair(3, 1), 0.3)
+          ),
+          shape = Shape(4, 3))
+
+        val array2 = SparseNDArrayFactory.arrayOf(
+          activeIndicesValues = arrayOf(
+            Pair(Pair(0, 1), 0.2),
+            Pair(Pair(1, 0), 0.1),
+            Pair(Pair(1, 3), 0.1),
+            Pair(Pair(2, 2), 0.5),
+            Pair(Pair(2, 1), 0.3)
+          ),
+          shape = Shape(4, 3))
+
+        val expectedArray = SparseNDArrayFactory.arrayOf(
+          activeIndicesValues = arrayOf(
+            Pair(Pair(0, 1), 0.3),
+            Pair(Pair(1, 0), 0.6),
+            Pair(Pair(1, 2), 0.1),
+            Pair(Pair(1, 3), 0.1),
+            Pair(Pair(2, 1), 0.3),
+            Pair(Pair(2, 2), 0.7),
+            Pair(Pair(3, 1), 0.3)
+          ),
+          shape = Shape(4, 3))
+
+        val res = array1.assignSumMerging(array2)
+
+        it("should return the same array") {
+          assertTrue(array1 === res)
+        }
+
+        it("should contain the expected values") {
+          assertTrue(expectedArray.equals(res))
         }
       }
     }
