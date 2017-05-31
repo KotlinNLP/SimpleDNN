@@ -8,9 +8,11 @@
 package com.kotlinnlp.simplednn.simplemath.ndarray.sparse
 
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.simplemath.equals
 import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import java.util.*
 
 /**
  *
@@ -359,6 +361,54 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
     for (index in 0 until this.values.size) {
       this.values[index] += a.values[index]
     }
+
+    return this
+  }
+
+  /**
+   *
+   */
+  fun assignSumMerging(a: SparseNDArray): SparseNDArray {
+    require(a.shape == this.shape) { "Arrays with different size" }
+
+    val activeIndices = Array(
+      size = this.values.size + a.values.size,
+      init = { i ->
+        val ref: SparseNDArray = if (i < this.values.size) this else a
+        val index: Int = i % this.values.size
+
+        val value: Double = ref.values[index]
+        val row: Int = ref.rowIndices[index]
+        val col: Int = ref.colIndices[index]
+
+        SparseEntry(Indices(row, col), value)
+      })
+
+    val values = arrayListOf<Double>()
+    val rows = arrayListOf<Int>()
+    val columns = arrayListOf<Int>()
+
+    for ((indices, value) in activeIndices.sortedWith(Comparator<SparseEntry> { (aIndices), (bIndices) ->
+      if (aIndices.second != bIndices.second) {
+        aIndices.second - bIndices.second
+      } else {
+        aIndices.first - bIndices.first
+      }
+    })) {
+      if (value != 0.0) {
+        if (values.size == 0 || columns.last() != indices.second || rows.last() != indices.first) {
+          values.add(value)
+          rows.add(indices.first)
+          columns.add(indices.second)
+        } else {
+          values[values.lastIndex] += value
+        }
+      }
+    }
+
+    this.values = values.toTypedArray()
+    this.rowIndices = rows.toTypedArray()
+    this.colIndices = columns.toTypedArray()
 
     return this
   }
@@ -746,7 +796,13 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    *
    */
   override fun equals(a: SparseNDArray, tolerance: Double): Boolean {
-    TODO("not implemented")
+
+    this.sortValues()
+    a.sortValues()
+
+    return equals(this.values, a.values) &&
+      Arrays.equals(this.rowIndices, a.rowIndices) &&
+      Arrays.equals(this.colIndices, a.colIndices)
   }
 
   /**
@@ -760,7 +816,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    *
    */
   override fun equals(other: Any?): Boolean {
-    TODO("not implemented")
+    return other is SparseNDArray && this.equals(other)
   }
 
   /**
@@ -768,5 +824,77 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    */
   override fun hashCode(): Int {
     TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  private fun sortValues() {
+    if (this.colIndices.size > 1) {
+      this.quicksort(0, this.colIndices.lastIndex)
+    }
+  }
+
+  /**
+   *
+   */
+  private fun quicksort(lo: Int, hi: Int) {
+
+    if (lo < hi) {
+      val p: Int = this.partition(lo, hi)
+      this.quicksort(lo, p - 1)
+      this.quicksort(p + 1, hi)
+    }
+  }
+
+  /**
+   *
+   */
+  private fun partition(lo: Int, hi: Int): Int {
+
+    val pivot: Int = hi
+    var i: Int = lo
+
+    while (i < pivot && this.compareArrays(i, pivot) <= 0) i++
+
+    for (j in (i + 1) until hi) {
+      if (this.compareArrays(j, pivot) <= 0) {
+        this.swap(i++, j)
+      }
+    }
+
+    this.swap(i, pivot)
+
+    return i
+  }
+
+  /**
+   *
+   */
+  private fun compareArrays(i: Int, j: Int): Int {
+    return if (this.colIndices[i] != this.colIndices[j])
+      this.colIndices[i] - this.colIndices[j]
+    else
+      this.rowIndices[i] - this.rowIndices[j]
+  }
+
+  /**
+   *
+   */
+  private fun swap(i: Int, j: Int) {
+    if (i != j) {
+      this.swapArray(this.values, i, j)
+      this.swapArray(this.rowIndices, i, j)
+      this.swapArray(this.colIndices, i, j)
+    }
+  }
+
+  /**
+   *
+   */
+  private fun <T> swapArray(array: Array<T>, i: Int, j: Int) {
+    val tmp: T = array[i]
+    array[i] = array[j]
+    array[j] = tmp
   }
 }

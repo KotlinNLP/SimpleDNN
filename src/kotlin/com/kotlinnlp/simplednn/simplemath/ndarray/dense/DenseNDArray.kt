@@ -278,7 +278,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
 
     when(a) {
       is DenseNDArray -> this.storage.addi(a.storage)
-      is SparseNDArray -> TODO("not implemented")
+      is SparseNDArray -> this.assignSum(a)
       is SparseBinaryNDArray -> TODO("not implemented")
     }
 
