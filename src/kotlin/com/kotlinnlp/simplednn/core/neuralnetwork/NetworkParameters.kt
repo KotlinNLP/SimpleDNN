@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.neuralnetwork
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import java.io.Serializable
 
 /**
@@ -107,7 +108,14 @@ class NetworkParameters(val layersConfiguration: List<LayerConfiguration>, priva
    */
   fun assignSum(addingParameters: NetworkParameters) {
     this.zip(addingParameters).forEach {
-      it.first.values.assignSum(it.second.values)
+      val first = it.first.values
+      val second = it.second.values
+
+      if (first is SparseNDArray && second is SparseNDArray) {
+        first.assignSumMerging(second)
+      } else {
+        first.assignSum(second)
+      }
     }
   }
 
