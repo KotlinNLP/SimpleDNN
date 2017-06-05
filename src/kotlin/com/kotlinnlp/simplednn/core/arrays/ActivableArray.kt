@@ -80,6 +80,7 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
     try {
       this._values.assignValues(values)
     } catch (e: UninitializedPropertyAccessException) {
+      require(values.length == this.size)
       this._values = values.copy()
     }
   }
