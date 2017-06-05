@@ -49,8 +49,8 @@ class AdaGradSpec: Spek({
 
         it("should match the expected updated array") {
           assertEquals(true, updatableArray.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39933, 0.39926, 0.49957, 0.999, 0.79978)),
-            tolerance = 1.0e-5))
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.399331, 0.399258, 0.499569, 0.999, 0.799782)),
+            tolerance = 1.0e-6))
         }
       }
     }

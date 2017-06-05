@@ -52,7 +52,7 @@ class LearningRateSpec: Spek({
         it("should match the expected updated array") {
           assertEquals(true, updatableArray.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3991, 0.3993, 0.4996, 0.9992, 0.7999)),
-            tolerance = 1.0e-5))
+            tolerance = 1.0e-6))
         }
       }
     }
