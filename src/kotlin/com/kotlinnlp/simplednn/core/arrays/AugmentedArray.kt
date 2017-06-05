@@ -57,9 +57,13 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    *               The errors must have the same size of the array values.
    */
   fun assignErrors(errors: DenseNDArray) {
+
     try {
       this._errors.assignValues(errors)
+
     } catch (e: UninitializedPropertyAccessException) {
+      require(errors.length == this.size)
+
       this._errors = errors.copy()
     }
   }
