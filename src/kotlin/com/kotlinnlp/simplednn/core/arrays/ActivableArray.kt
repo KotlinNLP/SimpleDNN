@@ -77,10 +77,13 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
    * @param values values to assign to this [ActivableArray]
    */
   open fun assignValues(values: NDArrayType) {
+
     try {
       this._values.assignValues(values)
+
     } catch (e: UninitializedPropertyAccessException) {
       require(values.length == this.size)
+
       this._values = values.copy()
     }
   }
