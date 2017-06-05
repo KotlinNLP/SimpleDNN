@@ -60,9 +60,19 @@ class AugmentedArraySpec : Spek({
         }
       }
 
-      on("after assignment") {
+      on("after assignment, with values initialized") {
 
         val augmentedArray = AugmentedArray(initArray)
+        augmentedArray.assignErrors(errors)
+
+        it("should have the expected assigned errors") {
+          assertEquals(true, augmentedArray.errors.equals(errors, tolerance = 1.0e-08))
+        }
+      }
+
+      on("after assignment, with values not initialized") {
+
+        val augmentedArray = AugmentedArray<DenseNDArray>(size = 5)
         augmentedArray.assignErrors(errors)
 
         it("should have the expected assigned errors") {
