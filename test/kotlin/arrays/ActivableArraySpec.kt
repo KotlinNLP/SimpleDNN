@@ -17,6 +17,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
 
 /**
@@ -27,6 +28,7 @@ class ActivableArraySpec : Spek({
   describe("an ActivableArray") {
 
     val initArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
+    val initArrayWrongSize = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1))
     val activationFunction = ELU(alpha = 1.0)
     val expectedActivatedValues = DenseNDArrayFactory.arrayOf(doubleArrayOf(
       0.0, 0.1, 0.01, -0.09516258, -0.00995017, 1.0, 10.0, -0.63212056, -0.9999546
@@ -39,9 +41,9 @@ class ActivableArraySpec : Spek({
 
       on("with values not assigned") {
 
-        val activableArray: ActivableArray<DenseNDArray> = ActivableArray(size = 9)
+        val activableArray = ActivableArray<DenseNDArray>(size = 9)
 
-        it("should throw an Exception when getting errors") {
+        it("should throw an Exception when trying to get values") {
           assertFailsWith<UninitializedPropertyAccessException> {
             activableArray.values
           }
@@ -50,7 +52,12 @@ class ActivableArraySpec : Spek({
 
       on("with the size, assigning values after") {
 
-        val activableArray: ActivableArray<DenseNDArray> = ActivableArray(size = 9)
+        val activableArray = ActivableArray<DenseNDArray>(size = 9)
+
+        it("should throw an exception when trying to assign values with wrong size") {
+          assertFails { activableArray.assignValues(initArrayWrongSize) }
+        }
+
         activableArray.assignValues(initArray)
 
         it("should contain values with the expected number of rows") {
@@ -150,21 +157,37 @@ class ActivableArraySpec : Spek({
       }
     }
 
-    on("cloning") {
+    context("cloning") {
 
-      val activableArray = ActivableArray(initArray)
-      activableArray.setActivation(activationFunction)
+      on("values not initialized") {
 
-      activableArray.activate()
+        val activableArray = ActivableArray<DenseNDArray>(size = 5)
 
-      val cloneArray = activableArray.clone()
+        val cloneArray = activableArray.clone()
 
-      it("should have the same not activated values") {
-        assertEquals(true, activableArray.valuesNotActivated.equals(cloneArray.valuesNotActivated))
+        it("should throw an Exception when getting values") {
+          assertFailsWith<UninitializedPropertyAccessException> {
+            cloneArray.values
+          }
+        }
       }
 
-      it("should have the same activated values") {
-        assertEquals(true, activableArray.values.equals(cloneArray.values))
+      on("values initialized") {
+
+        val activableArray = ActivableArray(initArray)
+        activableArray.setActivation(activationFunction)
+
+        activableArray.activate()
+
+        val cloneArray = activableArray.clone()
+
+        it("should have the same not activated values") {
+          assertEquals(true, activableArray.valuesNotActivated.equals(cloneArray.valuesNotActivated))
+        }
+
+        it("should have the same activated values") {
+          assertEquals(true, activableArray.values.equals(cloneArray.values))
+        }
       }
     }
   }
