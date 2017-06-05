@@ -8,6 +8,8 @@
 package arrays
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableSparseArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import org.jetbrains.spek.api.Spek
@@ -17,6 +19,7 @@ import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 /**
  *
@@ -27,24 +30,7 @@ class UpdatableArraySpec : Spek({
 
     context("initialization") {
 
-      on("with the length") {
-
-        val updatableArray = UpdatableArray(DenseNDArrayFactory.zeros(Shape(5)))
-
-        it("should contain values with the expected number of rows") {
-          assertEquals(5, updatableArray.values.rows)
-        }
-
-        it("should contain values with the expected number of columns") {
-          assertEquals(1, updatableArray.values.columns)
-        }
-
-        it("should contain a null support structure") {
-          assertNull(updatableArray.updaterSupportStructure)
-        }
-      }
-
-      on("with the shape") {
+      on("with an NDArray") {
 
         val updatableArray = UpdatableArray(DenseNDArrayFactory.zeros(Shape(3, 7)))
 
@@ -54,6 +40,66 @@ class UpdatableArraySpec : Spek({
 
         it("should contain values with the expected number of columns") {
           assertEquals(7, updatableArray.values.columns)
+        }
+
+        it("should contain a null support structure") {
+          assertNull(updatableArray.updaterSupportStructure)
+        }
+      }
+    }
+  }
+
+  describe("an UpdatableDenseArray") {
+
+    context("initialization") {
+
+      on("with the shape") {
+
+        val updatableArray = UpdatableDenseArray(shape = Shape(3, 2))
+
+        it("should contain values with the expected number of rows") {
+          assertEquals(3, updatableArray.values.rows)
+        }
+
+        it("should contain values with the expected number of columns") {
+          assertEquals(2, updatableArray.values.columns)
+        }
+
+        it("should contain zeros values") {
+          assertTrue {
+            DenseNDArrayFactory.arrayOf(arrayOf(
+              doubleArrayOf(0.0, 0.0),
+              doubleArrayOf(0.0, 0.0),
+              doubleArrayOf(0.0, 0.0)
+            )).equals(updatableArray.values, tolerance = 1.0e-08)
+          }
+        }
+
+        it("should contain a null support structure") {
+          assertNull(updatableArray.updaterSupportStructure)
+        }
+      }
+    }
+  }
+
+  describe("an UpdatableSparseArray") {
+
+    context("initialization") {
+
+      on("with the shape") {
+
+        val updatableArray = UpdatableSparseArray(shape = Shape(3, 2))
+
+        it("should contain values with the expected number of rows") {
+          assertEquals(3, updatableArray.values.rows)
+        }
+
+        it("should contain values with the expected number of columns") {
+          assertEquals(2, updatableArray.values.columns)
+        }
+
+        it("should contain zeros values") {
+          assertEquals(0, updatableArray.values.values.size)
         }
 
         it("should contain a null support structure") {
