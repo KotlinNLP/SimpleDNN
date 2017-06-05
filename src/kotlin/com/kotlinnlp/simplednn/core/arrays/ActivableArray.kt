@@ -137,8 +137,11 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
    */
   open fun clone(): ActivableArray<NDArrayType> {
 
-    val clonedArray = ActivableArray<NDArrayType>(size = this._values.length)
-    clonedArray.assignValues(this.values)
+    val clonedArray = ActivableArray<NDArrayType>(size = this.size)
+
+    try {
+      clonedArray.assignValues(this._values)
+    } catch (e: UninitializedPropertyAccessException) {}
 
     if (this.hasActivation) {
 
