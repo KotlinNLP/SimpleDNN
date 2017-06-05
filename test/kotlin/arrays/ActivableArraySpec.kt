@@ -17,6 +17,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 /**
  *
@@ -35,6 +36,17 @@ class ActivableArraySpec : Spek({
     ))
 
     context("initialization") {
+
+      on("with values not assigned") {
+
+        val activableArray: ActivableArray<DenseNDArray> = ActivableArray(size = 9)
+
+        it("should throw an Exception when getting errors") {
+          assertFailsWith<UninitializedPropertyAccessException> {
+            activableArray.values
+          }
+        }
+      }
 
       on("with the size, assigning values after") {
 
