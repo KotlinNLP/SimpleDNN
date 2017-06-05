@@ -19,6 +19,7 @@ import org.jetbrains.spek.api.dsl.on
 import layers.structure.utils.LSTMLayerStructureUtils
 import layers.structure.contextwindows.LSTMLayerContextWindow
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 /**
  *
@@ -26,6 +27,18 @@ import kotlin.test.assertEquals
 class LSTMLayerStructureSpec : Spek({
 
   describe("a LSTMLayerStructure") {
+
+    context("initialization") {
+
+      on("before calling any method") {
+
+        val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayerContextWindow.Empty())
+
+        it("should contain null paramsErrors") {
+          assertNull(layer.paramsErrors)
+        }
+      }
+    }
 
     context("forward") {
 

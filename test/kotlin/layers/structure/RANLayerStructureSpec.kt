@@ -19,6 +19,7 @@ import org.jetbrains.spek.api.dsl.on
 import layers.structure.contextwindows.RANLayerContextWindow
 import layers.structure.utils.RANLayerStructureUtils
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 /**
  *
@@ -26,6 +27,18 @@ import kotlin.test.assertEquals
 class RANLayerStructureSpec : Spek({
 
   describe("a RANLayerStructure") {
+
+    context("initialization") {
+
+      on("before calling any method") {
+
+        val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Empty())
+
+        it("should contain null paramsErrors") {
+          assertNull(layer.paramsErrors)
+        }
+      }
+    }
 
     context("forward") {
 
