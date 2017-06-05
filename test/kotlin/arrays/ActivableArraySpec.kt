@@ -28,7 +28,7 @@ class ActivableArraySpec : Spek({
     val initArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
     val activationFunction = ELU(alpha = 1.0)
     val expectedActivatedValues = DenseNDArrayFactory.arrayOf(doubleArrayOf(
-      0.0, 0.1, 0.01, -0.095162582, -0.009950166, 1.0, 10.0, -0.632120559, -0.9999546
+      0.0, 0.1, 0.01, -0.09516258, -0.00995017, 1.0, 10.0, -0.63212056, -0.9999546
     ))
     val activatedValuesDeriv = DenseNDArrayFactory.arrayOf(doubleArrayOf(
       1.0, 1.0, 1.0, 0.90483742, 0.99004983, 1.0, 1.0, 0.36787944, 0.0000454
@@ -85,7 +85,7 @@ class ActivableArraySpec : Spek({
       }
     }
 
-    on("activation") {
+    on("after activation") {
 
       val activableArray = ActivableArray(initArray)
       activableArray.setActivation(activationFunction)
@@ -106,8 +106,35 @@ class ActivableArraySpec : Spek({
         assertEquals(true, outActivatedValues !== activableArray.values)
       }
 
-      it("should return the same activated values calling getActivatedValues() after activate()") {
+      it("should return the same activated values calling getActivatedValues()") {
         assertEquals(true, outActivatedValues.equals(activableArray.values, tolerance = 1.0e-08))
+      }
+    }
+
+    on("after activated twice") {
+
+      val activableArray = ActivableArray(initArray)
+      activableArray.setActivation(activationFunction)
+
+      val expectedActivatedValues2 = DenseNDArrayFactory.arrayOf(doubleArrayOf(
+        0.0, 0.1, 0.01, -0.0907749, -0.00990083, 1.0, 10.0, -0.4685364, -0.63210386
+      ))
+
+      activableArray.activate()
+      activableArray.activate()
+
+      val outActivatedValues = activableArray.getActivatedValues()
+
+      it("should have the expected activated values") {
+        assertEquals(true, expectedActivatedValues2.equals(activableArray.values, tolerance = 1.0e-08))
+      }
+
+      it("should return the same activated values calling getActivatedValues()") {
+        assertEquals(true, outActivatedValues.equals(activableArray.values, tolerance = 1.0e-08))
+      }
+
+      it("should return the previous activated values as valuesNotActivated") {
+        assertEquals(true, expectedActivatedValues.equals(activableArray.valuesNotActivated, tolerance = 1.0e-08))
       }
     }
 
