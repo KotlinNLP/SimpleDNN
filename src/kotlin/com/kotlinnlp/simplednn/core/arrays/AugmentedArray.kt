@@ -93,7 +93,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
 
     if (this.hasActivation) {
 
-      if (this._valuesNotActivated != this._values) {
+      if (this._valuesNotActivated != null && this._valuesNotActivated != this._values) {
         clonedArray._valuesNotActivated = this._valuesNotActivated!!.copy()
       }
 

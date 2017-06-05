@@ -145,7 +145,7 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
 
     if (this.hasActivation) {
 
-      if (this._valuesNotActivated != this._values) {
+      if (this._valuesNotActivated != null && this._valuesNotActivated != this._values) {
         clonedArray._valuesNotActivated = this._valuesNotActivated!!.copy()
       }
 
