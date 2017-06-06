@@ -47,6 +47,7 @@ class LayerStructureSpec : Spek({
         val zerosCount = (0 until inputArray.size).count { i -> inputArray.values[i] == 0.0 }
 
         it("should contain the expected number of dropped values") {
+          // WARNING: This test is based on random generation of values
           assertTrue { equals(25000.0, zerosCount.toDouble(), tolerance=500.0) }
         }
 
