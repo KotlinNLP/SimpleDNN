@@ -77,7 +77,7 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
         .random(inputShape)
         .roundInt(threshold = this.dropout)
 
-      mask.assignDiv(this.p) // mask of zeros and [this.p]
+      mask.assignDiv(this.p) // mask of zeros and [1.0 / this.p]
 
       this.inputArray.values.assignProd(mask)
     }
