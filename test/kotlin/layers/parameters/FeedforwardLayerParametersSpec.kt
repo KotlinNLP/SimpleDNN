@@ -9,6 +9,8 @@ package layers.parameters
 
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.jetbrains.spek.api.Spek
@@ -17,7 +19,9 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  *
@@ -28,24 +32,55 @@ class FeedforwardLayerParametersSpec : Spek({
 
     context("initialization") {
 
-      val params = FeedforwardLayerParameters(inputSize = 3, outputSize = 2)
+      on("dense input") {
 
-      val w = params.weights.values
-      val b = params.biases.values
+        val params = FeedforwardLayerParameters(inputSize = 3, outputSize = 2)
 
-      var i = 0
-      val initValues = doubleArrayOf(0.1, 0.2, 0.3, 0.4, 0.5, 0.6)
-      val randomGenerator = mock<RandomGenerator>()
-      whenever(randomGenerator.next()).thenAnswer { initValues[i++] }
+        val w = params.weights.values
+        val b = params.biases.values
 
-      params.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
+        var i = 0
+        val initValues = doubleArrayOf(0.1, 0.2, 0.3, 0.4, 0.5, 0.6)
+        val randomGenerator = mock<RandomGenerator>()
+        whenever(randomGenerator.next()).thenAnswer { initValues[i++] }
 
-      it("should contain the expected initialized weights") {
-        (0 until w.length).forEach { i -> assertEquals(initValues[i], w[i]) }
+        params.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
+
+        it("should contain dense weights") {
+            assertTrue { w is DenseNDArray }
+        }
+
+        it("should contain dense biases") {
+            assertTrue { b is DenseNDArray }
+        }
+
+        it("should contain the expected initialized weights") {
+          (0 until w.length).forEach { i -> assertEquals(initValues[i], w[i]) }
+        }
+
+        it("should contain the expected initialized biases") {
+          (0 until b.length).forEach { i -> assertEquals(0.9, b[i]) }
+        }
       }
 
-      it("should contain the expected initialized biases") {
-        (0 until b.length).forEach { i -> assertEquals(0.9, b[i]) }
+      on("sparse input") {
+
+        val params = FeedforwardLayerParameters(inputSize = 3, outputSize = 2, sparseInput = true)
+
+        val w = params.weights.values
+        val b = params.biases.values
+
+        it("should contain sparse weights") {
+            assertTrue { w is SparseNDArray }
+        }
+
+        it("should contain dense biases") {
+            assertTrue { b is DenseNDArray }
+        }
+
+        it("should throw an Exception when trying to initialize") {
+            assertFails { params.initialize() }
+        }
       }
     }
 

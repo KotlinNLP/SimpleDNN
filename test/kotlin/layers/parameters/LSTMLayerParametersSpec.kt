@@ -9,6 +9,8 @@ package layers.parameters
 
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerParameters
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.jetbrains.spek.api.Spek
@@ -17,7 +19,9 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  *
@@ -28,83 +32,158 @@ class LSTMLayerParametersSpec : Spek({
 
     context("initialization") {
 
-      val params = LSTMLayerParameters(inputSize = 3, outputSize = 2)
+      on("dense input") {
 
-      val wIn = params.inputGate.weights.values
-      val wOut = params.outputGate.weights.values
-      val wFor = params.forgetGate.weights.values
-      val wC = params.candidate.weights.values
+        val params = LSTMLayerParameters(inputSize = 3, outputSize = 2)
 
-      val bIn = params.inputGate.biases.values
-      val bOut = params.outputGate.biases.values
-      val bFor = params.forgetGate.biases.values
-      val bC = params.candidate.biases.values
+        val wIn = params.inputGate.weights.values
+        val wOut = params.outputGate.weights.values
+        val wFor = params.forgetGate.weights.values
+        val wC = params.candidate.weights.values
 
-      val wInr = params.inputGate.recurrentWeights.values
-      val wOutr = params.outputGate.recurrentWeights.values
-      val wForr = params.forgetGate.recurrentWeights.values
-      val wCr = params.candidate.recurrentWeights.values
+        val bIn = params.inputGate.biases.values
+        val bOut = params.outputGate.biases.values
+        val bFor = params.forgetGate.biases.values
+        val bC = params.candidate.biases.values
 
-      var i = 0
-      val initValues = doubleArrayOf(
-        0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
-        0.7, 0.8, 0.9, 1.0, 1.1, 1.2,
-        1.3, 1.4, 1.5, 1.6, 1.7, 1.8,
-        1.9, 2.0, 2.1, 2.2, 2.3, 2.4,
-        2.5, 2.6, 2.7, 2.8, 2.9, 3.0,
-        3.1, 3.2, 3.3, 3.4, 3.5, 3.6,
-        3.7, 3.8, 3.9, 4.0)
-      val randomGenerator = mock<RandomGenerator>()
-      whenever(randomGenerator.next()).thenAnswer { initValues[i++] }
+        val wInr = params.inputGate.recurrentWeights.values
+        val wOutr = params.outputGate.recurrentWeights.values
+        val wForr = params.forgetGate.recurrentWeights.values
+        val wCr = params.candidate.recurrentWeights.values
 
-      params.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
+        var i = 0
+        val initValues = doubleArrayOf(
+          0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
+          0.7, 0.8, 0.9, 1.0, 1.1, 1.2,
+          1.3, 1.4, 1.5, 1.6, 1.7, 1.8,
+          1.9, 2.0, 2.1, 2.2, 2.3, 2.4,
+          2.5, 2.6, 2.7, 2.8, 2.9, 3.0,
+          3.1, 3.2, 3.3, 3.4, 3.5, 3.6,
+          3.7, 3.8, 3.9, 4.0)
+        val randomGenerator = mock<RandomGenerator>()
+        whenever(randomGenerator.next()).thenAnswer { initValues[i++] }
 
-      it("should contain the expected initialized weights of the input gate") {
-        (0 until wIn.length).forEach { i -> assertEquals(initValues[i], wIn[i]) }
+        params.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
+
+        it("should contain the expected initialized weights of the input gate") {
+          (0 until wIn.length).forEach { i -> assertEquals(initValues[i], wIn[i]) }
+        }
+
+        it("should contain the expected initialized weights of the output gate") {
+          (0 until wOut.length).forEach { i -> assertEquals(initValues[i + 6], wOut[i]) }
+        }
+
+        it("should contain the expected initialized weights of the forget gate") {
+          (0 until wFor.length).forEach { i -> assertEquals(initValues[i + 12], wFor[i]) }
+        }
+
+        it("should contain the expected initialized weights of the candidate") {
+          (0 until wC.length).forEach { i -> assertEquals(initValues[i + 18], wC[i]) }
+        }
+
+        it("should contain the expected initialized biases of the input gate") {
+          (0 until bIn.length).forEach { i -> assertEquals(0.9, bIn[i]) }
+        }
+
+        it("should contain the expected initialized biases of the forget gate") {
+          (0 until bFor.length).forEach { i -> assertEquals(0.9, bFor[i]) }
+        }
+
+        it("should contain the expected initialized biases of the output gate") {
+          (0 until bOut.length).forEach { i -> assertEquals(0.9, bOut[i]) }
+        }
+
+        it("should contain the expected initialized biases of the candidate") {
+          (0 until bC.length).forEach { i -> assertEquals(0.9, bC[i]) }
+        }
+
+        it("should contain the expected initialized recurrent weights of the input gate") {
+          (0 until wInr.length).forEach { i -> assertEquals(initValues[i + 24], wInr[i]) }
+        }
+
+        it("should contain the expected initialized recurrent weights of the output gate") {
+          (0 until wOutr.length).forEach { i -> assertEquals(initValues[i + 28], wOutr[i]) }
+        }
+
+        it("should contain the expected initialized recurrent weights of the forget gate") {
+          (0 until wForr.length).forEach { i -> assertEquals(initValues[i + 32], wForr[i]) }
+        }
+
+        it("should contain the expected initialized recurrent weights of the candidate") {
+          (0 until wCr.length).forEach { i -> assertEquals(initValues[i + 36], wCr[i]) }
+        }
       }
 
-      it("should contain the expected initialized weights of the output gate") {
-        (0 until wOut.length).forEach { i -> assertEquals(initValues[i + 6], wOut[i]) }
-      }
+      on("sparse input") {
 
-      it("should contain the expected initialized weights of the forget gate") {
-        (0 until wFor.length).forEach { i -> assertEquals(initValues[i + 12], wFor[i]) }
-      }
+        val params = LSTMLayerParameters(inputSize = 3, outputSize = 2, sparseInput = true)
 
-      it("should contain the expected initialized weights of the candidate") {
-        (0 until wC.length).forEach { i -> assertEquals(initValues[i + 18], wC[i]) }
-      }
+        val wIn = params.inputGate.weights.values
+        val wOut = params.outputGate.weights.values
+        val wFor = params.forgetGate.weights.values
+        val wC = params.candidate.weights.values
 
-      it("should contain the expected initialized biases of the input gate") {
-        (0 until bIn.length).forEach { i -> assertEquals(0.9, bIn[i]) }
-      }
+        val bIn = params.inputGate.biases.values
+        val bOut = params.outputGate.biases.values
+        val bFor = params.forgetGate.biases.values
+        val bC = params.candidate.biases.values
 
-      it("should contain the expected initialized biases of the forget gate") {
-        (0 until bFor.length).forEach { i -> assertEquals(0.9, bFor[i]) }
-      }
+        val wInr = params.inputGate.recurrentWeights.values
+        val wOutr = params.outputGate.recurrentWeights.values
+        val wForr = params.forgetGate.recurrentWeights.values
+        val wCr = params.candidate.recurrentWeights.values
 
-      it("should contain the expected initialized biases of the output gate") {
-        (0 until bOut.length).forEach { i -> assertEquals(0.9, bOut[i]) }
-      }
+        it("should contain sparse weights of the input gate") {
+            assertTrue { wIn is SparseNDArray }
+        }
 
-      it("should contain the expected initialized biases of the candidate") {
-        (0 until bC.length).forEach { i -> assertEquals(0.9, bC[i]) }
-      }
+        it("should contain sparse weights of the output gate") {
+            assertTrue { wOut is SparseNDArray }
+        }
 
-      it("should contain the expected initialized recurrent weights of the input gate") {
-        (0 until wInr.length).forEach { i -> assertEquals(initValues[i + 24], wInr[i]) }
-      }
+        it("should contain sparse weights of the forget gate") {
+            assertTrue { wFor is SparseNDArray }
+        }
 
-      it("should contain the expected initialized recurrent weights of the output gate") {
-        (0 until wOutr.length).forEach { i -> assertEquals(initValues[i + 28], wOutr[i]) }
-      }
+        it("should contain sparse weights of the candidate") {
+            assertTrue { wC is SparseNDArray }
+        }
 
-      it("should contain the expected initialized recurrent weights of the forget gate") {
-        (0 until wForr.length).forEach { i -> assertEquals(initValues[i + 32], wForr[i]) }
-      }
+        it("should contain dense biases of the input gate") {
+            assertTrue { bIn is DenseNDArray }
+        }
 
-      it("should contain the expected initialized recurrent weights of the candidate") {
-        (0 until wCr.length).forEach { i -> assertEquals(initValues[i + 36], wCr[i]) }
+        it("should contain dense biases of the output gate") {
+            assertTrue { bOut is DenseNDArray }
+        }
+
+        it("should contain dense biases of the forget gate") {
+            assertTrue { bFor is DenseNDArray }
+        }
+
+        it("should contain dense biases of the candidate") {
+            assertTrue { bC is DenseNDArray }
+        }
+
+        it("should contain dense recurrent weights of the input gate") {
+            assertTrue { wInr is DenseNDArray }
+        }
+
+        it("should contain dense recurrent weights of the output gate") {
+            assertTrue { wOutr is DenseNDArray }
+        }
+
+        it("should contain dense recurrent weights of the forget gate") {
+            assertTrue { wForr is DenseNDArray }
+        }
+
+        it("should contain dense recurrent weights of the candidate") {
+            assertTrue { wCr is DenseNDArray }
+        }
+
+        it("should throw an Exception when trying to initialize") {
+            assertFails { params.initialize() }
+        }
       }
     }
 
