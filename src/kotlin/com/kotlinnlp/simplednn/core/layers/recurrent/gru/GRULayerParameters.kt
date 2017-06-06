@@ -72,6 +72,7 @@ class GRULayerParameters(
    *
    */
   override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double) {
+    require(!this.sparseInput) { "Cannot randomize sparse weights" }
 
     this.candidate.weights.values.randomize(randomGenerator)
     this.resetGate.weights.values.randomize(randomGenerator)

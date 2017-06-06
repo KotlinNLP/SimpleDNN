@@ -83,6 +83,7 @@ class LSTMLayerParameters(
    *
    */
   override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double) {
+    require(!this.sparseInput) { "Cannot randomize sparse weights" }
 
     this.inputGate.weights.values.randomize(randomGenerator)
     this.outputGate.weights.values.randomize(randomGenerator)

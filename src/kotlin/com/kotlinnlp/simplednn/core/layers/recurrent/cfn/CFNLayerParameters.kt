@@ -71,6 +71,7 @@ class CFNLayerParameters(
    *
    */
   override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double) {
+    require(!this.sparseInput) { "Cannot randomize sparse weights" }
 
     this.inputGate.weights.values.randomize(randomGenerator)
     this.forgetGate.weights.values.randomize(randomGenerator)

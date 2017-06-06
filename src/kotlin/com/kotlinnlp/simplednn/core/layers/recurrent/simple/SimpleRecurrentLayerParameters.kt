@@ -61,6 +61,8 @@ class SimpleRecurrentLayerParameters(
    * @return
    */
   override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double) {
+    require(!this.sparseInput) { "Cannot randomize sparse weights" }
+
     this.weights.values.randomize(randomGenerator)
     this.biases.values.assignValues(biasesInitValue)
     this.recurrentWeights.values.randomize(randomGenerator)
