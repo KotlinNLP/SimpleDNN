@@ -30,7 +30,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     NeuralProcessor(neuralNetwork) {
 
   /**
-   * sequence
+   * Sequence of states.
    */
   private val sequence = NNSequence<InputNDArrayType>(neuralNetwork)
 
@@ -97,39 +97,6 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     } else {
       this.sequence.lastStructure!!.outputLayer.outputArray.values
     }
-  }
-
-  /**
-   *
-   */
-  private fun addNewState() {
-
-    val structure = RecurrentNetworkStructure(
-      layersConfiguration = this.neuralNetwork.layersConfiguration,
-      params = this.neuralNetwork.model,
-      structureContextWindow = this)
-
-    this.sequence.add(structure)
-
-    this.curStateIndex = this.sequence.lastIndex
-  }
-
-  /**
-   * Forward the current state.
-   *
-   * @param featuresArray the features to forward from the input to the output
-   * @param useDropout whether to apply the dropout
-   */
-  private fun forwardCurrentState(featuresArray: InputNDArrayType, useDropout: Boolean = false) {
-    this.sequence.lastStructure!!.forward(features = featuresArray, useDropout = useDropout)
-  }
-
-  /**
-   * Reset the sequence.
-   */
-  private fun reset() {
-    this.sequence.reset()
-    this.paramsErrorsAccumulator.reset()
   }
 
   /**
@@ -238,4 +205,36 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.paramsErrorsAccumulator.averageErrors()
   }
 
+  /**
+   *
+   */
+  private fun addNewState() {
+
+    val structure = RecurrentNetworkStructure(
+      layersConfiguration = this.neuralNetwork.layersConfiguration,
+      params = this.neuralNetwork.model,
+      structureContextWindow = this)
+
+    this.sequence.add(structure)
+
+    this.curStateIndex = this.sequence.lastIndex
+  }
+
+  /**
+   * Forward the current state.
+   *
+   * @param featuresArray the features to forward from the input to the output
+   * @param useDropout whether to apply the dropout
+   */
+  private fun forwardCurrentState(featuresArray: InputNDArrayType, useDropout: Boolean = false) {
+    this.sequence.lastStructure!!.forward(features = featuresArray, useDropout = useDropout)
+  }
+
+  /**
+   * Reset the sequence.
+   */
+  private fun reset() {
+    this.sequence.reset()
+    this.paramsErrorsAccumulator.reset()
+  }
 }
