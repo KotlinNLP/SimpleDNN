@@ -118,7 +118,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward the current state.
    *
    * @param featuresArray the features to forward from the input to the output
-   * @param useDropout whether to use the dropout
+   * @param useDropout whether to apply the dropout
    */
   private fun forwardCurrentState(featuresArray: InputNDArrayType, useDropout: Boolean = false) {
     this.sequence.lastStructure!!.forward(features = featuresArray, useDropout = useDropout)
@@ -168,7 +168,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward a sequence.
    *
    * @param sequenceFeaturesArray the features to forward for each item of the sequence
-   * @param useDropout whether to use the dropout
+   * @param useDropout whether to apply the dropout
    *
    * @return the last output of the network after the whole sequence is been forwarded
    */
@@ -185,7 +185,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward features.
    *
    * @param featuresArray the features to forward from the input to the output
-   * @param useDropout whether to use the dropout
+   * @param useDropout whether to apply the dropout
    */
   fun forward(featuresArray: InputNDArrayType, firstState: Boolean, useDropout: Boolean = false): DenseNDArray {
 

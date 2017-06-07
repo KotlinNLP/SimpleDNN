@@ -81,7 +81,7 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward features.
    *
    * @param features the features to forward from the input to the output
-   * @param useDropout whether to use the dropout
+   * @param useDropout whether to apply the dropout
    */
   fun forward(features: InputNDArrayType, useDropout: Boolean = false): DenseNDArray {
 

@@ -47,7 +47,10 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun setErrors(errors: DenseNDArray) = this.outputArray.assignErrors(errors)
 
   /**
-   * Forward the input to the output combining it with the parameters and apply dropout
+   * Forward the input to the output combining it with the parameters.
+   * If [useDropout] is true apply the dropout to the input before.
+   *
+   * @param useDropout whether to apply the dropout
    */
   fun forward(useDropout: Boolean = false) {
 
