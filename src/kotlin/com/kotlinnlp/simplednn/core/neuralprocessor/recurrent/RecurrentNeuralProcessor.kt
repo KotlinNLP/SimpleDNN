@@ -89,7 +89,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * reset
+   *
    */
   override fun getOutput(copy: Boolean): DenseNDArray {
     return if (copy) {
@@ -115,14 +115,17 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * Forward the current state.
    *
+   * @param featuresArray the features to forward from the input to the output
+   * @param useDropout whether to use the dropout
    */
   private fun forwardCurrentState(featuresArray: InputNDArrayType, useDropout: Boolean = false) {
     this.sequence.lastStructure!!.forward(features = featuresArray, useDropout = useDropout)
   }
 
   /**
-   * reset
+   * Reset the sequence.
    */
   private fun reset() {
     this.sequence.reset()
@@ -131,7 +134,6 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
   /**
    *
-   * @return
    */
   fun getInputSequenceErrors(copy: Boolean = true) = Array(
     size = this.sequence.length,
@@ -152,7 +154,6 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
   /**
    *
-   * @return
    */
   fun getOutputSequence(copy: Boolean = true): Array<DenseNDArray> =
     Array(size = this.sequence.length, init = {
@@ -164,22 +165,27 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     })
 
   /**
+   * Forward a sequence.
    *
-   * @param sequenceFeaturesArray features for each item of the sequence
+   * @param sequenceFeaturesArray the features to forward for each item of the sequence
+   * @param useDropout whether to use the dropout
+   *
    * @return the last output of the network after the whole sequence is been forwarded
    */
-  fun forward(sequenceFeaturesArray: ArrayList<InputNDArrayType>): DenseNDArray {
+  fun forward(sequenceFeaturesArray: ArrayList<InputNDArrayType>, useDropout: Boolean = false): DenseNDArray {
 
     sequenceFeaturesArray.forEachIndexed { i, features ->
-      this.forward(features, firstState = (i == 0))
+      this.forward(featuresArray = features, firstState = (i == 0), useDropout = useDropout)
     }
 
     return this.getOutput()
   }
 
   /**
+   * Forward features.
    *
-   * @param featuresArray features
+   * @param featuresArray the features to forward from the input to the output
+   * @param useDropout whether to use the dropout
    */
   fun forward(featuresArray: InputNDArrayType, firstState: Boolean, useDropout: Boolean = false): DenseNDArray {
 

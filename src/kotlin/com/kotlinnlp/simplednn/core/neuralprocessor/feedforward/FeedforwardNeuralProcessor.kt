@@ -25,16 +25,16 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) : NeuralProcessor(neuralNetwork) {
 
   /**
-   * The errors of the network model parameters
-   */
-  private val backwardParamsErrors: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
-
-  /**
    *
    */
   var structure = FeedforwardNetworkStructure<InputNDArrayType>(
     layersConfiguration = this.neuralNetwork.layersConfiguration,
     params = this.neuralNetwork.model)
+
+  /**
+   * The errors of the network model parameters
+   */
+  private val backwardParamsErrors: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
 
   /**
    *
@@ -80,12 +80,14 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * Forward features.
    *
-   * @param featuresArray features
+   * @param featuresArray the features to forward from the input to the output
+   * @param useDropout whether to use the dropout
    */
   fun forward(featuresArray: InputNDArrayType, useDropout: Boolean = false): DenseNDArray {
 
-    this.structure.forward(featuresArray, useDropout = useDropout)
+    this.structure.forward(features = featuresArray, useDropout = useDropout)
 
     return this.structure.outputLayer.outputArray.values
   }
