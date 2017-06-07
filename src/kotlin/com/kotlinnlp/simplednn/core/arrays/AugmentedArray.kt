@@ -51,10 +51,20 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   lateinit protected var _errors: DenseNDArray
 
   /**
+   * Contains the relevance of the current values
+   */
+  val relevance: DistributionArray get() = this._relevance
+
+  /**
+   * Contains the relevance of the current values
+   */
+  lateinit protected var _relevance: DistributionArray
+
+  /**
    * Assign errors to the array.
    *
-   * @param errors errors to assign to this [AugmentedArray].
-   *               The errors must have the same size of the array values.
+   * @param errors the [DenseNDArray] to assign as errors to this [AugmentedArray]. It must have the same size
+   *               of the values of this [AugmentedArray].
    */
   fun assignErrors(errors: DenseNDArray) {
 
@@ -65,6 +75,24 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
       require(errors.length == this.size)
 
       this._errors = errors.copy()
+    }
+  }
+
+  /**
+   * Assign the relevance to the array.
+   *
+   * @param relevance the [DistributionArray] to assign to this [AugmentedArray]. It must have the same size
+   *                  of the values of this [AugmentedArray].
+   */
+  fun assignRelevance(relevance: DistributionArray) {
+
+    try {
+      this._relevance.assignValues(relevance.values)
+
+    } catch (e: UninitializedPropertyAccessException) {
+      require(relevance.length == this.size)
+
+      this._relevance = relevance.clone()
     }
   }
 
