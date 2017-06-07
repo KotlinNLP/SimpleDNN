@@ -111,10 +111,12 @@ class CFNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward the input to the output combining it with the parameters, calculating its relevance respect of the output.
    *
+   * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
    * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
    *                                     as reference to calculate the relevance of the input
    */
-  override fun forwardInput(relevantOutcomesDistribution: DistributionArray) {
+  override fun forwardInput(paramsContributes: LayerParameters,
+                            relevantOutcomesDistribution: DistributionArray) {
     TODO("not implemented")
   }
 

@@ -66,17 +66,22 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward the input to the output combining it with the parameters, calculating its relevance respect of the output.
    * If [useDropout] is true apply the dropout to the input before.
    *
+   * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
    * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
    *                                     as reference to calculate the relevance of the input
    * @param useDropout whether to apply the dropout
    */
-  fun forward(relevantOutcomesDistribution: DistributionArray, useDropout: Boolean = false) {
+  fun forward(paramsContributes: LayerParameters,
+              relevantOutcomesDistribution: DistributionArray,
+              useDropout: Boolean = false) {
 
     if (useDropout) {
       this.applyDropout()
     }
 
-    this.forwardInput(relevantOutcomesDistribution)
+    this.forwardInput(
+      paramsContributes = paramsContributes,
+      relevantOutcomesDistribution = relevantOutcomesDistribution)
   }
 
   /**
@@ -87,10 +92,12 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward the input to the output combining it with the parameters, calculating its relevance respect of the output.
    *
+   * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
    * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
    *                                     as reference to calculate the relevance of the input
    */
-  abstract protected fun forwardInput(relevantOutcomesDistribution: DistributionArray)
+  abstract protected fun forwardInput(paramsContributes: LayerParameters,
+                                      relevantOutcomesDistribution: DistributionArray)
 
   /**
    *
