@@ -132,6 +132,10 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
       clonedArray.assignErrors(this._errors)
     } catch (e: UninitializedPropertyAccessException) {}
 
+    try {
+      clonedArray.assignRelevance(this._relevance)
+    } catch (e: UninitializedPropertyAccessException) {}
+
     return clonedArray
   }
 }
