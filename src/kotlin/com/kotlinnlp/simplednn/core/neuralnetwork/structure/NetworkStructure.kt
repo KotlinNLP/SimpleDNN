@@ -99,7 +99,7 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward features, calculating their relevance respect of the output.
+   * Forward features, calculating the relevance of each layer.
    *
    * @param features the features to forward from the input to the output
    * @param paramsContributes the [NetworkParameters] in which to save the contributes of the parameters
@@ -118,10 +118,16 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     for ((i, layer) in this.layers.withIndex()) {
       this.curLayerIndex = i
-      layer.forward(
+      layer.forward(paramsContributes = paramsContributes.paramsPerLayer[i], useDropout = useDropout)
+    }
+
+    this.layers.last().outputArray.assignRelevance(relevantOutcomesDistribution)
+
+    for ((i, layer) in this.layers.withIndex().reversed()) {
+      this.curLayerIndex = i
+      layer.calculateRelevance(
         paramsContributes = paramsContributes.paramsPerLayer[i],
-        relevantOutcomesDistribution = relevantOutcomesDistribution,
-        useDropout = useDropout)
+        relevantOutcomesDistribution = layer.outputArray.relevance)
     }
 
     return this.outputLayer.outputArray.values
