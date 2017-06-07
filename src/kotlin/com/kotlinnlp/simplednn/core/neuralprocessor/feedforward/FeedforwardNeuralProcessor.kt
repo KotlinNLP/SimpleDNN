@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.neuralprocessor.feedforward
 
+import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardNetworkStructure
@@ -25,11 +26,16 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) : NeuralProcessor(neuralNetwork) {
 
   /**
-   *
+   * The structure as support of forward and backward.
    */
   var structure = FeedforwardNetworkStructure<InputNDArrayType>(
     layersConfiguration = this.neuralNetwork.layersConfiguration,
     params = this.neuralNetwork.model)
+
+  /**
+   * The contributes of the model parameters to forward the input to the output
+   */
+  private val forwardParamsContributes: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
 
   /**
    * The errors of the network model parameters
@@ -88,6 +94,29 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun forward(featuresArray: InputNDArrayType, useDropout: Boolean = false): DenseNDArray {
 
     this.structure.forward(features = featuresArray, useDropout = useDropout)
+
+    return this.structure.outputLayer.outputArray.values
+  }
+
+  /**
+   * Forward features, calculating their relevance respect of the output.
+   *
+   * @param featuresArray the features to forward from the input to the output
+   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
+   *                                     as reference to calculate the relevance of the input
+   * @param useDropout whether to apply the dropout
+   *
+   * @return the output [NDArray]
+   */
+  fun forward(featuresArray: InputNDArrayType,
+              relevantOutcomesDistribution: DistributionArray,
+              useDropout: Boolean = false): DenseNDArray {
+
+    this.structure.forward(
+      features = featuresArray,
+      paramsContributes = this.forwardParamsContributes,
+      relevantOutcomesDistribution = relevantOutcomesDistribution,
+      useDropout = useDropout)
 
     return this.structure.outputLayer.outputArray.values
   }
