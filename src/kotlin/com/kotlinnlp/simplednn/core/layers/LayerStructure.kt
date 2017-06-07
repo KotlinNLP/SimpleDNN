@@ -67,21 +67,15 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * If [useDropout] is true apply the dropout to the input before.
    *
    * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
-   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
-   *                                     as reference to calculate the relevance of the input
    * @param useDropout whether to apply the dropout
    */
-  fun forward(paramsContributes: LayerParameters,
-              relevantOutcomesDistribution: DistributionArray,
-              useDropout: Boolean = false) {
+  fun forward(paramsContributes: LayerParameters, useDropout: Boolean = false) {
 
     if (useDropout) {
       this.applyDropout()
     }
 
-    this.forwardInput(
-      paramsContributes = paramsContributes,
-      relevantOutcomesDistribution = relevantOutcomesDistribution)
+    this.forwardInput(paramsContributes = paramsContributes)
   }
 
   /**
@@ -90,14 +84,20 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   abstract protected fun forwardInput()
 
   /**
-   * Forward the input to the output combining it with the parameters, calculating its relevance respect of the output.
+   * Forward the input to the output combining it with the parameters, saving the contributes of the parameters.
    *
    * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
+   */
+  abstract protected fun forwardInput(paramsContributes: LayerParameters)
+
+  /**
+   * Calculate the relevance of the input.
+   *
+   * @param paramsContributes the contributes of the parameters during the last forward
    * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
    *                                     as reference to calculate the relevance of the input
    */
-  abstract protected fun forwardInput(paramsContributes: LayerParameters,
-                                      relevantOutcomesDistribution: DistributionArray)
+  abstract fun calculateRelevance(paramsContributes: LayerParameters, relevantOutcomesDistribution: DistributionArray)
 
   /**
    *

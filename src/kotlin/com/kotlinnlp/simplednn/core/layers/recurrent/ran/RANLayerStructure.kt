@@ -105,17 +105,25 @@ class RANLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward the input to the output combining it with the parameters, calculating its relevance respect of the output.
+   * Forward the input to the output combining it with the parameters, saving the contributes of the parameters.
    *
    * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
-   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
-   *                                     as reference to calculate the relevance of the input
    */
-  override fun forwardInput(paramsContributes: LayerParameters,
-                            relevantOutcomesDistribution: DistributionArray) {
+  override fun forwardInput(paramsContributes: LayerParameters) {
     TODO("not implemented")
   }
 
+  /**
+   * Calculate the relevance of the input.
+   *
+   * @param paramsContributes the contributes of the parameters during the last forward
+   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
+   *                                     as reference to calculate the relevance of the input
+   */
+  override fun calculateRelevance(paramsContributes: LayerParameters,
+                                  relevantOutcomesDistribution: DistributionArray) {
+    TODO("not implemented")
+  }
 
   /**
    * Set gates values
