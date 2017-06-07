@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.layers.feedforward
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.LayerStructure
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -67,6 +68,16 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     y.assignDot(w, x).assignSum(b)
 
     this.outputArray.activate()
+  }
+
+  /**
+   * Forward the input to the output combining it with the parameters, calculating its relevance respect of the output.
+   *
+   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
+   *                                     as reference to calculate the relevance of the input
+   */
+  override fun forwardInput(relevantOutcomesDistribution: DistributionArray) {
+    TODO("not implemented")
   }
 
   /**

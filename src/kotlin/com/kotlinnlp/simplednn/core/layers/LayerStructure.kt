@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -62,9 +63,34 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * Forward the input to the output combining it with the parameters, calculating its relevance respect of the output.
+   * If [useDropout] is true apply the dropout to the input before.
+   *
+   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
+   *                                     as reference to calculate the relevance of the input
+   * @param useDropout whether to apply the dropout
+   */
+  fun forward(relevantOutcomesDistribution: DistributionArray, useDropout: Boolean = false) {
+
+    if (useDropout) {
+      this.applyDropout()
+    }
+
+    this.forwardInput(relevantOutcomesDistribution)
+  }
+
+  /**
    * Forward the input to the output combining it with the parameters
    */
   abstract protected fun forwardInput()
+
+  /**
+   * Forward the input to the output combining it with the parameters, calculating its relevance respect of the output.
+   *
+   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
+   *                                     as reference to calculate the relevance of the input
+   */
+  abstract protected fun forwardInput(relevantOutcomesDistribution: DistributionArray)
 
   /**
    *
@@ -74,7 +100,7 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  private fun applyDropout() {
+  protected fun applyDropout() {
 
     if (this.dropout > 0.0) {
       val inputShape = this.inputArray.values.shape

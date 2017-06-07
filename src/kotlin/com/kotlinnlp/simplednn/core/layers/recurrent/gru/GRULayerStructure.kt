@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers.recurrent.gru
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.layers.*
@@ -96,6 +97,17 @@ class GRULayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
       y.assignSum(p.reverseSub(1.0).prod(yPrev))
     }
   }
+
+  /**
+   * Forward the input to the output combining it with the parameters, calculating its relevance respect of the output.
+   *
+   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
+   *                                     as reference to calculate the relevance of the input
+   */
+  override fun forwardInput(relevantOutcomesDistribution: DistributionArray) {
+    TODO("not implemented")
+  }
+
 
   /**
    * Set gates values
