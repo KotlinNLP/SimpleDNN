@@ -18,8 +18,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 /**
  * The NetworkStructure.
  *
- * @param layersConfiguration layers layersConfiguration
- * @param params the network parameters per layer
+ * @property layersConfiguration layers layersConfiguration
+ * @property params the network parameters per layer
  */
 abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   val layersConfiguration: List<LayerConfiguration>,
@@ -78,9 +78,9 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward
+   * Forward features.
    *
-   * @param features features to forward
+   * @param features the features to forward from the input to the output
    * @param useDropout whether to use the dropout
    */
   fun forward(features: InputNDArrayType, useDropout: Boolean = false): DenseNDArray {

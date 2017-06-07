@@ -18,8 +18,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 /**
  * The FeedforwardNetworkStructure.
  *
- * @param layersConfiguration layers layersConfiguration
- * @param params the network parameters per layer
+ * @property layersConfiguration layers layersConfiguration
+ * @property params the network parameters per layer
  */
 class FeedforwardNetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   layersConfiguration: List<LayerConfiguration>,

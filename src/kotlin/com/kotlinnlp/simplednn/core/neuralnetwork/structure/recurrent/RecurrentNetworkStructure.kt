@@ -19,8 +19,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 /**
  * The RecurrentNetworkStructure.
  *
- * @param layersConfiguration layers layersConfiguration
- * @param params the network parameters per layer
+ * @property layersConfiguration layers layersConfiguration
+ * @property params the network parameters per layer
+ * @property structureContextWindow the context window to get the previous and the next state of the structure
  */
 class RecurrentNetworkStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
   layersConfiguration: List<LayerConfiguration>,
