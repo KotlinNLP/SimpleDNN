@@ -67,6 +67,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    *               of the values of this [AugmentedArray].
    */
   fun assignErrors(errors: DenseNDArray) {
+    require(errors.length == this.size) { "Errors must have the same size of the values" }
 
     try {
       this._errors.assignValues(errors)
@@ -85,6 +86,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    *                  of the values of this [AugmentedArray].
    */
   fun assignRelevance(relevance: DistributionArray) {
+    require(relevance.length == this.size) { "Relevance must have the same size of the values" }
 
     try {
       this._relevance.assignValues(relevance.values)
