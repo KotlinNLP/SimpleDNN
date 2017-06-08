@@ -139,18 +139,17 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  override val length: Int
-    get() = TODO("not implemented")
-
-  /**
-   *
-   */
   override val rows: Int = this.shape.dim1
 
   /**
    *
    */
   override val columns: Int = this.shape.dim2
+
+  /**
+   *
+   */
+  override val length: Int = this.rows * this.columns
 
   /**
    * Transpose
