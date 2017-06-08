@@ -56,8 +56,8 @@ class DistributionArray(val values: DenseNDArray) {
 
   init {
     require((0 until this.values.length).all{ i -> this.values[i] in 0.0 .. 1.0}) { "Required 0 <= value[i] <= 1.0" }
-    require(equals(this.values.sum(), 1.0, tolerance = 1.0e-08)) { "Values must be a probability distribution" }
-    require(this.values.columns == 1) { "Values must be a" }
+    require(equals(this.values.sum(), 1.0, tolerance = 1.0e-08)) { "Values sum must be equal to 1.0" }
+    require(this.values.columns == 1) { "Values must be a column vector" }
   }
 
   /**
