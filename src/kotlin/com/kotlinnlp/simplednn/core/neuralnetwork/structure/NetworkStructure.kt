@@ -125,9 +125,7 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     for ((i, layer) in this.layers.withIndex().reversed()) {
       this.curLayerIndex = i
-      layer.calculateRelevance(
-        paramsContributes = paramsContributes.paramsPerLayer[i],
-        relevantOutcomesDistribution = layer.outputArray.relevance)
+      layer.calculateRelevance(paramsContributes = paramsContributes.paramsPerLayer[i])
     }
 
     return this.outputLayer.outputArray.values
