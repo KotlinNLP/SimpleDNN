@@ -53,12 +53,12 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Contains the relevance of the current values
    */
-  val relevance: DistributionArray get() = this._relevance
+  val relevance: Norm1Array<*> get() = this._relevance
 
   /**
    * Contains the relevance of the current values
    */
-  lateinit protected var _relevance: DistributionArray
+  lateinit protected var _relevance: Norm1Array<*>
 
   /**
    * Assign errors to the array.
@@ -82,10 +82,10 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Assign the relevance to the array.
    *
-   * @param relevance the [DistributionArray] to assign to this [AugmentedArray]. It must have the same size
+   * @param relevance the [Norm1Array] to assign to this [AugmentedArray]. It must have the same size
    *                  of the values of this [AugmentedArray].
    */
-  fun assignRelevance(relevance: DistributionArray) {
+  fun assignRelevance(relevance: Norm1Array<*>) {
     require(relevance.length == this.size) { "Relevance must have the same size of the values" }
 
     try {
