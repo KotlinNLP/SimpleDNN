@@ -23,8 +23,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
  */
 class SparseBinaryNDArray(
   override val shape: Shape,
-  val activeIndicesByRow: VectorsMap = mutableMapOf<Int, VectorSet?>(),
-  val activeIndicesByColumn: VectorsMap = mutableMapOf<Int, VectorSet?>()
+  val activeIndicesByRow: VectorsMap = mutableMapOf<Int, VectorIndices?>(),
+  val activeIndicesByColumn: VectorsMap = mutableMapOf<Int, VectorIndices?>()
 ) : NDArray<SparseBinaryNDArray>,
     Iterable<Indices> {
 
@@ -45,12 +45,12 @@ class SparseBinaryNDArray(
     /**
      * The iterator of the map entries by row index (rowIndex, rowActiveIndices)
      */
-    val rowsIterator = this@SparseBinaryNDArray.activeIndicesByRow.iterator()
+    val rowsIterator = this@SparseBinaryNDArray.activeIndicesByRow.toSortedMap().iterator()
 
     /**
      * The iterator of the map entries by column index (columnIndex, columnActiveIndices)
      */
-    val columnsIterator = this@SparseBinaryNDArray.activeIndicesByColumn.iterator()
+    val columnsIterator = this@SparseBinaryNDArray.activeIndicesByColumn.toSortedMap().iterator()
 
     /**
      * The map entry (rowIndex, rowActiveIndices) of the current row
@@ -188,8 +188,8 @@ class SparseBinaryNDArray(
     require(value is Int && (value == 0 || value == 1) && i < this.rows && j < this.columns)
 
     if (value == 1) {
-      this.addElement(activeIndicesByRow, key = i, element = j)
-      this.addElement(activeIndicesByColumn, key = j, element = i)
+      this.addElement(this.activeIndicesByRow, key = i, element = j)
+      this.addElement(this.activeIndicesByColumn, key = j, element = i)
 
     } else {
       TODO("not implemented")
@@ -209,9 +209,12 @@ class SparseBinaryNDArray(
     if (indicesMap.containsKey(key)) {
       // Key already existing
       if (indicesMap[key] != null) {
-        indicesMap[key]!!.add(element)
+        if (!indicesMap[key]!!.contains(element)) {
+          indicesMap[key]!!.add(element)
+          indicesMap[key]!!.sort()
+        }
       } else {
-        indicesMap[key] = mutableSetOf(0, element)
+        indicesMap[key] = arrayListOf(0, element)
       }
 
     } else {
@@ -219,7 +222,7 @@ class SparseBinaryNDArray(
       if (element == 0) {
         indicesMap[key] = null
       } else {
-        indicesMap[key] = mutableSetOf(element)
+        indicesMap[key] = arrayListOf(element)
       }
     }
   }
@@ -281,10 +284,10 @@ class SparseBinaryNDArray(
    */
   private fun copyIndices(indicesMap: VectorsMap): VectorsMap {
 
-    val newMap = mutableMapOf<Int, VectorSet?>()
+    val newMap = mutableMapOf<Int, VectorIndices?>()
 
-    for ((key, indicesSet) in indicesMap.iterator()) {
-      newMap[key] = indicesSet?.toMutableSet()
+    for ((key, indicesList) in indicesMap.iterator()) {
+      newMap[key] = if (indicesList != null) ArrayList(indicesList) else null
     }
 
     return newMap
