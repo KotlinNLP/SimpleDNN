@@ -80,6 +80,53 @@ class FeedforwardLayerStructureSpec : Spek({
       }
     }
 
+    context("forward with relevance") {
+
+      on("input size 4 (no activation) and output size 5 (tanh)") {
+
+        val layer = FeedforwardLayerStructureUtils.buildLayer45()
+        val contributes = FeedforwardLayerParameters(inputSize = 4, outputSize = 5)
+
+        layer.forward(paramsContributes = contributes)
+
+        it("should match the expected output values") {
+          assertEquals(true, layer.outputArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.19)),
+            tolerance = 0.005))
+        }
+      }
+
+      on("input size 5 (tanh) and output size 3 (softmax)") {
+
+        val layer = FeedforwardLayerStructureUtils.buildLayer53()
+        val contributes = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
+
+        layer.forward(paramsContributes = contributes)
+
+        it("should match the expected output values") {
+
+          assertEquals(true, layer.outputArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.19, 0.29, 0.53)),
+            tolerance = 0.005))
+        }
+      }
+
+      on("input size 5 and output size 3 (without activation functions)") {
+
+        val layer = FeedforwardLayerStructureUtils.buildLayer53NoActivation()
+        val contributes = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
+
+        layer.forward(paramsContributes = contributes)
+
+        it("should match the expected output values") {
+
+          assertEquals(true, layer.outputArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.82, -0.52, 0.19)),
+            tolerance = 0.006))
+        }
+      }
+    }
+
     context("backward") {
 
       val lossCalculator = MSECalculator()

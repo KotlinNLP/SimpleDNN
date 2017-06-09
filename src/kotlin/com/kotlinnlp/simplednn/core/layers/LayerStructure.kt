@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -34,6 +33,11 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The probability to keep an output value (no dropout on it)
    */
   private val p = 1.0 - this.dropout
+
+  /**
+   * The stabilizing term used to calculate the relevance
+   */
+  protected val relevanceEps: Double = 0.01
 
   /**
    * Set the errors of the inputArray
@@ -94,10 +98,8 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Calculate the relevance of the input.
    *
    * @param paramsContributes the contributes of the parameters during the last forward
-   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
-   *                                     as reference to calculate the relevance of the input
    */
-  abstract fun calculateRelevance(paramsContributes: LayerParameters, relevantOutcomesDistribution: DistributionArray)
+  abstract fun calculateRelevance(paramsContributes: LayerParameters)
 
   /**
    *

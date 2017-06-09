@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers.recurrent.simple
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.layers.recurrent.*
@@ -95,11 +94,8 @@ class SimpleRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>
    * Calculate the relevance of the input.
    *
    * @param paramsContributes the contributes of the parameters during the last forward
-   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
-   *                                     as reference to calculate the relevance of the input
    */
-  override fun calculateRelevance(paramsContributes: LayerParameters,
-                                  relevantOutcomesDistribution: DistributionArray) {
+  override fun calculateRelevance(paramsContributes: LayerParameters) {
     TODO("not implemented")
   }
 
