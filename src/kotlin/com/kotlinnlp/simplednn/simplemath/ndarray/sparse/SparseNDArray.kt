@@ -288,6 +288,20 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
+  fun assignValues(values: Array<Double>, rowIndices: Array<Int>, colIndices: Array<Int>): SparseNDArray {
+    require(rowIndices.all{ i -> rowIndices[i] in 0 until this.rows}) { "Row index exceeded dim 1" }
+    require(colIndices.all{ i -> colIndices[i] in 0 until this.columns}) { "Column index exceeded dim 2" }
+
+    this.values = values.copyOf()
+    this.rowIndices = rowIndices.copyOf()
+    this.colIndices = colIndices.copyOf()
+
+    return this
+  }
+
+  /**
+   *
+   */
   override fun assignValues(a: NDArray<*>): SparseNDArray {
 
     return when(a) {
@@ -309,7 +323,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    *
    */
   override fun sum(): Double {
-    TODO("not implemented")
+    return (0 until this.values.size).sumByDouble { i -> this.values[i] }
   }
 
   /**
