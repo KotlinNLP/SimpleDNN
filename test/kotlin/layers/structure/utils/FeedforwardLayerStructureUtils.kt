@@ -69,7 +69,6 @@ object FeedforwardLayerStructureUtils {
   fun buildLayer53(): FeedforwardLayerStructure<DenseNDArray> {
 
     val inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.2)))
-    inputArray.setActivation(Tanh())
 
     return FeedforwardLayerStructure(
       inputArray = inputArray,
@@ -94,15 +93,6 @@ object FeedforwardLayerStructureUtils {
       params = this.getParams53(),
       activationFunction = Softmax())
   }
-
-  /**
-   *
-   */
-  fun buildLayer53NoActivation() = FeedforwardLayerStructure(
-    inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.2))),
-    outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(3))),
-    params = this.getParams53(),
-    activationFunction = null)
 
   /**
    *
