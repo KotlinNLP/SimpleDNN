@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.arrays.Norm1Array
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -41,15 +42,24 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
 
   /**
    * Set the errors of the inputArray
+   *
    * @param values the errors to set into the inputArray
    */
   fun setInput(values: InputNDArrayType) = this.inputArray.assignValues(values)
 
   /**
    * Set the errors of the outputArray
+   *
    * @param errors the errors to set into the outputArray
    */
   fun setErrors(errors: DenseNDArray) = this.outputArray.assignErrors(errors)
+
+  /**
+   * Set the relevance of the outputArray
+   *
+   * @param relevance the relevance to set into the outputArray
+   */
+  fun setOutputRelevance(relevance: Norm1Array<*>) = this.outputArray.assignRelevance(relevance)
 
   /**
    * Forward the input to the output combining it with the parameters.
