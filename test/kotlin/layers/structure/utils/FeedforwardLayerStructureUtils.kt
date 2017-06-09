@@ -15,6 +15,8 @@ import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArrayFactory
 
 /**
  *
@@ -59,14 +61,31 @@ object FeedforwardLayerStructureUtils {
   /**
    *
    */
-  fun getOutputGold5(): DenseNDArray =  DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.02, -1.1, 0.37, 0.2, -0.59))
+  fun getOutputGold5(): DenseNDArray =  DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.5, -0.4, -0.9, 0.9))
 
   /**
    *
    */
   fun buildLayer53(): FeedforwardLayerStructure<DenseNDArray> {
 
-    val inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.19)))
+    val inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.2)))
+    inputArray.setActivation(Tanh())
+
+    return FeedforwardLayerStructure(
+      inputArray = inputArray,
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(3))),
+      params = this.getParams53(),
+      activationFunction = Softmax())
+  }
+
+  /**
+   *
+   */
+  fun buildLayer53SparseBinary(): FeedforwardLayerStructure<SparseBinaryNDArray> {
+
+    val inputArray = AugmentedArray(SparseBinaryNDArrayFactory.arrayOf(
+      activeIndices = intArrayOf(2, 4),
+      shape = Shape(5)))
     inputArray.setActivation(Tanh())
 
     return FeedforwardLayerStructure(
@@ -80,7 +99,7 @@ object FeedforwardLayerStructureUtils {
    *
    */
   fun buildLayer53NoActivation() = FeedforwardLayerStructure(
-    inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.42, -1.09, 0.0, 0.87, -0.19))),
+    inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.2))),
     outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(3))),
     params = this.getParams53(),
     activationFunction = null)
