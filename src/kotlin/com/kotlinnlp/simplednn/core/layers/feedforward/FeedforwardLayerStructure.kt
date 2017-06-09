@@ -109,12 +109,14 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
                                 b: DenseNDArray,
                                 wContr: DenseNDArray) {
 
+    val xLength: Int = x.length
+
     for (j in 0 until w.rows) {
 
       y[j] = 0.0
 
       for (i in 0 until w.columns) {
-        val contribute: Double = w[j, i] * x[i] + b[j] / x.length
+        val contribute: Double = w[j, i] * x[i] + b[j] / xLength
 
         wContr[j, i] = contribute
         y[j] += contribute
