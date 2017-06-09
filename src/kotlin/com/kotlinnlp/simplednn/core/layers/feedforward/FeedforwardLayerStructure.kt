@@ -201,12 +201,14 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
                                              wContr: DenseNDArray) {
 
     val relevanceArray: DenseNDArray = DenseNDArrayFactory.zeros(shape = Shape(this.inputArray.size))
+    val xLength: Int = x.length
+    val yLength: Int = y.length
 
-    for (i in 0 until x.length) {
+    for (i in 0 until xLength) {
 
-      for (j in 0 until y.length) {
+      for (j in 0 until yLength) {
         val eps: Double = if (y[j] >= 0) this.relevanceEps else -this.relevanceEps
-        val epsN: Double = eps / x.length
+        val epsN: Double = eps / xLength
 
         relevanceArray[i] += yRelevance[j] * (wContr[j, i]  + epsN) / (y[j] + eps)
       }
