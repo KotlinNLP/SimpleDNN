@@ -138,6 +138,8 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     val yLength: Int = y.length
     val wContrActiveIndicesSize: Int = xActiveIndicesSize * yLength
 
+    y.zeros()
+
     val values = Array(
       size = wContrActiveIndicesSize,
       init = { k ->
@@ -230,17 +232,18 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     val relevanceValues: Array<Double> = Array(size = xActiveIndicesSize, init = { 0.0 })
     val relevanceColumns: Array<Int> = Array(size = xActiveIndicesSize, init = { 0 })
     val relevanceRows: Array<Int> = xActiveIndices.toTypedArray()
+    val yLength: Int = y.length
     var k: Int = 0
 
     for (l in 0 until xActiveIndicesSize) {
       // the indices of the non-zero elements of x are the same of the non-zero columns of wContr
-      for (j in 0 until y.length) {
+      for (j in 0 until yLength) {
         // loop over the i-th column of wContr (which is non-zero)
         val eps: Double = if (y[j] >= 0) this.relevanceEps else -this.relevanceEps
         val epsN: Double = eps / xActiveIndicesSize
-        val wContrIJ: Double = wContr.values[k++]  // linear indexing
+        val wContrJI: Double = wContr.values[k++]  // linear indexing
 
-        relevanceValues[l] += yRelevance[j] * (wContrIJ + epsN) / (y[j] + eps)
+        relevanceValues[l] += yRelevance[j] * (wContrJI + epsN) / (y[j] + eps)
       }
     }
 
