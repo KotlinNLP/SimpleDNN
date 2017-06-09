@@ -134,8 +134,10 @@ class AugmentedArraySpec : Spek({
 
         augmentedArray.assignRelevance(relevance)
 
+        val arrayRelevance: DenseNDArray = augmentedArray.relevance.values as DenseNDArray
+
         it("should have the expected assigned relevance") {
-          assertEquals(true, augmentedArray.relevance.values.equals(relevance.values, tolerance = 1.0e-08))
+          assertEquals(true, arrayRelevance.equals(relevance.values, tolerance = 1.0e-08))
         }
       }
 
@@ -144,8 +146,10 @@ class AugmentedArraySpec : Spek({
         val augmentedArray = AugmentedArray<DenseNDArray>(size = 9)
         augmentedArray.assignRelevance(relevance)
 
+        val arrayRelevance: DenseNDArray = augmentedArray.relevance.values as DenseNDArray
+
         it("should have the expected assigned errors") {
-          assertEquals(true, augmentedArray.relevance.values.equals(relevance.values, tolerance = 1.0e-08))
+          assertEquals(true, arrayRelevance.equals(relevance.values, tolerance = 1.0e-08))
         }
       }
     }
@@ -184,6 +188,8 @@ class AugmentedArraySpec : Spek({
         augmentedArray.assignErrors(errors)
         augmentedArray.assignRelevance(relevance)
 
+        val arrayRelevance: DenseNDArray = augmentedArray.relevance.values as DenseNDArray
+
         val cloneArray = augmentedArray.clone()
 
         it("should have the expected not activated values") {
@@ -199,7 +205,8 @@ class AugmentedArraySpec : Spek({
         }
 
         it("should have the expected relevance") {
-          assertEquals(true, augmentedArray.relevance.values.equals(cloneArray.relevance.values, tolerance = 1.0e-08))
+          val cloneRelevance = cloneArray.relevance.values as DenseNDArray
+          assertEquals(true, arrayRelevance.equals(cloneRelevance, tolerance = 1.0e-08))
         }
       }
     }
