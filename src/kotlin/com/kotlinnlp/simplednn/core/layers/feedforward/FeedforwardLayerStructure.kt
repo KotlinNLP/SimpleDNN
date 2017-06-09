@@ -154,8 +154,8 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     wContr.assignValues(
       values = values,
-      rowIndices = Array(size = wContrActiveIndicesSize, init = { k -> k / xActiveIndicesSize}),
-      colIndices = Array(size = wContrActiveIndicesSize, init = { k -> k % xActiveIndicesSize}))
+      rowIndices = Array(size = wContrActiveIndicesSize, init = { k -> k % yLength}),
+      colIndices = Array(size = wContrActiveIndicesSize, init = { k -> xActiveIndices[k / yLength]}))
   }
 
   /**
