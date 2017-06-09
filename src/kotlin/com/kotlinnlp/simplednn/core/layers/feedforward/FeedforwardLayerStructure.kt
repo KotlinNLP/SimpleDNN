@@ -131,8 +131,6 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
                                  b: DenseNDArray,
                                  wContr: SparseNDArray) {
 
-    y.zeros()
-
     val xActiveIndices: ArrayList<Int> = x.activeIndicesByColumn.values.first()!!
     val xActiveIndicesSize: Int = xActiveIndices.size
     val yLength: Int = y.length
@@ -144,7 +142,8 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
         val j: Int = k % yLength // linear indexing
         val i: Int = xActiveIndices[k / yLength] // linear indexing
 
-        val contribute: Double = w[j, i] + b[j] / x.length
+        val biasN: Double = b[j] / xActiveIndicesSize // biases are distributed uniformly on the active values
+        val contribute: Double = w[j, i] + biasN
 
         y[j] += contribute
 
