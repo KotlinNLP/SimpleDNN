@@ -7,10 +7,16 @@
 
 package layers.structure
 
+import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
+import com.kotlinnlp.simplednn.simplemath.ndarray.Indices
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.SparseEntry
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -19,6 +25,7 @@ import org.jetbrains.spek.api.dsl.on
 import layers.structure.utils.FeedforwardLayerStructureUtils
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 /**
  *
@@ -82,47 +89,84 @@ class FeedforwardLayerStructureSpec : Spek({
 
     context("forward with relevance") {
 
-      on("input size 4 (no activation) and output size 5 (tanh)") {
-
-        val layer = FeedforwardLayerStructureUtils.buildLayer45()
-        val contributes = FeedforwardLayerParameters(inputSize = 4, outputSize = 5)
-
-        layer.forward(paramsContributes = contributes)
-
-        it("should match the expected output values") {
-          assertEquals(true, layer.outputArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.19)),
-            tolerance = 0.005))
-        }
-      }
-
-      on("input size 5 (tanh) and output size 3 (softmax)") {
+      on("dense input") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer53()
         val contributes = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
 
         layer.forward(paramsContributes = contributes)
+        layer.setOutputRelevance(DistributionArray.uniform(length = 3))
+        layer.calculateRelevance(paramsContributes = contributes)
 
         it("should match the expected output values") {
+          assertTrue {
+            layer.outputArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.18687, 0.28442, 0.52871)),
+              tolerance = 1.0e-05)
+          }
+        }
 
-          assertEquals(true, layer.outputArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.19, 0.29, 0.53)),
-            tolerance = 0.005))
+        it("should match the expected contributes") {
+          val wContr: DenseNDArray = contributes.weights.values as DenseNDArray
+          assertTrue {
+            wContr.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(-0.42, 0.54, -0.1, -0.8, -0.08),
+                doubleArrayOf(-0.34, -0.46, 0.02, 0.44, -0.1),
+                doubleArrayOf(0.08, 0.04, 0.04, 0.04, -0.02)
+              )),
+              tolerance = 1.0e-05)
+          }
+        }
+
+        it("should set a Dense input relevance") {
+          assertTrue { layer.inputArray.relevance.values is DenseNDArray }
+        }
+
+        it("should match the expected input relevance") {
+          val relevance: DenseNDArray = layer.inputArray.relevance.values as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.55888, 0.20978, 0.09943, 0.05652, 0.07539)),
+              tolerance = 1.0e-05)
+          }
         }
       }
 
-      on("input size 5 and output size 3 (without activation functions)") {
+      on("sparse input") {
 
-        val layer = FeedforwardLayerStructureUtils.buildLayer53NoActivation()
-        val contributes = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
+        val layer = FeedforwardLayerStructureUtils.buildLayer53SparseBinary()
+        val contributes = FeedforwardLayerParameters(inputSize = 5, outputSize = 3, sparseInput = true)
 
         layer.forward(paramsContributes = contributes)
+        layer.setOutputRelevance(DistributionArray.uniform(length = 3))
+        layer.calculateRelevance(paramsContributes = contributes)
 
         it("should match the expected output values") {
+          assertTrue {
+            layer.outputArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1769, 0.53144, 0.29166)),
+              tolerance = 1.0e-05)
+          }
+        }
 
-          assertEquals(true, layer.outputArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.82, -0.52, 0.19)),
-            tolerance = 0.006))
+        it("should set a Sparse input relevance") {
+          assertTrue { layer.inputArray.relevance.values is SparseNDArray }
+        }
+
+        it("should match the expected input relevance") {
+          val relevance: SparseNDArray = layer.inputArray.relevance.values as SparseNDArray
+          assertTrue {
+            relevance.equals(
+              SparseNDArrayFactory.arrayOf(
+                activeIndicesValues = arrayOf(
+                  SparseEntry(Indices(2, 0), 1.04945),
+                  SparseEntry(Indices(4, 0), -0.04945)
+                ),
+                shape = Shape(5)
+              ),
+              tolerance = 1.0e-05)
+          }
         }
       }
     }
