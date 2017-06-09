@@ -819,7 +819,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
     this.sortValues()
     a.sortValues()
 
-    return equals(this.values, a.values) &&
+    return equals(this.values, a.values, tolerance = tolerance) &&
       Arrays.equals(this.rowIndices, a.rowIndices) &&
       Arrays.equals(this.colIndices, a.colIndices)
   }
