@@ -17,7 +17,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *
  * @property values the values as [DenseNDArray]
  */
-class DistributionArray(val values: DenseNDArray) {
+class DistributionArray(values: DenseNDArray) : Norm1Array<DenseNDArray>(values) {
 
   companion object {
 
@@ -61,17 +61,13 @@ class DistributionArray(val values: DenseNDArray) {
   }
 
   /**
-   * The length of this array.
-   */
-  val length: Int = this.values.length
-
-  /**
    * Assign values to the array.
    *
    * @param values values to assign to this [DistributionArray]
    */
-  fun assignValues(values: DenseNDArray) {
-    require(equals(values.sum(), 1.0, tolerance = 1.0e-08)) { "Values must be a probability distribution" }
+  override fun assignValues(values: NDArray<*>) {
+    require((0 until this.values.length).all{ i -> this.values[i] in 0.0 .. 1.0}) { "Required 0 <= value[i] <= 1.0" }
+    require(equals(values.sum(), 1.0, tolerance = 1.0e-08)) { "Values sum must be equal to 1.0" }
 
     this.values.assignValues(values)
   }
@@ -81,5 +77,5 @@ class DistributionArray(val values: DenseNDArray) {
    *
    * @return a clone of this [DistributionArray]
    */
-  fun clone(): DistributionArray = DistributionArray(values = this.values.copy())
+  override fun clone(): DistributionArray = DistributionArray(values = this.values.copy())
 }
