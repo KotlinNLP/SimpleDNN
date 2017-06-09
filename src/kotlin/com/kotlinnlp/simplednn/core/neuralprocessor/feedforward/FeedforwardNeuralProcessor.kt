@@ -86,6 +86,23 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * Get the relevance of the input.
+   * (If the input is Dense it is Dense, if the input is Sparse or SparseBinary it is Sparse).
+   *
+   * @param copy whether to return a copy of the relevance or not
+   *
+   * @return the relevance of the input as [NDArray]
+   */
+  fun getInputRelevance(copy: Boolean = true): NDArray<*> {
+
+    return if (copy) {
+      this.structure.inputLayer.inputArray.relevance.values.copy()
+    } else {
+      this.structure.inputLayer.inputArray.relevance.values
+    }
+  }
+
+  /**
    * Forward features.
    *
    * @param featuresArray the features to forward from the input to the output
