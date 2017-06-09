@@ -8,8 +8,8 @@
 package layers.structure
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
+import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.simplemath.ndarray.Indices
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.SparseEntry
@@ -48,19 +48,34 @@ class FeedforwardLayerStructureSpec : Spek({
 
     context("forward") {
 
-      on("input size 4 (no activation) and output size 5 (tanh)") {
+      on("input size 4 and output size 5 (tanh)") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer45()
         layer.forward()
 
         it("should match the expected output values") {
           assertEquals(true, layer.outputArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.19)),
-            tolerance = 0.005))
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.39693, -0.79688, 0.0, 0.70137, -0.18775)),
+            tolerance = 1.0e-05))
         }
       }
 
-      on("input size 5 (tanh) and output size 3 (softmax)") {
+      on("input size 5 (activated with tanh) and output size 3 (softmax)") {
+
+        val layer = FeedforwardLayerStructureUtils.buildLayer53()
+        layer.inputArray.setActivation(Tanh())
+        layer.inputArray.activate()
+        layer.forward()
+
+        it("should match the expected output values") {
+
+          assertEquals(true, layer.outputArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.18504, 0.29346, 0.5215)),
+            tolerance = 1.0e-05))
+        }
+      }
+
+      on("input size 5 and output size 3 (softmax)") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer53()
         layer.forward()
@@ -68,21 +83,8 @@ class FeedforwardLayerStructureSpec : Spek({
         it("should match the expected output values") {
 
           assertEquals(true, layer.outputArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.19, 0.29, 0.53)),
-            tolerance = 0.005))
-        }
-      }
-
-      on("input size 5 and output size 3 (without activation functions)") {
-
-        val layer = FeedforwardLayerStructureUtils.buildLayer53NoActivation()
-        layer.forward()
-
-        it("should match the expected output values") {
-
-          assertEquals(true, layer.outputArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.82, -0.52, 0.19)),
-            tolerance = 0.005))
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.18687, 0.28442, 0.52871)),
+            tolerance = 1.0e-05))
         }
       }
     }
@@ -173,9 +175,7 @@ class FeedforwardLayerStructureSpec : Spek({
 
     context("backward") {
 
-      val lossCalculator = MSECalculator()
-
-      on("input size 4 (no activation) and output size 5 (tanh)") {
+      on("input size 4 and output size 5 (tanh)") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer45()
         val outputGold = FeedforwardLayerStructureUtils.getOutputGold5()
@@ -183,30 +183,29 @@ class FeedforwardLayerStructureSpec : Spek({
 
         layer.forward()
 
-        val errors = lossCalculator.calculateErrors(output = layer.outputArray.values, outputGold = outputGold)
-        layer.outputArray.assignErrors(errors)
+        layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
         layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertEquals(true, layer.outputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.38, 0.3, -0.37, 0.5, 0.4)),
-            tolerance = 0.005))
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.39693, -1.29688, 0.4, 1.60137, -1.08775)),
+            tolerance = 1.0e-05))
         }
 
         it("should match the expected errors of the biases") {
           assertEquals(true, paramsErrors.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.38, 0.3, -0.37, 0.5, 0.4)),
-            tolerance = 0.005))
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.39693, -1.29688, 0.4, 1.60137, -1.08775)),
+            tolerance = 1.0e-05))
         }
 
         it("should match the expected errors of the weights") {
           assertEquals(true, (paramsErrors.weights.values as DenseNDArray).equals(
             DenseNDArrayFactory.arrayOf(arrayOf(
-              doubleArrayOf(0.3, 0.34, 0.34, -0.38),
-              doubleArrayOf(-0.24, -0.27, -0.27, 0.3),
-              doubleArrayOf(0.3, 0.34, 0.34, -0.37),
-              doubleArrayOf(-0.4, -0.45, -0.45, 0.5),
-              doubleArrayOf(-0.32, -0.36, -0.36, 0.4)
+              doubleArrayOf(0.31754, 0.35724, 0.35724, -0.39693),
+              doubleArrayOf(1.0375, 1.16719, 1.16719, -1.29688),
+              doubleArrayOf(-0.32, -0.36, -0.36, 0.4),
+              doubleArrayOf(-1.2811, -1.44124, -1.44124, 1.60137),
+              doubleArrayOf(0.8702, 0.97897, 0.97897, -1.08775)
             )),
             tolerance = 0.010))
         }
@@ -214,12 +213,55 @@ class FeedforwardLayerStructureSpec : Spek({
         it("should match the expected errors of the inputArray") {
 
           assertEquals(true, layer.inputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.32, -0.14, -0.06, 0.07)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.01972, -2.52839, 1.06928, 0.44533)),
             tolerance = 0.010))
         }
       }
 
-      on("input size 5 (tanh) and output size 3 (softmax)") {
+      on("input size 5 (activated with tanh) and output size 3 (softmax)") {
+
+        val layer = FeedforwardLayerStructureUtils.buildLayer53()
+        val outputGold = FeedforwardLayerStructureUtils.getOutputGold3()
+        val paramsErrors = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
+
+        layer.inputArray.setActivation(Tanh())
+        layer.inputArray.activate()
+        layer.forward()
+
+        layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+
+        it("should match the expected errors of the outputArray") {
+          assertEquals(true, layer.outputArray.errors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.81496, 0.29346, 0.5215)),
+            tolerance = 1.0e-05))
+        }
+
+        it("should match the expected errors of the biases") {
+          assertEquals(true, paramsErrors.biases.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.81496, 0.29346, 0.5215)),
+            tolerance = 1.0e-05))
+        }
+
+        it("should match the expected errors of the weights") {
+          assertEquals(true, (paramsErrors.weights.values as DenseNDArray).equals(
+            DenseNDArrayFactory.arrayOf(arrayOf(
+              doubleArrayOf(0.30964, 0.54116, 0.0, -0.49254, 0.16085),
+              doubleArrayOf(-0.1115, -0.19487, 0.0, 0.17736, -0.05792),
+              doubleArrayOf(-0.19814, -0.34629, 0.0, 0.31518, -0.10293)
+            )),
+            tolerance = 1.0e-05)) // some value is rounded exactly with the 3rd digit equal to 5
+        }
+
+        it("should match the expected errors of the inputArray") {
+
+          assertEquals(true, layer.inputArray.errors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.37648, 0.46292, -0.37159, 0.62905, 0.39789)),
+            tolerance = 1.0e-05))
+        }
+      }
+
+      on("input size 5 and output size 3 (softmax)") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer53()
         val outputGold = FeedforwardLayerStructureUtils.getOutputGold3()
@@ -227,79 +269,36 @@ class FeedforwardLayerStructureSpec : Spek({
 
         layer.forward()
 
-        val errors = lossCalculator.calculateErrors(output = layer.outputArray.values, outputGold = outputGold)
-        layer.outputArray.assignErrors(errors)
+        layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
         layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertEquals(true, layer.outputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.81, 0.29, 0.53)),
-            tolerance = 0.005))
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.81313, 0.28442, 0.52871)),
+            tolerance = 1.0e-05))
         }
 
         it("should match the expected errors of the biases") {
           assertEquals(true, paramsErrors.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.81, 0.29, 0.53)),
-            tolerance = 0.005))
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.81313, 0.28442, 0.52871)),
+            tolerance = 1.0e-05))
         }
 
         it("should match the expected errors of the weights") {
           assertEquals(true, (paramsErrors.weights.values as DenseNDArray).equals(
             DenseNDArrayFactory.arrayOf(arrayOf(
-              doubleArrayOf(0.32, 0.65, 0.0, -0.57, 0.15),
-              doubleArrayOf(-0.11, -0.23, 0.0, 0.2, -0.05),
-              doubleArrayOf(-0.21, -0.42, 0.0, 0.37, -0.1)
+              doubleArrayOf(0.32525, 0.6505, 0.0, -0.56919, 0.16263),
+              doubleArrayOf(-0.11377, -0.22753, 0.0, 0.19909, -0.05688),
+              doubleArrayOf(-0.21148, -0.42297, 0.0, 0.37010, -0.10574)
             )),
-            tolerance = 0.006)) // some value is rounded exactly with the 3rd digit equal to 5
+            tolerance = 1.0e-05))
         }
 
         it("should match the expected errors of the inputArray") {
 
           assertEquals(true, layer.inputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.38, 0.3, -0.37, 0.5, 0.4)),
-            tolerance = 0.005))
-        }
-      }
-
-      on("input size 5 and output size 3 (no activation functions)") {
-
-        val layer = FeedforwardLayerStructureUtils.buildLayer53NoActivation()
-        val outputGold = FeedforwardLayerStructureUtils.getOutputGold3()
-        val paramsErrors = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
-
-        layer.forward()
-
-        val errors = lossCalculator.calculateErrors(output = layer.outputArray.values, outputGold = outputGold)
-        layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
-
-        it("should match the expected errors of the outputArray") {
-          assertEquals(true, layer.outputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.82, -0.52, 0.19)),
-            tolerance = 0.006))
-        }
-
-        it("should match the expected errors of the biases") {
-          assertEquals(true, paramsErrors.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.82, -0.52, 0.19)),
-            tolerance = 0.006))
-        }
-
-        it("should match the expected errors of the weights") {
-          assertEquals(true, (paramsErrors.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
-              doubleArrayOf(0.76, 1.98, 0.0, -1.58, 0.34),
-              doubleArrayOf(0.22, 0.57, 0.0, -0.46, 0.1),
-              doubleArrayOf(-0.08, -0.2, 0.0, 0.16, -0.04)
-            )),
-            tolerance = 0.006))
-        }
-
-        it("should match the expected errors of the inputArray") {
-
-          assertEquals(true, layer.inputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.94, 1.14, -1.94, 1.5, -0.08)),
-            tolerance = 0.005))
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4474, 0.82115, -0.37411, 0.98377, 0.41057)),
+            tolerance = 1.0e-05))
         }
       }
     }
