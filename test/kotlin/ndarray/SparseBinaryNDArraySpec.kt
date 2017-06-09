@@ -82,11 +82,11 @@ class SparseBinaryNDArraySpec : Spek({
         }
 
         it("should return the expected second indices Pair") {
-          assertEquals(Pair(5, 19), iterator.next())
+          assertEquals(Pair(12, 6), iterator.next())
         }
 
         it("should return the expected third indices Pair") {
-          assertEquals(Pair(12, 6), iterator.next())
+          assertEquals(Pair(5, 19), iterator.next())
         }
 
         it("should return false calling hasNext() at the fourth iteration") {
