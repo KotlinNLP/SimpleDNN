@@ -42,7 +42,7 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param x a generic [NDArray]
    * @param y a [DenseNDArray] (no Sparse needed, generally little size on output)
    * @param yRelevance a [DenseNDArray], whose norm is 1.0, which indicates how much relevant are the values of [y]
-   * @param contributes a matrix which contains the contributes of each value of [x] to calculate each value of [y]
+   * @param contributes a matrix which maps the contributes from each value of [x] to each value of [y]
    *
    * @return the relevance of [x] respect of [y]
    */
