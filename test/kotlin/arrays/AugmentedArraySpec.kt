@@ -33,6 +33,7 @@ class AugmentedArraySpec : Spek({
     val errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.8, 0.1, 0.8, 0.4, 0.1, 0.2, 0.9, 0.2))
     val arrayWrongSize = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1))
     val relevance = DistributionArray.uniform(length = 9)
+    val recurrentRelevance = DistributionArray.oneHot(length = 9, oneAt = 3)
     val relevanceWrongSize = DistributionArray.uniform(length = 4)
 
     context("initialization") {
@@ -50,6 +51,12 @@ class AugmentedArraySpec : Spek({
         it("should throw an Exception when trying to get relevance") {
           assertFailsWith<UninitializedPropertyAccessException> {
             activableArray.relevance
+          }
+        }
+
+        it("should throw an Exception when trying to get recurrent relevance") {
+          assertFailsWith<UninitializedPropertyAccessException> {
+            activableArray.recurrentRelevance
           }
         }
       }
@@ -148,8 +155,51 @@ class AugmentedArraySpec : Spek({
 
         val arrayRelevance: DenseNDArray = augmentedArray.relevance.values as DenseNDArray
 
-        it("should have the expected assigned errors") {
+        it("should have the expected assigned recurrent relevance") {
           assertEquals(true, arrayRelevance.equals(relevance.values, tolerance = 1.0e-08))
+        }
+      }
+    }
+
+    context("recurrent relevance") {
+
+      on("before assignment") {
+
+        val augmentedArray = AugmentedArray<DenseNDArray>(size = 9)
+
+        it("should throw an Exception when getting recurrent relevance") {
+          assertFailsWith<UninitializedPropertyAccessException> {
+            augmentedArray.recurrentRelevance
+          }
+        }
+      }
+
+      on("after assignment, with values initialized") {
+
+        val augmentedArray = AugmentedArray(initArray)
+
+        it("should throw an exception when trying to assign relevance with wrong size") {
+          assertFails { augmentedArray.assignRecurrentRelevance(relevanceWrongSize) }
+        }
+
+        augmentedArray.assignRecurrentRelevance(recurrentRelevance)
+
+        val arrayRecRelevance: DenseNDArray = augmentedArray.recurrentRelevance.values as DenseNDArray
+
+        it("should have the expected assigned recurrent relevance") {
+          assertEquals(true, arrayRecRelevance.equals(recurrentRelevance.values, tolerance = 1.0e-08))
+        }
+      }
+
+      on("after assignment, with values not initialized") {
+
+        val augmentedArray = AugmentedArray<DenseNDArray>(size = 9)
+        augmentedArray.assignRecurrentRelevance(recurrentRelevance)
+
+        val arrayRecRelevance: DenseNDArray = augmentedArray.recurrentRelevance.values as DenseNDArray
+
+        it("should have the expected assigned recurrent relevance") {
+          assertEquals(true, arrayRecRelevance.equals(recurrentRelevance.values, tolerance = 1.0e-08))
         }
       }
     }
@@ -178,6 +228,12 @@ class AugmentedArraySpec : Spek({
             cloneArray.relevance
           }
         }
+
+        it("should throw an Exception when getting recurrent relevance") {
+          assertFailsWith<UninitializedPropertyAccessException> {
+            cloneArray.recurrentRelevance
+          }
+        }
       }
 
       on("values initialized") {
@@ -187,8 +243,10 @@ class AugmentedArraySpec : Spek({
         augmentedArray.activate()
         augmentedArray.assignErrors(errors)
         augmentedArray.assignRelevance(relevance)
+        augmentedArray.assignRecurrentRelevance(recurrentRelevance)
 
         val arrayRelevance: DenseNDArray = augmentedArray.relevance.values as DenseNDArray
+        val arrayRecRelevance: DenseNDArray = augmentedArray.recurrentRelevance.values as DenseNDArray
 
         val cloneArray = augmentedArray.clone()
 
@@ -207,6 +265,11 @@ class AugmentedArraySpec : Spek({
         it("should have the expected relevance") {
           val cloneRelevance = cloneArray.relevance.values as DenseNDArray
           assertEquals(true, arrayRelevance.equals(cloneRelevance, tolerance = 1.0e-08))
+        }
+
+        it("should have the expected recurrent relevance") {
+          val cloneRecRelevance = cloneArray.recurrentRelevance.values as DenseNDArray
+          assertEquals(true, arrayRecRelevance.equals(cloneRecRelevance, tolerance = 1.0e-08))
         }
       }
     }
