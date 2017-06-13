@@ -24,7 +24,6 @@ import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import layers.structure.utils.FeedforwardLayerStructureUtils
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
@@ -33,18 +32,6 @@ import kotlin.test.assertTrue
 class FeedforwardLayerStructureSpec : Spek({
 
   describe("a FeedForwardLayerStructure") {
-
-    context("initialization") {
-
-      on("before calling any method") {
-
-        val layer = FeedforwardLayerStructureUtils.buildLayer45()
-
-        it("should contain null paramsErrors") {
-          assertNull(layer.paramsErrors)
-        }
-      }
-    }
 
     context("forward") {
 

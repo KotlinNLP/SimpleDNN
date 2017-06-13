@@ -19,7 +19,6 @@ import org.jetbrains.spek.api.dsl.on
 import layers.structure.utils.SimpleRecurrentLayerStructureUtils
 import layers.structure.contextwindows.SimpleRecurrentLayerContextWindow
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 /**
  *
@@ -27,18 +26,6 @@ import kotlin.test.assertNull
 class SimpleRecurrentLayerStructureSpec : Spek({
 
   describe("a SimpleRecurrentLayerStructure") {
-
-    context("initialization") {
-
-      on("before calling any method") {
-
-        val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Empty())
-
-        it("should contain null paramsErrors") {
-          assertNull(layer.paramsErrors)
-        }
-      }
-    }
 
     context("forward") {
 

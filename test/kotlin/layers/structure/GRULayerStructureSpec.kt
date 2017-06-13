@@ -20,7 +20,6 @@ import org.jetbrains.spek.api.dsl.on
 import layers.structure.contextwindows.GRULayerContextWindow
 import layers.structure.utils.GRULayerStructureUtils
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 /**
  *
@@ -28,18 +27,6 @@ import kotlin.test.assertNull
 class GRULayerStructureSpec : Spek({
 
   describe("a GRULayerStructure") {
-
-    context("initialization") {
-
-      on("before calling any method") {
-
-        val layer = GRULayerStructureUtils.buildLayer(GRULayerContextWindow.Empty())
-
-        it("should contain null paramsErrors") {
-          assertNull(layer.paramsErrors)
-        }
-      }
-    }
 
     context("forward") {
 
