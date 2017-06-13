@@ -61,6 +61,16 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   lateinit protected var _relevance: Norm1Array<*>
 
   /**
+   * Contains the relevance of the current values when involved in recurrent calculations
+   */
+  val recurrentRelevance: Norm1Array<*> get() = this._recurrentRelevance
+
+  /**
+   * Contains the relevance of the current values when involved in recurrent calculations
+   */
+  lateinit protected var _recurrentRelevance: Norm1Array<*>
+
+  /**
    * Assign errors to the array.
    *
    * @param errors the [DenseNDArray] to assign as errors to this [AugmentedArray]. It must have the same size
@@ -82,8 +92,8 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Assign the relevance to the array.
    *
-   * @param relevance the [Norm1Array] to assign to this [AugmentedArray]. It must have the same size
-   *                  of the values of this [AugmentedArray].
+   * @param relevance the [Norm1Array] to assign to this [AugmentedArray] as relevance.
+   *                  It must have the same size of the values of this [AugmentedArray].
    */
   fun assignRelevance(relevance: Norm1Array<*>) {
     require(relevance.length == this.size) { "Relevance must have the same size of the values" }
@@ -95,6 +105,25 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
       require(relevance.length == this.size)
 
       this._relevance = relevance.clone()
+    }
+  }
+
+  /**
+   * Assign the recurrent relevance to the array.
+   *
+   * @param relevance the [Norm1Array] to assign to this [AugmentedArray] as recurrent relevance.
+   *                  It must have the same size of the values of this [AugmentedArray].
+   */
+  fun assignRecurrentRelevance(relevance: Norm1Array<*>) {
+    require(relevance.length == this.size) { "Relevance must have the same size of the values" }
+
+    try {
+      this._recurrentRelevance.assignValues(relevance.values)
+
+    } catch (e: UninitializedPropertyAccessException) {
+      require(relevance.length == this.size)
+
+      this._recurrentRelevance = relevance.clone()
     }
   }
 
@@ -136,6 +165,10 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
 
     try {
       clonedArray.assignRelevance(this._relevance)
+    } catch (e: UninitializedPropertyAccessException) {}
+
+    try {
+      clonedArray.assignRecurrentRelevance(this._recurrentRelevance)
     } catch (e: UninitializedPropertyAccessException) {}
 
     return clonedArray
