@@ -110,11 +110,11 @@ class FeedforwardLayerStructureSpec : Spek({
         layer.calculateRelevance(paramsContributes = contributes)
 
         it("should set a Dense input relevance") {
-          assertTrue { layer.inputArray.relevance.values is DenseNDArray }
+          assertTrue { layer.inputArray.relevance is DenseNDArray }
         }
 
         it("should match the expected input relevance") {
-          val relevance: DenseNDArray = layer.inputArray.relevance.values as DenseNDArray
+          val relevance: DenseNDArray = layer.inputArray.relevance as DenseNDArray
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.55888, 0.20978, 0.09943, 0.05652, 0.07539)),
@@ -142,11 +142,11 @@ class FeedforwardLayerStructureSpec : Spek({
         layer.calculateRelevance(paramsContributes = contributes)
 
         it("should set a Sparse input relevance") {
-          assertTrue { layer.inputArray.relevance.values is SparseNDArray }
+          assertTrue { layer.inputArray.relevance is SparseNDArray }
         }
 
         it("should match the expected input relevance") {
-          val relevance: SparseNDArray = layer.inputArray.relevance.values as SparseNDArray
+          val relevance: SparseNDArray = layer.inputArray.relevance as SparseNDArray
           assertTrue {
             relevance.equals(
               SparseNDArrayFactory.arrayOf(
