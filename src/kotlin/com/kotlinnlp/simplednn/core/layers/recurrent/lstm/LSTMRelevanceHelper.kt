@@ -7,8 +7,8 @@
 
 package com.kotlinnlp.simplednn.core.layers.recurrent.lstm
 
-import com.kotlinnlp.simplednn.core.layers.RelevanceHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.recurrent.RecurrentRelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  */
 class LSTMRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   layer: LSTMLayerStructure<InputNDArrayType>
-) : RelevanceHelper<InputNDArrayType>(layer) {
+) : RecurrentRelevanceHelper<InputNDArrayType>(layer) {
 
   /**
    * Calculate the relevance of the input.
@@ -26,6 +26,15 @@ class LSTMRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param paramsContributes the contributes of the parameters during the last forward
    */
   override fun calculateRelevance(paramsContributes: LayerParameters) {
+    TODO("not implemented")
+  }
+
+  /**
+   * Calculate the relevance of the output in the previous state respect of the current one.
+   *
+   * @param paramsContributes the contributes of the parameters during the last forward
+   */
+  override fun calculateRecurrentRelevance(paramsContributes: LayerParameters) {
     TODO("not implemented")
   }
 }
