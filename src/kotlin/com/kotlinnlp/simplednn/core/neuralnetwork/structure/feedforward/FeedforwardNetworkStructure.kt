@@ -8,7 +8,9 @@
 package com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.*
+import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -54,5 +56,23 @@ class FeedforwardNetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
       activationFunction = outputConfiguration.activationFunction,
       connectionType = outputConfiguration.connectionType!!,
       dropout = dropout)
+  }
+
+  /**
+   * Calculate the relevance of the input of each layer respect of its output, starting from the given distribution on
+   * the outcomes.
+   *
+   * @param paramsContributes the [NetworkParameters] in which to save the contributes of the parameters
+   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
+   *                                     as reference to calculate the relevance of the input
+   */
+  fun calculateRelevance(paramsContributes: NetworkParameters, relevantOutcomesDistribution: DistributionArray) {
+
+    this.layers.last().setOutputRelevance(relevantOutcomesDistribution)
+
+    for ((i, layer) in this.layers.withIndex().reversed()) { layer as FeedforwardLayerStructure
+      this.curLayerIndex = i
+      layer.calculateRelevance(paramsContributes = paramsContributes.paramsPerLayer[i])
+    }
   }
 }
