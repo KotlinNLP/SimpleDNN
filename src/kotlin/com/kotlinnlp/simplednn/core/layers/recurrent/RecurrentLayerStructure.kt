@@ -36,4 +36,19 @@ abstract class RecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayTy
   outputArray = outputArray,
   params = params,
   activationFunction = activationFunction,
-  dropout = dropout)
+  dropout = dropout) {
+
+  /**
+   * The helper which calculates the relevance
+   */
+  override abstract val relevanceHelper: RecurrentRelevanceHelper<InputNDArrayType>
+
+  /**
+   * Calculate the relevance of the output in previous state respect of current one.
+   *
+   * @param paramsContributes the contributes of the parameters during the last forward
+   */
+  fun calculateRecurrentRelevance(paramsContributes: LayerParameters) {
+    this.relevanceHelper.calculateRecurrentRelevance(paramsContributes = paramsContributes)
+  }
+}
