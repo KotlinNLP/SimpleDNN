@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
- * The [AugmentedArray] extends the [ActivableArray] with the errors.
+ * The [AugmentedArray] extends the [ActivableArray] with the errors and relevance.
  *
  * @property size the length of the array
  */
