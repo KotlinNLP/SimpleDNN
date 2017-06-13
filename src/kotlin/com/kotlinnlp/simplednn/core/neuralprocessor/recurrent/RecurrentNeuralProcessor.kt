@@ -8,6 +8,8 @@
 package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
+import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.recurrent.RecurrentLayerStructure
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
@@ -126,25 +128,6 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   )
 
   /**
-   * Get the relevance of each input of the sequence into an [Array].
-   * (If the input is Dense it is Dense, if the input is Sparse or SparseBinary it is Sparse).
-   *
-   * @param copy whether to return a copy of the relevance or not
-   *
-   * @return the relevance of the input as [NDArray]
-   */
-  fun getInputSequenceRelevance(copy: Boolean = true) = Array(
-    size = this.sequence.length,
-    init = { i ->
-      if (copy) {
-        this.sequence.states[i].structure.inputLayer.inputArray.relevance.values.copy()
-      } else {
-        this.sequence.states[i].structure.inputLayer.inputArray.relevance.values
-      }
-    }
-  )
-
-  /**
    *
    */
   fun getOutputSequence(copy: Boolean = true): Array<DenseNDArray> =
@@ -160,39 +143,20 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward a sequence.
    *
    * @param sequenceFeaturesArray the features to forward for each item of the sequence
+   * @param saveContributes whether to save the contributes of each input to its output (needed to calculate relevance)
    * @param useDropout whether to apply the dropout
    *
    * @return the last output of the network after the whole sequence is been forwarded
    */
   fun forward(sequenceFeaturesArray: ArrayList<InputNDArrayType>,
-              useDropout: Boolean = false): DenseNDArray {
-
-    sequenceFeaturesArray.forEachIndexed { i, features ->
-      this.forward(featuresArray = features, firstState = (i == 0), useDropout = useDropout)
-    }
-
-    return this.getOutput()
-  }
-
-  /**
-   * Forward a sequence, calculating the relevance of the inputs respect of the outputs.
-   *
-   * @param sequenceFeaturesArray the features to forward for each item of the sequence
-   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
-   *                                     as reference to calculate the relevance of the input
-   * @param useDropout whether to apply the dropout
-   *
-   * @return the last output of the network after the whole sequence is been forwarded
-   */
-  fun forward(sequenceFeaturesArray: ArrayList<InputNDArrayType>,
-              relevantOutcomesDistribution: DistributionArray,
+              saveContributes: Boolean = false,
               useDropout: Boolean = false): DenseNDArray {
 
     sequenceFeaturesArray.forEachIndexed { i, features ->
       this.forward(
         featuresArray = features,
         firstState = (i == 0),
-        relevantOutcomesDistribution = relevantOutcomesDistribution,
+        saveContributes = saveContributes,
         useDropout = useDropout)
     }
 
@@ -203,35 +167,13 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward features.
    *
    * @param featuresArray the features to forward from the input to the output
+   * @param saveContributes whether to save the contributes of each input to its output (needed to calculate relevance)
    * @param firstState whether the current one is the first state
    * @param useDropout whether to apply the dropout
    */
   fun forward(featuresArray: InputNDArrayType,
               firstState: Boolean,
-              useDropout: Boolean = false): DenseNDArray {
-
-    if (firstState) {
-      this.reset()
-    }
-
-    this.addNewState()
-    this.forwardCurrentState(featuresArray = featuresArray, useDropout = useDropout)
-
-    return this.getOutput()
-  }
-
-  /**
-   * Forward features, calculating their relevance respect of the output.
-   *
-   * @param featuresArray the features to forward from the input to the output
-   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
-   *                                     as reference to calculate the relevance of the input
-   * @param firstState whether the current one is the first state
-   * @param useDropout whether to apply the dropout
-   */
-  fun forward(featuresArray: InputNDArrayType,
-              relevantOutcomesDistribution: DistributionArray,
-              firstState: Boolean,
+              saveContributes: Boolean = false,
               useDropout: Boolean = false): DenseNDArray {
 
     if (firstState) {
@@ -241,10 +183,40 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.addNewState()
     this.forwardCurrentState(
       featuresArray = featuresArray,
-      relevantOutcomesDistribution = relevantOutcomesDistribution,
+      saveContributes = saveContributes,
       useDropout = useDropout)
 
     return this.getOutput()
+  }
+
+  /**
+   * Calculate the relevance of the input of a state respect of the output of another (or the same) state.
+   *
+   * @param stateFrom the index of the state from whose input to calculate the relevance
+   * @param stateTo the index of the state whose output will be used as reference to calculate the relevance
+   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
+   *                                     as reference to calculate the relevance of the input
+   * @param copy whether to return a copy of the relevance or not
+   *
+   * @return the relevance of the input of the state [stateFrom] respect of the output of the state [stateTo]
+   */
+  fun calculateRelevance(stateFrom: Int,
+                         stateTo: Int,
+                         relevantOutcomesDistribution: DistributionArray,
+                         copy: Boolean = true): NDArray<*> {
+
+    require(stateFrom in 0 until this.sequence.length) {
+      "stateFrom (%d) index exceeded sequence size (%d)".format(stateFrom, this.sequence.length)
+    }
+
+    this.sequence.states[stateTo].structure.layers.last().setOutputRelevance(relevantOutcomesDistribution)
+
+    for (stateIndex in (stateFrom .. stateTo).reversed()) {
+      this.curStateIndex = stateIndex // crucial to provide the right context
+      this.calculateCurrentStateRelevance(isFirstState = this.curStateIndex == stateFrom)
+    }
+
+    return this.getInputRelevance(stateIndex = stateFrom, copy = copy)
   }
 
   /**
@@ -305,30 +277,66 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward the current state.
    *
    * @param featuresArray the features to forward from the input to the output
-   * @param useDropout whether to apply the dropout
-   */
-  private fun forwardCurrentState(featuresArray: InputNDArrayType, useDropout: Boolean = false) {
-    this.sequence.lastStructure!!.forward(features = featuresArray, useDropout = useDropout)
-  }
-
-  /**
-   * Forward the current state, calculating the relevance of the inputs respect of the outputs.
-   *
-   * @param featuresArray the features to forward from the input to the output
-   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
-   *                                     as reference to calculate the relevance of the input
+   * @param saveContributes whether to save the contributes of each input to its output (needed to calculate relevance)
    * @param useDropout whether to apply the dropout
    */
   private fun forwardCurrentState(
     featuresArray: InputNDArrayType,
-    relevantOutcomesDistribution: DistributionArray,
+    saveContributes: Boolean,
     useDropout: Boolean = false) {
 
-    this.sequence.lastStructure!!.forward(
-      features = featuresArray,
-      paramsContributes = this.forwardParamsContributes,
-      relevantOutcomesDistribution = relevantOutcomesDistribution,
-      useDropout = useDropout)
+    if (saveContributes) {
+      this.sequence.lastStructure!!.forward(
+        features = featuresArray,
+        paramsContributes = this.forwardParamsContributes,
+        useDropout = useDropout)
+
+    } else {
+      this.sequence.lastStructure!!.forward(
+        features = featuresArray,
+        useDropout = useDropout)
+    }
+  }
+
+  /**
+   * Calculate the relevance of the layers of the current state
+   */
+  private fun calculateCurrentStateRelevance(isFirstState: Boolean) {
+
+    val structure: RecurrentNetworkStructure<InputNDArrayType> = this.sequence.states[this.curStateIndex].structure
+
+    for ((layerIndex, layer) in structure.layers.withIndex().reversed()) { layer as RecurrentLayerStructure
+
+      val params: LayerParameters = this.forwardParamsContributes.paramsPerLayer[layerIndex]
+
+      structure.curLayerIndex = layerIndex // crucial to provide the right context
+
+      if (isFirstState || layerIndex > 0) {
+        layer.calculateRelevance(paramsContributes = params)
+      }
+
+      if (!isFirstState) {
+        layer.calculateRecurrentRelevance(paramsContributes = params)
+      }
+    }
+  }
+
+  /**
+   * Get the relevance of the input of a state of the sequence.
+   * (If the input is Dense it is Dense, if the input is Sparse or SparseBinary it is Sparse).
+   *
+   * @param stateIndex the index of the state from which to extract the input relevance
+   * @param copy whether to return a copy of the relevance or not
+   *
+   * @return the relevance of the input as [NDArray]
+   */
+  private fun getInputRelevance(stateIndex: Int, copy: Boolean = true): NDArray<*> {
+
+    return if (copy) {
+      this.sequence.states[stateIndex].structure.inputLayer.inputArray.relevance.values.copy()
+    } else {
+      this.sequence.states[stateIndex].structure.inputLayer.inputArray.relevance.values
+    }
   }
 
   /**
