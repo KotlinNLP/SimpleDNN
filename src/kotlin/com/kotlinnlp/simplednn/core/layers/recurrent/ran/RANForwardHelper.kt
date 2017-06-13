@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: RANLayerStructure<InputNDArrayType>
-) : ForwardHelper<InputNDArrayType> {
+) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
    * Forward the input to the output combining it with the parameters.

@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class GRUForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: GRULayerStructure<InputNDArrayType>
-) : ForwardHelper<InputNDArrayType> {
+) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
    * Forward the input to the output combining it with the parameters.
