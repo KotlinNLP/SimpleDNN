@@ -36,9 +36,19 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   private val p = 1.0 - this.dropout
 
   /**
-   * The stabilizing term used to calculate the relevance
+   * The helper which execute the forward
    */
-  protected val relevanceEps: Double = 0.01
+  abstract protected val forwardHelper: ForwardHelper<InputNDArrayType>
+
+  /**
+   * The helper which execute the backward
+   */
+  abstract protected val backwardHelper: BackwardHelper<InputNDArrayType>
+
+  /**
+   * The helper which calculates the relevance
+   */
+  abstract protected val relevanceHelper: RelevanceHelper<InputNDArrayType>
 
   /**
    * Set the errors of the inputArray
@@ -73,7 +83,7 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
       this.applyDropout()
     }
 
-    this.forwardInput()
+    this.forwardHelper.forward()
   }
 
   /**
@@ -89,32 +99,24 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
       this.applyDropout()
     }
 
-    this.forwardInput(paramsContributes = paramsContributes)
+    this.forwardHelper.forward(paramsContributes = paramsContributes)
   }
-
-  /**
-   * Forward the input to the output combining it with the parameters
-   */
-  abstract protected fun forwardInput()
-
-  /**
-   * Forward the input to the output combining it with the parameters, saving the contributes of the parameters.
-   *
-   * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
-   */
-  abstract protected fun forwardInput(paramsContributes: LayerParameters)
 
   /**
    * Calculate the relevance of the input.
    *
    * @param paramsContributes the contributes of the parameters during the last forward
    */
-  abstract fun calculateRelevance(paramsContributes: LayerParameters)
+  fun calculateRelevance(paramsContributes: LayerParameters) {
+    this.relevanceHelper.calculateRelevance(paramsContributes = paramsContributes)
+  }
 
   /**
    *
    */
-  abstract fun backward(paramsErrors: LayerParameters, propagateToInput: Boolean = false)
+  fun backward(paramsErrors: LayerParameters, propagateToInput: Boolean = false) {
+    this.backwardHelper.backward(paramsErrors = paramsErrors, propagateToInput = propagateToInput)
+  }
 
   /**
    *
