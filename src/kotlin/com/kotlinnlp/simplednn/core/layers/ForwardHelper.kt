@@ -77,7 +77,7 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param b the biases added to each value of [y]
    * @param contributes a matrix which maps the contributes from each value of [x] to each value of [y]
    */
-  private fun forwardDenseArray(x: DenseNDArray,
+  protected fun forwardDenseArray(x: DenseNDArray,
                                 y: DenseNDArray,
                                 w: DenseNDArray,
                                 b: DenseNDArray,
