@@ -17,8 +17,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * @property layer the [SimpleRecurrentLayerStructure] in which to calculate the input relevance
  */
 class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: SimpleRecurrentLayerStructure<InputNDArrayType>
-) : RelevanceHelper<InputNDArrayType> {
+  layer: SimpleRecurrentLayerStructure<InputNDArrayType>
+) : RelevanceHelper<InputNDArrayType>(layer) {
 
   /**
    * Calculate the relevance of the input.
