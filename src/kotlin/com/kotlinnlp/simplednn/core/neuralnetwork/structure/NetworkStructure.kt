@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.neuralnetwork.structure
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -99,19 +98,17 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward features, calculating the relevance of each layer.
+   * Forward features, saving the contributes.
    *
    * @param features the features to forward from the input to the output
-   * @param paramsContributes the [NetworkParameters] in which to save the contributes of the parameters
-   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
-   *                                     as reference to calculate the relevance of the input
+   * @param paramsContributes the [NetworkParameters] in which to save the contributes of the input of each layer to
+   *                          the relative output
    * @param useDropout whether to apply the dropout
    *
    * @return the output [NDArray]
    */
   fun forward(features: InputNDArrayType,
               paramsContributes: NetworkParameters,
-              relevantOutcomesDistribution: DistributionArray,
               useDropout: Boolean = false): DenseNDArray {
 
     this.inputLayer.setInput(features)
@@ -119,13 +116,6 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     for ((i, layer) in this.layers.withIndex()) {
       this.curLayerIndex = i
       layer.forward(paramsContributes = paramsContributes.paramsPerLayer[i], useDropout = useDropout)
-    }
-
-    this.layers.last().setOutputRelevance(relevantOutcomesDistribution)
-
-    for ((i, layer) in this.layers.withIndex().reversed()) {
-      this.curLayerIndex = i
-      layer.calculateRelevance(paramsContributes = paramsContributes.paramsPerLayer[i])
     }
 
     return this.outputLayer.outputArray.values
