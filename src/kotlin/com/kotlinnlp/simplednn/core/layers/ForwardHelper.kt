@@ -36,17 +36,17 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward [x] to [y] combining it with [w] and [b], saving the contributes in [contributes].
    *
+   * @param contributes a matrix which maps the contributes from each value of [x] to each value of [y]
    * @param x a generic [NDArray]
    * @param y a [DenseNDArray]
    * @param w the weights which maps [x] to [y]
-   * @param b the biases added to each value of [y]
-   * @param contributes a matrix which maps the contributes from each value of [x] to each value of [y]
+   * @param b the biases added to each value of [y] (if null no bias is added)
    */
-  protected fun forwardArray(x: NDArray<*>,
+  protected fun forwardArray(contributes: NDArray<*>,
+                             x: NDArray<*>,
                              y: DenseNDArray,
                              w: DenseNDArray,
-                             b: DenseNDArray,
-                             contributes: NDArray<*>) {
+                             b: DenseNDArray? = null) {
 
     when (x) {
 
@@ -71,17 +71,17 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward [x] to [y] combining it with [w] and [b], saving the contributes in [contributes].
    *
+   * @param contributes a matrix which maps the contributes from each value of [x] to each value of [y]
    * @param x a [DenseNDArray]
    * @param y a [DenseNDArray]
    * @param w the weights which maps [x] to [y]
-   * @param b the biases added to each value of [y]
-   * @param contributes a matrix which maps the contributes from each value of [x] to each value of [y]
+   * @param b the biases added to each value of [y] (if null no bias is added)
    */
-  protected fun forwardDenseArray(x: DenseNDArray,
-                                y: DenseNDArray,
-                                w: DenseNDArray,
-                                b: DenseNDArray,
-                                contributes: DenseNDArray) {
+  protected fun forwardDenseArray(contributes: DenseNDArray,
+                                  x: DenseNDArray,
+                                  y: DenseNDArray,
+                                  w: DenseNDArray,
+                                  b: DenseNDArray? = null) {
 
     val xLength: Int = x.length
 
@@ -90,7 +90,11 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       y[j] = 0.0
 
       for (i in 0 until w.columns) {
-        val contribute: Double = w[j, i] * x[i] + b[j] / xLength
+        var contribute: Double = w[j, i] * x[i]
+
+        if (b != null) {
+          contribute += b[j] / xLength
+        }
 
         contributes[j, i] = contribute
         y[j] += contribute
@@ -101,17 +105,17 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward [x] to [y] combining it with [w] and [b], saving the contributes in [contributes].
    *
+   * @param contributes a matrix which maps the contributes from each value of [x] to each value of [y]
    * @param x a [SparseBinaryNDArray]
    * @param y a [DenseNDArray]
    * @param w the weights which maps [x] to [y]
-   * @param b the biases added to each value of [y]
-   * @param contributes a matrix which maps the contributes from each value of [x] to each value of [y]
+   * @param b the biases added to each value of [y] (if null no bias is added)
    */
-  private fun forwardSparseBinaryArray(x: SparseBinaryNDArray,
+  private fun forwardSparseBinaryArray(contributes: SparseNDArray,
+                                       x: SparseBinaryNDArray,
                                        y: DenseNDArray,
                                        w: DenseNDArray,
-                                       b: DenseNDArray,
-                                       contributes: SparseNDArray) {
+                                       b: DenseNDArray? = null) {
 
     val xActiveIndices: ArrayList<Int> = x.activeIndicesByColumn.values.first()!!
     val xActiveIndicesSize: Int = xActiveIndices.size
@@ -126,8 +130,11 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
         val j: Int = k % yLength // linear indexing
         val i: Int = xActiveIndices[k / yLength] // linear indexing
 
-        val biasN: Double = b[j] / xActiveIndicesSize // biases are distributed uniformly on the active values
-        val contribute: Double = w[j, i] + biasN
+        var contribute: Double = w[j, i]
+
+        if (b != null) {
+          contribute += b[j] / xActiveIndicesSize // biases are distributed uniformly on the active values
+        }
 
         y[j] += contribute
 
