@@ -53,22 +53,22 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Contains the relevance of the current values
    */
-  val relevance: Norm1Array<*> get() = this._relevance
+  val relevance: NDArray<*> get() = this._relevance
 
   /**
    * Contains the relevance of the current values
    */
-  lateinit protected var _relevance: Norm1Array<*>
+  lateinit protected var _relevance: NDArray<*>
 
   /**
    * Contains the relevance of the current values when involved in recurrent calculations
    */
-  val recurrentRelevance: Norm1Array<*> get() = this._recurrentRelevance
+  val recurrentRelevance: NDArray<*> get() = this._recurrentRelevance
 
   /**
    * Contains the relevance of the current values when involved in recurrent calculations
    */
-  lateinit protected var _recurrentRelevance: Norm1Array<*>
+  lateinit protected var _recurrentRelevance: NDArray<*>
 
   /**
    * Assign errors to the array.
@@ -92,38 +92,38 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Assign the relevance to the array.
    *
-   * @param relevance the [Norm1Array] to assign to this [AugmentedArray] as relevance.
+   * @param relevance the [NDArray] to assign to this [AugmentedArray] as relevance.
    *                  It must have the same size of the values of this [AugmentedArray].
    */
-  fun assignRelevance(relevance: Norm1Array<*>) {
+  fun assignRelevance(relevance: NDArray<*>) {
     require(relevance.length == this.size) { "Relevance must have the same size of the values" }
 
     try {
-      this._relevance.assignValues(relevance.values)
+      this._relevance.assignValues(relevance)
 
     } catch (e: UninitializedPropertyAccessException) {
       require(relevance.length == this.size)
 
-      this._relevance = relevance.clone()
+      this._relevance = relevance.copy()
     }
   }
 
   /**
    * Assign the recurrent relevance to the array.
    *
-   * @param relevance the [Norm1Array] to assign to this [AugmentedArray] as recurrent relevance.
+   * @param relevance the [NDArray] to assign to this [AugmentedArray] as recurrent relevance.
    *                  It must have the same size of the values of this [AugmentedArray].
    */
-  fun assignRecurrentRelevance(relevance: Norm1Array<*>) {
+  fun assignRecurrentRelevance(relevance: NDArray<*>) {
     require(relevance.length == this.size) { "Relevance must have the same size of the values" }
 
     try {
-      this._recurrentRelevance.assignValues(relevance.values)
+      this._recurrentRelevance.assignValues(relevance)
 
     } catch (e: UninitializedPropertyAccessException) {
       require(relevance.length == this.size)
 
-      this._recurrentRelevance = relevance.clone()
+      this._recurrentRelevance = relevance.copy()
     }
   }
 
