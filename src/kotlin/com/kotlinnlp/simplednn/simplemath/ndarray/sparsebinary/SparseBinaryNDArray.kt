@@ -652,6 +652,17 @@ class SparseBinaryNDArray(
   }
 
   /**
+   * Splits this NDArray into multiple NDArray each with length [splittingLength]
+   *
+   * @param splittingLength the length for sub-array division
+   *
+   * @return an Array containing the split values
+   */
+  override fun splitV(splittingLength: Int): Array<SparseBinaryNDArray> {
+    TODO("not implemented")
+  }
+
+  /**
    *
    */
   override fun equals(a: SparseBinaryNDArray, tolerance: Double): Boolean {

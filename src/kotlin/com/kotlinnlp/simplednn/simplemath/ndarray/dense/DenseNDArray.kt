@@ -712,6 +712,35 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   * Splits this NDArray into multiple NDArray each with length [splittingLength]
+   *
+   * @param splittingLength the length for sub-array division
+   *
+   * @return an Array containing the split values
+   */
+  override fun splitV(splittingLength: Int): Array<DenseNDArray>{
+
+    require(this.length % splittingLength == 0){
+      "The length of the array must be a multiple of the splitting length"
+    }
+
+    val result = arrayOfNulls<DenseNDArray>(this.length / splittingLength)
+
+    var start = 0
+    var end = splittingLength
+    var i = 0
+
+    while (start < this.length){
+      result[i] = this.getRange(start, end)
+      start = end
+      end += splittingLength
+      i++
+    }
+
+    return result.requireNoNulls()
+  }
+
+  /**
    * @param a a DenseNDArray
    * @param tolerance a must be in the range [a - tolerance, a + tolerance] to return True
    *

@@ -20,6 +20,7 @@ import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
+import java.util.*
 import kotlin.test.*
 
 /**
@@ -1094,6 +1095,22 @@ class DenseNDArraySpec : Spek({
       it("should have the expected values") {
         assertEquals(true, DenseNDArrayFactory.arrayOf(doubleArrayOf(
           0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9)).equals(concatenatedArray))
+      }
+    }
+
+    context("single vertical split") {
+
+      val array1 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.4))
+
+      val splitArray: Array<DenseNDArray> = array1.splitV(2)
+
+      it("should have the expected length") {
+        assertEquals(2, splitArray.size)
+      }
+
+      it("should have the expected values") {
+        assertEquals(true, Arrays.equals(arrayOf(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2)),
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.4))), splitArray))
       }
     }
   }

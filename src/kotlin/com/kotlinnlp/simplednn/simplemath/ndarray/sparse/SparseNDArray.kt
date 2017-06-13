@@ -812,6 +812,17 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
+   * Splits this NDArray into multiple NDArray each with length [splittingLength]
+   *
+   * @param splittingLength the length for sub-array division
+   *
+   * @return an Array containing the split values
+   */
+  override fun splitV(splittingLength: Int): Array<SparseNDArray> {
+    TODO("not implemented")
+  }
+
+  /**
    *
    */
   override fun equals(a: SparseNDArray, tolerance: Double): Boolean {
