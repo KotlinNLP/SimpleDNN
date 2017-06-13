@@ -33,7 +33,7 @@ class FeedforwardRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val inputRelevance = this.calculateRelevanceOfArray(
       x = this.layer.inputArray.values,
       y = this.layer.outputArray.valuesNotActivated,
-      yRelevance = this.layer.outputArray.relevance.values as DenseNDArray,
+      yRelevance = this.layer.outputArray.relevance as DenseNDArray,
       contributes = paramsContributes.weights.values
     )
 

@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.core.layers
 
-import com.kotlinnlp.simplednn.core.arrays.Norm1Array
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -49,7 +48,7 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   protected fun calculateRelevanceOfArray(x: InputNDArrayType,
                                           y: DenseNDArray,
                                           yRelevance: DenseNDArray,
-                                          contributes: NDArray<*>) : Norm1Array<*> =
+                                          contributes: NDArray<*>): NDArray<*> =
     when (x) {
 
       is DenseNDArray -> this.calculateRelevanceOfDenseArray(
@@ -80,7 +79,7 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   protected fun calculateRelevanceOfDenseArray(x: DenseNDArray,
                                                y: DenseNDArray,
                                                yRelevance: DenseNDArray,
-                                               contributes: DenseNDArray) : Norm1Array<DenseNDArray> {
+                                               contributes: DenseNDArray): DenseNDArray {
 
     val relevanceArray: DenseNDArray = DenseNDArrayFactory.zeros(shape = Shape(this.layer.inputArray.size))
     val xLength: Int = x.length
@@ -96,7 +95,7 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       }
     }
 
-    return Norm1Array(values = relevanceArray)
+    return relevanceArray
   }
 
   /**
@@ -113,7 +112,7 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun calculateRelevanceOfSparseArray(x: SparseBinaryNDArray,
                                               y: DenseNDArray,
                                               yRelevance: DenseNDArray,
-                                              contributes: SparseNDArray) : Norm1Array<SparseNDArray> {
+                                              contributes: SparseNDArray): SparseNDArray {
 
     val xActiveIndices: List<Int> = x.activeIndicesByColumn.values.first()!!
     val xActiveIndicesSize: Int =  xActiveIndices.size
@@ -135,13 +134,11 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       }
     }
 
-    return Norm1Array(
-      values = SparseNDArray(
-        shape = x.shape,
-        values = relevanceValues,
-        rows = relevanceRows,
-        columns = relevanceColumns
-      )
+    return SparseNDArray(
+      shape = x.shape,
+      values = relevanceValues,
+      rows = relevanceRows,
+      columns = relevanceColumns
     )
   }
 }

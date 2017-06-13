@@ -333,9 +333,9 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun getInputRelevance(stateIndex: Int, copy: Boolean = true): NDArray<*> {
 
     return if (copy) {
-      this.sequence.states[stateIndex].structure.inputLayer.inputArray.relevance.values.copy()
+      this.sequence.states[stateIndex].structure.inputLayer.inputArray.relevance.copy()
     } else {
-      this.sequence.states[stateIndex].structure.inputLayer.inputArray.relevance.values
+      this.sequence.states[stateIndex].structure.inputLayer.inputArray.relevance
     }
   }
 

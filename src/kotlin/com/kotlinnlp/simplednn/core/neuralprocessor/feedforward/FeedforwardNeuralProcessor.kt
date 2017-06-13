@@ -96,9 +96,9 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun getInputRelevance(copy: Boolean = true): NDArray<*> {
 
     return if (copy) {
-      this.structure.inputLayer.inputArray.relevance.values.copy()
+      this.structure.inputLayer.inputArray.relevance.copy()
     } else {
-      this.structure.inputLayer.inputArray.relevance.values
+      this.structure.inputLayer.inputArray.relevance
     }
   }
 

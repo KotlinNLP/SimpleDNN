@@ -69,7 +69,7 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param relevance the relevance to set into the outputArray
    */
-  fun setOutputRelevance(relevance: Norm1Array<*>) = this.outputArray.assignRelevance(relevance)
+  fun setOutputRelevance(relevance: Norm1Array<*>) = this.outputArray.assignRelevance(relevance.values)
 
   /**
    * Forward the input to the output combining it with the parameters.
