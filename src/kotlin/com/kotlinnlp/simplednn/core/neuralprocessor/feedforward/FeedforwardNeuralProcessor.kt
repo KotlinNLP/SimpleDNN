@@ -132,8 +132,11 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.structure.forward(
       features = featuresArray,
       paramsContributes = this.forwardParamsContributes,
-      relevantOutcomesDistribution = relevantOutcomesDistribution,
       useDropout = useDropout)
+
+    this.structure.calculateRelevance(
+      paramsContributes = this.forwardParamsContributes,
+      relevantOutcomesDistribution = relevantOutcomesDistribution)
 
     return this.structure.outputLayer.outputArray.values
   }
