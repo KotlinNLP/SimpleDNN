@@ -92,8 +92,8 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     val wContr: NDArray<*> = paramsContributes.weights.values
 
     when (x) {
-      is DenseNDArray -> this.forwardDenseInput(x = x, y = y, w = w, b = b, wContr = wContr as DenseNDArray)
-      is SparseBinaryNDArray -> this.forwardSparseInput(x = x, y = y, w = w, b = b, wContr = wContr as SparseNDArray)
+      is DenseNDArray -> this.forwardDenseInput(x = x, y = y, w = w, b = b, contr = wContr as DenseNDArray)
+      is SparseBinaryNDArray -> this.forwardSparseInput(x = x, y = y, w = w, b = b, contr = wContr as SparseNDArray)
       else -> throw RuntimeException("Invalid input type '%s'".format(x.javaClass.name))
     }
 
@@ -107,7 +107,7 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
                                 y: DenseNDArray,
                                 w: DenseNDArray,
                                 b: DenseNDArray,
-                                wContr: DenseNDArray) {
+                                contr: DenseNDArray) {
 
     val xLength: Int = x.length
 
@@ -118,7 +118,7 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
       for (i in 0 until w.columns) {
         val contribute: Double = w[j, i] * x[i] + b[j] / xLength
 
-        wContr[j, i] = contribute
+        contr[j, i] = contribute
         y[j] += contribute
       }
     }
@@ -131,17 +131,17 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
                                  y: DenseNDArray,
                                  w: DenseNDArray,
                                  b: DenseNDArray,
-                                 wContr: SparseNDArray) {
+                                 contr: SparseNDArray) {
 
     val xActiveIndices: ArrayList<Int> = x.activeIndicesByColumn.values.first()!!
     val xActiveIndicesSize: Int = xActiveIndices.size
     val yLength: Int = y.length
-    val wContrActiveIndicesSize: Int = xActiveIndicesSize * yLength
+    val contrActiveIndicesSize: Int = xActiveIndicesSize * yLength
 
     y.zeros()
 
     val values = Array(
-      size = wContrActiveIndicesSize,
+      size = contrActiveIndicesSize,
       init = { k ->
         val j: Int = k % yLength // linear indexing
         val i: Int = xActiveIndices[k / yLength] // linear indexing
@@ -154,10 +154,10 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
         contribute
       })
 
-    wContr.assignValues(
+    contr.assignValues(
       values = values,
-      rowIndices = Array(size = wContrActiveIndicesSize, init = { k -> k % yLength}),
-      colIndices = Array(size = wContrActiveIndicesSize, init = { k -> xActiveIndices[k / yLength]}))
+      rowIndices = Array(size = contrActiveIndicesSize, init = { k -> k % yLength}),
+      colIndices = Array(size = contrActiveIndicesSize, init = { k -> xActiveIndices[k / yLength]}))
   }
 
   /**
@@ -174,7 +174,7 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     val yRelevance: DenseNDArray = this.outputArray.relevance.values as DenseNDArray
     // output relevance is always Dense (no Sparse needed, generally little size)
 
-    val wContr: NDArray<*> = paramsContributes.weights.values
+    val contr: NDArray<*> = paramsContributes.weights.values
 
     when (x) {
 
@@ -182,13 +182,13 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
         x = x,
         y = y,
         yRelevance = yRelevance,
-        wContr = wContr as DenseNDArray)
+        contr = contr as DenseNDArray)
 
       is SparseBinaryNDArray -> this.calculateRelevanceOfSparseInput(
         x = x,
         y = y,
         yRelevance = yRelevance,
-        wContr = wContr as SparseNDArray)
+        contr = contr as SparseNDArray)
 
       else -> throw RuntimeException("Invalid input type '%s'".format(x.javaClass.name))
     }
@@ -200,7 +200,7 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun calculateRelevanceOfDenseInput(x: DenseNDArray,
                                              y: DenseNDArray,
                                              yRelevance: DenseNDArray,
-                                             wContr: DenseNDArray) {
+                                             contr: DenseNDArray) {
 
     val relevanceArray: DenseNDArray = DenseNDArrayFactory.zeros(shape = Shape(this.inputArray.size))
     val xLength: Int = x.length
@@ -212,7 +212,7 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
         val eps: Double = if (y[j] >= 0) this.relevanceEps else -this.relevanceEps
         val epsN: Double = eps / xLength
 
-        relevanceArray[i] += yRelevance[j] * (wContr[j, i]  + epsN) / (y[j] + eps)
+        relevanceArray[i] += yRelevance[j] * (contr[j, i]  + epsN) / (y[j] + eps)
       }
     }
 
@@ -225,7 +225,7 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun calculateRelevanceOfSparseInput(x: SparseBinaryNDArray,
                                               y: DenseNDArray,
                                               yRelevance: DenseNDArray,
-                                              wContr: SparseNDArray) {
+                                              contr: SparseNDArray) {
 
     val xActiveIndices: List<Int> = x.activeIndicesByColumn.values.first()!!
     val xActiveIndicesSize: Int =  xActiveIndices.size
@@ -236,12 +236,12 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     var k: Int = 0
 
     for (l in 0 until xActiveIndicesSize) {
-      // the indices of the non-zero elements of x are the same of the non-zero columns of wContr
+      // the indices of the non-zero elements of x are the same of the non-zero columns of contr
       for (j in 0 until yLength) {
-        // loop over the i-th column of wContr (which is non-zero)
+        // loop over the i-th column of contr (which is non-zero)
         val eps: Double = if (y[j] >= 0) this.relevanceEps else -this.relevanceEps
         val epsN: Double = eps / xActiveIndicesSize
-        val wContrJI: Double = wContr.values[k++]  // linear indexing
+        val wContrJI: Double = contr.values[k++]  // linear indexing
 
         relevanceValues[l] += yRelevance[j] * (wContrJI + epsN) / (y[j] + eps)
       }
