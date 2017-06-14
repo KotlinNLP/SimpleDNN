@@ -24,18 +24,10 @@ class RANRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Calculate the relevance of the input respect of the output.
    *
    * @param paramsContributes the contributes of the parameters during the last forward
-   */
-  override fun calculateRelevance(paramsContributes: LayerParameters) {
-    TODO("not implemented")
-  }
-
-  /**
-   * Calculate the relevance of the input respect of the output and add it to the relevance of the input array
-   * previously set.
    *
-   * @param paramsContributes the contributes of the parameters during the last forward
+   * @return the relevance of the input respect of the output
    */
-  override fun addInputRelevance(paramsContributes: LayerParameters) {
+  override fun getInputRelevance(paramsContributes: LayerParameters): NDArray<*> {
     TODO("not implemented")
   }
 
