@@ -8,8 +8,10 @@
 package com.kotlinnlp.simplednn.core.layers.recurrent.simple
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.LayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.RecurrentRelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which calculates the relevance of the input of a [layer] respect of its output.
@@ -21,12 +23,29 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
 ) : RecurrentRelevanceHelper<InputNDArrayType>(layer) {
 
   /**
-   * Calculate the relevance of the input.
+   * Calculate the relevance of the input respect of the output.
    *
    * @param paramsContributes the contributes of the parameters during the last forward
+   *
+   * @return the relevance of the input respect of the output
    */
-  override fun calculateRelevance(paramsContributes: LayerParameters) {
-    TODO("not implemented")
+  override fun getInputRelevance(paramsContributes: LayerParameters): NDArray<*> {
+    paramsContributes as SimpleRecurrentLayerParameters
+
+    val y: DenseNDArray = this.layer.outputArray.valuesNotActivated
+    val yRec: DenseNDArray = paramsContributes.biases.values
+    val yInput: DenseNDArray = y.sub(yRec)
+    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer() as? SimpleRecurrentLayerStructure<*>
+
+    return this.calculateRelevanceOfArray(
+      x = this.layer.inputArray.values,
+      y = yInput,
+      yRelevance = if (prevStateLayer != null)
+        this.getInputRelevancePartition(y = y, yInput = yInput, yRec = yRec)
+      else
+        this.layer.outputArray.relevance as DenseNDArray,
+      contributes = paramsContributes.weights.values
+    )
   }
 
   /**
@@ -35,6 +54,55 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
    * @param paramsContributes the contributes of the parameters during the last forward
    */
   override fun calculateRecurrentRelevance(paramsContributes: LayerParameters) {
-    TODO("not implemented")
+    paramsContributes as SimpleRecurrentLayerParameters
+
+    val y: DenseNDArray = this.layer.outputArray.valuesNotActivated
+    val yRec: DenseNDArray = paramsContributes.biases.values
+    val prevStateLayer: LayerStructure<*> = this.layer.layerContextWindow.getPrevStateLayer()!!
+
+    val recurrentRelevance = this.calculateRelevanceOfDenseArray(
+      x = prevStateLayer.outputArray.values,
+      y = yRec,
+      yRelevance = this.getRecurrentRelevancePartition(y = y, yRec = yRec),
+      contributes = paramsContributes.recurrentWeights.values
+    )
+
+    prevStateLayer.outputArray.assignRelevance(recurrentRelevance)
+  }
+
+  /**
+   * Get the partition of the output relevance respect of the input.
+   *
+   * @param y the output array of the layer
+   * @param yInput the contribute of the input to calculate the output array
+   * @param yRec the contribute of the recursion to calculate the output array
+   *
+   * @return the partition of the output relevance respect of the input
+   */
+  private fun getInputRelevancePartition(y: DenseNDArray, yInput: DenseNDArray, yRec: DenseNDArray): DenseNDArray {
+
+    val yRelevance: DenseNDArray = this.layer.outputArray.relevance as DenseNDArray
+    val eps: DenseNDArray = yRec.nonZeroSign().assignProd(this.relevanceEps) // the same factor (yRec) is needed
+    // to calculate eps either for the input partition then the recurrent one
+
+    // partition factor = (yInput + eps / 2) / (yInput + yRec + eps) [eps avoids divisions by zero]
+    return yRelevance.prod(yInput.sum(eps.div(2.0))).assignDiv(y.sum(eps))
+  }
+
+  /**
+   * Get the partition of the output relevance respect of the output in the previous state.
+   *
+   * @param y the output array of the layer
+   * @param yRec the contribute of the recursion to calculate the output array
+   *
+   * @return the partition of the output relevance respect of the output in the previous state
+   */
+  private fun getRecurrentRelevancePartition(y: DenseNDArray, yRec: DenseNDArray): DenseNDArray {
+
+    val yRelevance: DenseNDArray = this.layer.outputArray.relevance as DenseNDArray
+    val eps: DenseNDArray = yRec.nonZeroSign().assignProd(this.relevanceEps)
+
+    // partition factor = (yRec + eps / 2) / (yInput + yRec + eps) [eps avoids divisions by zero]
+    return yRelevance.prod(yRec.sum(eps.div(2.0))).assignDiv(y.sum(eps))
   }
 }
