@@ -569,12 +569,21 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   override fun avg(): Double = this.storage.mean()
 
   /**
-   * Sign function
+   * Sign function.
    *
-   * @return a new DenseNDArray containing the results of the function sign() applied element-wise
+   * @return a new [DenseNDArray] containing the results of the function sign() applied element-wise
    */
   override fun sign(): DenseNDArray {
     return DenseNDArray(MatrixFunctions.signum(this.storage))
+  }
+
+  /**
+   * Non-zero sign function.
+   *
+   * @return a new [DenseNDArray] containing +1 or -1 values depending on the sign element-wise (+1 if the value is 0)
+   */
+  fun nonZeroSign(): DenseNDArray {
+    return DenseNDArray(MatrixFunctions.signum(MatrixFunctions.signum(this.storage).addi(0.1)))
   }
 
   /**
