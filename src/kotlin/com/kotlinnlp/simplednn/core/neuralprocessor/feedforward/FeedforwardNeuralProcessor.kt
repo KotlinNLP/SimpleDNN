@@ -142,10 +142,10 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * Backward errors.
    *
-   * @param outputErrors the errors on the output of the network
-   * @param propagateToInput propagateErrorsToInput
-   * @return the avgLoss respect to the output of the network
+   * @param outputErrors the errors of the output
+   * @param propagateToInput whether to propagate the errors to the input
    */
   fun backward(outputErrors: DenseNDArray,
                propagateToInput: Boolean = false) {
