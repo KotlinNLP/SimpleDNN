@@ -214,7 +214,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     for (stateIndex in (stateFrom .. stateTo).reversed()) {
       this.curStateIndex = stateIndex // crucial to provide the right context
-      this.calculateCurrentStateRelevance(isFirstState = this.curStateIndex == stateFrom)
+      this.calculateCurrentStateRelevance(isFirstState = stateIndex == stateFrom)
     }
 
     return this.getInputRelevance(stateIndex = stateFrom, copy = copy)
