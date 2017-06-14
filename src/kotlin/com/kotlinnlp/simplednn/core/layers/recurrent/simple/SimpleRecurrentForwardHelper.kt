@@ -31,13 +31,13 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
     val w: DenseNDArray = this.layer.params.weights.values as DenseNDArray
     val b: DenseNDArray = this.layer.params.biases.values
 
-    val x: NDArray<*> = this.layer.inputArray.values
+    val x: InputNDArrayType = this.layer.inputArray.values
     val y: DenseNDArray = this.layer.outputArray.values
 
     // y = w (dot) x + b
     y.assignDot(w, x).assignSum(b)
 
-    // y += wRec (dot) yAPrev
+    // y += wRec (dot) yPrev
     val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer()
     if (prevStateLayer != null) { // recurrent contribute
 
@@ -53,9 +53,46 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
   /**
    * Forward the input to the output combining it with the parameters, saving the contributes of the parameters.
    *
+   * y = f(w (dot) x + b + wRec (dot) yPrev)
+   *
    * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
    */
   override fun forward(paramsContributes: LayerParameters) {
-    TODO("not implemented")
+    this.layer.params as SimpleRecurrentLayerParameters
+    paramsContributes as SimpleRecurrentLayerParameters
+
+    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer()
+    val y: DenseNDArray = this.layer.outputArray.values
+    val b: DenseNDArray = this.layer.params.biases.values
+    val bContrib: DenseNDArray = if (prevStateLayer != null) b.div(2.0) else b
+    // if there's a recurrent contribute b is divided equally within the sum
+
+    // y = w (dot) x + b ( -> b / 2)
+    this.forwardArray(
+      contributes = paramsContributes.weights.values,
+      x = this.layer.inputArray.values,
+      y = y,
+      w = this.layer.params.weights.values as DenseNDArray,
+      b = bContrib
+    )
+
+    // y += wRec (dot) yPrev + b / 2 (recurrent contribute)
+    if (prevStateLayer != null) {
+
+      val yRec: DenseNDArray = paramsContributes.biases.values // a tricky way to save the recurrent contribute
+                                                               // (b.size == y.size == yRec.size)
+
+      this.forwardArray(
+        contributes = paramsContributes.recurrentWeights.values,
+        x = prevStateLayer.outputArray.values,
+        y = yRec,
+        w = this.layer.params.recurrentWeights.values,
+        b = bContrib
+      )
+
+      y.assignSum(yRec)
+    }
+
+    this.layer.outputArray.activate()
   }
 }
