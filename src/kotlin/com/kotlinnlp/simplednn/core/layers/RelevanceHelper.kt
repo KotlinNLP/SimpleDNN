@@ -33,7 +33,7 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param paramsContributes the contributes of the parameters during the last forward
    */
-  fun calculateRelevance(paramsContributes: LayerParameters) {
+  fun calculateInputRelevance(paramsContributes: LayerParameters) {
     this.layer.inputArray.assignRelevance(relevance = this.getInputRelevance(paramsContributes = paramsContributes))
   }
 

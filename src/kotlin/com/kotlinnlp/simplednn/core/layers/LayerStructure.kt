@@ -103,6 +103,15 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * Calculate the relevance of the input respect of the output and assign it into the input array.
+   *
+   * @param paramsContributes the contributes of the parameters during the last forward
+   */
+  fun calculateInputRelevance(paramsContributes: LayerParameters) {
+    this.relevanceHelper.calculateInputRelevance(paramsContributes = paramsContributes)
+  }
+
+  /**
    * Calculate the relevance of the input respect of the output and add it to the relevance of the input array
    * previously set.
    *
@@ -110,15 +119,6 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   fun addInputRelevance(paramsContributes: LayerParameters) {
     this.relevanceHelper.addInputRelevance(paramsContributes = paramsContributes)
-  }
-
-  /**
-   * Calculate the relevance of the input.
-   *
-   * @param paramsContributes the contributes of the parameters during the last forward
-   */
-  fun calculateRelevance(paramsContributes: LayerParameters) {
-    this.relevanceHelper.calculateRelevance(paramsContributes = paramsContributes)
   }
 
   /**

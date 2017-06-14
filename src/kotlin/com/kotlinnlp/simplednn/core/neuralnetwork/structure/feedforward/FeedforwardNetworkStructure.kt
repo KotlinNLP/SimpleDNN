@@ -72,7 +72,7 @@ class FeedforwardNetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     for ((i, layer) in this.layers.withIndex().reversed()) { layer as FeedforwardLayerStructure
       this.curLayerIndex = i
-      layer.calculateRelevance(paramsContributes = paramsContributes.paramsPerLayer[i])
+      layer.calculateInputRelevance(paramsContributes = paramsContributes.paramsPerLayer[i])
     }
   }
 }

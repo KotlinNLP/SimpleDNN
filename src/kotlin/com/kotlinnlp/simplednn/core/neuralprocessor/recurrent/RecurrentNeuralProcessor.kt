@@ -317,7 +317,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
           layer.addInputRelevance(paramsContributes = params)
 
         } else {
-          layer.calculateRelevance(paramsContributes = params)
+          layer.calculateInputRelevance(paramsContributes = params)
         }
       }
 
