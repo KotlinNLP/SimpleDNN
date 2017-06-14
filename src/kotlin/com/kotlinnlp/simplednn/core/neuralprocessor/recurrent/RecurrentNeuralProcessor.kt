@@ -306,17 +306,22 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     val structure: RecurrentNetworkStructure<InputNDArrayType> = this.sequence.states[this.curStateIndex].structure
 
-    for ((layerIndex, layer) in structure.layers.withIndex().reversed()) { layer as RecurrentLayerStructure
+    for ((layerIndex, layer) in structure.layers.withIndex().reversed()) {
 
       val params: LayerParameters = this.forwardParamsContributes.paramsPerLayer[layerIndex]
 
       structure.curLayerIndex = layerIndex // crucial to provide the right context
 
       if (isFirstState || layerIndex > 0) {
-        layer.calculateRelevance(paramsContributes = params)
+        if (layerIndex > 0 && structure.layers[layerIndex - 1] is RecurrentLayerStructure) {
+          layer.addInputRelevance(paramsContributes = params)
+
+        } else {
+          layer.calculateRelevance(paramsContributes = params)
+        }
       }
 
-      if (!isFirstState) {
+      if (!isFirstState && layer is RecurrentLayerStructure) {
         layer.calculateRecurrentRelevance(paramsContributes = params)
       }
     }
