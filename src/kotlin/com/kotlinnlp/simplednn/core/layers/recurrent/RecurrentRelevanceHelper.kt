@@ -21,14 +21,6 @@ abstract class RecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayT
 ) : RelevanceHelper<InputNDArrayType>(layer) {
 
   /**
-   * Calculate the relevance of the input respect of the output and add it to the relevance of the input array
-   * previously set.
-   *
-   * @param paramsContributes the contributes of the parameters during the last forward
-   */
-  abstract fun addInputRelevance(paramsContributes: LayerParameters)
-
-  /**
    * Calculate the relevance of the output in the previous state respect of the current one.
    *
    * @param paramsContributes the contributes of the parameters during the last forward
