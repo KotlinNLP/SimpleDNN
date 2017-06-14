@@ -205,6 +205,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
                          relevantOutcomesDistribution: DistributionArray,
                          copy: Boolean = true): NDArray<*> {
 
+    require(stateFrom <= stateTo) { "stateFrom (%d) must be <= stateTo (%d)".format(stateFrom, stateTo) }
     require(stateFrom in 0 until this.sequence.length) {
       "stateFrom (%d) index exceeded sequence size (%d)".format(stateFrom, this.sequence.length)
     }
