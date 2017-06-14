@@ -471,6 +471,21 @@ class DenseNDArraySpec : Spek({
         }
       }
 
+      on("nonZeroSign() method") {
+
+        val signedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.1, 0.0, 0.7, -0.6))
+        val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, 1.0, 1.0, -1.0))
+        val res = signedArray.nonZeroSign()
+
+        it("should return a new DenseNDArray") {
+          assertEquals(false, signedArray === res)
+        }
+
+        it("should return the expected values") {
+          assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
+        }
+      }
+
       on("sqrt() method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3162, 0.4472, 0.5478, 0.0))
