@@ -107,7 +107,7 @@ class FeedforwardLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 3))
-        layer.calculateRelevance(paramsContributes = contributes)
+        layer.calculateInputRelevance(paramsContributes = contributes)
 
         it("should set a Dense input relevance") {
           assertTrue { layer.inputArray.relevance is DenseNDArray }
@@ -139,7 +139,7 @@ class FeedforwardLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 3))
-        layer.calculateRelevance(paramsContributes = contributes)
+        layer.calculateInputRelevance(paramsContributes = contributes)
 
         it("should set a Sparse input relevance") {
           assertTrue { layer.inputArray.relevance is SparseNDArray }
