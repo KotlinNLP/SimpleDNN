@@ -222,8 +222,10 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * Backward errors.
    *
-   * @param outputErrors output error
+   * @param outputErrors the errors of the output
+   * @param propagateToInput whether to propagate the errors to the input
    */
   fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false) {
 
@@ -235,8 +237,10 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * Backward errors of a sequence.
    *
    * @param outputErrorsSequence output errors for each item of the sequence
+   * @param propagateToInput whether to propagate the errors to the input
    */
   fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean = false) {
 
@@ -261,7 +265,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   *
+   * Add a new state.
    */
   private fun addNewState() {
 
@@ -301,7 +305,10 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Calculate the relevance of the layers of the current state
+   * Calculate the relevance of the layers of the current state.
+   *
+   * @param isFirstState a Boolean indicating if the current state is the first
+   * @param isLastState a Boolean indicating if the current state is the last
    */
   private fun calculateCurrentStateRelevance(isFirstState: Boolean, isLastState: Boolean) {
 
@@ -326,9 +333,14 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Calculate the relevance given a the layer
+   * Calculate the relevance given the current layer.
    *
-   * @param
+   * @param layer the current layer
+   * @param layerIndex the current layer index
+   * @param isFirstState a Boolean indicating if the current state is the first
+   * @param isLastState a Boolean indicating if the current state is the last
+   * @param isPropagating a Boolean indicating if the current layer is in the middle of the propagation
+   * @param isPrevLayerRecurrent a Boolean indicating if the previous layer is recurrent
    */
   private fun propagateLayerRelevance(layer: LayerStructure<*>,
                                       layerIndex: Int,
