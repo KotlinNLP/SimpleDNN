@@ -29,7 +29,7 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private val relevanceEps: Double = 0.01
 
   /**
-   * Calculate the relevance of the input.
+   * Calculate the relevance of the input respect of the output.
    *
    * @param paramsContributes the contributes of the parameters during the last forward
    */
