@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.LayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.RecurrentLayerStructure
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
@@ -308,25 +309,48 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     var isPropagating: Boolean = isLastState
 
     for ((layerIndex, layer) in structure.layers.withIndex().reversed()) {
-      val params: LayerParameters = this.forwardParamsContributes.paramsPerLayer[layerIndex]
 
       structure.curLayerIndex = layerIndex // crucial to provide the right context
 
       isPropagating = isPropagating || layer is RecurrentLayerStructure
 
-      if (isPropagating && (layerIndex > 0 || isFirstState)) {
+      this.propagateLayerRelevance(
+        layer = layer,
+        layerIndex = layerIndex,
+        isFirstState = isFirstState,
+        isLastState = isLastState,
+        isPropagating = isPropagating,
+        isPrevLayerRecurrent = layerIndex > 0 && structure.layers[layerIndex - 1] is RecurrentLayerStructure
+      )
+    }
+  }
 
-        if (!isLastState && layerIndex > 0 && structure.layers[layerIndex - 1] is RecurrentLayerStructure) {
-          layer.addInputRelevance(paramsContributes = params)
+  /**
+   * Calculate the relevance given a the layer
+   *
+   * @param
+   */
+  private fun propagateLayerRelevance(layer: LayerStructure<*>,
+                                      layerIndex: Int,
+                                      isFirstState: Boolean,
+                                      isLastState: Boolean,
+                                      isPropagating: Boolean,
+                                      isPrevLayerRecurrent: Boolean) {
 
-        } else {
-          layer.calculateInputRelevance(paramsContributes = params)
-        }
+    val params: LayerParameters = this.forwardParamsContributes.paramsPerLayer[layerIndex]
+
+    if (isPropagating && (layerIndex > 0 || isFirstState)) { // propagate relevance to input
+
+      if (!isLastState && isPrevLayerRecurrent) {
+        layer.addInputRelevance(paramsContributes = params)
+
+      } else {
+        layer.calculateInputRelevance(paramsContributes = params)
       }
+    }
 
-      if (!isFirstState && layer is RecurrentLayerStructure) {
-        layer.calculateRecurrentRelevance(paramsContributes = params)
-      }
+    if (!isFirstState && layer is RecurrentLayerStructure) { // propagate relevance to previous state
+      layer.calculateRecurrentRelevance(paramsContributes = params)
     }
   }
 
