@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -26,7 +25,7 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The stabilizing term used to calculate the relevance
    */
-  private val relevanceEps: Double = 0.01
+  protected val relevanceEps: Double = 0.01
 
   /**
    * Calculate the relevance of the input respect of the output.
@@ -102,7 +101,7 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
                                                yRelevance: DenseNDArray,
                                                contributes: DenseNDArray): DenseNDArray {
 
-    val relevanceArray: DenseNDArray = DenseNDArrayFactory.zeros(shape = Shape(this.layer.inputArray.size))
+    val relevanceArray: DenseNDArray = DenseNDArrayFactory.zeros(shape = x.shape)
     val xLength: Int = x.length
     val yLength: Int = y.length
 
