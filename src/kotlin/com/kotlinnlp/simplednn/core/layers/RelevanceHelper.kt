@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
  * @property layer the [LayerStructure] in which to calculate the input relevance
  */
 abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  protected val layer: LayerStructure<InputNDArrayType>
+  open protected val layer: LayerStructure<InputNDArrayType>
 ) {
 
   /**
