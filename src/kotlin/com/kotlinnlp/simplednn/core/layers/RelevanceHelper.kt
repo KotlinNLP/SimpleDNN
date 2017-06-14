@@ -33,7 +33,28 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param paramsContributes the contributes of the parameters during the last forward
    */
-  abstract fun calculateRelevance(paramsContributes: LayerParameters)
+  fun calculateRelevance(paramsContributes: LayerParameters) {
+    this.layer.inputArray.assignRelevance(relevance = this.getInputRelevance(paramsContributes = paramsContributes))
+  }
+
+  /**
+   * Calculate the relevance of the input respect of the output and add it to the relevance of the input array
+   * previously set.
+   *
+   * @param paramsContributes the contributes of the parameters during the last forward
+   */
+  fun addInputRelevance(paramsContributes: LayerParameters) {
+    this.layer.inputArray.relevance.assignSum(this.getInputRelevance(paramsContributes = paramsContributes))
+  }
+
+  /**
+   * Calculate the relevance of the input respect of the output.
+   *
+   * @param paramsContributes the contributes of the parameters during the last forward
+   *
+   * @return the relevance of the input respect of the output
+   */
+  protected abstract fun getInputRelevance(paramsContributes: LayerParameters): NDArray<*>
 
   /**
    * Calculate the relevance of the array [x] respect of the calculation which produced the array [y].
