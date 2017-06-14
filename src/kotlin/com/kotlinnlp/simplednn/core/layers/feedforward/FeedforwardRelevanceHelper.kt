@@ -22,7 +22,7 @@ class FeedforwardRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) : RelevanceHelper<InputNDArrayType>(layer) {
 
   /**
-   * Calculate the relevance of the input.
+   * Calculate the relevance of the input respect of the output.
    *
    * @param paramsContributes the contributes of the parameters during the last forward
    */
