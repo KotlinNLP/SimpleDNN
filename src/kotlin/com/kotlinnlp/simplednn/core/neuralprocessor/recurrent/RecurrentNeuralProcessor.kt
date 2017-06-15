@@ -44,11 +44,6 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   private var curStateIndex: Int = 0
 
   /**
-   * The contributes of the model parameters to forward the input to the output
-   */
-  private val forwardParamsContributes: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
-
-  /**
    * The errors of the network model parameters calculated during a single backward
    */
   private var backwardParamsErrors: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
@@ -181,7 +176,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
       this.reset()
     }
 
-    this.addNewState()
+    this.addNewState(saveContributes = saveContributes)
     this.forwardCurrentState(
       featuresArray = featuresArray,
       saveContributes = saveContributes,
@@ -266,15 +261,17 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
   /**
    * Add a new state.
+   *
+   * @param saveContributes whether to save the contributes of each input to its output (needed to calculate relevance)
    */
-  private fun addNewState() {
+  private fun addNewState(saveContributes: Boolean = false) {
 
     val structure = RecurrentNetworkStructure(
       layersConfiguration = this.neuralNetwork.layersConfiguration,
       params = this.neuralNetwork.model,
       structureContextWindow = this)
 
-    this.sequence.add(structure)
+    this.sequence.add(structure = structure, saveContributes = saveContributes)
 
     this.curStateIndex = this.sequence.lastIndex
   }
@@ -294,7 +291,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     if (saveContributes) {
       this.sequence.lastStructure!!.forward(
         features = featuresArray,
-        paramsContributes = this.forwardParamsContributes,
+        paramsContributes = this.sequence.lastContributes,
         useDropout = useDropout)
 
     } else {
@@ -349,7 +346,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
                                       isPropagating: Boolean,
                                       isPrevLayerRecurrent: Boolean) {
 
-    val params: LayerParameters = this.forwardParamsContributes.paramsPerLayer[layerIndex]
+    val params: LayerParameters = this.sequence.getStateContributes(this.curStateIndex)!!.paramsPerLayer[layerIndex]
 
     if (isPropagating && (layerIndex > 0 || isFirstState)) { // propagate relevance to input
 
