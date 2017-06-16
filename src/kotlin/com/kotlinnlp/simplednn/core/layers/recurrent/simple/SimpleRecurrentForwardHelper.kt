@@ -94,8 +94,8 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
    * y += wRec (dot) yPrev
    *
    * @param prevStateLayer the layer in the previous state
-   * @param paramsContributes the [LayerParameters] in which to save the contributes of the input in respect of the
-   *                          output
+   * @param paramsContributes the [SimpleRecurrentLayerParameters] in which to save the contributes of the input in
+   *                          respect of the output
    * @param bContribute the contribute of the biases
    */
   private fun addRecurrentContribute(prevStateLayer: LayerStructure<*>,
