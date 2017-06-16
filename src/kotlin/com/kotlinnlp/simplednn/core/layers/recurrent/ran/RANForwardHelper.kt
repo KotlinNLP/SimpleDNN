@@ -61,11 +61,13 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Set gates values
+   * Set gates values.
    *
    * inG = sigmoid(wIn (dot) x + bIn + wrIn (dot) yPrev)
    * forG = sigmoid(wForG (dot) x + bForG + wrForG (dot) yPrev)
    * c = wc (dot) x + bc
+   *
+   * @param prevStateLayer the layer in the previous state
    */
   private fun setGates(prevStateLayer: LayerStructure<*>?) { this.layer.params as RANLayerParameters
 
