@@ -80,41 +80,15 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
     // y += wRec (dot) yPrev + b / 2 (recurrent contribute)
     if (prevStateLayer != null) {
       this.addRecurrentContribute(
-        prevStateLayer = prevStateLayer,
-        paramsContributes = paramsContributes,
-        bContribute = bContrib)
+        yPrev = prevStateLayer.outputArray.values,
+        yRec = paramsContributes.biases.values, // a tricky way to save the recurrent contribute (b.size == y.size)
+        y = this.layer.outputArray.values,
+        wRec = this.layer.params.recurrentWeights.values,
+        b = bContrib,
+        contributes = paramsContributes.recurrentWeights.values
+      )
     }
 
     this.layer.outputArray.activate()
-  }
-
-  /**
-   * Add the recurrent contribute to the output array, saving the contributes of the input in respect of the output.
-   *
-   * y += wRec (dot) yPrev
-   *
-   * @param prevStateLayer the layer in the previous state
-   * @param paramsContributes the [SimpleRecurrentLayerParameters] in which to save the contributes of the input in
-   *                          respect of the output
-   * @param bContribute the contribute of the biases
-   */
-  private fun addRecurrentContribute(prevStateLayer: LayerStructure<*>,
-                                     paramsContributes: SimpleRecurrentLayerParameters,
-                                     bContribute: DenseNDArray) {
-
-    this.layer.params as SimpleRecurrentLayerParameters
-
-    val y: DenseNDArray = this.layer.outputArray.values
-    val yRec: DenseNDArray = paramsContributes.biases.values // a tricky way to save the recurrent contribute
-                                                             // (b.size == y.size == yRec.size)
-    this.forwardArray(
-      contributes = paramsContributes.recurrentWeights.values,
-      x = prevStateLayer.outputArray.values,
-      y = yRec,
-      w = this.layer.params.recurrentWeights.values,
-      b = bContribute
-    )
-
-    y.assignSum(yRec)
   }
 }
