@@ -23,11 +23,12 @@ class GateUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : Augmen
   }
 
   /**
-   *
-   * @param gateParams the parameters of the gate
-   * @param x the inputArray of the current layer
+   * Forward from the given input.
    *
    * g = w (dot) x + b
+   *
+   * @param gateParams the parameters of the gate
+   * @param x the input array of the current layer
    */
   fun forward(gateParams: GateParametersUnit, x: InputNDArrayType) {
 
@@ -38,9 +39,10 @@ class GateUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : Augmen
   }
 
   /**
+   * Add the recurrent contribute to the array.
    *
-   * @param gateParams the parameters of the gate of the next layer
-   * @param prevContribute the inputArray to add as contribute from the previous state
+   * @param gateParams the parameters of the gate
+   * @param prevContribute the input array to add as contribute from the previous state
    *
    * g += wRec (dot) prevContribute
    */
@@ -52,15 +54,15 @@ class GateUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : Augmen
   }
 
   /**
-   * Assign errors gradients to the [paramsErrors] associated to this gate
-   *
-   * @param paramsErrors a [GateParametersUnit] associated to this gate
-   * @param x the input [NDArray] of the gate
-   * @param yPrev the output [NDArray] of the gate in the previous state
+   * Assign errors to the [paramsErrors] associated to this gate.
    *
    * gb = gGate * 1
    * gw = gGate (dot) x
    * gwRec = gGate (dot) yPrev
+   *
+   * @param paramsErrors a [GateParametersUnit] associated to this gate
+   * @param x the input [NDArray] of the gate
+   * @param yPrev the output [NDArray] of the gate in the previous state
    */
   fun assignParamsGradients(paramsErrors: GateParametersUnit,
                             x: InputNDArrayType,
