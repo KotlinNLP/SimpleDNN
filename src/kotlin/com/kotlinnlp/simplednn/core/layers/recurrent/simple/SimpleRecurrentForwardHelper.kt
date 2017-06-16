@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.layers.recurrent.simple
 
 import com.kotlinnlp.simplednn.core.layers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.LayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -55,14 +56,14 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
    *
    * y = f(w (dot) x + b + wRec (dot) yPrev)
    *
-   * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
+   * @param paramsContributes the [LayerParameters] in which to save the contributes of the input in respect of the
+   *                          output
    */
   override fun forward(paramsContributes: LayerParameters) {
     this.layer.params as SimpleRecurrentLayerParameters
     paramsContributes as SimpleRecurrentLayerParameters
 
-    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer()
-    val y: DenseNDArray = this.layer.outputArray.values
+    val prevStateLayer: LayerStructure<*>? = this.layer.layerContextWindow.getPrevStateLayer()
     val b: DenseNDArray = this.layer.params.biases.values
     val bContrib: DenseNDArray = if (prevStateLayer != null) b.div(2.0) else b
     // if there's a recurrent contribute b is divided equally within the sum
@@ -71,28 +72,49 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
     this.forwardArray(
       contributes = paramsContributes.weights.values,
       x = this.layer.inputArray.values,
-      y = y,
+      y = this.layer.outputArray.values,
       w = this.layer.params.weights.values as DenseNDArray,
       b = bContrib
     )
 
     // y += wRec (dot) yPrev + b / 2 (recurrent contribute)
     if (prevStateLayer != null) {
-
-      val yRec: DenseNDArray = paramsContributes.biases.values // a tricky way to save the recurrent contribute
-                                                               // (b.size == y.size == yRec.size)
-
-      this.forwardArray(
-        contributes = paramsContributes.recurrentWeights.values,
-        x = prevStateLayer.outputArray.values,
-        y = yRec,
-        w = this.layer.params.recurrentWeights.values,
-        b = bContrib
-      )
-
-      y.assignSum(yRec)
+      this.addRecurrentContribute(
+        prevStateLayer = prevStateLayer,
+        paramsContributes = paramsContributes,
+        bContribute = bContrib)
     }
 
     this.layer.outputArray.activate()
+  }
+
+  /**
+   * Add the recurrent contribute to the output array, saving the contributes of the input in respect of the output.
+   *
+   * y += wRec (dot) yPrev
+   *
+   * @param prevStateLayer the layer in the previous state
+   * @param paramsContributes the [LayerParameters] in which to save the contributes of the input in respect of the
+   *                          output
+   * @param bContribute the contribute of the biases
+   */
+  private fun addRecurrentContribute(prevStateLayer: LayerStructure<*>,
+                                     paramsContributes: SimpleRecurrentLayerParameters,
+                                     bContribute: DenseNDArray) {
+
+    this.layer.params as SimpleRecurrentLayerParameters
+
+    val y: DenseNDArray = this.layer.outputArray.values
+    val yRec: DenseNDArray = paramsContributes.biases.values // a tricky way to save the recurrent contribute
+                                                             // (b.size == y.size == yRec.size)
+    this.forwardArray(
+      contributes = paramsContributes.recurrentWeights.values,
+      x = prevStateLayer.outputArray.values,
+      y = yRec,
+      w = this.layer.params.recurrentWeights.values,
+      b = bContribute
+    )
+
+    y.assignSum(yRec)
   }
 }
