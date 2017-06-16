@@ -106,9 +106,9 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward [x] to [y] combining it with [w] and [b], saving the contributes in [contributes].
    *
    * @param contributes a matrix which maps the contributes from each value of [x] to each value of [y]
-   * @param x a [SparseBinaryNDArray]
-   * @param y a [DenseNDArray]
-   * @param w the weights which maps [x] to [y]
+   * @param x the input array of the layer
+   * @param y the output array of the layer
+   * @param w the weights which connect [x] to [y]
    * @param b the biases added to each value of [y] (if null no bias is added)
    */
   private fun forwardSparseBinaryArray(contributes: SparseNDArray,
@@ -146,4 +146,30 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       rowIndices = Array(size = contrActiveIndicesSize, init = { k -> k % yLength}),
       colIndices = Array(size = contrActiveIndicesSize, init = { k -> xActiveIndices[k / yLength]}))
   }
+
+
+  /**
+   * Add the recurrent contribute to the output array, saving the contributes of the input in respect of the output.
+   *
+   * y += wRec (dot) yPrev
+   *
+   * @param contributes a matrix which maps the contributes from each value of [yPrev] to each value of [yRec]
+   * @param yPrev the output array of the layer in the previous state
+   * @param yRec the array in which the recurrent contribute is saved
+   * @param y the output array of the layer
+   * @param wRec the recurrent weights which connect [yPrev] to [y]
+   * @param b the biases added to each value of [yRec] (if null no bias is added)
+   */
+  protected fun addRecurrentContribute(contributes: DenseNDArray,
+                                       yPrev: DenseNDArray,
+                                       yRec: DenseNDArray,
+                                       y: DenseNDArray,
+                                       wRec: DenseNDArray,
+                                       b: DenseNDArray) {
+
+    this.forwardArray(contributes = contributes, x = yPrev, y = yRec, w = wRec, b = b)
+
+    y.assignSum(yRec)
+  }
+
 }
