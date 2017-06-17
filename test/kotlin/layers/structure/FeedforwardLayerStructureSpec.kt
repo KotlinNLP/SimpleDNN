@@ -81,9 +81,9 @@ class FeedforwardLayerStructureSpec : Spek({
       on("dense input") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer53()
-        val contributes = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
+        val contributions = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
 
-        layer.forward(paramsContributes = contributes)
+        layer.forward(paramsContributions = contributions)
 
         it("should match the expected output values") {
           assertTrue {
@@ -93,8 +93,8 @@ class FeedforwardLayerStructureSpec : Spek({
           }
         }
 
-        it("should match the expected contributes") {
-          val wContr: DenseNDArray = contributes.weights.values as DenseNDArray
+        it("should match the expected contributions") {
+          val wContr: DenseNDArray = contributions.weights.values as DenseNDArray
           assertTrue {
             wContr.equals(
               DenseNDArrayFactory.arrayOf(arrayOf(
@@ -107,7 +107,7 @@ class FeedforwardLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 3))
-        layer.calculateInputRelevance(paramsContributes = contributes)
+        layer.calculateInputRelevance(paramsContributions = contributions)
 
         it("should set a Dense input relevance") {
           assertTrue { layer.inputArray.relevance is DenseNDArray }
@@ -126,9 +126,9 @@ class FeedforwardLayerStructureSpec : Spek({
       on("sparse input") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer53SparseBinary()
-        val contributes = FeedforwardLayerParameters(inputSize = 5, outputSize = 3, sparseInput = true)
+        val contributions = FeedforwardLayerParameters(inputSize = 5, outputSize = 3, sparseInput = true)
 
-        layer.forward(paramsContributes = contributes)
+        layer.forward(paramsContributions = contributions)
 
         it("should match the expected output values") {
           assertTrue {
@@ -139,7 +139,7 @@ class FeedforwardLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 3))
-        layer.calculateInputRelevance(paramsContributes = contributes)
+        layer.calculateInputRelevance(paramsContributions = contributions)
 
         it("should set a Sparse input relevance") {
           assertTrue { layer.inputArray.relevance is SparseNDArray }

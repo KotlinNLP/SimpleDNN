@@ -64,9 +64,9 @@ class SimpleRecurrentLayerStructureSpec : Spek({
       on("without previous state context") {
 
         val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Empty())
-        val contributes = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5)
+        val contributions = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5)
 
-        layer.forward(paramsContributes = contributes)
+        layer.forward(paramsContributions = contributions)
 
         it("should match the expected outputArray") {
           assertTrue(layer.outputArray.values.equals(
@@ -74,8 +74,8 @@ class SimpleRecurrentLayerStructureSpec : Spek({
             tolerance = 1.0e-05))
         }
 
-        it("should match the expected contributes") {
-          val wContr: DenseNDArray = contributes.weights.values as DenseNDArray
+        it("should match the expected contributions") {
+          val wContr: DenseNDArray = contributions.weights.values as DenseNDArray
           assertTrue {
             wContr.equals(
               DenseNDArrayFactory.arrayOf(arrayOf(
@@ -90,7 +90,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 5))
-        layer.calculateInputRelevance(paramsContributes = contributes)
+        layer.calculateInputRelevance(paramsContributions = contributions)
 
         it("should set a Dense input relevance") {
           assertTrue { layer.inputArray.relevance is DenseNDArray }
@@ -107,7 +107,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         it("should throw an Exception when calculating the recurrent relevance") {
           assertFailsWith <KotlinNullPointerException> {
-            layer.calculateRecurrentRelevance(paramsContributes = contributes)
+            layer.calculateRecurrentRelevance(paramsContributions = contributions)
           }
         }
       }
@@ -117,11 +117,11 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         val prevStateLayer = SimpleRecurrentLayerContextWindow.Back().getPrevStateLayer()
         val contextWindow = mock<LayerContextWindow>()
         val layer = SimpleRecurrentLayerStructureUtils.buildLayer(contextWindow)
-        val contributes = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5)
+        val contributions = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5)
 
         whenever(contextWindow.getPrevStateLayer()).thenReturn(prevStateLayer)
 
-        layer.forward(paramsContributes = contributes)
+        layer.forward(paramsContributions = contributions)
 
         it("should match the expected outputArray") {
           assertTrue(layer.outputArray.values.equals(
@@ -129,8 +129,8 @@ class SimpleRecurrentLayerStructureSpec : Spek({
             tolerance = 1.0e-05))
         }
 
-        it("should match the expected contributes") {
-          val wContr: DenseNDArray = contributes.weights.values as DenseNDArray
+        it("should match the expected contributions") {
+          val wContr: DenseNDArray = contributions.weights.values as DenseNDArray
           assertTrue {
             wContr.equals(
               DenseNDArrayFactory.arrayOf(arrayOf(
@@ -144,8 +144,8 @@ class SimpleRecurrentLayerStructureSpec : Spek({
           }
         }
 
-        it("should match the expected recurrent contributes") {
-          val wRecContr: DenseNDArray = contributes.recurrentWeights.values
+        it("should match the expected recurrent contributions") {
+          val wRecContr: DenseNDArray = contributions.recurrentWeights.values
           assertTrue {
             wRecContr.equals(
               DenseNDArrayFactory.arrayOf(arrayOf(
@@ -160,8 +160,8 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 5))
-        layer.calculateInputRelevance(paramsContributes = contributes)
-        layer.calculateRecurrentRelevance(paramsContributes = contributes)
+        layer.calculateInputRelevance(paramsContributions = contributions)
+        layer.calculateRecurrentRelevance(paramsContributions = contributions)
 
         it("should set a Dense input relevance") {
           assertTrue { layer.inputArray.relevance is DenseNDArray }

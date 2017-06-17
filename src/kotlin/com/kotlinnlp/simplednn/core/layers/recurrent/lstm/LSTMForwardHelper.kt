@@ -39,11 +39,11 @@ class LSTMForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward the input to the output combining it with the parameters, saving the contributes of the parameters.
+   * Forward the input to the output combining it with the parameters, saving the contributions of the parameters.
    *
-   * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
+   * @param paramsContributions the [LayerParameters] in which to save the contributions of the parameters
    */
-  override fun forward(paramsContributes: LayerParameters) {
+  override fun forward(paramsContributions: LayerParameters) {
     TODO("not implemented")
   }
 
@@ -61,7 +61,7 @@ class LSTMForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.forwardGates()
 
     if (prevStateLayer != null) {
-      this.addGatesRecurrentContribute(prevStateLayer)
+      this.addGatesRecurrentContribution(prevStateLayer)
     }
 
     this.activateGates()
@@ -71,7 +71,7 @@ class LSTMForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val cand: DenseNDArray = this.layer.candidate.values
     cell.assignProd(inG, cand)
 
-    if (prevStateLayer != null) { // add recurrent contribute to the cell
+    if (prevStateLayer != null) { // add recurrent contribution to the cell
       val forG: DenseNDArray = this.layer.forgetGate.values
       val cellPrev: DenseNDArray = (prevStateLayer as LSTMLayerStructure).cell.valuesNotActivated
       cell.assignSum(forG.prod(cellPrev))
@@ -96,15 +96,15 @@ class LSTMForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  private fun addGatesRecurrentContribute(prevStateLayer: LayerStructure<*>) {
+  private fun addGatesRecurrentContribution(prevStateLayer: LayerStructure<*>) {
     this.layer.params as LSTMLayerParameters
 
     val yPrev: DenseNDArray = prevStateLayer.outputArray.values
 
-    this.layer.inputGate.addRecurrentContribute(this.layer.params.inputGate, yPrev)
-    this.layer.outputGate.addRecurrentContribute(this.layer.params.outputGate, yPrev)
-    this.layer.forgetGate.addRecurrentContribute(this.layer.params.forgetGate, yPrev)
-    this.layer.candidate.addRecurrentContribute(this.layer.params.candidate, yPrev)
+    this.layer.inputGate.addRecurrentContribution(this.layer.params.inputGate, yPrev)
+    this.layer.outputGate.addRecurrentContribution(this.layer.params.outputGate, yPrev)
+    this.layer.forgetGate.addRecurrentContribution(this.layer.params.forgetGate, yPrev)
+    this.layer.candidate.addRecurrentContribution(this.layer.params.candidate, yPrev)
   }
 
   /**

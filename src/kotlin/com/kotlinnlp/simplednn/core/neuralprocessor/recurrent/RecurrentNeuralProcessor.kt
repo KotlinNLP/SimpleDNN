@@ -139,20 +139,20 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward a sequence.
    *
    * @param sequenceFeaturesArray the features to forward for each item of the sequence
-   * @param saveContributes whether to save the contributes of each input to its output (needed to calculate relevance)
+   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate relevance)
    * @param useDropout whether to apply the dropout
    *
    * @return the last output of the network after the whole sequence is been forwarded
    */
   fun forward(sequenceFeaturesArray: ArrayList<InputNDArrayType>,
-              saveContributes: Boolean = false,
+              saveContributions: Boolean = false,
               useDropout: Boolean = false): DenseNDArray {
 
     sequenceFeaturesArray.forEachIndexed { i, features ->
       this.forward(
         featuresArray = features,
         firstState = (i == 0),
-        saveContributes = saveContributes,
+        saveContributions = saveContributions,
         useDropout = useDropout)
     }
 
@@ -163,23 +163,23 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward features.
    *
    * @param featuresArray the features to forward from the input to the output
-   * @param saveContributes whether to save the contributes of each input to its output (needed to calculate relevance)
+   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate relevance)
    * @param firstState whether the current one is the first state
    * @param useDropout whether to apply the dropout
    */
   fun forward(featuresArray: InputNDArrayType,
               firstState: Boolean,
-              saveContributes: Boolean = false,
+              saveContributions: Boolean = false,
               useDropout: Boolean = false): DenseNDArray {
 
     if (firstState) {
       this.reset()
     }
 
-    this.addNewState(saveContributes = saveContributes)
+    this.addNewState(saveContributions = saveContributions)
     this.forwardCurrentState(
       featuresArray = featuresArray,
-      saveContributes = saveContributes,
+      saveContributions = saveContributions,
       useDropout = useDropout)
 
     return this.getOutput()
@@ -262,16 +262,16 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Add a new state.
    *
-   * @param saveContributes whether to save the contributes of each input to its output (needed to calculate relevance)
+   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate relevance)
    */
-  private fun addNewState(saveContributes: Boolean = false) {
+  private fun addNewState(saveContributions: Boolean = false) {
 
     val structure = RecurrentNetworkStructure(
       layersConfiguration = this.neuralNetwork.layersConfiguration,
       params = this.neuralNetwork.model,
       structureContextWindow = this)
 
-    this.sequence.add(structure = structure, saveContributes = saveContributes)
+    this.sequence.add(structure = structure, saveContributions = saveContributions)
 
     this.curStateIndex = this.sequence.lastIndex
   }
@@ -280,18 +280,18 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward the current state.
    *
    * @param featuresArray the features to forward from the input to the output
-   * @param saveContributes whether to save the contributes of each input to its output (needed to calculate relevance)
+   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate relevance)
    * @param useDropout whether to apply the dropout
    */
   private fun forwardCurrentState(
     featuresArray: InputNDArrayType,
-    saveContributes: Boolean,
+    saveContributions: Boolean,
     useDropout: Boolean = false) {
 
-    if (saveContributes) {
+    if (saveContributions) {
       this.sequence.lastStructure!!.forward(
         features = featuresArray,
-        paramsContributes = this.sequence.lastContributes,
+        paramsContributions = this.sequence.lastContributions,
         useDropout = useDropout)
 
     } else {
@@ -346,20 +346,20 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
                                       isPropagating: Boolean,
                                       isPrevLayerRecurrent: Boolean) {
 
-    val params: LayerParameters = this.sequence.getStateContributes(this.curStateIndex)!!.paramsPerLayer[layerIndex]
+    val params: LayerParameters = this.sequence.getStateContributions(this.curStateIndex)!!.paramsPerLayer[layerIndex]
 
     if (isPropagating && (layerIndex > 0 || isFirstState)) { // propagate relevance to input
 
       if (!isLastState && isPrevLayerRecurrent) {
-        layer.addInputRelevance(paramsContributes = params)
+        layer.addInputRelevance(paramsContributions = params)
 
       } else {
-        layer.calculateInputRelevance(paramsContributes = params)
+        layer.calculateInputRelevance(paramsContributions = params)
       }
     }
 
     if (!isFirstState && layer is RecurrentLayerStructure) { // propagate relevance to previous state
-      layer.calculateRecurrentRelevance(paramsContributes = params)
+      layer.calculateRecurrentRelevance(paramsContributions = params)
     }
   }
 

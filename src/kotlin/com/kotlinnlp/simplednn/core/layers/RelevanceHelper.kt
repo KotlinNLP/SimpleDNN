@@ -30,30 +30,30 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Calculate the relevance of the input respect of the output.
    *
-   * @param paramsContributes the contributes of the parameters during the last forward
+   * @param paramsContributions the contributions of the parameters during the last forward
    */
-  fun calculateInputRelevance(paramsContributes: LayerParameters) {
-    this.layer.inputArray.assignRelevance(relevance = this.getInputRelevance(paramsContributes = paramsContributes))
+  fun calculateInputRelevance(paramsContributions: LayerParameters) {
+    this.layer.inputArray.assignRelevance(relevance = this.getInputRelevance(paramsContributions = paramsContributions))
   }
 
   /**
    * Calculate the relevance of the input respect of the output and add it to the relevance of the input array
    * previously set.
    *
-   * @param paramsContributes the contributes of the parameters during the last forward
+   * @param paramsContributions the contributions of the parameters during the last forward
    */
-  fun addInputRelevance(paramsContributes: LayerParameters) {
-    this.layer.inputArray.relevance.assignSum(this.getInputRelevance(paramsContributes = paramsContributes))
+  fun addInputRelevance(paramsContributions: LayerParameters) {
+    this.layer.inputArray.relevance.assignSum(this.getInputRelevance(paramsContributions = paramsContributions))
   }
 
   /**
    * Calculate the relevance of the input respect of the output.
    *
-   * @param paramsContributes the contributes of the parameters during the last forward
+   * @param paramsContributions the contributions of the parameters during the last forward
    *
    * @return the relevance of the input respect of the output
    */
-  protected abstract fun getInputRelevance(paramsContributes: LayerParameters): NDArray<*>
+  protected abstract fun getInputRelevance(paramsContributions: LayerParameters): NDArray<*>
 
   /**
    * Calculate the relevance of the array [x] respect of the calculation which produced the array [y].
@@ -61,27 +61,27 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param x a generic [NDArray]
    * @param y a [DenseNDArray] (no Sparse needed, generally little size on output)
    * @param yRelevance a [DenseNDArray], whose norm is 1.0, which indicates how much relevant are the values of [y]
-   * @param contributes a matrix which maps the contributes from each value of [x] to each value of [y]
+   * @param contributions a matrix which maps the contributions from each value of [x] to each value of [y]
    *
    * @return the relevance of [x] respect of [y]
    */
   protected fun calculateRelevanceOfArray(x: InputNDArrayType,
                                           y: DenseNDArray,
                                           yRelevance: DenseNDArray,
-                                          contributes: NDArray<*>): NDArray<*> =
+                                          contributions: NDArray<*>): NDArray<*> =
     when (x) {
 
       is DenseNDArray -> this.calculateRelevanceOfDenseArray(
         x = x,
         y = y,
         yRelevance = yRelevance,
-        contributes = contributes as DenseNDArray)
+        contributions = contributions as DenseNDArray)
 
       is SparseBinaryNDArray -> this.calculateRelevanceOfSparseArray(
         x = x,
         y = y,
         yRelevance = yRelevance,
-        contributes = contributes as SparseNDArray)
+        contributions = contributions as SparseNDArray)
 
       else -> throw RuntimeException("Invalid input type '%s'".format(x.javaClass.name))
     }
@@ -92,14 +92,14 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param x a [DenseNDArray]
    * @param y a [DenseNDArray] (no Sparse needed, generally little size on output)
    * @param yRelevance a [DenseNDArray], whose norm is 1.0, which indicates how much relevant are the values of [y]
-   * @param contributes a matrix which contains the contributes of each value of [x] to calculate each value of [y]
+   * @param contributions a matrix which contains the contributions of each value of [x] to calculate each value of [y]
    *
    * @return the relevance of [x] respect of [y]
    */
   protected fun calculateRelevanceOfDenseArray(x: DenseNDArray,
                                                y: DenseNDArray,
                                                yRelevance: DenseNDArray,
-                                               contributes: DenseNDArray): DenseNDArray {
+                                               contributions: DenseNDArray): DenseNDArray {
 
     val relevanceArray: DenseNDArray = DenseNDArrayFactory.zeros(shape = x.shape)
     val xLength: Int = x.length
@@ -111,7 +111,7 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
         val eps: Double = if (y[j] >= 0) this.relevanceEps else -this.relevanceEps
         val epsN: Double = eps / xLength
 
-        relevanceArray[i] += yRelevance[j] * (contributes[j, i]  + epsN) / (y[j] + eps)
+        relevanceArray[i] += yRelevance[j] * (contributions[j, i]  + epsN) / (y[j] + eps)
       }
     }
 
@@ -125,14 +125,14 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param x a [SparseBinaryNDArray]
    * @param y a [DenseNDArray] (no Sparse needed, generally little size on output)
    * @param yRelevance a [DenseNDArray], whose norm is 1.0, which indicates how much relevant are the values of [y]
-   * @param contributes a matrix which contains the contributes of each value of [x] to calculate each value of [y]
+   * @param contributions a matrix which contains the contributions of each value of [x] to calculate each value of [y]
    *
    * @return the relevance of [x] respect of [y]
    */
   private fun calculateRelevanceOfSparseArray(x: SparseBinaryNDArray,
                                               y: DenseNDArray,
                                               yRelevance: DenseNDArray,
-                                              contributes: SparseNDArray): SparseNDArray {
+                                              contributions: SparseNDArray): SparseNDArray {
 
     val xActiveIndices: List<Int> = x.activeIndicesByColumn.values.first()!!
     val xActiveIndicesSize: Int =  xActiveIndices.size
@@ -143,12 +143,12 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     var k: Int = 0
 
     for (l in 0 until xActiveIndicesSize) {
-      // the indices of the non-zero elements of x are the same of the non-zero columns of contributes
+      // the indices of the non-zero elements of x are the same of the non-zero columns of contributions
       for (j in 0 until yLength) {
-        // loop over the i-th column of contributes (which is non-zero)
+        // loop over the i-th column of contributions (which is non-zero)
         val eps: Double = if (y[j] >= 0) this.relevanceEps else -this.relevanceEps
         val epsN: Double = eps / xActiveIndicesSize
-        val wContrJI: Double = contributes.values[k++]  // linear indexing
+        val wContrJI: Double = contributions.values[k++]  // linear indexing
 
         relevanceValues[l] += yRelevance[j] * (wContrJI + epsN) / (y[j] + eps)
       }

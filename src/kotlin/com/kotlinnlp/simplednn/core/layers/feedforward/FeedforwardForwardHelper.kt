@@ -40,18 +40,18 @@ class FeedforwardForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward the input to the output combining it with the parameters, saving the contributes of the parameters.
+   * Forward the input to the output combining it with the parameters, saving the contributions of the parameters.
    *
    * y = f(w (dot) x + b)
    *
-   * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
+   * @param paramsContributions the [LayerParameters] in which to save the contributions of the parameters
    */
-  override fun forward(paramsContributes: LayerParameters) {
+  override fun forward(paramsContributions: LayerParameters) {
     this.layer.params as FeedforwardLayerParameters
-    paramsContributes as FeedforwardLayerParameters
+    paramsContributions as FeedforwardLayerParameters
 
     this.forwardArray(
-      contributes = paramsContributes.weights.values,
+      contributions = paramsContributions.weights.values,
       x = this.layer.inputArray.values,
       y = this.layer.outputArray.values,
       w = this.layer.params.weights.values as DenseNDArray,

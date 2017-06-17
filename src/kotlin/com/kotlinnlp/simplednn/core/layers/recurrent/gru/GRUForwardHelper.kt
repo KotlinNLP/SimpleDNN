@@ -48,11 +48,11 @@ class GRUForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward the input to the output combining it with the parameters, saving the contributes of the parameters.
+   * Forward the input to the output combining it with the parameters, saving the contributions of the parameters.
    *
-   * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
+   * @param paramsContributions the [LayerParameters] in which to save the contributions of the parameters
    */
-  override fun forward(paramsContributes: LayerParameters) {
+  override fun forward(paramsContributions: LayerParameters) {
     TODO("not implemented")
   }
 
@@ -71,19 +71,19 @@ class GRUForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.partitionGate.forward(this.layer.params.partitionGate, x)
     this.layer.candidate.forward(this.layer.params.candidate, x)
 
-    if (prevStateLayer != null) { // recurrent contribute for r and p
+    if (prevStateLayer != null) { // recurrent contribution for r and p
       val yPrev = prevStateLayer.outputArray.values
-      this.layer.resetGate.addRecurrentContribute(this.layer.params.resetGate, yPrev)
-      this.layer.partitionGate.addRecurrentContribute(this.layer.params.partitionGate, yPrev)
+      this.layer.resetGate.addRecurrentContribution(this.layer.params.resetGate, yPrev)
+      this.layer.partitionGate.addRecurrentContribution(this.layer.params.partitionGate, yPrev)
     }
 
     this.layer.resetGate.activate()
     this.layer.partitionGate.activate()
 
-    if (prevStateLayer != null) { // recurrent contribute for c
+    if (prevStateLayer != null) { // recurrent contribution for c
       val yPrev = prevStateLayer.outputArray.values
       val r = this.layer.resetGate.values
-      this.layer.candidate.addRecurrentContribute(this.layer.params.candidate, r.prod(yPrev))
+      this.layer.candidate.addRecurrentContribution(this.layer.params.candidate, r.prod(yPrev))
     }
 
     this.layer.candidate.activate()

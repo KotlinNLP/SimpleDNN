@@ -24,18 +24,18 @@ class FeedforwardRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Calculate the relevance of the input respect of the output.
    *
-   * @param paramsContributes the contributes of the parameters during the last forward
+   * @param paramsContributions the contributions of the parameters during the last forward
    *
    * @return the relevance of the input respect of the output
    */
-  override fun getInputRelevance(paramsContributes: LayerParameters): NDArray<*> {
-    paramsContributes as FeedforwardLayerParameters
+  override fun getInputRelevance(paramsContributions: LayerParameters): NDArray<*> {
+    paramsContributions as FeedforwardLayerParameters
 
     return this.calculateRelevanceOfArray(
       x = this.layer.inputArray.values,
       y = this.layer.outputArray.valuesNotActivated,
       yRelevance = this.layer.outputArray.relevance as DenseNDArray,
-      contributes = paramsContributes.weights.values
+      contributions = paramsContributions.weights.values
     )
   }
 }

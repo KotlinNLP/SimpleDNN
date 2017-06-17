@@ -39,18 +39,18 @@ class GateUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : Augmen
   }
 
   /**
-   * Add the recurrent contribute to the array.
+   * Add the recurrent contribution to the array.
    *
    * @param gateParams the parameters of the gate
-   * @param prevContribute the input array to add as contribute from the previous state
+   * @param prevContribution the input array to add as contribution from the previous state
    *
-   * g += wRec (dot) prevContribute
+   * g += wRec (dot) prevContribution
    */
-  fun addRecurrentContribute(gateParams: GateParametersUnit, prevContribute: DenseNDArray) {
+  fun addRecurrentContribution(gateParams: GateParametersUnit, prevContribution: DenseNDArray) {
 
     val wRec = gateParams.recurrentWeights.values
 
-    this.values.assignSum(wRec.dot(prevContribute))
+    this.values.assignSum(wRec.dot(prevContribution))
   }
 
   /**

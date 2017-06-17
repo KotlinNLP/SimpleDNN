@@ -90,35 +90,35 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward the input to the output combining it with the parameters, calculating its relevance respect of the output.
    * If [useDropout] is true apply the dropout to the input before.
    *
-   * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
+   * @param paramsContributions the [LayerParameters] in which to save the contributions of the parameters
    * @param useDropout whether to apply the dropout
    */
-  fun forward(paramsContributes: LayerParameters, useDropout: Boolean = false) {
+  fun forward(paramsContributions: LayerParameters, useDropout: Boolean = false) {
 
     if (useDropout) {
       this.applyDropout()
     }
 
-    this.forwardHelper.forward(paramsContributes = paramsContributes)
+    this.forwardHelper.forward(paramsContributions = paramsContributions)
   }
 
   /**
    * Calculate the relevance of the input respect of the output and assign it into the input array.
    *
-   * @param paramsContributes the contributes of the parameters during the last forward
+   * @param paramsContributions the contributions of the parameters during the last forward
    */
-  fun calculateInputRelevance(paramsContributes: LayerParameters) {
-    this.relevanceHelper.calculateInputRelevance(paramsContributes = paramsContributes)
+  fun calculateInputRelevance(paramsContributions: LayerParameters) {
+    this.relevanceHelper.calculateInputRelevance(paramsContributions = paramsContributions)
   }
 
   /**
    * Calculate the relevance of the input respect of the output and add it to the relevance of the input array
    * previously set.
    *
-   * @param paramsContributes the contributes of the parameters during the last forward
+   * @param paramsContributions the contributions of the parameters during the last forward
    */
-  fun addInputRelevance(paramsContributes: LayerParameters) {
-    this.relevanceHelper.addInputRelevance(paramsContributes = paramsContributes)
+  fun addInputRelevance(paramsContributions: LayerParameters) {
+    this.relevanceHelper.addInputRelevance(paramsContributions = paramsContributions)
   }
 
   /**

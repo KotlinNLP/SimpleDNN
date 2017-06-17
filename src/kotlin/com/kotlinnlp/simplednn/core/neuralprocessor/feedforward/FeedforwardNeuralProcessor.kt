@@ -33,9 +33,9 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     params = this.neuralNetwork.model)
 
   /**
-   * The contributes of the model parameters to forward the input to the output
+   * The contributions of the model parameters to forward the input to the output
    */
-  private val forwardParamsContributes: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
+  private val forwardParamsContributions: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
 
   /**
    * The errors of the network model parameters
@@ -131,11 +131,11 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.structure.forward(
       features = featuresArray,
-      paramsContributes = this.forwardParamsContributes,
+      paramsContributions = this.forwardParamsContributions,
       useDropout = useDropout)
 
     this.structure.calculateRelevance(
-      paramsContributes = this.forwardParamsContributes,
+      paramsContributions = this.forwardParamsContributions,
       relevantOutcomesDistribution = relevantOutcomesDistribution)
 
     return this.structure.outputLayer.outputArray.values

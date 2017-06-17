@@ -23,20 +23,20 @@ class LSTMRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Calculate the relevance of the input respect of the output.
    *
-   * @param paramsContributes the contributes of the parameters during the last forward
+   * @param paramsContributions the contributions of the parameters during the last forward
    *
    * @return the relevance of the input respect of the output
    */
-  override fun getInputRelevance(paramsContributes: LayerParameters): NDArray<*> {
+  override fun getInputRelevance(paramsContributions: LayerParameters): NDArray<*> {
     TODO("not implemented")
   }
 
   /**
    * Calculate the relevance of the output in the previous state respect of the current one.
    *
-   * @param paramsContributes the contributes of the parameters during the last forward
+   * @param paramsContributions the contributions of the parameters during the last forward
    */
-  override fun calculateRecurrentRelevance(paramsContributes: LayerParameters) {
+  override fun calculateRecurrentRelevance(paramsContributions: LayerParameters) {
     TODO("not implemented")
   }
 }

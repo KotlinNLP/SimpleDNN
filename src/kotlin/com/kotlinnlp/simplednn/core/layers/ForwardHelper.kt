@@ -27,22 +27,22 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   abstract fun forward()
 
   /**
-   * Forward the input to the output combining it with the parameters, saving the contributes of the parameters.
+   * Forward the input to the output combining it with the parameters, saving the contributions of the parameters.
    *
-   * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
+   * @param paramsContributions the [LayerParameters] in which to save the contributions of the parameters
    */
-  abstract fun forward(paramsContributes: LayerParameters)
+  abstract fun forward(paramsContributions: LayerParameters)
 
   /**
-   * Forward [x] to [y] combining it with [w] and [b], saving the contributes in [contributes].
+   * Forward [x] to [y] combining it with [w] and [b], saving the contributions in [contributions].
    *
-   * @param contributes a matrix which maps the contributes from each value of [x] to each value of [y]
+   * @param contributions a matrix which maps the contributions from each value of [x] to each value of [y]
    * @param x a generic [NDArray]
    * @param y a [DenseNDArray]
    * @param w the weights which maps [x] to [y]
    * @param b the biases added to each value of [y] (if null no bias is added)
    */
-  protected fun forwardArray(contributes: NDArray<*>,
+  protected fun forwardArray(contributions: NDArray<*>,
                              x: NDArray<*>,
                              y: DenseNDArray,
                              w: DenseNDArray,
@@ -55,29 +55,29 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
         y = y,
         w = w,
         b = b,
-        contributes = contributes as DenseNDArray)
+        contributions = contributions as DenseNDArray)
 
       is SparseBinaryNDArray -> this.forwardSparseBinaryArray(
         x = x,
         y = y,
         w = w,
         b = b,
-        contributes = contributes as SparseNDArray)
+        contributions = contributions as SparseNDArray)
 
       else -> throw RuntimeException("Invalid input type '%s'".format(x.javaClass.name))
     }
   }
 
   /**
-   * Forward [x] to [y] combining it with [w] and [b], saving the contributes in [contributes].
+   * Forward [x] to [y] combining it with [w] and [b], saving the contributions in [contributions].
    *
-   * @param contributes a matrix which maps the contributes from each value of [x] to each value of [y]
+   * @param contributions a matrix which maps the contributions from each value of [x] to each value of [y]
    * @param x a [DenseNDArray]
    * @param y a [DenseNDArray]
    * @param w the weights which maps [x] to [y]
    * @param b the biases added to each value of [y] (if null no bias is added)
    */
-  protected fun forwardDenseArray(contributes: DenseNDArray,
+  protected fun forwardDenseArray(contributions: DenseNDArray,
                                   x: DenseNDArray,
                                   y: DenseNDArray,
                                   w: DenseNDArray,
@@ -90,28 +90,28 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       y[j] = 0.0
 
       for (i in 0 until w.columns) {
-        var contribute: Double = w[j, i] * x[i]
+        var contribution: Double = w[j, i] * x[i]
 
         if (b != null) {
-          contribute += b[j] / xLength
+          contribution += b[j] / xLength
         }
 
-        contributes[j, i] = contribute
-        y[j] += contribute
+        contributions[j, i] = contribution
+        y[j] += contribution
       }
     }
   }
 
   /**
-   * Forward [x] to [y] combining it with [w] and [b], saving the contributes in [contributes].
+   * Forward [x] to [y] combining it with [w] and [b], saving the contributions in [contributions].
    *
-   * @param contributes a matrix which maps the contributes from each value of [x] to each value of [y]
+   * @param contributions a matrix which maps the contributions from each value of [x] to each value of [y]
    * @param x the input array of the layer
    * @param y the output array of the layer
    * @param w the weights which connect [x] to [y]
    * @param b the biases added to each value of [y] (if null no bias is added)
    */
-  private fun forwardSparseBinaryArray(contributes: SparseNDArray,
+  private fun forwardSparseBinaryArray(contributions: SparseNDArray,
                                        x: SparseBinaryNDArray,
                                        y: DenseNDArray,
                                        w: DenseNDArray,
@@ -130,18 +130,18 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
         val j: Int = k % yLength // linear indexing
         val i: Int = xActiveIndices[k / yLength] // linear indexing
 
-        var contribute: Double = w[j, i]
+        var contribution: Double = w[j, i]
 
         if (b != null) {
-          contribute += b[j] / xActiveIndicesSize // biases are distributed uniformly on the active values
+          contribution += b[j] / xActiveIndicesSize // biases are distributed uniformly on the active values
         }
 
-        y[j] += contribute
+        y[j] += contribution
 
-        contribute
+        contribution
       })
 
-    contributes.assignValues(
+    contributions.assignValues(
       values = values,
       rowIndices = Array(size = contrActiveIndicesSize, init = { k -> k % yLength}),
       colIndices = Array(size = contrActiveIndicesSize, init = { k -> xActiveIndices[k / yLength]}))
@@ -149,25 +149,25 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
 
   /**
-   * Add the recurrent contribute to the output array, saving the contributes of the input in respect of the output.
+   * Add the recurrent contribution to the output array, saving the contributions of the input in respect of the output.
    *
    * y += wRec (dot) yPrev
    *
-   * @param contributes a matrix which maps the contributes from each value of [yPrev] to each value of [yRec]
+   * @param contributions a matrix which maps the contributions from each value of [yPrev] to each value of [yRec]
    * @param yPrev the output array of the layer in the previous state
-   * @param yRec the array in which the recurrent contribute is saved
+   * @param yRec the array in which the recurrent contribution is saved
    * @param y the output array of the layer
    * @param wRec the recurrent weights which connect [yPrev] to [y]
    * @param b the biases added to each value of [yRec] (if null no bias is added)
    */
-  protected fun addRecurrentContribute(contributes: DenseNDArray,
+  protected fun addRecurrentContribution(contributions: DenseNDArray,
                                        yPrev: DenseNDArray,
                                        yRec: DenseNDArray,
                                        y: DenseNDArray,
                                        wRec: DenseNDArray,
                                        b: DenseNDArray) {
 
-    this.forwardArray(contributes = contributes, x = yPrev, y = yRec, w = wRec, b = b)
+    this.forwardArray(contributions = contributions, x = yPrev, y = yRec, w = wRec, b = b)
 
     y.assignSum(yRec)
   }

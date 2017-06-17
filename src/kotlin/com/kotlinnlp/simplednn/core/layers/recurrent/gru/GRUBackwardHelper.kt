@@ -81,7 +81,7 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       gr.zeros()
       gp.assignProd(c, pDeriv).assignProd(gy)
 
-    } else { // recurrent contribute
+    } else { // recurrent contribution
 
       val yPrev: DenseNDArray = prevStateOutput.values
       val wcr: DenseNDArray = this.layer.params.candidate.recurrentWeights.values
@@ -104,7 +104,7 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.partitionGate.assignParamsGradients(paramsErrors = this.paramsErrors.partitionGate, x = x, yPrev = yPrev)
     this.layer.candidate.assignParamsGradients(paramsErrors = this.paramsErrors.candidate, x = x)
 
-    if (yPrev != null) { // add recurrent contribute to the recurrent weights of the candidate
+    if (yPrev != null) { // add recurrent contribution to the recurrent weights of the candidate
       val r: DenseNDArray = this.layer.resetGate.values
       val gwcr: DenseNDArray = this.paramsErrors.candidate.recurrentWeights.values
       val gc: DenseNDArray = this.layer.candidate.errors
@@ -142,7 +142,7 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     if (nextStateLayer != null) {
       val gy: DenseNDArray = this.layer.outputArray.errors
-      val gyRec: DenseNDArray = this.getLayerRecurrentContribute(nextStateLayer)
+      val gyRec: DenseNDArray = this.getLayerRecurrentContribution(nextStateLayer)
 
       gy.assignSum(gyRec)
     }
@@ -152,7 +152,7 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getLayerRecurrentContribute(nextStateLayer: GRULayerStructure<*>): DenseNDArray {
+  private fun getLayerRecurrentContribution(nextStateLayer: GRULayerStructure<*>): DenseNDArray {
     this.layer.params as GRULayerParameters
 
     val resetGate = nextStateLayer.resetGate

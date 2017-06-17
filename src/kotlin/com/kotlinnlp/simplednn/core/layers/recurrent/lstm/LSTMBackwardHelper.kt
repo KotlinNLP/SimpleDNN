@@ -78,7 +78,7 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     gCell.assignProd(outG, cellDeriv).assignProd(gy) // attention: must be calculated before others
 
-    if (nextStateLayer != null) { // add recurrent contribute to gCell
+    if (nextStateLayer != null) { // add recurrent contribution to gCell
       val forGNext: DenseNDArray = nextStateLayer.forgetGate.values
       val gCellNext: DenseNDArray = nextStateLayer.cell.errors
       gCell.assignSum(gCellNext.prod(forGNext))
@@ -148,8 +148,8 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     if (nextStateLayer != null) {
       val gy: DenseNDArray = this.layer.outputArray.errors
       val gCell: DenseNDArray = this.layer.cell.errors
-      val gyRec: DenseNDArray = this.getLayerRecurrentContribute(nextStateLayer)
-      val gCellRec: DenseNDArray = this.getCellRecurrentContribute(nextStateLayer)
+      val gyRec: DenseNDArray = this.getLayerRecurrentContribution(nextStateLayer)
+      val gCellRec: DenseNDArray = this.getCellRecurrentContribution(nextStateLayer)
 
       gy.assignSum(gyRec)
       gCell.assignSum(gCellRec)
@@ -160,7 +160,7 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getLayerRecurrentContribute(nextStateLayer: LSTMLayerStructure<*>): DenseNDArray {
+  private fun getLayerRecurrentContribution(nextStateLayer: LSTMLayerStructure<*>): DenseNDArray {
     this.layer.params as LSTMLayerParameters
 
     val gInGNext: DenseNDArray = nextStateLayer.inputGate.errors
@@ -185,7 +185,7 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getCellRecurrentContribute(nextStateLayer: LSTMLayerStructure<*>): DenseNDArray {
+  private fun getCellRecurrentContribution(nextStateLayer: LSTMLayerStructure<*>): DenseNDArray {
 
     val gCellNext: DenseNDArray = nextStateLayer.cell.errors
     val forGNext: DenseNDArray = nextStateLayer.forgetGate.values

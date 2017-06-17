@@ -133,7 +133,7 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     if (nextStateLayer != null) {
       val gy: DenseNDArray = this.layer.outputArray.errors
-      val gyRec: DenseNDArray = this.getLayerRecurrentContribute(nextStateLayer)
+      val gyRec: DenseNDArray = this.getLayerRecurrentContribution(nextStateLayer)
 
       gy.assignSum(gyRec)
     }
@@ -143,7 +143,7 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getLayerRecurrentContribute(nextStateLayer: RANLayerStructure<*>): DenseNDArray {
+  private fun getLayerRecurrentContribution(nextStateLayer: RANLayerStructure<*>): DenseNDArray {
     this.layer.params as RANLayerParameters
 
     val inputGate = nextStateLayer.inputGate

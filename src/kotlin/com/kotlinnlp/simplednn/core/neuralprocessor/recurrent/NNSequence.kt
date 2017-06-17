@@ -25,7 +25,7 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
    */
   inner class NNState(
     val structure: RecurrentNetworkStructure<InputNDArrayType>,
-    val contributes: NetworkParameters? = null
+    val contributions: NetworkParameters? = null
   )
 
   /**
@@ -69,9 +69,9 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
     get() = if (this.states.isNotEmpty()) this.states.last().structure else null
 
   /**
-   * The contributes of the last state of the sequence. It requires that the sequence is not empty.
+   * The contributions of the last state of the sequence. It requires that the sequence is not empty.
    */
-  val lastContributes: NetworkParameters get() = this.states.last().contributes!!
+  val lastContributions: NetworkParameters get() = this.states.last().contributions!!
 
   /**
    * Whether an index is the last of the sequence.
@@ -96,28 +96,28 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
   }
 
   /**
-   * Get the contributes of the state at the given [stateIndex].
+   * Get the contributions of the state at the given [stateIndex].
    *
    * @param stateIndex the index of the sequence
    *
-   * @return the contributes of the state at the given [stateIndex] or null if the [stateIndex] exceeds the length
+   * @return the contributions of the state at the given [stateIndex] or null if the [stateIndex] exceeds the length
    */
-  fun getStateContributes(stateIndex: Int): NetworkParameters? {
-    return if (stateIndex in 0..this.lastIndex) this.states[stateIndex].contributes else null
+  fun getStateContributions(stateIndex: Int): NetworkParameters? {
+    return if (stateIndex in 0..this.lastIndex) this.states[stateIndex].contributions else null
   }
 
   /**
    * Add a new state to the sequence.
    *
    * @param structure the [RecurrentNetworkStructure] of the state
-   * @param saveContributes whether to include the contributes structure into the state
+   * @param saveContributions whether to include the contributions structure into the state
    */
-  fun add(structure: RecurrentNetworkStructure<InputNDArrayType>, saveContributes: Boolean) {
+  fun add(structure: RecurrentNetworkStructure<InputNDArrayType>, saveContributions: Boolean) {
 
     this.states.add(
       NNState(
         structure = structure,
-        contributes = if (saveContributes) this.neuralNetwork.parametersErrorsFactory() else null
+        contributions = if (saveContributions) this.neuralNetwork.parametersErrorsFactory() else null
       )
     )
   }

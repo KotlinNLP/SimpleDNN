@@ -132,7 +132,7 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     if (nextStateLayer != null) {
       val gy: DenseNDArray = this.layer.outputArray.errors
-      val gyRec: DenseNDArray = this.getLayerRecurrentContribute(nextStateLayer)
+      val gyRec: DenseNDArray = this.getLayerRecurrentContribution(nextStateLayer)
 
       gy.assignSum(gyRec)
     }
@@ -142,7 +142,7 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getLayerRecurrentContribute(nextStateLayer: CFNLayerStructure<*>): DenseNDArray {
+  private fun getLayerRecurrentContribution(nextStateLayer: CFNLayerStructure<*>): DenseNDArray {
     this.layer.params as CFNLayerParameters
 
     val inputGate = nextStateLayer.inputGate

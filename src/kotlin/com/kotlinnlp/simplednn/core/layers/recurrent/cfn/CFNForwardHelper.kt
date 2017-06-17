@@ -55,11 +55,11 @@ class CFNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward the input to the output combining it with the parameters, saving the contributes of the parameters.
+   * Forward the input to the output combining it with the parameters, saving the contributions of the parameters.
    *
-   * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
+   * @param paramsContributions the [LayerParameters] in which to save the contributions of the parameters
    */
-  override fun forward(paramsContributes: LayerParameters) {
+  override fun forward(paramsContributions: LayerParameters) {
     TODO("not implemented")
   }
 
@@ -80,10 +80,10 @@ class CFNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.forgetGate.forward(this.layer.params.forgetGate, x)
     c.assignDot(wc, x)
 
-    if (prevStateLayer != null) { // recurrent contribute for input and forget gates
+    if (prevStateLayer != null) { // recurrent contribution for input and forget gates
       val yPrev = prevStateLayer.outputArray.values
-      this.layer.inputGate.addRecurrentContribute(this.layer.params.inputGate, yPrev)
-      this.layer.forgetGate.addRecurrentContribute(this.layer.params.forgetGate, yPrev)
+      this.layer.inputGate.addRecurrentContribution(this.layer.params.inputGate, yPrev)
+      this.layer.forgetGate.addRecurrentContribution(this.layer.params.forgetGate, yPrev)
     }
 
     this.layer.inputGate.activate()
