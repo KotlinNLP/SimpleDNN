@@ -23,10 +23,7 @@ import java.util.*
  * @property network the [SWSLNetwork] of this encoder
  * @property optimizer the optimizer associated to the [SWSLNetwork] (can be null)
  */
-@Suppress("unused")
-class SWSLabeler(
-  private val network: SWSLNetwork,
-  private val optimizer: SWSLOptimizer?){
+class SWSLabeler(private val network: SWSLNetwork, private val optimizer: SWSLOptimizer?){
 
   /**
    * @property paramsErrors the errors on the network parameters
@@ -72,12 +69,11 @@ class SWSLabeler(
    *
    * @return an array of labels of the same size of [elements]
    */
-  @Suppress("unused")
   fun annotate(elements: Array<DenseNDArray>): ArrayList<Int> {
 
     this.setNewSequence(elements)
 
-    this.processSequence({ this.addLabel(this.getBestLabel()) })
+    this.forwardSequence({ this.addLabel(this.getBestLabel()) })
 
     return this.labels
   }
@@ -88,14 +84,13 @@ class SWSLabeler(
    * @param elements the input sequence to annotate
    * @param goldLabels the expected labels for each element
    */
-  @Suppress("unused")
   fun learn(elements: Array<DenseNDArray>, goldLabels: IntArray){
 
     require(optimizer != null) { "Impossible to learn without an optimizer" }
 
     this.setNewSequence(elements)
 
-    this.processSequence({
+    this.forwardSequence({
 
       val goldLabel = this.getGoldLabel(goldLabels)
 
@@ -103,7 +98,7 @@ class SWSLabeler(
         outputErrors = this.getOutputErrors(goldLabel),
         propagateToInput = true)
 
-      this.propagateErrors()
+      this.accumulateErrors()
 
       this.addLabel(goldLabel)
     })
@@ -112,7 +107,6 @@ class SWSLabeler(
   /**
    * @return the input errors
    */
-  @Suppress("unused")
   fun getInputSequenceErrors(): Array<DenseNDArray> = this.inputSequenceErrors!!
 
   /**
@@ -159,7 +153,7 @@ class SWSLabeler(
    *
    * @param callback the function to invoke to read the intermediate neural processor results
    */
-  private fun processSequence(callback: () -> Unit) {
+  private fun forwardSequence(callback: () -> Unit) {
 
     val featuresExtractor = SWSLFeaturesExtractor(
       sequence = this.sequence!!,
@@ -191,13 +185,13 @@ class SWSLabeler(
    * Propagate the last backward errors to the network parameters
    * (params and label embeddings) and to the input elements
    */
-  private fun propagateErrors(){
+  private fun accumulateErrors(){
 
     val (paramsErrors, labelsEmbeddingsErrors, inputErrors) = this.getNetworkErrors()
 
-    this.propagateParamsErrors(paramsErrors)
-    this.propagateLabelsEmbeddingsErrors(labelsEmbeddingsErrors)
-    this.propagateInputErrors(inputErrors)
+    this.accumulateParamsErrors(paramsErrors)
+    this.accumulateLabelsEmbeddingsErrors(labelsEmbeddingsErrors)
+    this.accumulateInputErrors(inputErrors)
   }
 
   /**
@@ -219,7 +213,7 @@ class SWSLabeler(
    *
    * @param paramsErrors the params errors to propagate
    */
-  private fun propagateParamsErrors(paramsErrors: NetworkParameters){
+  private fun accumulateParamsErrors(paramsErrors: NetworkParameters){
     this.optimizer!!.accumulateErrors(paramsErrors)
   }
 
@@ -228,7 +222,7 @@ class SWSLabeler(
    *
    * @param errors the errors to propagate
    */
-  private fun propagateInputErrors(errors: DenseNDArray){
+  private fun accumulateInputErrors(errors: DenseNDArray){
 
     this.sequence!!.getContext().zip(errors.splitV(this.network.elementSize)).forEach { (i, e) ->
 
@@ -241,7 +235,7 @@ class SWSLabeler(
    *
    * @param errors the errors to propagate
    */
-  private fun propagateLabelsEmbeddingsErrors(errors: DenseNDArray){
+  private fun accumulateLabelsEmbeddingsErrors(errors: DenseNDArray){
 
     this.alignLabelsEmbeddingsErrors(errors).forEach { (embeddingIndex, embeddingErrors) ->
 

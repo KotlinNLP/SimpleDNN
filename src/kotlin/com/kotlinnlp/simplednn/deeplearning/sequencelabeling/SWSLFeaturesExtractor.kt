@@ -35,21 +35,45 @@ class SWSLFeaturesExtractor(
    *  @return the features of the current state
    */
   fun getFeatures(): DenseNDArray = concatVectorsV(
-    *this.extractPrevLabelsFeatures(),
-    *this.extractPrevContextFeatures(),
+    *this.extractLeftContextLabelsFeatures(),
+    *this.extractLeftContextFeatures(),
     this.extractFocusFeatures(),
-    *this.extractNextContextFeatures()
+    *this.extractRightContextFeatures()
   )
 
   /**
-   * @return the dense-representation of the focus element
+   * @return an array containing the features of the elements in the left context
    */
-  private fun extractFocusFeatures(): DenseNDArray = this.sequence.getFocus()
+  private fun extractLeftContextFeatures(): Array<DenseNDArray> {
+    val leftContext = this.sequence.getLeftContext()
+
+    return Array(size = this.sequence.leftContextSize, init = {
+      val i = leftContext[it]
+      if (i != null) this.sequence[i] else this.network.emptyVector
+    })
+  }
 
   /**
-   * @return the dense-representations of the next elements
+   * @return an array containing the features of the labels of the elements in the left context
    */
-  private fun extractNextContextFeatures(): Array<DenseNDArray> {
+  private fun extractLeftContextLabelsFeatures(): Array<DenseNDArray> {
+    val leftContext = this.sequence.getLeftContext()
+
+    return Array(size = this.sequence.leftContextSize, init = {
+      val i = leftContext[it]
+      if (i != null) this.getLabelEmbedding(this.labels[i]).array.values else this.network.emptyLabelVector
+    })
+  }
+
+  /**
+   * @return the features of the focus element
+   */
+  private fun extractFocusFeatures(): DenseNDArray = this.sequence.getFocusElement()
+
+  /**
+   * @return an array containing the features of the elements in the right context
+   */
+  private fun extractRightContextFeatures(): Array<DenseNDArray> {
     val nextWindow = this.sequence.getRightContext()
 
     return Array(size = this.sequence.rightContextSize, init = {
@@ -59,35 +83,9 @@ class SWSLFeaturesExtractor(
   }
 
   /**
-   * @return the dense-representations of the previous elements
-   */
-  private fun extractPrevContextFeatures(): Array<DenseNDArray> {
-    val prevWindow = this.sequence.getLeftContext()
-
-    return Array(size = this.sequence.leftContextSize, init = {
-      val i = prevWindow[it]
-      if (i != null) this.sequence[i] else this.network.emptyVector
-    })
-  }
-
-  /**
-   * @return the dense-representations of the previous labels
-   */
-  private fun extractPrevLabelsFeatures(): Array<DenseNDArray> {
-    val prevWindow = this.sequence.getLeftContext()
-
-    return Array(size = this.sequence.leftContextSize, init = {
-      val i = prevWindow[it]
-      if (i != null) this.getLabelEmbedding(this.labels[i]).array.values else this.network.emptyLabelVector
-    })
-  }
-
-  /**
-   * Return the label embedding representation for a given [embeddingIndex]
-   *
    * @param embeddingIndex an embedding index
    *
-   * @return the label embedding for the index [embeddingIndex]
+   * @return the label embedding representation for a given [embeddingIndex]
    */
   private fun getLabelEmbedding(embeddingIndex: Int) = this.network.labelsEmbeddings.getEmbedding(embeddingIndex)
 }

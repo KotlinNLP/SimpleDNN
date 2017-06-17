@@ -63,7 +63,7 @@ class SlidingWindowSequence(
   /**
    * @return the dense-representation of the focus element
    */
-  fun getFocus(): DenseNDArray = this.elements[this.focusIndex]
+  fun getFocusElement(): DenseNDArray = this.elements[this.focusIndex]
 
   /**
    *
@@ -83,31 +83,37 @@ class SlidingWindowSequence(
   }
 
   /**
-   * @return an array containing the indexes of the elements within the [leftContextSize].
-   *         If an index is out of the sequence, it becomes 'null'.
+   * @return an array containing the indexes of the elements within the [leftContextSize] or 'null' values if an index
+   *         is out of the range of the sequence.
    */
-  fun getLeftContext(): Array<Int?> = Array(size = this.leftContextSize, init = {
-    val i = this.leftContextSize - 1 - it
-    val k = this.focusIndex - 1 - i
-    if (k < 0) null else k
-  })
+  fun getLeftContext(): Array<Int?> = Array(
+    size = this.leftContextSize,
+    init = {
+      val i = this.leftContextSize - 1 - it
+      val k = this.focusIndex - 1 - i
+      if (k < 0) null else k
+    }
+  )
 
   /**
-   * @return an array containing the indexes of the elements within the [rightContextSize].
-   *         If an index is out of the sequence, it becomes 'null'.
+   * @return an array containing the indexes of the elements within the [rightContextSize] or 'null' values if an index
+   *         is out of the range of the sequence.
    */
-  fun getRightContext(): Array<Int?> = Array(size = this.rightContextSize, init = {
-    val k = this.focusIndex + 1 + it
-    if (k >= this.elements.size) null else k
-  })
+  fun getRightContext(): Array<Int?> = Array(
+    size = this.rightContextSize,
+    init = {
+      val k = this.focusIndex + 1 + it
+      if (k >= this.elements.size) null else k
+    }
+  )
 
   /**
-   * @return the entire context composed by the indexes of the left, focus and right context
+   * @return the entire focused context composed by the indexes of the left context, the focus and the right context
    */
   fun getContext(): Array<Int?> = this.getLeftContext() + this.focusIndex + this.getRightContext()
 
   /**
-   * @return a string representation of indexes of the entire context
+   * @return a string representation of the focused context
    */
   fun contextToString(): String =
     "[${this.getLeftContext().joinToString()}] $focusIndex [${this.getRightContext().joinToString()}]"

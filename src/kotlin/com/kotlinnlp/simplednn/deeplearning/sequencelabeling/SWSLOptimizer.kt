@@ -17,14 +17,15 @@ import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The SWSLOptimizer is the optimizer of the SWSLNetwork.
+ * The SWSLOptimizer is the optimizer of the [SWSLNetwork].
  *
  * @property network the SWSLNetwork to optimize
  * @property updateMethod the [UpdateMethod] used to optimize the network params errors (default ADAM)
  */
 class SWSLOptimizer(
   private val network: SWSLNetwork,
-  val updateMethod: UpdateMethod = ADAMMethod(stepSize = 0.001)) : Optimizer {
+  val updateMethod: UpdateMethod = ADAMMethod(stepSize = 0.001)
+) : Optimizer {
 
   /**
    * The [Optimizer] used to optimize the network
