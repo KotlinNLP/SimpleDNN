@@ -10,6 +10,8 @@ package com.kotlinnlp.simplednn.core.layers.recurrent.ran
 import com.kotlinnlp.simplednn.core.layers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.recurrent.GateParametersUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -23,7 +25,7 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
-   * Forward the input to the output combining it with the parameters.
+   * Forward the input to the output through the gates, combining it with the parameters.
    *
    * y = f(inG * c + yPrev * forG)
    */
@@ -52,12 +54,38 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward the input to the output combining it with the parameters, saving the contributes of the parameters.
+   * Forward the input to the output through the gates, combining it with the parameters and saving the contributes
+   * of the input array to each gate.
    *
    * @param paramsContributes the [LayerParameters] in which to save the contributes of the parameters
    */
   override fun forward(paramsContributes: LayerParameters) {
-    TODO("not implemented")
+
+    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer()
+
+    // must be called before accessing to the activated values of the gates
+    this.setGates(prevStateLayer = prevStateLayer, paramsContributes = paramsContributes as RANLayerParameters)
+
+    val y: DenseNDArray = this.layer.outputArray.values
+    val c: DenseNDArray = this.layer.candidate.values
+    val inG: DenseNDArray = this.layer.inputGate.values
+    val forG: DenseNDArray = this.layer.forgetGate.values
+
+    // y = inG * c
+    y.assignProd(inG, c)
+
+    // y += yPrev * forG
+    if (prevStateLayer != null) {
+      val yPrev: DenseNDArray = prevStateLayer.outputArray.valuesNotActivated
+      val yRec: DenseNDArray = paramsContributes.candidate.biases.values
+      // a tricky way to save the recurrent contribute (b.size == y.size)
+
+      yRec.assignProd(yPrev, forG)
+      y.assignSum(yRec)
+    }
+
+    // f(y)
+    this.layer.outputArray.activate()
   }
 
   /**
@@ -88,5 +116,120 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.layer.inputGate.activate()
     this.layer.forgetGate.activate()
+  }
+
+  /**
+   * Set gates values, saving the contributes of the input in respect of the output.
+   *
+   * inG = sigmoid(wIn (dot) x + bIn + wrIn (dot) yPrev)
+   * forG = sigmoid(wForG (dot) x + bForG + wrForG (dot) yPrev)
+   * c = wc (dot) x + bc
+   *
+   * @param prevStateLayer the layer in the previous state
+   * @param paramsContributes the [RANLayerParameters] in which to save the contributes of the input in
+   *                          respect of the output
+   */
+  private fun setGates(prevStateLayer: LayerStructure<*>?, paramsContributes: RANLayerParameters) {
+    this.layer.params as RANLayerParameters
+
+    // if there's a recurrent contribute biases are divided equally within the sum
+    val splitBiases: Boolean = prevStateLayer != null
+    val inGParams: GateParametersUnit = this.layer.params.inputGate
+    val forGParams: GateParametersUnit = this.layer.params.forgetGate
+    val bInG: DenseNDArray = if (splitBiases) inGParams.biases.values.div(2.0) else inGParams.biases.values
+    val bForG: DenseNDArray = if (splitBiases) forGParams.biases.values.div(2.0) else forGParams.biases.values
+
+    this.forwardGates(paramsContributes = paramsContributes, bInG = bInG, bForG = bForG)
+
+    if (prevStateLayer != null) { // recurrent contribute for input and forget gates
+      this.addGatesRecurrentContribute(
+        paramsContributes = paramsContributes,
+        yPrev = prevStateLayer.outputArray.valuesNotActivated,
+        bInG = bInG,
+        bForG = bForG)
+    }
+
+    this.layer.inputGate.activate()
+    this.layer.forgetGate.activate()
+  }
+
+  /**
+   * Forward the input to the gates, saving its contributes in respect of each gate.
+   *
+   * g += wRec (dot) yPrev
+   *
+   * @param paramsContributes the [RANLayerParameters] in which to save the contributes of the input in
+   *                          respect of each gate
+   * @param bInG the biases array of the input gate
+   * @param bForG the biases array of the forget gate
+   */
+  private fun forwardGates(paramsContributes: RANLayerParameters, bInG: DenseNDArray, bForG: DenseNDArray) {
+    this.layer.params as RANLayerParameters
+
+    val x: InputNDArrayType = this.layer.inputArray.values
+    val candidateParams: FeedforwardLayerParameters = this.layer.params.candidate
+    val inGParams: GateParametersUnit = this.layer.params.inputGate
+    val forGParams: GateParametersUnit = this.layer.params.forgetGate
+
+    this.forwardArray(
+      contributes = paramsContributes.candidate.weights.values,
+      x = x,
+      y = this.layer.candidate.values,
+      w = candidateParams.weights.values as DenseNDArray,
+      b = candidateParams.biases.values)
+
+    this.forwardArray(
+      contributes = paramsContributes.inputGate.weights.values,
+      x = x,
+      y = this.layer.inputGate.values,
+      w = inGParams.weights.values as DenseNDArray,
+      b = bInG)
+
+    this.forwardArray(
+      contributes = paramsContributes.forgetGate.weights.values,
+      x = x,
+      y = this.layer.forgetGate.values,
+      w = forGParams.weights.values as DenseNDArray,
+      b = bForG)
+  }
+
+  /**
+   * Add the recurrent contribute to the gate, saving the contributes of the input in respect of the output.
+   *
+   * g += wRec (dot) yPrev
+   *
+   * @param yPrev the output array of the layer in the previous state
+   * @param paramsContributes the [RANLayerParameters] in which to save the contributes of the input in
+   *                          respect of each gate
+   * @param bInG the biases array of the input gate
+   * @param bForG the biases array of the forget gate
+   */
+  private fun addGatesRecurrentContribute(yPrev: DenseNDArray,
+                                          bInG: DenseNDArray,
+                                          bForG: DenseNDArray,
+                                          paramsContributes: RANLayerParameters) {
+
+    this.layer.params as RANLayerParameters
+
+    val inGParams: GateParametersUnit = this.layer.params.inputGate
+    val forGParams: GateParametersUnit = this.layer.params.forgetGate
+
+    this.addRecurrentContribute(
+      yPrev = yPrev,
+      yRec = paramsContributes.inputGate.biases.values, // a tricky way to save the recurrent contribute
+      y = this.layer.candidate.values,                  // (b.size == y.size)
+      wRec = inGParams.recurrentWeights.values,
+      b = bInG,
+      contributes = inGParams.recurrentWeights.values
+    )
+
+    this.addRecurrentContribute(
+      yPrev = yPrev,
+      yRec = paramsContributes.forgetGate.biases.values, // a tricky way to save the recurrent contribute
+      y = this.layer.candidate.values,                   // (b.size == y.size)
+      wRec = forGParams.recurrentWeights.values,
+      b = bForG,
+      contributes = forGParams.recurrentWeights.values
+    )
   }
 }
