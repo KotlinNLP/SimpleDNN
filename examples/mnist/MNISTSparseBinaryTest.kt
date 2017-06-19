@@ -23,8 +23,10 @@ import com.kotlinnlp.simplednn.helpers.validation.FeedforwardValidationHelper
 import com.jsoniter.*
 import Configuration
 import CorpusPaths
+import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.simplemath.ndarray.*
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArrayFactory
@@ -37,7 +39,6 @@ fun main(args: Array<String>) {
   MNISTSparseBinaryTest.start()
   println("End.")
 }
-
 
 /**
  *
@@ -54,17 +55,20 @@ object MNISTSparseBinaryTest {
 
     val nn = buildNetwork()
 
-    train(nn, dataset)
+    train(neuralNetwork = nn, dataset = dataset)
+
+    printImages(
+      neuralNetwork = nn,
+      dataset = arrayListOf(*dataset.validation.subList(0, 20).toTypedArray()) // reduced sublist
+    )
   }
 
   /**
    *
-   * @param corpus corpus
-   * @return
    */
   fun readCorpus(corpus: CorpusPaths): Corpus<SimpleExample<SparseBinaryNDArray>> {
 
-    println("\n-- CORPUS READING")
+    println("\n-- CORPUS READING\n")
 
     val startTime = System.nanoTime()
 
@@ -105,8 +109,6 @@ object MNISTSparseBinaryTest {
 
   /**
    *
-   * @param filename
-   * @return
    */
   fun JSONFileReader(filename: String): ArrayList<SimpleExample<SparseBinaryNDArray>> {
 
@@ -166,7 +168,7 @@ object MNISTSparseBinaryTest {
    */
   fun train(neuralNetwork: NeuralNetwork, dataset: Corpus<SimpleExample<SparseBinaryNDArray>>): Unit {
 
-    println("\n-- TRAINING")
+    println("\n-- TRAINING\n")
 
     val optimizer = ParamsOptimizer(
       neuralNetwork = neuralNetwork,
@@ -191,5 +193,45 @@ object MNISTSparseBinaryTest {
       batchSize = 1,
       shuffler = Shuffler(enablePseudoRandom = true, seed = 1),
       validationHelper = validationHelper)
+  }
+
+  /**
+   *
+   */
+  fun printImages(neuralNetwork: NeuralNetwork, dataset: ArrayList<SimpleExample<SparseBinaryNDArray>>) {
+
+    println("\n-- PRINT IMAGES RELEVANCE\n")
+
+    val neuralProcessor = FeedforwardNeuralProcessor<SparseBinaryNDArray>(neuralNetwork)
+
+    val validationHelper = FeedforwardValidationHelper(
+      neuralProcessor = neuralProcessor,
+      outputEvaluationFunction = ClassificationEvaluation())
+
+    validationHelper.validate(
+      examples = dataset,
+      saveContributions = true,
+      onPrediction = { example, _ ->
+        val relevance = neuralProcessor.calculateInputRelevance(DistributionArray.uniform(length = 10))
+        val image: DenseNDArray = DenseNDArrayFactory.zeros(Shape(784))
+
+        this.printImage(image = image.assignValues(relevance), value = example.outputGold.argMaxIndex())
+      }
+    )
+  }
+
+  /**
+   *
+   */
+  fun printImage(image: DenseNDArray, value: Int) {
+
+    println("------------------ %d -----------------".format(value))
+
+    for (i in 0 until 28) {
+      for (j in 0 until 28) {
+          print(if (image[i * 28 + j] > 0.0) "# " else "  ")
+      }
+      println()
+    }
   }
 }
