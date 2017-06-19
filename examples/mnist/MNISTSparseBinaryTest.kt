@@ -212,10 +212,10 @@ object MNISTSparseBinaryTest {
       examples = dataset,
       saveContributions = true,
       onPrediction = { example, _ ->
-        val relevance = neuralProcessor.calculateInputRelevance(DistributionArray.uniform(length = 10))
-        val image: DenseNDArray = DenseNDArrayFactory.zeros(Shape(784))
+        val sparseRelevance = neuralProcessor.calculateInputRelevance(DistributionArray.uniform(length = 10))
+        val denseRelevance: DenseNDArray = DenseNDArrayFactory.zeros(Shape(784)).assignValues(sparseRelevance)
 
-        this.printImage(image = image.assignValues(relevance), value = example.outputGold.argMaxIndex())
+        this.printImage(image = denseRelevance, value = example.outputGold.argMaxIndex())
       }
     )
   }
