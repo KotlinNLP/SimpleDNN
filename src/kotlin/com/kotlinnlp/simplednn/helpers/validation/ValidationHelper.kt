@@ -12,8 +12,10 @@ import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvaluationFunction
 
 /**
+ * An helper which executes the validation of a dataset.
  *
- * @param neuralProcessor neuralProcessor
+ * @property neuralProcessor a neural processor
+ * @property outputEvaluationFunction the output evaluation function
  */
 abstract class ValidationHelper<ExampleType: Example>(
   open val neuralProcessor: NeuralProcessor,
@@ -23,17 +25,20 @@ abstract class ValidationHelper<ExampleType: Example>(
    * Validate examples.
    *
    * @param examples a list of examples to validate
-   * @param onPrediction a callback called for each prediction (args: example, isCorrect)
+   * @param onPrediction an optional callback called for each prediction (args: example, isCorrect)
+   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
+   *                          the relevance)
    *
    * @return the percentage of correct predictions
    */
   fun validate(examples: ArrayList<ExampleType>,
-               onPrediction: (example: ExampleType, isCorrect: Boolean) -> Unit = {_, _ -> }): Double {
+               onPrediction: (example: ExampleType, isCorrect: Boolean) -> Unit = {_, _ -> },
+               saveContributions: Boolean = false): Double {
 
     var correctPredictions: Int = 0
 
     examples.forEach {
-      val isCorrect = this.validate(it)
+      val isCorrect = this.validate(it, saveContributions = saveContributions)
 
       if (isCorrect) {
         correctPredictions += 1
@@ -49,8 +54,10 @@ abstract class ValidationHelper<ExampleType: Example>(
    * Validate a single example.
    *
    * @param example the example to validate
+   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
+   *                          the relevance)
    *
    * @return a Boolean indicating if the predicted output matches the gold output
    */
-  abstract fun validate(example: ExampleType): Boolean
+  abstract fun validate(example: ExampleType, saveContributions: Boolean): Boolean
 }
