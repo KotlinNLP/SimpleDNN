@@ -20,9 +20,11 @@ abstract class ValidationHelper<ExampleType: Example>(
   val outputEvaluationFunction: OutputEvaluationFunction) {
 
   /**
+   * Validate examples.
    *
-   * @param examples example
-   * @return percentage of correct predictions
+   * @param examples a list of examples to validate
+   *
+   * @return the percentage of correct predictions
    */
   fun validate(examples: ArrayList<ExampleType>): Double {
 
@@ -37,9 +39,11 @@ abstract class ValidationHelper<ExampleType: Example>(
     return correctPredictions.toDouble() / examples.size
   }
   /**
+   * Validate a single example.
    *
-   * @param example a single example
-   * @return true if the output match the gold output, false otherwise
+   * @param example the example to validate
+   *
+   * @return a Boolean indicating if the predicted output matches the gold output
    */
   abstract fun validate(example: ExampleType): Boolean
 }
