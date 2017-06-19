@@ -57,7 +57,7 @@ object ProgressiveSumTest {
    */
   fun readCorpus(corpus: CorpusPaths): Corpus<SequenceExample<DenseNDArray>> {
 
-    println("\n-- CORPUS READING")
+    println("\n-- CORPUS READING\n")
 
     val startTime = System.nanoTime()
 
@@ -151,7 +151,7 @@ object ProgressiveSumTest {
    */
   fun initialValidation(neuralNetwork: NeuralNetwork, dataset: Corpus<SequenceExample<DenseNDArray>>): Unit {
 
-    println("\n-- VALIDATION BEFORE TRAINING")
+    println("\n-- VALIDATION BEFORE TRAINING\n")
 
     val validationHelper = SequenceValidationHelper<DenseNDArray>(
       neuralProcessor = RecurrentNeuralProcessor(neuralNetwork),
@@ -167,7 +167,7 @@ object ProgressiveSumTest {
    */
   fun train(neuralNetwork: NeuralNetwork, dataset: Corpus<SequenceExample<DenseNDArray>>): Unit {
 
-    println("\n-- TRAINING")
+    println("\n-- TRAINING\n")
 
     val optimizer = ParamsOptimizer(
       neuralNetwork = neuralNetwork,
