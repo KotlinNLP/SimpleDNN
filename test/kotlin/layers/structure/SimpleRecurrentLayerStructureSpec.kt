@@ -9,7 +9,6 @@ package layers.structure
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
-import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -39,10 +38,10 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Empty())
         layer.forward()
 
-        it("should match the expected outputArray") {
+        it("should match the expected output") {
           assertTrue(layer.outputArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.19)),
-            tolerance = 0.005))
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.39693, -0.79688, 0.0, 0.70137, -0.18775)),
+            tolerance = 1.0e-05))
         }
       }
 
@@ -51,10 +50,10 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Back())
         layer.forward()
 
-        it("should match the expected outputArray") {
+        it("should match the expected output") {
           assertTrue(layer.outputArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.74, -0.80, 0.20, 0.91, 0.14)),
-            tolerance = 0.005))
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.74428, -0.8005, 0.19738, 0.9087, 0.13909)),
+            tolerance = 1.0e-05))
         }
       }
     }
@@ -68,7 +67,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         layer.forward(paramsContributions = contributions)
 
-        it("should match the expected outputArray") {
+        it("should match the expected output") {
           assertTrue(layer.outputArray.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.39693, -0.79688, 0.0, 0.70137, -0.18775)),
             tolerance = 1.0e-05))
@@ -123,7 +122,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         layer.forward(paramsContributions = contributions)
 
-        it("should match the expected outputArray") {
+        it("should match the expected output") {
           assertTrue(layer.outputArray.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(0.74428, -0.8005, 0.19738, 0.9087, 0.13909)),
             tolerance = 1.0e-05))
@@ -196,35 +195,33 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         layer.forward()
 
-        val errors = MSECalculator().calculateErrors(
-          output = layer.outputArray.values,
-          outputGold = SimpleRecurrentLayerStructureUtils.getOutputGold())
+        val outputGold = SimpleRecurrentLayerStructureUtils.getOutputGold()
 
-        layer.outputArray.assignErrors(errors)
+        layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
         layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
-        it("should match the expected errors of the outputArray") {
+        it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.97, -1.55, 0.15, -0.94, -0.64)),
-            tolerance = 0.005))
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.96693, -1.54688, 0.15, -0.93863, -0.63775)),
+            tolerance = 1.0e-05))
         }
 
         it("should match the expected errors of the biases") {
           assertTrue(paramsErrors.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.97, -1.55, 0.15, -0.94, -0.64)),
-            tolerance = 0.005))
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.96693, -1.54688, 0.15, -0.93863, -0.63775)),
+            tolerance = 1.0e-05))
         }
 
         it("should match the expected errors of the weights") {
           assertTrue((paramsErrors.weights.values as DenseNDArray).equals(
             DenseNDArrayFactory.arrayOf(arrayOf(
-              doubleArrayOf(0.77, 0.87, 0.87, -0.97),
-              doubleArrayOf(1.24, 1.39, 1.39, -1.55),
-              doubleArrayOf(-0.12, -0.14, -0.14, 0.15),
-              doubleArrayOf(0.75, 0.84, 0.84, -0.94),
-              doubleArrayOf(0.51, 0.57, 0.57, -0.64)
+              doubleArrayOf(0.77354, 0.87024, 0.87024, -0.96693),
+              doubleArrayOf(1.2375, 1.39219, 1.39219, -1.54688),
+              doubleArrayOf(-0.12, -0.135, -0.135, 0.15),
+              doubleArrayOf(0.7509, 0.84476, 0.84476, -0.93863),
+              doubleArrayOf(0.5102, 0.57397, 0.57397, -0.63775)
             )),
-            tolerance = 0.005))
+            tolerance = 1.0e-05))
         }
 
         it("should match the expected errors of the recurrent weights") {
@@ -236,13 +233,13 @@ class SimpleRecurrentLayerStructureSpec : Spek({
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)
             )),
-            tolerance = 0.005))
+            tolerance = 1.0e-05))
         }
 
-        it("should match the expected errors of the inputArray") {
+        it("should match the expected errors of the input") {
           assertTrue(layer.inputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-2.47, 0.14, 1.11, 1.48)),
-            tolerance = 0.005))
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-2.46728, 0.14061, 1.11028, 1.47633)),
+            tolerance = 1.0e-05))
         }
       }
 
@@ -253,55 +250,53 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         layer.forward()
 
-        val errors = MSECalculator().calculateErrors(
-          output = layer.outputArray.values,
-          outputGold = SimpleRecurrentLayerStructureUtils.getOutputGold())
+        val outputGold = SimpleRecurrentLayerStructureUtils.getOutputGold()
 
-        layer.outputArray.assignErrors(errors)
+        layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
         layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
-        it("should match the expected errors of the outputArray") {
+        it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.75, -1.69, 0.41, -0.98, -1.48)),
-            tolerance = 0.005))
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.74789, -1.69287, 0.41, -0.97927, -1.47708)),
+            tolerance = 1.0e-05))
         }
 
         it("should match the expected errors of the biases") {
           assertTrue(paramsErrors.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.75, -1.69, 0.41, -0.98, -1.48)),
-            tolerance = 0.005))
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.74789, -1.69287, 0.41, -0.97927, -1.47708)),
+            tolerance = 1.0e-05))
         }
 
         it("should match the expected errors of the weights") {
           assertTrue((paramsErrors.weights.values as DenseNDArray).equals(
             DenseNDArrayFactory.arrayOf(arrayOf(
-              doubleArrayOf(0.6, 0.67, 0.67, -0.75),
-              doubleArrayOf(1.35, 1.52, 1.52, -1.69),
-              doubleArrayOf(-0.33, -0.37, -0.37, 0.41),
-              doubleArrayOf(0.78, 0.88, 0.88, -0.98),
-              doubleArrayOf(1.18, 1.33, 1.33, -1.48)
+              doubleArrayOf(0.59832, 0.6731, 0.67310, -0.74789),
+              doubleArrayOf(1.3543, 1.52359, 1.52359, -1.69287),
+              doubleArrayOf(-0.328, -0.369, -0.369, 0.41),
+              doubleArrayOf(0.78342, 0.88134, 0.88134, -0.97927),
+              doubleArrayOf(1.18166, 1.32937, 1.32937, -1.47708)
             )),
-            tolerance = 0.005))
+            tolerance = 1.0e-05))
         }
 
         it("should match the expected errors of the recurrent weights") {
           assertTrue(paramsErrors.recurrentWeights.values.equals(
             DenseNDArrayFactory.arrayOf(arrayOf(
-              doubleArrayOf(-0.04, -0.08, 0.0, 0.07, -0.02),
-              doubleArrayOf(-0.04, -0.08, 0.0, 0.07, -0.02),
-              doubleArrayOf(0.2, 0.4, 0.0, -0.35, 0.09),
-              doubleArrayOf(-0.28, -0.56, 0.0, 0.49, -0.13),
-              doubleArrayOf(-0.08, -0.16, 0.0, 0.14, -0.04)
+              doubleArrayOf(-0.03969, -0.07969, 0.0, 0.07014, -0.01877),
+              doubleArrayOf(-0.03969, -0.07969, 0.0, 0.07014, -0.01877),
+              doubleArrayOf(0.19847, 0.39844, 0.0, -0.35069, 0.09387),
+              doubleArrayOf(-0.27785, -0.55781, 0.0, 0.49096, -0.13142),
+              doubleArrayOf(-0.07939, -0.15938, 0.0, 0.14027, -0.03755)
             )),
-            tolerance = 0.005))
+            tolerance = 1.0e-05))
         }
 
-        it("should match the expected errors of the inputArray") {
+        it("should match the expected errors of the input") {
           assertTrue(layer.inputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-2.65, -0.65, 1.59, 0.92)),
-            tolerance = 0.005))
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-2.64621, -0.65432, 1.58598, 0.9243)),
+            tolerance = 1.0e-05))
         }
-        }
+      }
     }
   }
 })
