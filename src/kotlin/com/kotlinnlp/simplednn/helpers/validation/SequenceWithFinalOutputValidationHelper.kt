@@ -13,7 +13,10 @@ import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvalu
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
+ * An helper which executes the validation of a dataset of [SequenceExampleWithFinalOutput]s.
  *
+ * @property neuralProcessor a recurrent neural processor
+ * @property outputEvaluationFunction the output evaluation function
  */
 class SequenceWithFinalOutputValidationHelper<NDArrayType: NDArray<NDArrayType>>(
   override val neuralProcessor: RecurrentNeuralProcessor<NDArrayType>,
@@ -22,9 +25,19 @@ class SequenceWithFinalOutputValidationHelper<NDArrayType: NDArray<NDArrayType>>
   neuralProcessor = neuralProcessor,
   outputEvaluationFunction = outputEvaluationFunction) {
 
-  override fun validate(example: SequenceExampleWithFinalOutput<NDArrayType>): Boolean {
+  /**
+   * Validate a single example.
+   *
+   * @param example the example to validate
+   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
+   *                          the relevance)
+   *
+   * @return a Boolean indicating if the predicted output matches the gold output
+   */
+  override fun validate(example: SequenceExampleWithFinalOutput<NDArrayType>, saveContributions: Boolean): Boolean {
 
-    val output = this.neuralProcessor.forward(example.sequenceFeatures)
+    val output = this.neuralProcessor.forward(example.sequenceFeatures, saveContributions = saveContributions)
+
     return this.outputEvaluationFunction(output = output, outputGold = example.outputGold)
   }
 }
