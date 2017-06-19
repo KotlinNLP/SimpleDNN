@@ -96,7 +96,7 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
    */
   fun arrayOf(matrix: Array<DoubleArray>): DenseNDArray {
     val rows = matrix.size
-    val columns = matrix[0].size
+    val columns = if (matrix.isNotEmpty()) matrix[0].size else 0
     val m = DoubleMatrix(rows, columns)
 
     (0 until rows * columns).forEach { linearIndex ->
