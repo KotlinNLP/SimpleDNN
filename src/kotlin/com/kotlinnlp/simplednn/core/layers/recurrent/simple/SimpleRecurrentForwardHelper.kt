@@ -52,16 +52,15 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
   }
 
   /**
-   * Forward the input to the output combining it with the parameters, saving the contributions of the parameters.
+   * Forward the input to the output combining it with the parameters, saving the contributions.
    *
    * y = f(w (dot) x + b + wRec (dot) yPrev)
    *
-   * @param paramsContributions the [LayerParameters] in which to save the contributions of the input in respect of the
-   *                          output
+   * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  override fun forward(paramsContributions: LayerParameters) {
+  override fun forward(layerContributions: LayerParameters) {
     this.layer.params as SimpleRecurrentLayerParameters
-    paramsContributions as SimpleRecurrentLayerParameters
+    layerContributions as SimpleRecurrentLayerParameters
 
     val prevStateLayer: LayerStructure<*>? = this.layer.layerContextWindow.getPrevStateLayer()
     val b: DenseNDArray = this.layer.params.biases.values
@@ -70,7 +69,7 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
 
     // y = w (dot) x + b ( -> b / 2)
     this.forwardArray(
-      contributions = paramsContributions.weights.values,
+      contributions = layerContributions.weights.values,
       x = this.layer.inputArray.values,
       y = this.layer.outputArray.values,
       w = this.layer.params.weights.values as DenseNDArray,
@@ -81,11 +80,11 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
     if (prevStateLayer != null) {
       this.addRecurrentContribution(
         yPrev = prevStateLayer.outputArray.values,
-        yRec = paramsContributions.biases.values, // a tricky way to save the recurrent contribution (b.size == y.size)
+        yRec = layerContributions.biases.values, // a tricky way to save the recurrent contribution (b.size == y.size)
         y = this.layer.outputArray.values,
         wRec = this.layer.params.recurrentWeights.values,
         b = bContrib,
-        contributions = paramsContributions.recurrentWeights.values
+        contributions = layerContributions.recurrentWeights.values
       )
     }
 

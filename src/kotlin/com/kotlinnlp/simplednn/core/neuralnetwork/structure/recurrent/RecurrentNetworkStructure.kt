@@ -53,6 +53,7 @@ class RecurrentNetworkStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param inputArray an AugmentedArray used as referenced input (to concatV two layers)
    * @param outputConfiguration the layersConfiguration of the output array
    * @param params the network parameters of the current layer
+   * @param dropout the probability of dropout
    *
    * @return a new LayerStructure
    */

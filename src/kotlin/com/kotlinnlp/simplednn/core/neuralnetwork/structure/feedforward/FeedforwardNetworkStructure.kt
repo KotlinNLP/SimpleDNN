@@ -62,17 +62,17 @@ class FeedforwardNetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Calculate the relevance of the input of each layer respect of its output, starting from the given distribution on
    * the outcomes.
    *
-   * @param paramsContributions the [NetworkParameters] in which to save the contributions of the parameters
+   * @param networkContributions the [NetworkParameters] in which to save the contributions during calculations
    * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
    *                                     as reference to calculate the relevance of the input
    */
-  fun calculateRelevance(paramsContributions: NetworkParameters, relevantOutcomesDistribution: DistributionArray) {
+  fun calculateRelevance(networkContributions: NetworkParameters, relevantOutcomesDistribution: DistributionArray) {
 
     this.layers.last().setOutputRelevance(relevantOutcomesDistribution)
 
     for ((i, layer) in this.layers.withIndex().reversed()) { layer as FeedforwardLayerStructure
       this.curLayerIndex = i
-      layer.calculateInputRelevance(paramsContributions = paramsContributions.paramsPerLayer[i])
+      layer.calculateInputRelevance(layerContributions = networkContributions.paramsPerLayer[i])
     }
   }
 }

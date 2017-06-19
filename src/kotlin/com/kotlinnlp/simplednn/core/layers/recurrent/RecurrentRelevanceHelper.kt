@@ -23,7 +23,7 @@ abstract class RecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayT
   /**
    * Calculate the relevance of the output in the previous state respect of the current one.
    *
-   * @param paramsContributions the contributions of the parameters during the last forward
+   * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  abstract fun calculateRecurrentRelevance(paramsContributions: LayerParameters)
+  abstract fun calculateRecurrentRelevance(layerContributions: LayerParameters)
 }

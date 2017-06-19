@@ -83,7 +83,7 @@ class FeedforwardLayerStructureSpec : Spek({
         val layer = FeedforwardLayerStructureUtils.buildLayer53()
         val contributions = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
 
-        layer.forward(paramsContributions = contributions)
+        layer.forward(layerContributions = contributions)
 
         it("should match the expected output values") {
           assertTrue {
@@ -107,7 +107,7 @@ class FeedforwardLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 3))
-        layer.calculateInputRelevance(paramsContributions = contributions)
+        layer.calculateInputRelevance(layerContributions = contributions)
 
         it("should set a Dense input relevance") {
           assertTrue { layer.inputArray.relevance is DenseNDArray }
@@ -128,7 +128,7 @@ class FeedforwardLayerStructureSpec : Spek({
         val layer = FeedforwardLayerStructureUtils.buildLayer53SparseBinary()
         val contributions = FeedforwardLayerParameters(inputSize = 5, outputSize = 3, sparseInput = true)
 
-        layer.forward(paramsContributions = contributions)
+        layer.forward(layerContributions = contributions)
 
         it("should match the expected output values") {
           assertTrue {
@@ -139,7 +139,7 @@ class FeedforwardLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 3))
-        layer.calculateInputRelevance(paramsContributions = contributions)
+        layer.calculateInputRelevance(layerContributions = contributions)
 
         it("should set a Sparse input relevance") {
           assertTrue { layer.inputArray.relevance is SparseNDArray }

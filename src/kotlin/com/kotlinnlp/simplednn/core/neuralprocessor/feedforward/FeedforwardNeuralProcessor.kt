@@ -33,9 +33,10 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     params = this.neuralNetwork.model)
 
   /**
-   * The contributions of the model parameters to forward the input to the output
+   * The structure in which to save the contributions of the calculations during the forward (needed to calculate the
+   * relevance of the input in respect of the output)
    */
-  private val forwardParamsContributions: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
+  private val forwardContributions: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
 
   /**
    * The errors of the network model parameters
@@ -115,7 +116,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     if (saveContributions) {
       this.structure.forward(
         features = featuresArray,
-        paramsContributions = this.forwardParamsContributions,
+        networkContributions = this.forwardContributions,
         useDropout = useDropout)
 
     } else {
@@ -139,7 +140,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun calculateInputRelevance(relevantOutcomesDistribution: DistributionArray, copy: Boolean = true): NDArray<*> {
 
     this.structure.calculateRelevance(
-      paramsContributions = this.forwardParamsContributions,
+      networkContributions = this.forwardContributions,
       relevantOutcomesDistribution = relevantOutcomesDistribution)
 
     return if (copy) {

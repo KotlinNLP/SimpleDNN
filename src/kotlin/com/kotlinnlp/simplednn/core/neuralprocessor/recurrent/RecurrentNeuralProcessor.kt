@@ -293,7 +293,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     if (saveContributions) {
       this.sequence.lastStructure!!.forward(
         features = featuresArray,
-        paramsContributions = this.sequence.lastContributions,
+        networkContributions = this.sequence.lastContributions,
         useDropout = useDropout)
 
     } else {
@@ -348,20 +348,21 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
                                       isPropagating: Boolean,
                                       isPrevLayerRecurrent: Boolean) {
 
-    val params: LayerParameters = this.sequence.getStateContributions(this.curStateIndex)!!.paramsPerLayer[layerIndex]
+    val contributions: LayerParameters
+      = this.sequence.getStateContributions(this.curStateIndex)!!.paramsPerLayer[layerIndex]
 
     if (isPropagating && (layerIndex > 0 || isFirstState)) { // propagate relevance to input
 
       if (!isLastState && isPrevLayerRecurrent) {
-        layer.addInputRelevance(paramsContributions = params)
+        layer.addInputRelevance(layerContributions = contributions)
 
       } else {
-        layer.calculateInputRelevance(paramsContributions = params)
+        layer.calculateInputRelevance(layerContributions = contributions)
       }
     }
 
     if (!isFirstState && layer is RecurrentLayerStructure) { // propagate relevance to previous state
-      layer.calculateRecurrentRelevance(paramsContributions = params)
+      layer.calculateRecurrentRelevance(layerContributions = contributions)
     }
   }
 

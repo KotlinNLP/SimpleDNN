@@ -48,11 +48,11 @@ class GRUForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward the input to the output combining it with the parameters, saving the contributions of the parameters.
+   * Forward the input to the output combining it with the parameters, saving the contributions.
    *
-   * @param paramsContributions the [LayerParameters] in which to save the contributions of the parameters
+   * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  override fun forward(paramsContributions: LayerParameters) {
+  override fun forward(layerContributions: LayerParameters) {
     TODO("not implemented")
   }
 

@@ -46,9 +46,9 @@ abstract class RecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayTy
   /**
    * Calculate the relevance of the output in previous state respect of current one.
    *
-   * @param paramsContributions the contributions of the parameters during the last forward
+   * @param layerContributions the contributions saved during the last forward
    */
-  fun calculateRecurrentRelevance(paramsContributions: LayerParameters) {
-    this.relevanceHelper.calculateRecurrentRelevance(paramsContributions = paramsContributions)
+  fun calculateRecurrentRelevance(layerContributions: LayerParameters) {
+    this.relevanceHelper.calculateRecurrentRelevance(layerContributions = layerContributions)
   }
 }

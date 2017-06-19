@@ -101,21 +101,21 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward features, saving the contributions.
    *
    * @param features the features to forward from the input to the output
-   * @param paramsContributions the [NetworkParameters] in which to save the contributions of the input of each layer to
-   *                          the relative output
+   * @param networkContributions the [NetworkParameters] in which to save the contributions of the input of each layer
+   *                             in respect of the related output
    * @param useDropout whether to apply the dropout
    *
    * @return the output [NDArray]
    */
   fun forward(features: InputNDArrayType,
-              paramsContributions: NetworkParameters,
+              networkContributions: NetworkParameters,
               useDropout: Boolean = false): DenseNDArray {
 
     this.inputLayer.setInput(features)
 
     for ((i, layer) in this.layers.withIndex()) {
       this.curLayerIndex = i
-      layer.forward(paramsContributions = paramsContributions.paramsPerLayer[i], useDropout = useDropout)
+      layer.forward(layerContributions = networkContributions.paramsPerLayer[i], useDropout = useDropout)
     }
 
     return this.outputLayer.outputArray.values

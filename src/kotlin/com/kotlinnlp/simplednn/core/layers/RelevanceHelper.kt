@@ -30,30 +30,30 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Calculate the relevance of the input respect of the output.
    *
-   * @param paramsContributions the contributions of the parameters during the last forward
+   * @param layerContributions the contributions saved during the last forward
    */
-  fun calculateInputRelevance(paramsContributions: LayerParameters) {
-    this.layer.inputArray.assignRelevance(relevance = this.getInputRelevance(paramsContributions = paramsContributions))
+  fun calculateInputRelevance(layerContributions: LayerParameters) {
+    this.layer.inputArray.assignRelevance(relevance = this.getInputRelevance(layerContributions = layerContributions))
   }
 
   /**
    * Calculate the relevance of the input respect of the output and add it to the relevance of the input array
    * previously set.
    *
-   * @param paramsContributions the contributions of the parameters during the last forward
+   * @param layerContributions the contributions saved during the last forward
    */
-  fun addInputRelevance(paramsContributions: LayerParameters) {
-    this.layer.inputArray.relevance.assignSum(this.getInputRelevance(paramsContributions = paramsContributions))
+  fun addInputRelevance(layerContributions: LayerParameters) {
+    this.layer.inputArray.relevance.assignSum(this.getInputRelevance(layerContributions = layerContributions))
   }
 
   /**
    * Calculate the relevance of the input respect of the output.
    *
-   * @param paramsContributions the contributions of the parameters during the last forward
+   * @param layerContributions the contributions saved during the last forward
    *
    * @return the relevance of the input respect of the output
    */
-  protected abstract fun getInputRelevance(paramsContributions: LayerParameters): NDArray<*>
+  protected abstract fun getInputRelevance(layerContributions: LayerParameters): NDArray<*>
 
   /**
    * Calculate the relevance of the array [x] respect of the calculation which produced the array [y].

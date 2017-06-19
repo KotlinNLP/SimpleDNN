@@ -25,15 +25,15 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
   /**
    * Calculate the relevance of the input respect of the output.
    *
-   * @param paramsContributions the contributions of the parameters during the last forward
+   * @param layerContributions the contributions saved during the last forward
    *
    * @return the relevance of the input respect of the output
    */
-  override fun getInputRelevance(paramsContributions: LayerParameters): NDArray<*> {
-    paramsContributions as SimpleRecurrentLayerParameters
+  override fun getInputRelevance(layerContributions: LayerParameters): NDArray<*> {
+    layerContributions as SimpleRecurrentLayerParameters
 
     val y: DenseNDArray = this.layer.outputArray.valuesNotActivated
-    val yRec: DenseNDArray = paramsContributions.biases.values
+    val yRec: DenseNDArray = layerContributions.biases.values
     val yInput: DenseNDArray = y.sub(yRec)
     val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer() as? SimpleRecurrentLayerStructure<*>
 
@@ -44,27 +44,27 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
         this.getInputRelevancePartition(y = y, yInput = yInput, yRec = yRec)
       else
         this.layer.outputArray.relevance as DenseNDArray,
-      contributions = paramsContributions.weights.values
+      contributions = layerContributions.weights.values
     )
   }
 
   /**
    * Calculate the relevance of the output in the previous state respect of the current one.
    *
-   * @param paramsContributions the contributions of the parameters during the last forward
+   * @param layerContributions the contributions saved during the last forward
    */
-  override fun calculateRecurrentRelevance(paramsContributions: LayerParameters) {
-    paramsContributions as SimpleRecurrentLayerParameters
+  override fun calculateRecurrentRelevance(layerContributions: LayerParameters) {
+    layerContributions as SimpleRecurrentLayerParameters
 
     val y: DenseNDArray = this.layer.outputArray.valuesNotActivated
-    val yRec: DenseNDArray = paramsContributions.biases.values
+    val yRec: DenseNDArray = layerContributions.biases.values
     val prevStateLayer: LayerStructure<*> = this.layer.layerContextWindow.getPrevStateLayer()!!
 
     val recurrentRelevance = this.calculateRelevanceOfDenseArray(
       x = prevStateLayer.outputArray.values,
       y = yRec,
       yRelevance = this.getRecurrentRelevancePartition(y = y, yRec = yRec),
-      contributions = paramsContributions.recurrentWeights.values
+      contributions = layerContributions.recurrentWeights.values
     )
 
     prevStateLayer.outputArray.assignRelevance(recurrentRelevance)

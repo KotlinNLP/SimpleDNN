@@ -27,11 +27,11 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   abstract fun forward()
 
   /**
-   * Forward the input to the output combining it with the parameters, saving the contributions of the parameters.
+   * Forward the input to the output combining it with the parameters, saving the contributions.
    *
-   * @param paramsContributions the [LayerParameters] in which to save the contributions of the parameters
+   * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  abstract fun forward(paramsContributions: LayerParameters)
+  abstract fun forward(layerContributions: LayerParameters)
 
   /**
    * Forward [x] to [y] combining it with [w] and [b], saving the contributions in [contributions].
