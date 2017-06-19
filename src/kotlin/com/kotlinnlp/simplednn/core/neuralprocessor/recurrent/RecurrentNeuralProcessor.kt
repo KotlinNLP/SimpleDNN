@@ -139,7 +139,8 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward a sequence.
    *
    * @param sequenceFeaturesArray the features to forward for each item of the sequence
-   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate relevance)
+   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
+   *                          the relevance)
    * @param useDropout whether to apply the dropout
    *
    * @return the last output of the network after the whole sequence is been forwarded
@@ -163,7 +164,8 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward features.
    *
    * @param featuresArray the features to forward from the input to the output
-   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate relevance)
+   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
+   *                          the relevance)
    * @param firstState whether the current one is the first state
    * @param useDropout whether to apply the dropout
    */
