@@ -86,23 +86,6 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Get the relevance of the input.
-   * (If the input is Dense it is Dense, if the input is Sparse or SparseBinary it is Sparse).
-   *
-   * @param copy whether to return a copy of the relevance or not
-   *
-   * @return the relevance of the input as [NDArray]
-   */
-  fun getInputRelevance(copy: Boolean = true): NDArray<*> {
-
-    return if (copy) {
-      this.structure.inputLayer.inputArray.relevance.copy()
-    } else {
-      this.structure.inputLayer.inputArray.relevance
-    }
-  }
-
-  /**
    * Forward features.
    *
    * @param featuresArray the features to forward from the input to the output
@@ -116,29 +99,54 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward features, calculating their relevance respect of the output.
+   * Forward features, saving the contributes of the input in respect of the output.
    *
    * @param featuresArray the features to forward from the input to the output
-   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
-   *                                     as reference to calculate the relevance of the input
+   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
+   *                          the relevance)
    * @param useDropout whether to apply the dropout
    *
    * @return the output [NDArray]
    */
   fun forward(featuresArray: InputNDArrayType,
-              relevantOutcomesDistribution: DistributionArray,
+              saveContributions: Boolean,
               useDropout: Boolean = false): DenseNDArray {
 
-    this.structure.forward(
-      features = featuresArray,
-      paramsContributions = this.forwardParamsContributions,
-      useDropout = useDropout)
+    if (saveContributions) {
+      this.structure.forward(
+        features = featuresArray,
+        paramsContributions = this.forwardParamsContributions,
+        useDropout = useDropout)
+
+    } else {
+      this.structure.forward(features = featuresArray, useDropout = useDropout)
+    }
+
+    return this.structure.outputLayer.outputArray.values
+  }
+
+  /**
+   * Calculate the relevance of the input of respect of the output, starting from the given distribution on
+   * the outcomes.
+   *
+   * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
+   *                                     as reference to calculate the relevance of the input
+   * @param copy whether to return a copy of the relevance or not
+   *
+   * @return the input relevance array (If the input is Dense it is Dense, if the input is Sparse or SparseBinary it
+   *         is Sparse)
+   */
+  fun calculateInputRelevance(relevantOutcomesDistribution: DistributionArray, copy: Boolean = false): NDArray<*> {
 
     this.structure.calculateRelevance(
       paramsContributions = this.forwardParamsContributions,
       relevantOutcomesDistribution = relevantOutcomesDistribution)
 
-    return this.structure.outputLayer.outputArray.values
+    return if (copy) {
+      this.structure.inputLayer.inputArray.relevance.copy()
+    } else {
+      this.structure.inputLayer.inputArray.relevance
+    }
   }
 
   /**
@@ -147,8 +155,8 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param outputErrors the errors of the output
    * @param propagateToInput whether to propagate the errors to the input
    */
-  fun backward(outputErrors: DenseNDArray,
-               propagateToInput: Boolean = false) {
+  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false) {
+
     this.structure.backward(
       outputErrors = outputErrors,
       paramsErrors = this.backwardParamsErrors,
