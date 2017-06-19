@@ -161,11 +161,11 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param b the biases added to each value of [yRec] (if null no bias is added)
    */
   protected fun addRecurrentContribution(contributions: DenseNDArray,
-                                       yPrev: DenseNDArray,
-                                       yRec: DenseNDArray,
-                                       y: DenseNDArray,
-                                       wRec: DenseNDArray,
-                                       b: DenseNDArray) {
+                                         yPrev: DenseNDArray,
+                                         yRec: DenseNDArray,
+                                         y: DenseNDArray,
+                                         wRec: DenseNDArray,
+                                         b: DenseNDArray) {
 
     this.forwardArray(contributions = contributions, x = yPrev, y = yRec, w = wRec, b = b)
 
