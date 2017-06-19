@@ -23,21 +23,28 @@ abstract class ValidationHelper<ExampleType: Example>(
    * Validate examples.
    *
    * @param examples a list of examples to validate
+   * @param onPrediction a callback called for each prediction (args: example, isCorrect)
    *
    * @return the percentage of correct predictions
    */
-  fun validate(examples: ArrayList<ExampleType>): Double {
+  fun validate(examples: ArrayList<ExampleType>,
+               onPrediction: (example: ExampleType, isCorrect: Boolean) -> Unit = {_, _ -> }): Double {
 
     var correctPredictions: Int = 0
 
     examples.forEach {
-      if (this.validate(it)) {
+      val isCorrect = this.validate(it)
+
+      if (isCorrect) {
         correctPredictions += 1
       }
+
+      onPrediction(it, isCorrect)
     }
 
     return correctPredictions.toDouble() / examples.size
   }
+
   /**
    * Validate a single example.
    *
