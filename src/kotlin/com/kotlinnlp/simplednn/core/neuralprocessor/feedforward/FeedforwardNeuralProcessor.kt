@@ -136,7 +136,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return the input relevance array (If the input is Dense it is Dense, if the input is Sparse or SparseBinary it
    *         is Sparse)
    */
-  fun calculateInputRelevance(relevantOutcomesDistribution: DistributionArray, copy: Boolean = false): NDArray<*> {
+  fun calculateInputRelevance(relevantOutcomesDistribution: DistributionArray, copy: Boolean = true): NDArray<*> {
 
     this.structure.calculateRelevance(
       paramsContributions = this.forwardParamsContributions,
