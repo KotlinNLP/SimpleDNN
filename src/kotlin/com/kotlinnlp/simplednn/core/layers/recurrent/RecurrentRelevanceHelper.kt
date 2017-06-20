@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.core.layers.recurrent
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which calculates the relevance of the input of a [layer] respect of its output.
@@ -28,43 +27,4 @@ abstract class RecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayT
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
   abstract fun setRecurrentRelevance(layerContributions: LayerParameters)
-
-  /**
-   * @param yRelevance the relevance of [y]
-   * @param y the output array
-   * @param yContribute1 the first contribution to calculate [y]
-   * @param yContribute2 the second contribution to calculate [y]
-   *
-   * @return the partition of [yRelevance] with the same ratio as [yContribute1] is in respect of [y].
-   */
-  protected fun getRelevancePartition1(yRelevance: DenseNDArray,
-                                       y: DenseNDArray,
-                                       yContribute1: DenseNDArray,
-                                       yContribute2: DenseNDArray): DenseNDArray {
-
-    val eps: DenseNDArray = yContribute2.nonZeroSign().assignProd(this.relevanceEps) // the same factor (yContribute2)
-    // is needed to calculate eps either for the first partition then the second one
-
-    // partition factor = (yContribute1 + eps / 2) / (yContribute1 + yContribute2 + eps) [eps avoids divisions by zero]
-    return yRelevance.prod(yContribute1.sum(eps.div(2.0))).assignDiv(y.sum(eps))
-  }
-
-  /**
-   * Get the partition of the output relevance respect of the output in the previous state.
-   *
-   * @param yRelevance the relevance of [y]
-   * @param y the output array
-   * @param yContribute2 the second contribution to calculate [y]
-   *
-   * @return the partition of [yRelevance] with the same ratio as [yContribute2] is in respect of [y].
-   */
-  protected fun getRelevancePartition2(yRelevance: DenseNDArray,
-                                       y: DenseNDArray,
-                                       yContribute2: DenseNDArray): DenseNDArray {
-
-    val eps: DenseNDArray = yContribute2.nonZeroSign().assignProd(this.relevanceEps)
-
-    // partition factor = (yContribute2 + eps / 2) / (yInput + yContribute2 + eps) [eps avoids divisions by zero]
-    return yRelevance.prod(yContribute2.sum(eps.div(2.0))).assignDiv(y.sum(eps))
-  }
 }
