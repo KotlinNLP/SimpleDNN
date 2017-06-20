@@ -44,11 +44,12 @@ abstract class RecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayTy
   override abstract val relevanceHelper: RecurrentRelevanceHelper<InputNDArrayType>
 
   /**
-   * Calculate the relevance of the output in previous state respect of current one.
+   * Calculate the relevance of the output in the previous state respect of the current one and assign it to the output
+   * array of the previous state.
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  fun calculateRecurrentRelevance(layerContributions: LayerParameters) {
-    this.relevanceHelper.calculateRecurrentRelevance(layerContributions = layerContributions)
+  fun setRecurrentRelevance(layerContributions: LayerParameters) {
+    this.relevanceHelper.setRecurrentRelevance(layerContributions = layerContributions)
   }
 }

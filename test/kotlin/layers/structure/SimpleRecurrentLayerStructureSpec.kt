@@ -106,7 +106,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         it("should throw an Exception when calculating the recurrent relevance") {
           assertFailsWith <KotlinNullPointerException> {
-            layer.calculateRecurrentRelevance(layerContributions = contributions)
+            layer.setRecurrentRelevance(layerContributions = contributions)
           }
         }
       }
@@ -160,7 +160,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 5))
         layer.setInputRelevance(layerContributions = contributions)
-        layer.calculateRecurrentRelevance(layerContributions = contributions)
+        layer.setRecurrentRelevance(layerContributions = contributions)
 
         it("should set a Dense input relevance") {
           assertTrue { layer.inputArray.relevance is DenseNDArray }

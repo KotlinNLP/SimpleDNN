@@ -362,7 +362,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     }
 
     if (!isFirstState && layer is RecurrentLayerStructure) { // propagate relevance to previous state
-      layer.calculateRecurrentRelevance(layerContributions = contributions)
+      layer.setRecurrentRelevance(layerContributions = contributions)
     }
   }
 

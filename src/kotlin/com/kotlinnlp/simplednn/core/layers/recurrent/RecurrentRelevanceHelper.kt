@@ -22,11 +22,12 @@ abstract class RecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayT
 ) : RelevanceHelper<InputNDArrayType>(layer) {
 
   /**
-   * Calculate the relevance of the output in the previous state respect of the current one.
+   * Calculate the relevance of the output in the previous state respect of the current one and assign it to the output
+   * array of the previous state.
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  abstract fun calculateRecurrentRelevance(layerContributions: LayerParameters)
+  abstract fun setRecurrentRelevance(layerContributions: LayerParameters)
 
   /**
    * @param yRelevance the relevance of [y]

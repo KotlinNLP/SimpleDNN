@@ -23,8 +23,6 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
 ) : RecurrentRelevanceHelper<InputNDArrayType>(layer) {
 
   /**
-   * Calculate the relevance of the input respect of the output.
-   *
    * @param layerContributions the contributions saved during the last forward
    *
    * @return the relevance of the input respect of the output
@@ -50,11 +48,12 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
   }
 
   /**
-   * Calculate the relevance of the output in the previous state respect of the current one.
+   * Calculate the relevance of the output in the previous state respect of the current one and assign it to the output
+   * array of the previous state.
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  override fun calculateRecurrentRelevance(layerContributions: LayerParameters) {
+  override fun setRecurrentRelevance(layerContributions: LayerParameters) {
     layerContributions as SimpleRecurrentLayerParameters
 
     val y: DenseNDArray = this.layer.outputArray.valuesNotActivated
