@@ -71,25 +71,6 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
   }
 
   /**
-   * Get the partition of the output relevance respect of the input.
-   *
-   * @param y the output array of the layer
-   * @param yInput the contribution of the input to calculate the output array
-   * @param yRec the contribution of the recursion to calculate the output array
-   *
-   * @return the partition of the output relevance respect of the input
-   */
-  private fun getInputRelevancePartition(y: DenseNDArray, yInput: DenseNDArray, yRec: DenseNDArray): DenseNDArray {
-
-    val yRelevance: DenseNDArray = this.layer.outputArray.relevance as DenseNDArray
-    val eps: DenseNDArray = yRec.nonZeroSign().assignProd(this.relevanceEps) // the same factor (yRec) is needed
-    // to calculate eps either for the input partition then the recurrent one
-
-    // partition factor = (yInput + eps / 2) / (yInput + yRec + eps) [eps avoids divisions by zero]
-    return yRelevance.prod(yInput.sum(eps.div(2.0))).assignDiv(y.sum(eps))
-  }
-
-  /**
    * Get the partition of the output relevance respect of the output in the previous state.
    *
    * @param y the output array of the layer
