@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
- *
+ * The basic unit of the recurrent layer, which extends the [LayerUnit] with the recurrent contribution.
  */
 class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : LayerUnit<InputNDArrayType>(size) {
 
@@ -22,9 +22,9 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
   }
 
   /**
-   * Add the recurrent contribution to the array.
+   * Add the recurrent contribution to the unit.
    *
-   * @param gateParams the parameters of the gate
+   * @param paramsErrors the parameters associated to this unit
    * @param prevContribution the output array to add as contribution from the previous state
    *
    * g += wRec (dot) prevContribution
@@ -37,14 +37,14 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
   }
 
   /**
-   * Assign errors to the [paramsErrors] associated to this gate.
+   * Assign errors to the parameters associated to this unit.
    *
    * gb = errors * 1
    * gw = errors (dot) x
    * gwRec = errors (dot) yPrev
    *
-   * @param paramsErrors the [ParametersUnit] associated to this gate
-   * @param x the input [NDArray] of the gate
+   * @param paramsErrors the parameters associated to this unit
+   * @param x the input of the unit
    * @param yPrev the output array as contribution from the previous state
    */
   fun assignParamsGradients(paramsErrors: ParametersUnit,

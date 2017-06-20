@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
- *
+ * The basic unit of the layer, which extends the [AugmentedArray] with forward and backward methods.
  */
 open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : AugmentedArray<DenseNDArray>(size) {
 
@@ -27,7 +27,7 @@ open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : 
    *
    * g = w (dot) x + b
    *
-   * @param gateParams the parameters of the gate
+   * @param gateParams the parameters associated to this unit
    * @param x the input array of the current layer
    */
   fun forward(gateParams: ParametersUnit, x: InputNDArrayType) {
@@ -39,13 +39,13 @@ open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : 
   }
 
   /**
-   * Assign errors to the [paramsErrors] associated to this gate.
+   * Assign errors to the parameters associated to this unit.
    *
    * gb = errors * 1
    * gw = errors (dot) x
    *
-   * @param paramsErrors the [ParametersUnit] associated to this gate
-   * @param x the input [NDArray] of the gate
+   * @param paramsErrors the parameters associated to this unit
+   * @param x the input of the unit
    */
   fun assignParamsGradients(paramsErrors: ParametersUnit, x: InputNDArrayType) {
 
