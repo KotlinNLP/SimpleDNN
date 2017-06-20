@@ -42,7 +42,7 @@ class GateUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : Augmen
    * Add the recurrent contribution to the array.
    *
    * @param gateParams the parameters of the gate
-   * @param prevContribution the input array to add as contribution from the previous state
+   * @param prevContribution the output array to add as contribution from the previous state
    *
    * g += wRec (dot) prevContribution
    */
@@ -60,9 +60,9 @@ class GateUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : Augmen
    * gw = gGate (dot) x
    * gwRec = gGate (dot) yPrev
    *
-   * @param paramsErrors a [GateParametersUnit] associated to this gate
+   * @param paramsErrors the [GateParametersUnit] associated to this gate
    * @param x the input [NDArray] of the gate
-   * @param yPrev the output [NDArray] of the gate in the previous state
+   * @param yPrev the output array as contribution from the previous state
    */
   fun assignParamsGradients(paramsErrors: GateParametersUnit,
                             x: InputNDArrayType,
