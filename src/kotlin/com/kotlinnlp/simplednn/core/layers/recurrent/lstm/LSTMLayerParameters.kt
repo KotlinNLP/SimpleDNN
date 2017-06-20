@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.recurrent.lstm
 
-import com.kotlinnlp.simplednn.core.layers.ParametersUnit
+import com.kotlinnlp.simplednn.core.layers.RecurrentParametersUnit
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 
@@ -27,7 +27,7 @@ class LSTMLayerParameters(
   /**
    *
    */
-  val inputGate = ParametersUnit(
+  val inputGate = RecurrentParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
@@ -35,7 +35,7 @@ class LSTMLayerParameters(
   /**
    *
    */
-  val outputGate = ParametersUnit(
+  val outputGate = RecurrentParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
@@ -43,7 +43,7 @@ class LSTMLayerParameters(
   /**
    *
    */
-  val forgetGate = ParametersUnit(
+  val forgetGate = RecurrentParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
@@ -51,7 +51,7 @@ class LSTMLayerParameters(
   /**
    *
    */
-  val candidate = ParametersUnit(
+  val candidate = RecurrentParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)

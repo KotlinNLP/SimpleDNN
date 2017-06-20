@@ -29,7 +29,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    *
    * g += wRec (dot) prevContribution
    */
-  fun addRecurrentContribution(gateParams: ParametersUnit, prevContribution: DenseNDArray) {
+  fun addRecurrentContribution(gateParams: RecurrentParametersUnit, prevContribution: DenseNDArray) {
 
     val wRec = gateParams.recurrentWeights.values
 
@@ -47,7 +47,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    * @param x the input of the unit
    * @param yPrev the output array as contribution from the previous state
    */
-  fun assignParamsGradients(paramsErrors: ParametersUnit,
+  fun assignParamsGradients(paramsErrors: RecurrentParametersUnit,
                             x: InputNDArrayType,
                             yPrev: DenseNDArray? = null) {
 

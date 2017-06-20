@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 /**
  *
  */
-data class ParametersUnit(val inputSize: Int, val outputSize: Int, private val sparseInput: Boolean = false) {
+data class RecurrentParametersUnit(val inputSize: Int, val outputSize: Int, private val sparseInput: Boolean = false) {
 
   /**
    *

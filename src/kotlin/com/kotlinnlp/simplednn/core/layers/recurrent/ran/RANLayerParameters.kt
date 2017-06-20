@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.recurrent.ran
 
-import com.kotlinnlp.simplednn.core.layers.ParametersUnit
+import com.kotlinnlp.simplednn.core.layers.RecurrentParametersUnit
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
@@ -28,7 +28,7 @@ class RANLayerParameters(
   /**
    *
    */
-  val inputGate = ParametersUnit(
+  val inputGate = RecurrentParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
@@ -36,7 +36,7 @@ class RANLayerParameters(
   /**
    *
    */
-  val forgetGate = ParametersUnit(
+  val forgetGate = RecurrentParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)

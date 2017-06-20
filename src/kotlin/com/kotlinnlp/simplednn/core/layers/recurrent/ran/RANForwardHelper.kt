@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.layers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.LayerStructure
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.layers.ParametersUnit
+import com.kotlinnlp.simplednn.core.layers.RecurrentParametersUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -135,8 +135,8 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     // biases are divided equally within the sum if there's a contribution coming from recursion
     val splitBiases: Boolean = prevStateLayer != null
-    val inGParams: ParametersUnit = this.layer.params.inputGate
-    val forGParams: ParametersUnit = this.layer.params.forgetGate
+    val inGParams: RecurrentParametersUnit = this.layer.params.inputGate
+    val forGParams: RecurrentParametersUnit = this.layer.params.forgetGate
     val bInG: DenseNDArray = if (splitBiases) inGParams.biases.values.div(2.0) else inGParams.biases.values
     val bForG: DenseNDArray = if (splitBiases) forGParams.biases.values.div(2.0) else forGParams.biases.values
 
@@ -168,8 +168,8 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     val x: InputNDArrayType = this.layer.inputArray.values
     val candidateParams: FeedforwardLayerParameters = this.layer.params.candidate
-    val inGParams: ParametersUnit = this.layer.params.inputGate
-    val forGParams: ParametersUnit = this.layer.params.forgetGate
+    val inGParams: RecurrentParametersUnit = this.layer.params.inputGate
+    val forGParams: RecurrentParametersUnit = this.layer.params.forgetGate
 
     this.forwardArray(
       contributions = layerContributions.candidate.weights.values,
@@ -210,8 +210,8 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.layer.params as RANLayerParameters
 
-    val inGParams: ParametersUnit = this.layer.params.inputGate
-    val forGParams: ParametersUnit = this.layer.params.forgetGate
+    val inGParams: RecurrentParametersUnit = this.layer.params.inputGate
+    val forGParams: RecurrentParametersUnit = this.layer.params.forgetGate
 
     this.addRecurrentContribution(
       yPrev = yPrev,
