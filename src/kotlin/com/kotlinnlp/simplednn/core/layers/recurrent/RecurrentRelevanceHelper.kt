@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.layers.recurrent
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which calculates the relevance of the input of a [layer] respect of its output.
@@ -26,4 +27,23 @@ abstract class RecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayT
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
   abstract fun calculateRecurrentRelevance(layerContributions: LayerParameters)
+
+  /**
+   * Get the partition of the output relevance respect of the input.
+   *
+   * @param y the output array
+   * @param yInput the contribution to calculate the output array coming from the input
+   * @param yRec the contribution to calculate the output array coming from the recursion
+   *
+   * @return the partition of the output relevance respect of the input
+   */
+  protected fun getInputRelevancePartition(y: DenseNDArray, yInput: DenseNDArray, yRec: DenseNDArray): DenseNDArray {
+
+    val yRelevance: DenseNDArray = this.layer.outputArray.relevance as DenseNDArray
+    val eps: DenseNDArray = yRec.nonZeroSign().assignProd(this.relevanceEps) // the same factor (yRec) is needed
+    // to calculate eps either for the input partition then the recurrent one
+
+    // partition factor = (yInput + eps / 2) / (yInput + yRec + eps) [eps avoids divisions by zero]
+    return yRelevance.prod(yInput.sum(eps.div(2.0))).assignDiv(y.sum(eps))
+  }
 }
