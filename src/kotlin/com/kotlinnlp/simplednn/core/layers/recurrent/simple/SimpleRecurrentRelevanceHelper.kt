@@ -9,9 +9,12 @@ package com.kotlinnlp.simplednn.core.layers.recurrent.simple
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.core.layers.RelevanceUtils
 import com.kotlinnlp.simplednn.core.layers.recurrent.RecurrentRelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+
+typealias RU = RelevanceUtils
 
 /**
  * The helper which calculates the relevance of the input of a [layer] respect of its output.
@@ -36,11 +39,11 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
     val yRelevance: DenseNDArray = this.layer.outputArray.relevance as DenseNDArray
     val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer() as? SimpleRecurrentLayerStructure<*>
 
-    return this.calculateRelevanceOfArray(
+    return RelevanceUtils.calculateRelevanceOfArray(
       x = this.layer.inputArray.values,
       y = yInput,
       yRelevance = if (prevStateLayer != null)
-        this.getRelevancePartition1(yRelevance = yRelevance, y = y, yContribute1 = yInput, yContribute2 = yRec)
+        RU.getRelevancePartition1(yRelevance = yRelevance, y = y, yContribute1 = yInput, yContribute2 = yRec)
       else
         this.layer.outputArray.relevance as DenseNDArray,
       contributions = layerContributions.weights.values
@@ -61,10 +64,10 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
     val prevStateLayer: LayerStructure<*> = this.layer.layerContextWindow.getPrevStateLayer()!!
     val yRelevance: DenseNDArray = this.layer.outputArray.relevance as DenseNDArray
 
-    val recurrentRelevance = this.calculateRelevanceOfDenseArray(
+    val recurrentRelevance = RU.calculateRelevanceOfDenseArray(
       x = prevStateLayer.outputArray.values,
       y = yRec,
-      yRelevance = this.getRelevancePartition2(yRelevance = yRelevance, y = y, yContribute2 = yRec),
+      yRelevance = RU.getRelevancePartition2(yRelevance = yRelevance, y = y, yContribute2 = yRec),
       contributions = layerContributions.recurrentWeights.values
     )
 

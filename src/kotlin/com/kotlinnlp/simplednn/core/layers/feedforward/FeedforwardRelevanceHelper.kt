@@ -9,8 +9,11 @@ package com.kotlinnlp.simplednn.core.layers.feedforward
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.RelevanceHelper
+import com.kotlinnlp.simplednn.core.layers.RelevanceUtils
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+
+typealias RU = RelevanceUtils
 
 /**
  * The helper which calculates the relevance of the input of a [layer] respect of its output.
@@ -29,7 +32,7 @@ class FeedforwardRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override fun getInputRelevance(layerContributions: LayerParameters): NDArray<*> {
     layerContributions as FeedforwardLayerParameters
 
-    return this.calculateRelevanceOfArray(
+    return RU.calculateRelevanceOfArray(
       x = this.layer.inputArray.values,
       y = this.layer.outputArray.valuesNotActivated,
       yRelevance = this.layer.outputArray.relevance as DenseNDArray,
