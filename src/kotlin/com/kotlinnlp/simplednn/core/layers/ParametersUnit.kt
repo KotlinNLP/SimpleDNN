@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableSparseArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
- *
+ * The parameters associated to a [LayerUnit].
  */
 open class ParametersUnit(val inputSize: Int, val outputSize: Int, private val sparseInput: Boolean = false) {
 

@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.core.layers
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 
 /**
- *
+ * The parameters associated to a [RecurrentLayerUnit].
  */
 class RecurrentParametersUnit(
   inputSize: Int,
