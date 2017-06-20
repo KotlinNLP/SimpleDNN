@@ -212,7 +212,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     for (stateIndex in (stateFrom .. stateTo).reversed()) {
       this.curStateIndex = stateIndex // crucial to provide the right context
-      this.calculateCurrentStateRelevance(isFirstState = stateIndex == stateFrom, isLastState = stateIndex == stateTo)
+      this.propagateRelevanceOnCurrentState(isFirstState = stateIndex == stateFrom, isLastState = stateIndex == stateTo)
     }
 
     return this.getInputRelevance(stateIndex = stateFrom, copy = copy)
@@ -304,12 +304,12 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Calculate the relevance of the layers of the current state.
+   * Propagate the relevance backward through the layers of the current state.
    *
    * @param isFirstState a Boolean indicating if the current state is the first
    * @param isLastState a Boolean indicating if the current state is the last
    */
-  private fun calculateCurrentStateRelevance(isFirstState: Boolean, isLastState: Boolean) {
+  private fun propagateRelevanceOnCurrentState(isFirstState: Boolean, isLastState: Boolean) {
 
     val structure: RecurrentNetworkStructure<InputNDArrayType> = this.sequence.states[this.curStateIndex].structure
     var isPropagating: Boolean = isLastState
@@ -332,7 +332,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Calculate the relevance given the current layer.
+   * Propagate the relevance backward through the current layer.
    *
    * @param layer the current layer
    * @param layerIndex the current layer index
@@ -357,7 +357,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
         layer.addInputRelevance(layerContributions = contributions)
 
       } else {
-        layer.calculateInputRelevance(layerContributions = contributions)
+        layer.setInputRelevance(layerContributions = contributions)
       }
     }
 

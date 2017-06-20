@@ -89,7 +89,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 5))
-        layer.calculateInputRelevance(layerContributions = contributions)
+        layer.setInputRelevance(layerContributions = contributions)
 
         it("should set a Dense input relevance") {
           assertTrue { layer.inputArray.relevance is DenseNDArray }
@@ -159,7 +159,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 5))
-        layer.calculateInputRelevance(layerContributions = contributions)
+        layer.setInputRelevance(layerContributions = contributions)
         layer.calculateRecurrentRelevance(layerContributions = contributions)
 
         it("should set a Dense input relevance") {

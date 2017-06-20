@@ -28,11 +28,11 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   protected val relevanceEps: Double = 0.01
 
   /**
-   * Calculate the relevance of the input respect of the output.
+   * Calculate the relevance of the input respect of the output and assign it to the input array.
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  fun calculateInputRelevance(layerContributions: LayerParameters) {
+  fun setInputRelevance(layerContributions: LayerParameters) {
     this.layer.inputArray.assignRelevance(relevance = this.getInputRelevance(layerContributions = layerContributions))
   }
 

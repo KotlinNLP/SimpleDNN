@@ -127,8 +127,8 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Calculate the relevance of the input of respect of the output, starting from the given distribution on
-   * the outcomes.
+   * Calculate the relevance of the input of respect of the output, propagating backward the given distribution on the
+   * outcomes.
    *
    * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
    *                                     as reference to calculate the relevance of the input
@@ -139,7 +139,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   fun calculateInputRelevance(relevantOutcomesDistribution: DistributionArray, copy: Boolean = true): NDArray<*> {
 
-    this.structure.calculateRelevance(
+    this.structure.propagateRelevance(
       networkContributions = this.forwardContributions,
       relevantOutcomesDistribution = relevantOutcomesDistribution)
 

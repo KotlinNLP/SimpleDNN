@@ -103,12 +103,12 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Calculate the relevance of the input respect of the output and assign it into the input array.
+   * Calculate the relevance of the input respect of the output and assign it to the input array.
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  fun calculateInputRelevance(layerContributions: LayerParameters) {
-    this.relevanceHelper.calculateInputRelevance(layerContributions = layerContributions)
+  fun setInputRelevance(layerContributions: LayerParameters) {
+    this.relevanceHelper.setInputRelevance(layerContributions = layerContributions)
   }
 
   /**
