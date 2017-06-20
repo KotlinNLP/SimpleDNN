@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.recurrent
+package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 /**
  *
  */
-data class GateParametersUnit(val inputSize: Int, val outputSize: Int, private val sparseInput: Boolean = false) {
+data class ParametersUnit(val inputSize: Int, val outputSize: Int, private val sparseInput: Boolean = false) {
 
   /**
    *
