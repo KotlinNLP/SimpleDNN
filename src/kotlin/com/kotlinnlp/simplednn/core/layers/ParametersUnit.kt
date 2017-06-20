@@ -11,11 +11,25 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.arrays.UpdatableSparseArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import java.io.Serializable
 
 /**
  * The parameters associated to a [LayerUnit].
  */
-open class ParametersUnit(val inputSize: Int, val outputSize: Int, private val sparseInput: Boolean = false) {
+open class ParametersUnit(
+  val inputSize: Int,
+  val outputSize: Int,
+  private val sparseInput: Boolean = false
+) : Serializable {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed from Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
 
   /**
    *
