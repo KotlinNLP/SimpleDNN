@@ -155,7 +155,7 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param contributions a matrix which maps the contributions from each value of [yPrev] to each value of [yRec]
    * @param yPrev the output array of the layer in the previous state
-   * @param yRec the array in which the recurrent contribution is saved
+   * @param yRec the array in which the contribution coming from the recursion will be saved
    * @param y the output array of the layer
    * @param wRec the recurrent weights which connect [yPrev] to [y]
    * @param b the biases added to each value of [yRec] (if null no bias is added)
