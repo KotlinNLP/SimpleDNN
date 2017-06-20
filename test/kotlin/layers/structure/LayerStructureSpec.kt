@@ -9,6 +9,7 @@ package layers.structure
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
+import com.kotlinnlp.simplednn.core.layers.LayerUnit
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.simplemath.equals
@@ -37,7 +38,7 @@ class LayerStructureSpec : Spek({
 
         val layer = FeedforwardLayerStructure(
           inputArray = inputArray,
-          outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))),
+          outputArray = LayerUnit(5),
           params = FeedforwardLayerParameters(inputSize = 100000, outputSize = 5),
           activationFunction = Tanh(),
           dropout = 0.25)

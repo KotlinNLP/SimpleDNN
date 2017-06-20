@@ -34,13 +34,11 @@ object LayerStructureFactory {
     dropout: Double = 0.0,
     contextWindow: LayerContextWindow? = null): LayerStructure<InputNDArrayType> {
 
-    val outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize)))
-
     return when(connectionType) {
 
       LayerType.Connection.Feedforward -> FeedforwardLayerStructure(
         inputArray = inputArray,
-        outputArray = outputArray,
+        outputArray = LayerUnit(outputSize),
         params = params,
         activationFunction = activationFunction,
         dropout = dropout
@@ -48,7 +46,7 @@ object LayerStructureFactory {
 
       LayerType.Connection.SimpleRecurrent -> SimpleRecurrentLayerStructure(
         inputArray = inputArray,
-        outputArray = outputArray,
+        outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
         params = params,
         activationFunction = activationFunction,
         dropout = dropout,
@@ -57,7 +55,7 @@ object LayerStructureFactory {
 
       LayerType.Connection.GRU -> GRULayerStructure(
         inputArray = inputArray,
-        outputArray = outputArray,
+        outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
         params = params,
         activationFunction = activationFunction,
         dropout = dropout,
@@ -66,7 +64,7 @@ object LayerStructureFactory {
 
       LayerType.Connection.LSTM -> LSTMLayerStructure(
         inputArray = inputArray,
-        outputArray = outputArray,
+        outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
         params = params,
         activationFunction = activationFunction,
         dropout = dropout,
@@ -75,7 +73,7 @@ object LayerStructureFactory {
 
       LayerType.Connection.CFN -> CFNLayerStructure(
         inputArray = inputArray,
-        outputArray = outputArray,
+        outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
         params = params,
         activationFunction = activationFunction,
         dropout = dropout,
@@ -84,7 +82,7 @@ object LayerStructureFactory {
 
       LayerType.Connection.RAN -> RANLayerStructure(
         inputArray = inputArray,
-        outputArray = outputArray,
+        outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
         params = params,
         activationFunction = activationFunction,
         dropout = dropout,
