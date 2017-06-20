@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.core.layers.recurrent.ran
 import com.kotlinnlp.simplednn.core.layers.RecurrentParametersUnit
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.ParametersUnit
 
 /**
  * The parameters of the layer of type RAN.
@@ -44,7 +44,7 @@ class RANLayerParameters(
   /**
    *
    */
-  val candidate = FeedforwardLayerParameters(
+  val candidate = ParametersUnit(
     inputSize = inputSize,
     outputSize = outputSize,
     sparseInput = this.sparseInput)

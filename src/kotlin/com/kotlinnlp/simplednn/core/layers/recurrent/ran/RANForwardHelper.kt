@@ -7,11 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.recurrent.ran
 
-import com.kotlinnlp.simplednn.core.layers.ForwardHelper
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.layers.RecurrentParametersUnit
+import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -167,7 +163,7 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.params as RANLayerParameters
 
     val x: InputNDArrayType = this.layer.inputArray.values
-    val candidateParams: FeedforwardLayerParameters = this.layer.params.candidate
+    val candidateParams: ParametersUnit = this.layer.params.candidate
     val inGParams: RecurrentParametersUnit = this.layer.params.inputGate
     val forGParams: RecurrentParametersUnit = this.layer.params.forgetGate
 
