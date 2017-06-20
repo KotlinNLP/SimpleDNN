@@ -44,17 +44,17 @@ class GRULayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  val candidate = LayerUnit<InputNDArrayType>(outputArray.size)
+  val candidate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
    *
    */
-  val resetGate = LayerUnit<InputNDArrayType>(outputArray.size)
+  val resetGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
    *
    */
-  val partitionGate = LayerUnit<InputNDArrayType>(outputArray.size)
+  val partitionGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
    * The helper which execute the forward

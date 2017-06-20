@@ -51,12 +51,12 @@ class CFNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  val inputGate = LayerUnit<InputNDArrayType>(outputArray.size)
+  val inputGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
    *
    */
-  val forgetGate = LayerUnit<InputNDArrayType>(outputArray.size)
+  val forgetGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
    *
