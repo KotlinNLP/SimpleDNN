@@ -27,13 +27,13 @@ open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : 
    *
    * g = w (dot) x + b
    *
-   * @param gateParams the parameters associated to this unit
+   * @param parameters the parameters associated to this unit
    * @param x the input array of the current layer
    */
-  fun forward(gateParams: RecurrentParametersUnit, x: InputNDArrayType) {
+  fun forward(parameters: ParametersUnit, x: InputNDArrayType) {
 
-    val w = gateParams.weights.values as DenseNDArray
-    val b = gateParams.biases.values
+    val w = parameters.weights.values as DenseNDArray
+    val b = parameters.biases.values
 
     this.values.assignDot(w, x).assignSum(b)
   }
@@ -47,7 +47,7 @@ open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : 
    * @param paramsErrors the parameters associated to this unit
    * @param x the input of the unit
    */
-  fun assignParamsGradients(paramsErrors: RecurrentParametersUnit, x: InputNDArrayType) {
+  fun assignParamsGradients(paramsErrors: ParametersUnit, x: InputNDArrayType) {
 
     val gb: DenseNDArray = paramsErrors.biases.values
     val gw: NDArray<*> = paramsErrors.weights.values

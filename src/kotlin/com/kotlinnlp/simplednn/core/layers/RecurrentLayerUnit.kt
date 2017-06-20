@@ -24,14 +24,14 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
   /**
    * Add the recurrent contribution to the unit.
    *
-   * @param gateParams the parameters associated to this unit
+   * @param parameters the parameters associated to this unit
    * @param prevContribution the output array to add as contribution from the previous state
    *
    * g += wRec (dot) prevContribution
    */
-  fun addRecurrentContribution(gateParams: RecurrentParametersUnit, prevContribution: DenseNDArray) {
+  fun addRecurrentContribution(parameters: RecurrentParametersUnit, prevContribution: DenseNDArray) {
 
-    val wRec = gateParams.recurrentWeights.values
+    val wRec = parameters.recurrentWeights.values
 
     this.values.assignSum(wRec.dot(prevContribution))
   }
@@ -51,7 +51,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
                             x: InputNDArrayType,
                             yPrev: DenseNDArray? = null) {
 
-    this.assignParamsGradients(paramsErrors = paramsErrors, x = x)
+    super.assignParamsGradients(paramsErrors = paramsErrors, x = x)
 
     if (yPrev != null) {
       val gwRec: DenseNDArray = paramsErrors.recurrentWeights.values
