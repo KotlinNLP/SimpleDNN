@@ -22,8 +22,6 @@ class FeedforwardRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) : RelevanceHelper<InputNDArrayType>(layer) {
 
   /**
-   * Calculate the relevance of the input respect of the output.
-   *
    * @param layerContributions the contributions saved during the last forward
    *
    * @return the relevance of the input respect of the output
