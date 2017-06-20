@@ -12,9 +12,7 @@ import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  * The RecurrentNetworkStructure.
@@ -65,7 +63,7 @@ class RecurrentNetworkStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
 
     return LayerStructureFactory<InputNDArrayType>(
       inputArray = inputArray,
-      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputConfiguration.size))),
+      outputSize = outputConfiguration.size,
       params = params,
       activationFunction = outputConfiguration.activationFunction,
       connectionType = outputConfiguration.connectionType!!,
