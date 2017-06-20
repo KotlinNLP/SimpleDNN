@@ -18,6 +18,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  */
 open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : AugmentedArray<DenseNDArray>(size) {
 
+  /**
+   * Initialize values with an empty array.
+   */
   init {
     this.assignValues(DenseNDArrayFactory.emptyArray(Shape(size)))
   }
