@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.core.layers.feedforward
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.*
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
@@ -25,7 +24,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  */
 class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
-  outputArray: AugmentedArray<DenseNDArray>,
+  override val outputArray: LayerUnit<InputNDArrayType>,
   params: LayerParameters,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
