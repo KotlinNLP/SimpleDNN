@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.recurrent.gru
 
-import com.kotlinnlp.simplednn.core.layers.recurrent.GateParametersUnit
+import com.kotlinnlp.simplednn.core.layers.ParametersUnit
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 
@@ -27,7 +27,7 @@ class GRULayerParameters(
   /**
    *
    */
-  val candidate = GateParametersUnit(
+  val candidate = ParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
@@ -35,7 +35,7 @@ class GRULayerParameters(
   /**
    *
    */
-  val resetGate = GateParametersUnit(
+  val resetGate = ParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
@@ -43,7 +43,7 @@ class GRULayerParameters(
   /**
    *
    */
-  val partitionGate = GateParametersUnit(
+  val partitionGate = ParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)

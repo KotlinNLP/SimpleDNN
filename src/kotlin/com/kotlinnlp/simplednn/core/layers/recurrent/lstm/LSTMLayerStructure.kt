@@ -46,22 +46,22 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  val inputGate = GateUnit<InputNDArrayType>(outputArray.size)
+  val inputGate = LayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
    *
    */
-  val outputGate = GateUnit<InputNDArrayType>(outputArray.size)
+  val outputGate = LayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
    *
    */
-  val forgetGate = GateUnit<InputNDArrayType>(outputArray.size)
+  val forgetGate = LayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
    *
    */
-  val candidate = GateUnit<InputNDArrayType>(outputArray.size)
+  val candidate = LayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
    *

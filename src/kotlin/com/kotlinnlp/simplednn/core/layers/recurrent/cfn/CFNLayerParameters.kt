@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers.recurrent.cfn
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.layers.recurrent.GateParametersUnit
+import com.kotlinnlp.simplednn.core.layers.ParametersUnit
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 
@@ -28,7 +28,7 @@ class CFNLayerParameters(
   /**
    *
    */
-  val inputGate = GateParametersUnit(
+  val inputGate = ParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
@@ -36,7 +36,7 @@ class CFNLayerParameters(
   /**
    *
    */
-  val forgetGate = GateParametersUnit(
+  val forgetGate = ParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
