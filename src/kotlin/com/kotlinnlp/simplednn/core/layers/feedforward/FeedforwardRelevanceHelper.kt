@@ -34,7 +34,7 @@ class FeedforwardRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       x = this.layer.inputArray.values,
       y = this.layer.outputArray.valuesNotActivated,
       yRelevance = this.layer.outputArray.relevance as DenseNDArray,
-      contributions = layerContributions.weights.values
+      contributions = layerContributions.unit.weights.values
     )
   }
 }
