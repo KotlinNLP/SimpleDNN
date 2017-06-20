@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.recurrent
+package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 /**
  *
  */
-class GateUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : AugmentedArray<DenseNDArray>(size) {
+class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : AugmentedArray<DenseNDArray>(size) {
 
   init {
     this.assignValues(DenseNDArrayFactory.emptyArray(Shape(size)))
@@ -30,7 +30,7 @@ class GateUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : Augmen
    * @param gateParams the parameters of the gate
    * @param x the input array of the current layer
    */
-  fun forward(gateParams: GateParametersUnit, x: InputNDArrayType) {
+  fun forward(gateParams: ParametersUnit, x: InputNDArrayType) {
 
     val w = gateParams.weights.values as DenseNDArray
     val b = gateParams.biases.values
@@ -46,7 +46,7 @@ class GateUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : Augmen
    *
    * g += wRec (dot) prevContribution
    */
-  fun addRecurrentContribution(gateParams: GateParametersUnit, prevContribution: DenseNDArray) {
+  fun addRecurrentContribution(gateParams: ParametersUnit, prevContribution: DenseNDArray) {
 
     val wRec = gateParams.recurrentWeights.values
 
@@ -60,11 +60,11 @@ class GateUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : Augmen
    * gw = gGate (dot) x
    * gwRec = gGate (dot) yPrev
    *
-   * @param paramsErrors the [GateParametersUnit] associated to this gate
+   * @param paramsErrors the [ParametersUnit] associated to this gate
    * @param x the input [NDArray] of the gate
    * @param yPrev the output array as contribution from the previous state
    */
-  fun assignParamsGradients(paramsErrors: GateParametersUnit,
+  fun assignParamsGradients(paramsErrors: ParametersUnit,
                             x: InputNDArrayType,
                             yPrev: DenseNDArray? = null) {
 
