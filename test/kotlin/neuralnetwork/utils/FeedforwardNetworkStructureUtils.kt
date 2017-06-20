@@ -24,10 +24,10 @@ object FeedforwardNetworkStructureUtils {
     val inputParams = (params.paramsPerLayer[0] as FeedforwardLayerParameters)
     val outputParams = (params.paramsPerLayer[1] as FeedforwardLayerParameters)
 
-    inputParams.weights.values.assignValues(FeedforwardLayerStructureUtils.getParams45().weights.values)
-    inputParams.biases.values.assignValues(FeedforwardLayerStructureUtils.getParams45().biases.values)
-    outputParams.weights.values.assignValues(FeedforwardLayerStructureUtils.getParams53().weights.values)
-    outputParams.biases.values.assignValues(FeedforwardLayerStructureUtils.getParams53().biases.values)
+    inputParams.unit.weights.values.assignValues(FeedforwardLayerStructureUtils.getParams45().unit.weights.values)
+    inputParams.unit.biases.values.assignValues(FeedforwardLayerStructureUtils.getParams45().unit.biases.values)
+    outputParams.unit.weights.values.assignValues(FeedforwardLayerStructureUtils.getParams53().unit.weights.values)
+    outputParams.unit.biases.values.assignValues(FeedforwardLayerStructureUtils.getParams53().unit.biases.values)
 
     return params
   }

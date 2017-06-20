@@ -39,8 +39,8 @@ object RecurrentNetworkStructureUtils {
     inputParams.weights.values.assignValues(recurrentParams.weights.values)
     inputParams.biases.values.assignValues(recurrentParams.biases.values)
     inputParams.recurrentWeights.values.assignValues(recurrentParams.recurrentWeights.values)
-    outputParams.weights.values.assignValues(feedforwardParams.weights.values)
-    outputParams.biases.values.assignValues(feedforwardParams.biases.values)
+    outputParams.unit.weights.values.assignValues(feedforwardParams.unit.weights.values)
+    outputParams.unit.biases.values.assignValues(feedforwardParams.unit.biases.values)
 
     return params
   }

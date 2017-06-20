@@ -43,7 +43,7 @@ object FeedforwardLayerStructureUtils {
 
     val params = FeedforwardLayerParameters(inputSize = 4, outputSize = 5)
 
-    params.weights.values.assignValues(
+    params.unit.weights.values.assignValues(
       DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
@@ -52,7 +52,7 @@ object FeedforwardLayerStructureUtils {
         doubleArrayOf(0.4, 1.0, -0.7, 0.8)
       )))
 
-    params.biases.values.assignValues(
+    params.unit.biases.values.assignValues(
       DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
     )
 
@@ -102,14 +102,14 @@ object FeedforwardLayerStructureUtils {
 
     val params = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
 
-    params.weights.values.assignValues(
+    params.unit.weights.values.assignValues(
       DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.8, -0.8, 0.9, -1.0, -0.1),
         doubleArrayOf(0.9, 0.6, 0.7, 0.6, 0.6),
         doubleArrayOf(-0.1, 0.0, 0.3, 0.0, 0.3)
       )))
 
-    params.biases.values.assignValues(
+    params.unit.biases.values.assignValues(
       DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.5, 0.1, 0.2)))
 
     return params

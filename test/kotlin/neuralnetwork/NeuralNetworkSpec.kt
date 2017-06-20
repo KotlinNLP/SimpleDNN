@@ -76,8 +76,8 @@ class NeuralNetworkSpec: Spek({
       network.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
 
       val params = network.model.paramsPerLayer[0] as FeedforwardLayerParameters
-      val w = params.weights.values
-      val b = params.biases.values
+      val w = params.unit.weights.values
+      val b = params.unit.biases.values
 
       it("should contain the expected initialized weights") {
         (0 until w.length).forEach({ i -> assertEquals(initValues[i], w[i]) })

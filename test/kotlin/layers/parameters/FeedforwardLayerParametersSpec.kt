@@ -36,8 +36,8 @@ class FeedforwardLayerParametersSpec : Spek({
 
         val params = FeedforwardLayerParameters(inputSize = 3, outputSize = 2)
 
-        val w = params.weights.values
-        val b = params.biases.values
+        val w = params.unit.weights.values
+        val b = params.unit.biases.values
 
         var i = 0
         val initValues = doubleArrayOf(0.1, 0.2, 0.3, 0.4, 0.5, 0.6)
@@ -67,8 +67,8 @@ class FeedforwardLayerParametersSpec : Spek({
 
         val params = FeedforwardLayerParameters(inputSize = 3, outputSize = 2, sparseInput = true)
 
-        val w = params.weights.values
-        val b = params.biases.values
+        val w = params.unit.weights.values
+        val b = params.unit.biases.values
 
         it("should contain sparse weights") {
             assertTrue { w is SparseNDArray }
@@ -90,8 +90,8 @@ class FeedforwardLayerParametersSpec : Spek({
 
       val iterator = params.iterator()
 
-      val w = params.weights
-      val b = params.biases
+      val w = params.unit.weights
+      val b = params.unit.biases
 
       on("iteration 1") {
         it("should return the weights") {
