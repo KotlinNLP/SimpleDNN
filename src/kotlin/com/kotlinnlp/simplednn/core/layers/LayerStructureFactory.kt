@@ -16,8 +16,9 @@ import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerStructure
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  *
@@ -26,14 +27,16 @@ object LayerStructureFactory {
 
   operator fun <InputNDArrayType : NDArray<InputNDArrayType>> invoke(
     inputArray: AugmentedArray<InputNDArrayType>,
-    outputArray: AugmentedArray<DenseNDArray>,
+    outputSize: Int,
     params: LayerParameters,
     activationFunction: ActivationFunction?,
     connectionType: LayerType.Connection,
     dropout: Double = 0.0,
-    contextWindow: LayerContextWindow? = null): LayerStructure<InputNDArrayType> =
+    contextWindow: LayerContextWindow? = null): LayerStructure<InputNDArrayType> {
 
-    when(connectionType) {
+    val outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize)))
+
+    return when(connectionType) {
 
       LayerType.Connection.Feedforward -> FeedforwardLayerStructure(
         inputArray = inputArray,
@@ -90,4 +93,5 @@ object LayerStructureFactory {
 
       else -> throw RuntimeException("Invalid connection type: " + connectionType)
     }
+  }
 }
