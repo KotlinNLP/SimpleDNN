@@ -28,14 +28,7 @@ class FeedforwardForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun forward() { this.layer.params as FeedforwardLayerParameters
 
-    val x: InputNDArrayType = this.layer.inputArray.values
-    val y: DenseNDArray = this.layer.outputArray.values
-
-    val w: DenseNDArray = this.layer.params.unit.weights.values as DenseNDArray
-    val b: DenseNDArray = this.layer.params.unit.biases.values
-
-    y.assignDot(w, x).assignSum(b)
-
+    this.layer.outputArray.forward(parameters = this.layer.params.unit, x = this.layer.inputArray.values)
     this.layer.outputArray.activate()
   }
 

@@ -50,14 +50,9 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignParamsGradients() {
 
-    val gb: DenseNDArray = this.paramsErrors.unit.biases.values
-    val gw: NDArray<*> = this.paramsErrors.unit.weights.values
-
-    val x: InputNDArrayType = this.layer.inputArray.values
-    val gy: DenseNDArray = this.layer.outputArray.errors
-
-    gb.assignValues(gy)
-    gw.assignDot(gy, x.T)
+    this.layer.outputArray.assignParamsGradients(
+      paramsErrors = this.paramsErrors.unit,
+      x = this.layer.inputArray.values)
   }
 
   /**
