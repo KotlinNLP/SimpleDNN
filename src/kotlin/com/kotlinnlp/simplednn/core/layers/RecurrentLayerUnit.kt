@@ -24,7 +24,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
   /**
    * Add the recurrent contribution to the unit.
    *
-   * @param paramsErrors the parameters associated to this unit
+   * @param gateParams the parameters associated to this unit
    * @param prevContribution the output array to add as contribution from the previous state
    *
    * g += wRec (dot) prevContribution
@@ -43,7 +43,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    * gw = errors (dot) x
    * gwRec = errors (dot) yPrev
    *
-   * @param paramsErrors the parameters associated to this unit
+   * @param paramsErrors the parameters errors associated to this unit
    * @param x the input of the unit
    * @param yPrev the output array as contribution from the previous state
    */
