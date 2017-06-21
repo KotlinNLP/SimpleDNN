@@ -9,12 +9,12 @@ package layers.structure.contextwindows
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.RecurrentLayerUnit
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  *
@@ -57,7 +57,8 @@ sealed class SimpleRecurrentLayerContextWindow: LayerContextWindow {
  */
 private fun buildPrevStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> {
 
-  val outputArray = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
+  val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
+  outputArray.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
   outputArray.activate()
 
   return SimpleRecurrentLayerStructure(
@@ -73,7 +74,7 @@ private fun buildPrevStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> {
  */
 private fun buildNextStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> {
 
-  val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(5)))
+  val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
   outputArray.assignErrors(errors =  DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
   val layer = SimpleRecurrentLayerStructure(

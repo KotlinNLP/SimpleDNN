@@ -46,7 +46,7 @@ object LayerStructureFactory {
 
       LayerType.Connection.SimpleRecurrent -> SimpleRecurrentLayerStructure(
         inputArray = inputArray,
-        outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
+        outputArray = RecurrentLayerUnit(outputSize),
         params = params,
         activationFunction = activationFunction,
         dropout = dropout,
