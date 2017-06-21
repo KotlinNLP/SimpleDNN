@@ -32,7 +32,7 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
     layerContributions as SimpleRecurrentLayerParameters
 
     val y: DenseNDArray = this.layer.outputArray.valuesNotActivated
-    val yRec: DenseNDArray = layerContributions.biases.values
+    val yRec: DenseNDArray = layerContributions.unit.biases.values
     val yInput: DenseNDArray = y.sub(yRec)
     val yRelevance: DenseNDArray = this.layer.outputArray.relevance as DenseNDArray
     val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer() as? SimpleRecurrentLayerStructure<*>
@@ -45,7 +45,7 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
           .getRelevancePartition1(yRelevance = yRelevance, y = y, yContribute1 = yInput, yContribute2 = yRec)
       else
         this.layer.outputArray.relevance as DenseNDArray,
-      contributions = layerContributions.weights.values
+      contributions = layerContributions.unit.weights.values
     )
   }
 
@@ -59,7 +59,7 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
     layerContributions as SimpleRecurrentLayerParameters
 
     val y: DenseNDArray = this.layer.outputArray.valuesNotActivated
-    val yRec: DenseNDArray = layerContributions.biases.values
+    val yRec: DenseNDArray = layerContributions.unit.biases.values
     val prevStateLayer: LayerStructure<*> = this.layer.layerContextWindow.getPrevStateLayer()!!
     val yRelevance: DenseNDArray = this.layer.outputArray.relevance as DenseNDArray
 
@@ -67,7 +67,7 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
       x = prevStateLayer.outputArray.values,
       y = yRec,
       yRelevance = RelevanceUtils.getRelevancePartition2(yRelevance = yRelevance, y = y, yContribute2 = yRec),
-      contributions = layerContributions.recurrentWeights.values
+      contributions = layerContributions.unit.recurrentWeights.values
     )
 
     prevStateLayer.outputArray.assignRelevance(recurrentRelevance)

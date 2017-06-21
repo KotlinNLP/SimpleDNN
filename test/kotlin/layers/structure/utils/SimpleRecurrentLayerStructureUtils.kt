@@ -9,12 +9,11 @@ package layers.structure.utils
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.RecurrentLayerUnit
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerStructure
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  *
@@ -24,9 +23,9 @@ object SimpleRecurrentLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow): SimpleRecurrentLayerStructure<DenseNDArray> = SimpleRecurrentLayerStructure(
+  fun buildLayer(layerContextWindow: LayerContextWindow) = SimpleRecurrentLayerStructure(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
-    outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))),
+    outputArray = RecurrentLayerUnit(5),
     params = this.buildParams(),
     activationFunction = Tanh(),
     layerContextWindow = layerContextWindow)
@@ -38,7 +37,7 @@ object SimpleRecurrentLayerStructureUtils {
 
     val params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5)
 
-    params.weights.values.assignValues(
+    params.unit.weights.values.assignValues(
       DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
@@ -47,11 +46,11 @@ object SimpleRecurrentLayerStructureUtils {
         doubleArrayOf(0.4, 1.0, -0.7, 0.8)
       )))
 
-    params.biases.values.assignValues(
+    params.unit.biases.values.assignValues(
       DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
     )
 
-    params.recurrentWeights.values.assignValues(
+    params.unit.recurrentWeights.values.assignValues(
       DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7),
         doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7),
@@ -67,5 +66,4 @@ object SimpleRecurrentLayerStructureUtils {
    *
    */
   fun getOutputGold() = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.57, 0.75, -0.15, 1.64, 0.45))
-
 }

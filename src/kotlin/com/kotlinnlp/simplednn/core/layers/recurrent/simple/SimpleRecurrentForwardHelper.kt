@@ -29,23 +29,15 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
    */
   override fun forward() { this.layer.params as SimpleRecurrentLayerParameters
 
-    val w: DenseNDArray = this.layer.params.weights.values as DenseNDArray
-    val b: DenseNDArray = this.layer.params.biases.values
-
-    val x: InputNDArrayType = this.layer.inputArray.values
-    val y: DenseNDArray = this.layer.outputArray.values
-
     // y = w (dot) x + b
-    y.assignDot(w, x).assignSum(b)
+    this.layer.outputArray.forward(parameters = this.layer.params.unit, x = this.layer.inputArray.values)
 
     // y += wRec (dot) yPrev
     val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer()
-    if (prevStateLayer != null) { // recurrent contribution
-
-      val wRec: DenseNDArray = this.layer.params.recurrentWeights.values
-      val yPrev: DenseNDArray = prevStateLayer.outputArray.values
-
-      y.assignSum(wRec.dot(yPrev))
+    if (prevStateLayer != null) {
+      this.layer.outputArray.addRecurrentContribution(
+        parameters = this.layer.params.unit,
+        prevContribution = prevStateLayer.outputArray.values)
     }
 
     this.layer.outputArray.activate()
@@ -63,16 +55,16 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
     layerContributions as SimpleRecurrentLayerParameters
 
     val prevStateLayer: LayerStructure<*>? = this.layer.layerContextWindow.getPrevStateLayer()
-    val b: DenseNDArray = this.layer.params.biases.values
+    val b: DenseNDArray = this.layer.params.unit.biases.values
     val bContrib: DenseNDArray = if (prevStateLayer != null) b.div(2.0) else b
     // if there's a recurrent contribution b is divided equally within the sum
 
     // y = w (dot) x + b ( -> b / 2)
     this.forwardArray(
-      contributions = layerContributions.weights.values,
+      contributions = layerContributions.unit.weights.values,
       x = this.layer.inputArray.values,
       y = this.layer.outputArray.values,
-      w = this.layer.params.weights.values as DenseNDArray,
+      w = this.layer.params.unit.weights.values as DenseNDArray,
       b = bContrib
     )
 
@@ -80,11 +72,11 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
     if (prevStateLayer != null) {
       this.addRecurrentContribution(
         yPrev = prevStateLayer.outputArray.values,
-        yRec = layerContributions.biases.values, // a tricky way to save the recurrent contribution (b.size == y.size)
+        yRec = layerContributions.unit.biases.values, // a tricky way to save the recurrent contribution (b.size == y.size)
         y = this.layer.outputArray.values,
-        wRec = this.layer.params.recurrentWeights.values,
+        wRec = this.layer.params.unit.recurrentWeights.values,
         b = bContrib,
-        contributions = layerContributions.recurrentWeights.values
+        contributions = layerContributions.unit.recurrentWeights.values
       )
     }
 

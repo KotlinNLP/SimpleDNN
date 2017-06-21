@@ -36,9 +36,9 @@ object RecurrentNetworkStructureUtils {
     val recurrentParams = SimpleRecurrentLayerStructureUtils.buildParams()
     val feedforwardParams = FeedforwardLayerStructureUtils.getParams53()
 
-    inputParams.weights.values.assignValues(recurrentParams.weights.values)
-    inputParams.biases.values.assignValues(recurrentParams.biases.values)
-    inputParams.recurrentWeights.values.assignValues(recurrentParams.recurrentWeights.values)
+    inputParams.unit.weights.values.assignValues(recurrentParams.unit.weights.values)
+    inputParams.unit.biases.values.assignValues(recurrentParams.unit.biases.values)
+    inputParams.unit.recurrentWeights.values.assignValues(recurrentParams.unit.recurrentWeights.values)
     outputParams.unit.weights.values.assignValues(feedforwardParams.unit.weights.values)
     outputParams.unit.biases.values.assignValues(feedforwardParams.unit.biases.values)
 

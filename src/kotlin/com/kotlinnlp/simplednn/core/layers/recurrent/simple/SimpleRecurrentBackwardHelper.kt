@@ -59,8 +59,8 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
   private fun assignParamsGradients(nextStateLayer: LayerStructure<*>?) {
 
     val x: InputNDArrayType = this.layer.inputArray.values
-    val gb: DenseNDArray = this.paramsErrors.biases.values
-    val gw: NDArray<*> = this.paramsErrors.weights.values
+    val gb: DenseNDArray = this.paramsErrors.unit.biases.values
+    val gw: NDArray<*> = this.paramsErrors.unit.weights.values
     val gy: DenseNDArray = this.layer.outputArray.errors
 
     gb.assignValues(gy)
@@ -69,7 +69,7 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
     if (nextStateLayer != null) { // recurrent errors
       val gyNext: DenseNDArray = nextStateLayer.outputArray.errors
       val y: DenseNDArray = this.layer.outputArray.values
-      val gwRec: DenseNDArray = this.paramsErrors.recurrentWeights.values
+      val gwRec: DenseNDArray = this.paramsErrors.unit.recurrentWeights.values
 
       gwRec.assignDot(gyNext, y.T)
     }
@@ -80,8 +80,8 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
    */
   private fun assignLayerGradients() { this.layer.params as SimpleRecurrentLayerParameters
 
-    val gb: DenseNDArray = this.paramsErrors.biases.values
-    val w: DenseNDArray = this.layer.params.weights.values as DenseNDArray
+    val gb: DenseNDArray = this.paramsErrors.unit.biases.values
+    val w: DenseNDArray = this.layer.params.unit.weights.values as DenseNDArray
 
     val gx: DenseNDArray = this.layer.inputArray.errors
 
@@ -102,7 +102,7 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
 
     val gy: DenseNDArray = this.layer.outputArray.errors
     val gyNext: DenseNDArray = nextStateLayer.outputArray.errors
-    val wRec: DenseNDArray = this.layer.params.recurrentWeights.values
+    val wRec: DenseNDArray = this.layer.params.unit.recurrentWeights.values
 
     // gRec = gyNext (dot) wRec
     val gRec: DenseNDArray = gyNext.T.dot(wRec)

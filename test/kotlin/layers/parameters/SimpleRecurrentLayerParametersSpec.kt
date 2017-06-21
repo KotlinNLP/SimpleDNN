@@ -36,9 +36,9 @@ class SimpleRecurrentLayerParametersSpec : Spek({
 
         val params = SimpleRecurrentLayerParameters(inputSize = 3, outputSize = 2)
 
-        val w = params.weights.values
-        val b = params.biases.values
-        val wr = params.recurrentWeights.values
+        val w = params.unit.weights.values
+        val b = params.unit.biases.values
+        val wr = params.unit.recurrentWeights.values
 
         var i = 0
         val initValues = doubleArrayOf(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
@@ -64,9 +64,9 @@ class SimpleRecurrentLayerParametersSpec : Spek({
 
         val params = SimpleRecurrentLayerParameters(inputSize = 3, outputSize = 2, sparseInput = true)
 
-        val w = params.weights.values
-        val b = params.biases.values
-        val wr = params.recurrentWeights.values
+        val w = params.unit.weights.values
+        val b = params.unit.biases.values
+        val wr = params.unit.recurrentWeights.values
 
         it("should contain sparse weights") {
             assertTrue { w is SparseNDArray }
@@ -92,9 +92,9 @@ class SimpleRecurrentLayerParametersSpec : Spek({
 
       val iterator = params.iterator()
 
-      val w = params.weights
-      val b = params.biases
-      val wr = params.recurrentWeights
+      val w = params.unit.weights
+      val b = params.unit.biases
+      val wr = params.unit.recurrentWeights
 
       on("iteration 1") {
         it("should return the weights") {
