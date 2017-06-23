@@ -50,6 +50,16 @@ sealed class SimpleRecurrentLayerContextWindow: LayerContextWindow {
 
     override fun getNextStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> = buildNextStateLayer()
   }
+
+  /**
+   *
+   */
+  class Bilateral: SimpleRecurrentLayerContextWindow() {
+
+    override fun getPrevStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> = buildPrevStateLayer()
+
+    override fun getNextStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> = buildNextStateLayer()
+  }
 }
 
 /**
@@ -59,6 +69,7 @@ private fun buildPrevStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> {
 
   val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
   outputArray.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
+  outputArray.setActivation(Tanh())
   outputArray.activate()
 
   return SimpleRecurrentLayerStructure(
