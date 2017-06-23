@@ -58,4 +58,16 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
       gwRec.assignDot(this.errors, yPrev.T)
     }
   }
+
+  /**
+   * @param parameters the parameters associated to this unit
+   *
+   * @return the errors of the recursion of this unit
+   */
+  fun getRecurrentErrors(parameters: RecurrentParametersUnit): DenseNDArray {
+
+    val wForG: DenseNDArray = parameters.recurrentWeights.values
+
+    return this.errors.T.dot(wForG)
+  }
 }
