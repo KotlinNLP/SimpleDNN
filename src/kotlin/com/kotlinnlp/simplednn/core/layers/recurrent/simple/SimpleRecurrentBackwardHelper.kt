@@ -7,9 +7,9 @@
 
 package com.kotlinnlp.simplednn.core.layers.recurrent.simple
 
+import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -39,12 +39,13 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
     this.paramsErrors = paramsErrors as SimpleRecurrentLayerParameters
 
     val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer()
+    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer()
 
     if (nextStateLayer != null) {
-      this.addLayerRecurrentGradients(nextStateLayer)
+      this.addLayerRecurrentGradients(nextStateLayer as SimpleRecurrentLayerStructure<*>)
     }
 
-    this.assignParamsGradients(nextStateLayer)
+    this.assignParamsGradients(prevStateLayer?.outputArray)
 
     if (propagateToInput) {
       this.assignLayerGradients()
@@ -54,25 +55,14 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
   /**
    * gb = gy * 1
    * gw = gb (dot) x
-   * gwRec = gyNext (dot) y
+   * gwRec = gy (dot) yPrev
    */
-  private fun assignParamsGradients(nextStateLayer: LayerStructure<*>?) {
+  private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
 
-    val x: InputNDArrayType = this.layer.inputArray.values
-    val gb: DenseNDArray = this.paramsErrors.unit.biases.values
-    val gw: NDArray<*> = this.paramsErrors.unit.weights.values
-    val gy: DenseNDArray = this.layer.outputArray.errors
-
-    gb.assignValues(gy)
-    gw.assignDot(gb, x.T)
-
-    if (nextStateLayer != null) { // recurrent errors
-      val gyNext: DenseNDArray = nextStateLayer.outputArray.errors
-      val y: DenseNDArray = this.layer.outputArray.values
-      val gwRec: DenseNDArray = this.paramsErrors.unit.recurrentWeights.values
-
-      gwRec.assignDot(gyNext, y.T)
-    }
+    this.layer.outputArray.assignParamsGradients(
+      paramsErrors = this.paramsErrors.unit,
+      x = this.layer.inputArray.values,
+      yPrev = prevStateOutput?.values)
   }
 
   /**
@@ -80,13 +70,10 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
    */
   private fun assignLayerGradients() { this.layer.params as SimpleRecurrentLayerParameters
 
-    val gb: DenseNDArray = this.paramsErrors.unit.biases.values
-    val w: DenseNDArray = this.layer.params.unit.weights.values as DenseNDArray
-
     val gx: DenseNDArray = this.layer.inputArray.errors
 
     // gx = gb (dot) w
-    gx.assignValues(gb.T.dot(w))
+    gx.assignValues(this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit))
 
     // gx *= xDeriv
     if (this.layer.inputArray.hasActivation && gx is DenseNDArray) {
@@ -97,15 +84,13 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
   /**
    * gy += (gyNext (dot) wRec) * yDeriv
    */
-  private fun addLayerRecurrentGradients(nextStateLayer: LayerStructure<*>) {
+  private fun addLayerRecurrentGradients(nextStateLayer: SimpleRecurrentLayerStructure<*>) {
     this.layer.params as SimpleRecurrentLayerParameters
 
     val gy: DenseNDArray = this.layer.outputArray.errors
-    val gyNext: DenseNDArray = nextStateLayer.outputArray.errors
-    val wRec: DenseNDArray = this.layer.params.unit.recurrentWeights.values
 
     // gRec = gyNext (dot) wRec
-    val gRec: DenseNDArray = gyNext.T.dot(wRec)
+    val gRec: DenseNDArray = nextStateLayer.outputArray.getRecurrentErrors(parameters = this.layer.params.unit)
 
     // gRec *= yDeriv
     if (this.layer.outputArray.hasActivation) {
