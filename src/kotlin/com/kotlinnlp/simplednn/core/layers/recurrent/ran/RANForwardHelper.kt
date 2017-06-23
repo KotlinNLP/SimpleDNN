@@ -98,13 +98,10 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun setGates(prevStateLayer: LayerStructure<*>?) { this.layer.params as RANLayerParameters
 
     val x: InputNDArrayType = this.layer.inputArray.values
-    val c: DenseNDArray = this.layer.candidate.values
-    val wc: DenseNDArray = this.layer.params.candidate.weights.values as DenseNDArray
-    val bc: DenseNDArray = this.layer.params.candidate.biases.values
 
-    this.layer.inputGate.forward(this.layer.params.inputGate, x)
-    this.layer.forgetGate.forward(this.layer.params.forgetGate, x)
-    c.assignDot(wc, x).assignSum(bc)
+    this.layer.inputGate.forward(parameters = this.layer.params.inputGate, x = x)
+    this.layer.forgetGate.forward(parameters = this.layer.params.forgetGate, x = x)
+    this.layer.candidate.forward(parameters = this.layer.params.candidate, x = x)
 
     if (prevStateLayer != null) { // recurrent contribution for input and forget gates
       val yPrev = prevStateLayer.outputArray.valuesNotActivated
