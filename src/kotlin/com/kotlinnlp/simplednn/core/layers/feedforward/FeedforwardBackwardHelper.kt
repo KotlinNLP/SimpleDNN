@@ -60,12 +60,9 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignLayerGradients() { this.layer.params as FeedforwardLayerParameters
 
-    val gy: DenseNDArray = this.layer.outputArray.errors
-    val w: DenseNDArray = this.layer.params.unit.weights.values as DenseNDArray
-
     val gx: DenseNDArray = this.layer.inputArray.errors
 
-    gx.assignValues(gy.T.dot(w))
+    gx.assignValues(this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit))
 
     if (this.layer.inputArray.hasActivation && gx is DenseNDArray) {
       gx.assignProd(this.layer.inputArray.calculateActivationDeriv())
