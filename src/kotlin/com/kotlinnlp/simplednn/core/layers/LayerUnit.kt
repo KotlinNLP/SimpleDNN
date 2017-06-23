@@ -58,4 +58,16 @@ open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : 
     gb.assignValues(this.errors)
     gw.assignDot(this.errors, x.T)
   }
+
+  /**
+   * @param parameters the parameters associated to this unit
+   *
+   * @return the errors of the input of this unit
+   */
+  fun getInputErrors(parameters: ParametersUnit): DenseNDArray {
+
+    val w: DenseNDArray = parameters.weights.values as DenseNDArray
+
+    return this.errors.T.dot(w)
+  }
 }
