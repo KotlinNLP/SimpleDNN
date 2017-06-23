@@ -161,8 +161,6 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     val x: InputNDArrayType = this.layer.inputArray.values
     val candidateParams: ParametersUnit = this.layer.params.candidate
-    val inGParams: RecurrentParametersUnit = this.layer.params.inputGate
-    val forGParams: RecurrentParametersUnit = this.layer.params.forgetGate
 
     this.forwardArray(
       contributions = layerContributions.candidate.weights.values,
@@ -175,14 +173,14 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       contributions = layerContributions.inputGate.weights.values,
       x = x,
       y = this.layer.inputGate.values,
-      w = inGParams.weights.values as DenseNDArray,
+      w = this.layer.params.inputGate.weights.values as DenseNDArray,
       b = bInG)
 
     this.forwardArray(
       contributions = layerContributions.forgetGate.weights.values,
       x = x,
       y = this.layer.forgetGate.values,
-      w = forGParams.weights.values as DenseNDArray,
+      w = this.layer.params.forgetGate.weights.values as DenseNDArray,
       b = bForG)
   }
 
