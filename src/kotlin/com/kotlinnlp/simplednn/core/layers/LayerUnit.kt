@@ -70,4 +70,20 @@ open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : 
 
     return this.errors.T.dot(w)
   }
+
+  /**
+   * @param x the input of the unit
+   * @param contributions the contribution of the input to calculate the output
+   *
+   * @return the relevance of the input of the unit
+   */
+  fun getInputRelevance(x: InputNDArrayType, contributions: ParametersUnit): NDArray<*> {
+
+    return RelevanceUtils.calculateRelevanceOfArray(
+      x = x,
+      y = this.valuesNotActivated,
+      yRelevance = this.relevance as DenseNDArray,
+      contributions = contributions.weights.values
+    )
+  }
 }
