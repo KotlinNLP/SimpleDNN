@@ -82,28 +82,24 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
                         contributions: RecurrentParametersUnit,
                         yPrev: DenseNDArray?): NDArray<*> {
 
-    val y: DenseNDArray = this.valuesNotActivated
-    val yInput: DenseNDArray
-    val yRelevance: DenseNDArray
-
     if (yPrev != null) {
-      yInput = y.sub(yPrev)
-      yRelevance = RelevanceUtils.getRelevancePartition1(
+      val y: DenseNDArray = this.valuesNotActivated
+      val yInput: DenseNDArray = y.sub(yPrev)
+      val yInputRelevance: DenseNDArray = RelevanceUtils.getRelevancePartition1(
         yRelevance = this.relevance as DenseNDArray,
         y = y,
         yContribute1 = yInput,
         yContribute2 = yPrev)
 
-    } else {
-      yInput = y
-      yRelevance = this.relevance as DenseNDArray
-    }
+      return RelevanceUtils.calculateRelevanceOfArray(
+        x = x,
+        y = yInput,
+        yRelevance = yInputRelevance,
+        contributions = contributions.weights.values
+      )
 
-    return RelevanceUtils.calculateRelevanceOfArray(
-      x = x,
-      y = yInput,
-      yRelevance = yRelevance,
-      contributions = contributions.weights.values
-    )
+    } else {
+      return super.getInputRelevance(x = x, contributions = contributions)
+    }
   }
 }
