@@ -73,7 +73,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
 
   /**
    * @param x the input of the unit
-   * @param contributions the contribution of the input to calculate the output
+   * @param contributions the contributions of this unit in the last forward
    * @param yPrev the output array as contribution from the previous state
    *
    * @return the relevance of the input of the unit
@@ -101,5 +101,28 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
     } else {
       return super.getInputRelevance(x = x, contributions = contributions)
     }
+  }
+
+  /**
+   * @param contributions the contributions of this unit in the last forward
+   * @param yPrev the output array as contribution from the previous state
+   *
+   * @return the relevance of the output in the previous state in respect of the current one
+   */
+  fun getRecurrentRelevance(contributions: RecurrentParametersUnit, yPrev: DenseNDArray): DenseNDArray {
+
+    val y: DenseNDArray = this.valuesNotActivated
+    val yRec: DenseNDArray = contributions.biases.values
+    val yRecRelevance: DenseNDArray = RelevanceUtils.getRelevancePartition2(
+      yRelevance = this.relevance as DenseNDArray,
+      y = y,
+      yContribute2 = yRec)
+
+    return RelevanceUtils.calculateRelevanceOfDenseArray(
+      x = yPrev,
+      y = yRec,
+      yRelevance = yRecRelevance,
+      contributions = contributions.recurrentWeights.values
+    )
   }
 }
