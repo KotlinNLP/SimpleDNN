@@ -9,7 +9,6 @@ package com.kotlinnlp.simplednn.core.layers.recurrent.simple
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.LayerStructure
-import com.kotlinnlp.simplednn.core.layers.RelevanceUtils
 import com.kotlinnlp.simplednn.core.layers.recurrent.RecurrentRelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -20,7 +19,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property layer the [SimpleRecurrentLayerStructure] in which to calculate the input relevance
  */
 class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  layer: SimpleRecurrentLayerStructure<InputNDArrayType>
+  override val layer: SimpleRecurrentLayerStructure<InputNDArrayType>
 ) : RecurrentRelevanceHelper<InputNDArrayType>(layer) {
 
   /**
@@ -31,44 +30,25 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
   override fun getInputRelevance(layerContributions: LayerParameters): NDArray<*> {
     layerContributions as SimpleRecurrentLayerParameters
 
-    val y: DenseNDArray = this.layer.outputArray.valuesNotActivated
-    val yRec: DenseNDArray = layerContributions.unit.biases.values
-    val yInput: DenseNDArray = y.sub(yRec)
-    val yRelevance: DenseNDArray = this.layer.outputArray.relevance as DenseNDArray
-    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer() as? SimpleRecurrentLayerStructure<*>
-
-    return RelevanceUtils.calculateRelevanceOfArray(
+    return this.layer.outputArray.getInputRelevance(
       x = this.layer.inputArray.values,
-      y = yInput,
-      yRelevance = if (prevStateLayer != null)
-        RelevanceUtils
-          .getRelevancePartition1(yRelevance = yRelevance, y = y, yContribute1 = yInput, yContribute2 = yRec)
-      else
-        this.layer.outputArray.relevance as DenseNDArray,
-      contributions = layerContributions.unit.weights.values
-    )
+      contributions = layerContributions.unit,
+      prevStateExists = this.layer.layerContextWindow.getPrevStateLayer() != null)
   }
 
   /**
-   * Calculate the relevance of the output in the previous state respect of the current one and assign it to the output
-   * array of the previous state.
+   * Calculate the relevance of the output in the previous state in respect of the current one and assign it to the
+   * output array of the previous state.
    *
    * @param layerContributions the contributions saved during the last forward
    */
   override fun setRecurrentRelevance(layerContributions: LayerParameters) {
     layerContributions as SimpleRecurrentLayerParameters
 
-    val y: DenseNDArray = this.layer.outputArray.valuesNotActivated
-    val yRec: DenseNDArray = layerContributions.unit.biases.values
     val prevStateLayer: LayerStructure<*> = this.layer.layerContextWindow.getPrevStateLayer()!!
-    val yRelevance: DenseNDArray = this.layer.outputArray.relevance as DenseNDArray
-
-    val recurrentRelevance = RelevanceUtils.calculateRelevanceOfDenseArray(
-      x = prevStateLayer.outputArray.values,
-      y = yRec,
-      yRelevance = RelevanceUtils.getRelevancePartition2(yRelevance = yRelevance, y = y, yContribute2 = yRec),
-      contributions = layerContributions.unit.recurrentWeights.values
-    )
+    val recurrentRelevance: DenseNDArray = this.layer.outputArray.getRecurrentRelevance(
+      contributions = layerContributions.unit,
+      yPrev = prevStateLayer.outputArray.values)
 
     prevStateLayer.outputArray.assignRelevance(recurrentRelevance)
   }
