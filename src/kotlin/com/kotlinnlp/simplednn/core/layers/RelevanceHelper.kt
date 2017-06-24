@@ -42,7 +42,7 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layerContributions the contributions saved during the last forward
    *
-   * @return the relevance of the input respect of the output
+   * @return the relevance of the input in respect of the output
    */
   protected abstract fun getInputRelevance(layerContributions: LayerParameters): NDArray<*>
 }
