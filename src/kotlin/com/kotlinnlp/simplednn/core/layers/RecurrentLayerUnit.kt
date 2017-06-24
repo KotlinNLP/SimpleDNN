@@ -73,34 +73,43 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
 
   /**
    * @param x the input of the unit
-   * @param contributions the contributions of this unit in the last forward
-   * @param yPrev the output array as contribution from the previous state
+   * @param contributions the contribution of the input to calculate the output
    *
    * @return the relevance of the input of the unit
    */
   fun getInputRelevance(x: InputNDArrayType,
                         contributions: RecurrentParametersUnit,
-                        yPrev: DenseNDArray?): NDArray<*> {
+                        prevStateExists: Boolean): NDArray<*> {
 
-    if (yPrev != null) {
-      val y: DenseNDArray = this.valuesNotActivated
-      val yInput: DenseNDArray = y.sub(yPrev)
-      val yInputRelevance: DenseNDArray = RelevanceUtils.getRelevancePartition1(
-        yRelevance = this.relevance as DenseNDArray,
-        y = y,
-        yContribute1 = yInput,
-        yContribute2 = yPrev)
+    return if (prevStateExists)
+      this.getInputRelevancePartitioned(x = x, contributions = contributions)
+    else
+      this.getInputRelevance(x = x, contributions = contributions)
+  }
 
-      return RelevanceUtils.calculateRelevanceOfArray(
-        x = x,
-        y = yInput,
-        yRelevance = yInputRelevance,
-        contributions = contributions.weights.values
-      )
+  /**
+   * @param x the input of the unit
+   * @param contributions the contributions of this unit in the last forward
+   *
+   * @return the relevance of the input of the unit, calculated from the input partition of the output relevance
+   */
+  private fun getInputRelevancePartitioned(x: InputNDArrayType, contributions: RecurrentParametersUnit): NDArray<*> {
 
-    } else {
-      return super.getInputRelevance(x = x, contributions = contributions)
-    }
+    val y: DenseNDArray = this.valuesNotActivated
+    val yRec: DenseNDArray = contributions.biases.values
+    val yInput: DenseNDArray = y.sub(yRec)
+    val yInputRelevance: DenseNDArray = RelevanceUtils.getRelevancePartition1(
+      yRelevance = this.relevance as DenseNDArray,
+      y = y,
+      yContribute1 = yInput,
+      yContribute2 = yRec)  // the recurrent contrib. to y is saved into the biases contrib.
+
+    return RelevanceUtils.calculateRelevanceOfArray(
+      x = x,
+      y = yInput,
+      yRelevance = yInputRelevance,
+      contributions = contributions.weights.values
+    )
   }
 
   /**
@@ -111,11 +120,10 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    */
   fun getRecurrentRelevance(contributions: RecurrentParametersUnit, yPrev: DenseNDArray): DenseNDArray {
 
-    val y: DenseNDArray = this.valuesNotActivated
     val yRec: DenseNDArray = contributions.biases.values
     val yRecRelevance: DenseNDArray = RelevanceUtils.getRelevancePartition2(
       yRelevance = this.relevance as DenseNDArray,
-      y = y,
+      y = this.valuesNotActivated,
       yContribute2 = yRec)
 
     return RelevanceUtils.calculateRelevanceOfDenseArray(
