@@ -350,7 +350,6 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
                                       replaceInputRelevance: Boolean) {
 
     require(propagateToInput || propagateToPrevState)
-    require(replaceInputRelevance || !propagateToInput)
 
     val contributions: LayerParameters
       = this.sequence.getStateContributions(this.curStateIndex)!!.paramsPerLayer[layerIndex]
