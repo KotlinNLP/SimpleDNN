@@ -33,7 +33,7 @@ class GRULayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
-) : RecurrentLayerStructure<InputNDArrayType>(
+) : GatedRecurrentLayerStructure<InputNDArrayType>(
   inputArray = inputArray,
   outputArray = outputArray,
   params = params,
