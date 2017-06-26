@@ -318,15 +318,17 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
       structure.curLayerIndex = layerIndex // crucial to provide the right context
 
-      isPropagating = isPropagating || layer is RecurrentLayerStructure
+      val isCurLayerRecurrent = layer is RecurrentLayerStructure
+      val isPrevLayerRecurrent = layerIndex > 0 && structure.layers[layerIndex - 1] is RecurrentLayerStructure
+
+      isPropagating = isPropagating || isCurLayerRecurrent
 
       this.propagateLayerRelevance(
         layer = layer,
         layerIndex = layerIndex,
-        isFirstState = isFirstState,
-        isLastState = isLastState,
-        isPropagating = isPropagating,
-        isPrevLayerRecurrent = layerIndex > 0 && structure.layers[layerIndex - 1] is RecurrentLayerStructure
+        propagateToPrevState = !isFirstState && isCurLayerRecurrent,
+        propagateToInput = isPropagating && (layerIndex > 0 || isFirstState),
+        replaceInputRelevance = !isLastState && isPrevLayerRecurrent
       )
     }
   }
@@ -336,32 +338,33 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layer the current layer
    * @param layerIndex the current layer index
-   * @param isFirstState a Boolean indicating if the current state is the first
-   * @param isLastState a Boolean indicating if the current state is the last
-   * @param isPropagating a Boolean indicating if the current layer is in the middle of the propagation
-   * @param isPrevLayerRecurrent a Boolean indicating if the previous layer is recurrent
+   * @param propagateToPrevState whether to propagate to the previous state
+   * @param propagateToInput whether to propagate to the input
+   * @param replaceInputRelevance a Boolean if the relevance of the input must be replaced or added
    */
   private fun propagateLayerRelevance(layer: LayerStructure<*>,
                                       layerIndex: Int,
-                                      isFirstState: Boolean,
-                                      isLastState: Boolean,
-                                      isPropagating: Boolean,
-                                      isPrevLayerRecurrent: Boolean) {
+                                      propagateToPrevState: Boolean,
+                                      propagateToInput: Boolean,
+                                      replaceInputRelevance: Boolean) {
+
+    require(propagateToInput || propagateToPrevState)
+    require(replaceInputRelevance || !propagateToInput)
 
     val contributions: LayerParameters
       = this.sequence.getStateContributions(this.curStateIndex)!!.paramsPerLayer[layerIndex]
 
-    if (isPropagating && (layerIndex > 0 || isFirstState)) { // propagate relevance to input
+    if (propagateToInput) {
 
-      if (!isLastState && isPrevLayerRecurrent) {
-        layer.addInputRelevance(layerContributions = contributions)
+      if (replaceInputRelevance) {
+        layer.setInputRelevance(layerContributions = contributions)
 
       } else {
-        layer.setInputRelevance(layerContributions = contributions)
+        layer.addInputRelevance(layerContributions = contributions)
       }
     }
 
-    if (!isFirstState && layer is RecurrentLayerStructure) { // propagate relevance to previous state
+    if (propagateToPrevState) { layer as RecurrentLayerStructure
       layer.setRecurrentRelevance(layerContributions = contributions)
     }
   }
