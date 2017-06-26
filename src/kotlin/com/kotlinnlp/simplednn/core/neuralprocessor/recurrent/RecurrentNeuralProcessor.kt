@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.core.layers.recurrent.GatedRecurrentLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.RecurrentLayerStructure
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
@@ -353,6 +354,10 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     val contributions: LayerParameters
       = this.sequence.getStateContributions(this.curStateIndex)!!.paramsPerLayer[layerIndex]
+
+    if (layer is GatedRecurrentLayerStructure) {
+      layer.propagateRelevanceToGates(layerContributions = contributions)
+    }
 
     if (propagateToInput) {
 
