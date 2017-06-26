@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.layers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
- * The helper which calculates the relevance of the input of a [layer] respect of its output.
+ * The helper which calculates the relevance of the input of a recurrent [layer] respect of its output.
  *
  * @property layer the [RecurrentLayerStructure] in which to calculate the input relevance
  */
