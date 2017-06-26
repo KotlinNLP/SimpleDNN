@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers.recurrent.lstm
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.recurrent.RecurrentRelevanceHelper
+import com.kotlinnlp.simplednn.core.layers.recurrent.GatedRecurrentRelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
@@ -18,7 +18,16 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  */
 class LSTMRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   layer: LSTMLayerStructure<InputNDArrayType>
-) : RecurrentRelevanceHelper<InputNDArrayType>(layer) {
+) : GatedRecurrentRelevanceHelper<InputNDArrayType>(layer) {
+
+  /**
+   * Propagate the relevance from the output to the gated units of the layer.
+   *
+   * @param layerContributions the structure in which to save the contributions during the calculations
+   */
+  override fun propagateRelevanceToGates(layerContributions: LayerParameters) {
+    TODO("not implemented")
+  }
 
   /**
    * @param layerContributions the contributions saved during the last forward
