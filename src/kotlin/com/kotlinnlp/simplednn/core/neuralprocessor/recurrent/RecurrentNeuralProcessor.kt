@@ -324,13 +324,15 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
       isPropagating = isPropagating || isCurLayerRecurrent
 
-      this.propagateLayerRelevance(
-        layer = layer,
-        layerIndex = layerIndex,
-        propagateToPrevState = !isFirstState && isCurLayerRecurrent,
-        propagateToInput = isPropagating && (layerIndex > 0 || isFirstState),
-        replaceInputRelevance = isLastState || !isPrevLayerRecurrent
-      )
+      if (isPropagating) {
+        this.propagateLayerRelevance(
+          layer = layer,
+          layerIndex = layerIndex,
+          propagateToPrevState = !isFirstState && isCurLayerRecurrent,
+          propagateToInput = layerIndex > 0 || isFirstState,
+          replaceInputRelevance = isLastState || !isPrevLayerRecurrent
+        )
+      }
     }
   }
 
