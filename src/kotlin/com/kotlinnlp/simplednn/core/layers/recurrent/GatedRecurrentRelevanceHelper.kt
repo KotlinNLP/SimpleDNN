@@ -20,7 +20,7 @@ abstract class GatedRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDA
 ) : RecurrentRelevanceHelper<InputNDArrayType>(layer) {
 
   /**
-   * Propagete the relevance from the output to the gated units of the layer.
+   * Propagate the relevance from the output to the gated units of the layer.
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
