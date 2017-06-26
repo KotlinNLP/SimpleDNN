@@ -41,6 +41,7 @@ class LSTMRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Calculate the relevance of the output in the previous state respect of the current one and assign it to the output
    * array of the previous state.
+   * WARNING: it's needed that a previous state exists.
    *
    * @param layerContributions the contributions saved during the last forward
    */
