@@ -329,7 +329,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
         layerIndex = layerIndex,
         propagateToPrevState = !isFirstState && isCurLayerRecurrent,
         propagateToInput = isPropagating && (layerIndex > 0 || isFirstState),
-        replaceInputRelevance = !isLastState && isPrevLayerRecurrent
+        replaceInputRelevance = isLastState || !isPrevLayerRecurrent
       )
     }
   }
