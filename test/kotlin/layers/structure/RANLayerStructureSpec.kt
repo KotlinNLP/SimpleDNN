@@ -7,10 +7,14 @@
 
 package layers.structure
 
+import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
+import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -19,6 +23,8 @@ import org.jetbrains.spek.api.dsl.on
 import layers.structure.contextwindows.RANLayerContextWindow
 import layers.structure.utils.RANLayerStructureUtils
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 /**
  *
@@ -86,6 +92,259 @@ class RANLayerStructureSpec : Spek({
           assertEquals(true, layer.outputArray.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5045, 0.01121, 0.04046, 0.78504, -0.78786)),
             tolerance = 1.0e-05))
+        }
+      }
+    }
+
+    context("forward with relevance") {
+
+      on("without previous state context") {
+
+        val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Empty())
+        val contributions = RANLayerParameters(inputSize = 4, outputSize = 5)
+
+        layer.forward(layerContributions = contributions)
+
+        it("should match the expected input gate") {
+          assertEquals(true, layer.inputGate.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39652, 0.25162, 0.5, 0.70475, 0.45264)),
+            tolerance = 1.0e-05))
+        }
+
+        it("should match the expected forget gate") {
+          assertEquals(true, layer.forgetGate.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.85321, 0.43291, 0.11609, 0.51999, 0.24232)),
+            tolerance = 1.0e-05))
+        }
+
+        it("should match the expected candidate") {
+          assertEquals(true, layer.candidate.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(1.02, -0.1, 0.1, 2.03, -1.41)),
+            tolerance = 1.0e-05))
+        }
+
+        it("should match the expected outputArray") {
+          assertEquals(true, layer.outputArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.38375, -0.02516, 0.04996, 0.8918, -0.56369)),
+            tolerance = 1.0e-05))
+        }
+
+        it("should match the expected contributions of the input gate") {
+          val inputGateContrib: DenseNDArray = contributions.inputGate.weights.values as DenseNDArray
+          assertTrue {
+            inputGateContrib.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(-0.3, -0.44, 0.82, -0.5),
+                doubleArrayOf(-0.56, 0.36, -0.09, -0.8),
+                doubleArrayOf(-0.635, 0.555, -0.345, 0.425),
+                doubleArrayOf(-0.44, 1.01, 0.2, 0.1),
+                doubleArrayOf(-0.42, -1.0, 0.53, 0.7)
+              )),
+              tolerance = 1.0e-05)
+          }
+        }
+
+        it("should match the expected contributions of the candidate") {
+          val candidateContrib: DenseNDArray = contributions.candidate.weights.values as DenseNDArray
+          assertTrue {
+            candidateContrib.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(0.85, -0.13, 0.05, 0.25),
+                doubleArrayOf(0.56, -0.63, 0.27, -0.3),
+                doubleArrayOf(-0.465, 0.315, -0.225, 0.475),
+                doubleArrayOf(0.975, 0.715, -0.635, 0.975),
+                doubleArrayOf(-0.475, -0.795, 0.735, -0.875)
+              )),
+              tolerance = 1.0e-05)
+          }
+        }
+
+        layer.setOutputRelevance(DistributionArray.uniform(length = 5))
+        layer.propagateRelevanceToGates(layerContributions = contributions)
+        layer.setInputRelevance(layerContributions = contributions)
+
+        it("should set a Dense input relevance") {
+          assertTrue { layer.inputArray.relevance is DenseNDArray }
+        }
+
+        it("should match the expected input relevance") {
+          val relevance: DenseNDArray = layer.inputArray.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-6.80494, 7.20431, -4.37039, 4.97103)),
+              tolerance = 1.0e-05)
+          }
+        }
+
+        it("should throw an Exception when calculating the recurrent relevance") {
+          assertFailsWith <KotlinNullPointerException> {
+            layer.setRecurrentRelevance(layerContributions = contributions)
+          }
+        }
+      }
+
+      on("with previous state context") {
+
+        val prevStateLayer = RANLayerContextWindow.Back().getPrevStateLayer()
+        val contextWindow = mock<LayerContextWindow>()
+        val layer = RANLayerStructureUtils.buildLayer(contextWindow)
+        val contributions = RANLayerParameters(inputSize = 4, outputSize = 5)
+
+        whenever(contextWindow.getPrevStateLayer()).thenReturn(prevStateLayer)
+
+        layer.forward(layerContributions = contributions)
+
+        it("should match the expected input gate") {
+          assertEquals(true, layer.inputGate.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.72312, 0.24974, 0.54983, 0.82054, 0.53494)),
+            tolerance = 1.0e-05))
+        }
+
+        it("should match the expected forget gate") {
+          assertEquals(true, layer.forgetGate.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.91133, 0.18094, 0.04834, 0.67481, 0.38936)),
+            tolerance = 1.0e-05))
+        }
+
+        it("should match the expected candidate") {
+          assertEquals(true, layer.candidate.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(1.02, -0.1, 0.1, 2.03, -1.41)),
+            tolerance = 1.0e-05))
+        }
+
+        it("should match the expected outputArray") {
+          assertEquals(true, layer.outputArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5045, 0.01121, 0.04046, 0.78504, -0.78786)),
+            tolerance = 1.0e-05))
+        }
+
+        it("should match the expected contributions of the input gate") {
+          val inputGateContrib: DenseNDArray = contributions.inputGate.weights.values as DenseNDArray
+          assertTrue {
+            inputGateContrib.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(-0.35, -0.49, 0.77, -0.55),
+                doubleArrayOf(-0.56, 0.36, -0.09, -0.8),
+                doubleArrayOf(-0.5975, 0.5925, -0.3075, 0.4625),
+                doubleArrayOf(-0.54, 0.91, 0.1, 0.0),
+                doubleArrayOf(-0.37, -0.95, 0.58, 0.75)
+              )),
+              tolerance = 1.0e-05)
+          }
+        }
+
+        it("should match the expected contributions of the forget gate") {
+          val forgetGateContrib: DenseNDArray = contributions.forgetGate.weights.values as DenseNDArray
+          assertTrue {
+            forgetGateContrib.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(0.0325, -0.2475, 1.0125, 0.5125),
+                doubleArrayOf(-0.5350, 0.2050, -0.0650, 0.025),
+                doubleArrayOf(-0.6725, -0.8325, 0.3375, -0.4125),
+                doubleArrayOf(0.7450, -0.7850, 0.2950, -0.275),
+                doubleArrayOf(0.4475, -0.6525, 0.4275, -0.9125)
+              )),
+              tolerance = 1.0e-05)
+          }
+        }
+
+        it("should match the expected contributions of the candidate") {
+          val candidateContrib: DenseNDArray = contributions.candidate.weights.values as DenseNDArray
+          assertTrue {
+            candidateContrib.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(0.85, -0.13, 0.05, 0.25),
+                doubleArrayOf(0.56, -0.63, 0.27, -0.3),
+                doubleArrayOf(-0.465, 0.315, -0.225, 0.475),
+                doubleArrayOf(0.975, 0.715, -0.635, 0.975),
+                doubleArrayOf(-0.475, -0.795, 0.735, -0.875)
+              )),
+              tolerance = 1.0e-05)
+          }
+        }
+
+        it("should match the expected recurrent contributions of the input gate") {
+          val inputGateContrib: DenseNDArray = contributions.inputGate.recurrentWeights.values
+          assertTrue {
+            inputGateContrib.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(0.04, 0.2, -0.2, 0.94, 0.60),
+                doubleArrayOf(0.14, -0.16, -0.06, 0.63, -0.56),
+                doubleArrayOf(0.15, 0.15, -0.24, 0.42, -0.43),
+                doubleArrayOf(0.08, 0.06, -0.07, 0.26, 0.72),
+                doubleArrayOf(0.08, 0.08, -0.28, 0.05, 0.20)
+              )),
+              tolerance = 1.0e-05)
+          }
+        }
+
+        it("should match the expected recurrent contributions of the forget gate") {
+          val forgetGateContrib: DenseNDArray = contributions.forgetGate.recurrentWeights.values
+          assertTrue {
+            forgetGateContrib.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(0.07, -0.03, 0.39, 0.18, 0.41),
+                doubleArrayOf(-0.08, -0.16, 0.02, -0.7, -0.22),
+                doubleArrayOf(-0.03, -0.27, -0.18, -0.99, 0.07),
+                doubleArrayOf(-0.12, 0.06, -0.07, 0.38, 0.50),
+                doubleArrayOf(-0.05, 0.01, -0.03, 0.72, -0.41)
+              )),
+              tolerance = 1.0e-05)
+          }
+        }
+
+        layer.setOutputRelevance(DistributionArray.uniform(length = 5))
+        layer.propagateRelevanceToGates(layerContributions = contributions)
+        layer.setInputRelevance(layerContributions = contributions)
+        layer.setRecurrentRelevance(layerContributions = contributions)
+
+        it("should set a Dense input relevance") {
+          assertTrue { layer.inputArray.relevance is DenseNDArray }
+        }
+
+        it("should match the expected relevance of the input gate") {
+          val relevance: DenseNDArray = layer.inputGate.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.13434, -0.09416, 0.16398, 0.15841, 0.07058)),
+              tolerance = 1.0e-05)
+          }
+        }
+
+        it("should match the expected relevance of the forget gate") {
+          val relevance: DenseNDArray = layer.forgetGate.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03434, 0.19416, -0.06398, -0.05841, 0.02942)),
+              tolerance = 1.0e-05)
+          }
+        }
+
+        it("should match the expected relevance of the candidate") {
+          val relevance: DenseNDArray = layer.candidate.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.13434, -0.09416, 0.16398, 0.15841, 0.07058)),
+              tolerance = 1.0e-05)
+          }
+        }
+
+        it("should match the expected input relevance") {
+          val relevance: DenseNDArray = layer.inputArray.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.73699, 0.21761, -0.13861, 1.13203)),
+              tolerance = 1.0e-05)
+          }
+        }
+
+        it("should match the expected recurrent relevance") {
+          val relevance: DenseNDArray = prevStateLayer.outputArray.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.15578, 0.3737, -0.40348, 0.45246, -0.05248)),
+              tolerance = 1.0e-05)
+          }
         }
       }
     }
