@@ -207,19 +207,19 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.addRecurrentContribution(
       yPrev = yPrev,
       yRec = layerContributions.inputGate.biases.values, // a tricky way to save the contribution coming from recursion
-      y = this.layer.candidate.values,                   // (b.size == y.size)
+      y = this.layer.inputGate.values,                   // (b.size == y.size)
       wRec = inGParams.recurrentWeights.values,
       b = bInG,
-      contributions = inGParams.recurrentWeights.values
+      contributions = layerContributions.inputGate.recurrentWeights.values
     )
 
     this.addRecurrentContribution(
       yPrev = yPrev,
       yRec = layerContributions.forgetGate.biases.values, // a tricky way to save the contribution coming from recursion
-      y = this.layer.candidate.values,                    // (b.size == y.size)
+      y = this.layer.forgetGate.values,                   // (b.size == y.size)
       wRec = forGParams.recurrentWeights.values,
       b = bForG,
-      contributions = forGParams.recurrentWeights.values
+      contributions = layerContributions.forgetGate.recurrentWeights.values
     )
   }
 }
