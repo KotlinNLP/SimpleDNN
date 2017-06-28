@@ -42,7 +42,7 @@ open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : 
   }
 
   /**
-   * Assign errors to the parameters associated to this unit.
+   * Assign errors to the parameters associated to this unit. The errors of the output must be already set.
    *
    * gb = errors * 1
    * gw = errors (dot) x
@@ -60,6 +60,8 @@ open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : 
   }
 
   /**
+   * Get the errors of the input of the unit. The errors of the output must be already set.
+   *
    * @param parameters the parameters associated to this unit
    *
    * @return the errors of the input of this unit
@@ -72,6 +74,8 @@ open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : 
   }
 
   /**
+   * Get the relevance of the input of the unit. The relevance of the output must be already set.
+   *
    * @param x the input of the unit
    * @param contributions the contribution of the input to calculate the output
    *

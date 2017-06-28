@@ -37,7 +37,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
   }
 
   /**
-   * Assign errors to the parameters associated to this unit.
+   * Assign errors to the parameters associated to this unit. The errors of the output must be already set.
    *
    * gb = errors * 1
    * gw = errors (dot) x
@@ -60,6 +60,9 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
   }
 
   /**
+   * Get the errors of the output in the previous state. The errors of the output in the current state must be
+   * already set.
+   *
    * @param parameters the parameters associated to this unit
    *
    * @return the errors of the recursion of this unit
@@ -72,6 +75,8 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
   }
 
   /**
+   * Get the relevance of the input of the unit. The relevance of the output must be already set.
+   *
    * @param x the input of the unit
    * @param contributions the contribution of the input to calculate the output
    *
@@ -113,6 +118,9 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
   }
 
   /**
+   * Get the relevance of the output in the previous state. The relevance of the output in the current state must be
+   * already set.
+   *
    * @param contributions the contributions of this unit in the last forward
    * @param yPrev the output array as contribution from the previous state
    *
