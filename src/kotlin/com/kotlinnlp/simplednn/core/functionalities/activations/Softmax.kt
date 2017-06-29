@@ -7,7 +7,9 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.activations
 
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * The softmax function transforms a vector in non-negative real numbers that
@@ -35,6 +37,31 @@ class Softmax : ActivationFunction {
     }
 
     out.assignDiv(sum)
+  }
+
+  /**
+   * Apply the Softmax function derivative to [xArray].
+   *
+   * @param xArray the input NDArray
+   *
+   * @return a new NDArray containing the result (the Jacobian matrix)
+   */
+  override fun df(xArray: DenseNDArray): DenseNDArray {
+
+    val jacobianMatrix: DenseNDArray = DenseNDArrayFactory.zeros(shape = Shape(xArray.length, xArray.length))
+
+    for (i in 0 until xArray.length) {
+      for (j in i until xArray.length) {
+
+        jacobianMatrix[i, j] = if (i == j) xArray[i] * (1.0 - xArray[j]) else - xArray[i] * xArray[j]
+
+        if (i != j) {
+          jacobianMatrix[j, i] = jacobianMatrix[i, j]
+        }
+      }
+    }
+
+    return jacobianMatrix
   }
 
   /**
