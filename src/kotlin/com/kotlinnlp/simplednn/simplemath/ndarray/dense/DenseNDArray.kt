@@ -789,4 +789,11 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
     rows = mask.dim1,
     columns = mask.dim2
   )
+
+  /**
+   *
+   */
+  fun toDoubleArray(): DoubleArray {
+    return this.storage.dup().data
+  }
 }
