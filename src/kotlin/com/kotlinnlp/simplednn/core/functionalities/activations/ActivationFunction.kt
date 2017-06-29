@@ -47,6 +47,29 @@ interface ActivationFunction : Serializable {
   fun f(array: DenseNDArray, out: DenseNDArray)
 
   /**
+   * Apply the activation function derivative to [xArray].
+   *
+   * @param xArray the input NDArray
+   *
+   * @return a new NDArray containing the result
+   */
+  fun df(xArray: DenseNDArray): DenseNDArray {
+    val out: DenseNDArray = xArray.factory.emptyArray(xArray.shape)
+    this.dfOptimized(this.f(xArray), out)
+    return out
+  }
+
+  /**
+   * Assign to [out] the activation function derivative calculated in [xArray].
+   *
+   * @param xArray the input NDArray
+   * @param out the NDArray in which the result is written
+   */
+  fun df(xArray: DenseNDArray, out: DenseNDArray) {
+    this.dfOptimized(this.f(xArray), out)
+  }
+
+  /**
    * Apply the activation function derivative to [fxArray].
    *
    * @param fxArray the input NDArray (WARNING: it must be f(x) for optimization)
