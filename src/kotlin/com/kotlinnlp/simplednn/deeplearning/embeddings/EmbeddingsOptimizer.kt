@@ -35,7 +35,7 @@ class EmbeddingsOptimizer(
   /**
    * Map an embeddings index with its errors
    */
-  private val embeddingsErrorsAccumulator = mutableMapOf<Int, EmbeddingsErrors>()
+  private val embeddingsErrorsMap = mutableMapOf<Int, EmbeddingsErrors>()
 
   /**
    * Accumulate errors of the [embeddingIndex] embedding
@@ -45,13 +45,13 @@ class EmbeddingsOptimizer(
    */
   fun accumulateErrors(embeddingIndex: Int, errors: DenseNDArray) {
 
-    val embeddingsErrorsAccumulator: EmbeddingsErrors? = this.embeddingsErrorsAccumulator[embeddingIndex]
+    val embeddingsErrors: EmbeddingsErrors? = this.embeddingsErrorsMap[embeddingIndex]
 
-    if (embeddingsErrorsAccumulator == null){
-      this.embeddingsErrorsAccumulator[embeddingIndex] = EmbeddingsErrors(errors = errors.copy(), count = 1)
+    if (embeddingsErrors == null){
+      this.embeddingsErrorsMap[embeddingIndex] = EmbeddingsErrors(errors = errors.copy(), count = 1)
     } else {
-      embeddingsErrorsAccumulator.errors.assignSum(errors)
-      embeddingsErrorsAccumulator.count += 1
+      embeddingsErrors.errors.assignSum(errors)
+      embeddingsErrors.count += 1
     }
   }
 
@@ -60,12 +60,12 @@ class EmbeddingsOptimizer(
    */
   override fun update() {
 
-    for ((embeddingIndex, embeddingsErrors) in this.embeddingsErrorsAccumulator) {
+    for ((embeddingIndex, embeddingsErrors) in this.embeddingsErrorsMap) {
       embeddingsErrors.errors.assignDiv(embeddingsErrors.count.toDouble()) // average errors
       this.updateMethod.update(this.embeddingsContainer.lookupTable[embeddingIndex].array, embeddingsErrors.errors)
     }
 
-    this.embeddingsErrorsAccumulator.clear()
+    this.embeddingsErrorsMap.clear()
   }
 
   /**
