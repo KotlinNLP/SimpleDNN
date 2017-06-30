@@ -455,8 +455,14 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override fun prod(a: DenseNDArray): DenseNDArray {
-    return DenseNDArray(this.storage.mul(a.storage))
+  override fun prod(a: NDArray<*>): DenseNDArray {
+
+    return when(a) {
+      is DenseNDArray -> DenseNDArray(this.storage.mul(a.storage))
+      is SparseNDArray -> TODO("not implemented")
+      is SparseBinaryNDArray -> TODO("not implemented")
+      else -> throw RuntimeException("Invalid NDArray type")
+    }
   }
 
   /**

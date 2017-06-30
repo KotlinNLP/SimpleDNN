@@ -237,7 +237,7 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
-  fun prod(a: SelfType): SelfType
+  fun prod(a: NDArray<*>): SelfType
 
   /**
    *

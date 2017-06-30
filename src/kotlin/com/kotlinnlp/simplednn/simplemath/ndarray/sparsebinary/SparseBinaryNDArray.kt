@@ -455,7 +455,7 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  override fun prod(a: SparseBinaryNDArray): SparseBinaryNDArray {
+  override fun prod(a: NDArray<*>): SparseBinaryNDArray {
     TODO("not implemented")
   }
 
