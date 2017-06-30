@@ -35,7 +35,7 @@ class EmbeddingsOptimizer(
   private val embeddingsErrorsMap = mutableMapOf<Int, EmbeddingsErrors>()
 
   /**
-   * Accumulate errors of the [embeddingIndex] embedding
+   * Accumulate errors of the embeddings at [embeddingIndex].
    *
    * @param embeddingIndex index of the embedding on which to accumulate the [errors]
    * @param errors errors to accumulate
@@ -53,7 +53,7 @@ class EmbeddingsOptimizer(
   }
 
   /**
-   * Update the embeddings
+   * Update the embeddings.
    */
   override fun update() {
 
@@ -67,8 +67,7 @@ class EmbeddingsOptimizer(
 
   /**
    * Method to call every new epoch.
-   *
-   * In turn it calls the same method into the `updateMethod`
+   * In turn it calls the same method into the `updateMethod`.
    */
   override fun newEpoch() {
     if (this.updateMethod is EpochScheduling) {
@@ -78,8 +77,7 @@ class EmbeddingsOptimizer(
 
   /**
    * Method to call every new batch.
-   *
-   * In turn it calls the same method into the `updateMethod`
+   * In turn it calls the same method into the `updateMethod`.
    */
   override fun newBatch() {
     if (this.updateMethod is BatchScheduling) {
@@ -89,8 +87,7 @@ class EmbeddingsOptimizer(
 
   /**
    * Method to call every new example.
-   *
-   * In turn it calls the same method into the `updateMethod`
+   * In turn it calls the same method into the `updateMethod`.
    */
   override fun newExample() {
     if (this.updateMethod is ExampleScheduling) {
