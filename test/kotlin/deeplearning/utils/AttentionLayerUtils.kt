@@ -1,0 +1,94 @@
+/* Copyright 2016-present The KotlinNLP Authors. All Rights Reserved.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ * ------------------------------------------------------------------*/
+
+package deeplearning.utils
+
+import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
+import com.kotlinnlp.simplednn.core.layers.LayerStructureFactory
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayer
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+
+/**
+ *
+ */
+object AttentionLayerUtils {
+
+  /**
+   *
+   */
+  fun buildAttentionLayer(): AttentionLayer {
+
+    val layer = AttentionLayer(attentionSize = 2)
+
+    layer.contextVector.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, -0.5)))
+
+    return layer
+  }
+
+  /**
+   *
+   */
+  fun buildInputSequence(): ArrayList<AugmentedArray<DenseNDArray>> = arrayListOf(
+    AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.7, 0.9, 0.6))),
+    AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.5, 0.7, -0.7, 0.8))),
+    AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, -0.5, 0.0, 0.2)))
+  )
+
+  /**
+   *
+   */
+  fun buildAttentionSequence(inputSequence: ArrayList<AugmentedArray<DenseNDArray>>): ArrayList<DenseNDArray> {
+
+    val transformLayer: FeedforwardLayerStructure<DenseNDArray> = this.buildTransformLayer()
+
+    return arrayListOf(*Array(
+      size = inputSequence.size,
+      init = { i ->
+        transformLayer.setInput(inputSequence[i].values)
+        transformLayer.forward()
+        transformLayer.outputArray.values.copy()
+      }
+    ))
+  }
+
+  /**
+   *
+   */
+  fun buildOutputErrors(): DenseNDArray = DenseNDArrayFactory.arrayOf(
+    doubleArrayOf(-0.2, 0.5, 0.1, -0.5)
+  )
+
+  /**
+   *
+   */
+  private fun buildTransformLayer(): FeedforwardLayerStructure<DenseNDArray> {
+
+    val params = FeedforwardLayerParameters(inputSize = 4, outputSize = 2)
+
+    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+      doubleArrayOf(0.3, 0.4, 0.2, -0.2),
+      doubleArrayOf(0.2, -0.1, 0.1, 0.6)
+    )))
+
+    params.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(
+      doubleArrayOf(0.3, -0.4)
+    ))
+
+    return LayerStructureFactory(
+      inputArray = AugmentedArray<DenseNDArray>(size = 4),
+      outputSize = 2,
+      params = params,
+      activationFunction = Tanh(),
+      connectionType = LayerType.Connection.Feedforward
+    ) as FeedforwardLayerStructure
+  }
+}
