@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
- * The EmbeddingsOptimizer is the optimizer of the EmbeddingsContainer
+ * The optimizer of the [EmbeddingsContainer].
  *
  * @property embeddingsContainer embeddings container to optimize
  * @property updateMethod the [UpdateMethod] for the optimization (e.g. ADAM, AdaGrad, ...)
@@ -25,10 +25,7 @@ class EmbeddingsOptimizer(
   val updateMethod: UpdateMethod) : Optimizer {
 
   /**
-   * Support structure to store errors
-   *
-   * @property errors the [DenseNDArray] which contains the accumulated errors
-   * @property count how many times the errors has been accumulated
+   * A support structure to store errors.
    */
   private data class EmbeddingsErrors(val errors: DenseNDArray, var count: Int)
 
