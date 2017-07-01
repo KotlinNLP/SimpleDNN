@@ -21,7 +21,6 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @property attentionSequence the sequence of attention arrays
  */
 class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
-  val inputSize: Int,
   val inputSequence: ArrayList<AugmentedArray<InputNDArrayType>>,
   val attentionSequence: ArrayList<DenseNDArray>
 ) {
@@ -29,17 +28,12 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * The output dense array.
    */
-  val outputArray = AugmentedArray<DenseNDArray>(values = DenseNDArrayFactory.zeros(Shape(this.inputSize)))
+  val outputArray: AugmentedArray<DenseNDArray>
 
   /**
    * A matrix containing the attention arrays as rows.
    */
-  lateinit var attentionMatrix: AugmentedArray<DenseNDArray>
-
-  /**
-   * An array which contains the result of the dot product between the [attentionMatrix] and the context vector.
-   */
-  lateinit var attentionContext: DenseNDArray
+  val attentionMatrix: AugmentedArray<DenseNDArray>
 
   /**
    * The array containing the importance score for each element of the input sequence.
@@ -50,32 +44,30 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
    * The array in which to save the errors of the context vector.
    */
   lateinit var contextVectorErrors: DenseNDArray
-    private set
+
+  /**
+   * The size of each array of input.
+   */
+  private val inputSize: Int
 
   /**
    * Initialize values.
    */
   init {
-    this.initAttentionMatrix()
-  }
-
-  /**
-   * Assign the context vector errors.
-   *
-   * @param errors the errors to assign
-   */
-  fun assignContextVectorErrors(errors: DenseNDArray) {
-
-    try {
-      this.contextVectorErrors.assignValues(errors)
-
-    } catch (e: UninitializedPropertyAccessException) {
-      this.contextVectorErrors = errors.copy()
+    require(this.inputSequence.size > 0) { "The input sequence cannot be empty." }
+    require(this.attentionSequence.size > 0) { "The attention sequence cannot be empty." }
+    require(this.inputSequence.size == this.attentionSequence.size) {
+      "The input sequence must have the same length of the attention sequence."
     }
+
+    this.inputSize = this.inputSequence.first().size
+    this.checkInputArraysSize() // call it after the inputSize is been set
+    this.outputArray = AugmentedArray<DenseNDArray>(values = DenseNDArrayFactory.zeros(Shape(this.inputSize)))
+    this.attentionMatrix = this.buildAttentionMatrix()
   }
 
   /**
-   *
+   * @return the errors of the attention arrays.
    */
   fun getAttentionErrors(): Array<DenseNDArray> = Array(
     size = this.attentionMatrix.values.shape.dim1,
@@ -83,17 +75,23 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   )
 
   /**
-   * Initialize attention matrix values.
+   * Check the size of the input arrays.
    */
-  private fun initAttentionMatrix() {
+  private fun checkInputArraysSize() {
+    this.inputSequence.forEach {
+      require(it.size == this.inputSize)
+    }
+  }
 
-    this.attentionMatrix = AugmentedArray(values = DenseNDArrayFactory.arrayOf(
+  /**
+   * Build the attention matrix.
+   */
+  private fun buildAttentionMatrix() = AugmentedArray(
+    values = DenseNDArrayFactory.arrayOf(
       Array(
         size = this.attentionSequence.size,
-        init = { i ->
-          this.attentionSequence[i].toDoubleArray()
-        }
+        init = { i -> this.attentionSequence[i].toDoubleArray() }
       )
-    ))
-  }
+    )
+  )
 }

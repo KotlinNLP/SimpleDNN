@@ -27,9 +27,9 @@ class AttentionLayerForwardHelper(private val layer: AttentionLayerStructure<*>)
    */
   fun forward(contextVector: UpdatableDenseArray) {
 
-    this.layer.attentionContext = this.layer.attentionMatrix.values.dot(contextVector.values)
+    val attentionContext = this.layer.attentionMatrix.values.dot(contextVector.values)
 
-    this.layer.importanceScore = Softmax().f(this.layer.attentionContext)
+    this.layer.importanceScore = Softmax().f(attentionContext)
 
     this.calculateOutput()
   }

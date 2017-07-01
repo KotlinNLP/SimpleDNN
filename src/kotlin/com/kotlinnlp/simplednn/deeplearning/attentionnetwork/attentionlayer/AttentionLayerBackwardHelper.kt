@@ -33,7 +33,7 @@ class AttentionLayerBackwardHelper(private val layer: AttentionLayerStructure<*>
     val scoreErrors: DenseNDArray = this.getScoreErrors()
     val softmaxGradients: DenseNDArray = Softmax().df(this.layer.importanceScore)
     val acErrors: DenseNDArray = softmaxGradients.dot(scoreErrors)
-    this.layer.assignContextVectorErrors(acErrors.T.dot(this.layer.attentionMatrix.values).T)
+    this.layer.contextVectorErrors = acErrors.T.dot(this.layer.attentionMatrix.values).T
 
     if (propagateToInput) {
       this.setInputErrors()
