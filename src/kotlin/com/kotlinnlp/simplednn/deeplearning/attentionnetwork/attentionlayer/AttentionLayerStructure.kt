@@ -56,7 +56,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
    * Initialize values.
    */
   init {
-    this.initAttentionMatrix(this.attentionSequence)
+    this.initAttentionMatrix()
   }
 
   /**
@@ -83,17 +83,15 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   )
 
   /**
-   * Init attention matrix values.
-   *
-   * @param attentionSequence the list of attention arrays of the sequence.
+   * Initialize attention matrix values.
    */
-  private fun initAttentionMatrix(attentionSequence: ArrayList<DenseNDArray>) {
+  private fun initAttentionMatrix() {
 
     this.attentionMatrix = AugmentedArray(values = DenseNDArrayFactory.arrayOf(
       Array(
-        size = attentionSequence.size,
+        size = this.attentionSequence.size,
         init = { i ->
-          attentionSequence[i].toDoubleArray()
+          this.attentionSequence[i].toDoubleArray()
         }
       )
     ))
