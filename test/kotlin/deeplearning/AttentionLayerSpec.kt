@@ -7,11 +7,15 @@
 
 package deeplearning
 
+import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import deeplearning.utils.AttentionLayerUtils
 import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
@@ -23,6 +27,26 @@ import kotlin.test.assertTrue
 class AttentionLayerSpec : Spek({
 
   describe("an AttentionLayer") {
+
+    context("initialization") {
+
+      val attentionLayer = AttentionLayerUtils.buildAttentionLayer()
+      val randomGenerator = mock<RandomGenerator>()
+
+      var i: Double = 0.0
+      whenever(randomGenerator.next()).thenAnswer { i++ }
+
+      attentionLayer.initialize(randomGenerator)
+
+      it("should have a context vector with the expected initialized values") {
+        assertTrue {
+          attentionLayer.contextVector.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 1.0)),
+            tolerance = 1.0e-06
+          )
+        }
+      }
+    }
 
     on("forward") {
 
