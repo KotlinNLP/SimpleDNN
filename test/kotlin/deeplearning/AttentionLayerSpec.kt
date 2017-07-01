@@ -29,20 +29,11 @@ class AttentionLayerSpec : Spek({
       val attentionLayer = AttentionLayerUtils.buildAttentionLayer()
       val inputSequence = AttentionLayerUtils.buildInputSequence()
       val structure = AttentionLayerStructure(
-        inputSize = 4,
         inputSequence = inputSequence,
         attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence)
       )
 
       attentionLayer.forward(structure)
-
-      it("should match the expected attention context") {
-        assertTrue {
-          structure.attentionContext.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.093476, 0.040542, 0.039525)),
-            tolerance = 1.0e-06)
-        }
-      }
 
       it("should match the expected importance score") {
         assertTrue {
@@ -66,7 +57,6 @@ class AttentionLayerSpec : Spek({
       val attentionLayer = AttentionLayerUtils.buildAttentionLayer()
       val inputSequence = AttentionLayerUtils.buildInputSequence()
       val structure = AttentionLayerStructure(
-        inputSize = 4,
         inputSequence = inputSequence,
         attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence)
       )
