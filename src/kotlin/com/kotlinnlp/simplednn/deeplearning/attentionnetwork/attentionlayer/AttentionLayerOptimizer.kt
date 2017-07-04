@@ -15,17 +15,17 @@ import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
- * The optimizer of the [AttentionLayer].
+ * The optimizer of the Attention Layer.
  *
- * @property attentionLayer the attention layer to optimize
+ * @property params the attention layer parameters to optimize
  * @property updateMethod the [UpdateMethod] for the optimization (e.g. ADAM, AdaGrad, ...)
  */
-class AttentionLayerOptimizer(val attentionLayer: AttentionLayer, val updateMethod: UpdateMethod) : Optimizer {
+class AttentionLayerOptimizer(val params: AttentionLayerParameters, val updateMethod: UpdateMethod) : Optimizer {
 
   /**
    * A support structure to store the errors of the context vector.
    */
-  private val contextVectorErrors: DenseNDArray = this.attentionLayer.contextVector.values.zerosLike()
+  private val contextVectorErrors: DenseNDArray = this.params.contextVector.values.zerosLike()
 
   /**
    * The counter of the amount of errors accumulated.
@@ -33,23 +33,23 @@ class AttentionLayerOptimizer(val attentionLayer: AttentionLayer, val updateMeth
   private var count: Int = 0
 
   /**
-   * Accumulate the context vector errors contained into the [structure].
+   * Accumulate the parameters errors contained into the [errors].
    *
-   * @param structure the structure of the Attention Layer from which to extract the errors
+   * @param errors the errors of the Attention Layer parameters
    */
-  fun accumulateErrors(structure: AttentionLayerStructure<*>) {
+  fun accumulateErrors(errors: AttentionLayerParameters) {
 
-    this.contextVectorErrors.assignSum(structure.contextVectorErrors)
+    this.contextVectorErrors.assignSum(errors.contextVector.values)
     this.count += 1
   }
 
   /**
-   * Update the context vector.
+   * Update the parameters.
    */
   override fun update() {
 
     this.contextVectorErrors.assignDiv(this.count.toDouble()) // average errors
-    this.updateMethod.update(this.attentionLayer.contextVector, this.contextVectorErrors)
+    this.updateMethod.update(this.params.contextVector, this.contextVectorErrors)
 
     this.contextVectorErrors.zeros()
     this.count = 0
