@@ -11,15 +11,14 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
- * Attention Layer.
+ * Attention Layer parameters.
  *
  * @property attentionSize the size of each array of attention
  */
-class AttentionLayer(val attentionSize: Int) {
+class AttentionLayerParameters(val attentionSize: Int) {
 
   /**
    * The context vector trainable parameter.
@@ -33,35 +32,5 @@ class AttentionLayer(val attentionSize: Int) {
    */
   fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true)) {
     this.contextVector.values.randomize(randomGenerator)
-  }
-
-  /**
-   * Perform the forward of the input sequence contained into the [structure].
-   *
-   * @param structure the support structure to perform calculations
-   *
-   * @return the output array
-   */
-  fun forward(structure: AttentionLayerStructure<*>): DenseNDArray {
-
-    val helper = AttentionLayerForwardHelper(layer = structure)
-
-    helper.forward(contextVector)
-
-    return structure.outputArray.values
-  }
-
-  /**
-   * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
-   * algorithm, starting from the errors of the output array.
-   *
-   * @param structure the attention layer structure used during the forward
-   * @param propagateToInput whether to propagate the errors to the input sequence
-   */
-  fun backward(structure: AttentionLayerStructure<*>, propagateToInput: Boolean) {
-
-    val helper = AttentionLayerBackwardHelper(layer = structure)
-
-    helper.backward(contextVector = this.contextVector, propagateToInput = propagateToInput)
   }
 }
