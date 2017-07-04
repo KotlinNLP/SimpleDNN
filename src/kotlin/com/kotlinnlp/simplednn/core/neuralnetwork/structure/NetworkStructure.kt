@@ -124,8 +124,8 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Propagate the output error using the gradient descent algorithm
    *
-   * @param outputErrors errors to propagate
-   * @param paramsErrors the error on the network parameters
+   * @param outputErrors the errors to propagate from the output
+   * @param paramsErrors the structure in which to save the errors of the parameters
    * @param propagateToInput whether to propagate the errors to the input
    */
   fun backward(outputErrors: DenseNDArray,
