@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerStructureFactory
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayer
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
@@ -25,13 +25,13 @@ object AttentionLayerUtils {
   /**
    *
    */
-  fun buildAttentionLayer(): AttentionLayer {
+  fun buildParams(): AttentionLayerParameters {
 
-    val layer = AttentionLayer(attentionSize = 2)
+    val params = AttentionLayerParameters(attentionSize = 2)
 
-    layer.contextVector.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, -0.5)))
+    params.contextVector.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, -0.5)))
 
-    return layer
+    return params
   }
 
   /**

@@ -9,7 +9,7 @@ package deeplearning
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerOptimizer
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerStructure
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import deeplearning.utils.AttentionLayerUtils
 import org.jetbrains.spek.api.Spek
@@ -27,26 +27,23 @@ class AttentionLayerOptimizerSpec : Spek({
 
     on("accumulation") {
 
-      val attentionLayer = AttentionLayerUtils.buildAttentionLayer()
-      val inputSequence = AttentionLayerUtils.buildInputSequence()
-      val structure = AttentionLayerStructure(
-        inputSequence = inputSequence,
-        attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence))
+      val params = AttentionLayerUtils.buildParams()
       val optimizer = AttentionLayerOptimizer(
-        attentionLayer = attentionLayer,
+        params = params,
         updateMethod = LearningRateMethod(learningRate = 0.1))
+      val errors = AttentionLayerParameters(attentionSize = 2)
 
-      structure.contextVectorErrors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, -0.5))
-      optimizer.accumulateErrors(structure)
+      errors.contextVector.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, -0.5)))
+      optimizer.accumulateErrors(errors)
 
-      structure.contextVectorErrors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, -0.3))
-      optimizer.accumulateErrors(structure)
+      errors.contextVector.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, -0.3)))
+      optimizer.accumulateErrors(errors)
 
       optimizer.update()
 
       it("should update the context vector correctly") {
         assertTrue {
-          attentionLayer.contextVector.values.equals(
+          params.contextVector.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.33, -0.46)),
             tolerance = 1.0e-06
           )
