@@ -16,13 +16,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 /**
  * The structure of the Attention Layer.
  *
- * @property inputSize the size of each array of input
  * @property inputSequence the sequence of input arrays
  * @property attentionSequence the sequence of attention arrays
+ * @property params the parameters of the Attention Layer
  */
 class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   val inputSequence: ArrayList<AugmentedArray<InputNDArrayType>>,
-  val attentionSequence: ArrayList<DenseNDArray>
+  val attentionSequence: ArrayList<DenseNDArray>,
+  val params: AttentionLayerParameters
 ) {
 
   /**
@@ -39,11 +40,6 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
    * The array containing the importance score for each element of the input sequence.
    */
   lateinit var importanceScore: DenseNDArray
-
-  /**
-   * The array in which to save the errors of the context vector.
-   */
-  lateinit var contextVectorErrors: DenseNDArray
 
   /**
    * The size of each array of input.
@@ -73,6 +69,34 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
     size = this.attentionMatrix.values.shape.dim1,
     init = { i -> this.attentionMatrix.errors.getRow(i).T }
   )
+
+  /**
+   * Perform the forward of the input sequence.
+   *
+   * @return the output array
+   */
+  fun forward(): DenseNDArray {
+
+    val helper = AttentionLayerForwardHelper(layer = this)
+
+    helper.forward()
+
+    return this.outputArray.values
+  }
+
+  /**
+   * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
+   * algorithm, starting from the errors of the output array.
+   *
+   * @param paramsErrors the errors of the parameters which will be filled
+   * @param propagateToInput whether to propagate the errors to the input sequence
+   */
+  fun backward(paramsErrors: AttentionLayerParameters, propagateToInput: Boolean) {
+
+    val helper = AttentionLayerBackwardHelper(layer = this)
+
+    helper.backward(paramsErrors = paramsErrors, propagateToInput = propagateToInput)
+  }
 
   /**
    * Check the size of the input arrays.
