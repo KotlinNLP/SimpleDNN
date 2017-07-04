@@ -71,6 +71,13 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   )
 
   /**
+   * Set the errors of the [outputArray].
+   *
+   * @param errors the errors to set into the outputArray
+   */
+  fun setErrors(errors: DenseNDArray) = this.outputArray.assignErrors(errors)
+
+  /**
    * Perform the forward of the input sequence.
    *
    * @return the output array
