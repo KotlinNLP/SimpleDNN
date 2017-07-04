@@ -7,27 +7,25 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The Attention Layer forward helper.
  *
- * @property layer the structure of the Attention Layer as support to perform calculations
+ * @property layer the Attention Layer Structure as support to perform calculations
  */
 class AttentionLayerForwardHelper(private val layer: AttentionLayerStructure<*>) {
 
   /**
    * Perform the forward of the input sequence contained into the [layer].
    *
-   * @param contextVector the context vector parameter of the attention layer.
-   *
    * @return the output array
    */
-  fun forward(contextVector: UpdatableDenseArray) {
+  fun forward() {
 
-    val attentionContext = this.layer.attentionMatrix.values.dot(contextVector.values)
+    val contextVect: DenseNDArray = this.layer.params.contextVector.values
+    val attentionContext: DenseNDArray = this.layer.attentionMatrix.values.dot(contextVect)
 
     this.layer.importanceScore = Softmax().f(attentionContext)
 
