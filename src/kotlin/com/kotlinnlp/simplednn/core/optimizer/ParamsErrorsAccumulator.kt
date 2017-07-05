@@ -52,7 +52,7 @@ class ParamsErrorsAccumulator(val neuralNetwork: NeuralNetwork) {
   }
 
   /**
-   * Accumulate the [paramsErrors].
+   * Accumulate the given [paramsErrors] into the accumulator.
    *
    * @param paramsErrors the network parameters errors to accumulate
    */
