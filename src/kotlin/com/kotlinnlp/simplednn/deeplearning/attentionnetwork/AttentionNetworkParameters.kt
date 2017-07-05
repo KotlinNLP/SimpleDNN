@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.Atte
 /**
  * The parameters of the Attention Network.
  */
-class AttentionNetworkParameters(
+data class AttentionNetworkParameters(
   val inputSize: Int,
   val attentionSize: Int,
   val sparseInput: Boolean = false
