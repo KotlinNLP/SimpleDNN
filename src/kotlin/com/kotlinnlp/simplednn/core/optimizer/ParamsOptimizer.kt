@@ -18,8 +18,10 @@ import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
+ * The optimizer of the parameters of the [NeuralNetwork]
  *
- * @param neuralNetwork neural layer
+ * @param neuralNetwork the Attention Network to optimize
+ * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
 class ParamsOptimizer(val neuralNetwork: NeuralNetwork, val updateMethod: UpdateMethod) : Optimizer {
 
