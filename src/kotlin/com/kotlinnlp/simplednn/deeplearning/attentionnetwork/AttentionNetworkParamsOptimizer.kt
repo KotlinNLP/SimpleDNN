@@ -21,11 +21,11 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  * The optimizer of the parameters of the [AttentionNetwork]
  *
  * @param network the Attention Network to optimize
+ * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
 class AttentionNetworkParamsOptimizer(
   val network: AttentionNetwork<*>,
-  val updateMethod: UpdateMethod,
-  val minLossCountToUpdate: Int = 1
+  val updateMethod: UpdateMethod
 ) : Optimizer {
 
   /**
@@ -42,11 +42,8 @@ class AttentionNetworkParamsOptimizer(
    */
   override fun update() {
 
-    if (this.paramsErrorsAccumulator.count >= this.minLossCountToUpdate) {
-
-      this.paramsErrorsAccumulator.averageErrors()
-      this.updateParams()
-    }
+    this.paramsErrorsAccumulator.averageErrors()
+    this.updateParams()
   }
 
   /**

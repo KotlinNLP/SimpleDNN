@@ -21,11 +21,7 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  *
  * @param neuralNetwork neural layer
  */
-class ParamsOptimizer(
-  val neuralNetwork: NeuralNetwork,
-  val updateMethod: UpdateMethod,
-  val minLossCountToUpdate: Int = 1
-) : Optimizer {
+class ParamsOptimizer(val neuralNetwork: NeuralNetwork, val updateMethod: UpdateMethod) : Optimizer {
 
   /**
    * The accumulator of errors of the network parameters.
@@ -37,12 +33,9 @@ class ParamsOptimizer(
    */
   override fun update() {
 
-    if (this.paramsErrorsAccumulator.count >= this.minLossCountToUpdate) {
-
-      this.paramsErrorsAccumulator.averageErrors()
-      this.updateParams()
-      this.paramsErrorsAccumulator.reset()
-    }
+    this.paramsErrorsAccumulator.averageErrors()
+    this.updateParams()
+    this.paramsErrorsAccumulator.reset()
   }
 
   /**
