@@ -28,12 +28,12 @@ class ParamsOptimizer(
 ) : Optimizer {
 
   /**
-   *
+   * The accumulator of errors of the network parameters.
    */
   private val paramsErrorsAccumulator: ParamsErrorsAccumulator = ParamsErrorsAccumulator(this.neuralNetwork)
 
   /**
-   * Normalize the errors, Update the params and reset the errors
+   * Calculate the errors average, update the params.
    */
   override fun update() {
 
@@ -47,7 +47,6 @@ class ParamsOptimizer(
 
   /**
    * Method to call every new epoch.
-   *
    * In turn it calls the same method into the `updateMethod`
    */
   override fun newEpoch() {
@@ -59,7 +58,6 @@ class ParamsOptimizer(
 
   /**
    * Method to call every new batch.
-   *
    * In turn it calls the same method into the `updateMethod`
    */
   override fun newBatch() {
@@ -71,7 +69,6 @@ class ParamsOptimizer(
 
   /**
    * Method to call every new example.
-   *
    * In turn it calls the same method into the `updateMethod`
    */
   override fun newExample() {
@@ -82,14 +79,16 @@ class ParamsOptimizer(
   }
 
   /**
+   * Accumulate the given [paramsErrors] into the accumulator.
    *
+   * @param paramsErrors the network parameters errors to accumulate
    */
   fun accumulate(paramsErrors: NetworkParameters) {
     this.paramsErrorsAccumulator.accumulate(paramsErrors)
   }
 
   /**
-   * Update the params respect to the errors using the update helper (Learning Rate, ADAM, AdaGrad, ...)
+   * Update the params in respect of the errors using the update method helper (Learning Rate, ADAM, AdaGrad, ...).
    */
   private fun updateParams() {
 
