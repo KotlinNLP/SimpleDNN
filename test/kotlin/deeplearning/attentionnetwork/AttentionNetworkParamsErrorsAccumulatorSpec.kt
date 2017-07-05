@@ -102,6 +102,17 @@ class AttentionNetworkParamsErrorsAccumulatorSpec : Spek({
           )
         }
       }
+
+      accumulator.reset()
+
+      it("should contain zeros errors after calling reset()") {
+        val resetErrors = accumulator.getParamsErrors()
+        assertTrue {
+          resetErrors.transformParams.all { it as UpdatableDenseArray
+            it.values.equals(it.values.zerosLike(), tolerance = 1.0e-08)
+          }
+        }
+      }
     }
 
     on("average") {
