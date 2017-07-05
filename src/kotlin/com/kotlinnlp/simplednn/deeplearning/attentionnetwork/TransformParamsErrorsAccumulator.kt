@@ -31,7 +31,7 @@ class TransformParamsErrorsAccumulator<InputNDArrayType: NDArray<InputNDArrayTyp
   private val isEmpty: Boolean get() = this.count == 0
 
   /**
-   * The structure in which to accumulate the errors of the transform layer parameters.
+   * The structure in which to accumulate the errors of the attention-transform-layer parameters.
    */
   private val paramsErrors: FeedforwardLayerParameters = this.paramsErrorsFactory()
 
@@ -55,7 +55,7 @@ class TransformParamsErrorsAccumulator<InputNDArrayType: NDArray<InputNDArrayTyp
   /**
    * Accumulate the given [paramsErrors] into the accumulator.
    *
-   * @param paramsErrors the network parameters errors to accumulate
+   * @param paramsErrors the attention-transform-layer parameters errors to accumulate
    */
   fun accumulate(paramsErrors: FeedforwardLayerParameters) {
 
@@ -69,7 +69,7 @@ class TransformParamsErrorsAccumulator<InputNDArrayType: NDArray<InputNDArrayTyp
   }
 
   /**
-   * @return the structure in which to accumulate the errors of the transform layer parameters
+   * @return the structure in which to accumulate the errors of the attention-transform-layer parameters
    */
   private fun paramsErrorsFactory(): FeedforwardLayerParameters {
 
