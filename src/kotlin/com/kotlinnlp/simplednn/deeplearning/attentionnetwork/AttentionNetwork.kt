@@ -103,13 +103,13 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   private fun transformLayerFactory(): FeedforwardLayerStructure<InputNDArrayType> {
 
+    @Suppress("UNCHECKED_CAST")
     val inputArray = when (this.inputType) {
       LayerType.Input.Dense -> AugmentedArray<DenseNDArray>(size = this.inputSize)
       LayerType.Input.Sparse -> AugmentedArray<SparseNDArray>(size = this.inputSize)
       LayerType.Input.SparseBinary -> AugmentedArray<SparseBinaryNDArray>(size = this.inputSize)
-    }
+    } as AugmentedArray<InputNDArrayType>
 
-    @Suppress("UNCHECKED_CAST")
     return LayerStructureFactory(
       inputArray = inputArray,
       outputSize = this.attentionSize,
@@ -117,7 +117,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
       activationFunction = Tanh(),
       connectionType = LayerType.Connection.Feedforward,
       dropout = this.dropout
-    ) as FeedforwardLayerStructure<InputNDArrayType>
+    ) as FeedforwardLayerStructure
   }
 
   /**
