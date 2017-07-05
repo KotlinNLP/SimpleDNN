@@ -38,7 +38,7 @@ class ParamsErrorsAccumulator(val neuralNetwork: NeuralNetwork) {
   fun getParamsErrors() = if (this.isEmpty) this.neuralNetwork.parametersErrorsFactory() else this.paramsErrors
 
   /**
-   * Reset the counter.
+   * Reset the accumulated errors.
    */
   fun reset() {
     this.count = 0
