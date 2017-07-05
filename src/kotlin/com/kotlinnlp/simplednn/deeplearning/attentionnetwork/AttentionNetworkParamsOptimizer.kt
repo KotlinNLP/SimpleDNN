@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.deeplearning.attentionnetwork
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -30,7 +31,11 @@ class AttentionNetworkParamsOptimizer(
   /**
    * The accumulator of errors of the network parameters.
    */
-  private val paramsErrorsAccumulator = AttentionNetworkParamsErrorsAccumulator(this.network)
+  private val paramsErrorsAccumulator = AttentionNetworkParamsErrorsAccumulator(
+    inputSize = this.network.inputSize,
+    attentionSize = this.network.attentionSize,
+    sparseInput = this.network.inputType == LayerType.Input.SparseBinary
+  )
 
   /**
    * Calculate the errors average and update the params.

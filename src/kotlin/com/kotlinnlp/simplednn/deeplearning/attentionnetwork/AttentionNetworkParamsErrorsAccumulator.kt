@@ -7,13 +7,17 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork
 
-import com.kotlinnlp.simplednn.core.layers.LayerType
-
 /**
  * The accumulator of the errors of the attention network parameters.
+ *
+ * @property inputSize the input size of the attention network
+ * @property attentionSize the attention size of the network
+ * @property sparseInput whether the input of the network is sparse
  */
 class AttentionNetworkParamsErrorsAccumulator(
-  val network: AttentionNetwork<*>
+  val inputSize: Int,
+  val attentionSize: Int,
+  val sparseInput: Boolean
 ) {
 
   /**
@@ -70,9 +74,9 @@ class AttentionNetworkParamsErrorsAccumulator(
    * @return the structure in which to accumulate the errors of the attention network parameters
    */
   private fun paramsErrorsFactory() = AttentionNetworkParameters(
-    inputSize = this.network.inputSize,
-    attentionSize = this.network.attentionSize,
-    sparseInput = this.network.inputType == LayerType.Input.SparseBinary
+    inputSize = this.inputSize,
+    attentionSize = this.attentionSize,
+    sparseInput = this.sparseInput
   )
 
   /**
