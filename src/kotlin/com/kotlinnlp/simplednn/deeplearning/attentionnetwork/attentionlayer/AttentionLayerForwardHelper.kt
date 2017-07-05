@@ -20,6 +20,16 @@ class AttentionLayerForwardHelper(private val layer: AttentionLayerStructure<*>)
   /**
    * Perform the forward of the input sequence contained into the [layer].
    *
+   *   x_i = i-th input array
+   *   alpha_i = i-th value of alpha
+   *   am = attention matrix
+   *   cv = context vector
+   *
+   *   ac = am (dot) cv  // attention context
+   *   alpha = softmax(ac)  // importance score
+   *
+   *   y = sum by { x_i * alpha_i }
+   *
    * @return the output array
    */
   fun forward() {
@@ -34,6 +44,8 @@ class AttentionLayerForwardHelper(private val layer: AttentionLayerStructure<*>)
 
   /**
    * Calculate the values of the output array.
+   *
+   *   y = sum by { x_i * alpha_i }
    */
   private fun calculateOutput() {
 
