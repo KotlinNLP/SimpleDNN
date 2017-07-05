@@ -32,8 +32,8 @@ class AttentionNetworkParamsOptimizer(
    * The accumulator of errors of the network parameters.
    */
   private val paramsErrorsAccumulator = AttentionNetworkParamsErrorsAccumulator(
-    inputSize = this.network.inputSize,
-    attentionSize = this.network.attentionSize,
+    inputSize = this.network.model.inputSize,
+    attentionSize = this.network.model.attentionSize,
     sparseInput = this.network.inputType == LayerType.Input.SparseBinary
   )
 
