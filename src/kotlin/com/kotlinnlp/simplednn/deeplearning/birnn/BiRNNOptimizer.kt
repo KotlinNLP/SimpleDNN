@@ -46,26 +46,6 @@ class BiRNNOptimizer(
   private val outputNetwork = ParamsOptimizer(network.outputNetwork, outputUpdateMethod)
 
   /**
-   * Update the params using the accumulated errors and reset the errors
-   */
-  override fun update(): Unit {
-    this.outputNetwork.update()
-    this.leftToRightOptimizer.update()
-    this.rightToLeftOptimizer.update()
-  }
-
-  /**
-   * Accumulate the params errors on the optimizer
-   *
-   * @param errors params errors to accumulate
-   */
-  fun accumulate(errors: BiRNNParameters) {
-    this.leftToRightOptimizer.accumulate(errors.leftToRight)
-    this.rightToLeftOptimizer.accumulate(errors.rightToLeft)
-    this.outputNetwork.accumulate(errors.output)
-  }
-
-  /**
    * Method to call every new epoch.
    */
   override fun newEpoch() {
@@ -90,5 +70,25 @@ class BiRNNOptimizer(
     this.leftToRightOptimizer.newExample()
     this.rightToLeftOptimizer.newExample()
     this.outputNetwork.newExample()
+  }
+
+  /**
+   * Update the params using the accumulated errors and reset the errors
+   */
+  override fun update(): Unit {
+    this.outputNetwork.update()
+    this.leftToRightOptimizer.update()
+    this.rightToLeftOptimizer.update()
+  }
+
+  /**
+   * Accumulate the params errors on the optimizer
+   *
+   * @param errors params errors to accumulate
+   */
+  fun accumulate(errors: BiRNNParameters) {
+    this.leftToRightOptimizer.accumulate(errors.leftToRight)
+    this.rightToLeftOptimizer.accumulate(errors.rightToLeft)
+    this.outputNetwork.accumulate(errors.output)
   }
 }

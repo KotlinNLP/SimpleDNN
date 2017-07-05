@@ -31,16 +31,6 @@ class ParamsOptimizer(val neuralNetwork: NeuralNetwork, val updateMethod: Update
   private val paramsErrorsAccumulator: ParamsErrorsAccumulator = ParamsErrorsAccumulator(this.neuralNetwork)
 
   /**
-   * Calculate the errors average, update the params.
-   */
-  override fun update() {
-
-    this.paramsErrorsAccumulator.averageErrors()
-    this.updateParams()
-    this.paramsErrorsAccumulator.reset()
-  }
-
-  /**
    * Method to call every new epoch.
    * In turn it calls the same method into the `updateMethod`
    */
@@ -71,6 +61,16 @@ class ParamsOptimizer(val neuralNetwork: NeuralNetwork, val updateMethod: Update
     if (this.updateMethod is ExampleScheduling) {
       this.updateMethod.newExample()
     }
+  }
+
+  /**
+   * Calculate the errors average, update the params.
+   */
+  override fun update() {
+
+    this.paramsErrorsAccumulator.averageErrors()
+    this.updateParams()
+    this.paramsErrorsAccumulator.reset()
   }
 
   /**

@@ -46,24 +46,6 @@ class TreeRNNOptimizer(
   private val concatOptimizer = ParamsOptimizer(network.concatNetwork, concatUpdateMethod)
 
   /**
-   * Update the params using the accumulated errors and reset the errors
-   */
-  override fun update() {
-    this.leftOptimizer.update()
-    this.rightOptimizer.update()
-    this.concatOptimizer.update()
-  }
-
-  /**
-   * Accumulate the params errors
-   */
-  fun accumulate(errors: TreeRNNParameters) {
-    this.leftOptimizer.accumulate(errors.leftRNN)
-    this.rightOptimizer.accumulate(errors.rightRNN)
-    this.concatOptimizer.accumulate(errors.concatNetwork)
-  }
-
-  /**
    * Method to call every new epoch.
    */
   override fun newEpoch() {
@@ -88,5 +70,23 @@ class TreeRNNOptimizer(
     this.leftOptimizer.newExample()
     this.rightOptimizer.newExample()
     this.concatOptimizer.newExample()
+  }
+
+  /**
+   * Update the params using the accumulated errors and reset the errors
+   */
+  override fun update() {
+    this.leftOptimizer.update()
+    this.rightOptimizer.update()
+    this.concatOptimizer.update()
+  }
+
+  /**
+   * Accumulate the params errors
+   */
+  fun accumulate(errors: TreeRNNParameters) {
+    this.leftOptimizer.accumulate(errors.leftRNN)
+    this.rightOptimizer.accumulate(errors.rightRNN)
+    this.concatOptimizer.accumulate(errors.concatNetwork)
   }
 }

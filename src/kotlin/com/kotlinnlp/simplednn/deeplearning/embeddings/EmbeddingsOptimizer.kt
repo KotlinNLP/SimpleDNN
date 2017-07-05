@@ -35,37 +35,6 @@ class EmbeddingsOptimizer(
   private val embeddingsErrorsMap = mutableMapOf<Int, EmbeddingsErrors>()
 
   /**
-   * Accumulate errors of the embeddings at [embeddingIndex].
-   *
-   * @param embeddingIndex index of the embedding on which to accumulate the [errors]
-   * @param errors errors to accumulate
-   */
-  fun accumulateErrors(embeddingIndex: Int, errors: DenseNDArray) {
-
-    val embeddingsErrors: EmbeddingsErrors? = this.embeddingsErrorsMap[embeddingIndex]
-
-    if (embeddingsErrors == null){
-      this.embeddingsErrorsMap[embeddingIndex] = EmbeddingsErrors(errors = errors.copy(), count = 1)
-    } else {
-      embeddingsErrors.errors.assignSum(errors)
-      embeddingsErrors.count += 1
-    }
-  }
-
-  /**
-   * Update the embeddings.
-   */
-  override fun update() {
-
-    for ((embeddingIndex, embeddingsErrors) in this.embeddingsErrorsMap) {
-      embeddingsErrors.errors.assignDiv(embeddingsErrors.count.toDouble()) // average errors
-      this.updateMethod.update(this.embeddingsContainer.lookupTable[embeddingIndex].array, embeddingsErrors.errors)
-    }
-
-    this.embeddingsErrorsMap.clear()
-  }
-
-  /**
    * Method to call every new epoch.
    * In turn it calls the same method into the `updateMethod`.
    */
@@ -92,6 +61,37 @@ class EmbeddingsOptimizer(
   override fun newExample() {
     if (this.updateMethod is ExampleScheduling) {
       this.updateMethod.newExample()
+    }
+  }
+
+  /**
+   * Update the embeddings.
+   */
+  override fun update() {
+
+    for ((embeddingIndex, embeddingsErrors) in this.embeddingsErrorsMap) {
+      embeddingsErrors.errors.assignDiv(embeddingsErrors.count.toDouble()) // average errors
+      this.updateMethod.update(this.embeddingsContainer.lookupTable[embeddingIndex].array, embeddingsErrors.errors)
+    }
+
+    this.embeddingsErrorsMap.clear()
+  }
+
+  /**
+   * Accumulate errors of the embeddings at [embeddingIndex].
+   *
+   * @param embeddingIndex index of the embedding on which to accumulate the [errors]
+   * @param errors errors to accumulate
+   */
+  fun accumulateErrors(embeddingIndex: Int, errors: DenseNDArray) {
+
+    val embeddingsErrors: EmbeddingsErrors? = this.embeddingsErrorsMap[embeddingIndex]
+
+    if (embeddingsErrors == null){
+      this.embeddingsErrorsMap[embeddingIndex] = EmbeddingsErrors(errors = errors.copy(), count = 1)
+    } else {
+      embeddingsErrors.errors.assignSum(errors)
+      embeddingsErrors.count += 1
     }
   }
 }

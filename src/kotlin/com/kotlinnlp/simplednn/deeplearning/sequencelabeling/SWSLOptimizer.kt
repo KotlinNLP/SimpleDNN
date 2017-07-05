@@ -43,24 +43,6 @@ class SWSLOptimizer(
     updateMethod = AdaGradMethod(learningRate = 0.1))
 
   /**
-   * Update the params (network params and labels embeddings) using the accumulated errors.
-   * After the update the errors are cleared.
-   */
-  override fun update(): Unit {
-    this.classifierOptimizer.update()
-    this.labelEmbeddingsOptimizer.update()
-  }
-
-  /**
-   * Accumulate the network params errors
-   *
-   * @param errors the params errors to accumulate
-   */
-  fun accumulateErrors(errors: NetworkParameters) {
-    this.classifierOptimizer.accumulate(errors)
-  }
-
-  /**
    * Accumulate the embeddings errors
    *
    * @param embeddingIndex the index of an embedding
@@ -92,5 +74,23 @@ class SWSLOptimizer(
   override fun newExample() {
     this.classifierOptimizer.newExample()
     this.labelEmbeddingsOptimizer.newExample()
+  }
+
+  /**
+   * Update the params (network params and labels embeddings) using the accumulated errors.
+   * After the update the errors are cleared.
+   */
+  override fun update(): Unit {
+    this.classifierOptimizer.update()
+    this.labelEmbeddingsOptimizer.update()
+  }
+
+  /**
+   * Accumulate the network params errors
+   *
+   * @param errors the params errors to accumulate
+   */
+  fun accumulateErrors(errors: NetworkParameters) {
+    this.classifierOptimizer.accumulate(errors)
   }
 }
