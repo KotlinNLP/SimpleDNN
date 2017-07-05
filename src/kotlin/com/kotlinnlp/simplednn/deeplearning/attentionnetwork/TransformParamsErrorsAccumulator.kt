@@ -10,13 +10,12 @@ package com.kotlinnlp.simplednn.deeplearning.attentionnetwork
 import com.kotlinnlp.simplednn.core.layers.LayerParametersFactory
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * The accumulator of the errors of the attention-transform-layer parameters.
  */
-class TransformParamsErrorsAccumulator<InputNDArrayType: NDArray<InputNDArrayType>>(
-  val network: AttentionNetwork<InputNDArrayType>
+class TransformParamsErrorsAccumulator(
+  val network: AttentionNetwork<*>
 ) {
 
   /**
