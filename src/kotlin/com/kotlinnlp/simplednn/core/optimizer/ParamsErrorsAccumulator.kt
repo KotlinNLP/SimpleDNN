@@ -17,43 +17,44 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 class ParamsErrorsAccumulator(val neuralNetwork: NeuralNetwork) {
 
   /**
-   *
+   * A counter of times when errors were accumulated.
    */
   var count = 0
     private set
 
   /**
-   *
+   * The structure in which to accumulate the errors of the network parameters.
    */
   private val paramsErrors: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
 
   /**
-   *
+   * A boolean indicating whether errors are accumulated.
    */
   private val isEmpty: Boolean get() = this.count == 0
 
   /**
-   *
+   * @return the errors of the network parameters
    */
   fun getParamsErrors() = if (this.isEmpty) this.neuralNetwork.parametersErrorsFactory() else this.paramsErrors
 
   /**
-   * Reset the avgLoss
+   * Reset the counter.
    */
   fun reset() {
     this.count = 0
   }
 
   /**
-   * Divide the accumulated gradients for the number of examples
+   * Divide the accumulated errors by the number of accumulations.
    */
   fun averageErrors() {
     this.paramsErrors.assignDiv(this.count)
   }
 
   /**
-   * Sum local errors to backwardParamsErrors
+   * Accumulate the [paramsErrors].
    *
+   * @param paramsErrors the network parameters errors to accumulate
    */
   fun accumulate(paramsErrors: NetworkParameters) {
 
