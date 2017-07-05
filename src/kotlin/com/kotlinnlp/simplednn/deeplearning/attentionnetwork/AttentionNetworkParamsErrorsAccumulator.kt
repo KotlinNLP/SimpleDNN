@@ -8,13 +8,12 @@
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork
 
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * The accumulator of the errors of the attention network parameters.
  */
-class AttentionNetworkParamsErrorsAccumulator<InputNDArrayType: NDArray<InputNDArrayType>>(
-  val network: AttentionNetwork<InputNDArrayType>
+class AttentionNetworkParamsErrorsAccumulator(
+  val network: AttentionNetwork<*>
 ) {
 
   /**
