@@ -23,18 +23,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
  * The Attention Network which classifies an input sequence using an Attention Layer and a Feedforward Layer as
  * transform layer.
  *
- * @property inputSize the size of each array of input
- * @property inputType the type of the input arrays
- * @property attentionSize the size of each attention array
  * @property model the parameters of the model of the network
+ * @property inputType the type of the input arrays
  * @property dropout the probability of dropout (default 0.0) when generating the attention arrays for the Attention
  *                   Layer. If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
 class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
-  val inputSize: Int,
-  val inputType: LayerType.Input,
-  val attentionSize: Int,
   val model: AttentionNetworkParameters,
+  val inputType: LayerType.Input,
   val dropout: Double = 0.0
 ) {
 
@@ -42,8 +38,8 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
    * The accumulator of errors of the transform layer parameters.
    */
   private val transformParamsErrorsAccumulator = TransformParamsErrorsAccumulator(
-    inputSize = this.inputSize,
-    attentionSize = this.attentionSize,
+    inputSize = this.model.inputSize,
+    attentionSize = this.model.attentionSize,
     sparseInput = this.inputType == LayerType.Input.SparseBinary)
 
   /**
@@ -108,14 +104,14 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     @Suppress("UNCHECKED_CAST")
     val inputArray = when (this.inputType) {
-      LayerType.Input.Dense -> AugmentedArray<DenseNDArray>(size = this.inputSize)
-      LayerType.Input.Sparse -> AugmentedArray<SparseNDArray>(size = this.inputSize)
-      LayerType.Input.SparseBinary -> AugmentedArray<SparseBinaryNDArray>(size = this.inputSize)
+      LayerType.Input.Dense -> AugmentedArray<DenseNDArray>(size = this.model.inputSize)
+      LayerType.Input.Sparse -> AugmentedArray<SparseNDArray>(size = this.model.inputSize)
+      LayerType.Input.SparseBinary -> AugmentedArray<SparseBinaryNDArray>(size = this.model.inputSize)
     } as AugmentedArray<InputNDArrayType>
 
     return LayerStructureFactory(
       inputArray = inputArray,
-      outputSize = this.attentionSize,
+      outputSize = this.model.attentionSize,
       params = this.model.transformParams,
       activationFunction = Tanh(),
       connectionType = LayerType.Connection.Feedforward,
