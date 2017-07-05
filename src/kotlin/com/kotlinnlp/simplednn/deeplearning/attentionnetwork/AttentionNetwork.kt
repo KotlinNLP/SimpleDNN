@@ -26,7 +26,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
  * @property inputSize the size of each array of input
  * @property inputType the type of the input arrays
  * @property attentionSize the size of each attention array
- * @property params the parameters of the model of the network
+ * @property model the parameters of the model of the network
  * @property dropout the probability of dropout (default 0.0) when generating the attention arrays for the Attention
  *                   Layer. If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
@@ -34,7 +34,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   val inputSize: Int,
   val inputType: LayerType.Input,
   val attentionSize: Int,
-  val params: AttentionNetworkParameters,
+  val model: AttentionNetworkParameters,
   val dropout: Double = 0.0
 ) {
 
@@ -113,7 +113,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
     return LayerStructureFactory(
       inputArray = inputArray,
       outputSize = this.attentionSize,
-      params = this.params.transformParams,
+      params = this.model.transformParams,
       activationFunction = Tanh(),
       connectionType = LayerType.Connection.Feedforward,
       dropout = this.dropout
@@ -132,7 +132,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
     this.attentionLayer = AttentionLayerStructure(
       inputSequence = inputSequence,
       attentionSequence = this.buildAttentionSequence(inputSequence = inputSequence, useDropout = useDropout),
-      params = this.params.attentionParams
+      params = this.model.attentionParams
     )
   }
 

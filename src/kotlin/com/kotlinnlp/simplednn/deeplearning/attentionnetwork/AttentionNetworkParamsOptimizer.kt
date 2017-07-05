@@ -95,10 +95,10 @@ class AttentionNetworkParamsOptimizer<InputNDArrayType: NDArray<InputNDArrayType
     val accumulatedErrors: AttentionNetworkParameters = this.paramsErrorsAccumulator.getParamsErrors()
 
     this.updateMethod.update(
-      array = this.attentionNetwork.params.attentionParams.contextVector,
+      array = this.attentionNetwork.model.attentionParams.contextVector,
       errors = accumulatedErrors.attentionParams.contextVector.values)
 
-    this.attentionNetwork.params.transformParams.zip(accumulatedErrors.transformParams).forEach { (params, errors) ->
+    this.attentionNetwork.model.transformParams.zip(accumulatedErrors.transformParams).forEach { (params, errors) ->
 
       val e = errors.values
 
