@@ -63,6 +63,8 @@ class TransformParamsErrorsAccumulator(
    * @param paramsErrors the attention-transform-layer parameters errors to accumulate
    */
   fun accumulate(paramsErrors: FeedforwardLayerParameters) {
+    require(paramsErrors.inputSize == this.inputSize)
+    require(paramsErrors.outputSize == this.attentionSize)
 
     if (this.isEmpty) {
       this.assignValues(paramsErrors)

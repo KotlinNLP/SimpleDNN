@@ -60,6 +60,8 @@ class AttentionNetworkParamsErrorsAccumulator(
    * @param paramsErrors the network parameters errors to accumulate
    */
   fun accumulate(paramsErrors: AttentionNetworkParameters) {
+    require(paramsErrors.inputSize == this.inputSize)
+    require(paramsErrors.attentionSize == this.attentionSize)
 
     if (this.isEmpty) {
       this.assignValues(paramsErrors)
