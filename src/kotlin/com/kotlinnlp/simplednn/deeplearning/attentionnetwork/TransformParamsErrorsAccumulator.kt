@@ -46,6 +46,13 @@ class TransformParamsErrorsAccumulator(
   fun getParamsErrors() = if (this.isEmpty) this.paramsErrorsFactory() else this.paramsErrors
 
   /**
+   * Reset the accumulated errors.
+   */
+  fun reset() {
+    this.count = 0
+  }
+
+  /**
    * Divide the accumulated errors by the number of accumulations.
    */
   fun averageErrors() {
