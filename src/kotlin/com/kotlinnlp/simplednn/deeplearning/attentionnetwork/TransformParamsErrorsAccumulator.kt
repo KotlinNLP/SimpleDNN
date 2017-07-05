@@ -13,9 +13,15 @@ import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameter
 
 /**
  * The accumulator of the errors of the attention-transform-layer parameters.
+ *
+ * @property inputSize the input size of the attention network
+ * @property attentionSize the attention size of the network
+ * @property sparseInput whether the input of the network is sparse
  */
 class TransformParamsErrorsAccumulator(
-  val network: AttentionNetwork<*>
+  val inputSize: Int,
+  val attentionSize: Int,
+  val sparseInput: Boolean
 ) {
 
   /**
@@ -73,10 +79,10 @@ class TransformParamsErrorsAccumulator(
   private fun paramsErrorsFactory(): FeedforwardLayerParameters {
 
     return LayerParametersFactory(
-      inputSize = this.network.inputSize,
-      outputSize = this.network.attentionSize,
+      inputSize = this.inputSize,
+      outputSize = this.attentionSize,
       connectionType = LayerType.Connection.Feedforward,
-      sparseInput = this.network.inputType == LayerType.Input.SparseBinary
+      sparseInput = this.sparseInput
     ) as FeedforwardLayerParameters
   }
 

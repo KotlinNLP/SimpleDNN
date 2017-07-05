@@ -41,7 +41,10 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * The accumulator of errors of the transform layer parameters.
    */
-  private val transformParamsErrorsAccumulator = TransformParamsErrorsAccumulator(network = this)
+  private val transformParamsErrorsAccumulator = TransformParamsErrorsAccumulator(
+    inputSize = this.inputSize,
+    attentionSize = this.attentionSize,
+    sparseInput = this.inputType == LayerType.Input.SparseBinary)
 
   /**
    * The attention transform layer which creates an attention array from each array of an input sequence.
