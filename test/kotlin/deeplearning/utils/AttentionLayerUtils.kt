@@ -70,7 +70,7 @@ object AttentionLayerUtils {
   /**
    *
    */
-  private fun buildTransformLayer(): FeedforwardLayerStructure<DenseNDArray> {
+  fun buildTransformLayerParams1(): FeedforwardLayerParameters {
 
     val params = FeedforwardLayerParameters(inputSize = 4, outputSize = 2)
 
@@ -83,10 +83,37 @@ object AttentionLayerUtils {
       doubleArrayOf(0.3, -0.4)
     ))
 
+    return params
+  }
+
+  /**
+   *
+   */
+  fun buildTransformLayerParams2(): FeedforwardLayerParameters {
+
+    val params = FeedforwardLayerParameters(inputSize = 4, outputSize = 2)
+
+    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+      doubleArrayOf(0.7, -0.8, 0.1, -0.6),
+      doubleArrayOf(0.8, 0.6, -0.9, -0.2)
+    )))
+
+    params.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(
+      doubleArrayOf(-0.9, 0.1)
+    ))
+
+    return params
+  }
+
+  /**
+   *
+   */
+  private fun buildTransformLayer(): FeedforwardLayerStructure<DenseNDArray> {
+
     return LayerStructureFactory(
       inputArray = AugmentedArray<DenseNDArray>(size = 4),
       outputSize = 2,
-      params = params,
+      params = this.buildTransformLayerParams1(),
       activationFunction = Tanh(),
       connectionType = LayerType.Connection.Feedforward
     ) as FeedforwardLayerStructure
