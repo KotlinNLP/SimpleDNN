@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.deeplearning.attentionnetwork
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
@@ -20,10 +19,10 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 /**
  * The optimizer of the parameters of the [AttentionNetwork]
  *
- * @param attentionNetwork the Attention Network to optimize
+ * @param network the Attention Network to optimize
  */
-class AttentionNetworkParamsOptimizer<InputNDArrayType: NDArray<InputNDArrayType>>(
-  val attentionNetwork: AttentionNetwork<InputNDArrayType>,
+class AttentionNetworkParamsOptimizer(
+  val network: AttentionNetwork<*>,
   val updateMethod: UpdateMethod,
   val minLossCountToUpdate: Int = 1
 ) : Optimizer {
@@ -31,7 +30,7 @@ class AttentionNetworkParamsOptimizer<InputNDArrayType: NDArray<InputNDArrayType
   /**
    * The accumulator of errors of the network parameters.
    */
-  private val paramsErrorsAccumulator = AttentionNetworkParamsErrorsAccumulator(this.attentionNetwork)
+  private val paramsErrorsAccumulator = AttentionNetworkParamsErrorsAccumulator(this.network)
 
   /**
    * Calculate the errors average and update the params.
@@ -95,10 +94,10 @@ class AttentionNetworkParamsOptimizer<InputNDArrayType: NDArray<InputNDArrayType
     val accumulatedErrors: AttentionNetworkParameters = this.paramsErrorsAccumulator.getParamsErrors()
 
     this.updateMethod.update(
-      array = this.attentionNetwork.model.attentionParams.contextVector,
+      array = this.network.model.attentionParams.contextVector,
       errors = accumulatedErrors.attentionParams.contextVector.values)
 
-    this.attentionNetwork.model.transformParams.zip(accumulatedErrors.transformParams).forEach { (params, errors) ->
+    this.network.model.transformParams.zip(accumulatedErrors.transformParams).forEach { (params, errors) ->
 
       val e = errors.values
 
