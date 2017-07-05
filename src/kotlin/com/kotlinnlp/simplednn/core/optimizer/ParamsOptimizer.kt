@@ -99,7 +99,7 @@ class ParamsOptimizer(
       when (e) {
         is DenseNDArray -> this.updateMethod.update(array = params as UpdatableDenseArray, errors = e)
         is SparseNDArray -> this.updateMethod.update(array = params as UpdatableDenseArray, errors = e)
-        else -> throw RuntimeException("Invalide errors type")
+        else -> throw RuntimeException("Invalid errors type")
       }
     }
   }
