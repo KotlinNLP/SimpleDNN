@@ -57,7 +57,6 @@ class AttentionNetworkParamsErrorsAccumulator(
       val countDouble = this.count.toDouble()
       this.paramsErrors.attentionParams.contextVector.values.assignDiv(countDouble)
       this.paramsErrors.transformParams.forEach { it.values.assignDiv(countDouble) }
-      this.count = 0
     }
   }
 

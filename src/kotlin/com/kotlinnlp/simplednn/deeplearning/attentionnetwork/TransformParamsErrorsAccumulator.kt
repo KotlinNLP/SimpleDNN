@@ -60,7 +60,6 @@ class TransformParamsErrorsAccumulator(
     if (this.count != 0) {
       val countDouble = this.count.toDouble()
       this.paramsErrors.forEach { it.values.assignDiv(countDouble) }
-      this.count = 0
     }
   }
 
