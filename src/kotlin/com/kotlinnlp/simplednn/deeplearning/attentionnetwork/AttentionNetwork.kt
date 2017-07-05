@@ -204,6 +204,8 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     val accumulatedErrors: FeedforwardLayerParameters = this.transformParamsErrorsAccumulator.getParamsErrors()
     paramsErrors.zip(accumulatedErrors).forEach { (a, b) -> a.values.assignValues(b.values) }
+
+    this.transformParamsErrorsAccumulator.reset()
   }
 
   /**

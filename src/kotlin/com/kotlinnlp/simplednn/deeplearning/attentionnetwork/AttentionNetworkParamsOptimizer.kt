@@ -44,6 +44,7 @@ class AttentionNetworkParamsOptimizer(
 
     this.paramsErrorsAccumulator.averageErrors()
     this.updateParams()
+    this.paramsErrorsAccumulator.reset()
   }
 
   /**
