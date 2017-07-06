@@ -27,7 +27,7 @@ class AttentionLayerParametersSpec : Spek({
 
     context("initialization") {
 
-      val params = AttentionLayerUtils.buildParams()
+      val params = AttentionLayerUtils.buildAttentionParams()
       val randomGenerator = mock<RandomGenerator>()
 
       var i: Double = 0.0

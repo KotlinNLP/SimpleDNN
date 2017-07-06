@@ -27,7 +27,7 @@ class AttentionLayerOptimizerSpec : Spek({
 
     on("accumulation") {
 
-      val params = AttentionLayerUtils.buildParams()
+      val params = AttentionLayerUtils.buildAttentionParams()
       val optimizer = AttentionLayerOptimizer(
         params = params,
         updateMethod = LearningRateMethod(learningRate = 0.1))

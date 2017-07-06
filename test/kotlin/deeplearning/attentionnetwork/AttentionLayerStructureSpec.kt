@@ -32,7 +32,7 @@ class AttentionLayerStructureSpec : Spek({
 
       val inputSequence = AttentionLayerUtils.buildInputSequence()
       val attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence)
-      val params = AttentionLayerUtils.buildParams()
+      val params = AttentionLayerUtils.buildAttentionParams()
 
       it("should raise an Exception with an empty input sequence") {
         assertFails {
@@ -73,7 +73,7 @@ class AttentionLayerStructureSpec : Spek({
       val structure = AttentionLayerStructure(
         inputSequence = inputSequence,
         attentionSequence = attentionSequence,
-        params = AttentionLayerUtils.buildParams())
+        params = AttentionLayerUtils.buildAttentionParams())
 
       it("should initialize the attention matrix correctly") {
         assertTrue {
@@ -121,7 +121,7 @@ class AttentionLayerStructureSpec : Spek({
       val structure = AttentionLayerStructure(
         inputSequence = inputSequence,
         attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence),
-        params = AttentionLayerUtils.buildParams()
+        params = AttentionLayerUtils.buildAttentionParams()
       )
 
       structure.forward()
@@ -149,7 +149,7 @@ class AttentionLayerStructureSpec : Spek({
       val structure = AttentionLayerStructure(
         inputSequence = inputSequence,
         attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence),
-        params = AttentionLayerUtils.buildParams()
+        params = AttentionLayerUtils.buildAttentionParams()
       )
 
       structure.forward()
