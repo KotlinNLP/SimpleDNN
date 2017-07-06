@@ -78,7 +78,10 @@ class AttentionNetworkParamsErrorsAccumulatorSpec : Spek({
 
       it("should match the expected accumulated context vector errors") {
         assertTrue {
-          contextVectorErrors.equals(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, -0.2)), tolerance = 1.0e-06)
+          contextVectorErrors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.1)),
+            tolerance = 1.0e-06
+          )
         }
       }
 
@@ -132,7 +135,10 @@ class AttentionNetworkParamsErrorsAccumulatorSpec : Spek({
 
       it("should match the expected average of the context vector errors") {
         assertTrue {
-          contextVectorErrors.equals(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.05, -0.1)), tolerance = 1.0e-06)
+          contextVectorErrors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, -0.05)),
+            tolerance = 1.0e-06
+          )
         }
       }
 

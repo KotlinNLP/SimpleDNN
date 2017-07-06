@@ -66,7 +66,10 @@ class AttentionNetworkParamsOptimizerSpec : Spek({
 
       it("should match the expected updated context vector") {
         assertTrue {
-          contextVector.equals(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.195, -0.59)), tolerance = 1.0e-06)
+          contextVector.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.28, -0.495)),
+            tolerance = 1.0e-06
+          )
         }
       }
 
