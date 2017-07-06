@@ -96,6 +96,17 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   }
 
   /**
+   * @return the errors of the arrays of input.
+   */
+  fun getInputErrors(): Array<DenseNDArray> {
+
+    return Array(
+      size = this.attentionLayer.inputSequence.size,
+      init = { i -> this.attentionLayer.inputSequence[i].errors }
+    )
+  }
+
+  /**
    * The factory of the transform layer.
    *
    * @return a new FeedforwardLayerStructure
