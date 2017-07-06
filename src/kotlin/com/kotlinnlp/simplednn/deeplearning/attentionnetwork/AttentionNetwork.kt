@@ -190,9 +190,9 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
     val attentionErrors: Array<DenseNDArray> = this.attentionLayer.getAttentionErrors()
 
     // Accumulate errors into the accumulator
-    for (i in 0 until this.attentionLayer.inputSequence.size) {
-      this.transformLayers[i].setErrors(attentionErrors[i])
-      this.transformLayers[i].backward(paramsErrors = paramsErrors, propagateToInput = propagateToInput)
+    this.transformLayers.forEachIndexed { i, layer ->
+      layer.setErrors(attentionErrors[i].assignProd(layer.outputArray.calculateActivationDeriv()))
+      layer.backward(paramsErrors = paramsErrors, propagateToInput = propagateToInput)
       this.transformParamsErrorsAccumulator.accumulate(paramsErrors)
     }
 
