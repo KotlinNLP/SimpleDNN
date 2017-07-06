@@ -26,7 +26,7 @@ object AttentionLayerUtils {
   /**
    *
    */
-  fun buildParams(): AttentionLayerParameters {
+  fun buildAttentionParams(): AttentionLayerParameters {
 
     val params = AttentionLayerParameters(attentionSize = 2)
 
@@ -113,12 +113,11 @@ object AttentionLayerUtils {
 
     val params = AttentionNetworkParameters(inputSize = 4, attentionSize = 2, sparseInput = false)
     val transformParams = this.buildTransformLayerParams1()
+    val attentionParams = this.buildAttentionParams() // [-0.3, -0.5]
 
     params.transformParams.unit.weights.values.assignValues(transformParams.unit.weights.values)
     params.transformParams.unit.biases.values.assignValues(transformParams.unit.biases.values)
-    params.attentionParams.contextVector.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, -0.6))
-    )
+    params.attentionParams.contextVector.values.assignValues(attentionParams.contextVector.values)
 
     return params
   }
