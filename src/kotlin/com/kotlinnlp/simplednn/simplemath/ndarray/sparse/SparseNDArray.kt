@@ -479,7 +479,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override fun dot(a: SparseNDArray): SparseNDArray {
+  override fun dot(a: NDArray<*>): SparseNDArray {
     TODO("not implemented")
   }
 

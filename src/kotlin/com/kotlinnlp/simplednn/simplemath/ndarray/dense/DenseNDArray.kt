@@ -374,13 +374,6 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
-   *
-   */
-  override fun dot(a: DenseNDArray): DenseNDArray {
-    return DenseNDArray(this.storage.mmul(a.storage))
-  }
-
-  /**
    * Dot product between this [DenseNDArray] and a [DenseNDArray] masked by [mask]
    *
    * @param a the [DenseNDArray] by which is calculated the dot product
@@ -390,6 +383,56 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   override fun dot(a: DenseNDArray, mask: NDArrayMask): SparseNDArray {
     TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun dot(a: NDArray<*>): DenseNDArray {
+
+    return when(a) {
+      is DenseNDArray -> this.dot(a)
+      is SparseNDArray -> TODO("not implemented")
+      is SparseBinaryNDArray -> this.dot(a)
+      else -> throw RuntimeException("Invalid NDArray type")
+    }
+  }
+
+  /**
+   *
+   */
+  private fun dot(a: DenseNDArray): DenseNDArray {
+    return DenseNDArray(this.storage.mmul(a.storage))
+  }
+
+  /**
+   *
+   */
+  private fun dot(a: SparseBinaryNDArray): DenseNDArray {
+    require(this.columns == a.rows)
+
+    val res = DenseNDArrayFactory.zeros(shape = Shape(this.rows, a.columns))
+
+    if (a.rows == 1) {
+      // Column vector (dot) row vector
+      for (j in a.activeIndicesByColumn.keys) {
+        for (i in 0 until this.rows) {
+          res.storage.put(i, j, this[i])
+        }
+      }
+
+    } else if (a.columns == 1) {
+      // n-dim array (dot) column vector
+      for (i in 0 until this.rows) {
+        res.storage.put(i, a.activeIndicesByRow.keys.sumByDouble { this[i, it] })
+      }
+
+    } else {
+      // n-dim array (dot) n-dim array
+      TODO("not implemented")
+    }
+
+    return res
   }
 
   /**
