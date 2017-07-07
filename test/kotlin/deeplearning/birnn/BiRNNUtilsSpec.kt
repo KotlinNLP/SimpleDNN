@@ -1,9 +1,11 @@
-package deeplearning/* Copyright 2016-present The KotlinNLP Authors. All Rights Reserved.
+/* Copyright 2016-present The KotlinNLP Authors. All Rights Reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
+
+package deeplearning.birnn
 
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNUtils
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -19,7 +21,7 @@ import kotlin.test.assertEquals
 /**
  *
  */
-class BiRNNUtilsSpec: Spek({
+class BiRNNUtilsSpec : Spek({
 
   describe("a BiRNNUtils") {
 
