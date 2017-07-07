@@ -76,9 +76,9 @@ class BiRNNOptimizer(
    * Update the params using the accumulated errors and reset the errors
    */
   override fun update(): Unit {
-    this.outputNetwork.update()
     this.leftToRightOptimizer.update()
     this.rightToLeftOptimizer.update()
+    this.outputNetwork.update()
   }
 
   /**

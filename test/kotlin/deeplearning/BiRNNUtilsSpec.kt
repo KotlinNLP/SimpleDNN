@@ -1,4 +1,4 @@
-/* Copyright 2016-present The KotlinNLP Authors. All Rights Reserved.
+package deeplearning/* Copyright 2016-present The KotlinNLP Authors. All Rights Reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -21,7 +21,7 @@ import kotlin.test.assertEquals
  */
 class BiRNNUtilsSpec: Spek({
 
-  describe("a BiRNNUtilsSpec") {
+  describe("a BiRNNUtils") {
 
     val array1 = arrayOf(
       DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7)),
@@ -63,7 +63,6 @@ class BiRNNUtilsSpec: Spek({
       it("should return the pre-calculated values") {
         assertEquals(true, Arrays.equals(expectedResult, result))
       }
-
     }
 
     on("sumBidirectionalErrors"){
@@ -91,10 +90,9 @@ class BiRNNUtilsSpec: Spek({
       it("should return the pre-calculated values") {
         assertEquals(true, Arrays.equals(expectedResult, result))
       }
-
     }
 
-    on("splitBidirectionalErrors"){
+    on("splitErrors"){
 
       val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7, 0.1, -0.6, -1.0, -0.1, -0.4))
 
@@ -107,7 +105,6 @@ class BiRNNUtilsSpec: Spek({
         assertEquals(true, expectedResult1.equals(result1))
         assertEquals(true, expectedResult2.equals(result2))
       }
-
     }
 
     on("splitErrorsSequence"){
@@ -125,9 +122,6 @@ class BiRNNUtilsSpec: Spek({
         assertEquals(true, Arrays.equals(array1, result1))
         assertEquals(true, Arrays.equals(array2, result2))
       }
-
     }
-
   }
-
 })

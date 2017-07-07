@@ -24,34 +24,31 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * This implementation support a sequence encoding at time.
  *
  * @property network the [BiRNN] of this encoder
- * @property optimizer the Optimizer associated to this BiRNN (can be null)
  */
-class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
-  private val network: BiRNN,
-  private val optimizer: BiRNNOptimizer?) {
+class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val network: BiRNN) {
 
   /**
-   * The [RecurrentNeuralProcessor] to encode the sequence left-to-right
+   * The [RecurrentNeuralProcessor] which encodes the sequence left-to-right.
    */
   private val leftToRightProcessor = RecurrentNeuralProcessor<InputNDArrayType>(this.network.leftToRightNetwork)
 
   /**
-   * The [RecurrentNeuralProcessor] to encode the sequence right-to-left
+   * The [RecurrentNeuralProcessor] which encodes the sequence right-to-left.
    */
   private val rightToLeftProcessor = RecurrentNeuralProcessor<InputNDArrayType>(this.network.rightToLeftNetwork)
 
   /**
-   * The [FeedforwardNeuralProcessor] to take two RNN vectors and returning a single d-dimensional vector
+   * The [FeedforwardNeuralProcessor] which merges the outputs of the input RNNs into a single vector.
    */
   private val outputProcessorList = ArrayList<FeedforwardNeuralProcessor<DenseNDArray>>()
 
   /**
-   * Contains the errors accumulated from the outputProcessorList during the encoding process
+   * Contains the errors accumulated from the outputProcessorList during the encoding process.
    */
   private val outputErrorsAccumulator = ParamsErrorsAccumulator(this.network.outputNetwork)
 
   /**
-   * Encode the [sequence]
+   * Encode the [sequence].
    *
    * @param sequence the sequence to encode
    *
@@ -63,40 +60,34 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     val (leftToRightOut, rightToLeftOut) = this.biEncoding(sequence)
 
-    return this.feedForward(BiRNNUtils.concatenate(leftToRightOut, rightToLeftOut))
+    return this.forwardOutput(BiRNNUtils.concatenate(leftToRightOut, rightToLeftOut))
   }
 
   /**
    * Propagate the errors of the entire sequence.
-   * Accumulate the the params errors on the optimizer (required).
+   * Accumulate the errors of the parameters into the optimizer.
    *
    * @param outputErrorsSequence the errors to propagate
-   * @params propagateToInput whether to propagate the output errors to the input or not
+   * @param propagateToInput whether to propagate the output errors to the input or not
+   *
+   * @return the errors of the parameters of the [network]
    */
-  fun propagateErrors(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean) {
-
-    require(this.optimizer != null){
-      "Impossible to propagate errors without an optimizer"
-    }
+  fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean): BiRNNParameters {
 
     require(outputErrorsSequence.size == outputProcessorList.size) {
       "Number of errors (%d) does not reflect the number of processed item (%s)".format(
         outputErrorsSequence.size, outputProcessorList.size)
     }
 
-    this.propagateErrorsOnRNNs(
-      outputErrorsSequence = this.propagateErrorsOnOutput(outputErrorsSequence),
+    this.RNNsBackward(
+      outputErrorsSequence = this.outputBackward(outputErrorsSequence),
       propagateToInput = propagateToInput)
 
-    this.optimizer!!.accumulate(this.getParamsErrors())
+    return this.getParamsErrors()
   }
 
   /**
-   * Return the errors of the sequence.
-   *
-   * The errors of the two recurrent networks are combined by summation.
-   *
-   * @return the errors of the sequence
+   * @return the errors of the input sequence (the errors of the two RNNs are combined by summation)
    */
   fun getInputSequenceErrors(): Array<DenseNDArray> {
     return BiRNNUtils.sumBidirectionalErrors(
@@ -116,11 +107,11 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Given a [sequence] return the encoded left-to-right and right-to-left representation
+   * Given a [sequence] return the encoded left-to-right and right-to-left representation.
    *
    * @param sequence the sequence to encode
    *
-   * @return the encoded sequence of the form Pair<leftToRightOut, rightToLeftOut>
+   * @return a Pair with two arrays containing the outputs of the two RNNs
    */
   private fun biEncoding(sequence: Array<InputNDArrayType>):
     Pair<Array<DenseNDArray>, Array<DenseNDArray>> {
@@ -144,25 +135,25 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Return the results of the feed-forward output processor on the entire [sequence]
+   * Forward the results of the input RNNs within the feed-forward output processor.
    *
    * @param sequence the sequence to forward
    *
-   * @return the results of the forward
+   * @return an array containing the forwarded sequence
    */
-  private fun feedForward(sequence: Array<DenseNDArray>): Array<DenseNDArray> =
+  private fun forwardOutput(sequence: Array<DenseNDArray>): Array<DenseNDArray> =
     Array(size = sequence.size, init = {
       this.addNewOutputProcessor().forward(sequence[it])
     })
 
   /**
-   * Propagate the errors on the output processor and return its input errors.
+   * Execute the backward of the output processor and return its input errors.
    *
    * @param outputErrorsSequence the errors to propagate
    *
-   * @return the errors to propagate on the two recurrent networks
+   * @return the errors to propagate to the two RNNs
    */
-  private fun propagateErrorsOnOutput(outputErrorsSequence: Array<DenseNDArray>): Array<DenseNDArray> {
+  private fun outputBackward(outputErrorsSequence: Array<DenseNDArray>): Array<DenseNDArray> {
 
     require(outputErrorsSequence.size == outputProcessorList.size) {
       "Number of errors (%d) does not reflect the length of the number of mlp processors (%d)".format(
@@ -180,12 +171,12 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Propagate the errors on the two recurrent networks
+   * Propagate the errors to the input RNNs.
    *
    * @param outputErrorsSequence the sequence errors to propagate
-   * @param propagateToInput whether to propagate the errors on the input
+   * @param propagateToInput whether to propagate the errors to the input
    */
-  private fun propagateErrorsOnRNNs(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean) {
+  private fun RNNsBackward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean) {
 
     val (leftToRightOutputErrors, rightToLeftOutputErrors) =
       BiRNNUtils.splitErrorsSequence(outputErrorsSequence)
