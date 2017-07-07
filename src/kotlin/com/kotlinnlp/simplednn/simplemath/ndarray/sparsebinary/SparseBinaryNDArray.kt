@@ -415,7 +415,7 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  override fun dot(a: NDArray<*>): SparseBinaryNDArray {
+  override fun dot(a: NDArray<*>): DenseNDArray {
     TODO("not implemented")
   }
 

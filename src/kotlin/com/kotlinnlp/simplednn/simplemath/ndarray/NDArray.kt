@@ -205,7 +205,7 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
-  fun dot(a: NDArray<*>): SelfType
+  fun dot(a: NDArray<*>): DenseNDArray
 
   /**
    * Dot product between this [NDArray] and a [DenseNDArray] masked by [mask]
