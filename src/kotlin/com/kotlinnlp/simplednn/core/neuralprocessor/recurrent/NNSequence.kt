@@ -51,36 +51,23 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
     get() = this.states.size - 1
 
   /**
-   * The structure of the last state of the sequence. It requires that the sequence is not empty.
-   */
-  val lastStructure: RecurrentNetworkStructure<InputNDArrayType>? = this.getStateStructure(this.lastIndex)
-
-  /**
-   * The contributions of the last state of the sequence. It requires that the sequence is not empty.
-   */
-  val lastContributions: NetworkParameters get() = this.getStateContributions(this.lastIndex)!!
-
-  /**
    * Get the structure of the state at the given [stateIndex].
    *
    * @param stateIndex the index of the sequence
    *
-   * @return the structure of the state at the given [stateIndex] or null if the [stateIndex] exceeds the length
+   * @return the structure of the state at the given [stateIndex]
    */
-  fun getStateStructure(stateIndex: Int): RecurrentNetworkStructure<InputNDArrayType>? {
-    return if (stateIndex in 0..this.lastIndex) this.states[stateIndex].structure else null
-  }
+  fun getStateStructure(stateIndex: Int): RecurrentNetworkStructure<InputNDArrayType>
+    = this.states[stateIndex].structure
 
   /**
    * Get the contributions of the state at the given [stateIndex].
    *
    * @param stateIndex the index of the sequence
    *
-   * @return the contributions of the state at the given [stateIndex] or null if the [stateIndex] exceeds the length
+   * @return the contributions of the state at the given [stateIndex]
    */
-  fun getStateContributions(stateIndex: Int): NetworkParameters? {
-    return if (stateIndex in 0..this.lastIndex) this.states[stateIndex].contributions else null
-  }
+  fun getStateContributions(stateIndex: Int): NetworkParameters = this.states[stateIndex].contributions!!
 
   /**
    * Add a new state to the sequence.
@@ -90,6 +77,7 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
    */
   fun add(structure: RecurrentNetworkStructure<InputNDArrayType>, saveContributions: Boolean) {
 
+    // TODO: set always contributions?? (structures are created only when it's needed)
     this.states.add(
       NNState(
         structure = structure,
