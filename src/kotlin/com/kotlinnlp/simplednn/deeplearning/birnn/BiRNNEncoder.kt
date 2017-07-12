@@ -160,7 +160,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
         outputErrorsSequence.size, outputProcessorList.size)
     }
 
-    return Array(size = outputErrorsSequence.size, init = {
+    val inputErrors = Array(size = outputErrorsSequence.size, init = {
 
       this.outputProcessorList[it].backward(outputErrors = outputErrorsSequence[it], propagateToInput = true)
 
@@ -168,6 +168,10 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
 
       this.outputProcessorList[it].getInputErrors()
     })
+
+    this.outputErrorsAccumulator.averageErrors()
+
+    return inputErrors
   }
 
   /**
