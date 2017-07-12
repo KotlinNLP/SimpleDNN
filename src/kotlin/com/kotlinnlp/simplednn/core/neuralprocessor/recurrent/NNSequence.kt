@@ -53,13 +53,12 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
   /**
    * The structure of the last state of the sequence. It requires that the sequence is not empty.
    */
-  val lastStructure: RecurrentNetworkStructure<InputNDArrayType>?
-    get() = if (this.states.isNotEmpty()) this.states.last().structure else null
+  val lastStructure: RecurrentNetworkStructure<InputNDArrayType>? = this.getStateStructure(this.lastIndex)
 
   /**
    * The contributions of the last state of the sequence. It requires that the sequence is not empty.
    */
-  val lastContributions: NetworkParameters get() = this.states.last().contributions!!
+  val lastContributions: NetworkParameters get() = this.getStateContributions(this.lastIndex)!!
 
   /**
    * Get the structure of the state at the given [stateIndex].
