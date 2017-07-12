@@ -51,18 +51,6 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
     get() = this.states.size - 1
 
   /**
-   * A Boolean indicating if the sequence is empty.
-   */
-  val isEmpty: Boolean
-    get() = this.states.isEmpty()
-
-  /**
-   * A Boolean indicating if the sequence is not empty.
-   */
-  val isNotEmpty: Boolean
-    get() = this.states.isNotEmpty()
-
-  /**
    * The structure of the last state of the sequence. It requires that the sequence is not empty.
    */
   val lastStructure: RecurrentNetworkStructure<InputNDArrayType>?
