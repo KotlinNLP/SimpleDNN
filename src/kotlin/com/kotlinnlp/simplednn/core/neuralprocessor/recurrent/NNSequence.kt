@@ -99,11 +99,10 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
   }
 
   /**
-   *
+   * Reset the sequence.
    */
   fun reset() {
     this.states.clear()
     this.paramsErrorsAccumulator.reset()
   }
-
 }
