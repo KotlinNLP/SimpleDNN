@@ -229,7 +229,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     val outputErrorsSequence = Array(
       size = this.sequence.length,
-      init = {i -> if (sequence.isLast(i)) outputErrors else this.zeroErrors})
+      init = { i -> if (i == sequence.lastIndex) outputErrors else this.zeroErrors })
 
     this.backward(outputErrorsSequence = outputErrorsSequence, propagateToInput = propagateToInput)
   }
