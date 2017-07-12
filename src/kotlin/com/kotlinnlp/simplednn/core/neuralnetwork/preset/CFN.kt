@@ -13,9 +13,9 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 
 /**
- *
+ * The Chaos-Free (Recurrent) Network factory.
  */
-object CFNNeuralNetwork {
+object CFN {
 
   operator fun invoke(inputSize: Int,
                       hiddenSize: Int,

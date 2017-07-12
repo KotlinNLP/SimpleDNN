@@ -10,7 +10,7 @@ package neuralnetwork.preset
 import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.neuralnetwork.preset.CFNNeuralNetwork
+import com.kotlinnlp.simplednn.core.neuralnetwork.preset.CFN
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -24,11 +24,11 @@ import kotlin.test.assertNull
  */
 class CFNSpec : Spek({
 
-  describe("a CFN Neural Netowork") {
+  describe("a CFN") {
 
     val hiddenActivation = ELU()
     val outputActivation = Softmax()
-    val network = CFNNeuralNetwork(
+    val network = CFN(
       inputSize = 3,
       hiddenSize = 5,
       hiddenActivation = hiddenActivation,

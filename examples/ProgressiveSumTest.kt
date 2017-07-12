@@ -13,11 +13,11 @@ import com.jsoniter.*
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.core.neuralnetwork.preset.CFNNeuralNetwork
 import com.kotlinnlp.simplednn.helpers.training.SequenceTrainingHelper
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
+import com.kotlinnlp.simplednn.core.neuralnetwork.preset.CFN
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.helpers.validation.SequenceValidationHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -134,7 +134,7 @@ object ProgressiveSumTest {
    */
   fun buildNetwork(): NeuralNetwork {
 
-    val nn = CFNNeuralNetwork(
+    val nn = CFN(
       inputSize = 1,
       hiddenSize = 100,
       hiddenActivation = Tanh(),
