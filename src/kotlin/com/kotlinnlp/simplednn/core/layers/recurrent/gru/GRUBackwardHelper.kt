@@ -175,7 +175,7 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gRec1: DenseNDArray = gr.T.dot(wrr)
     val gRec2: DenseNDArray = gp.T.dot(wpr)
     val gRec3: DenseNDArray = gc.T.dot(wcr).prod(r)
-    val gRec4: DenseNDArray = p.reverseSub(1.0).prod(gy).T
+    val gRec4: DenseNDArray = p.reverseSub(1.0).assignProd(gy).T
 
     return gRec1.assignSum(gRec2).assignSum(gRec3).assignSum(gRec4)
   }
