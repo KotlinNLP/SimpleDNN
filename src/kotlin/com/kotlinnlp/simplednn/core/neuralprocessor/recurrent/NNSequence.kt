@@ -74,17 +74,6 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
   val lastContributions: NetworkParameters get() = this.states.last().contributions!!
 
   /**
-   * Whether an index is the last of the sequence.
-   *
-   * @param index the index of the sequence
-   *
-   * @return a Boolean indicating if the given [index] is the last of the sequence
-   */
-  fun isLast(index: Int): Boolean {
-    return index == this.states.size - 1
-  }
-
-  /**
    * Get the structure of the state at the given [stateIndex].
    *
    * @param stateIndex the index of the sequence
