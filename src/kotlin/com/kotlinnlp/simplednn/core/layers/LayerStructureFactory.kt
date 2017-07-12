@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerStructure
+import com.kotlinnlp.simplednn.core.layers.recurrent.deltarnn.DeltaRNNLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerStructure
@@ -81,6 +82,15 @@ object LayerStructureFactory {
       )
 
       LayerType.Connection.RAN -> RANLayerStructure(
+        inputArray = inputArray,
+        outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
+        params = params,
+        activationFunction = activationFunction,
+        dropout = dropout,
+        layerContextWindow = contextWindow!!
+      )
+
+      LayerType.Connection.DeltaRNN -> DeltaRNNLayerStructure(
         inputArray = inputArray,
         outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
         params = params,

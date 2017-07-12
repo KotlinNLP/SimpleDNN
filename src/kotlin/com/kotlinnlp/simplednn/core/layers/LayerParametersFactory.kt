@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerParameters
+import com.kotlinnlp.simplednn.core.layers.recurrent.deltarnn.DeltaRNNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerParameters
@@ -53,6 +54,11 @@ object LayerParametersFactory {
         sparseInput = sparseInput)
 
       LayerType.Connection.RAN -> RANLayerParameters(
+        inputSize = inputSize,
+        outputSize = outputSize,
+        sparseInput = sparseInput)
+
+      LayerType.Connection.DeltaRNN -> DeltaRNNLayerParameters(
         inputSize = inputSize,
         outputSize = outputSize,
         sparseInput = sparseInput)
