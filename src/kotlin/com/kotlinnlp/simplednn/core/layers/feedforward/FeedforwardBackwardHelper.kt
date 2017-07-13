@@ -37,6 +37,11 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.paramsErrors = paramsErrors as FeedforwardLayerParameters
 
+    if (this.layer.outputArray.hasActivation) { // gy *= yDeriv
+      val gy: DenseNDArray = this.layer.outputArray.errors
+      gy.assignProd(this.layer.outputArray.calculateActivationDeriv())
+    }
+
     this.assignParamsGradients()
 
     if (propagateToInput) {
@@ -56,16 +61,12 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * gx = (gy (dot) w) * xDeriv
+   * gx = gy (dot) w
    */
   private fun assignLayerGradients() { this.layer.params as FeedforwardLayerParameters
 
     val gx: DenseNDArray = this.layer.inputArray.errors
 
     gx.assignValues(this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit))
-
-    if (this.layer.inputArray.hasActivation && gx is DenseNDArray) {
-      gx.assignProd(this.layer.inputArray.calculateActivationDeriv())
-    }
   }
 }

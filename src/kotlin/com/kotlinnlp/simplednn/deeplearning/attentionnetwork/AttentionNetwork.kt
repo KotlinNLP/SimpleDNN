@@ -202,7 +202,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     // Accumulate errors into the accumulator
     this.transformLayers.forEachIndexed { i, layer ->
-      layer.setErrors(attentionErrors[i].assignProd(layer.outputArray.calculateActivationDeriv()))
+      layer.setErrors(attentionErrors[i])
       layer.backward(paramsErrors = paramsErrors, propagateToInput = propagateToInput)
       this.transformParamsErrorsAccumulator.accumulate(paramsErrors)
     }
