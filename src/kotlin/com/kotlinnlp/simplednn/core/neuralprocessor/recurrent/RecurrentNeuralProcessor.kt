@@ -261,11 +261,11 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
         "reflect the length of the sequence (${this.sequence.length})"
     }
 
-    for ((i, state) in this.sequence.states.withIndex().reversed()) {
+    for (i in (0 .. this.lastStateIndex).reversed()) {
 
       this.curStateIndex = i // crucial to provide the right context
 
-      state.structure.backward(
+      this.sequence.getStateStructure(i).backward(
         outputErrors = outputErrorsSequence[i],
         paramsErrors = this.backwardParamsErrors,
         propagateToInput = propagateToInput)
