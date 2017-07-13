@@ -28,14 +28,34 @@ class ParamsErrorsAccumulator(val neuralNetwork: NeuralNetwork) {
   private val paramsErrors: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
 
   /**
-   * A boolean indicating whether errors are accumulated.
+   * A boolean indicating if some errors are accumulated.
    */
   private val isEmpty: Boolean get() = this.count == 0
 
   /**
-   * @return the errors of the network parameters
+   * A boolean indicating if no errors were accumulated.
    */
-  fun getParamsErrors() = if (this.isEmpty) this.neuralNetwork.parametersErrorsFactory() else this.paramsErrors
+  private val isNotEmpty: Boolean get() = this.count > 0
+
+  /**
+   * @param copy a Boolean indicating if the returned errors must be a copy or a reference
+   *
+   * @return the accumulated errors of the network parameters
+   */
+  fun getParamsErrors(copy: Boolean = true): NetworkParameters {
+    require(this.isNotEmpty) { "Cannot get params errors without accumulating before" }
+
+    val paramsError: NetworkParameters
+
+    return if (copy) {
+      paramsError = this.neuralNetwork.parametersErrorsFactory()
+      paramsError.assignValues(this.paramsErrors)
+      paramsError
+
+    } else {
+      this.paramsErrors
+    }
+  }
 
   /**
    * Reset the accumulated errors.
