@@ -93,22 +93,12 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
+   * @return the accumulated errors of the network parameters
    */
-  override fun getParamsErrors(copy: Boolean): NetworkParameters {
-
-    val paramsError: NetworkParameters
-
-    if (copy) {
-      paramsError = this.neuralNetwork.parametersErrorsFactory()
-      paramsError.assignValues(this.paramsErrorsAccumulator.getParamsErrors())
-
-    } else {
-      paramsError = this.paramsErrorsAccumulator.getParamsErrors()
-    }
-
-    return paramsError
-  }
+  override fun getParamsErrors(copy: Boolean): NetworkParameters
+    = this.paramsErrorsAccumulator.getParamsErrors(copy = copy)
 
   /**
    *
