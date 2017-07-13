@@ -87,7 +87,8 @@ class ParamsOptimizer(val neuralNetwork: NeuralNetwork, val updateMethod: Update
    */
   private fun updateParams() {
 
-    this.neuralNetwork.model.zip(this.paramsErrorsAccumulator.getParamsErrors()).forEach { (params, errors) ->
+    this.neuralNetwork.model.zip(this.paramsErrorsAccumulator.getParamsErrors(copy = false)).forEach {
+      (params, errors) ->
 
       val e = errors.values
 
