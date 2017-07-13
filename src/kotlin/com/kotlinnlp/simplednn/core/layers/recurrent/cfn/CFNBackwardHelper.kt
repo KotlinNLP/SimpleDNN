@@ -41,7 +41,9 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer() as? CFNLayerStructure
     val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer() as? CFNLayerStructure
 
-    this.addOutputRecurrentGradients(nextStateLayer)
+    if (nextStateLayer != null) {
+      this.addOutputRecurrentGradients(nextStateLayer)
+    }
 
     this.assignGatesGradients(prevStateLayer)
     this.assignParamsGradients(prevStateLayer?.outputArray)
@@ -128,14 +130,12 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun addOutputRecurrentGradients(nextStateLayer: CFNLayerStructure<*>?) {
+  private fun addOutputRecurrentGradients(nextStateLayer: CFNLayerStructure<*>) {
 
-    if (nextStateLayer != null) {
-      val gy: DenseNDArray = this.layer.outputArray.errors
-      val gyRec: DenseNDArray = this.getLayerRecurrentContribution(nextStateLayer)
+    val gy: DenseNDArray = this.layer.outputArray.errors
+    val gyRec: DenseNDArray = this.getLayerRecurrentContribution(nextStateLayer)
 
-      gy.assignSum(gyRec)
-    }
+    gy.assignSum(gyRec)
   }
 
   /**
