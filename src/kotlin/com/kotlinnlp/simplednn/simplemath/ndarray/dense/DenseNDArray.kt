@@ -172,6 +172,13 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   * @return a new [DenseNDArray] with the same shape of this, filled with ones.
+   */
+  fun onesLike(): DenseNDArray {
+    return DenseNDArray(DoubleMatrix.ones(this.shape.dim1, shape.dim2))
+  }
+
+  /**
    *
    */
   override fun copy(): DenseNDArray = DenseNDArray(this.storage.dup())
