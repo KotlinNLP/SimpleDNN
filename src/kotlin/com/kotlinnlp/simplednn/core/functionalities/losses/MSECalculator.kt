@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 open class MSECalculator : LossCalculator {
 
   /**
-   * Calculate the loss within an output and its gold.
+   * Calculate the loss between an output and its gold.
    *
    * @param output  current output layer
    * @param outputGold expected binary output
@@ -27,7 +27,7 @@ open class MSECalculator : LossCalculator {
   }
 
   /**
-   * Calculate the errors within an output and its gold.
+   * Calculate the errors between an output and its gold.
    *
    * @param output current output layer
    * @param outputGold expected binary output

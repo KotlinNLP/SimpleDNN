@@ -43,7 +43,7 @@ class AugmentedMSECalculator(val pi: Double = 0.1, val c: Double = 10.0) : LossC
   private val lossPartition: Double = 1.0 - pi
 
   /**
-   * Calculate the loss within an output and its gold.
+   * Calculate the loss between an output and its gold.
    *
    * @param output  current output layer
    * @param outputGold expected binary output
@@ -67,7 +67,7 @@ class AugmentedMSECalculator(val pi: Double = 0.1, val c: Double = 10.0) : LossC
   }
 
   /**
-   * Calculate the errors within an output and its gold.
+   * Calculate the errors between an output and its gold.
    *
    * @param output current output layer
    * @param outputGold expected binary output

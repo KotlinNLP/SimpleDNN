@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 interface LossCalculator {
 
   /**
-   * Calculate the loss within an output and its gold.
+   * Calculate the loss between an output and its gold.
    *
    * @param output  current output layer
    * @param outputGold expected binary output
@@ -26,7 +26,7 @@ interface LossCalculator {
   fun calculateLoss(output: DenseNDArray, outputGold: DenseNDArray): DenseNDArray
 
   /**
-   * Calculate the errors within an output and its gold.
+   * Calculate the errors between an output and its gold.
    *
    * @param output current output layer
    * @param outputGold expected binary output
