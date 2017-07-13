@@ -38,7 +38,7 @@ class SigmoidSpec : Spek({
       }
     }
 
-    on("df") {
+    on("dfOptimized") {
 
       val dfArray = activationFunction.dfOptimized(activatedArray)
       val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(
