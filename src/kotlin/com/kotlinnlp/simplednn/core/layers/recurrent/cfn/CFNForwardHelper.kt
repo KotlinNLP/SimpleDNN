@@ -81,7 +81,7 @@ class CFNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     c.assignDot(wc, x)
 
     if (prevStateLayer != null) { // recurrent contribution for input and forget gates
-      val yPrev = prevStateLayer.outputArray.values
+      val yPrev = prevStateLayer.outputArray.valuesNotActivated
       this.layer.inputGate.addRecurrentContribution(this.layer.params.inputGate, yPrev)
       this.layer.forgetGate.addRecurrentContribution(this.layer.params.forgetGate, yPrev)
     }
