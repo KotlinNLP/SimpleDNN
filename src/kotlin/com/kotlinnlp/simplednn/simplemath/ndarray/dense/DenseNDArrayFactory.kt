@@ -36,7 +36,7 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
    * @return a new DenseNDArray filled with zeros
    */
   override fun zeros(shape: Shape): DenseNDArray {
-    return emptyArray(shape)
+    return this.emptyArray(shape)
   }
 
   /**
@@ -49,7 +49,7 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
   override fun oneHotEncoder(length: Int, oneAt: Int): DenseNDArray {
     require(oneAt in 0 until length)
 
-    val array = emptyArray(Shape(length))
+    val array = this.emptyArray(Shape(length))
 
     array[oneAt] = 1.0
 
@@ -78,6 +78,15 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
     }
 
     return DenseNDArray(m)
+  }
+
+  /**
+   * @param shape shape
+   *
+   * @return a new DenseNDArray filled with ones
+   */
+  fun ones(shape: Shape): DenseNDArray {
+    return DenseNDArray(DoubleMatrix.ones(shape.dim1, shape.dim2))
   }
 
   /**
