@@ -129,6 +129,16 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * Perform the multiplication of the output array by the derivative of its activated values.
+   */
+  fun applyOutputActivationDeriv() {
+
+    if (this.outputArray.hasActivation) {
+      this.outputArray.errors.assignProd(this.outputArray.calculateActivationDeriv())
+    }
+  }
+
+  /**
    *
    */
   protected fun applyDropout() {
