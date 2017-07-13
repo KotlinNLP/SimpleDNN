@@ -11,7 +11,6 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.*
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType.Connection
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
-import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardNetworkStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -127,12 +126,9 @@ class FeedforwardNetworkStructureSpec : Spek({
         }
 
         val outputGold = FeedforwardLayerStructureUtils.getOutputGold3()
-        val errors = MSECalculator().calculateErrors(
-          output = structure.outputLayer.outputArray.values,
-          outputGold = outputGold)
 
         structure.backward(
-          outputErrors = errors,
+          outputErrors = structure.outputLayer.outputArray.values.sub(outputGold),
           paramsErrors = NetworkParameters(layersConfiguration),
           propagateToInput = true)
 
