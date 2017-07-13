@@ -256,7 +256,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean = false) {
 
-    require(outputErrorsSequence.size == this.lastStateIndex) {
+    require(outputErrorsSequence.size == (this.lastStateIndex + 1)) {
       "Number of errors (${outputErrorsSequence.size}) does not " +
         "reflect the length of the sequence (${this.sequence.length})"
     }
