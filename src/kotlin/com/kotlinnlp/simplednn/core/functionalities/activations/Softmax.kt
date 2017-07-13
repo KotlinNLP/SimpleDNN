@@ -71,7 +71,7 @@ class Softmax : ActivationFunction {
    *
    * @return a new NDArray containing the result
    */
-  override fun dfOptimized(fxArray: DenseNDArray): DenseNDArray = fxArray.copy()
+  override fun dfOptimized(fxArray: DenseNDArray): DenseNDArray = DenseNDArrayFactory.ones(fxArray.shape)
 
   /**
    * Assign to [out] the Softmax function derivative calculated in [fxArray].
@@ -80,6 +80,6 @@ class Softmax : ActivationFunction {
    * @param out the NDArray in which the result is written
    */
   override fun dfOptimized(fxArray: DenseNDArray, out: DenseNDArray) {
-    out.assignValues(fxArray)
+    out.ones()
   }
 }
