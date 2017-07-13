@@ -15,6 +15,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  *
@@ -39,18 +40,18 @@ class SoftmaxSpec : Spek({
       }
 
       it("should return the expected array") {
-        assertEquals(true, expectedArray.equals(activatedArray, tolerance = 1.0e-10))
+        assertTrue(expectedArray.equals(activatedArray, tolerance = 1.0e-10))
       }
     }
 
-    context("df") {
+    context("dfOptimized") {
 
       on("returning a new NDArray as output") {
 
         val dfArray = activationFunction.dfOptimized(activatedArray)
 
         it("should return the expected array") {
-          assertEquals(true, activatedArray.equals(dfArray, tolerance = 1.0e-08))
+          assertTrue(activatedArray.onesLike().equals(dfArray, tolerance = 1.0e-08))
         }
       }
 
@@ -60,7 +61,7 @@ class SoftmaxSpec : Spek({
         activationFunction.dfOptimized(activatedArray, outDfArray)
 
         it("should assign the expected values") {
-          assertEquals(true, activatedArray.equals(outDfArray, tolerance = 1.0e-08))
+          assertTrue(activatedArray.onesLike().equals(outDfArray, tolerance = 1.0e-08))
         }
       }
     }
