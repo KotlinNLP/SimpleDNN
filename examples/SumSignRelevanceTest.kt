@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
+import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.dataset.*
@@ -115,7 +115,7 @@ object SumSignRelevanceTest {
     val trainingHelper = SequenceWithFinalOutputTrainingHelper<DenseNDArray>(
       neuralProcessor = RecurrentNeuralProcessor(neuralNetwork),
       optimizer = optimizer,
-      lossCalculator = MSECalculator(),
+      lossCalculator = SoftmaxCrossEntropyCalculator(),
       verbose = true)
 
     val validationHelper = SequenceWithFinalOutputValidationHelper(

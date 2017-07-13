@@ -12,7 +12,6 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
-import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.helpers.training.FeedforwardTrainingHelper
@@ -24,6 +23,7 @@ import com.kotlinnlp.simplednn.helpers.validation.FeedforwardValidationHelper
 import com.jsoniter.*
 import Configuration
 import CorpusPaths
+import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import java.io.BufferedInputStream
@@ -163,7 +163,7 @@ object MNISTTest {
     val trainingHelper = FeedforwardTrainingHelper<DenseNDArray>(
       neuralProcessor = FeedforwardNeuralProcessor(neuralNetwork),
       optimizer = optimizer,
-      lossCalculator = MSECalculator(),
+      lossCalculator = SoftmaxCrossEntropyCalculator(),
       verbose = true)
 
     val validationHelper = FeedforwardValidationHelper<DenseNDArray>(

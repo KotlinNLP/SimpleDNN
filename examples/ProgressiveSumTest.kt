@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.L
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.jsoniter.*
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
+import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.helpers.training.SequenceTrainingHelper
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
@@ -176,7 +176,7 @@ object ProgressiveSumTest {
     val trainingHelper = SequenceTrainingHelper<DenseNDArray>(
       neuralProcessor = RecurrentNeuralProcessor(neuralNetwork),
       optimizer = optimizer,
-      lossCalculator = MSECalculator(),
+      lossCalculator = SoftmaxCrossEntropyCalculator(),
       verbose = true)
 
     val validationHelper = SequenceValidationHelper<DenseNDArray>(

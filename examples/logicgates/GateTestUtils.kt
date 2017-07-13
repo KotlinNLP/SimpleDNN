@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.helpers.training.FeedforwardTrainingHelper
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
-import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
+import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
@@ -111,7 +111,7 @@ object GateTestUtils {
     val trainingHelper = FeedforwardTrainingHelper(
       neuralProcessor = neuralProcessor,
       optimizer = optimizer,
-      lossCalculator = MSECalculator())
+      lossCalculator = SoftmaxCrossEntropyCalculator())
 
     val validationHelper =  FeedforwardValidationHelper(
         neuralProcessor = neuralProcessor,
