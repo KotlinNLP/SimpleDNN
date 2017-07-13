@@ -972,7 +972,23 @@ class DenseNDArraySpec : Spek({
           (0 until array.length).forEach { i -> assertEquals(0.0, array[i]) }
         }
       }
+    }
 
+    context("converting a DenseNDArray to ones") {
+
+      val array = DenseNDArrayFactory.arrayOf(arrayOf(
+        doubleArrayOf(0.1, 0.2, 0.3, 0.4),
+        doubleArrayOf(0.5, 0.6, 0.7, 0.8)
+      ))
+
+      on("ones() method call") {
+
+        array.ones()
+
+        it("should return an DenseNDArray filled with ones") {
+          (0 until array.length).forEach { i -> assertEquals(1.0, array[i]) }
+        }
+      }
     }
 
     context("values assignment") {
