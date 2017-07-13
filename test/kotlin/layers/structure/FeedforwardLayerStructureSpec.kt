@@ -196,14 +196,14 @@ class FeedforwardLayerStructureSpec : Spek({
               doubleArrayOf(-0.65089, -0.73226, -0.73226, 0.81362),
               doubleArrayOf(0.83952, 0.94446, 0.94446, -1.04940)
             )),
-            tolerance = 0.010))
+            tolerance = 1.0e-05))
         }
 
         it("should match the expected errors of the inputArray") {
 
           assertEquals(true, layer.inputArray.errors.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0126, -2.07296, 1.07476, -0.14158)),
-            tolerance = 0.010))
+            tolerance = 1.0e-05))
         }
       }
 
