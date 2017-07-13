@@ -157,6 +157,14 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   * Fill the array with ones.
+   */
+  fun ones(): DenseNDArray {
+    this.storage.fill(1.0)
+    return this
+  }
+
+  /**
    *
    */
   override fun zerosLike(): DenseNDArray {
