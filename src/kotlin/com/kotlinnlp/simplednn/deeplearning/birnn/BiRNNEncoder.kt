@@ -190,7 +190,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
       propagateToInput = propagateToInput)
 
     this.rightToLeftProcessor.backward(
-      outputErrorsSequence = rightToLeftOutputErrors,
+      outputErrorsSequence = rightToLeftOutputErrors.reversed().toTypedArray(),
       propagateToInput = propagateToInput)
   }
 
