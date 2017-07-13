@@ -957,6 +957,20 @@ class DenseNDArraySpec : Spek({
       }
     }
 
+    context("initialization through onesLike()") {
+
+      val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0)).onesLike()
+      val arrayOfOnes = array.onesLike()
+
+      it("should have the expected length") {
+        assertEquals(array.length, arrayOfOnes.length)
+      }
+
+      it("should have the expected values") {
+        assertEquals(true, DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 1.0, 1.0, 1.0)).equals(arrayOfOnes))
+      }
+    }
+
     context("converting a DenseNDArray to zeros") {
 
       val array = DenseNDArrayFactory.arrayOf(arrayOf(
