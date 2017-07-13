@@ -133,10 +133,6 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       .assignSum(gOutG.T.dot(wOutG))
       .assignSum(gForG.T.dot(wForG))
       .assignSum(gCand.T.dot(wCand))
-
-    if (this.layer.inputArray.hasActivation && gx is DenseNDArray) {
-      gx.assignProd(this.layer.inputArray.calculateActivationDeriv())
-    }
   }
 
   /**

@@ -41,6 +41,8 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer() as? RANLayerStructure
     val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer() as? RANLayerStructure
 
+    this.layer.applyOutputActivationDeriv() // must be applied BEFORE having added the recurrent contribution
+
     this.addOutputRecurrentGradients(nextStateLayer)
 
     this.assignGatesGradients(prevStateLayer)
@@ -119,10 +121,6 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gC: DenseNDArray = this.layer.candidate.errors
 
     gx.assignValues(gForG.T.dot(wForG)).assignSum(gC.T.dot(wC)).assignSum(gInG.T.dot(wInG))
-
-    if (this.layer.inputArray.hasActivation && gx is DenseNDArray) {
-      gx.assignProd(this.layer.inputArray.calculateActivationDeriv())
-    }
   }
 
   /**

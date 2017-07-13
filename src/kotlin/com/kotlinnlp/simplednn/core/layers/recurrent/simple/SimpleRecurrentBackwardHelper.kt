@@ -45,6 +45,8 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
       this.addLayerRecurrentGradients(nextStateLayer as SimpleRecurrentLayerStructure<*>)
     }
 
+    this.layer.applyOutputActivationDeriv() // must be applied AFTER having added the recurrent contribution
+
     this.assignParamsGradients(prevStateLayer?.outputArray)
 
     if (propagateToInput) {
@@ -66,37 +68,24 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
   }
 
   /**
-   * gx = (gb (dot) w) * xDeriv
+   * gx = gb (dot) w
    */
   private fun assignLayerGradients() { this.layer.params as SimpleRecurrentLayerParameters
 
     val gx: DenseNDArray = this.layer.inputArray.errors
 
-    // gx = gb (dot) w
     gx.assignValues(this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit))
-
-    // gx *= xDeriv
-    if (this.layer.inputArray.hasActivation && gx is DenseNDArray) {
-      gx.assignProd(this.layer.inputArray.calculateActivationDeriv())
-    }
   }
 
   /**
-   * gy += (gyNext (dot) wRec) * yDeriv
+   * gy += gyNext (dot) wRec
    */
   private fun addLayerRecurrentGradients(nextStateLayer: SimpleRecurrentLayerStructure<*>) {
+
     this.layer.params as SimpleRecurrentLayerParameters
 
     val gy: DenseNDArray = this.layer.outputArray.errors
-
-    // gRec = gyNext (dot) wRec
     val gRec: DenseNDArray = nextStateLayer.outputArray.getRecurrentErrors(parameters = this.layer.params.unit)
-
-    // gRec *= yDeriv
-    if (this.layer.outputArray.hasActivation) {
-      val yDeriv: DenseNDArray = this.layer.outputArray.calculateActivationDeriv()
-      gRec.assignProd(yDeriv)
-    }
 
     gy.assignSum(gRec)
   }

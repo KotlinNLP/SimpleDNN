@@ -37,10 +37,7 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.paramsErrors = paramsErrors as FeedforwardLayerParameters
 
-    if (this.layer.outputArray.hasActivation) { // gy *= yDeriv
-      val gy: DenseNDArray = this.layer.outputArray.errors
-      gy.assignProd(this.layer.outputArray.calculateActivationDeriv())
-    }
+    this.layer.applyOutputActivationDeriv()
 
     this.assignParamsGradients()
 

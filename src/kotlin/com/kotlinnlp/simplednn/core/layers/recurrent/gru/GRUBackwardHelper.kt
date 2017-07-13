@@ -128,10 +128,6 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gr: DenseNDArray = this.layer.resetGate.errors
 
     gx.assignValues(gp.T.dot(wp)).assignSum(gc.T.dot(wc)).assignSum(gr.T.dot(wr))
-
-    if (this.layer.inputArray.hasActivation && gx is DenseNDArray) {
-      gx.assignProd(this.layer.inputArray.calculateActivationDeriv())
-    }
   }
 
   /**

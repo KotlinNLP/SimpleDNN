@@ -120,10 +120,6 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gC: DenseNDArray = this.layer.candidate.errors
 
     gx.assignValues(gForG.T.dot(wForG)).assignSum(gC.T.dot(wC)).assignSum(gInG.T.dot(wInG))
-
-    if (this.layer.inputArray.hasActivation && gx is DenseNDArray) {
-      gx.assignProd(this.layer.inputArray.calculateActivationDeriv())
-    }
   }
 
   /**

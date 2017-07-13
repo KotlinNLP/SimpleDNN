@@ -45,6 +45,8 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       this.addOutputRecurrentGradients(nextStateLayer as DeltaRNNLayerStructure<*>)
     }
 
+    this.layer.applyOutputActivationDeriv() // must be applied AFTER having added the recurrent gradients
+
     this.assignArraysGradients(prevStateOutput)
     this.assignParamsGradients(prevStateOutput)
 
@@ -179,9 +181,5 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     gxTmp.assignProd(gc).assignSum(gp)
 
     gx.assignValues(gxTmp.T.dot(w))
-
-    if (this.layer.inputArray.hasActivation && gx is DenseNDArray) {
-      gx.assignProd(this.layer.inputArray.calculateActivationDeriv())
-    }
   }
 }
