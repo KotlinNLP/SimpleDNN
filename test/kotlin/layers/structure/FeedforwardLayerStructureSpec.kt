@@ -177,24 +177,24 @@ class FeedforwardLayerStructureSpec : Spek({
 
         it("should match the expected errors of the outputArray") {
           assertEquals(true, layer.outputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.39693, -1.29688, 0.4, 1.60137, -1.08775)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.33439, -0.47334, 0.4, 0.81362, -1.0494)),
             tolerance = 1.0e-05))
         }
 
         it("should match the expected errors of the biases") {
           assertEquals(true, paramsErrors.unit.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.39693, -1.29688, 0.4, 1.60137, -1.08775)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.33439, -0.47334, 0.4, 0.81362, -1.0494)),
             tolerance = 1.0e-05))
         }
 
         it("should match the expected errors of the weights") {
           assertEquals(true, (paramsErrors.unit.weights.values as DenseNDArray).equals(
             DenseNDArrayFactory.arrayOf(arrayOf(
-              doubleArrayOf(0.31754, 0.35724, 0.35724, -0.39693),
-              doubleArrayOf(1.0375, 1.16719, 1.16719, -1.29688),
+              doubleArrayOf(0.26751, 0.30095, 0.30095, -0.33439),
+              doubleArrayOf(0.37867, 0.42601, 0.42601, -0.47334),
               doubleArrayOf(-0.32, -0.36, -0.36, 0.4),
-              doubleArrayOf(-1.2811, -1.44124, -1.44124, 1.60137),
-              doubleArrayOf(0.8702, 0.97897, 0.97897, -1.08775)
+              doubleArrayOf(-0.65089, -0.73226, -0.73226, 0.81362),
+              doubleArrayOf(0.83952, 0.94446, 0.94446, -1.04940)
             )),
             tolerance = 0.010))
         }
@@ -202,7 +202,7 @@ class FeedforwardLayerStructureSpec : Spek({
         it("should match the expected errors of the inputArray") {
 
           assertEquals(true, layer.inputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.01972, -2.52839, 1.06928, 0.44533)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0126, -2.07296, 1.07476, -0.14158)),
             tolerance = 0.010))
         }
       }
@@ -245,7 +245,7 @@ class FeedforwardLayerStructureSpec : Spek({
         it("should match the expected errors of the inputArray") {
 
           assertEquals(true, layer.inputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.37648, 0.46292, -0.37159, 0.62905, 0.39789)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.440004, 0.828046, -0.371592, 0.991038, 0.414023)),
             tolerance = 1.0e-05))
         }
       }
