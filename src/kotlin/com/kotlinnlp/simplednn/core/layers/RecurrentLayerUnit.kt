@@ -53,9 +53,12 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
 
     super.assignParamsGradients(paramsErrors = paramsErrors, x = x)
 
+    val gwRec: DenseNDArray = paramsErrors.recurrentWeights.values
+
     if (yPrev != null) {
-      val gwRec: DenseNDArray = paramsErrors.recurrentWeights.values
       gwRec.assignDot(this.errors, yPrev.T)
+    } else {
+      gwRec.zeros()
     }
   }
 
