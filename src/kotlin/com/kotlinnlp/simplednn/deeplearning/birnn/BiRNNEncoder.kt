@@ -176,7 +176,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
 
       this.outputErrorsAccumulator.accumulate(this.outputProcessorList[it].getParamsErrors())
 
-      this.outputProcessorList[it].getInputErrors()
+      this.outputProcessorList[it].getInputErrors(copy = false)
     })
 
     this.outputErrorsAccumulator.averageErrors()
