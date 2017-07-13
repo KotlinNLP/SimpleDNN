@@ -32,7 +32,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   neuralNetwork: NeuralNetwork
 ) : StructureContextWindow<InputNDArrayType>,
-    NeuralProcessor(neuralNetwork) {
+  NeuralProcessor(neuralNetwork) {
 
   /**
    * Sequence of states.
@@ -48,6 +48,12 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * An index which indicates the last state (-1 if the sequence is empty).
    */
   private var lastStateIndex: Int = -1
+
+  /**
+   * The total amount of states processed in the current sequence.
+   */
+  private val statesSize: Int
+    get() = this.lastStateIndex + 1
 
   /**
    * The errors of the network model parameters calculated during a single backward
@@ -118,14 +124,12 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  fun getInputSequenceErrors(copy: Boolean = true) = Array(
-    size = this.sequence.length,
+  fun getInputSequenceErrors(copy: Boolean = true): Array<DenseNDArray> = Array(
+    size = this.statesSize,
     init = { i ->
       val inputErrors = this.sequence.getStateStructure(i).inputLayer.inputArray.errors
 
-      require(inputErrors is DenseNDArray) {
-        "Input errors available only if input is dense"
-      }
+      require(inputErrors is DenseNDArray) { "Input errors available only if input is dense" }
 
       if (copy) {
         inputErrors.copy()
@@ -138,14 +142,16 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  fun getOutputSequence(copy: Boolean = true): Array<DenseNDArray> =
-    Array(size = this.sequence.length, init = { i ->
+  fun getOutputSequence(copy: Boolean = true): Array<DenseNDArray> = Array(
+    size = this.statesSize,
+    init = { i ->
       if (copy) {
         this.sequence.getStateStructure(i).outputLayer.outputArray.values.copy()
       } else {
         this.sequence.getStateStructure(i).outputLayer.outputArray.values
       }
-    })
+    }
+  )
 
   /**
    * Forward a sequence.
@@ -220,7 +226,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     require(stateFrom <= stateTo) { "stateFrom (%d) must be <= stateTo (%d)".format(stateFrom, stateTo) }
     require(stateFrom in 0 .. this.lastStateIndex) {
-      "stateFrom (%d) index exceeded sequence size (%d)".format(stateFrom, this.sequence.length)
+      "stateFrom (%d) index exceeded sequence size (%d)".format(stateFrom, this.statesSize)
     }
 
     this.sequence.getStateStructure(stateTo).layers.last().setOutputRelevance(relevantOutcomesDistribution)
@@ -242,7 +248,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false) {
 
     val outputErrorsSequence = Array(
-      size = this.sequence.length,
+      size = this.statesSize,
       init = { i -> if (i == this.lastStateIndex) outputErrors else this.zeroErrors })
 
     this.backward(outputErrorsSequence = outputErrorsSequence, propagateToInput = propagateToInput)
@@ -256,9 +262,9 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean = false) {
 
-    require(outputErrorsSequence.size == (this.lastStateIndex + 1)) {
-      "Number of errors (${outputErrorsSequence.size}) does not " +
-        "reflect the length of the sequence (${this.sequence.length})"
+    require(outputErrorsSequence.size == (this.statesSize)) {
+      "Number of errors (%d) does not reflect the length of the sequence (%d)"
+          .format(outputErrorsSequence.size, this.statesSize)
     }
 
     for (i in (0 .. this.lastStateIndex).reversed()) {
