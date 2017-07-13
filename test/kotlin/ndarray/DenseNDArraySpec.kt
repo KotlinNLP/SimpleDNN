@@ -86,6 +86,27 @@ class DenseNDArraySpec : Spek({
         }
       }
 
+      on("ones()") {
+
+        val array = DenseNDArrayFactory.ones(Shape(2, 3))
+
+        it("should return an NDArray") {
+          assertEquals(true, array is DenseNDArray)
+        }
+
+        it("should have the expected number of rows") {
+          assertEquals(true, array.rows == 2)
+        }
+
+        it("should have the expected number of columns") {
+          assertEquals(true, array.columns == 3)
+        }
+
+        it("should be filled with ones") {
+          (0 until array.length).forEach({ assertEquals(1.0, array[it]) })
+        }
+      }
+
       on("emptyArray()") {
 
         val array = DenseNDArrayFactory.emptyArray(Shape(3, 2))
