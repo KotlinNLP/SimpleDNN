@@ -65,14 +65,11 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
 
   /**
    * Propagate the errors of the entire sequence.
-   * Accumulate the errors of the parameters into the optimizer.
    *
    * @param outputErrorsSequence the errors to propagate
    * @param propagateToInput whether to propagate the output errors to the input or not
-   *
-   * @return the errors of the parameters of the [network]
    */
-  fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean): BiRNNParameters {
+  fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean) {
 
     require(outputErrorsSequence.size == outputProcessorList.size) {
       "Number of errors (%d) does not reflect the number of processed item (%s)".format(
@@ -82,17 +79,30 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
     this.RNNsBackward(
       outputErrorsSequence = this.outputBackward(outputErrorsSequence),
       propagateToInput = propagateToInput)
-
-    return this.getParamsErrors()
   }
 
   /**
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   *
    * @return the errors of the input sequence (the errors of the two RNNs are combined by summation)
    */
-  fun getInputSequenceErrors(): Array<DenseNDArray> {
+  fun getInputSequenceErrors(copy: Boolean = true): Array<DenseNDArray> {
     return BiRNNUtils.sumBidirectionalErrors(
-      leftToRightInputErrors = this.leftToRightProcessor.getInputSequenceErrors(),
-      rightToLeftInputErrors = this.rightToLeftProcessor.getInputSequenceErrors()
+      leftToRightInputErrors = this.leftToRightProcessor.getInputSequenceErrors(copy = copy),
+      rightToLeftInputErrors = this.rightToLeftProcessor.getInputSequenceErrors(copy = copy)
+    )
+  }
+
+  /**
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   *
+   * @return the errors of the BiRNN parameters
+   */
+  fun getParamsErrors(copy: Boolean = true): BiRNNParameters {
+    return BiRNNParameters(
+      leftToRight = leftToRightProcessor.getParamsErrors(copy = copy),
+      rightToLeft = rightToLeftProcessor.getParamsErrors(copy = copy),
+      output = outputErrorsAccumulator.getParamsErrors(copy = copy)
     )
   }
 
@@ -192,19 +202,6 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
     this.rightToLeftProcessor.backward(
       outputErrorsSequence = rightToLeftOutputErrors.reversed().toTypedArray(),
       propagateToInput = propagateToInput)
-  }
-
-  /**
-   * Return the errors of the BiRNNParameters
-   *
-   * @return the errors of the BiRNN parameters
-   */
-  private fun getParamsErrors(): BiRNNParameters {
-    return BiRNNParameters(
-      leftToRight = leftToRightProcessor.getParamsErrors(),
-      rightToLeft = rightToLeftProcessor.getParamsErrors(),
-      output = outputErrorsAccumulator.getParamsErrors()
-    )
   }
 
   /**
