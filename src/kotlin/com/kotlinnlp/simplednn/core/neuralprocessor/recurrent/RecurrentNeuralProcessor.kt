@@ -219,7 +219,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
                          copy: Boolean = true): NDArray<*> {
 
     require(stateFrom <= stateTo) { "stateFrom (%d) must be <= stateTo (%d)".format(stateFrom, stateTo) }
-    require(stateFrom in 0 until this.sequence.length) {
+    require(stateFrom in 0 .. this.lastStateIndex) {
       "stateFrom (%d) index exceeded sequence size (%d)".format(stateFrom, this.sequence.length)
     }
 
@@ -256,7 +256,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean = false) {
 
-    require(outputErrorsSequence.size == this.sequence.length) {
+    require(outputErrorsSequence.size == this.lastStateIndex) {
       "Number of errors (${outputErrorsSequence.size}) does not " +
         "reflect the length of the sequence (${this.sequence.length})"
     }
