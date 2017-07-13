@@ -10,12 +10,12 @@ package com.kotlinnlp.simplednn.core.functionalities.losses
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * Cross-entropy Softmax Calculator.
+ * Softmax cross-entropy Calculator.
  *
  * It must be used to calculate the loss ONLY if the activation function of the
  * output is the [com.kotlinnlp.simplednn.core.functionalities.activations.Softmax].
  */
-open class CrossEntropySoftmaxCalculator : LossCalculator {
+open class SoftmaxCrossEntropyCalculator : LossCalculator {
 
   private val eps: Double = 1.0e-08
 

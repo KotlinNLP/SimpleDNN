@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.helpers.training
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
-import com.kotlinnlp.simplednn.core.functionalities.losses.CrossEntropySoftmaxCalculator
+import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.functionalities.losses.LossCalculator
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
@@ -37,8 +37,8 @@ class FeedforwardTrainingHelper<NDArrayType: NDArray<NDArrayType>>(
     val activation = this.neuralProcessor.neuralNetwork.layersConfiguration.last().activationFunction
 
     require(
-      (this.lossCalculator is CrossEntropySoftmaxCalculator && activation is Softmax) ||
-        (this.lossCalculator !is CrossEntropySoftmaxCalculator && activation !is Softmax)
+      (this.lossCalculator is SoftmaxCrossEntropyCalculator && activation is Softmax) ||
+        (this.lossCalculator !is SoftmaxCrossEntropyCalculator && activation !is Softmax)
     ) {
       "Softmax cross-entropy loss must be used with the softmax as output activation function and vice versa"
     }

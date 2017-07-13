@@ -7,7 +7,7 @@
 
 package losses
 
-import com.kotlinnlp.simplednn.core.functionalities.losses.CrossEntropySoftmaxCalculator
+import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.simplemath.equals
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -23,11 +23,11 @@ import kotlin.test.assertTrue
 /**
  *
  */
-class CrossEntropySoftmaxCalculatorSpec : Spek({
+class SoftmaxCrossEntropyCalculatorSpec : Spek({
 
-  describe("a CrossEntropySoftmaxCalculator") {
+  describe("a SoftmaxCrossEntropyCalculator") {
 
-    val lossCalculator = CrossEntropySoftmaxCalculator()
+    val lossCalculator = SoftmaxCrossEntropyCalculator()
 
     context("output and gold not compatible") {
 
