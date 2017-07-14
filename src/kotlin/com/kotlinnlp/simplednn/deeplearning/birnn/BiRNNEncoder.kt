@@ -51,7 +51,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
   /**
    * The amount of processors used at a given time.
    */
-  private var outputProcessorsListSize: Int = 0
+  private var usedOutputProcessors: Int = 0
 
   /**
    * Encode the [sequence].
@@ -77,9 +77,9 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
    */
   fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean) {
 
-    require(outputErrorsSequence.size == this.outputProcessorsListSize) {
+    require(outputErrorsSequence.size == this.usedOutputProcessors) {
       "Number of errors (%d) does not reflect the number of processed item (%s)".format(
-        outputErrorsSequence.size, this.outputProcessorsListSize)
+        outputErrorsSequence.size, this.usedOutputProcessors)
     }
 
     this.RNNsBackward(
@@ -121,14 +121,15 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
    */
   private fun getOutputProcessor(index: Int): FeedforwardNeuralProcessor<DenseNDArray> {
 
-    require(index <= this.outputProcessorsListSize) {
-      "Invalid output processor index: %d (size = %d)".format(index, this.outputProcessorsListSize)
+    require(index <= this.outputProcessorsList.size) {
+      "Invalid output processor index: %d (size = %d)".format(index, this.outputProcessorsList.size)
     }
 
-    if (index == this.outputProcessorsListSize) { // add a new processor into the list
+    if (index == this.outputProcessorsList.size) { // add a new processor into the list
       this.outputProcessorsList.add(FeedforwardNeuralProcessor(this.network.outputNetwork))
-      this.outputProcessorsListSize++
     }
+
+    this.usedOutputProcessors++
 
     return this.outputProcessorsList[index]
   }
@@ -183,9 +184,9 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
    */
   private fun outputBackward(outputErrorsSequence: Array<DenseNDArray>): Array<DenseNDArray> {
 
-    require(outputErrorsSequence.size == this.outputProcessorsListSize) {
+    require(outputErrorsSequence.size == this.usedOutputProcessors) {
       "Number of errors (%d) does not reflect the length of the number of mlp processors (%d)".format(
-        outputErrorsSequence.size, this.outputProcessorsListSize)
+        outputErrorsSequence.size, this.usedOutputProcessors)
     }
 
     val inputErrors = Array(
@@ -243,7 +244,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
    * Reset temporary memories.
    */
   private fun reset() {
-    this.outputProcessorsListSize = 0
+    this.usedOutputProcessors = 0
     this.outputErrorsAccumulator.reset()
   }
 }
