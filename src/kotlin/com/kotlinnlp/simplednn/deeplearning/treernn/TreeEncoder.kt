@@ -217,7 +217,7 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
      */
     private fun backwardConcat(errors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
       this.concatProcessor.backward(errors, propagateToInput = true)
-      return this.splitLeftAndRightErrors(this.concatProcessor.getInputErrors())
+      return this.splitLeftAndRightErrors(this.concatProcessor.getInputErrors(copy = false))
     }
 
     /**
