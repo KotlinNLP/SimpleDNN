@@ -232,11 +232,9 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
      * @param children left or right children nodes.
      *                 NOTE: The children direction must be aligned with the one of the processor.
      */
-    private fun encodeChildren(
-      processor: RecurrentNeuralProcessor<DenseNDArray>,
-      head: DenseNDArray,
-      children: ArrayList<Node>
-    ): DenseNDArray {
+    private fun encodeChildren(processor: RecurrentNeuralProcessor<DenseNDArray>,
+                               head: DenseNDArray,
+                               children: ArrayList<Node>): DenseNDArray {
 
       processor.forward(head, firstState = true)
 
@@ -250,11 +248,9 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
      *
      * This method is the "backward" of the [encodeChildren] function.
      */
-    private fun backwardChildren(
-      processor: RecurrentNeuralProcessor<DenseNDArray>,
-      children: ArrayList<Node>,
-      errors: DenseNDArray
-    ) {
+    private fun backwardChildren(processor: RecurrentNeuralProcessor<DenseNDArray>,
+                                 children: ArrayList<Node>,
+                                 errors: DenseNDArray) {
 
       processor.backward(errors, propagateToInput = true)
 
