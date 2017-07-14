@@ -18,7 +18,7 @@ import kotlin.test.assertEquals
 /**
  *
  */
-class TreeRNNSpec : Spek({
+class TreeEncoderSpec : Spek({
 
   describe("a TreeEncoder") {
 
