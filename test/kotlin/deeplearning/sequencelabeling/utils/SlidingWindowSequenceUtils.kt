@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package deeplearning.utils
+package deeplearning.sequencelabeling.utils
 
 import com.kotlinnlp.simplednn.deeplearning.sequencelabeling.SlidingWindowSequence
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory

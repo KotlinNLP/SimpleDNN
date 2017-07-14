@@ -5,13 +5,13 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package deeplearning
+package deeplearning.sequencelabeling
 
 import com.kotlinnlp.simplednn.deeplearning.sequencelabeling.SWSLFeaturesExtractor
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import deeplearning.utils.SWSLNetworkUtils
-import deeplearning.utils.SlidingWindowSequenceUtils
+import deeplearning.sequencelabeling.utils.SWSLNetworkUtils
+import deeplearning.sequencelabeling.utils.SlidingWindowSequenceUtils
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe

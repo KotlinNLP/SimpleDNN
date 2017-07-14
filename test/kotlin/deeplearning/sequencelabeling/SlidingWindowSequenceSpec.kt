@@ -5,9 +5,9 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package deeplearning
+package deeplearning.sequencelabeling
 
-import deeplearning.utils.SlidingWindowSequenceUtils.buildSlidingWindowSequence
+import deeplearning.sequencelabeling.utils.SlidingWindowSequenceUtils
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -25,7 +25,7 @@ class SlidingWindowSequenceSpec: Spek({
 
     context("size = 5, leftContextSize = 3, rightContextSize = 3") {
 
-      val sequence = buildSlidingWindowSequence()
+      val sequence = SlidingWindowSequenceUtils.buildSlidingWindowSequence()
 
       on("setFocus on the 2nd element"){
         sequence.setFocus(2)

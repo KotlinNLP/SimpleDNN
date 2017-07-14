@@ -5,9 +5,9 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package deeplearning
+package deeplearning.sequencelabeling
 
-import deeplearning.utils.SWSLNetworkUtils.buildNetwork
+import deeplearning.sequencelabeling.utils.SWSLNetworkUtils
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -24,7 +24,7 @@ class SWSLNetworkSpec: Spek({
 
     context("input=2, hidden=5, output=10, prevWindow=3, nextWindow=3, labelEmbedding=2") {
 
-      val network = buildNetwork()
+      val network = SWSLNetworkUtils.buildNetwork()
 
       on("featuresSize"){
 
