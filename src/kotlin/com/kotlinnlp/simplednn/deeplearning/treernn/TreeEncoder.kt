@@ -366,9 +366,7 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
   }
 
   /**
-   * Return the list of ids of the root nodes.
-   *
-   * @return list of id
+   * @return the list of ids of the root nodes
    */
   fun getRootsIds(): List<Int> = this.nodes.values.filter({ it.root }).map({ it.id })
 
