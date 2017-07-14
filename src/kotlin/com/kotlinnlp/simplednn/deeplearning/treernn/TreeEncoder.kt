@@ -72,7 +72,7 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
     /**
      * Whether this node is a root
      */
-    internal var root: Boolean = true
+    internal var isRoot: Boolean = true
       internal set
 
     /**
@@ -155,7 +155,7 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
      */
     internal fun addChild(child: Node) {
 
-      child.root = false
+      child.isRoot = false
       child.head = this
 
       if (this.id < child.id) {
@@ -358,7 +358,7 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
     val node = this.nodes[nodeId]!!
 
     require(errors.shape == node.vector.shape)
-    require(node.root)
+    require(node.isRoot)
 
     node.encodingErrors = errors.copy()
 
@@ -368,7 +368,7 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
   /**
    * @return the list of ids of the root nodes
    */
-  fun getRootsIds(): List<Int> = this.nodes.values.filter({ it.root }).map({ it.id })
+  fun getRootsIds(): List<Int> = this.nodes.values.filter({ it.isRoot }).map({ it.id })
 
   /**
    * Propagate the encoding errors starting from the nodes with encoding errors.
