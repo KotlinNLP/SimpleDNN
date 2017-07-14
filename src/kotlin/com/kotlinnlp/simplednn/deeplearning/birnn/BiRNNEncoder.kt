@@ -38,12 +38,13 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
   private val rightToLeftProcessor = RecurrentNeuralProcessor<InputNDArrayType>(this.network.rightToLeftNetwork)
 
   /**
-   * The [FeedforwardNeuralProcessor] which merges the outputs of the input RNNs into a single vector.
+   * A list of [FeedforwardNeuralProcessor]s which merge each pair of output arrays of the input RNNs into a single
+   * vector.
    */
-  private val outputProcessorList = ArrayList<FeedforwardNeuralProcessor<DenseNDArray>>()
+  private val outputProcessorsList = ArrayList<FeedforwardNeuralProcessor<DenseNDArray>>()
 
   /**
-   * Contains the errors accumulated from the outputProcessorList during the encoding process.
+   * Contains the errors accumulated from the outputProcessorsList during the encoding process.
    */
   private val outputErrorsAccumulator = ParamsErrorsAccumulator(this.network.outputNetwork)
 
@@ -71,9 +72,9 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
    */
   fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean) {
 
-    require(outputErrorsSequence.size == outputProcessorList.size) {
+    require(outputErrorsSequence.size == outputProcessorsList.size) {
       "Number of errors (%d) does not reflect the number of processed item (%s)".format(
-        outputErrorsSequence.size, outputProcessorList.size)
+        outputErrorsSequence.size, outputProcessorsList.size)
     }
 
     this.RNNsBackward(
@@ -112,8 +113,8 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
    * @return the new added output processor
    */
   private fun addNewOutputProcessor(): FeedforwardNeuralProcessor<DenseNDArray> {
-    this.outputProcessorList.add(FeedforwardNeuralProcessor(this.network.outputNetwork))
-    return this.outputProcessorList.last()
+    this.outputProcessorsList.add(FeedforwardNeuralProcessor(this.network.outputNetwork))
+    return this.outputProcessorsList.last()
   }
 
   /**
@@ -165,18 +166,18 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
    */
   private fun outputBackward(outputErrorsSequence: Array<DenseNDArray>): Array<DenseNDArray> {
 
-    require(outputErrorsSequence.size == outputProcessorList.size) {
+    require(outputErrorsSequence.size == outputProcessorsList.size) {
       "Number of errors (%d) does not reflect the length of the number of mlp processors (%d)".format(
-        outputErrorsSequence.size, outputProcessorList.size)
+        outputErrorsSequence.size, outputProcessorsList.size)
     }
 
     val inputErrors = Array(size = outputErrorsSequence.size, init = {
 
-      this.outputProcessorList[it].backward(outputErrors = outputErrorsSequence[it], propagateToInput = true)
+      this.outputProcessorsList[it].backward(outputErrors = outputErrorsSequence[it], propagateToInput = true)
 
-      this.outputErrorsAccumulator.accumulate(this.outputProcessorList[it].getParamsErrors())
+      this.outputErrorsAccumulator.accumulate(this.outputProcessorsList[it].getParamsErrors())
 
-      this.outputProcessorList[it].getInputErrors(copy = false)
+      this.outputProcessorsList[it].getInputErrors(copy = false)
     })
 
     this.outputErrorsAccumulator.averageErrors()
@@ -208,7 +209,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
    * Reset temporary memories
    */
   private fun reset() {
-    this.outputProcessorList.clear()
+    this.outputProcessorsList.clear()
     this.outputErrorsAccumulator.reset()
   }
 }
