@@ -78,9 +78,12 @@ class TreeRNN(
 
   /**
    * Initialize the weight of the sub-networks [leftRNN], [rightRNN], [concatNetwork]
-   * using the default random generator
+   * using the default random generator.
+   *
+   * @return this [TreeRNN]
    */
   fun initialize(): TreeRNN {
+
     this.leftRNN.initialize()
     this.rightRNN.initialize()
     this.concatNetwork.initialize()
