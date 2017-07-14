@@ -158,7 +158,7 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
       child.isRoot = false
       child.head = this
 
-      if (this.id < child.id) {
+      if (child.id < this.id) {
         this.leftChildren.add(child)
       } else {
         this.rightChildren.add(child)
