@@ -366,7 +366,7 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
   }
 
   /**
-   * Return the list of the id of the nodes which are roots
+   * Return the list of ids of the root nodes.
    *
    * @return list of id
    */
