@@ -370,7 +370,7 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
    *
    * @return list of id
    */
-  fun getRootsId(): List<Int> = this.nodes.values.filter({ it.root }).map({ it.id })
+  fun getRootsIds(): List<Int> = this.nodes.values.filter({ it.root }).map({ it.id })
 
   /**
    * Propagate the encoding errors starting from the nodes with encoding errors.
