@@ -118,7 +118,9 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
     /**
      * Initialize the node setting its encoding representation
      */
-    init { this.encoding = this.encode() }
+    init {
+      this.encoding = this.encode()
+    }
 
     /**
      * Reset the encoding and backward errors associated to this Node.
@@ -240,7 +242,7 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
 
       children.forEach { processor.forward(it.encoding, firstState = false) }
 
-      return processor.getOutput()
+      return processor.getOutput(copy = false)
     }
 
     /**
