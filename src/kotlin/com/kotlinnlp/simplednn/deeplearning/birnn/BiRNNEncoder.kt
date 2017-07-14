@@ -113,28 +113,6 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
   }
 
   /**
-   * Get the output processor at the given index (create a new one if the index exceeds the size of the list).
-   *
-   * @param index the index of the output processor in the lis
-   *
-   * @return the output processor at the given [index]
-   */
-  private fun getOutputProcessor(index: Int): FeedforwardNeuralProcessor<DenseNDArray> {
-
-    require(index <= this.outputProcessorsList.size) {
-      "Invalid output processor index: %d (size = %d)".format(index, this.outputProcessorsList.size)
-    }
-
-    if (index == this.outputProcessorsList.size) { // add a new processor into the list
-      this.outputProcessorsList.add(FeedforwardNeuralProcessor(this.network.outputNetwork))
-    }
-
-    this.usedOutputProcessors++
-
-    return this.outputProcessorsList[index]
-  }
-
-  /**
    * Given a [sequence] return the encoded left-to-right and right-to-left representation.
    *
    * @param sequence the sequence to encode
@@ -172,8 +150,34 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
   private fun forwardOutput(sequence: Array<DenseNDArray>): Array<DenseNDArray> =
     Array(
       size = sequence.size,
-      init = { i -> this.getOutputProcessor(i).forward(sequence[i]) }
+      init = { i ->
+        val processor = this.getOutputProcessor(i)
+
+        this.usedOutputProcessors++
+
+        processor.forward(sequence[i])
+      }
     )
+
+  /**
+   * Get the output processor at the given index (create a new one if the index exceeds the size of the list).
+   *
+   * @param index the index of the output processor in the lis
+   *
+   * @return the output processor at the given [index]
+   */
+  private fun getOutputProcessor(index: Int): FeedforwardNeuralProcessor<DenseNDArray> {
+
+    require(index <= this.outputProcessorsList.size) {
+      "Invalid output processor index: %d (size = %d)".format(index, this.outputProcessorsList.size)
+    }
+
+    if (index == this.outputProcessorsList.size) { // add a new processor into the list
+      this.outputProcessorsList.add(FeedforwardNeuralProcessor(this.network.outputNetwork))
+    }
+
+    return this.outputProcessorsList[index]
+  }
 
   /**
    * Execute the backward of the output processor and return its input errors.
