@@ -215,7 +215,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
 
     processor.backward(outputErrors = errors, propagateToInput = true)
 
-    this.outputErrorsAccumulator.accumulate(processor.getParamsErrors())
+    this.outputErrorsAccumulator.accumulate(processor.getParamsErrors(copy = false))
 
     return processor.getInputErrors(copy = false)
   }
