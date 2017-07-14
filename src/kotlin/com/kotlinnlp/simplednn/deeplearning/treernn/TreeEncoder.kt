@@ -399,9 +399,9 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
         this.optimizer.newExample()
 
         this.optimizer.accumulate(TreeRNNParameters(
-          leftRNN = it.leftProcessor.getParamsErrors(),
-          rightRNN = it.rightProcessor.getParamsErrors(),
-          concatNetwork = it.concatProcessor.getParamsErrors()))
+          leftRNN = it.leftProcessor.getParamsErrors(copy = false),
+          rightRNN = it.rightProcessor.getParamsErrors(copy = false),
+          concatNetwork = it.concatProcessor.getParamsErrors(copy = false)))
       }
     }
   }
