@@ -45,7 +45,7 @@ class TreeRNNSpec : Spek({
       }
 
       it("should return the expected number of root nodes") {
-        assertEquals(sequence.size, treeEncoder.getRootsId().size)
+        assertEquals(sequence.size, treeEncoder.getRootsIds().size)
       }
     }
 
