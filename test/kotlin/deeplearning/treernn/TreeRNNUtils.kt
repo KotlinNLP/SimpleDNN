@@ -8,6 +8,9 @@
 package deeplearning.treernn
 
 import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
+import com.kotlinnlp.simplednn.deeplearning.treernn.TreeEncoder
 import com.kotlinnlp.simplednn.deeplearning.treernn.TreeRNN
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -27,6 +30,45 @@ object TreeRNNUtils {
       hiddenLayerSize = 3,
       hiddenLayerConnectionType = LayerType.Connection.SimpleRecurrent)
 
+    val leftParams = network.leftRNN.model.paramsPerLayer[0] as SimpleRecurrentLayerParameters
+    val rightParams = network.rightRNN.model.paramsPerLayer[0] as SimpleRecurrentLayerParameters
+    val concatParams = network.concatNetwork.model.paramsPerLayer[0] as FeedforwardLayerParameters
+
+    leftParams.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+      doubleArrayOf(0.6, 0.8),
+      doubleArrayOf(-0.3, 0.0),
+      doubleArrayOf(0.9, -0.8)
+    )))
+
+    leftParams.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 0.2, -0.3)))
+
+    leftParams.unit.recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+      doubleArrayOf(0.1, 0.7, 0.0),
+      doubleArrayOf(0.2, 0.9, -0.2),
+      doubleArrayOf(-0.5, -0.2, -0.4)
+    )))
+
+    rightParams.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+      doubleArrayOf(0.1, 0.9),
+      doubleArrayOf(-1.0, -0.4),
+      doubleArrayOf(0.4, -0.8)
+    )))
+
+    rightParams.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, 0.9, 0.4)))
+
+    rightParams.unit.recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+      doubleArrayOf(1.0, -0.1, 0.7),
+      doubleArrayOf(-0.7, 0.8, -1.0),
+      doubleArrayOf(0.0, 0.8, 0.0)
+    )))
+
+    concatParams.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+      doubleArrayOf(0.2, -0.2, -0.4, 1.0, -0.5, -0.4),
+      doubleArrayOf(0.5, 0.5, 0.2, -0.8, 0.5, 0.1)
+    )))
+
+    concatParams.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.9, -0.8)))
+
     return network
   }
 
@@ -42,5 +84,39 @@ object TreeRNNUtils {
     Pair(6, DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9, -0.5))),
     Pair(7, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, 0.7))),
     Pair(8, DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.7)))
+  )
+
+  /**
+   *
+   */
+  fun setHeads(treeEncoder: TreeEncoder) {
+
+    treeEncoder.setHead(4, headId = 3)
+    treeEncoder.setHead(5, headId = 3)
+    treeEncoder.setHead(3, headId = 2)
+    treeEncoder.setHead(1, headId = 2)
+    treeEncoder.setHead(7, headId = 6)
+    treeEncoder.setHead(8, headId = 7)
+  }
+
+  /**
+   *
+   */
+  fun setHeads2(treeEncoder: TreeEncoder) {
+
+    treeEncoder.setHead(3, headId = 2)
+    treeEncoder.setHead(1, headId = 2)
+    treeEncoder.setHead(4, headId = 3)
+    treeEncoder.setHead(8, headId = 7)
+    treeEncoder.setHead(7, headId = 6)
+    treeEncoder.setHead(5, headId = 3)
+  }
+
+  /**
+   *
+   */
+  fun getEncodingErrors(): Map<Int, DenseNDArray> = mapOf(
+    Pair(2, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 0.4))),
+    Pair(6, DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9, 0.6)))
   )
 }
