@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package deeplearning.utils
+package deeplearning.attentionnetwork.utils
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
@@ -49,7 +49,7 @@ object AttentionLayerUtils {
    */
   fun buildAttentionSequence(inputSequence: ArrayList<AugmentedArray<DenseNDArray>>): ArrayList<DenseNDArray> {
 
-    val transformLayer: FeedforwardLayerStructure<DenseNDArray> = this.buildTransformLayer()
+    val transformLayer: FeedforwardLayerStructure<DenseNDArray> = buildTransformLayer()
 
     return arrayListOf(*Array(
       size = inputSequence.size,
@@ -112,8 +112,8 @@ object AttentionLayerUtils {
   fun buildAttentionNetworkParams1(): AttentionNetworkParameters {
 
     val params = AttentionNetworkParameters(inputSize = 4, attentionSize = 2, sparseInput = false)
-    val transformParams = this.buildTransformLayerParams1()
-    val attentionParams = this.buildAttentionParams() // [-0.3, -0.5]
+    val transformParams = buildTransformLayerParams1()
+    val attentionParams = buildAttentionParams() // [-0.3, -0.5]
 
     params.transformParams.unit.weights.values.assignValues(transformParams.unit.weights.values)
     params.transformParams.unit.biases.values.assignValues(transformParams.unit.biases.values)
@@ -128,7 +128,7 @@ object AttentionLayerUtils {
   fun buildAttentionNetworkParams2(): AttentionNetworkParameters {
 
     val params = AttentionNetworkParameters(inputSize = 4, attentionSize = 2, sparseInput = false)
-    val transformParams = this.buildTransformLayerParams2()
+    val transformParams = buildTransformLayerParams2()
 
     params.transformParams.unit.weights.values.assignValues(transformParams.unit.weights.values)
     params.transformParams.unit.biases.values.assignValues(transformParams.unit.biases.values)
