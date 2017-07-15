@@ -8,9 +8,21 @@
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import java.io.Serializable
 
 /**
+ * Support structure for the Update Method.
  *
- * @param shape shape
+ * @param shape the shape of the structure
  */
-abstract class UpdaterSupportStructure(val shape: Shape)
+abstract class UpdaterSupportStructure(val shape: Shape) : Serializable {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed from Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
+}
