@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * that relies on a recursive combination of recurrent-neural network encoders.
  *
  * You have to instantiate a new TreeEncoder for each tree to encode.
- * Different TreeEncoder instances share the same [network] and [optimizer].
+ * Different TreeEncoder instances could share the same [network].
  *
  * Usage:
  *
@@ -34,7 +34,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *   After setting the errors in a certain state of the tree-encoding process, you must propagate the errors
  *   using the [propagateErrors] function. Since each node-encoding depends on the network’s parameters,
  *   each parameter update will invalidate all the encodings. Therefore the errors of the network parameters
- *   are accumulated in the [optimizer] throughout the tree-encoding process.
+ *   are accumulated into an optimizer at each propagation.
  *   At the end of the process (for example when the tree is complete) you call the update function of the optimizer
  *   which finally optimize the network parameters.
  *
@@ -44,9 +44,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * [Eliyahu Kiperwasser and Yoav Goldberg - Easy-First Dependency Parsing with Hierarchical Tree LSTMs](https://www.transacl.org/ojs/index.php/tacl/article/viewFile/798/208)
  *
  * @property network the TreeRNN of this encoder
- * @property optimizer the optimizer associated to the TreeRNN (can be null)
  */
-class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOptimizer?) {
+class TreeEncoder(private val network: TreeRNN) {
 
   /**
    * A Node contains the the encoded vector representation resulting by the encoding process
@@ -375,28 +374,31 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
    * Propagate the encoding errors starting from the nodes with encoding errors.
    * Accumulate the resulting network parameters errors.
    * Clear the errors of the nodes.
+   *
+   * @param optimizer the optimizer in which to accumulate the errors of the parameters of the [TreeRNN]
    */
-  fun propagateErrors() {
-    require(optimizer != null) { "Impossible to propagate errors without an optimizer" }
+  fun propagateErrors(optimizer: TreeRNNOptimizer) {
 
     this.nodesWithEncodingErrors.forEach { it.propagateErrors() }
-    this.accumulateParamsErrors()
+    this.accumulateParamsErrors(optimizer)
     this.clearNodeErrors()
   }
 
   /**
-   * Accumulate the parameters errors calculated during the recursive back-propagation.
+   * Accumulate the parameters errors calculated during the recursive back-propagation into the optimizer.
+   *
+   * @param optimizer the optimizer in which to accumulate the errors
    */
-  private fun accumulateParamsErrors() {
+  private fun accumulateParamsErrors(optimizer: TreeRNNOptimizer) {
 
-    this.optimizer!!.newBatch()
+    optimizer.newBatch()
 
     this.nodes.values.forEach {
       if (it.getNodeErrors() != null) { // optimization
 
-        this.optimizer.newExample()
+        optimizer.newExample()
 
-        this.optimizer.accumulate(TreeRNNParameters(
+        optimizer.accumulate(TreeRNNParameters(
             leftRNN = it.leftProcessor.getParamsErrors(copy = false),
             rightRNN = it.rightProcessor.getParamsErrors(copy = false),
             concatNetwork = it.concatProcessor.getParamsErrors(copy = false)))
