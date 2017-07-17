@@ -10,14 +10,12 @@ package com.kotlinnlp.simplednn.deeplearning.birnn
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 
 /**
- * The BiRNNParameters contains the parameter of its sub-networks
- * (leftToRightNetwork, rightToLeftNetwork, outputNetwork)
+ * The BiRNNParameters contains the parameter of its sub-networks (leftToRightNetwork, rightToLeftNetwork).
  *
  * @property leftToRight network parameters of the left-to-right recurrent neural network
  * @property rightToLeft network parameters of the right-to-left recurrent neural network
- * @property output network parameters of the final feed-forward network
  */
 data class BiRNNParameters(
   val leftToRight: NetworkParameters,
-  val rightToLeft: NetworkParameters,
-  val output: NetworkParameters)
+  val rightToLeft: NetworkParameters
+)

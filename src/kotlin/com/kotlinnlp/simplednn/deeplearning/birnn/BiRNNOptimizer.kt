@@ -13,37 +13,30 @@ import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 
 /**
- * The BiRNNOptimizer is the optimizer of the BiRNN which in turn aggregate
- * the optimizers of its sub-networks: leftToRightNetwork, rightToLeftNetwork, outputNetwork.
+ * The optimizer of the BiRNN which in turn aggregates the optimizers of its sub-networks: leftToRightNetwork and
+ * rightToLeftNetwork.
  *
- * It is recommended to use the same UpdateMethod configuration for all the sub-networks.
+ * It is recommended to use the same UpdateMethod configuration for each sub-network.
  *
- * @param network the TreeRNN to optimize
+ * @param network the [BiRNN] to optimize
  * @param leftToRightUpdateMethod the [UpdateMethod] used for the left-to-right recurrent network
  * @param rightToLeftUpdateMethod the [UpdateMethod] used for the right-to-left recurrent network
- * @param outputUpdateMethod the [UpdateMethod] used for the feed-forward output network
  */
 class BiRNNOptimizer(
   network: BiRNN,
   leftToRightUpdateMethod: UpdateMethod = ADAMMethod(stepSize = 0.0001),
-  rightToLeftUpdateMethod: UpdateMethod = ADAMMethod(stepSize = 0.0001),
-  outputUpdateMethod: UpdateMethod = ADAMMethod(stepSize = 0.0001)
+  rightToLeftUpdateMethod: UpdateMethod = ADAMMethod(stepSize = 0.0001)
 ) : Optimizer {
 
   /**
-   * The [Optimizer] used for the left-to-right network
+   * The [ParamsOptimizer] for the left-to-right network.
    */
   private val leftToRightOptimizer = ParamsOptimizer(network.leftToRightNetwork, leftToRightUpdateMethod)
 
   /**
-   * The [Optimizer] used for the right-to-left network
+   * The [ParamsOptimizer] for the right-to-left network.
    */
   private val rightToLeftOptimizer = ParamsOptimizer(network.rightToLeftNetwork, rightToLeftUpdateMethod)
-
-  /**
-   * The [Optimizer] used for the output network
-   */
-  private val outputNetwork = ParamsOptimizer(network.outputNetwork, outputUpdateMethod)
 
   /**
    * Method to call every new epoch.
@@ -51,7 +44,6 @@ class BiRNNOptimizer(
   override fun newEpoch() {
     this.leftToRightOptimizer.newEpoch()
     this.rightToLeftOptimizer.newEpoch()
-    this.outputNetwork.newEpoch()
   }
 
   /**
@@ -60,7 +52,6 @@ class BiRNNOptimizer(
   override fun newBatch() {
     this.leftToRightOptimizer.newBatch()
     this.rightToLeftOptimizer.newBatch()
-    this.outputNetwork.newBatch()
   }
 
   /**
@@ -69,26 +60,23 @@ class BiRNNOptimizer(
   override fun newExample() {
     this.leftToRightOptimizer.newExample()
     this.rightToLeftOptimizer.newExample()
-    this.outputNetwork.newExample()
   }
 
   /**
-   * Update the params using the accumulated errors and reset the errors
+   * Update the parameters using the accumulated errors and then reset the errors.
    */
   override fun update(): Unit {
     this.leftToRightOptimizer.update()
     this.rightToLeftOptimizer.update()
-    this.outputNetwork.update()
   }
 
   /**
-   * Accumulate the params errors on the optimizer
+   * Accumulate the parameters errors into the optimizer.
    *
-   * @param errors params errors to accumulate
+   * @param errors the parameters errors to accumulate
    */
   fun accumulate(errors: BiRNNParameters) {
     this.leftToRightOptimizer.accumulate(errors.leftToRight)
     this.rightToLeftOptimizer.accumulate(errors.rightToLeft)
-    this.outputNetwork.accumulate(errors.output)
   }
 }

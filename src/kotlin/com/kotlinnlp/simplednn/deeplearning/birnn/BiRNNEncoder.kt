@@ -7,9 +7,7 @@
 
 package com.kotlinnlp.simplednn.deeplearning.birnn
 
-import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
-import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
@@ -38,22 +36,6 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
   private val rightToLeftProcessor = RecurrentNeuralProcessor<InputNDArrayType>(this.network.rightToLeftNetwork)
 
   /**
-   * A list of [FeedforwardNeuralProcessor]s which merge each pair of output arrays of the input RNNs into a single
-   * vector.
-   */
-  private val outputProcessorsList = ArrayList<FeedforwardNeuralProcessor<DenseNDArray>>()
-
-  /**
-   * Contains the errors accumulated from the outputProcessorsList during the encoding process.
-   */
-  private val outputErrorsAccumulator = ParamsErrorsAccumulator(this.network.outputNetwork)
-
-  /**
-   * The amount of processors used at a given time.
-   */
-  private var usedOutputProcessors: Int = 0
-
-  /**
    * Encode the [sequence].
    *
    * @param sequence the sequence to encode
@@ -62,11 +44,9 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
    */
   fun encode(sequence: Array<InputNDArrayType>): Array<DenseNDArray> {
 
-    this.reset()
-
     val (leftToRightOut, rightToLeftOut) = this.biEncoding(sequence)
 
-    return this.forwardOutput(BiRNNUtils.concatenate(leftToRightOut, rightToLeftOut))
+    return BiRNNUtils.concatenate(leftToRightOut, rightToLeftOut)
   }
 
   /**
@@ -77,13 +57,15 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
    */
   fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean) {
 
-    require(outputErrorsSequence.size == this.usedOutputProcessors) {
-      "Number of errors (%d) does not reflect the number of processed item (%s)".format(
-        outputErrorsSequence.size, this.usedOutputProcessors)
-    }
+    val (leftToRightOutputErrors, rightToLeftOutputErrors) =
+      BiRNNUtils.splitErrorsSequence(outputErrorsSequence)
 
-    this.RNNsBackward(
-      outputErrorsSequence = this.outputBackward(outputErrorsSequence),
+    this.leftToRightProcessor.backward(
+      outputErrorsSequence = leftToRightOutputErrors,
+      propagateToInput = propagateToInput)
+
+    this.rightToLeftProcessor.backward(
+      outputErrorsSequence = rightToLeftOutputErrors.reversed().toTypedArray(),
       propagateToInput = propagateToInput)
   }
 
@@ -107,8 +89,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
   fun getParamsErrors(copy: Boolean = true): BiRNNParameters {
     return BiRNNParameters(
       leftToRight = leftToRightProcessor.getParamsErrors(copy = copy),
-      rightToLeft = rightToLeftProcessor.getParamsErrors(copy = copy),
-      output = outputErrorsAccumulator.getParamsErrors(copy = copy)
+      rightToLeft = rightToLeftProcessor.getParamsErrors(copy = copy)
     )
   }
 
@@ -138,117 +119,5 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val netw
       leftToRightOut.requireNoNulls(),
       rightToLeftOut.requireNoNulls()
     )
-  }
-
-  /**
-   * Forward the results of the input RNNs within the feed-forward output processor.
-   *
-   * @param sequence the sequence to forward
-   *
-   * @return an array containing the forwarded sequence
-   */
-  private fun forwardOutput(sequence: Array<DenseNDArray>): Array<DenseNDArray> =
-    Array(
-      size = sequence.size,
-      init = { i ->
-        val processor = this.getOutputProcessor(i)
-
-        this.usedOutputProcessors++
-
-        processor.forward(sequence[i])
-      }
-    )
-
-  /**
-   * Get the output processor at the given index (create a new one if the index exceeds the size of the list).
-   *
-   * @param index the index of the output processor in the lis
-   *
-   * @return the output processor at the given [index]
-   */
-  private fun getOutputProcessor(index: Int): FeedforwardNeuralProcessor<DenseNDArray> {
-
-    require(index <= this.outputProcessorsList.size) {
-      "Invalid output processor index: %d (size = %d)".format(index, this.outputProcessorsList.size)
-    }
-
-    if (index == this.outputProcessorsList.size) { // add a new processor into the list
-      this.outputProcessorsList.add(FeedforwardNeuralProcessor(this.network.outputNetwork))
-    }
-
-    return this.outputProcessorsList[index]
-  }
-
-  /**
-   * Execute the backward of the output processor and return its input errors.
-   *
-   * @param outputErrorsSequence the errors to propagate
-   *
-   * @return the errors to propagate to the two RNNs
-   */
-  private fun outputBackward(outputErrorsSequence: Array<DenseNDArray>): Array<DenseNDArray> {
-
-    require(outputErrorsSequence.size == this.usedOutputProcessors) {
-      "Number of errors (%d) does not reflect the length of the number of mlp processors (%d)".format(
-        outputErrorsSequence.size, this.usedOutputProcessors)
-    }
-
-    val inputErrors = Array(
-      size = outputErrorsSequence.size,
-      init = { i ->
-        this.outputProcessorBackward(
-          processor = this.outputProcessorsList[i],
-          errors = outputErrorsSequence[i])
-      })
-
-    this.outputErrorsAccumulator.averageErrors()
-
-    return inputErrors
-  }
-
-  /**
-   * Perform the backward of an output processor from the given [errors] and accumulate its params errors.
-   *
-   * @param processor the output processor
-   * @param errors the output errors of the [processor]
-   *
-   * @return the input errors by reference
-   */
-  private fun outputProcessorBackward(processor: FeedforwardNeuralProcessor<DenseNDArray>,
-                                      errors: DenseNDArray): DenseNDArray {
-
-    processor.backward(outputErrors = errors, propagateToInput = true)
-
-    this.outputErrorsAccumulator.accumulate(processor.getParamsErrors(copy = false))
-
-    return processor.getInputErrors(copy = false)
-  }
-
-  /**
-   * Propagate the errors to the input RNNs.
-   *
-   * @param outputErrorsSequence the sequence errors to propagate
-   * @param propagateToInput whether to propagate the errors to the input
-   */
-  private fun RNNsBackward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean) {
-
-    val (leftToRightOutputErrors, rightToLeftOutputErrors) =
-      BiRNNUtils.splitErrorsSequence(outputErrorsSequence)
-
-    this.leftToRightProcessor.backward(
-      outputErrorsSequence = leftToRightOutputErrors,
-      propagateToInput = propagateToInput)
-
-    this.rightToLeftProcessor.backward(
-      outputErrorsSequence = rightToLeftOutputErrors.reversed().toTypedArray(),
-      propagateToInput = propagateToInput)
-  }
-
-  /**
-   * Reset temporary memories.
-   */
-  private fun reset() {
-    this.usedOutputProcessors = 0
-    this.outputErrorsAccumulator.reset()
   }
 }

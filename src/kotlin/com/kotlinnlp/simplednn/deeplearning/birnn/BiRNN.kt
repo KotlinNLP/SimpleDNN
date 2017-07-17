@@ -21,80 +21,60 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
  * Mike Schuster and Kuldip K. Paliwal. - Bidirectional recurrent neural networks
  *
  * @property inputType the type of the input layer (Dense, Sparse, SparseBinary)
- * @property inputLayerSize size of the input layer
- * @property hiddenLayerSize size of the hidden layer
- * @property hiddenLayerActivation activation function of the hidden layer
+ * @property inputLayerSize the size of the input layer
+ * @property hiddenLayerSize the size of the hidden layer
+ * @property hiddenLayerActivation the activation function of the hidden layer
  * @property hiddenLayerConnectionType type of recurrent neural network (e.g. LSTM, GRU, CFN, SimpleRNN)
- * @property outputLayerSize size of the output layer
- * @property outputLayerActivation activation function of the output layer (could be null)
  */
 class BiRNN(
   val inputType: LayerType.Input,
   val inputLayerSize: Int,
   val hiddenLayerSize: Int,
   val hiddenLayerActivation: ActivationFunction?,
-  val hiddenLayerConnectionType: LayerType.Connection,
-  val outputLayerSize: Int,
-  val outputLayerActivation: ActivationFunction?) {
+  val hiddenLayerConnectionType: LayerType.Connection) {
 
   /**
    * The Recurrent Neural Network to process the sequence left-to-right
    */
-  val leftToRightNetwork: NeuralNetwork
+  val leftToRightNetwork = NeuralNetwork(
+    LayerConfiguration(
+      size = this.inputLayerSize,
+      inputType = this.inputType),
+    LayerConfiguration(
+      size = this.hiddenLayerSize,
+      activationFunction = this.hiddenLayerActivation,
+      connectionType = this.hiddenLayerConnectionType))
 
   /**
    * The Recurrent Neural Network to process the sequence right-to-left
    */
-  val rightToLeftNetwork: NeuralNetwork
+  val rightToLeftNetwork = NeuralNetwork(
+    LayerConfiguration(
+      size = this.inputLayerSize,
+      inputType = this.inputType),
+    LayerConfiguration(
+      size = this.hiddenLayerSize,
+      activationFunction = this.hiddenLayerActivation,
+      connectionType = this.hiddenLayerConnectionType))
 
   /**
-   * The Feedforward Neural Network that combine the bidirectional output
-   * using a linear transformation followed a the non-linear activation function.
+   * Check connection to the output layer.
    */
-  val outputNetwork: NeuralNetwork
-
   init {
     require(hiddenLayerConnectionType.property == LayerType.Property.Recurrent) {
       "required hiddenLayerConnectionType with Recurrent property"
     }
-
-    this.leftToRightNetwork = NeuralNetwork(
-      LayerConfiguration(
-        size = this.inputLayerSize,
-        inputType = this.inputType),
-      LayerConfiguration(
-        size = this.hiddenLayerSize,
-        activationFunction = this.hiddenLayerActivation,
-        connectionType = this.hiddenLayerConnectionType))
-
-    this.rightToLeftNetwork = NeuralNetwork(
-      LayerConfiguration(
-        size = this.inputLayerSize,
-        inputType = this.inputType),
-      LayerConfiguration(
-        size = this.hiddenLayerSize,
-        activationFunction = this.hiddenLayerActivation,
-        connectionType = this.hiddenLayerConnectionType))
-
-    this.outputNetwork = NeuralNetwork(
-      LayerConfiguration(
-        size = this.hiddenLayerSize * 2),
-      LayerConfiguration(
-        size = this.outputLayerSize,
-        activationFunction = this.outputLayerActivation,
-        connectionType = LayerType.Connection.Feedforward))
   }
 
   /**
-   * Initialize the weight of the sub-networks [leftToRightNetwork],
-   * [rightToLeftNetwork], [outputNetwork] using the default random generator.
+   * Initialize the weight of the sub-networks [leftToRightNetwork] and [rightToLeftNetwork] using the default
+   * random generator.
    *
    * @return this BiRNN
    */
   fun initialize(): BiRNN {
     this.leftToRightNetwork.initialize()
     this.rightToLeftNetwork.initialize()
-    this.outputNetwork.initialize()
 
     return this
   }
