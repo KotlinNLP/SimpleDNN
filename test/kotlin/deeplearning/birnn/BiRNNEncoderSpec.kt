@@ -135,5 +135,34 @@ class BiRNNEncoderSpec : Spek({
         )
       }
     }
+
+    val inputErrors: Array<DenseNDArray> = encoder.getInputSequenceErrors()
+
+    it("should match the expected errors of first input array") {
+      assertTrue {
+        inputErrors[0].equals(
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(1.031472, -0.627913)),
+          tolerance = 1.0e-06
+        )
+      }
+    }
+
+    it("should match the expected errors of second input array") {
+      assertTrue {
+        inputErrors[1].equals(
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.539497, -0.629167)),
+          tolerance = 1.0e-06
+        )
+      }
+    }
+
+    it("should match the expected errors of third input array") {
+      assertTrue {
+        inputErrors[2].equals(
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.013097, -0.09932)),
+          tolerance = 1.0e-06
+        )
+      }
+    }
   }
 })
