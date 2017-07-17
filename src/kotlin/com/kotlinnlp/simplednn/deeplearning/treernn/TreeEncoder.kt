@@ -132,11 +132,11 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
     }
 
     /**
-     * The errors on a given node can be set using the [TreeEncoder.setEncodingErrors]
-     * or automatically generated during the back-propagation process.
+     * The errors associated to a given node can be set using the [TreeEncoder.setEncodingErrors] method or
+     * automatically generated during the back-propagation process.
      * In this implementation the errors are combined by summation.
      *
-     * @return the sum of the errors associated to this Node
+     * @return the sum of the errors associated to this Node or null if the node has no errors associated to it
      */
     internal fun getNodeErrors(): DenseNDArray? = when {
       this.encodingErrors != null && this.backwardErrors != null -> this.encodingErrors!!.sum(this.backwardErrors!!)
@@ -187,7 +187,12 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
      * Propagate errors to the descendants using the back-propagation algorithm
      */
     internal fun propagateErrors() {
-      this.backward(this.getNodeErrors())
+
+      val errors: DenseNDArray? = this.getNodeErrors()
+
+      if (errors != null && errors.sum() != 0.0) {
+        this.backward(errors)
+      }
 
       this.leftChildren.forEach { it.propagateErrors() }
       this.rightChildren.forEach { it.propagateErrors() }
@@ -200,14 +205,12 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
      *
      * @param errors the errors accumulated on this node to propagate
      */
-    private fun backward(errors: DenseNDArray?) {
+    private fun backward(errors: DenseNDArray) {
 
-      if (errors != null && errors.sum() != 0.0){
-        val (leftErrors, rightErrors) = this.backwardConcat(errors)
+      val (leftErrors, rightErrors) = this.backwardConcat(errors)
 
-        this.backwardChildren(processor = this.leftProcessor, children = this.leftChildren, errors = leftErrors)
-        this.backwardChildren(processor = this.rightProcessor, children = this.rightChildren, errors = rightErrors)
-      }
+      this.backwardChildren(processor = this.leftProcessor, children = this.leftChildren, errors = leftErrors)
+      this.backwardChildren(processor = this.rightProcessor, children = this.rightChildren, errors = rightErrors)
     }
 
     /**
@@ -218,7 +221,9 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
      * @return pair of left and right errors
      */
     private fun backwardConcat(errors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
+
       this.concatProcessor.backward(errors, propagateToInput = true)
+
       return this.splitLeftAndRightErrors(this.concatProcessor.getInputErrors(copy = false))
     }
 
@@ -372,10 +377,7 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
    * Clear the errors of the nodes.
    */
   fun propagateErrors() {
-
-    require(optimizer != null){
-      "Impossible to propagate errors without an optimizer"
-    }
+    require(optimizer != null) { "Impossible to propagate errors without an optimizer" }
 
     this.nodesWithEncodingErrors.forEach { it.propagateErrors() }
     this.accumulateParamsErrors()
@@ -383,9 +385,9 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
   }
 
   /**
-   * Accumulate the params errors calculated during the recursive back-propagation
+   * Accumulate the parameters errors calculated during the recursive back-propagation.
    */
-  private fun accumulateParamsErrors(){
+  private fun accumulateParamsErrors() {
 
     this.optimizer!!.newBatch()
 
@@ -395,9 +397,9 @@ class TreeEncoder(private val network: TreeRNN, private val optimizer: TreeRNNOp
         this.optimizer.newExample()
 
         this.optimizer.accumulate(TreeRNNParameters(
-          leftRNN = it.leftProcessor.getParamsErrors(copy = false),
-          rightRNN = it.rightProcessor.getParamsErrors(copy = false),
-          concatNetwork = it.concatProcessor.getParamsErrors(copy = false)))
+            leftRNN = it.leftProcessor.getParamsErrors(copy = false),
+            rightRNN = it.rightProcessor.getParamsErrors(copy = false),
+            concatNetwork = it.concatProcessor.getParamsErrors(copy = false)))
       }
     }
   }
