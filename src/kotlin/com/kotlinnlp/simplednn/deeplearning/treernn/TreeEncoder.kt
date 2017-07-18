@@ -189,7 +189,7 @@ class TreeEncoder(private val network: TreeRNN) {
 
       val errors: DenseNDArray? = this.getNodeErrors()
 
-      if (errors != null && errors.sum() != 0.0) {
+      if (errors != null && (0 until errors.length).any { errors[it] != 0.0 }) {
         this.backward(errors)
       }
 
