@@ -117,6 +117,8 @@ object TreeRNNUtils {
    */
   fun getEncodingErrors(): Map<Int, DenseNDArray> = mapOf(
     Pair(2, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 0.4))),
-    Pair(6, DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9, 0.6)))
+    Pair(3, DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, 0.3))),
+    Pair(6, DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9, 0.6))),
+    Pair(8, DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, -0.1)))
   )
 }
