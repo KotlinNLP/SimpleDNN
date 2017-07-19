@@ -8,6 +8,7 @@
 package deeplearning.treernn
 
 import com.kotlinnlp.simplednn.deeplearning.treernn.TreeEncoder
+import com.kotlinnlp.simplednn.deeplearning.treernn.TreeRNNOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -28,7 +29,7 @@ class TreeEncoderSpec : Spek({
     on("addNodes") {
 
       val treeRNN = TreeRNNUtils.buildTreeRNN()
-      val treeEncoder = TreeEncoder(network = treeRNN, optimizer = null)
+      val treeEncoder = TreeEncoder(network = treeRNN)
       val nodes: Map<Int, DenseNDArray> = TreeRNNUtils.buildNodes()
 
       nodes.forEach { nodeId, vector -> treeEncoder.addNode(id = nodeId, vector = vector) }
@@ -45,7 +46,7 @@ class TreeEncoderSpec : Spek({
     on("setHead") {
 
       val treeRNN = TreeRNNUtils.buildTreeRNN()
-      val treeEncoder = TreeEncoder(network = treeRNN, optimizer = null)
+      val treeEncoder = TreeEncoder(network = treeRNN)
       val nodes: Map<Int, DenseNDArray> = TreeRNNUtils.buildNodes()
 
       nodes.forEach { nodeId, vector -> treeEncoder.addNode(id = nodeId, vector = vector) }
@@ -144,8 +145,8 @@ class TreeEncoderSpec : Spek({
     on("setHead with a different order") {
 
       val treeRNN = TreeRNNUtils.buildTreeRNN()
-      val treeEncoder1 = TreeEncoder(network = treeRNN, optimizer = null)
-      val treeEncoder2 = TreeEncoder(network = treeRNN, optimizer = null)
+      val treeEncoder1 = TreeEncoder(network = treeRNN)
+      val treeEncoder2 = TreeEncoder(network = treeRNN)
       val nodes: Map<Int, DenseNDArray> = TreeRNNUtils.buildNodes()
 
       nodes.forEach { nodeId, vector -> treeEncoder1.addNode(id = nodeId, vector = vector) }
@@ -197,7 +198,7 @@ class TreeEncoderSpec : Spek({
     on("getNode") {
 
       val treeRNN = TreeRNNUtils.buildTreeRNN()
-      val treeEncoder = TreeEncoder(network = treeRNN, optimizer = null)
+      val treeEncoder = TreeEncoder(network = treeRNN)
       val nodes: Map<Int, DenseNDArray> = TreeRNNUtils.buildNodes()
 
       nodes.forEach { nodeId, vector -> treeEncoder.addNode(id = nodeId, vector = vector) }
@@ -217,10 +218,10 @@ class TreeEncoderSpec : Spek({
       }
     }
 
-    on("setEncodingErrors") {
+    on("addEncodingErrors") {
 
       val treeRNN = TreeRNNUtils.buildTreeRNN()
-      val treeEncoder = TreeEncoder(network = treeRNN, optimizer = null)
+      val treeEncoder = TreeEncoder(network = treeRNN)
       val nodes: Map<Int, DenseNDArray> = TreeRNNUtils.buildNodes()
       val encodingErrors: Map<Int, DenseNDArray> = TreeRNNUtils.getEncodingErrors()
 
@@ -228,26 +229,87 @@ class TreeEncoderSpec : Spek({
 
       TreeRNNUtils.setHeads(treeEncoder)
 
-      encodingErrors.forEach { nodeId, errors -> treeEncoder.setEncodingErrors(nodeId = nodeId, errors = errors) }
+      encodingErrors.forEach { nodeId, errors -> treeEncoder.addEncodingErrors(nodeId = nodeId, errors = errors) }
 
       it("should raise an Exception when trying to set the encoding errors of a node not previously inserted") {
-        assertFails { treeEncoder.setEncodingErrors(12, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2))) }
+        assertFails { treeEncoder.addEncodingErrors(12, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2))) }
       }
 
       it("should raise an Exception when trying to set not compatible encoding errors") {
-        assertFails { treeEncoder.setEncodingErrors(3, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3))) }
+        assertFails { treeEncoder.addEncodingErrors(3, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3))) }
       }
 
-      it("should raise an Exception when trying to set the encoding errors of a not-root node") {
-        assertFails { treeEncoder.setEncodingErrors(3, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2))) }
+      val optimizer = TreeRNNOptimizer(treeRNN)
+      treeEncoder.propagateErrors(optimizer)
+
+      it("should match the expected vector errors of the node 1") {
+        assertTrue {
+          treeEncoder.getNode(1).vectorErrors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.057933, -0.20179)),
+            tolerance = 1.0e-06)
+        }
       }
 
-      it("should set the expected errors into the first root node") {
-        assertTrue { encodingErrors[2]!!.equals(treeEncoder.getNode(2).getNodeErrors()!!, tolerance = 1.0e-08) }
+      it("should match the expected vector errors of the node 2") {
+        assertTrue {
+          treeEncoder.getNode(2).vectorErrors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.14089, 0.20105)),
+            tolerance = 1.0e-06)
+        }
       }
 
-      it("should set the expected errors into the second root node") {
-        assertTrue { encodingErrors[6]!!.equals(treeEncoder.getNode(6).getNodeErrors()!!, tolerance = 1.0e-08) }
+      it("should match the expected vector errors of the node 3") {
+        assertTrue {
+          treeEncoder.getNode(3).vectorErrors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.025417, -0.068414)),
+            tolerance = 1.0e-06
+          )
+        }
+      }
+
+      it("should match the expected vector errors of the node 4") {
+        assertTrue {
+          treeEncoder.getNode(4).vectorErrors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.009037, -0.076462)),
+            tolerance = 1.0e-06
+          )
+        }
+      }
+
+      it("should match the expected vector errors of the node 5") {
+        assertTrue {
+          treeEncoder.getNode(5).vectorErrors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.010593, -0.009837)),
+            tolerance = 1.0e-06
+          )
+        }
+      }
+
+      it("should match the expected vector errors of the node 6") {
+        assertTrue {
+          treeEncoder.getNode(6).vectorErrors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.231024, -0.32538)),
+            tolerance = 1.0e-06
+          )
+        }
+      }
+
+      it("should match the expected vector errors of the node 7") {
+        assertTrue {
+          treeEncoder.getNode(7).vectorErrors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.165773, -0.053794)),
+            tolerance = 1.0e-06
+          )
+        }
+      }
+
+      it("should match the expected vector errors of the node 8") {
+        assertTrue {
+          treeEncoder.getNode(8).vectorErrors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.002945, -0.056789)),
+            tolerance = 1.0e-06
+          )
+        }
       }
     }
   }
