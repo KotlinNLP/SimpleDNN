@@ -7,6 +7,9 @@
 
 package deeplearning.treernn
 
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
+import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
 import com.kotlinnlp.simplednn.deeplearning.treernn.TreeEncoder
 import com.kotlinnlp.simplednn.deeplearning.treernn.TreeRNNOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -223,13 +226,10 @@ class TreeEncoderSpec : Spek({
       val treeRNN = TreeRNNUtils.buildTreeRNN()
       val treeEncoder = TreeEncoder(network = treeRNN)
       val nodes: Map<Int, DenseNDArray> = TreeRNNUtils.buildNodes()
-      val encodingErrors: Map<Int, DenseNDArray> = TreeRNNUtils.getEncodingErrors()
 
       nodes.forEach { nodeId, vector -> treeEncoder.addNode(id = nodeId, vector = vector) }
 
       TreeRNNUtils.setHeads(treeEncoder)
-
-      encodingErrors.forEach { nodeId, errors -> treeEncoder.addEncodingErrors(nodeId = nodeId, errors = errors) }
 
       it("should raise an Exception when trying to set the encoding errors of a node not previously inserted") {
         assertFails { treeEncoder.addEncodingErrors(12, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2))) }
@@ -238,6 +238,20 @@ class TreeEncoderSpec : Spek({
       it("should raise an Exception when trying to set not compatible encoding errors") {
         assertFails { treeEncoder.addEncodingErrors(3, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3))) }
       }
+    }
+
+    on("propagateErrors") {
+
+      val treeRNN = TreeRNNUtils.buildTreeRNN()
+      val treeEncoder = TreeEncoder(network = treeRNN)
+      val nodes: Map<Int, DenseNDArray> = TreeRNNUtils.buildNodes()
+      val encodingErrors: Map<Int, DenseNDArray> = TreeRNNUtils.getEncodingErrors()
+
+      nodes.forEach { nodeId, vector -> treeEncoder.addNode(id = nodeId, vector = vector) }
+
+      TreeRNNUtils.setHeads(treeEncoder)
+
+      encodingErrors.forEach { nodeId, errors -> treeEncoder.addEncodingErrors(nodeId = nodeId, errors = errors) }
 
       val optimizer = TreeRNNOptimizer(treeRNN)
       treeEncoder.propagateErrors(optimizer)
@@ -309,6 +323,116 @@ class TreeEncoderSpec : Spek({
             DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.002945, -0.056789)),
             tolerance = 1.0e-06
           )
+        }
+      }
+    }
+
+    on("update") {
+
+      val treeRNN = TreeRNNUtils.buildTreeRNN()
+      val treeEncoder = TreeEncoder(network = treeRNN)
+      val nodes: Map<Int, DenseNDArray> = TreeRNNUtils.buildNodes()
+      val encodingErrors: Map<Int, DenseNDArray> = TreeRNNUtils.getEncodingErrors()
+
+      val optimizer = TreeRNNOptimizer(
+        network = treeRNN,
+        leftUpdateMethod = LearningRateMethod(learningRate = 0.1),
+        rightUpdateMethod = LearningRateMethod(learningRate = 0.1),
+        concatUpdateMethod = LearningRateMethod(learningRate = 0.1))
+
+      nodes.forEach { nodeId, vector -> treeEncoder.addNode(id = nodeId, vector = vector) }
+
+      TreeRNNUtils.setHeads(treeEncoder)
+
+      encodingErrors.forEach { nodeId, errors -> treeEncoder.addEncodingErrors(nodeId = nodeId, errors = errors) }
+
+      treeEncoder.propagateErrors(optimizer)
+      optimizer.update()
+
+      val concatParams = treeRNN.concatNetwork.model.paramsPerLayer[0] as FeedforwardLayerParameters
+      val leftRNNParams = treeRNN.leftRNN.model.paramsPerLayer[0] as SimpleRecurrentLayerParameters
+      val rightRNNParams = treeRNN.rightRNN.model.paramsPerLayer[0] as SimpleRecurrentLayerParameters
+
+      it("should match the expected updated values of the concat network biases") {
+        assertTrue {
+           concatParams.unit.biases.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.903129, -0.809295)),
+            tolerance = 1.0e-06)
+        }
+      }
+
+      it("should match the expected updated values of the concat network weights") {
+        assertTrue {
+          (concatParams.unit.weights.values as DenseNDArray).equals(
+            DenseNDArrayFactory.arrayOf(arrayOf(
+              doubleArrayOf(0.19561, -0.201012, -0.400524, 1.003945, -0.501027, -0.398002),
+              doubleArrayOf(0.501749, 0.494214, 0.202465, -0.800209, 0.492504, 0.091253)
+            )),
+            tolerance = 1.0e-06)
+        }
+      }
+
+      it("should match the expected updated values of the leftRNN biases") {
+        assertTrue {
+           leftRNNParams.unit.biases.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.79655, 0.195259, -0.303113)),
+            tolerance = 1.0e-06)
+        }
+      }
+
+      it("should match the expected updated values of the leftRNN weights") {
+        assertTrue {
+          (leftRNNParams.unit.weights.values as DenseNDArray).equals(
+            DenseNDArrayFactory.arrayOf(arrayOf(
+              doubleArrayOf(0.602513, 0.802564),
+              doubleArrayOf(-0.295092, 0.005574),
+              doubleArrayOf(0.902109, -0.796982)
+            )),
+            tolerance = 1.0e-06)
+        }
+      }
+
+      it("should match the expected updated values of the leftRNN recurrent weights") {
+        assertTrue {
+          leftRNNParams.unit.recurrentWeights.values.equals(
+            DenseNDArrayFactory.arrayOf(arrayOf(
+              doubleArrayOf(0.100383, 0.699583, 0.000294),
+              doubleArrayOf(0.200129, 0.899859, -0.199901),
+              doubleArrayOf(-0.500351, -0.199617, -0.400269)
+            )),
+            tolerance = 1.0e-06)
+        }
+      }
+
+      it("should match the expected updated values of the rightRNN biases") {
+        assertTrue {
+           rightRNNParams.unit.biases.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.708738, 0.898502, 0.401487)),
+            tolerance = 1.0e-06)
+        }
+      }
+
+      it("should match the expected updated values of the rightRNN weights") {
+        assertTrue {
+          (rightRNNParams.unit.weights.values as DenseNDArray).equals(
+            DenseNDArrayFactory.arrayOf(arrayOf(
+              doubleArrayOf(0.097327, 0.894518),
+              doubleArrayOf(-1.000919, -0.398736),
+              doubleArrayOf(0.396431, -0.801835)
+            )),
+            tolerance = 1.0e-06)
+        }
+      }
+
+      it("should match the expected updated values of the rightRNN recurrent weights") {
+        assertTrue {
+          rightRNNParams.unit.recurrentWeights.values.equals(
+            DenseNDArrayFactory.arrayOf(arrayOf(
+              doubleArrayOf(1.000556, -0.09775, 0.700684),
+              doubleArrayOf(-0.700047, 0.798187, -1.000972),
+              doubleArrayOf(-0.000055, 0.800068, 0.000076)
+            )),
+            tolerance = 1.0e-06)
         }
       }
     }
