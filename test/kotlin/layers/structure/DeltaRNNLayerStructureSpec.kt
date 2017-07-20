@@ -104,7 +104,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the outputArray") {
           assertTrue {
             layer.outputArray.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.282482, -0.68061, -0.109175, -1.43231, -0.713768)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.25913, -0.677332, -0.101842, -1.370527, -0.664109)),
               tolerance = 1.0e-06)
           }
         }
@@ -112,7 +112,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the candidate array") {
           assertTrue {
             layer.candidate.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.099336, -0.095874, -0.061456, -0.270142, -0.342373)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.091124, -0.095413, -0.057328, -0.258489, -0.318553)),
               tolerance = 1.0e-06)
           }
         }
@@ -120,7 +120,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the partition array") {
           assertTrue {
             layer.partition.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.040117, -0.039291, 0.009608, -0.203702, 0.076921)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.0368, -0.039102, 0.008963, -0.194915, 0.071569)),
               tolerance = 1.0e-06)
           }
         }
@@ -128,7 +128,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the candidate biases") {
           assertTrue {
             paramsErrors.feedforwardUnit.biases.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.099336, -0.095874, -0.061456, -0.270142, -0.342373)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.091124, -0.095413, -0.057328, -0.258489, -0.318553)),
               tolerance = 1.0e-06)
           }
         }
@@ -136,7 +136,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the partition biases") {
           assertTrue {
             paramsErrors.recurrentUnit.biases.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.040117, -0.039291, 0.009608, -0.203702, 0.076921)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.0368, -0.039102, 0.008963, -0.194915, 0.071569)),
               tolerance = 1.0e-06)
           }
         }
@@ -152,7 +152,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the beta1 array") {
           assertTrue {
             paramsErrors.beta1.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.081455, 0.104503, -0.018437, -0.01891, -0.071898)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.074722, 0.104, -0.017198, -0.018094, -0.066896)),
               tolerance = 1.0e-06)
           }
         }
@@ -169,11 +169,11 @@ class DeltaRNNLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(arrayOf(
-                doubleArrayOf(0.008253, 0.009284, 0.009284, -0.010316),
-                doubleArrayOf(0.000753, 0.000847, 0.000847, -0.000942),
-                doubleArrayOf(-0.027352, -0.030771, -0.030771, 0.03419),
-                doubleArrayOf(0.076516, 0.086081, 0.086081, -0.095645),
-                doubleArrayOf(-0.171096, -0.192483, -0.192483, 0.21387)
+                doubleArrayOf(0.007571, 0.008517, 0.008517, -0.009463),
+                doubleArrayOf(0.00075, 0.000843, 0.000843, -0.000937),
+                doubleArrayOf(-0.025515, -0.028704, -0.028704, 0.031894),
+                doubleArrayOf(0.073215, 0.082367, 0.082367, -0.091519),
+                doubleArrayOf(-0.159192, -0.179091, -0.179091, 0.19899)
               )),
               tolerance = 1.0e-06)
           }
@@ -197,7 +197,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the inputArray") {
           assertTrue {
             layer.inputArray.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.027148, 0.270204, -0.131293, 0.204699)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.023319, 0.253729, -0.122248, 0.190719)),
               tolerance = 1.0e-06)
           }
         }
@@ -216,7 +216,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the outputArray") {
           assertTrue {
             layer.outputArray.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.367842, -0.521409, -0.090679, -1.990224, -0.926828)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.352809, -0.494163, -0.085426, -1.746109, -0.7161)),
               tolerance = 1.0e-06)
           }
         }
@@ -224,7 +224,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the candidate array") {
           assertTrue {
             layer.candidate.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.127725, -0.073765, -0.057584, -0.562482, -0.457644)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.122505, -0.06991, -0.054249, -0.493489, -0.353592)),
               tolerance = 1.0e-06)
           }
         }
@@ -232,7 +232,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the partition array") {
           assertTrue {
             layer.partition.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.071043, -0.0153, -0.001379, -0.470858, -0.053671)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.06814, -0.0145, -0.001299, -0.413104, -0.041468)),
               tolerance = 1.0e-06)
           }
         }
@@ -240,7 +240,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the candidate biases") {
           assertTrue {
             paramsErrors.feedforwardUnit.biases.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.127725, -0.073765, -0.057584, -0.562482, -0.457644)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.122505, -0.06991, -0.054249, -0.493489, -0.353592)),
               tolerance = 1.0e-06)
           }
         }
@@ -248,7 +248,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the partition biases") {
           assertTrue {
             paramsErrors.recurrentUnit.biases.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.071043, -0.0153, -0.001379, -0.470858, -0.053671)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.06814, -0.0145, -0.001299, -0.413104, -0.041468)),
               tolerance = 1.0e-06)
           }
         }
@@ -256,7 +256,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the alpha array") {
           assertTrue {
             paramsErrors.alpha.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.115834, -0.00333, -0.003066, -0.020045, -0.026394)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1111, -0.003156, -0.002889, -0.017586, -0.020393)),
               tolerance = 1.0e-06)
           }
         }
@@ -264,7 +264,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the beta1 array") {
           assertTrue {
             paramsErrors.beta1.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.104734, 0.080403, -0.017275, -0.039374, -0.096105)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.100454, 0.076202, -0.016275, -0.034544, -0.074254)),
               tolerance = 1.0e-06)
           }
         }
@@ -272,7 +272,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the beta2 array") {
           assertTrue {
             paramsErrors.beta2.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.14126, 0.003055, -0.01022, -0.286357, -0.125688)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.135487, 0.002895, -0.009628, -0.251233, -0.097111)),
               tolerance = 1.0e-06)
           }
         }
@@ -281,11 +281,11 @@ class DeltaRNNLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(arrayOf(
-                doubleArrayOf(-0.030323, -0.034114, -0.034114, 0.037904),
-                doubleArrayOf(-0.010631, -0.01196, -0.01196, 0.013289),
-                doubleArrayOf(-0.014871, -0.01673, -0.01673, 0.018589),
-                doubleArrayOf(0.288327, 0.324368, 0.324368, -0.360408),
-                doubleArrayOf(-0.093454, -0.105136, -0.105136, 0.116817)
+                doubleArrayOf(-0.029084, -0.03272, -0.03272, 0.036355),
+                doubleArrayOf(-0.010076, -0.011335, -0.011335, 0.012595),
+                doubleArrayOf(-0.01401, -0.015761, -0.015761, 0.017512),
+                doubleArrayOf(0.252961, 0.284582, 0.284582, -0.316202),
+                doubleArrayOf(-0.072206, -0.081232, -0.081232, 0.090257)
               )),
               tolerance = 1.0e-06)
           }
@@ -296,11 +296,11 @@ class DeltaRNNLayerStructureSpec : Spek({
           assertTrue {
             wRec.equals(
               DenseNDArrayFactory.arrayOf(arrayOf(
-                doubleArrayOf(0.000252, -0.000252, 0.000372, 0.000915, 0.000848),
-                doubleArrayOf(0.001849, -0.001849, 0.002729, 0.00671, 0.006221),
-                doubleArrayOf(0.012389, -0.012389, 0.018285, 0.04496, 0.041679),
-                doubleArrayOf(-0.085707, 0.085707, -0.126498, -0.311042, -0.288349),
-                doubleArrayOf(0.01093, -0.01093, 0.016131, 0.039665, 0.036771)
+                doubleArrayOf(0.000242, -0.000242, 0.000357, 0.000878, 0.000813),
+                doubleArrayOf(0.001752, -0.001752, 0.002586, 0.00636, 0.005896),
+                doubleArrayOf(0.011671, -0.011671, 0.017226, 0.042355, 0.039265),
+                doubleArrayOf(-0.075195, 0.075195, -0.110982, -0.272891, -0.252981),
+                doubleArrayOf(0.008445, -0.008445, 0.012464, 0.030647, 0.028411)
               )),
               tolerance = 1.0e-06)
           }
@@ -309,7 +309,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the inputArray") {
           assertTrue {
             layer.inputArray.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.200333, 0.4456, -0.10519, 0.105415)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.177606, 0.379355, -0.085751, 0.080693)),
               tolerance = 1.0e-06)
           }
         }
@@ -328,7 +328,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the outputArray") {
           assertTrue {
             layer.outputArray.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.082082, -0.40561, -0.205775, -0.40071, -0.751368)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.075296, -0.403656, -0.191953, -0.383426, -0.699093)),
               tolerance = 1.0e-06)
           }
         }
@@ -336,7 +336,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the candidate array") {
           assertTrue {
             layer.candidate.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.028864, -0.057136, -0.115833, -0.075576, -0.360408)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.026478, -0.056861, -0.108053, -0.072316, -0.335333)),
               tolerance = 1.0e-06)
           }
         }
@@ -344,7 +344,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the partition array") {
           assertTrue {
             layer.partition.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.011657, -0.023416, 0.018109, -0.056989, 0.080973)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.010693, -0.023303, 0.016893, -0.05453, 0.07534)),
               tolerance = 1.0e-06)
           }
         }
@@ -352,7 +352,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the candidate biases") {
           assertTrue {
             paramsErrors.feedforwardUnit.biases.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.028864, -0.057136, -0.115833, -0.075576, -0.360408)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.026478, -0.056861, -0.108053, -0.072316, -0.335333)),
               tolerance = 1.0e-06)
           }
         }
@@ -360,7 +360,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the partition biases") {
           assertTrue {
             paramsErrors.recurrentUnit.biases.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.011657, -0.023416, 0.018109, -0.056989, 0.080973)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.010693, -0.023303, 0.016893, -0.05453, 0.07534)),
               tolerance = 1.0e-06)
           }
         }
@@ -376,7 +376,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the beta1 array") {
           assertTrue {
             paramsErrors.beta1.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.023669, 0.062279, -0.03475, -0.00529, -0.075686)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.021712, 0.061979, -0.032416, -0.005062, -0.07042)),
               tolerance = 1.0e-06)
           }
         }
@@ -393,11 +393,11 @@ class DeltaRNNLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(arrayOf(
-                doubleArrayOf(0.002398, 0.002698, 0.002698, -0.002998),
-                doubleArrayOf(0.000449, 0.000505, 0.000505, -0.000561),
-                doubleArrayOf(-0.051554, -0.057998, -0.057998, 0.064443),
-                doubleArrayOf(0.021407, 0.024082, 0.024082, -0.026758),
-                doubleArrayOf(-0.180109, -0.202623, -0.202623, 0.225136)
+                doubleArrayOf(0.0022, 0.002475, 0.002475, -0.00275),
+                doubleArrayOf(0.000447, 0.000503, 0.000503, -0.000558),
+                doubleArrayOf(-0.048091, -0.054102, -0.054102, 0.060114),
+                doubleArrayOf(0.020483, 0.023044, 0.023044, -0.025604),
+                doubleArrayOf(-0.167578, -0.188526, -0.188526, 0.209473)
               )),
               tolerance = 1.0e-06)
           }
@@ -421,7 +421,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the inputArray") {
           assertTrue {
             layer.inputArray.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.111866, 0.202535, -0.135921, 0.217254)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.10362, 0.18901, -0.126453, 0.202292)),
               tolerance = 1.0e-06)
           }
         }
@@ -440,7 +440,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the outputArray") {
           assertTrue {
             layer.outputArray.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.167442, -0.246409, -0.187279, -0.958624, -0.964428)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.160599, -0.233533, -0.17643, -0.841042, -0.745151)),
               tolerance = 1.0e-06)
           }
         }
@@ -448,7 +448,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the candidate array") {
           assertTrue {
             layer.candidate.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.058141, -0.03486, -0.118929, -0.270929, -0.47621)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.055764, -0.033038, -0.11204, -0.237697, -0.367937)),
               tolerance = 1.0e-06)
           }
         }
@@ -456,7 +456,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the partition array") {
           assertTrue {
             layer.partition.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.032339, -0.00723, -0.002847, -0.226797, -0.055849)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.031017, -0.006853, -0.002682, -0.198978, -0.043151)),
               tolerance = 1.0e-06)
           }
         }
@@ -464,7 +464,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the candidate biases") {
           assertTrue {
             paramsErrors.feedforwardUnit.biases.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.058141, -0.03486, -0.118929, -0.270929, -0.47621)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.055764, -0.033038, -0.11204, -0.237697, -0.367937)),
               tolerance = 1.0e-06)
           }
         }
@@ -472,7 +472,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the partition biases") {
           assertTrue {
             paramsErrors.recurrentUnit.biases.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.032339, -0.00723, -0.002847, -0.226797, -0.055849)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.031017, -0.006853, -0.002682, -0.198978, -0.043151)),
               tolerance = 1.0e-06)
           }
         }
@@ -480,7 +480,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the alpha array") {
           assertTrue {
             paramsErrors.alpha.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.052728, -0.001574, -0.006332, -0.009655, -0.027465)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.050573, -0.001492, -0.005966, -0.008471, -0.021221)),
               tolerance = 1.0e-06)
           }
         }
@@ -488,7 +488,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the beta1 array") {
           assertTrue {
             paramsErrors.beta1.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.047675, 0.037997, -0.035679, -0.018965, -0.100004)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.045727, 0.036012, -0.033612, -0.016639, -0.077267)),
               tolerance = 1.0e-06)
           }
         }
@@ -496,7 +496,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the beta2 array") {
           assertTrue {
             paramsErrors.beta2.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.064302, 0.001444, -0.021108, -0.137928, -0.130787)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.061674, 0.001368, -0.019886, -0.121011, -0.10105)),
               tolerance = 1.0e-06)
           }
         }
@@ -505,11 +505,11 @@ class DeltaRNNLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(arrayOf(
-                doubleArrayOf(-0.013803, -0.015529, -0.015529, 0.017254),
-                doubleArrayOf(-0.005024, -0.005652, -0.005652, 0.006280),
-                doubleArrayOf(-0.030713, -0.034553, -0.034553, 0.038392),
-                doubleArrayOf(0.138877, 0.156237, 0.156237, -0.173597),
-                doubleArrayOf(-0.097245, -0.109401, -0.109401, 0.121556)
+                doubleArrayOf(-0.013239, -0.014894, -0.014894, 0.016549),
+                doubleArrayOf(-0.004762, -0.005357, -0.005357, 0.005952),
+                doubleArrayOf(-0.028934, -0.032551, -0.032551, 0.036168),
+                doubleArrayOf(0.121843, 0.137073, 0.137073, -0.152304),
+                doubleArrayOf(-0.075135, -0.084527, -0.084527, 0.093919)
               )),
               tolerance = 1.0e-06)
           }
@@ -520,11 +520,11 @@ class DeltaRNNLayerStructureSpec : Spek({
           assertTrue {
             wRec.equals(
               DenseNDArrayFactory.arrayOf(arrayOf(
-                doubleArrayOf(0.000115, -0.000115, 0.000169, 0.000416, 0.000386),
-                doubleArrayOf(0.000874, -0.000874, 0.00129, 0.003171, 0.00294),
-                doubleArrayOf(0.025586, -0.025586, 0.037764, 0.092855, 0.086081),
-                doubleArrayOf(-0.041282, 0.041282, -0.06093, -0.149819, -0.138888),
-                doubleArrayOf(0.011373, -0.011373, 0.016786, 0.041274, 0.038263)
+                doubleArrayOf(0.00011, -0.00011, 0.000162, 0.000399, 0.000370),
+                doubleArrayOf(0.000828, -0.000828, 0.001222, 0.003005, 0.002786),
+                doubleArrayOf(0.024104, -0.024104, 0.035576, 0.087477, 0.081094),
+                doubleArrayOf(-0.036219, 0.036219, -0.053457, -0.131442, -0.121852),
+                doubleArrayOf(0.008787, -0.008787, 0.012969, 0.03189, 0.029563)
               )),
               tolerance = 1.0e-06)
           }
@@ -533,7 +533,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the inputArray") {
           assertTrue {
             layer.inputArray.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.050357, 0.25876, -0.086747, 0.118424)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.046517, 0.213223, -0.067537, 0.093758)),
               tolerance = 1.0e-06)
           }
         }
