@@ -81,14 +81,17 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
         w = this.layer.params.recurrentUnit.weights.values as DenseNDArray)
     }
 
-    val c: DenseNDArray = this.calculateCandidate(wyRec = wyRec)
+    val c: DenseNDArray = this.calculateCandidate(wyRec = wyRec, layerContributions = layerContributions)
     val p: DenseNDArray = this.calculatePartition()
 
     val y: DenseNDArray = this.layer.outputArray.values
     y.assignProd(p, c)
 
     if (yPrev != null) {
-      y.assignSum(p.reverseSub(1.0).assignProd(yPrev))
+      val yRec: DenseNDArray = layerContributions.recurrentUnit.biases.values
+
+      yRec.assignValues(p.reverseSub(1.0).assignProd(yPrev))
+      y.assignSum(yRec)
     }
 
     this.layer.outputArray.activate()
@@ -138,6 +141,50 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     if (wyRec != null) {
       val beta2: DenseNDArray = this.layer.params.beta2.values
       d1.assignSum(beta2.prod(wyRec))
+    }
+
+    c.assignSum(d1, bc)
+
+    if (wyRec != null) {
+      val alpha: DenseNDArray = this.layer.params.alpha.values
+      val d2: DenseNDArray = alpha.prod(wx).assignProd(wyRec)
+      c.assignSum(d2)
+    }
+
+    this.layer.candidate.activate()
+
+    return c
+  }
+
+  /**
+   * Calculate the values of the candidate array, saving its contributions from input.
+   *
+   *   d1 = beta1 * w (dot) x + beta2 * wRec (dot) yPrev
+   *   d2 = alpha * w (dot) x * wRec (dot) yPrev
+   *   c = tanh(d1 + d2 + bc)
+   *
+   * @param wyRec the result of the dot product between wRec and yPrev if any, null otherwise
+   * @param layerContributions the structure in which to save the contributions during the calculations
+   *
+   * @return the array of candidate
+   */
+  private fun calculateCandidate(wyRec: DenseNDArray?, layerContributions: DeltaRNNLayerParameters): DenseNDArray {
+    this.layer.params as DeltaRNNLayerParameters
+
+    val c: DenseNDArray = this.layer.candidate.values
+    val bc: DenseNDArray = this.layer.params.feedforwardUnit.biases.values
+    val beta1: DenseNDArray = this.layer.params.beta1.values
+    val wx: DenseNDArray = this.layer.wx.values
+    val d1Input: DenseNDArray = layerContributions.feedforwardUnit.biases.values
+
+    d1Input.assignProd(beta1, wx)
+
+    val d1: DenseNDArray =  if (wyRec != null) {
+      val beta2: DenseNDArray = this.layer.params.beta2.values
+      beta2.prod(wyRec).assignSum(d1Input)
+
+    } else {
+      d1Input
     }
 
     c.assignSum(d1, bc)
