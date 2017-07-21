@@ -135,35 +135,39 @@ object RelevanceUtils {
    * @param y the output array
    * @param yContribute1 the first contribution to calculate [y]
    * @param yContribute2 the second contribution to calculate [y]
+   * @param nPartitions the number of partitions into which [y] is divided
    *
    * @return the partition of [yRelevance] with the same ratio as [yContribute1] is in respect of [y].
    */
   fun getRelevancePartition1(yRelevance: DenseNDArray,
                              y: DenseNDArray,
                              yContribute1: DenseNDArray,
-                             yContribute2: DenseNDArray): DenseNDArray {
+                             yContribute2: DenseNDArray,
+                             nPartitions: Int = 2): DenseNDArray {
 
     val eps: DenseNDArray = yContribute2.nonZeroSign().assignProd(this.relevanceEps) // the same factor (yContribute2)
     // is needed to calculate eps either for the first partition then the second one
 
-    // partition factor = (yContribute1 + eps / 2) / (yContribute1 + yContribute2 + eps) [eps avoids divisions by zero]
-    return yRelevance.prod(yContribute1.sum(eps.div(2.0))).assignDiv(y.sum(eps))
+    // partition factor = (yContribute1 + eps / n) / (yContribute1 + yContribute2 + eps) [eps avoids divisions by zero]
+    return yRelevance.prod(yContribute1.sum(eps.div(nPartitions.toDouble()))).assignDiv(y.sum(eps))
   }
 
   /**
    * @param yRelevance the relevance of [y]
    * @param y the output array
    * @param yContribute2 the second contribution to calculate [y]
+   * @param nPartitions the number of partitions into which [y] is divided
    *
    * @return the partition of [yRelevance] with the same ratio as [yContribute2] is in respect of [y].
    */
   fun getRelevancePartition2(yRelevance: DenseNDArray,
                              y: DenseNDArray,
-                             yContribute2: DenseNDArray): DenseNDArray {
+                             yContribute2: DenseNDArray,
+                             nPartitions: Int = 2): DenseNDArray {
 
     val eps: DenseNDArray = yContribute2.nonZeroSign().assignProd(this.relevanceEps)
 
-    // partition factor = (yContribute2 + eps / 2) / (yInput + yContribute2 + eps) [eps avoids divisions by zero]
-    return yRelevance.prod(yContribute2.sum(eps.div(2.0))).assignDiv(y.sum(eps))
+    // partition factor = (yContribute2 + eps / n) / (yInput + yContribute2 + eps) [eps avoids divisions by zero]
+    return yRelevance.prod(yContribute2.sum(eps.div(nPartitions.toDouble()))).assignDiv(y.sum(eps))
   }
 }
