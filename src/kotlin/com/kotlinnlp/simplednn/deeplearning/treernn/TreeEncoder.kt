@@ -8,7 +8,9 @@
 package com.kotlinnlp.simplednn.deeplearning.treernn
 
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
+import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
+import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessorsPool
 import com.kotlinnlp.simplednn.simplemath.concatVectorsV
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -92,17 +94,20 @@ class TreeEncoder(private val network: TreeRNN) {
     /**
      * The [RecurrentNeuralProcessor] to encode the left-children.
      */
-    internal val leftProcessor = RecurrentNeuralProcessor<DenseNDArray>(this@TreeEncoder.network.leftRNN)
+    internal val leftProcessor: RecurrentNeuralProcessor<DenseNDArray>
+      = this@TreeEncoder.leftProcessorsPool.getProcessor()
 
     /**
      * The [RecurrentNeuralProcessor] to encode the right-children.
      */
-    internal val rightProcessor = RecurrentNeuralProcessor<DenseNDArray>(this@TreeEncoder.network.rightRNN)
+    internal val rightProcessor: RecurrentNeuralProcessor<DenseNDArray>
+      = this@TreeEncoder.rightProcessorsPool.getProcessor()
 
     /**
      * The [FeedforwardNeuralProcessor] to take two d-dimensional vectors and returning a single d-dimensional vector.
      */
-    internal val concatProcessor = FeedforwardNeuralProcessor<DenseNDArray>(this@TreeEncoder.network.concatNetwork)
+    internal val concatProcessor: FeedforwardNeuralProcessor<DenseNDArray>
+      = this@TreeEncoder.concatProcessorsPool.getProcessor()
 
     /**
      * The head of the node.
@@ -303,6 +308,21 @@ class TreeEncoder(private val network: TreeRNN) {
       }
     }
   }
+
+  /**
+   * The pool of processors for the left RNN.
+   */
+  private val leftProcessorsPool = RecurrentNeuralProcessorsPool<DenseNDArray>(this.network.leftRNN)
+
+  /**
+   * The pool of processors for the right RNN.
+   */
+  private val rightProcessorsPool = RecurrentNeuralProcessorsPool<DenseNDArray>(this.network.rightRNN)
+
+  /**
+   * The pool of processors for the concat output network.
+   */
+  private val concatProcessorsPool = FeedforwardNeuralProcessorsPool<DenseNDArray>(this.network.concatNetwork)
 
   /**
    * The nodes mapped to their IDs.
