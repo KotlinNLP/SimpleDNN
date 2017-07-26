@@ -66,6 +66,19 @@ class DeltaRNNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   val wyRec = AugmentedArray<DenseNDArray>(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
 
   /**
+   * The support structure used to save temporary results during a forward and using them to calculate the relevance
+   * later.
+   */
+  val relevanceSupport: DeltaRNNRelevanceSupport
+    get() = try {
+      this._relevanceSupport
+
+    } catch (e: UninitializedPropertyAccessException) {
+      this._relevanceSupport = DeltaRNNRelevanceSupport(outputSize = this.outputArray.size)
+      this._relevanceSupport
+    }
+
+  /**
    * The helper which execute the forward
    */
   override val forwardHelper = DeltaRNNForwardHelper(layer = this)
@@ -79,6 +92,12 @@ class DeltaRNNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The helper which calculates the relevance
    */
   override val relevanceHelper = DeltaRNNRelevanceHelper(layer = this)
+
+  /**
+   * The support structure used to save temporary results during a forward and using them to calculate the relevance
+   * later.
+   */
+  lateinit private var _relevanceSupport: DeltaRNNRelevanceSupport
 
   /**
    * Initialization: set the activation functions.
