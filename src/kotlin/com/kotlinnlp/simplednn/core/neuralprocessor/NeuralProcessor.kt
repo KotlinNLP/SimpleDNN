@@ -15,8 +15,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * The [NeuralProcessor] acts on the [neuralNetwork] performing predictions and training.
  *
  * @property neuralNetwork a [NeuralNetwork]
+ * @property id an identification number useful to track a specific processor
  */
-abstract class NeuralProcessor(val neuralNetwork: NeuralNetwork) {
+abstract class NeuralProcessor(val neuralNetwork: NeuralNetwork, val id: Int = 0) {
 
   /**
    *

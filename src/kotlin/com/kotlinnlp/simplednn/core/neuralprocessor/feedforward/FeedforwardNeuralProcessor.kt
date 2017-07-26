@@ -20,10 +20,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * and training based on Examples.
  *
  * @property neuralNetwork a [NeuralNetwork]
+ * @property id an identification number useful to track a specific processor
  */
 class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
-  neuralNetwork: NeuralNetwork
-) : NeuralProcessor(neuralNetwork) {
+  neuralNetwork: NeuralNetwork,
+  id: Int = 0
+) : NeuralProcessor(neuralNetwork = neuralNetwork, id = id) {
 
   /**
    * The structure as support of forward and backward.

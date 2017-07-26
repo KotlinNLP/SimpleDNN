@@ -28,11 +28,13 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  * and training based on sequences of recurrent Examples.
  *
  * @property neuralNetwork a [NeuralNetwork]
+ * @property id an identification number useful to track a specific processor
  */
 class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
-  neuralNetwork: NeuralNetwork
+  neuralNetwork: NeuralNetwork,
+  id: Int = 0
 ) : StructureContextWindow<InputNDArrayType>,
-  NeuralProcessor(neuralNetwork) {
+  NeuralProcessor(neuralNetwork = neuralNetwork, id = id) {
 
   /**
    * Sequence of states.
