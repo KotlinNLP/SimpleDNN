@@ -428,6 +428,28 @@ class DenseNDArraySpec : Spek({
         }
       }
 
+      on("matrix.prod(colVector) method") {
+
+        val matrix = DenseNDArrayFactory.arrayOf(arrayOf(
+          doubleArrayOf(0.1, 0.2, 0.3, 0.0),
+          doubleArrayOf(0.4, 0.5, 0.7, 0.9)
+        ))
+        val colVector = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, 0.3))
+        val expectedMatrix = DenseNDArrayFactory.arrayOf(arrayOf(
+          doubleArrayOf(0.02, 0.04, 0.06, 0.0),
+          doubleArrayOf(0.12, 0.15, 0.21, 0.27)
+        ))
+        val res = matrix.prod(colVector)
+
+        it("should return a new DenseNDArray") {
+          assertEquals(false, matrix === res)
+        }
+
+        it("should return the expected values") {
+          assertEquals(true, res.equals(expectedMatrix, tolerance = 1.0e-04))
+        }
+      }
+
       on("div(number) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1111, 0.2222, 0.3333, 0.0))
