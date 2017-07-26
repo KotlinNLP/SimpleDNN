@@ -81,7 +81,7 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
         w = this.layer.params.recurrentUnit.weights.values as DenseNDArray)
     }
 
-    val c: DenseNDArray = this.calculateCandidate(wyRec = wyRec, layerContributions = layerContributions)
+    val c: DenseNDArray = this.calculateCandidateSavingContributions(wyRec = wyRec)
     val p: DenseNDArray = this.calculatePartition()
 
     val y: DenseNDArray = this.layer.outputArray.values
@@ -157,41 +157,48 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Calculate the values of the candidate array, saving its contributions from input.
+   * Calculate the values of the candidate array, saving its contributions from d1 and d2.
    *
    *   d1 = beta1 * w (dot) x + beta2 * wRec (dot) yPrev
    *   d2 = alpha * w (dot) x * wRec (dot) yPrev
    *   c = tanh(d1 + d2 + bc)
    *
    * @param wyRec the result of the dot product between wRec and yPrev if any, null otherwise
-   * @param layerContributions the structure in which to save the contributions during the calculations
    *
    * @return the array of candidate
    */
-  private fun calculateCandidate(wyRec: DenseNDArray?, layerContributions: DeltaRNNLayerParameters): DenseNDArray {
+  private fun calculateCandidateSavingContributions(wyRec: DenseNDArray?): DenseNDArray {
     this.layer.params as DeltaRNNLayerParameters
+
+    val relevanceSupport = this.layer.relevanceSupport
 
     val c: DenseNDArray = this.layer.candidate.values
     val bc: DenseNDArray = this.layer.params.feedforwardUnit.biases.values
     val beta1: DenseNDArray = this.layer.params.beta1.values
     val wx: DenseNDArray = this.layer.wx.values
-    val d1Input: DenseNDArray = layerContributions.feedforwardUnit.biases.values
-
-    d1Input.assignProd(beta1, wx)
+    val d1Input: DenseNDArray = relevanceSupport.d1Input.values
 
     val d1: DenseNDArray =  if (wyRec != null) {
       val beta2: DenseNDArray = this.layer.params.beta2.values
-      beta2.prod(wyRec).assignSum(d1Input)
+      val halfBc: DenseNDArray = bc.div(2.0) // bc split equally among d1Input and d1Rec
+      val d1Rec: DenseNDArray = relevanceSupport.d1Rec.values
+
+      d1Input.assignProd(beta1, wx).assignSum(halfBc) // d1Input is saved to calculate the relevance later
+      d1Rec.assignProd(beta2, wyRec).assignSum(halfBc) // d1Rec is saved to calculate the relevance later
+
+      d1Input.sum(d1Rec)
 
     } else {
-      d1Input
+      d1Input.assignProd(beta1, wx).assignSum(bc)
     }
 
-    c.assignSum(d1, bc)
+    c.assignValues(d1)
 
     if (wyRec != null) {
       val alpha: DenseNDArray = this.layer.params.alpha.values
-      val d2: DenseNDArray = alpha.prod(wx).assignProd(wyRec)
+      val d2: DenseNDArray = relevanceSupport.d2.values
+
+      d2.assignProd(alpha, wx).assignProd(wyRec) // d2 is saved to calculate the relevance later
       c.assignSum(d2)
     }
 
