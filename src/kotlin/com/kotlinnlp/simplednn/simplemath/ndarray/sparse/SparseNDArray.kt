@@ -603,19 +603,35 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
+   * Product by a [DenseNDArray] with the same shape or a compatible column vector (each column is multiplied
+   * by the given vector).
    *
+   * @param a the [DenseNDArray] by which this [SparseNDArray] will be multiplied
+   *
+   * @return a new [SparseNDArray] containing the product between this [SparseNDArray] and [a]
    */
   private fun prod(a: DenseNDArray): SparseNDArray {
-    require(a.shape == this.shape) { "Arrays with different size" }
+    require(a.shape == this.shape || (a.columns == 1 && a.rows == this.rows)) { "Arrays with not compatible size" }
 
-    return SparseNDArray(
-      shape = this.shape,
-      values = Array(
-        size = this.values.size,
-        init = { i -> this.values[i] * a[this.rowIndices[i], this.colIndices[i]]}
-      ),
-      rows = this.rowIndices.copyOf(),
-      columns = this.colIndices.copyOf())
+    return if (a.shape == this.shape)
+      SparseNDArray(
+        shape = this.shape,
+        values = Array(
+          size = this.values.size,
+          init = { k -> this.values[k] * a[this.rowIndices[k], this.colIndices[k]] }
+        ),
+        rows = this.rowIndices.copyOf(),
+        columns = this.colIndices.copyOf())
+
+    else
+      SparseNDArray(
+        shape = this.shape,
+        values = Array(
+          size = this.values.size,
+          init = { k -> this.values[k] * a[this.rowIndices[k], 0] }
+        ),
+        rows = this.rowIndices.copyOf(),
+        columns = this.colIndices.copyOf())
   }
 
   /**

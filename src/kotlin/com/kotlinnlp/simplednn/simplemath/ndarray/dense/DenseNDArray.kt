@@ -516,11 +516,36 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   override fun prod(a: NDArray<*>): DenseNDArray {
 
     return when(a) {
-      is DenseNDArray -> DenseNDArray(this.storage.mul(a.storage))
+      is DenseNDArray -> this.prod(a)
       is SparseNDArray -> TODO("not implemented")
       is SparseBinaryNDArray -> TODO("not implemented")
       else -> throw RuntimeException("Invalid NDArray type")
     }
+  }
+
+  /**
+   * Product by a [DenseNDArray] with the same shape or a compatible column vector (each column is multiplied
+   * by the given vector).
+   *
+   * @param a the [DenseNDArray] by which this [DenseNDArray] will be multiplied
+   *
+   * @return a new [DenseNDArray] containing the product between this [DenseNDArray] and [a]
+   */
+  private fun prod(a: DenseNDArray): DenseNDArray {
+    require(a.shape == this.shape || (a.columns == 1 && a.rows == this.rows)) { "Arrays with not compatible size" }
+
+    return if (a.shape == this.shape)
+      DenseNDArray(this.storage.mul(a.storage))
+
+    else
+      DenseNDArray(DoubleMatrix(
+        this.storage.rows,
+        this.storage.columns,
+        *DoubleArray(
+          size = this.length,
+          init = { k -> this.storage[k] * a[k % a.length] } // linear indexing
+        )
+      ))
   }
 
   /**
