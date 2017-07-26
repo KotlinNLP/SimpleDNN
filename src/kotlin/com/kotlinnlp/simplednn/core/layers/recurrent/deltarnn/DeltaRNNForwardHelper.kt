@@ -37,7 +37,9 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     wx.assignDot(w, x)
 
-    val c: DenseNDArray = this.calculateCandidate(wyRec = this.calculateRecurrentContribution(yPrev))
+    val c: DenseNDArray = this.calculateCandidate(
+      wyRec = if (yPrev != null) this.calculateRecurrentContribution(yPrev) else null)
+
     val p: DenseNDArray = this.calculatePartition()
 
     val y: DenseNDArray = this.layer.outputArray.values
@@ -101,20 +103,17 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Calculate the recurrent contribution as dot product between the output in the previous state and the recurrent
    * weights.
    *
-   * @return the recurrent contribution (can be null)
+   * @param yPrev the output array in the previous state
+   *
+   * @return the recurrent contribution
    */
-  private fun calculateRecurrentContribution(yPrev: DenseNDArray?): DenseNDArray? {
+  private fun calculateRecurrentContribution(yPrev: DenseNDArray): DenseNDArray? {
     this.layer.params as DeltaRNNLayerParameters
 
-    return if (yPrev != null) {
-      val wRec: DenseNDArray = this.layer.params.recurrentUnit.weights.values as DenseNDArray
-      val wyRec: DenseNDArray = this.layer.wyRec.values
+    val wRec: DenseNDArray = this.layer.params.recurrentUnit.weights.values as DenseNDArray
+    val wyRec: DenseNDArray = this.layer.wyRec.values
 
-      return wyRec.assignDot(wRec, yPrev)
-
-    } else {
-      null
-    }
+    return wyRec.assignDot(wRec, yPrev)
   }
 
   /**
