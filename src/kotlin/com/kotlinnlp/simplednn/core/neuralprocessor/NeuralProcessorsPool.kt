@@ -49,6 +49,13 @@ abstract class NeuralProcessorsPool<NeuralProcessorType: NeuralProcessor>(
   }
 
   /**
+   * Set all processors as available again.
+   */
+  fun releaseAll() {
+    this.pool.forEach { this.availableProcessors.add(it.id) }
+  }
+
+  /**
    * Add a new processor to the pool.
    */
   private fun addProcessor() {
