@@ -421,6 +421,19 @@ class TreeEncoder(private val network: TreeRNN) {
   }
 
   /**
+   * Reset the Tree removing all nodes.
+   */
+  fun clearTree() {
+
+    this.nodes.clear()
+    this.nodesWithEncodingErrors.clear()
+
+    this.leftProcessorsPool.releaseAll()
+    this.rightProcessorsPool.releaseAll()
+    this.concatProcessorsPool.releaseAll()
+  }
+
+  /**
    * Launch the propagation starting from the given [node] if it contains encoding errors, recur to children otherwise.
    *
    * @param node the node from which to start the propagation of the errors
