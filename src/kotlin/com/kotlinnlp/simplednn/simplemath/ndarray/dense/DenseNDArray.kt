@@ -525,14 +525,16 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
 
   /**
    * Product by a [DenseNDArray] with the same shape or a compatible column vector (each column is multiplied
-   * by the given vector).
+   * by the given vector). It works also against a row and a column vector.
    *
    * @param a the [DenseNDArray] by which this [DenseNDArray] will be multiplied
    *
    * @return a new [DenseNDArray] containing the product between this [DenseNDArray] and [a]
    */
   private fun prod(a: DenseNDArray): DenseNDArray {
-    require(a.shape == this.shape || (a.columns == 1 && a.rows == this.rows)) { "Arrays with not compatible size" }
+    require(a.shape == this.shape ||
+      (a.columns == 1 && a.rows == this.rows) ||
+      (a.isVector && this.isVector && a.length == this.length)) { "Arrays with not compatible size" }
 
     return if (a.shape == this.shape)
       DenseNDArray(this.storage.mul(a.storage))
