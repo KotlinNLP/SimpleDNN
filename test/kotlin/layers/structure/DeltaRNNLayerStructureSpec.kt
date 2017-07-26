@@ -7,9 +7,13 @@
 
 package layers.structure
 
+import com.kotlinnlp.simplednn.core.arrays.DistributionArray
+import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.deltarnn.DeltaRNNLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -17,6 +21,7 @@ import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import layers.structure.utils.DeltaRNNLayerStructureUtils
 import layers.structure.contextwindows.DeltaLayerContextWindow
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 /**
@@ -83,6 +88,259 @@ class DeltaRNNLayerStructureSpec : Spek({
           assertTrue {
             layer.outputArray.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.202158, 0.228591, -0.240679, -0.350224, -0.476828)),
+              tolerance = 1.0e-06)
+          }
+        }
+      }
+    }
+
+    context("forward with relevance") {
+
+      on("without previous state context") {
+
+        val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Empty())
+        val contributions = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5)
+
+        layer.forward(layerContributions = contributions)
+
+        it("should match the expected candidate") {
+          assertTrue {
+            layer.candidate.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.568971, 0.410323, -0.39693, 0.648091, -0.449441)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected partition array") {
+          assertTrue {
+            layer.partition.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.519989, 0.169384, 0.668188, 0.325195, 0.601088)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected output") {
+          assertTrue {
+            layer.outputArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.287518, 0.06939, -0.259175, 0.20769, -0.263768)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected contributions of the input") {
+          val inputContrib: DenseNDArray = contributions.feedforwardUnit.weights.values as DenseNDArray
+          assertTrue {
+            inputContrib.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(-0.4, -0.54, 0.72, -0.6),
+                doubleArrayOf(-0.56, 0.36, -0.09, -0.8),
+                doubleArrayOf(-0.56, 0.63, -0.27, 0.5),
+                doubleArrayOf(-0.64, 0.81, 0.0, -0.1),
+                doubleArrayOf(-0.32, -0.9, 0.63, 0.8)
+              )),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected recurrent contributions") {
+          val recContrib: DenseNDArray = contributions.recurrentUnit.weights.values as DenseNDArray
+          assertTrue {
+            recContrib.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)
+              )),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        layer.setOutputRelevance(DistributionArray.uniform(length = 5))
+        layer.propagateRelevanceToGates(layerContributions = contributions)
+        layer.setInputRelevance(layerContributions = contributions)
+
+        it("should set a Dense input relevance") {
+          assertTrue { layer.inputArray.relevance is DenseNDArray }
+        }
+
+        it("should match the expected relevance of the partition array") {
+          val relevance: DenseNDArray = layer.partition.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, 0.1, 0.1, 0.1)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected relevance of the candidate") {
+          val relevance: DenseNDArray = layer.candidate.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, 0.1, 0.1, 0.1)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected relevance of the d1 input array") {
+          val relevance: DenseNDArray = layer.relevanceSupport.d1Input.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, 0.1, 0.1, 0.1)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected input relevance") {
+          val relevance: DenseNDArray = layer.inputArray.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.058871, -0.524906, 1.314539, 0.269238)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should throw an Exception when calculating the recurrent relevance") {
+          assertFailsWith <KotlinNullPointerException> {
+            layer.setRecurrentRelevance(layerContributions = contributions)
+          }
+        }
+      }
+
+      on("with previous state context") {
+
+        val prevStateLayer = DeltaLayerContextWindow.Back().getPrevStateLayer()
+        val contextWindow = mock<LayerContextWindow>()
+        val layer = DeltaRNNLayerStructureUtils.buildLayer(contextWindow)
+        val contributions = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5)
+
+        whenever(contextWindow.getPrevStateLayer()).thenReturn(prevStateLayer)
+
+        layer.forward(layerContributions = contributions)
+
+        it("should match the expected candidate") {
+          assertTrue {
+            layer.candidate.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.576403, 0.40594, -0.222741, 0.36182, -0.42253)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected partition array") {
+          assertTrue {
+            layer.partition.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.519989, 0.169384, 0.668188, 0.325195, 0.601088)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected output") {
+          assertTrue {
+            layer.outputArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.202158, 0.228591, -0.240679, -0.350224, -0.476828)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected contributions of the input") {
+          val inputContrib: DenseNDArray = contributions.feedforwardUnit.weights.values as DenseNDArray
+          assertTrue {
+            inputContrib.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(-0.4, -0.54, 0.72, -0.6),
+                doubleArrayOf(-0.56, 0.36, -0.09, -0.8),
+                doubleArrayOf(-0.56, 0.63, -0.27, 0.5),
+                doubleArrayOf(-0.64, 0.81, 0.0, -0.1),
+                doubleArrayOf(-0.32, -0.9, 0.63, 0.8)
+              )),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected recurrent contributions") {
+          val recContrib: DenseNDArray = contributions.recurrentUnit.weights.values as DenseNDArray
+          assertTrue {
+            recContrib.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(0.0, 0.1579, -0.23305, 0.716298, 0.464826),
+                doubleArrayOf(0.138163, -0.1579, -0.058263, 0.501409, -0.464826),
+                doubleArrayOf(0.177638, 0.177638, -0.203919, 0.358149, -0.332018),
+                doubleArrayOf(0.0, -0.019738, -0.145656, 0.14326, 0.531229),
+                doubleArrayOf(0.118425, 0.118425, -0.23305, 0.07163, 0.199211)
+              )),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        layer.setOutputRelevance(DistributionArray.uniform(length = 5))
+        layer.propagateRelevanceToGates(layerContributions = contributions)
+        layer.setInputRelevance(layerContributions = contributions)
+        layer.setRecurrentRelevance(layerContributions = contributions)
+
+        it("should set a Dense input relevance") {
+          assertTrue { layer.inputArray.relevance is DenseNDArray }
+        }
+
+        it("should match the expected relevance of the partition array") {
+          val relevance: DenseNDArray = layer.partition.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, 0.1, 0.1, 0.1)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected relevance of the candidate") {
+          val relevance: DenseNDArray = layer.candidate.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.151155, 0.030391, 0.06021, -0.029987, 0.048968)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected relevance of the d1 input array") {
+          val relevance: DenseNDArray = layer.relevanceSupport.d1Input.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.101818, 0.031252, 0.074148, -0.028935, 0.031181)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected relevance of the d1 recurrent array") {
+          val relevance: DenseNDArray = layer.relevanceSupport.d1Rec.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.05417, 0.000358, -0.00857, 0.000304, 0.018798)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected relevance of the d2 array") {
+          val relevance: DenseNDArray = layer.relevanceSupport.d2.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.103506, -0.001219, -0.005368, -0.001356, -0.001011)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected input relevance") {
+          val relevance: DenseNDArray = layer.inputArray.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.156729, -0.419269, 1.161411, 0.171329)),
+              tolerance = 1.0e-06)
+          }
+        }
+
+        it("should match the expected recurrent relevance") {
+          val relevance: DenseNDArray = prevStateLayer.outputArray.relevance as DenseNDArray
+          assertTrue {
+            relevance.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.077057, 0.03487, 0.116601, 0.037238, 0.131607)),
               tolerance = 1.0e-06)
           }
         }
