@@ -35,6 +35,11 @@ class TreeRNN(
   val hiddenLayerConnectionType: LayerType.Connection = LayerType.Connection.GRU) {
 
   /**
+   * The size of the output layer
+   */
+  val outputLayerSize: Int = this.inputLayerSize
+
+  /**
    * The Recurrent Neural Network to encode the left-children sequence
    */
   val leftRNN: NeuralNetwork
@@ -71,7 +76,7 @@ class TreeRNN(
 
     this.concatNetwork = NeuralNetwork(
       LayerConfiguration(size = this.hiddenLayerSize * 2),
-      LayerConfiguration(size = this.inputLayerSize,
+      LayerConfiguration(size = this.outputLayerSize,
         activationFunction = Tanh(), // fixed
         connectionType = LayerType.Connection.Feedforward))
   }
