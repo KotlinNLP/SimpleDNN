@@ -34,6 +34,12 @@ class BiRNN(
   val hiddenLayerConnectionType: LayerType.Connection) {
 
   /**
+   * The size of the output layer results from the concatenation of the hidden layers
+   * of the [leftToRightNetwork] and [rightToLeftNetwork]
+   */
+  val outputLayerSize: Int = this.hiddenLayerSize * 2
+
+  /**
    * The Recurrent Neural Network to process the sequence left-to-right
    */
   val leftToRightNetwork = NeuralNetwork(
