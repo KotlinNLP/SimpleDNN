@@ -58,9 +58,9 @@ data class HANModel(
       BiRNN(
         inputType = LayerType.Input.Dense,
         inputSize = inputSize,
-        outputSize = this.getEncoderOutputSize(inputSize = inputSize, levelIndex = i),
-        outputActivation = this.hiddenActivation,
-        outputConnectionType = this.hiddenConnectionType)
+        hiddenSize = this.getEncoderOutputSize(inputSize = inputSize, levelIndex = i),
+        hiddenActivation = this.hiddenActivation,
+        recurrentConnectionType = this.hiddenConnectionType)
     }
   )
 
@@ -72,7 +72,7 @@ data class HANModel(
     init = { i ->
 
       AttentionNetworkParameters(
-        inputSize = this.biRNNs[i].outputSize,
+        inputSize = this.biRNNs[i].hiddenSize,
         attentionSize = this.attentionSize,
         sparseInput = false
       )
@@ -83,7 +83,7 @@ data class HANModel(
    * The parameters of the output feedforward layer.
    */
   val outputLayerParams = FeedforwardLayerParameters(
-    inputSize = this.biRNNs.last().outputSize,
+    inputSize = this.biRNNs.last().hiddenSize,
     outputSize = this.outputSize,
     sparseInput = false)
 

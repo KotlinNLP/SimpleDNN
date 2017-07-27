@@ -45,9 +45,9 @@ object BiRNNEncoderUtils {
     val birnn = BiRNN(
       inputSize = 2,
       inputType = LayerType.Input.Dense,
-      outputSize = 3,
-      outputActivation = Tanh(),
-      outputConnectionType = LayerType.Connection.SimpleRecurrent
+      hiddenSize = 3,
+      hiddenActivation = Tanh(),
+      recurrentConnectionType = LayerType.Connection.SimpleRecurrent
     )
 
     this.initL2RParameters(params = birnn.leftToRightNetwork.model.paramsPerLayer[0] as SimpleRecurrentLayerParameters)

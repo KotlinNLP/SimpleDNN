@@ -55,7 +55,7 @@ class HAN(val model: HANModel, val dropout: Double = 0.0) {
    *
    */
   private val outputLayer = FeedforwardLayerStructure(
-    inputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(shape = Shape(this.model.biRNNs.last().outputSize))),
+    inputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(shape = Shape(this.model.biRNNs.last().hiddenSize))),
     outputArray = LayerUnit<DenseNDArray>(size = this.model.outputSize),
     params = this.model.outputLayerParams
   )
