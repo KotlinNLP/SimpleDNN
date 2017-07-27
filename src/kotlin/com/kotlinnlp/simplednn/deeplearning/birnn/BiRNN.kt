@@ -21,17 +21,17 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
  * Mike Schuster and Kuldip K. Paliwal. - Bidirectional recurrent neural networks
  *
  * @property inputType the type of the input layer (Dense, Sparse, SparseBinary)
- * @property inputLayerSize the size of the input layer
- * @property hiddenLayerSize the size of the hidden layer
- * @property hiddenLayerActivation the activation function of the hidden layer
- * @property hiddenLayerConnectionType type of recurrent neural network (e.g. LSTM, GRU, CFN, SimpleRNN)
+ * @property inputSize the size of the input layer of each RNN
+ * @property outputSize the size of the output layer of each RNN
+ * @property outputActivation the activation function of the output layer
+ * @property outputConnectionType type of recurrent neural network (e.g. LSTM, GRU, CFN, SimpleRNN)
  */
 class BiRNN(
   val inputType: LayerType.Input,
-  val inputLayerSize: Int,
-  val hiddenLayerSize: Int,
-  val hiddenLayerActivation: ActivationFunction?,
-  val hiddenLayerConnectionType: LayerType.Connection) {
+  val inputSize: Int,
+  val outputSize: Int,
+  val outputActivation: ActivationFunction?,
+  val outputConnectionType: LayerType.Connection) {
 
   /**
    * The size of the output layer results from the concatenation of the hidden layers
@@ -44,31 +44,31 @@ class BiRNN(
    */
   val leftToRightNetwork = NeuralNetwork(
     LayerConfiguration(
-      size = this.inputLayerSize,
+      size = this.inputSize,
       inputType = this.inputType),
     LayerConfiguration(
-      size = this.hiddenLayerSize,
-      activationFunction = this.hiddenLayerActivation,
-      connectionType = this.hiddenLayerConnectionType))
+      size = this.outputSize,
+      activationFunction = this.outputActivation,
+      connectionType = this.outputConnectionType))
 
   /**
    * The Recurrent Neural Network to process the sequence right-to-left
    */
   val rightToLeftNetwork = NeuralNetwork(
     LayerConfiguration(
-      size = this.inputLayerSize,
+      size = this.inputSize,
       inputType = this.inputType),
     LayerConfiguration(
-      size = this.hiddenLayerSize,
-      activationFunction = this.hiddenLayerActivation,
-      connectionType = this.hiddenLayerConnectionType))
+      size = this.outputSize,
+      activationFunction = this.outputActivation,
+      connectionType = this.outputConnectionType))
 
   /**
    * Check connection to the output layer.
    */
   init {
-    require(hiddenLayerConnectionType.property == LayerType.Property.Recurrent) {
-      "required hiddenLayerConnectionType with Recurrent property"
+    require(this.outputConnectionType.property == LayerType.Property.Recurrent) {
+      "required outputConnectionType with Recurrent property"
     }
   }
 

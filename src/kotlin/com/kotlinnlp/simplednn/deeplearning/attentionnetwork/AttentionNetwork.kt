@@ -40,7 +40,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   private val transformParamsErrorsAccumulator = TransformParamsErrorsAccumulator(
     inputSize = this.model.inputSize,
     attentionSize = this.model.attentionSize,
-    sparseInput = this.inputType == LayerType.Input.SparseBinary)
+    sparseInput = this.model.sparseInput)
 
   /**
    * The attention transform layer which creates an attention array from each array of an input sequence.

@@ -20,6 +20,16 @@ abstract class NeuralProcessorsPool<NeuralProcessorType: NeuralProcessor>(
 ) {
 
   /**
+   * The size of the pool (all processors).
+   */
+  val size: Int get() = this.pool.size
+
+  /**
+   * The number of processors in use.
+   */
+  val usage: Int get() = this.pool.size - this.availableProcessors.size
+
+  /**
    * The pool of all the created processors.
    */
   private val pool = arrayListOf<NeuralProcessorType>()
