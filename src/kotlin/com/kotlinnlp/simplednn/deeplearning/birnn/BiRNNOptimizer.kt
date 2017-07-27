@@ -11,6 +11,9 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
+import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
+import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
+import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
  * The optimizer of the BiRNN which in turn aggregates the optimizers of its sub-networks: leftToRightNetwork and
@@ -19,47 +22,54 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMetho
  * It is recommended to use the same UpdateMethod configuration for each sub-network.
  *
  * @param network the [BiRNN] to optimize
- * @param leftToRightUpdateMethod the [UpdateMethod] used for the left-to-right recurrent network
- * @param rightToLeftUpdateMethod the [UpdateMethod] used for the right-to-left recurrent network
+ * @param updateMethod the [UpdateMethod] used for the left-to-right and right-to-left recurrent networks
  */
 class BiRNNOptimizer(
   network: BiRNN,
-  leftToRightUpdateMethod: UpdateMethod = ADAMMethod(stepSize = 0.0001),
-  rightToLeftUpdateMethod: UpdateMethod = ADAMMethod(stepSize = 0.0001)
+  val updateMethod: UpdateMethod = ADAMMethod(stepSize = 0.0001)
 ) : Optimizer {
 
   /**
    * The [ParamsOptimizer] for the left-to-right network.
    */
-  private val leftToRightOptimizer = ParamsOptimizer(network.leftToRightNetwork, leftToRightUpdateMethod)
+  private val leftToRightOptimizer = ParamsOptimizer(network.leftToRightNetwork, updateMethod)
 
   /**
    * The [ParamsOptimizer] for the right-to-left network.
    */
-  private val rightToLeftOptimizer = ParamsOptimizer(network.rightToLeftNetwork, rightToLeftUpdateMethod)
+  private val rightToLeftOptimizer = ParamsOptimizer(network.rightToLeftNetwork, updateMethod)
 
   /**
    * Method to call every new epoch.
+   * In turn it calls the same method into the `updateMethod`
    */
   override fun newEpoch() {
-    this.leftToRightOptimizer.newEpoch()
-    this.rightToLeftOptimizer.newEpoch()
+
+    if (this.updateMethod is EpochScheduling) {
+      this.updateMethod.newEpoch()
+    }
   }
 
   /**
    * Method to call every new batch.
+   * In turn it calls the same method into the `updateMethod`
    */
   override fun newBatch() {
-    this.leftToRightOptimizer.newBatch()
-    this.rightToLeftOptimizer.newBatch()
+
+    if (this.updateMethod is BatchScheduling) {
+      this.updateMethod.newBatch()
+    }
   }
 
   /**
    * Method to call every new example.
+   * In turn it calls the same method into the `updateMethod`
    */
   override fun newExample() {
-    this.leftToRightOptimizer.newExample()
-    this.rightToLeftOptimizer.newExample()
+
+    if (this.updateMethod is ExampleScheduling) {
+      this.updateMethod.newExample()
+    }
   }
 
   /**
