@@ -21,8 +21,8 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
  * Mike Schuster and Kuldip K. Paliwal. - Bidirectional recurrent neural networks
  *
  * @property inputType the type of the input layer (Dense, Sparse, SparseBinary)
- * @property inputSize the size of the input layer
- * @property outputSize the size of the output layer
+ * @property inputSize the size of the input layer of each RNN
+ * @property outputSize the size of the output layer of each RNN
  * @property outputActivation the activation function of the output layer
  * @property outputConnectionType type of recurrent neural network (e.g. LSTM, GRU, CFN, SimpleRNN)
  */
