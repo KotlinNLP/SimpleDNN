@@ -8,8 +8,9 @@
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
+import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN
 
@@ -39,7 +40,7 @@ data class HAN(
   val compressionFactors: ArrayList<Double> = arrayListOf(*Array(
     size = hierarchySize,
     init = { i -> if (i == 0) 2.0 else 1.0 }))
-  ) {
+) {
 
   /**
    * Check the compatibility of the arguments.
@@ -84,12 +85,20 @@ data class HAN(
   )
 
   /**
-   * The parameters of the output feedforward layer.
+   * The network (a single Feedforward layer) which transforms the output of the last hierarchical level to the output
+   * of the [HANEncoder].
    */
-  val outputLayerParams = FeedforwardLayerParameters(
-    inputSize = this.biRNNs.last().outputSize,
-    outputSize = this.outputSize,
-    sparseInput = false)
+  val outputNetwork = NeuralNetwork(
+    LayerConfiguration(
+      size = this.biRNNs.last().outputSize,
+      inputType = LayerType.Input.Dense
+    ),
+    LayerConfiguration(
+      size = this.outputSize,
+      activationFunction = this.outputActivation,
+      connectionType = LayerType.Connection.Feedforward
+    )
+  )
 
   /**
    * @param levelIndex the index of a level of the hierarchy
