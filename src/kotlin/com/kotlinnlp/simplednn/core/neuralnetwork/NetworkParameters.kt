@@ -149,4 +149,18 @@ class NetworkParameters(val layersConfiguration: List<LayerConfiguration>, priva
       it.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
     }
   }
+
+  /**
+   * @return a new [NetworkParameters] containing a copy of all values of this one
+   */
+  fun clone(): NetworkParameters {
+
+    val clonedParams = NetworkParameters(layersConfiguration = this.layersConfiguration, sparseInput = this.sparseInput)
+
+    clonedParams.zip(this) { cloned, params ->
+      cloned.values.assignValues(params.values)
+    }
+
+    return clonedParams
+  }
 }
