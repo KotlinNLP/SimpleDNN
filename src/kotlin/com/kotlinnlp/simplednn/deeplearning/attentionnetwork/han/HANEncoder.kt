@@ -117,6 +117,8 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
    */
   fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean) {
 
+    this.resetAccumulators()
+
     this.outputProcessor.backward(outputErrors = outputErrors, propagateToInput = true)
 
     this.backwardHierarchicalLevel(
@@ -125,7 +127,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
       propagateToInput = propagateToInput
     )
 
-    this.resetAccumulators()
+    this.averageAccumulatedErrors()
   }
 
   /**
@@ -271,17 +273,29 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
   }
 
   /**
+   * Set the average of all the params errors accumulated by each accumulator.
+   */
+  private fun averageAccumulatedErrors() {
+
+    this.encodersParamsErrorsAccumulators.forEach {
+      it.averageErrors()
+    }
+
+    this.attentionNetworksParamsErrorsAccumulators.forEach {
+      it.averageErrors()
+    }
+  }
+
+  /**
    * Reset all the params errors accumulators.
    */
   private fun resetAccumulators() {
 
     this.encodersParamsErrorsAccumulators.forEach {
-      it.averageErrors()
       it.reset()
     }
 
     this.attentionNetworksParamsErrorsAccumulators.forEach {
-      it.averageErrors()
       it.reset()
     }
   }
