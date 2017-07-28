@@ -13,12 +13,12 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 
 /**
- * Bidirectional Recursive Neural Network (BiRNN)
+ * Bidirectional Recursive Neural Network (BiRNN).
  *
  * The class contains the sub-networks which constitute a BiRNN.
  *
- * Reference:
- * Mike Schuster and Kuldip K. Paliwal. - Bidirectional recurrent neural networks
+ *   Reference:
+ *   Mike Schuster and Kuldip K. Paliwal. - Bidirectional recurrent neural networks
  *
  * @property inputType the type of the input layer (Dense, Sparse, SparseBinary)
  * @property inputSize the size of the input layer of each RNN
@@ -36,13 +36,13 @@ class BiRNN(
   val recurrentConnectionType: LayerType.Connection) {
 
   /**
-   * The size of the output layer results from the concatenation of the hidden layers
-   * of the [leftToRightNetwork] and [rightToLeftNetwork]
+   * The size of the output layer resulting from the concatenation of the hidden layers of the [leftToRightNetwork] and
+   * [rightToLeftNetwork].
    */
   val outputSize: Int = this.hiddenSize * 2
 
   /**
-   * The Recurrent Neural Network to process the sequence left-to-right
+   * The Recurrent Neural Network to process the sequence left-to-right.
    */
   val leftToRightNetwork = NeuralNetwork(
     LayerConfiguration(
@@ -54,7 +54,7 @@ class BiRNN(
       connectionType = this.recurrentConnectionType))
 
   /**
-   * The Recurrent Neural Network to process the sequence right-to-left
+   * The Recurrent Neural Network to process the sequence right-to-left.
    */
   val rightToLeftNetwork = NeuralNetwork(
     LayerConfiguration(
