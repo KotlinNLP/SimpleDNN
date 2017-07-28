@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
- * Hierarchical Attention Networks.
+ * Encoder based on Hierarchical Attention Networks.
  *
  *   Reference:
  *   [Zichao Yang, Diyi Yang, Chris Dyer, Xiaodong He, Alex Smola, Eduard Hovy -
@@ -52,7 +52,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
   )
 
   /**
-   *
+   * The Feedforward layer which transforms the output of the last hierarchical level to the output of the [HANEncoder].
    */
   private val outputLayer = FeedforwardLayerStructure(
     inputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(shape = Shape(this.model.biRNNs.last().hiddenSize))),
