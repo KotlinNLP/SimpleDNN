@@ -55,7 +55,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
    * The Feedforward layer which transforms the output of the last hierarchical level to the output of the [HANEncoder].
    */
   private val outputLayer = FeedforwardLayerStructure(
-    inputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(shape = Shape(this.model.biRNNs.last().hiddenSize))),
+    inputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(shape = Shape(this.model.biRNNs.last().outputSize))),
     outputArray = LayerUnit<DenseNDArray>(size = this.model.outputSize),
     params = this.model.outputLayerParams
   )
