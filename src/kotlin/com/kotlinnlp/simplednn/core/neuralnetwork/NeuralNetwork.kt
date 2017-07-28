@@ -77,7 +77,7 @@ class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Seriali
   /**
    * Initialize the parameters of the model using the given random generator and value for the biases.
    *
-   * @param randomGenerator a [RandomGenerator] (default: fixed range with radius 0.8)
+   * @param randomGenerator a [RandomGenerator] (default: fixed range with radius 0.08)
    * @param biasesInitValue the init value for all the biases (default: 0.0)
    *
    * @return this [NeuralNetwork]
