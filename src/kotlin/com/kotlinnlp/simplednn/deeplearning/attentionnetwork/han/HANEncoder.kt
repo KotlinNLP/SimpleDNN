@@ -11,7 +11,10 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetwork
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncoder
+import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -36,6 +39,14 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
   )
 
   /**
+   * An array containing params errors accumulator for each BiRNN encoder.
+   */
+  private val encodersParamsErrorsAccumulators: Array<BiRNNParamsErrorsAccumulator> = Array(
+    size = this.model.hierarchySize,
+    init = { i -> BiRNNParamsErrorsAccumulator(this.model.biRNNs[i]) }
+  )
+
+  /**
    * An array containing the [AttentionNetwork]s, one for each level of the HAN.
    */
   private val attentionNetworks: Array<AttentionNetwork<DenseNDArray>> = Array(
@@ -45,6 +56,31 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
         model = this.model.attentionNetworksParams[i],
         inputType = LayerType.Input.Dense,
         dropout = this.dropout)
+    }
+  )
+
+  /**
+   * An array containing params errors accumulator for each [AttentionNetwork].
+   */
+  private val attentionNetworksParamsErrorsAccumulators: Array<AttentionNetworkParamsErrorsAccumulator> = Array(
+    size = this.model.hierarchySize,
+    init = { i ->
+      AttentionNetworkParamsErrorsAccumulator(
+        inputSize = this.attentionNetworks[i].model.inputSize,
+        attentionSize = this.attentionNetworks[i].model.attentionSize,
+        sparseInput = false)
+    }
+  )
+
+  /**
+   * An array containing structures to save the params errors of each [AttentionNetwork] during the backward.
+   */
+  private val attentionNetworksParamsErrors: Array<AttentionNetworkParameters> = Array(
+    size = this.model.hierarchySize,
+    init = { i-> AttentionNetworkParameters(
+      inputSize = this.attentionNetworks[i].model.inputSize,
+      attentionSize = this.attentionNetworks[i].model.attentionSize,
+      sparseInput = false)
     }
   )
 
@@ -80,8 +116,49 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
    * @param propagateToInput whether to propagate the output errors to the input or not
    */
   fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean) {
+
+    this.outputProcessor.backward(outputErrors = outputErrors, propagateToInput = true)
+
+    this.backwardHierarchicalLevel(
+      outputErrors = this.outputProcessor.getInputErrors(copy = false),
+      levelIndex = 0,
+      propagateToInput = propagateToInput
+    )
+
+    this.resetAccumulators()
+  }
+
+  /**
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   *
+   * @return the errors of the input sequences, grouped with the same hierarchy as the given input
+   */
+  fun getInputSequenceErrors(copy: Boolean = true): HierarchyItem {
     TODO("not implemented")
   }
+
+  /**
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   *
+   * @return the errors of the HAN parameters
+   */
+  fun getParamsErrors(copy: Boolean = true) = HANParameters(
+    biRNNs = arrayListOf(*Array(
+      size = this.model.hierarchySize,
+      init = { i ->
+        val paramsErrors = this.encodersParamsErrorsAccumulators[i].getParamsErrors()
+        if (copy) paramsErrors.clone() else paramsErrors
+      }
+    )),
+    attentionNetworks = arrayListOf(*Array(
+      size = this.model.hierarchySize,
+      init = { i ->
+        val paramsErrors = this.attentionNetworksParamsErrorsAccumulators[i].getParamsErrors()
+        if (copy) paramsErrors.clone() else paramsErrors
+      }
+    )),
+    outputNetwork = this.outputProcessor.getParamsErrors(copy = copy)
+  )
 
   /**
    * Apply the forward to the given [item] of the hierarchy dispatching it between a 'level' or a 'sequence'.
@@ -129,5 +206,83 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
         this.forwardItem(item = level[i], levelIndex = levelIndex + 1, useDropout = useDropout)
       }
     )
+  }
+
+  /**
+   * Backward of the whole level at the given [levelIndex] of the hierarchy.
+   *
+   * @param outputErrors the errors of the output of the [AttentionNetwork] at the given [levelIndex]
+   * @param levelIndex the index of a level in the hierarchy
+   * @param propagateToInput whether to propagate the errors to the input or not
+   */
+  private fun backwardHierarchicalLevel(outputErrors: DenseNDArray, levelIndex: Int, propagateToInput: Boolean) {
+
+    val isNotLastLevel = levelIndex < (this.model.hierarchySize - 1)
+
+    this.backwardAttentionNetwork(outputErrors = outputErrors, levelIndex = levelIndex)
+    this.backwardEncoder(levelIndex = levelIndex, propagateToInput = isNotLastLevel || propagateToInput)
+
+    if (isNotLastLevel) {
+      this.encoders[levelIndex].getInputSequenceErrors().forEach {
+        this.backwardHierarchicalLevel(
+          outputErrors = it,
+          levelIndex = levelIndex + 1,
+          propagateToInput = propagateToInput
+        )
+      }
+    }
+  }
+
+  /**
+   * Backward of the [AttentionNetwork] at the given [levelIndex] of the hierarchy.
+   *
+   * @param outputErrors the errors of the output of the [AttentionNetwork] at the given [levelIndex]
+   * @param levelIndex the index of a level in the hierarchy
+   */
+  private fun backwardAttentionNetwork(outputErrors: DenseNDArray, levelIndex: Int) {
+
+    val accumulator = this.attentionNetworksParamsErrorsAccumulators[levelIndex]
+    val paramsErrors = this.attentionNetworksParamsErrors[levelIndex]
+
+    this.attentionNetworks[levelIndex].backward(
+      outputErrors = outputErrors,
+      paramsErrors = paramsErrors,
+      propagateToInput = true)
+
+    accumulator.accumulate(paramsErrors)
+  }
+
+  /**
+   * Backward of the [BiRNNEncoder] at the given [levelIndex] of the hierarchy.
+   *
+   * @param levelIndex the index of a level in the hierarchy
+   * @param propagateToInput whether to propagate the errors to the input or not
+   */
+  private fun backwardEncoder(levelIndex: Int, propagateToInput: Boolean) {
+
+    val accumulator = this.encodersParamsErrorsAccumulators[levelIndex]
+    val encoder: BiRNNEncoder<DenseNDArray> = this.encoders[levelIndex]
+
+    encoder.backward(
+      outputErrorsSequence = this.attentionNetworks[levelIndex].getInputErrors(),
+      propagateToInput = propagateToInput)
+
+    accumulator.accumulate(encoder.getParamsErrors(copy = false))
+  }
+
+  /**
+   * Reset all the params errors accumulators.
+   */
+  private fun resetAccumulators() {
+
+    this.encodersParamsErrorsAccumulators.forEach {
+      it.averageErrors()
+      it.reset()
+    }
+
+    this.attentionNetworksParamsErrorsAccumulators.forEach {
+      it.averageErrors()
+      it.reset()
+    }
   }
 }
