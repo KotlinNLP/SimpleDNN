@@ -1,0 +1,10 @@
+package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han
+
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+
+/**
+ * @return a [HierarchySequence] from an array of [DenseNDArray]s
+ */
+fun Array<DenseNDArray>.toHierarchySequence(): HierarchySequence {
+  return HierarchySequence(*this)
+}
