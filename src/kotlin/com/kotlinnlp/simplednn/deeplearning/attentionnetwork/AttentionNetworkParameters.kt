@@ -7,6 +7,8 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork
 
+import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
+import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.LayerParametersFactory
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
@@ -39,6 +41,23 @@ data class AttentionNetworkParameters(
    * The parameters of the attention layer.
    */
   val attentionParams = AttentionLayerParameters(attentionSize = this.attentionSize)
+
+  /**
+   * Initialize the parameters of the sub-networks using the given random generator and value for the biases.
+   *
+   * @param randomGenerator a [RandomGenerator] (default: fixed range with radius 0.8)
+   * @param biasesInitValue the init value for all the biases (default: 0.0)
+   *
+   * @return this [AttentionNetworkParameters]
+   */
+  fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
+                 biasesInitValue: Double = 0.0): AttentionNetworkParameters {
+
+    this.transformParams.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
+    this.attentionParams.initialize(randomGenerator = randomGenerator)
+
+    return this
+  }
 
   /**
    * @return a new [AttentionNetworkParameters] containing a copy of all values of this one

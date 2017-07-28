@@ -8,6 +8,8 @@
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
+import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
+import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
@@ -66,7 +68,7 @@ data class HAN(
         inputSize = inputSize,
         hiddenSize = this.getBiRNNOutputSize(inputSize = inputSize, levelIndex = i) / 2,
         hiddenActivation = this.biRNNsActivation,
-        recurrentConnectionType = this.biRNNsConnectionType).initialize()
+        recurrentConnectionType = this.biRNNsConnectionType)
     }
   )
 
@@ -99,7 +101,27 @@ data class HAN(
       activationFunction = this.outputActivation,
       connectionType = LayerType.Connection.Feedforward
     )
-  ).initialize()
+  )
+
+  /**
+   * Initialize the parameters of the sub-networks using the given random generator and value for the biases.
+   *
+   * @param randomGenerator a [RandomGenerator] (default: fixed range with radius 0.8)
+   * @param biasesInitValue the init value for all the biases (default: 0.0)
+   *
+   * @return this [HAN]
+   */
+  fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
+                 biasesInitValue: Double = 0.0): HAN {
+
+    this.biRNNs.forEach { it.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue) }
+    this.attentionNetworksParams.forEach {
+      it.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
+    }
+    this.outputNetwork.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
+
+    return this
+  }
 
   /**
    * @param levelIndex the index of a level of the hierarchy
