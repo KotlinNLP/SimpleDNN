@@ -9,13 +9,10 @@ package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.LayerUnit
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetwork
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncoder
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * Encoder based on Hierarchical Attention Networks.
@@ -33,7 +30,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
   /**
    * An array containing the encoders ([BiRNNEncoder]s), one for each level of the HAN.
    */
-  private val encoders = Array(
+  private val encoders: Array<BiRNNEncoder<DenseNDArray>> = Array(
     size = this.model.hierarchySize,
     init = { i -> BiRNNEncoder<DenseNDArray>(this.model.biRNNs[i]) }
   )
@@ -41,7 +38,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
   /**
    * An array containing the [AttentionNetwork]s, one for each level of the HAN.
    */
-  private val attentionNetworks = Array(
+  private val attentionNetworks: Array<AttentionNetwork<DenseNDArray>> = Array(
     size = this.model.hierarchySize,
     init = { i ->
       AttentionNetwork<DenseNDArray>(
@@ -52,13 +49,9 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
   )
 
   /**
-   * The Feedforward layer which transforms the output of the last hierarchical level to the output of the [HANEncoder].
+   * The processor for the output Feedforward network (single layer).
    */
-  private val outputLayer = FeedforwardLayerStructure(
-    inputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(shape = Shape(this.model.biRNNs.last().outputSize))),
-    outputArray = LayerUnit<DenseNDArray>(size = this.model.outputSize),
-    params = this.model.outputLayerParams
-  )
+  private val outputProcessor = FeedforwardNeuralProcessor<DenseNDArray>(this.model.outputNetwork)
 
   /**
    * Forward a sequences hierarchy encoding the sequence of each level through a [BiRNNEncoder] and an
@@ -73,20 +66,20 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
    */
   fun forward(sequencesHierarchy: HierarchyItem, useDropout: Boolean = false): DenseNDArray {
 
-    val outputArray: DenseNDArray = this.forwardItem(item = sequencesHierarchy, levelIndex = 0, useDropout = useDropout)
+    val topOutput: DenseNDArray = this.forwardItem(item = sequencesHierarchy, levelIndex = 0, useDropout = useDropout)
 
-    this.outputLayer.setInput(outputArray)
-    this.outputLayer.forward(useDropout = useDropout)
+    this.outputProcessor.forward(featuresArray = topOutput, useDropout = useDropout)
 
-    return this.outputLayer.outputArray.values
+    return this.outputProcessor.getOutput()
   }
 
   /**
    * Propagate the errors from the output within the whole hierarchical structure, eventually until the input.
    *
    * @param outputErrors the errors of the output
+   * @param propagateToInput whether to propagate the output errors to the input or not
    */
-  fun backward(outputErrors: DenseNDArray) {
+  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean) {
     TODO("not implemented")
   }
 
