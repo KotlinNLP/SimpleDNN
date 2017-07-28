@@ -65,7 +65,7 @@ data class HAN(
         inputSize = inputSize,
         hiddenSize = this.getBiRNNOutputSize(inputSize = inputSize, levelIndex = i) / 2,
         hiddenActivation = this.biRNNsActivation,
-        recurrentConnectionType = this.biRNNsConnectionType)
+        recurrentConnectionType = this.biRNNsConnectionType).initialize()
     }
   )
 
@@ -98,7 +98,7 @@ data class HAN(
       activationFunction = this.outputActivation,
       connectionType = LayerType.Connection.Feedforward
     )
-  )
+  ).initialize()
 
   /**
    * @param levelIndex the index of a level of the hierarchy
