@@ -36,7 +36,9 @@ data class HAN(
   val attentionSize: Int,
   val outputSize: Int,
   val outputActivation: ActivationFunction?,
-  val compressionFactors: ArrayList<Double>
+  val compressionFactors: ArrayList<Double> = arrayListOf(*Array(
+    size = hierarchySize,
+    init = { i -> if (i == 0) 2.0 else 1.0 }))
   ) {
 
   /**
