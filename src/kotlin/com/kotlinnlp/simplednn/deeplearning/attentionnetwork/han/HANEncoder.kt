@@ -64,7 +64,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
    * Forward a sequences hierarchy encoding the sequence of each level through a [BiRNNEncoder] and an
    * [AttentionNetwork].
    *
-   * The output of the top level is classified using a single Feedforward Layer with a Softmax activation.
+   * The output of the top level is classified using a single Feedforward Layer.
    *
    * @param sequencesHierarchy the sequences hierarchy of input
    * @param useDropout whether to apply the dropout to generate the attention arrays
@@ -82,7 +82,9 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
   }
 
   /**
+   * Propagate the errors from the output within the whole hierarchical structure, eventually until the input.
    *
+   * @param outputErrors the errors of the output
    */
   fun backward(outputErrors: DenseNDArray) {
     TODO("not implemented")
