@@ -11,8 +11,8 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The HierarchySequence represents the lowest level of the input hierarchy of a [HAN].
+ * The HierarchySequence represents the lowest level of the input hierarchy of a [HANEncoder].
  *
- * It contains a list of [AugmentedArray]s as input sequence of the lowest level of a [HAN].
+ * It contains a list of [AugmentedArray]s as input sequence of the lowest level of a [HANEncoder].
  */
 class HierarchySequence : HierarchyItem, ArrayList<DenseNDArray>()
