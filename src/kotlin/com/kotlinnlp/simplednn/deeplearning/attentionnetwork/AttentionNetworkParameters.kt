@@ -39,4 +39,23 @@ data class AttentionNetworkParameters(
    * The parameters of the attention layer.
    */
   val attentionParams = AttentionLayerParameters(attentionSize = this.attentionSize)
+
+  /**
+   * @return a new [AttentionNetworkParameters] containing a copy of all values of this one
+   */
+  fun clone(): AttentionNetworkParameters {
+
+    val clonedParams = AttentionNetworkParameters(
+      inputSize = this.inputSize,
+      attentionSize = this.attentionSize,
+      sparseInput = this.sparseInput)
+
+    clonedParams.transformParams.zip(this.transformParams) { cloned, params ->
+      cloned.values.assignValues(params.values)
+    }
+
+    clonedParams.attentionParams.contextVector.values.assignValues(this.attentionParams.contextVector.values)
+
+    return clonedParams
+  }
 }
