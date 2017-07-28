@@ -75,19 +75,17 @@ class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Seriali
   fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
 
   /**
-   * Initialize the weights and biases of the model
+   * Initialize the parameters of the model using the given random generator and value for the biases.
    *
-   * @param randomGenerator the random generator
-   * @param biasesInitValue the initial biases values (default 0)
+   * @param randomGenerator a [RandomGenerator] (default: fixed range with radius 0.8)
+   * @param biasesInitValue the init value for all the biases (default: 0.0)
    *
-   * @return this network
+   * @return this [NeuralNetwork]
    */
   fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
                  biasesInitValue: Double = 0.0): NeuralNetwork {
 
-    this.model.initialize(
-      randomGenerator = randomGenerator,
-      biasesInitValue = biasesInitValue)
+    this.model.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
 
     return this
   }
