@@ -16,24 +16,24 @@ import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN
 /**
  * The model of the Hierarchical Attention Networks.
  *
- * @param inputSize the input size
- * @param hiddenActivation
- * @param hiddenConnectionType
- * @param outputActivation
- * @param attentionSize
- * @param outputSize
  * @param hierarchySize
+ * @param inputSize the input size
+ * @param biRNNsActivation
+ * @param biRNNsConnectionType
+ * @param attentionSize
+ * @param outputActivation
+ * @param outputSize
  * @param compressionFactors
  *
  */
 data class HAN(
-  val inputSize: Int,
-  val hiddenActivation: ActivationFunction?,
-  val hiddenConnectionType: LayerType.Connection,
-  val outputActivation: ActivationFunction?,
-  val attentionSize: Int,
-  val outputSize: Int,
   val hierarchySize: Int = 2,
+  val inputSize: Int,
+  val biRNNsActivation: ActivationFunction?,
+  val biRNNsConnectionType: LayerType.Connection,
+  val attentionSize: Int,
+  val outputActivation: ActivationFunction?,
+  val outputSize: Int,
   val compressionFactors: ArrayList<Double>
 ) {
 
@@ -59,8 +59,8 @@ data class HAN(
         inputType = LayerType.Input.Dense,
         inputSize = inputSize,
         hiddenSize = this.getEncoderOutputSize(inputSize = inputSize, levelIndex = i),
-        hiddenActivation = this.hiddenActivation,
-        recurrentConnectionType = this.hiddenConnectionType)
+        hiddenActivation = this.biRNNsActivation,
+        recurrentConnectionType = this.biRNNsConnectionType)
     }
   )
 
