@@ -19,8 +19,6 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  * The optimizer of the BiRNN which in turn aggregates the optimizers of its sub-networks: leftToRightNetwork and
  * rightToLeftNetwork.
  *
- * It is recommended to use the same UpdateMethod configuration for each sub-network.
- *
  * @param network the [BiRNN] to optimize
  * @param updateMethod the [UpdateMethod] used for the left-to-right and right-to-left recurrent networks
  */
