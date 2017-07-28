@@ -46,6 +46,7 @@ data class HAN(
    * Check the compatibility of the arguments.
    */
   init {
+    require(this.hierarchySize > 0) { "The number of hierarchical levels must be >= 1" }
     require(this.compressionFactors.size == hierarchySize) {
       "The number of compression factors (%d) doesn't match the number of levels of the hierarchy (%d)"
         .format(this.compressionFactors.size, this.hierarchySize)
