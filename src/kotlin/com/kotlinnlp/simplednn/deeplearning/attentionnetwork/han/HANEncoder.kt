@@ -28,7 +28,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @property dropout the probability of dropout (default 0.0) when generating the attention arrays for the Attention
  *                   Layers. If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
-class HANEncoder(val model: HANModel, val dropout: Double = 0.0) {
+class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
 
   /**
    * An array containing the encoders ([BiRNNEncoder]s), one for each level of the HAN.

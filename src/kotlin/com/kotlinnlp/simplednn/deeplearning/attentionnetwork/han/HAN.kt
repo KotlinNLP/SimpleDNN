@@ -26,7 +26,7 @@ import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN
  * @param compressionFactors
  *
  */
-data class HANModel(
+data class HAN(
   val inputSize: Int,
   val hiddenActivation: ActivationFunction?,
   val hiddenConnectionType: LayerType.Connection,
