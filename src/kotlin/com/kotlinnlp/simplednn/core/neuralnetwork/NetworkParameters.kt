@@ -139,10 +139,10 @@ class NetworkParameters(val layersConfiguration: List<LayerConfiguration>, priva
   }
 
   /**
-   * Initialize the parameters with a random generator and fixed biases values.
+   * Initialize the parameters using the given random generator and value for the biases.
    *
-   * @param randomGenerator randomGenerator
-   * @param biasesInitValue biasesInitValue
+   * @param randomGenerator a [RandomGenerator]
+   * @param biasesInitValue the init value for all the biases
    */
   fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double) {
     this.paramsPerLayer.forEach {
