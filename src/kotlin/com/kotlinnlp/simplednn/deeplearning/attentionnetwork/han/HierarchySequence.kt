@@ -15,4 +15,11 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * It contains a list of [AugmentedArray]s as input sequence of the lowest level of a [HANEncoder].
  */
-class HierarchySequence : HierarchyItem, ArrayList<DenseNDArray>()
+class HierarchySequence(vararg arrays: DenseNDArray) : HierarchyItem, ArrayList<DenseNDArray>(arrays.size) {
+
+  init {
+    arrays.forEach {
+      this.add(it)
+    }
+  }
+}
