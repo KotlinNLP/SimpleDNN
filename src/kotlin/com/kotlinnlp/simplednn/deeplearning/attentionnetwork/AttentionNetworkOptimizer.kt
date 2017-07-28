@@ -9,7 +9,6 @@ package com.kotlinnlp.simplednn.deeplearning.attentionnetwork
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -20,21 +19,18 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 /**
  * The optimizer of the parameters of the [AttentionNetwork]
  *
- * @param network the Attention Network to optimize
+ * @param model the [AttentionNetworkParameters] to optimize
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
-class AttentionNetworkOptimizer(
-  val network: AttentionNetwork<*>,
-  val updateMethod: UpdateMethod
-) : Optimizer {
+class AttentionNetworkOptimizer(val model: AttentionNetworkParameters, val updateMethod: UpdateMethod) : Optimizer {
 
   /**
    * The accumulator of errors of the network parameters.
    */
   private val paramsErrorsAccumulator = AttentionNetworkParamsErrorsAccumulator(
-    inputSize = this.network.model.inputSize,
-    attentionSize = this.network.model.attentionSize,
-    sparseInput = this.network.inputType == LayerType.Input.SparseBinary
+    inputSize = this.model.inputSize,
+    attentionSize = this.model.attentionSize,
+    sparseInput = this.model.sparseInput
   )
 
   /**
@@ -97,10 +93,10 @@ class AttentionNetworkOptimizer(
     val accumulatedErrors: AttentionNetworkParameters = this.paramsErrorsAccumulator.getParamsErrors()
 
     this.updateMethod.update(
-      array = this.network.model.attentionParams.contextVector,
+      array = this.model.attentionParams.contextVector,
       errors = accumulatedErrors.attentionParams.contextVector.values)
 
-    this.network.model.transformParams.zip(accumulatedErrors.transformParams).forEach { (params, errors) ->
+    this.model.transformParams.zip(accumulatedErrors.transformParams).forEach { (params, errors) ->
 
       val e = errors.values
 

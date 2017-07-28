@@ -35,11 +35,10 @@ class AttentionNetworkParamsOptimizerSpec : Spek({
 
       it("should raise an Exception with params errors not compatible") {
 
-        val network = AttentionNetwork<DenseNDArray>(
-            model = AttentionNetworkParameters(inputSize = 2, attentionSize = 3),
-            inputType = LayerType.Input.Dense)
-
-        val optimizer = AttentionNetworkOptimizer(network = network, updateMethod = learningRateMethod)
+        val optimizer = AttentionNetworkOptimizer(
+          model = AttentionNetworkParameters(inputSize = 2, attentionSize = 3, sparseInput = false),
+          updateMethod = learningRateMethod
+        )
 
         assertFails { optimizer.accumulate(paramsErrors = AttentionLayerUtils.buildAttentionNetworkParams1()) }
       }
@@ -52,7 +51,7 @@ class AttentionNetworkParamsOptimizerSpec : Spek({
       network.model.attentionParams.contextVector.values.assignValues(params.attentionParams.contextVector.values)
       network.model.transformParams.zip(params.transformParams).forEach { (a, b) -> a.values.assignValues(b.values) }
 
-      val optimizer = AttentionNetworkOptimizer(network = network, updateMethod = learningRateMethod)
+      val optimizer = AttentionNetworkOptimizer(model = network.model, updateMethod = learningRateMethod)
       val errors1 = AttentionLayerUtils.buildAttentionNetworkParams1()
       val errors2 = AttentionLayerUtils.buildAttentionNetworkParams2()
 
