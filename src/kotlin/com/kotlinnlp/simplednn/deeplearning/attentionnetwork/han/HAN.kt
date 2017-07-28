@@ -57,12 +57,12 @@ data class HAN(
   val biRNNs = Array(
     size = this.hierarchySize,
     init = { i ->
-      val inputSize: Int = this.getEncodingInputSize(i)
+      val inputSize: Int = this.getLevelInputSize(i)
 
       BiRNN(
         inputType = LayerType.Input.Dense,
         inputSize = inputSize,
-        hiddenSize = this.getEncoderOutputSize(inputSize = inputSize, levelIndex = i),
+        hiddenSize = this.getBiRNNOutputSize(inputSize = inputSize, levelIndex = i),
         hiddenActivation = this.biRNNsActivation,
         recurrentConnectionType = this.biRNNsConnectionType)
     }
@@ -94,24 +94,24 @@ data class HAN(
   /**
    * @param levelIndex the index of a level of the hierarchy
    *
-   * @return the size of the input at the given [levelIndex]
+   * @return the input size of the hierarchical level at the given [levelIndex]
    */
-  private fun getEncodingInputSize(levelIndex: Int): Int {
+  private fun getLevelInputSize(levelIndex: Int): Int {
 
     var inputSize: Int = this.inputSize
 
     for (i in 0 until levelIndex) {
-      inputSize = this.getEncoderOutputSize(inputSize = inputSize, levelIndex = levelIndex)
+      inputSize = this.getBiRNNOutputSize(inputSize = inputSize, levelIndex = levelIndex)
     }
 
     return inputSize
   }
 
   /**
-   * Get the size of the output of the encoder at the given [levelIndex], compressing the [inputSize] with the
+   * Get the size of the output of the BiRNN at the given [levelIndex], compressing the [inputSize] with the
    * corresponding compression factor.
    *
-   * Since the output of the encoder is the concatenation of the outputs of 2 RNNs, the output size could be rounded to
+   * Since the output of the BiRNN is the concatenation of the outputs of 2 RNNs, the output size could be rounded to
    * the next odd integer.
    *
    * @param inputSize the size of the input at the given [levelIndex]
@@ -119,7 +119,7 @@ data class HAN(
    *
    * @return the output size of the encoder at the given [levelIndex]
    */
-  private fun getEncoderOutputSize(inputSize: Int, levelIndex: Int): Int {
+  private fun getBiRNNOutputSize(inputSize: Int, levelIndex: Int): Int {
 
     val compressedInputSize = Math.round(inputSize * this.compressionFactors[levelIndex]).toInt()
 
