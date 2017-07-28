@@ -16,14 +16,16 @@ import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN
 /**
  * The model of the Hierarchical Attention Networks.
  *
- * @param hierarchySize
- * @param inputSize the input size
- * @param biRNNsActivation
- * @param biRNNsConnectionType
- * @param attentionSize
- * @param outputActivation
- * @param outputSize
- * @param compressionFactors
+ * @param hierarchySize the number of levels of the hierarchy
+ * @param inputSize the size of each array of input
+ * @param biRNNsActivation the activation function of the BiRNNs
+ * @param biRNNsConnectionType the layer connection type of the BiRNNs
+ * @param attentionSize the size of the attention arrays of the AttentionLayers
+ * @param outputSize the size of the output layer
+ * @param outputActivation the activation function of the output layer
+ * @param compressionFactors an array with [hierarchySize] elements, which defines the compression factor of the input
+ *                           size of each hierarchical level in respect of its output.
+ *                           (By default the first factor is 2.0, the others 1.0)
  *
  */
 data class HAN(
@@ -32,10 +34,10 @@ data class HAN(
   val biRNNsActivation: ActivationFunction?,
   val biRNNsConnectionType: LayerType.Connection,
   val attentionSize: Int,
-  val outputActivation: ActivationFunction?,
   val outputSize: Int,
+  val outputActivation: ActivationFunction?,
   val compressionFactors: ArrayList<Double>
-) {
+  ) {
 
   /**
    * Check the compatibility of the arguments.
