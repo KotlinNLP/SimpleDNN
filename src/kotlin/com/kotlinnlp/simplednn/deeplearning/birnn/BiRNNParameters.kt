@@ -18,4 +18,13 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 data class BiRNNParameters(
   val leftToRight: NetworkParameters,
   val rightToLeft: NetworkParameters
-)
+) {
+
+  /**
+   * @return a new [BiRNNParameters] containing a copy of all values of this one
+   */
+  fun clone() = BiRNNParameters(
+    leftToRight = this.leftToRight.clone(),
+    rightToLeft = this.rightToLeft.clone()
+  )
+}
