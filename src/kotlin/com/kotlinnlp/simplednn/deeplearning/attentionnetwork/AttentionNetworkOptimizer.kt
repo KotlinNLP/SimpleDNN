@@ -23,7 +23,7 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  * @param network the Attention Network to optimize
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
-class AttentionNetworkParamsOptimizer(
+class AttentionNetworkOptimizer(
   val network: AttentionNetwork<*>,
   val updateMethod: UpdateMethod
 ) : Optimizer {

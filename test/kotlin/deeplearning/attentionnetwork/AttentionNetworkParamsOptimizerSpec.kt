@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.L
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetwork
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParamsOptimizer
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import deeplearning.attentionnetwork.utils.AttentionLayerUtils
@@ -27,7 +27,7 @@ import kotlin.test.assertTrue
  */
 class AttentionNetworkParamsOptimizerSpec : Spek({
 
-  describe("an AttentionNetworkParamsOptimizer") {
+  describe("an AttentionNetworkOptimizer") {
 
     val learningRateMethod = LearningRateMethod(learningRate = 0.1)
 
@@ -39,7 +39,7 @@ class AttentionNetworkParamsOptimizerSpec : Spek({
             model = AttentionNetworkParameters(inputSize = 2, attentionSize = 3),
             inputType = LayerType.Input.Dense)
 
-        val optimizer = AttentionNetworkParamsOptimizer(network = network, updateMethod = learningRateMethod)
+        val optimizer = AttentionNetworkOptimizer(network = network, updateMethod = learningRateMethod)
 
         assertFails { optimizer.accumulate(paramsErrors = AttentionLayerUtils.buildAttentionNetworkParams1()) }
       }
@@ -52,7 +52,7 @@ class AttentionNetworkParamsOptimizerSpec : Spek({
       network.model.attentionParams.contextVector.values.assignValues(params.attentionParams.contextVector.values)
       network.model.transformParams.zip(params.transformParams).forEach { (a, b) -> a.values.assignValues(b.values) }
 
-      val optimizer = AttentionNetworkParamsOptimizer(network = network, updateMethod = learningRateMethod)
+      val optimizer = AttentionNetworkOptimizer(network = network, updateMethod = learningRateMethod)
       val errors1 = AttentionLayerUtils.buildAttentionNetworkParams1()
       val errors2 = AttentionLayerUtils.buildAttentionNetworkParams2()
 
