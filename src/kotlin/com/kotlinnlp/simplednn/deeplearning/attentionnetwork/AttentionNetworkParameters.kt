@@ -22,6 +22,11 @@ data class AttentionNetworkParameters(
 ) {
 
   /**
+   * The size of the output array.
+   */
+  val outputSize: Int = this.inputSize
+
+  /**
    * The parameters of the transform layer.
    */
   val transformParams: FeedforwardLayerParameters = LayerParametersFactory(
