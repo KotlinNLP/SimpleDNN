@@ -8,6 +8,8 @@
 package com.kotlinnlp.simplednn.deeplearning.birnn
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
+import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
+import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
@@ -75,14 +77,19 @@ class BiRNN(
   }
 
   /**
-   * Initialize the weight of the sub-networks [leftToRightNetwork] and [rightToLeftNetwork] using the default
-   * random generator.
+   * Initialize the weight of the sub-networks [leftToRightNetwork] and [rightToLeftNetwork] using given random
+   * generator and value for the biases.
+   *
+   * @param randomGenerator a [RandomGenerator] (default: fixed range with radius 0.8)
+   * @param biasesInitValue the init value for all the biases (default: 0.0)
    *
    * @return this BiRNN
    */
-  fun initialize(): BiRNN {
-    this.leftToRightNetwork.initialize()
-    this.rightToLeftNetwork.initialize()
+  fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
+                 biasesInitValue: Double = 0.0): BiRNN {
+
+    this.leftToRightNetwork.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
+    this.rightToLeftNetwork.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
 
     return this
   }
