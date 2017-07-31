@@ -28,7 +28,7 @@ fun main(args: Array<String>) {
   println("Start 'MNIST Sequence Test'")
 
   val dataset = CorpusReader<SequenceExampleWithFinalOutput<DenseNDArray>>().read(
-    corpusPath = Configuration.loadFromFile().mnist_sequence.datasets_paths,
+    corpusPath = Configuration.loadFromFile().mnist_sequence.datasets_paths, // same for validation and test
     examplesExtractor = MNISTSequenceExampleExtractor(outputSize = 10),
     perLine = true)
 
