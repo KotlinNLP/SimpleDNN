@@ -8,8 +8,8 @@
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han
 
 /**
- * The HierarchyLevel represents a higher level of the input hierarchy of a [HANEncoder].
+ * The HierarchyGroup represents a higher level of the input hierarchy of a [HANEncoder].
  *
  * It contains a list of other [HierarchyItem]s as sub-levels.
  */
-class HierarchyLevel : HierarchyItem, ArrayList<HierarchyItem>()
+class HierarchyGroup : HierarchyItem, ArrayList<HierarchyItem>()

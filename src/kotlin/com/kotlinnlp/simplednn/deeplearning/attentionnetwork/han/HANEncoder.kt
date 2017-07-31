@@ -166,7 +166,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
    * Apply the forward to the given [item] of the hierarchy dispatching it between a 'level' or a 'sequence'.
    *
    * @param item the item of the hierarchy to which to apply the forward
-   * @param levelIndex the index of a level in the hierarchy
+   * @param levelIndex the index of the hierarchical level of the [item]
    * @param useDropout whether to apply the dropout to generate the attention arrays
    *
    * @return the output array
@@ -174,7 +174,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
   private fun forwardItem(item: HierarchyItem, levelIndex: Int, useDropout: Boolean): DenseNDArray {
 
     val inputSequence = when (item) {
-      is HierarchyLevel -> this.buildInputSequence(level = item, levelIndex = levelIndex, useDropout = useDropout)
+      is HierarchyGroup -> this.buildInputSequence(group = item, levelIndex = levelIndex, useDropout = useDropout)
       is HierarchySequence -> item.toTypedArray()
       else -> throw RuntimeException("Invalid hierarchy item type")
     }
@@ -190,22 +190,22 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
   }
 
   /**
-   * Build the input sequence of the given [level] forwarding its sub-levels .
+   * Build the input sequence of the given [group] forwarding its sub-levels .
    *
-   * @param level a level of the hierarchy
-   * @param levelIndex the index of the given [level]
+   * @param group a group of the hierarchy
+   * @param levelIndex the index of the hierarchical level of the given [group]
    * @param useDropout whether to apply the dropout to generate the attention arrays
    *
-   * @return the input sequence for the given [level]
+   * @return the input sequence for the given [group]
    */
-  private fun buildInputSequence(level: HierarchyLevel,
+  private fun buildInputSequence(group: HierarchyGroup,
                                  levelIndex: Int,
                                  useDropout: Boolean): Array<DenseNDArray> {
 
     return Array(
-      size = level.size,
+      size = group.size,
       init = { i ->
-        this.forwardItem(item = level[i], levelIndex = levelIndex + 1, useDropout = useDropout)
+        this.forwardItem(item = group[i], levelIndex = levelIndex + 1, useDropout = useDropout)
       }
     )
   }

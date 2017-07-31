@@ -11,6 +11,6 @@ package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han
  * The HierarchyItem defines a generic item of the hierarchy which represent the input of an [HANEncoder].
  *
  * An item could be a list of [HierarchySequence]s if it represents the lowest level of the hierarchy (the input of the
- * [HANEncoder]) or a list of [HierarchyLevel]s if it represent a higher level.
+ * [HANEncoder]) or a list of [HierarchyGroup]s if it represent a higher level.
  */
 interface HierarchyItem
