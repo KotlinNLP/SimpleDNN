@@ -18,122 +18,48 @@ import com.kotlinnlp.simplednn.helpers.training.FeedforwardTrainingHelper
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.helpers.validation.FeedforwardValidationHelper
-import com.jsoniter.*
-import Configuration
-import CorpusPaths
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import java.io.BufferedInputStream
-import java.io.FileInputStream
-import java.util.concurrent.TimeUnit
+import Configuration
+import CorpusReader
+import ClassificationExampleExtractor
 
 fun main(args: Array<String>) {
+
   println("Start 'MNIST Test'")
-  MNISTTest.start()
+
+  val dataset = CorpusReader<SimpleExample<DenseNDArray>>().read(
+    corpusPath = Configuration.loadFromFile().mnist.datasets_paths,
+    examplesExtractor = ClassificationExampleExtractor(outputSize = 10),
+    perLine = false)
+
+  MNISTTest(dataset).start()
+
   println("End.")
 }
-
 
 /**
  *
  */
-object MNISTTest {
+class MNISTTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
+
+  /**
+   *
+   */
+  private val neuralNetwork = this.buildNetwork()
 
   /**
    *
    */
   fun start(): Unit {
-
-    val configuration = Configuration.Companion.loadFromFile()
-    val dataset: Corpus<SimpleExample<DenseNDArray>> = readCorpus(configuration.mnist.datasets_paths)
-
-    val nn = buildNetwork()
-
-    train(nn, dataset)
-  }
-
-  /**
-   *
-   * @param corpus corpus
-   * @return
-   */
-  fun readCorpus(corpus: CorpusPaths): Corpus<SimpleExample<DenseNDArray>> {
-
-    println("\n-- CORPUS READING")
-
-    val startTime = System.nanoTime()
-
-    val dataset = Corpus(
-      training = JSONFileReader(corpus.training),
-      validation = JSONFileReader(corpus.validation),
-      test = JSONFileReader(corpus.test))
-
-    val elapsedTime = System.nanoTime() - startTime
-
-    println("Elapsed time: ${TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS) / 1000.0}s")
-    println("Train: %d examples".format(dataset.training.size))
-    println("Validation: %d examples".format(dataset.validation.size))
-    println("Test: %d examples".format(dataset.test.size))
-
-    return dataset
+    this.train()
   }
 
   /**
    *
    */
-  fun JsonIterator.readNDArray(): DenseNDArray {
-    val array = ArrayList<Double>()
-    while (this.readArray()) array.add(this.readDouble())
-    return DenseNDArrayFactory.arrayOf(array.toDoubleArray())
-  }
-
-  /**
-   *
-   * @param filename
-   * @return
-   */
-  fun JSONFileReader(filename: String): ArrayList<SimpleExample<DenseNDArray>> {
-
-    val examples = ArrayList<SimpleExample<DenseNDArray>>()
-    val iterator = JsonIterator.parse(BufferedInputStream(FileInputStream(filename)), 2048)
-
-    while(iterator.readArray()) {
-      examples.add(this.extractExample(iterator))
-    }
-
-    return examples
-  }
-
-  /**
-   *
-   */
-  fun extractExample(iterator: JsonIterator): SimpleExample<DenseNDArray> {
-
-    val outputGold = DenseNDArrayFactory.zeros(Shape(1, 10))
-    var goldIndex: Int
-    var features: DenseNDArray? = null
-
-    while (iterator.readArray()) {
-
-      if (iterator.whatIsNext() == ValueType.ARRAY) {
-        features = iterator.readNDArray()
-
-      } else if (iterator.whatIsNext() == ValueType.NUMBER) {
-        goldIndex = iterator.readInt() // - 1
-        outputGold[goldIndex] = 1.0
-      }
-    }
-
-    return SimpleExample(features!!, outputGold)
-  }
-
-  /**
-   *
-   */
-  fun buildNetwork(): NeuralNetwork {
+  private fun buildNetwork(): NeuralNetwork {
 
     val nn = FeedforwardNeuralNetwork(
       inputSize = 784,
@@ -150,29 +76,29 @@ object MNISTTest {
   /**
    *
    */
-  fun train(neuralNetwork: NeuralNetwork, dataset: Corpus<SimpleExample<DenseNDArray>>): Unit {
+  private fun train(): Unit {
 
     println("\n-- TRAINING")
 
     val optimizer = ParamsOptimizer(
-      neuralNetwork = neuralNetwork,
+      neuralNetwork = this.neuralNetwork,
       updateMethod = LearningRateMethod(
         learningRate = 0.01,
         decayMethod = HyperbolicDecay(decay = 0.5, initLearningRate = 0.01)))
 
     val trainingHelper = FeedforwardTrainingHelper<DenseNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor(neuralNetwork),
+      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork),
       optimizer = optimizer,
       lossCalculator = SoftmaxCrossEntropyCalculator(),
       verbose = true)
 
     val validationHelper = FeedforwardValidationHelper<DenseNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor(neuralNetwork),
+      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork),
       outputEvaluationFunction = ClassificationEvaluation())
 
     trainingHelper.train(
-      trainingExamples = dataset.training,
-      validationExamples = dataset.validation,
+      trainingExamples = this.dataset.training,
+      validationExamples = this.dataset.validation,
       epochs = 3,
       batchSize = 1,
       shuffler = Shuffler(enablePseudoRandom = true, seed = 1),

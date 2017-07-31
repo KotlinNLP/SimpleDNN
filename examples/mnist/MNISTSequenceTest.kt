@@ -16,123 +16,43 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.helpers.training.SequenceWithFinalOutputTrainingHelper
 import com.kotlinnlp.simplednn.helpers.validation.SequenceWithFinalOutputValidationHelper
-import com.jsoniter.*
-import Configuration
-import CorpusPaths
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import java.io.File
-import java.util.concurrent.TimeUnit
+import CorpusReader
+import mnist.helpers.MNISTSequenceExampleExtractor
 
 fun main(args: Array<String>) {
+
   println("Start 'MNIST Sequence Test'")
-  MNISTSequenceTest.start()
+
+  val dataset = CorpusReader<SequenceExampleWithFinalOutput<DenseNDArray>>().read(
+    corpusPath = Configuration.loadFromFile().mnist_sequence.datasets_paths,
+    examplesExtractor = MNISTSequenceExampleExtractor(outputSize = 10),
+    perLine = true)
+
+  MNISTSequenceTest(dataset).start()
+
   println("End.")
 }
 
 /**
  *
  */
-object MNISTSequenceTest {
+class MNISTSequenceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<DenseNDArray>>) {
 
   /**
    *
    */
-  fun start(): Unit {
-
-    val configuration = Configuration.loadFromFile()
-    val dataset = this.readCorpus(configuration.mnist_sequence.datasets_paths)
-
-    val nn = this.buildNetwork()
-
-    this.train(nn, dataset)
-  }
-
-  /**
-   *
-   * @param corpus corpus
-   * @return
-   */
-  fun readCorpus(corpus: CorpusPaths): Corpus<SequenceExampleWithFinalOutput<DenseNDArray>> {
-
-    println("\n-- CORPUS READING")
-
-    val startTime = System.nanoTime()
-
-    val dataset = Corpus(
-      training = JSONLFileReader(corpus.training),
-      validation = JSONLFileReader(corpus.validation),
-      test = JSONLFileReader(corpus.test))
-
-    val elapsedTime = System.nanoTime() - startTime
-
-    println("Elapsed time: ${TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS) / 1000.0}s")
-    println("Train: %d examples".format(dataset.training.size))
-    println("Validation: %d examples".format(dataset.validation.size))
-    println("Test: %d examples".format(dataset.test.size))
-
-    return dataset
-  }
+  val neuralNetwork = this.buildNetwork()
 
   /**
    *
    */
-  fun JsonIterator.readNDArray(): DenseNDArray {
-    val array = ArrayList<Double>()
-    while (this.readArray()) array.add(this.readDouble())
-    return DenseNDArrayFactory.arrayOf(array.toDoubleArray())
-  }
+  fun start() {
 
-  /**
-   *
-   * @param filename
-   * @return
-   */
-  fun JSONLFileReader(filename: String): ArrayList<SequenceExampleWithFinalOutput<DenseNDArray>> {
-
-    val file = File(filename)
-    val examples: ArrayList<SequenceExampleWithFinalOutput<DenseNDArray>> = ArrayList()
-
-    file.forEachLine {
-      examples.add(this.extractExample(iterator = JsonIterator.parse(it)))
-    }
-
-    return examples
-  }
-
-  /**
-   *
-   */
-  fun extractExample(iterator: JsonIterator): SequenceExampleWithFinalOutput<DenseNDArray> {
-
-    val featuresList = ArrayList<DenseNDArray>()
-    val outputGold = DenseNDArrayFactory.zeros(Shape(10))
-
-    // read "digit"
-    iterator.readObject()
-    outputGold[iterator.readInt()] = 1.0
-
-    // skip "id"
-    iterator.readObject()
-    iterator.readAny()
-
-    // read "sequence_data"
-    iterator.readObject()
-
-    while (iterator.readArray()) {
-      if (iterator.whatIsNext() == ValueType.ARRAY) {
-        val features = iterator.readNDArray()
-        val deltaX = features[0]
-        val deltaY = features[1]
-        featuresList.add(DenseNDArrayFactory.arrayOf(doubleArrayOf(deltaX, deltaY)))
-      }
-    }
-
-    return SequenceExampleWithFinalOutput(featuresList, outputGold)
+    this.train()
   }
 
   /**
@@ -156,13 +76,13 @@ object MNISTSequenceTest {
   /**
    *
    */
-  fun train(neuralNetwork: NeuralNetwork, dataset: Corpus<SequenceExampleWithFinalOutput<DenseNDArray>>): Unit {
+  fun train(): Unit {
 
     println("\n-- TRAINING")
 
-    val optimizer = ParamsOptimizer(neuralNetwork, ADAMMethod(stepSize = 0.001))
+    val optimizer = ParamsOptimizer(this.neuralNetwork, ADAMMethod(stepSize = 0.001))
 
-    val neuralProcessor = RecurrentNeuralProcessor<DenseNDArray>(neuralNetwork)
+    val neuralProcessor = RecurrentNeuralProcessor<DenseNDArray>(this.neuralNetwork)
 
     val trainingHelper = SequenceWithFinalOutputTrainingHelper(
       neuralProcessor = neuralProcessor,
@@ -175,8 +95,8 @@ object MNISTSequenceTest {
       outputEvaluationFunction = ClassificationEvaluation())
 
     trainingHelper.train(
-      trainingExamples = dataset.training,
-      validationExamples = dataset.validation,
+      trainingExamples = this.dataset.training,
+      validationExamples = this.dataset.validation,
       epochs = 3,
       batchSize = 1,
       shuffler = Shuffler(enablePseudoRandom = true, seed = 1),
