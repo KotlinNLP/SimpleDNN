@@ -10,36 +10,48 @@ package com.kotlinnlp.simplednn.helpers.training.utils
 import com.kotlinnlp.simplednn.dataset.Shuffler
 
 /**
+ * An helper class to iterate over integer indices shuffling them with a [Shuffler] object.
  *
+ * @property size the number of indices over which to iterate
+ * @param shuffler the optional [Shuffler] object (if null indices are not shuffled)
  */
-class ExamplesIndices(val size: Int, val shuffler: Shuffler?) : Iterable<Int> {
+class ExamplesIndices(private val size: Int, shuffler: Shuffler? = null) : Iterable<Int> {
 
+  /**
+   * Indices Iterator class.
+   */
   private inner class IndicesIterator : Iterator<Int> {
+
     /**
-     *
+     * The count of the current index.
      */
     private var count: Int = 0
 
     /**
-     *
+     * Iterator hasNext method.
      */
     override fun hasNext(): Boolean = this.count < (ExampleIndices@size)
 
     /**
-     *
+     * Iterator next method.
      */
     override fun next(): Int = ExampleIndices@indices[this.count++]
   }
 
   /**
-   *
+   * The
    */
-  val indices = IntArray(size = size, init = { it })
-
-  init { shuffler?.invoke(indices) }
+  private val indices = IntArray(size = size, init = { it })
 
   /**
-   *
+   * Indices shuffle.
+   */
+  init {
+    shuffler?.invoke(indices)
+  }
+
+  /**
+   * @return the iterator over the indices
    */
   override fun iterator(): Iterator<Int> = IndicesIterator()
 }
