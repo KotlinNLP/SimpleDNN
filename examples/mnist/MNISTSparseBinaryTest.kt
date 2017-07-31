@@ -59,7 +59,7 @@ class MNISTSparseBinaryTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArra
   fun start(): Unit {
 
     this.train()
-    this.printImages(examples = arrayListOf(*this.dataset.validation.subList(0, 20).toTypedArray())) // reduced sublist
+    this.printImages(examples = ArrayList(this.dataset.validation.subList(0, 20))) // reduced sublist
   }
 
   /**
