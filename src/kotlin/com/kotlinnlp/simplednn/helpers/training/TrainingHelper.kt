@@ -188,10 +188,7 @@ abstract class TrainingHelper<ExampleType: Example>(
   private fun logTrainingEnd(): Unit {
 
     if (this.verbose) { // TODO: replace lastLoss with another more valuable value
-
-      this.printElapsedTime()
-
-      println(" Loss: %.10f".format(100.0 * this.statistics.lastLoss))
+      println("[%s] Loss: %.10f".format(this.formatElapsedTime(), 100.0 * this.statistics.lastLoss))
     }
   }
 
@@ -214,10 +211,7 @@ abstract class TrainingHelper<ExampleType: Example>(
   private fun logValidationEnd(): Unit {
 
     if (this.verbose) {
-
-      this.printElapsedTime()
-
-      println(" Accuracy: %.2f%%".format(100.0 * this.statistics.lastAccuracy))
+      println("[%s] Accuracy: %.2f%%".format(this.formatElapsedTime(), 100.0 * this.statistics.lastAccuracy))
     }
   }
 
@@ -229,12 +223,13 @@ abstract class TrainingHelper<ExampleType: Example>(
   }
 
   /**
-   * Print the elapsed time in milliseconds and seconds.
+   * @return the formatted string with elapsed time in seconds and minutes.
    */
-  private fun printElapsedTime() {
+  private fun formatElapsedTime(): String {
 
     val elapsedTime = System.currentTimeMillis() - this.startTime
+    val elapsedSecs = elapsedTime / 1000.0
 
-    print("[%d ms (%.1f s)]".format(elapsedTime, (elapsedTime / 1000.0) / 60.0))
+    return "%.3f s (%.1f mmin)".format(elapsedSecs, elapsedSecs / 60.0)
   }
 }
