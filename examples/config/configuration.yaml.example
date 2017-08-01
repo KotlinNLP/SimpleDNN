@@ -15,3 +15,9 @@ progressive_sum:
     training: "<PATH>/<FILENAME>.jsonl"
     validation: "<PATH>/<FILENAME>.jsonl"
     test: "<PATH>/<FILENAME>.jsonl"
+
+han_classifier:
+  datasets_paths:
+    training: "<PATH>/<FILENAME>.jsonl"
+    validation: "<PATH>/<FILENAME>.jsonl"
+    test: "<PATH>/<FILENAME>.jsonl"
