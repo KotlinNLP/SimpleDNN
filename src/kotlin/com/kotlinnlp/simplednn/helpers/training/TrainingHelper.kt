@@ -27,12 +27,12 @@ abstract class TrainingHelper<ExampleType: Example>(
   val verbose: Boolean = false) {
 
   /**
-   *
+   * The statistics of training (accuracy, loss, etc..).
    */
   val statistics = TrainingStatistics()
 
   /**
-   *
+   * When timing started.
    */
   private var startTime: Long = 0
 
