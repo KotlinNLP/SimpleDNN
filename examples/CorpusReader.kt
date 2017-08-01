@@ -10,7 +10,6 @@ import com.kotlinnlp.simplednn.dataset.Corpus
 import com.kotlinnlp.simplednn.dataset.Example
 import java.io.BufferedInputStream
 import java.io.FileInputStream
-import java.util.concurrent.TimeUnit
 
 /**
  * A helper to read corpora from file (containing training, validation and test sets).
@@ -33,16 +32,14 @@ class CorpusReader<ExampleType : Example> {
 
     println("\n-- CORPUS READING")
 
-    val startTime = System.nanoTime()
+    val startTime = System.currentTimeMillis()
 
     val dataset = Corpus(
       training = this.readDataset(corpusPath.training, exampleExtractor, perLine = perLine),
       validation = this.readDataset(corpusPath.validation, exampleExtractor, perLine = perLine),
       test = this.readDataset(corpusPath.test, exampleExtractor, perLine = perLine))
 
-    val elapsedTime = System.nanoTime() - startTime
-
-    println("Elapsed time: ${TimeUnit.MILLISECONDS.convert(elapsedTime, TimeUnit.NANOSECONDS) / 1000.0}s")
+    println("Elapsed time: %s s".format(System.currentTimeMillis() - startTime))
     println("Train: %d examples".format(dataset.training.size))
     println("Validation: %d examples".format(dataset.validation.size))
     println("Test: %d examples".format(dataset.test.size))
