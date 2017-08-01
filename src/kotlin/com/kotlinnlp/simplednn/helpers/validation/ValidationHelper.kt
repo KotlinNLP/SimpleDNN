@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvaluationFunction
 
 /**
- * An helper which executes the validation of a dataset.
+ * A helper which executes the validation of a dataset.
  *
  * @property neuralProcessor a neural processor
  * @property outputEvaluationFunction the output evaluation function

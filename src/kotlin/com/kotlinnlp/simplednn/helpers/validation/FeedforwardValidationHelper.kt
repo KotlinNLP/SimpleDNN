@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvalu
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
- * An helper which executes the validation of a dataset of [SimpleExample]s.
+ * A helper which executes the validation of a dataset of [SimpleExample]s.
  *
  * @property neuralProcessor a feed-forward neural processor
  * @property outputEvaluationFunction the output evaluation function

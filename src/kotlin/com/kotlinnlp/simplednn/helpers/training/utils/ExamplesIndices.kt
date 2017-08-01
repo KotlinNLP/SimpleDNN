@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.helpers.training.utils
 import com.kotlinnlp.simplednn.dataset.Shuffler
 
 /**
- * An helper class to iterate over integer indices shuffling them with a [Shuffler] object.
+ * A helper class to iterate over integer indices shuffling them with a [Shuffler] object.
  *
  * @property size the number of indices over which to iterate
  * @param shuffler the optional [Shuffler] object (if null indices are not shuffled)
