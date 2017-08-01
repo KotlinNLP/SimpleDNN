@@ -31,7 +31,7 @@ fun main(args: Array<String>) {
 
   val dataset = CorpusReader<SimpleExample<DenseNDArray>>().read(
     corpusPath = Configuration.loadFromFile().mnist.datasets_paths,
-    examplesExtractor = ClassificationExampleExtractor(outputSize = 10),
+    exampleExtractor = ClassificationExampleExtractor(outputSize = 10),
     perLine = false)
 
   MNISTTest(dataset).start()

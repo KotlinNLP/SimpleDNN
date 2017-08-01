@@ -35,7 +35,7 @@ fun main(args: Array<String>) {
 
   val dataset = CorpusReader<SimpleExample<SparseBinaryNDArray>>().read(
     corpusPath = Configuration.loadFromFile().mnist.datasets_paths,
-    examplesExtractor = MNISTSparseExampleExtractor(outputSize = 10),
+    exampleExtractor = MNISTSparseExampleExtractor(outputSize = 10),
     perLine = false)
 
   MNISTSparseBinaryTest(dataset).start()

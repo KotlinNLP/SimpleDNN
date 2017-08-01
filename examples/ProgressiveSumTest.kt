@@ -25,7 +25,7 @@ fun main(args: Array<String>) {
 
   val dataset = CorpusReader<SequenceExample<DenseNDArray>>().read(
     corpusPath = Configuration.loadFromFile().progressive_sum.datasets_paths, // same for validation and test
-    examplesExtractor = ClassificationSequenceExampleExtractor(outputSize = 11),
+    exampleExtractor = ClassificationSequenceExampleExtractor(outputSize = 11),
     perLine = true)
 
   ProgressiveSumTest(dataset).start()

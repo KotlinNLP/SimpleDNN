@@ -29,7 +29,7 @@ fun main(args: Array<String>) {
 
   val dataset = CorpusReader<SequenceExampleWithFinalOutput<DenseNDArray>>().read(
     corpusPath = Configuration.loadFromFile().mnist_sequence.datasets_paths, // same for validation and test
-    examplesExtractor = MNISTSequenceExampleExtractor(outputSize = 10),
+    exampleExtractor = MNISTSequenceExampleExtractor(outputSize = 10),
     perLine = true)
 
   MNISTSequenceTest(dataset).start()

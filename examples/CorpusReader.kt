@@ -18,17 +18,17 @@ import java.util.concurrent.TimeUnit
 class CorpusReader<ExampleType : Example> {
 
   /**
-   * Read the corpus from the given [corpusPath], extracting examples with the an [examplesExtractor] from a pure JSON
+   * Read the corpus from the given [corpusPath], extracting examples with the an [exampleExtractor] from a pure JSON
    * file if [perLine] is false, otherwise from a JSON-line file.
    *
    * @param corpusPath the [CorpusPaths] from which to read the datasets
-   * @param examplesExtractor an [ExampleExtractor]
+   * @param exampleExtractor an [ExampleExtractor]
    * @param perLine a Boolean indicating if the file contains a JSON object per line, or a unique pure JSON
    *
    * @return the read [Corpus]
    */
   fun read(corpusPath: CorpusPaths,
-           examplesExtractor: ExampleExtractor<ExampleType>,
+           exampleExtractor: ExampleExtractor<ExampleType>,
            perLine: Boolean): Corpus<ExampleType> {
 
     println("\n-- CORPUS READING")
@@ -36,9 +36,9 @@ class CorpusReader<ExampleType : Example> {
     val startTime = System.nanoTime()
 
     val dataset = Corpus(
-      training = this.readDataset(corpusPath.training, examplesExtractor, perLine = perLine),
-      validation = this.readDataset(corpusPath.validation, examplesExtractor, perLine = perLine),
-      test = this.readDataset(corpusPath.test, examplesExtractor, perLine = perLine))
+      training = this.readDataset(corpusPath.training, exampleExtractor, perLine = perLine),
+      validation = this.readDataset(corpusPath.validation, exampleExtractor, perLine = perLine),
+      test = this.readDataset(corpusPath.test, exampleExtractor, perLine = perLine))
 
     val elapsedTime = System.nanoTime() - startTime
 
