@@ -37,21 +37,24 @@ abstract class TrainingHelper<ExampleType: Example>(
   private var startTime: Long = 0
 
   /**
+   * Train the NeuralNetwork of the [neuralProcessor] over the specified number of [epochs], grouping examples in
+   * batches of the given [batchSize] and shuffling them with the given [shuffler] before each epoch.
+   * If [validationHelper] is not null, the NeuralNetwork is tested over the given [validationExamples] after each
+   * epoch.
    *
    * @param trainingExamples training examples
-   * @param validationExamples validation examples
-   * @param validationHelper the helper for the validation
-   * @param epochs max epoch
+   * @param epochs number of epochs
    * @param batchSize the size of each batch (default 1)
-   * @param shuffler enable shuffle trainingExamples
-   * @return the last avgLoss
+   * @param validationExamples validation examples (default null)
+   * @param validationHelper the helper for the validation (default null)
+   * @param shuffler the [Shuffler] to shuffle [trainingExamples] before each epoch (default null)
    */
   fun train(trainingExamples: ArrayList<ExampleType>,
-            validationExamples: ArrayList<ExampleType>,
-            validationHelper: ValidationHelper<ExampleType>?,
             epochs: Int,
             batchSize: Int,
-            shuffler: Shuffler?): Unit {
+            validationExamples: ArrayList<ExampleType>? = null,
+            validationHelper: ValidationHelper<ExampleType>? = null,
+            shuffler: Shuffler? = null) {
 
     require(batchSize > 0)
 
@@ -59,29 +62,32 @@ abstract class TrainingHelper<ExampleType: Example>(
 
     for (i in 0 until epochs) {
 
-      this.logTrainStart(epochIndex = i)
+      this.logTrainingStart(epochIndex = i)
 
       this.trainEpoch(trainingExamples = trainingExamples, batchSize = batchSize, shuffler = shuffler)
 
-      this.logTrainEnd()
+      this.logTrainingEnd()
 
       if (validationHelper != null) {
 
-        this.logValidateStart()
+        this.logValidationStart()
 
-        this.statistics.lastAccuracy = validationHelper.validate(validationExamples)
+        this.statistics.lastAccuracy = validationHelper.validate(validationExamples!!)
 
-        this.logValidateEnd()
+        this.logValidationEnd()
       }
     }
   }
 
   /**
+   * Train the NeuralNetwork of the [neuralProcessor], grouping examples in batches of the given [batchSize] and
+   * shuffling them with the given [shuffler] before training.
    *
+   * @param trainingExamples training examples
+   * @param batchSize the size of each batch (default 1)
+   * @param shuffler the [Shuffler] to shuffle [trainingExamples] before training (default null)
    */
-  fun trainEpoch(trainingExamples: ArrayList<ExampleType>,
-                 batchSize: Int,
-                 shuffler: Shuffler?): Unit {
+  fun trainEpoch(trainingExamples: ArrayList<ExampleType>, batchSize: Int, shuffler: Shuffler? = null) {
 
     this.newEpoch()
 
@@ -96,7 +102,7 @@ abstract class TrainingHelper<ExampleType: Example>(
   }
 
   /**
-   * Train the network from an example and accumulate the errors of the parameters into the optimizer
+   * Train the network with the given [example] and accumulate the errors of the parameters into the [optimizer].
    *
    * @param example the example used to train the network
    *
@@ -114,7 +120,7 @@ abstract class TrainingHelper<ExampleType: Example>(
 
     this.optimizer.accumulate(this.neuralProcessor.getParamsErrors())
 
-    if (this.statistics.exampleCount == batchSize) { // A batch is just ended
+    if (this.statistics.exampleCount == batchSize) { // a batch is just ended
       this.optimizer.update()
     }
 
@@ -122,7 +128,7 @@ abstract class TrainingHelper<ExampleType: Example>(
   }
 
   /**
-   * Learn from an example (forward + backward)
+   * Learn from an example (forward + backward).
    *
    * @param example the example used to train the network
    *
@@ -164,54 +170,71 @@ abstract class TrainingHelper<ExampleType: Example>(
   }
 
   /**
-   *
+   * Log when training starts.
    */
-  private fun logTrainStart(epochIndex: Int): Unit {
+  private fun logTrainingStart(epochIndex: Int): Unit {
 
     if (this.verbose) {
 
-      this.startTime = System.currentTimeMillis()
+      this.startTiming()
 
       println("Epoch ${epochIndex + 1}")
     }
   }
 
   /**
-   *
+   * Log when training ends.
    */
-  private fun logTrainEnd(): Unit {
+  private fun logTrainingEnd(): Unit {
 
     if (this.verbose) { // TODO: replace lastLoss with another more valuable value
 
-      val elapsedTime = System.currentTimeMillis() - this.startTime
+      this.printElapsedTime()
 
-      println("[%d ms] Loss: %.10f".format(elapsedTime, this.statistics.lastLoss))
+      println(" Loss: %.10f".format(100.0 * this.statistics.lastLoss))
     }
   }
 
   /**
-   *
+   * Log when validation starts.
    */
-  private fun logValidateStart(): Unit {
+  private fun logValidationStart(): Unit {
 
     if (this.verbose) {
 
-      this.startTime = System.currentTimeMillis()
+      this.startTiming()
 
       println("Start validation")
     }
   }
 
   /**
-   *
+   * Log when validation ends.
    */
-  private fun logValidateEnd(): Unit {
+  private fun logValidationEnd(): Unit {
 
-    if (this.verbose) { // TODO: replace lastLoss with another more valuable value
+    if (this.verbose) {
 
-      val elapsedTime = System.currentTimeMillis() - this.startTime
+      this.printElapsedTime()
 
-      println("[%d ms] Accuracy: %.2f%%".format(elapsedTime, 100.0 * this.statistics.lastAccuracy))
+      println(" Accuracy: %.2f%%".format(100.0 * this.statistics.lastAccuracy))
     }
+  }
+
+  /**
+   * Start registering time.
+   */
+  private fun startTiming() {
+    this.startTime = System.currentTimeMillis()
+  }
+
+  /**
+   * Print the elapsed time in milliseconds and seconds.
+   */
+  private fun printElapsedTime() {
+
+    val elapsedTime = System.currentTimeMillis() - this.startTime
+
+    print("[%d ms (%.1f s)]".format(elapsedTime, (elapsedTime / 1000.0) / 60.0))
   }
 }
