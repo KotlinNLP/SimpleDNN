@@ -13,12 +13,19 @@ import java.io.FileInputStream
 import java.util.concurrent.TimeUnit
 
 /**
- *
+ * A helper to read corpora from file (containing training, validation and test sets).
  */
 class CorpusReader<ExampleType : Example> {
 
   /**
+   * Read the corpus from the given [corpusPath], extracting examples with the an [examplesExtractor] from a pure JSON
+   * file if [perLine] is false, otherwise from a JSON-line file.
    *
+   * @param corpusPath the [CorpusPaths] from which to read the datasets
+   * @param examplesExtractor an [ExampleExtractor]
+   * @param perLine a Boolean indicating if the file contains a JSON object per line, or a unique pure JSON
+   *
+   * @return the read [Corpus]
    */
   fun read(corpusPath: CorpusPaths,
            examplesExtractor: ExampleExtractor<ExampleType>,
@@ -44,44 +51,60 @@ class CorpusReader<ExampleType : Example> {
   }
 
   /**
+   * Read a dataset from the given file extracting examples with the given [exampleExtractor].
    *
+   * @param filename the name of the dataset file
+   * @param exampleExtractor an [ExampleExtractor]
+   * @param perLine a Boolean indicating if the file contains a JSON object per line, or a unique pure JSON
+   *
+   * @return the read dataset
    */
   private fun readDataset(filename: String,
-                          extractExample: ExampleExtractor<ExampleType>,
+                          exampleExtractor: ExampleExtractor<ExampleType>,
                           perLine: Boolean): ArrayList<ExampleType> {
     return if (perLine)
-      this.readDatasetPerLine(filename = filename, examplesExtractor = extractExample)
+      this.readDatasetPerLine(filename = filename, exampleExtractor = exampleExtractor)
     else
-      this.readDatasetFromWholeFile(filename = filename, examplesExtractor = extractExample)
+      this.readDatasetFromWholeFile(filename = filename, exampleExtractor = exampleExtractor)
   }
 
   /**
+   * Read a dataset per line from the given file extracting examples with the given [exampleExtractor].
    *
+   * @param filename the name of the dataset file
+   * @param exampleExtractor an [ExampleExtractor]
+   *
+   * @return the read dataset
    */
   private fun readDatasetPerLine(filename: String,
-                                 examplesExtractor: ExampleExtractor<ExampleType>): ArrayList<ExampleType> {
+                                 exampleExtractor: ExampleExtractor<ExampleType>): ArrayList<ExampleType> {
 
     val examples = ArrayList<ExampleType>()
     val file = FileInputStream(filename)
 
     file.reader().forEachLine {
-      examples.add(examplesExtractor.extract(JsonIterator.parse(it)))
+      examples.add(exampleExtractor.extract(JsonIterator.parse(it)))
     }
 
     return examples
   }
 
   /**
+   * Read a dataset from the given JSON file extracting examples with the given [exampleExtractor].
    *
+   * @param filename the name of the dataset file
+   * @param exampleExtractor an [ExampleExtractor]
+   *
+   * @return the read dataset
    */
   private fun readDatasetFromWholeFile(filename: String,
-                                       examplesExtractor: ExampleExtractor<ExampleType>): ArrayList<ExampleType> {
+                                       exampleExtractor: ExampleExtractor<ExampleType>): ArrayList<ExampleType> {
 
     val examples = ArrayList<ExampleType>()
     val iterator = JsonIterator.parse(BufferedInputStream(FileInputStream(filename)), 2048)
 
     while(iterator.readArray()) {
-      examples.add(examplesExtractor.extract(iterator))
+      examples.add(exampleExtractor.extract(iterator))
     }
 
     return examples
