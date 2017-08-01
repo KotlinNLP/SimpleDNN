@@ -188,7 +188,8 @@ abstract class TrainingHelper<ExampleType: Example>(
   private fun logTrainingEnd(): Unit {
 
     if (this.verbose) { // TODO: replace lastLoss with another more valuable value
-      println("[%s] Loss: %.10f".format(this.formatElapsedTime(), 100.0 * this.statistics.lastLoss))
+      println("Elapsed time: %s".format(this.formatElapsedTime()))
+      println("Loss: %.5f".format(100.0 * this.statistics.lastLoss))
     }
   }
 
@@ -211,7 +212,8 @@ abstract class TrainingHelper<ExampleType: Example>(
   private fun logValidationEnd(): Unit {
 
     if (this.verbose) {
-      println("[%s] Accuracy: %.2f%%".format(this.formatElapsedTime(), 100.0 * this.statistics.lastAccuracy))
+      println("Elapsed time: %s".format(this.formatElapsedTime()))
+      println("Accuracy: %.2f%%".format(100.0 * this.statistics.lastAccuracy))
     }
   }
 
@@ -230,6 +232,6 @@ abstract class TrainingHelper<ExampleType: Example>(
     val elapsedTime = System.currentTimeMillis() - this.startTime
     val elapsedSecs = elapsedTime / 1000.0
 
-    return "%.3f s (%.1f mmin)".format(elapsedSecs, elapsedSecs / 60.0)
+    return "%.3f s (%.1f min)".format(elapsedSecs, elapsedSecs / 60.0)
   }
 }
