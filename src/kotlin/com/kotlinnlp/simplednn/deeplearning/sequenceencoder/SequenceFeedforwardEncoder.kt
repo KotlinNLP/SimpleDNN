@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * It encodes a sequence of arrays into another sequence of arrays using a [SequenceFeedforwardNetwork].
  */
 class SequenceFeedforwardEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
-  private val network: SequenceFeedforwardNetwork
+  val network: SequenceFeedforwardNetwork
 ) {
 
   /**
