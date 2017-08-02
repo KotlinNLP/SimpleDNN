@@ -23,7 +23,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  *
  * @property network the [BiRNN] of this encoder
  */
-class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val network: BiRNN) {
+class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val network: BiRNN) {
 
   /**
    * The [RecurrentNeuralProcessor] which encodes the sequence left-to-right.
