@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.deeplearning.birnn
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
@@ -22,10 +21,7 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  * @param network the [BiRNN] to optimize
  * @param updateMethod the [UpdateMethod] used for the left-to-right and right-to-left recurrent networks
  */
-class BiRNNOptimizer(
-  network: BiRNN,
-  val updateMethod: UpdateMethod = ADAMMethod(stepSize = 0.0001)
-) : Optimizer {
+class BiRNNOptimizer(network: BiRNN, val updateMethod: UpdateMethod) : Optimizer {
 
   /**
    * The [ParamsOptimizer] for the left-to-right network.
