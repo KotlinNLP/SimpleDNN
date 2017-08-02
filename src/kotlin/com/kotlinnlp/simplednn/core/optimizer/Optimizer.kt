@@ -12,11 +12,12 @@ import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
- *
+ * The Optimizer defines a module that optimizes the parameters of a neural element.
  */
 interface Optimizer : ExampleScheduling, BatchScheduling, EpochScheduling {
+
   /**
-   *
+   * Update the parameters of the neural element associated to this optimizer.
    */
   fun update()
 
