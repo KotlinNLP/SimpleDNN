@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import java.io.Serializable
 
 /**
  * The EmbeddingsContainer
@@ -18,7 +19,16 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  * @property count the number of embeddings of this EmbeddingsContainer (e.g. number of word in a vocabulary=
  * @property size the size of the embeddings (typically a range between about 50 to a few hundreds)
  */
-class EmbeddingsContainer(val count: Int, val size: Int) {
+class EmbeddingsContainer(val count: Int, val size: Int) : Serializable {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed from Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
 
   /**
    * An Embedding is a dense vectors of real numbers.
@@ -26,7 +36,17 @@ class EmbeddingsContainer(val count: Int, val size: Int) {
    * @property index the index of the Embedding in the lookupTable
    * @property array the values of the Embedding
    */
-  data class Embedding(val index: Int, val array: UpdatableDenseArray)
+  data class Embedding(val index: Int, val array: UpdatableDenseArray) : Serializable {
+
+    companion object {
+
+      /**
+       * Private val used to serialize the class (needed from Serializable)
+       */
+      @Suppress("unused")
+      private const val serialVersionUID: Long = 1L
+    }
+  }
 
   /**
    * Out-of-vocabulary embeddings used to represent unknown-item
