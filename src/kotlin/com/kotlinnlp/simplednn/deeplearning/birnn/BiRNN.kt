@@ -13,6 +13,10 @@ import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGener
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.utils.Serializer
+import java.io.InputStream
+import java.io.OutputStream
+import java.io.Serializable
 
 /**
  * Bidirectional Recursive Neural Network (BiRNN).
@@ -35,7 +39,25 @@ class BiRNN(
   val inputSize: Int,
   val hiddenSize: Int,
   val hiddenActivation: ActivationFunction?,
-  val recurrentConnectionType: LayerType.Connection) {
+  val recurrentConnectionType: LayerType.Connection) : Serializable {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed from Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+
+    /**
+     * Read a [BiRNN] (serialized) from an input stream and decode it.
+     *
+     * @param inputStream the [InputStream] from which to read the serialized [BiRNN]
+     *
+     * @return the [BiRNN] read from [inputStream] and decoded
+     */
+    fun load(inputStream: InputStream): BiRNN = Serializer.deserialize(inputStream)
+  }
 
   /**
    * The size of the output layer resulting from the concatenation of the hidden layers of the [leftToRightNetwork] and
@@ -75,6 +97,13 @@ class BiRNN(
       "required recurrentConnectionType with Recurrent property"
     }
   }
+
+  /**
+   * Serialize this [BiRNN] and write it to an output stream.
+   *
+   * @param outputStream the [OutputStream] in which to write this serialized [BiRNN]
+   */
+  fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
 
   /**
    * Initialize the weight of the sub-networks [leftToRightNetwork] and [rightToLeftNetwork] using given random

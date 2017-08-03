@@ -11,6 +11,10 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.utils.Serializer
+import java.io.InputStream
+import java.io.OutputStream
+import java.io.Serializable
 
 /**
  * Sequence Feedforward Network.
@@ -26,7 +30,25 @@ class SequenceFeedforwardNetwork(
   val inputType: LayerType.Input,
   val inputSize: Int,
   val outputSize: Int,
-  val outputActivation: ActivationFunction?) {
+  val outputActivation: ActivationFunction?) : Serializable {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed from Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+
+    /**
+     * Read a [SequenceFeedforwardNetwork] (serialized) from an input stream and decode it.
+     *
+     * @param inputStream the [InputStream] from which to read the serialized [SequenceFeedforwardNetwork]
+     *
+     * @return the [SequenceFeedforwardNetwork] read from [inputStream] and decoded
+     */
+    fun load(inputStream: InputStream): SequenceFeedforwardNetwork = Serializer.deserialize(inputStream)
+  }
 
   /**
    * The Feedforward Neural Network which encodes each input array into another array.
@@ -39,6 +61,13 @@ class SequenceFeedforwardNetwork(
       size = this.outputSize,
       activationFunction = this.outputActivation,
       connectionType = LayerType.Connection.Feedforward))
+
+  /**
+   * Serialize this [SequenceFeedforwardNetwork] and write it to an output stream.
+   *
+   * @param outputStream the [OutputStream] in which to write this serialized [SequenceFeedforwardNetwork]
+   */
+  fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
 
   /**
    * Initialize the weight of the network using the default random generator.
