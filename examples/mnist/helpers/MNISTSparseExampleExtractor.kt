@@ -13,8 +13,8 @@ import com.kotlinnlp.simplednn.dataset.SimpleExample
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
-import ExampleExtractor
-import readSparseBinaryNDArray
+import utils.exampleextractor.ExampleExtractor
+import utils.readSparseBinaryNDArray
 
 /**
  *

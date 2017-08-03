@@ -27,7 +27,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import mnist.helpers.MNISTSparseExampleExtractor
-import CorpusReader
+import utils.CorpusReader
 
 fun main(args: Array<String>) {
 

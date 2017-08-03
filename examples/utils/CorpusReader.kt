@@ -5,11 +5,15 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
+package utils
+
 import com.jsoniter.JsonIterator
 import com.kotlinnlp.simplednn.dataset.Corpus
 import com.kotlinnlp.simplednn.dataset.Example
+import utils.exampleextractor.ExampleExtractor
 import java.io.BufferedInputStream
 import java.io.FileInputStream
+import CorpusPaths
 
 /**
  * A helper to read corpora from file (containing training, validation and test sets).

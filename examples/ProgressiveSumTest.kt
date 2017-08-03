@@ -18,6 +18,8 @@ import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.Classificat
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.CFN
 import com.kotlinnlp.simplednn.helpers.validation.SequenceValidationHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import utils.CorpusReader
+import utils.exampleextractor.ClassificationSequenceExampleExtractor
 
 fun main(args: Array<String>) {
 

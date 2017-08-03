@@ -11,10 +11,10 @@ import com.jsoniter.JsonIterator
 import com.jsoniter.ValueType
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import ExampleExtractor
 import com.kotlinnlp.simplednn.dataset.SequenceExampleWithFinalOutput
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import readDenseNDArray
+import utils.exampleextractor.ExampleExtractor
+import utils.readDenseNDArray
 
 /**
  *

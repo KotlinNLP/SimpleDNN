@@ -21,9 +21,9 @@ import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.Classificat
 import com.kotlinnlp.simplednn.helpers.validation.FeedforwardValidationHelper
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import utils.exampleextractor.ClassificationExampleExtractor
+import utils.CorpusReader
 import Configuration
-import CorpusReader
-import ClassificationExampleExtractor
 
 fun main(args: Array<String>) {
 

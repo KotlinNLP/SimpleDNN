@@ -20,8 +20,8 @@ import com.kotlinnlp.simplednn.helpers.training.SequenceWithFinalOutputTrainingH
 import com.kotlinnlp.simplednn.helpers.validation.SequenceWithFinalOutputValidationHelper
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import CorpusReader
 import mnist.helpers.MNISTSequenceExampleExtractor
+import utils.CorpusReader
 
 fun main(args: Array<String>) {
 

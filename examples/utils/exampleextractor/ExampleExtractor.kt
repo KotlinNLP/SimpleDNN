@@ -5,6 +5,8 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
+package utils.exampleextractor
+
 import com.jsoniter.JsonIterator
 import com.kotlinnlp.simplednn.dataset.Example
 
