@@ -83,7 +83,7 @@ class EmbeddingsOptimizer(
    * @param embeddingIndex index of the embedding on which to accumulate the [errors]
    * @param errors errors to accumulate
    */
-  fun accumulateErrors(embeddingIndex: Int, errors: DenseNDArray) {
+  fun accumulate(embeddingIndex: Int, errors: DenseNDArray) {
 
     val embeddingsErrors: EmbeddingsErrors? = this.embeddingsErrorsMap[embeddingIndex]
 

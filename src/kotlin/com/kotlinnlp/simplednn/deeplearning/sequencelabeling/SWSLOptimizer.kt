@@ -49,7 +49,7 @@ class SWSLOptimizer(
    * @param errors the errors of this embedding
    */
   fun accumulateLabelEmbeddingErrors(embeddingIndex: Int, errors: DenseNDArray) {
-    this.labelEmbeddingsOptimizer.accumulateErrors(embeddingIndex = embeddingIndex, errors = errors)
+    this.labelEmbeddingsOptimizer.accumulate(embeddingIndex = embeddingIndex, errors = errors)
   }
 
   /**
