@@ -25,9 +25,9 @@ import kotlin.test.assertTrue
 /**
  *
  */
-class FeedforwardNeuralProcessorsPoolSpec : Spek({
+class NeuralProcessorsPoolSpec : Spek({
 
-  describe("a FeedforwardNeuralProcessorsPool") {
+  describe("a NeuralProcessorsPool") {
 
     on("getItem") {
 
