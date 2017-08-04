@@ -239,7 +239,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
   }
 
   /**
-   * Backward of the whole level at the given [levelIndex] of the hierarchy.
+   * Backward the hierarchy group at the given [levelIndex] of the hierarchy, with the given [groupIndex].
    *
    * @param outputErrors the errors of the output of the [AttentionNetwork] at the given [levelIndex]
    * @param levelIndex the index of the propagating level of the hierarchy
