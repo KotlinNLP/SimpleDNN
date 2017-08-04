@@ -93,7 +93,7 @@ abstract class ItemsPool<ItemType: ItemsPool.IDItem> {
   /**
    * The factory of a new item
    *
-   * @param id the id of the item to create
+   * @param id the unique id of the item to create
    *
    * @return a new item with the given [id]
    */
