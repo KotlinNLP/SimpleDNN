@@ -25,11 +25,11 @@ import kotlin.test.assertTrue
 /**
  *
  */
-class NeuralProcessorsPoolSpec : Spek({
+class FeedforwardNeuralProcessorsPoolSpec : Spek({
 
-  describe("a NeuralProcessorsPool") {
+  describe("a FeedforwardNeuralProcessorsPool") {
 
-    on("getProcessor") {
+    on("getItem") {
 
       val pool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
         neuralNetwork = FeedforwardNeuralNetwork(
@@ -39,8 +39,8 @@ class NeuralProcessorsPoolSpec : Spek({
           outputSize = 2,
           outputActivation = null))
 
-      val processor1 = pool.getProcessor()
-      val processor2 = pool.getProcessor()
+      val processor1 = pool.getItem()
+      val processor2 = pool.getItem()
 
       it("should return a processor with id 0 when called the first time") {
         assertEquals(0, processor1.id)
@@ -69,8 +69,8 @@ class NeuralProcessorsPoolSpec : Spek({
           outputSize = 2,
           outputActivation = null))
 
-      val processor1 = pool.getProcessor()
-      pool.getProcessor()
+      val processor1 = pool.getItem()
+      pool.getItem()
 
       pool.releaseProcessor(processor1)
 
@@ -93,8 +93,8 @@ class NeuralProcessorsPoolSpec : Spek({
           outputSize = 2,
           outputActivation = null))
 
-      pool.getProcessor()
-      pool.getProcessor()
+      pool.getItem()
+      pool.getItem()
 
       pool.releaseAll()
 
@@ -117,7 +117,7 @@ class NeuralProcessorsPoolSpec : Spek({
           outputSize = 2,
           outputActivation = null))
 
-      val processor = pool.getProcessor()
+      val processor = pool.getItem()
 
       it("should return a FeedforwardNeuralProcessor") {
         assertTrue { processor is FeedforwardNeuralProcessor<DenseNDArray> }
@@ -134,7 +134,7 @@ class NeuralProcessorsPoolSpec : Spek({
           outputSize = 2,
           outputActivation = null))
 
-      val processor = pool.getProcessor()
+      val processor = pool.getItem()
 
       it("should return a RecurrentNeuralProcessor") {
         assertTrue { processor is RecurrentNeuralProcessor<DenseNDArray> }
