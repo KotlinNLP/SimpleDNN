@@ -55,7 +55,7 @@ abstract class ItemsPool<ItemType: ItemsPool.IDItem> {
   /**
    * Set a item as available again.
    */
-  fun releaseItems(item: ItemType) {
+  fun releaseItem(item: ItemType) {
     this.availableItems.add(item.id)
   }
 

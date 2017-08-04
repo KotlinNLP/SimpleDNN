@@ -59,7 +59,7 @@ class NeuralProcessorsPoolSpec : Spek({
       }
     }
 
-    on("releaseItems") {
+    on("releaseItem") {
 
       val pool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
         neuralNetwork = FeedforwardNeuralNetwork(
@@ -72,7 +72,7 @@ class NeuralProcessorsPoolSpec : Spek({
       val processor1 = pool.getItem()
       pool.getItem()
 
-      pool.releaseItems(processor1)
+      pool.releaseItem(processor1)
 
       it("should contain the expected number of processors") {
         assertEquals(2, pool.size)
