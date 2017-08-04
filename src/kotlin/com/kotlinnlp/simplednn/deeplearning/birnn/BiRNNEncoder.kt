@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.birnn
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.utils.ItemsPool
 
 /**
  * Bidirectional Recursive Neural Network Encoder
@@ -22,8 +23,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * This implementation support a sequence encoding at time.
  *
  * @property network the [BiRNN] of this encoder
+ * @property id an identification number useful to track a specific [BiRNNEncoder]
  */
-class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val network: BiRNN) {
+class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
+  val network: BiRNN,
+  override val id: Int = 0
+) : ItemsPool.IDItem {
 
   /**
    * The [RecurrentNeuralProcessor] which encodes the sequence left-to-right.
