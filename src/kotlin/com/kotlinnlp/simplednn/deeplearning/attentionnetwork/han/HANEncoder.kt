@@ -120,6 +120,8 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
    */
   fun forward(sequencesHierarchy: HierarchyItem, useDropout: Boolean = false): DenseNDArray {
 
+    this.resetUsedNetworks()
+
     val topOutput: DenseNDArray = this.forwardItem(item = sequencesHierarchy, levelIndex = 0, useDropout = useDropout)
 
     this.outputProcessor.forward(featuresArray = topOutput, useDropout = useDropout)
@@ -147,8 +149,6 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
     )
 
     this.averageAccumulatedErrors()
-
-    this.resetUsedNetworks()
   }
 
   /**
