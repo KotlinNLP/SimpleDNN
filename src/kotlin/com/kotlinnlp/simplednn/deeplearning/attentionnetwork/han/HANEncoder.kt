@@ -141,7 +141,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
 
     this.outputProcessor.backward(outputErrors = outputErrors, propagateToInput = true)
 
-    this.backwardHierarchicalLevel(
+    this.backwardHierarchicalGroup(
       outputErrors = this.outputProcessor.getInputErrors(copy = false),
       levelIndex = 0,
       groupIndex = 0,
@@ -246,7 +246,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
    * @param groupIndex the index of the propagating group of this level
    * @param propagateToInput whether to propagate the errors to the input or not
    */
-  private fun backwardHierarchicalLevel(outputErrors: DenseNDArray,
+  private fun backwardHierarchicalGroup(outputErrors: DenseNDArray,
                                         levelIndex: Int,
                                         groupIndex: Int,
                                         propagateToInput: Boolean) {
@@ -265,7 +265,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
 
     if (isNotLastLevel) {
       this.encodersPools[levelIndex].getItem().getInputSequenceErrors().forEachIndexed { groupIndex, errors ->
-        this.backwardHierarchicalLevel(
+        this.backwardHierarchicalGroup(
           outputErrors = errors,
           levelIndex = levelIndex + 1,
           groupIndex = groupIndex,
