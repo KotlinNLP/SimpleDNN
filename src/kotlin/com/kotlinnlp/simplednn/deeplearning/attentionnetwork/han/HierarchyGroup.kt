@@ -12,4 +12,11 @@ package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han
  *
  * It contains a list of other [HierarchyItem]s as sub-levels.
  */
-class HierarchyGroup : HierarchyItem, ArrayList<HierarchyItem>()
+class HierarchyGroup(vararg groups: HierarchyItem) : HierarchyItem, ArrayList<HierarchyItem>(groups.size) {
+
+  init {
+    groups.forEach {
+      this.add(it)
+    }
+  }
+}
