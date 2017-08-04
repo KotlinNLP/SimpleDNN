@@ -28,7 +28,7 @@ abstract class ItemsPool<ItemType: ItemsPool.IDItem> {
   /**
    * The number of items in use.
    */
-  val usage: Int get() = this.pool.size - this.availableProcessors.size
+  val usage: Int get() = this.pool.size - this.availableItems.size
 
   /**
    * The pool of all the created items.
@@ -38,32 +38,32 @@ abstract class ItemsPool<ItemType: ItemsPool.IDItem> {
   /**
    * A set containing the ids of items not in use.
    */
-  private val availableProcessors = mutableSetOf<Int>()
+  private val availableItems = mutableSetOf<Int>()
 
   /**
    * Get a item currently not in use (setting it as in use).
    */
   fun getItem(): ItemType {
 
-    if (availableProcessors.size == 0) {
+    if (availableItems.size == 0) {
       this.addItem()
     }
 
-    return this.popAvailableProcessor()
+    return this.popAvailableItem()
   }
 
   /**
    * Set a item as available again.
    */
-  fun releaseProcessor(item: ItemType) {
-    this.availableProcessors.add(item.id)
+  fun releaseItems(item: ItemType) {
+    this.availableItems.add(item.id)
   }
 
   /**
    * Set all items as available again.
    */
   fun releaseAll() {
-    this.pool.forEach { this.availableProcessors.add(it.id) }
+    this.pool.forEach { this.availableItems.add(it.id) }
   }
 
   /**
@@ -74,7 +74,7 @@ abstract class ItemsPool<ItemType: ItemsPool.IDItem> {
     val item = this.itemFactory(id = this.pool.size)
 
     this.pool.add(item)
-    this.availableProcessors.add(item.id)
+    this.availableItems.add(item.id)
   }
 
   /**
@@ -82,10 +82,10 @@ abstract class ItemsPool<ItemType: ItemsPool.IDItem> {
    *
    * @return the first available item
    */
-  private fun popAvailableProcessor(): ItemType {
+  private fun popAvailableItem(): ItemType {
 
-    val itemId: Int = this.availableProcessors.first()
-    this.availableProcessors.remove(itemId)
+    val itemId: Int = this.availableItems.first()
+    this.availableItems.remove(itemId)
 
     return this.pool[itemId]
   }
