@@ -95,19 +95,19 @@ class TreeEncoder(private val network: TreeRNN) {
      * The [RecurrentNeuralProcessor] to encode the left-children.
      */
     internal val leftProcessor: RecurrentNeuralProcessor<DenseNDArray>
-      = this@TreeEncoder.leftProcessorsPool.getProcessor()
+      = this@TreeEncoder.leftProcessorsPool.getItem()
 
     /**
      * The [RecurrentNeuralProcessor] to encode the right-children.
      */
     internal val rightProcessor: RecurrentNeuralProcessor<DenseNDArray>
-      = this@TreeEncoder.rightProcessorsPool.getProcessor()
+      = this@TreeEncoder.rightProcessorsPool.getItem()
 
     /**
      * The [FeedforwardNeuralProcessor] to take two d-dimensional vectors and returning a single d-dimensional vector.
      */
     internal val concatProcessor: FeedforwardNeuralProcessor<DenseNDArray>
-      = this@TreeEncoder.concatProcessorsPool.getProcessor()
+      = this@TreeEncoder.concatProcessorsPool.getItem()
 
     /**
      * The head of the node.
