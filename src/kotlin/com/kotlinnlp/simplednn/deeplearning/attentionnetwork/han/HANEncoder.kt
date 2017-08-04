@@ -147,6 +147,8 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
     )
 
     this.averageAccumulatedErrors()
+
+    this.resetUsedNetworks()
   }
 
   /**
@@ -338,6 +340,18 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
     this.attentionNetworksParamsErrorsAccumulators.forEach {
       it.reset()
     }
+  }
+
+  /**
+   * Set all sub-networks as not used.
+   */
+  private fun resetUsedNetworks() {
+
+    this.usedEncodersPerLevel.forEach { it.clear() }
+    this.usedAttentionNetworksPerLevel.forEach { it.clear() }
+
+    this.encodersPools.forEach { it.releaseAll() }
+    this.attentionNetworksPools.forEach { it.releaseAll() }
   }
 
   /**
