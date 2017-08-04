@@ -18,6 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
+import com.kotlinnlp.simplednn.utils.ItemsPool
 
 /**
  * The Attention Network which classifies an input sequence using an Attention Layer and a Feedforward Layer as
@@ -27,12 +28,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
  * @property inputType the type of the input arrays
  * @property dropout the probability of dropout (default 0.0) when generating the attention arrays for the Attention
  *                   Layer. If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
+ * @property id an identification number useful to track a specific [AttentionNetwork]
  */
 class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   val model: AttentionNetworkParameters,
   val inputType: LayerType.Input,
-  val dropout: Double = 0.0
-) {
+  val dropout: Double = 0.0,
+  override val id: Int = 0
+) : ItemsPool.IDItem {
 
   /**
    * The accumulator of errors of the transform layer parameters.
