@@ -25,7 +25,7 @@ class EmbeddingsHelper(
   val dropoutConfiguration: DropoutConfiguration): Optimizer {
 
   /**
-   * Dropout configuration
+   * Dropout configuration.
    *
    * @property alpha dropout constant
    * @property enablePseudoRandom whether to enable pseudo random
@@ -37,7 +37,7 @@ class EmbeddingsHelper(
     val seed: Long = 1)
 
   /**
-   * Random generator used by [getEmbeddingDropout]
+   * Random generator used by [getEmbeddingDropout].
    */
   private val rndGenerator = if (this.dropoutConfiguration.enablePseudoRandom) {
     Random(this.dropoutConfiguration.seed)
@@ -46,15 +46,14 @@ class EmbeddingsHelper(
   }
 
   /**
-   * The optimizer of the [embeddings]
+   * The optimizer of the [embeddings].
    */
   private val optimizer = EmbeddingsOptimizer(
     embeddingsContainer = this.embeddings,
     updateMethod = this.updateMethod)
 
   /**
-   * Replace an embedding with the 'unknown' with probability
-   * that is inversely proportional to the [occurrences]
+   * Replace an embedding with the 'unknown' with probability that is inversely proportional to the [occurrences].
    */
   fun getEmbeddingDropout(index: Int?, occurrences: Int): EmbeddingsContainer.Embedding =
     if (rndGenerator.nextDouble() < this.dropoutConfiguration.alpha / (occurrences + this.dropoutConfiguration.alpha)){
@@ -64,8 +63,9 @@ class EmbeddingsHelper(
     }
 
   /**
-   * Return the embedding at the given index.
-   * If the index is null return the nullEmbedding.
+   * Get the embedding at the given [index].
+   * If the [index] is null return the [EmbeddingsContainer.nullEmbedding].
+   * If the [index] is negative or greater than [count] return the [EmbeddingsContainer.unknownEmbedding].
    *
    * @param index (can be null)
    *
@@ -74,12 +74,17 @@ class EmbeddingsHelper(
   fun getEmbedding(index: Int?): EmbeddingsContainer.Embedding = this.embeddings.getEmbedding(index)
 
   /**
-   * @return the 'unknown' embedding
+   * @return the [EmbeddingsContainer.unknownEmbedding]
    */
   fun getUnknownEmbedding() = this.embeddings.unknownEmbedding
 
   /**
-   * Propagate the errors on the embedding
+   * @return the [EmbeddingsContainer.nullEmbedding]
+   */
+  fun getNullEmbedding() = this.embeddings.nullEmbedding
+
+  /**
+   * Propagate the errors to the given [embedding].
    *
    * @param embedding embedding to which propagate the [outputErrors]
    * @param outputErrors the errors to propagate on the [embedding]
@@ -89,7 +94,7 @@ class EmbeddingsHelper(
   }
 
   /**
-   * In turn it calls the same method into the `optimizer`
+   * In turn it calls the same method into the `optimizer`.
    */
   override fun update() {
     this.optimizer.update()
@@ -97,8 +102,7 @@ class EmbeddingsHelper(
 
   /**
    * Method to call every new epoch.
-   *
-   * In turn it calls the same method into the `optimizer`
+   * In turn it calls the same method into the `optimizer`.
    */
   override fun newEpoch() {
     this.optimizer.newEpoch()
@@ -106,8 +110,7 @@ class EmbeddingsHelper(
 
   /**
    * Method to call every new batch.
-   *
-   * In turn it calls the same method into the `optimizer`
+   * In turn it calls the same method into the `optimizer`.
    */
   override fun newBatch() {
     this.optimizer.newBatch()
@@ -115,8 +118,7 @@ class EmbeddingsHelper(
 
   /**
    * Method to call every new example.
-   *
-   * In turn it calls the same method into the `optimizer`
+   * In turn it calls the same method into the `optimizer`.
    */
   override fun newExample() {
     this.optimizer.newExample()
