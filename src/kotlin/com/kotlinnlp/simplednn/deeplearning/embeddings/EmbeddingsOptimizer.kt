@@ -87,11 +87,12 @@ class EmbeddingsOptimizer(
 
     val embeddingsErrors: EmbeddingsErrors? = this.embeddingsErrorsMap[embeddingIndex]
 
-    if (embeddingsErrors == null){
-      this.embeddingsErrorsMap[embeddingIndex] = EmbeddingsErrors(errors = errors.copy(), count = 1)
+    if (embeddingsErrors != null) {
+        embeddingsErrors.errors.assignSum(errors)
+        embeddingsErrors.count += 1
+
     } else {
-      embeddingsErrors.errors.assignSum(errors)
-      embeddingsErrors.count += 1
+      this.embeddingsErrorsMap[embeddingIndex] = EmbeddingsErrors(errors = errors.copy(), count = 1)
     }
   }
 }
