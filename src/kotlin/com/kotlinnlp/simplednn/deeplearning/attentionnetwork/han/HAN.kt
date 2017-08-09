@@ -15,6 +15,10 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN
+import com.kotlinnlp.simplednn.utils.Serializer
+import java.io.InputStream
+import java.io.OutputStream
+import java.io.Serializable
 
 /**
  * The model of the Hierarchical Attention Networks.
@@ -41,7 +45,25 @@ data class HAN(
   val compressionFactors: ArrayList<Double> = arrayListOf(*Array(
     size = hierarchySize,
     init = { i -> if (i == 0) 2.0 else 1.0 }))
-) {
+) : Serializable {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed from Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+
+    /**
+     * Read a [HAN] (serialized) from an input stream and decode it.
+     *
+     * @param inputStream the [InputStream] from which to read the serialized [HAN]
+     *
+     * @return the [HAN] read from [inputStream] and decoded
+     */
+    fun load(inputStream: InputStream): HAN = Serializer.deserialize(inputStream)
+  }
 
   /**
    * Check the compatibility of the arguments.
@@ -121,6 +143,13 @@ data class HAN(
 
     return this
   }
+
+  /**
+   * Serialize this [HAN] and write it to an output stream.
+   *
+   * @param outputStream the [OutputStream] in which to write this serialized [HAN]
+   */
+  fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
 
   /**
    * @param levelIndex the index of a level of the hierarchy
