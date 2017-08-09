@@ -107,6 +107,40 @@ class NeuralProcessorsPoolSpec : Spek({
       }
     }
 
+    on("getItem after releaseAll") {
+
+      val pool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
+        neuralNetwork = FeedforwardNeuralNetwork(
+          inputSize = 5,
+          hiddenSize = 3,
+          hiddenActivation = null,
+          outputSize = 2,
+          outputActivation = null))
+
+      val processor1 = pool.getItem()
+      val processor2 = pool.getItem()
+      val processor3 = pool.getItem()
+      val processor4 = pool.getItem()
+
+      pool.releaseAll()
+
+      it("should return the expected processor 1") {
+        assertTrue { processor1 === pool.getItem() }
+      }
+
+      it("should return the expected processor 2") {
+        assertTrue { processor2 === pool.getItem() }
+      }
+
+      it("should return the expected processor 3") {
+        assertTrue { processor3 === pool.getItem() }
+      }
+
+      it("should return the expected processor 4") {
+        assertTrue { processor4 === pool.getItem() }
+      }
+    }
+
     context("FeedforwardNeuralProcessorsPool") {
 
       val pool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
