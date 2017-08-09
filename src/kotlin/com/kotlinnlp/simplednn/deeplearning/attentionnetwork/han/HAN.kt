@@ -129,9 +129,9 @@ data class HAN(
    */
   private fun getLevelInputSize(levelIndex: Int): Int {
 
-    var inputSize: Int = this.inputSize
+    var inputSize: Int = this.inputSize // assign the size of the lowest level
 
-    (levelIndex until this.hierarchySize).reversed().forEach { i ->
+    ((levelIndex + 1) until this.hierarchySize).reversed().forEach { i -> // skip lowest level (already assigned)
       inputSize = this.getBiRNNOutputSize(inputSize = inputSize, levelIndex = i)
     }
 
