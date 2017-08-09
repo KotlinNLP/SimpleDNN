@@ -8,8 +8,8 @@
 package com.kotlinnlp.simplednn.utils
 
 /**
- * A pool of items which allows to allocate and release them when needed, without creating a new one.
- * E.g.: it is useful to optimize the creation of new structures every time a NeuralProcessor is created.
+ * A pool of items which allows to allocate and release them when needed, without creating new ones every time.
+ * E.g.: it is useful to optimize the creation of new structures every time a NeuralProcessor is needed.
  */
 abstract class ItemsPool<ItemType: ItemsPool.IDItem> {
 
@@ -36,12 +36,12 @@ abstract class ItemsPool<ItemType: ItemsPool.IDItem> {
   private val pool = arrayListOf<ItemType>()
 
   /**
-   * A set containing the ids of items not in use.
+   * A set containing the ids of the items not in use.
    */
   private val availableItems = mutableSetOf<Int>()
 
   /**
-   * Get a item currently not in use (setting it as in use).
+   * Get an item currently not in use (and set it as in use).
    */
   fun getItem(): ItemType {
 
@@ -91,7 +91,7 @@ abstract class ItemsPool<ItemType: ItemsPool.IDItem> {
   }
 
   /**
-   * The factory of a new item
+   * The factory of a new item.
    *
    * @param id the unique id of the item to create
    *
