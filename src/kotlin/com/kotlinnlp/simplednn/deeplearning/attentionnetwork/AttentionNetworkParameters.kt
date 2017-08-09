@@ -13,6 +13,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerParametersFactory
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerParameters
+import java.io.Serializable
 
 /**
  * The parameters of the Attention Network.
@@ -21,7 +22,16 @@ data class AttentionNetworkParameters(
   val inputSize: Int,
   val attentionSize: Int,
   val sparseInput: Boolean = false
-) {
+) : Serializable {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed from Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
 
   /**
    * The size of the output array.
