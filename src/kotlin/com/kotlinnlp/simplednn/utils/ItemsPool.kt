@@ -38,10 +38,14 @@ abstract class ItemsPool<ItemType: ItemsPool.IDItem> {
   /**
    * A set containing the ids of the items not in use.
    */
-  private val availableItems = mutableSetOf<Int>()
+  private val availableItems = mutableListOf<Int>()
 
   /**
-   * Get an item currently not in use (and set it as in use).
+   * Get an item currently not in use (and set it as in use). If no items are available a new one is created and added
+   * to the pool.
+   * If called after a releaseAll items will be returned in the same order as they have been added to the pool.
+   *
+   * @return an available item
    */
   fun getItem(): ItemType {
 
@@ -56,6 +60,7 @@ abstract class ItemsPool<ItemType: ItemsPool.IDItem> {
    * Set a item as available again.
    */
   fun releaseItem(item: ItemType) {
+    require(item.id !in this.availableItems) { "Item already available" }
     this.availableItems.add(item.id)
   }
 
@@ -63,6 +68,7 @@ abstract class ItemsPool<ItemType: ItemsPool.IDItem> {
    * Set all items as available again.
    */
   fun releaseAll() {
+    this.availableItems.clear()
     this.pool.forEach { this.availableItems.add(it.id) }
   }
 
@@ -84,8 +90,7 @@ abstract class ItemsPool<ItemType: ItemsPool.IDItem> {
    */
   private fun popAvailableItem(): ItemType {
 
-    val itemId: Int = this.availableItems.first()
-    this.availableItems.remove(itemId)
+    val itemId: Int = this.availableItems.removeAt(0)
 
     return this.pool[itemId]
   }
