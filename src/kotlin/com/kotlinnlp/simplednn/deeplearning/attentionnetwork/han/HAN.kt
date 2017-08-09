@@ -92,7 +92,7 @@ data class HAN(
    */
   val outputNetwork = NeuralNetwork(
     LayerConfiguration(
-      size = this.biRNNs.last().outputSize,
+      size = this.biRNNs.first().outputSize, // level 0 = top level
       inputType = LayerType.Input.Dense
     ),
     LayerConfiguration(
