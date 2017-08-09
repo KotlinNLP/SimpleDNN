@@ -78,21 +78,31 @@ class EmbeddingsOptimizer(
   }
 
   /**
-   * Accumulate errors of the embeddings at [embeddingIndex].
+   * Accumulate errors of the embeddings with the given [embeddingIndex].
+   * If [embeddingIndex] is null [errors] will be associated to the nullEmbedding.
+   * If [embeddingIndex] is negative or greater then the embeddings count [errors] will be associated to the
+   * unknownEmbedding.
    *
-   * @param embeddingIndex index of the embedding on which to accumulate the [errors]
+   * @param embeddingIndex index of the embedding on which to accumulate the [errors] (can be null)
    * @param errors errors to accumulate
    */
-  fun accumulate(embeddingIndex: Int, errors: DenseNDArray) {
+  fun accumulate(embeddingIndex: Int?, errors: DenseNDArray) {
 
-    val embeddingsErrors: EmbeddingsErrors? = this.embeddingsErrorsMap[embeddingIndex]
+    val index: Int = if (embeddingIndex == null)
+      -2
+    else if (embeddingIndex in 0 until this.embeddingsContainer.count)
+      embeddingIndex
+    else
+      -1 // unknown
+
+    val embeddingsErrors: EmbeddingsErrors? = this.embeddingsErrorsMap[index]
 
     if (embeddingsErrors != null) {
         embeddingsErrors.errors.assignSum(errors)
         embeddingsErrors.count += 1
 
     } else {
-      this.embeddingsErrorsMap[embeddingIndex] = EmbeddingsErrors(errors = errors.copy(), count = 1)
+      this.embeddingsErrorsMap[index] = EmbeddingsErrors(errors = errors.copy(), count = 1)
     }
   }
 }
