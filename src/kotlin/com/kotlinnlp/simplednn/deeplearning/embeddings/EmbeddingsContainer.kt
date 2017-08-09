@@ -16,8 +16,8 @@ import java.io.Serializable
 /**
  * The EmbeddingsContainer
  *
- * @property count the number of embeddings of this EmbeddingsContainer (e.g. number of word in a vocabulary=
- * @property size the size of the embeddings (typically a range between about 50 to a few hundreds)
+ * @property count the number of embeddings in this [EmbeddingsContainer] (e.g. number of word in a vocabulary=
+ * @property size the size of each embedding (typically a range between about 50 to a few hundreds)
  */
 class EmbeddingsContainer(val count: Int, val size: Int) : Serializable {
 
@@ -47,58 +47,69 @@ class EmbeddingsContainer(val count: Int, val size: Int) : Serializable {
       private const val serialVersionUID: Long = 1L
     }
   }
-
-  /**
-   * Out-of-vocabulary embeddings used to represent unknown-item
-   */
-  val unknownEmbeddingsId: Int = this.count
-
-  /**
-   * Out-of-vocabulary embeddings used to represent null-item
-   */
-  val nullEmbeddingsId: Int = this.count + 1
   
   /**
    * Map from indices to vectors, i.e. index 7 to vector [0.18, 0.12, 0.87...].
-   * The last two elements of the look-up table are the 'unknown' and 'null' vectors
+   * The last two elements of the look-up table are the 'unknown' and 'null' vectors.
    */
-  val lookupTable = Array(
-    size = count + 2,
-    init = { Embedding(index = it, array = UpdatableDenseArray(Shape(this.size))) }
-  )
+  private val lookupTable = Array(size = count, init = { index -> this.buildEmbedding(index) })
 
   /**
-   * Unknown Embedding
+   * The Unknown Embedding.
    */
-  val unknownEmbedding get() = this.lookupTable[this.unknownEmbeddingsId]
+  val unknownEmbedding = this.buildEmbedding(index = -1)
 
   /**
-   * Null Embedding
+   * The Null Embedding.
    */
-  val nullEmbedding get() = this.lookupTable[this.nullEmbeddingsId]
+  val nullEmbedding = this.buildEmbedding(index = -2)
 
   /**
-   * Return the embedding at the given index.
-   * If the index is null return the nullEmbedding.
+   * Get the embedding at the given [index].
+   * If the [index] is null return the [nullEmbedding].
+   * If the [index] is negative or greater than [count] return the [unknownEmbedding].
    *
    * @param index (can be null)
    *
-   * @return the embedding at the given index
+   * @return the [Embedding] at the given [index] or [nullEmbedding] or [unknownEmbedding]
    */
   fun getEmbedding(index: Int?): Embedding {
-    require(index == null || index in 0 .. this.lookupTable.size)
-    return this.lookupTable[index ?: this.nullEmbeddingsId]
+
+    return if (index != null) {
+
+      if (index in 0 until this.count)
+        this.lookupTable[index]
+
+      else
+        this.unknownEmbedding
+
+    } else {
+      this.nullEmbedding
+    }
   }
 
   /**
    * Random embeddings initialization.
    *
-   * @param randomGenerator
+   * @param randomGenerator a [RandomGenerator]
    *
-   * @return this EmbeddingContainer
+   * @return this [EmbeddingsContainer]
    */
-  fun randomize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true)): EmbeddingsContainer {
+  fun randomize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true))
+    : EmbeddingsContainer {
+
     this.lookupTable.forEach { it.array.values.randomize(randomGenerator) }
+
+    this.nullEmbedding.array.values.randomize(randomGenerator)
+    this.unknownEmbedding.array.values.randomize(randomGenerator)
+
     return this
   }
+
+  /**
+   * @param index the index associated to the [Embedding] to build
+   *
+   * @return a new [Embedding] with the given [index]
+   */
+  private fun buildEmbedding(index: Int) = Embedding(index = index, array = UpdatableDenseArray(Shape(this.size)))
 }
