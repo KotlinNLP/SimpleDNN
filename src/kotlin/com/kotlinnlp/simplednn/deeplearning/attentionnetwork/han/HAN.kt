@@ -26,10 +26,9 @@ import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN
  * @property attentionSize the size of the attention arrays of the AttentionLayers
  * @property outputSize the size of the output layer
  * @property outputActivation the activation function of the output layer
- * @property compressionFactors an array with [hierarchySize] elements, which defines the compression factor of the input
- *                           size of each hierarchical level in respect of its output.
- *                           (By default the first factor is 2.0, the others 1.0)
- *
+ * @property compressionFactors an array with [hierarchySize] elements, which defines the compression factor of the
+ *                              input size of each hierarchical level in respect of its output, starting from the lowest
+ *                              level. By default the first factor is 2.0, the others 1.0.
  */
 data class HAN(
   val hierarchySize: Int = 2,
@@ -153,7 +152,7 @@ data class HAN(
    */
   private fun getBiRNNOutputSize(inputSize: Int, levelIndex: Int): Int {
 
-    val compressedInputSize = Math.round(inputSize * this.compressionFactors[levelIndex]).toInt()
+    val compressedInputSize = Math.round(inputSize * this.compressionFactors.reversed()[levelIndex]).toInt()
 
     return if (compressedInputSize % 2 == 0) compressedInputSize else compressedInputSize + 1
   }
