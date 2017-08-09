@@ -132,8 +132,8 @@ data class HAN(
 
     var inputSize: Int = this.inputSize
 
-    (levelIndex until this.hierarchySize).reversed().forEach {
-      inputSize = this.getBiRNNOutputSize(inputSize = inputSize, levelIndex = levelIndex)
+    (levelIndex until this.hierarchySize).reversed().forEach { i ->
+      inputSize = this.getBiRNNOutputSize(inputSize = inputSize, levelIndex = i)
     }
 
     return inputSize
