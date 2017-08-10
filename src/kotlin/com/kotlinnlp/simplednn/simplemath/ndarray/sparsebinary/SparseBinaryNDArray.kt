@@ -250,7 +250,12 @@ class SparseBinaryNDArray(
   }
 
   /**
-   * Return a one-dimensional NDArray sub-vector of a vertical vector
+   * Get a one-dimensional NDArray sub-vector of a vertical vector.
+   *
+   * @param a the start index of the range (inclusive)
+   * @param b the end index of the range (exclusive)
+   *
+   * @return the sub-array
    */
   override fun getRange(a: Int, b: Int): SparseBinaryNDArray {
     TODO("not implemented")

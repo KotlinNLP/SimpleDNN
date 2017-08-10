@@ -141,7 +141,12 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
-   * Return a one-dimensional DenseNDArray sub-vector of a vertical vector
+   * Get a one-dimensional DenseNDArray sub-vector of a vertical vector.
+   *
+   * @param a the start index of the range (inclusive)
+   * @param b the end index of the range (exclusive)
+   *
+   * @return the sub-array
    */
   override fun getRange(a: Int, b: Int): DenseNDArray {
     require(this.shape.dim2 == 1)
