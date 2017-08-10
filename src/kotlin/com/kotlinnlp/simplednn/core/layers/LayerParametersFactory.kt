@@ -62,7 +62,5 @@ object LayerParametersFactory {
         inputSize = inputSize,
         outputSize = outputSize,
         sparseInput = sparseInput)
-
-      else -> throw RuntimeException("Invalid connection type: " + connectionType)
     }
 }

@@ -177,8 +177,6 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
         outputConfiguration = outputConfiguration,
         params = params,
         dropout = inputConfiguration.dropout)
-
-      else -> throw RuntimeException("Invalid input type: %s".format(inputConfiguration.inputType))
     }
   }
 

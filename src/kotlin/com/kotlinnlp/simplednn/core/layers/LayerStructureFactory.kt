@@ -98,8 +98,6 @@ object LayerStructureFactory {
         dropout = dropout,
         layerContextWindow = contextWindow!!
       )
-
-      else -> throw RuntimeException("Invalid connection type: " + connectionType)
     }
   }
 }

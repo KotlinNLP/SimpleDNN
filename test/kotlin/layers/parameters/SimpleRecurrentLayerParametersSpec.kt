@@ -40,10 +40,10 @@ class SimpleRecurrentLayerParametersSpec : Spek({
         val b = params.unit.biases.values
         val wr = params.unit.recurrentWeights.values
 
-        var i = 0
+        var k = 0
         val initValues = doubleArrayOf(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
         val randomGenerator = mock<RandomGenerator>()
-        whenever(randomGenerator.next()).thenAnswer { initValues[i++] }
+        whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
         params.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
 

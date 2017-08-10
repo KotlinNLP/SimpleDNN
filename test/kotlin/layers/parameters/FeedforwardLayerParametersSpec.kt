@@ -39,10 +39,10 @@ class FeedforwardLayerParametersSpec : Spek({
         val w = params.unit.weights.values
         val b = params.unit.biases.values
 
-        var i = 0
+        var k = 0
         val initValues = doubleArrayOf(0.1, 0.2, 0.3, 0.4, 0.5, 0.6)
         val randomGenerator = mock<RandomGenerator>()
-        whenever(randomGenerator.next()).thenAnswer { initValues[i++] }
+        whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
         params.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
 

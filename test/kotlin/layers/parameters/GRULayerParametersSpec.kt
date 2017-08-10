@@ -48,7 +48,7 @@ class GRULayerParametersSpec : Spek({
         val wrr = params.resetGate.recurrentWeights.values
         val wpr = params.partitionGate.recurrentWeights.values
 
-        var i = 0
+        var k = 0
         val initValues = doubleArrayOf(
           0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
           0.7, 0.8, 0.9, 1.0, 1.1, 1.2,
@@ -56,7 +56,7 @@ class GRULayerParametersSpec : Spek({
           1.9, 2.0, 2.1, 2.2, 2.3, 2.4,
           2.5, 2.6, 2.7, 2.8, 2.9, 3.0)
         val randomGenerator = mock<RandomGenerator>()
-        whenever(randomGenerator.next()).thenAnswer { initValues[i++] }
+        whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
         params.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
 
