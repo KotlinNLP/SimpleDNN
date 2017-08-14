@@ -1201,5 +1201,23 @@ class DenseNDArraySpec : Spek({
           DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.4))), splitArray))
       }
     }
+
+    context("single vertical split multiple range size") {
+
+      val array1 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.4))
+
+      val splitArray: Array<DenseNDArray> = array1.splitV(2, 1, 1)
+
+      it("should have the expected length") {
+        assertEquals(3, splitArray.size)
+      }
+
+      it("should have the expected values") {
+        assertEquals(true, Arrays.equals(arrayOf(
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2)),
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3)),
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4))), splitArray))
+      }
+    }
   }
 })

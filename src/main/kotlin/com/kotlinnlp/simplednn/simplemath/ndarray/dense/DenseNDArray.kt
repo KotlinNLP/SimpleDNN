@@ -817,32 +817,61 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
-   * Splits this NDArray into multiple NDArray each with length [splittingLength]
+   * Split this NDArray into multiple NDArray.
+   *
+   * If the number of arguments is one, split this NDArray into multiple NDArray each with length [splittingLength].
+   * If there are multiple arguments, split this NDArray according to the length of each [splittingLength] element.
+   *
+   * @param splittingLength the length(s) for sub-array division
+   *
+   * @return an Array containing the split values
+   */
+  override fun splitV(vararg splittingLength: Int): Array<DenseNDArray> =
+    if (splittingLength.size == 1){
+      this.splitVSingleSegment(splittingLength.first())
+    } else {
+      this.splitVMultipleSegments(splittingLength)
+    }
+
+  /**
+   * Split this NDArray into multiple NDArray each with length [splittingLength]
    *
    * @param splittingLength the length for sub-array division
    *
    * @return an Array containing the split values
    */
-  override fun splitV(splittingLength: Int): Array<DenseNDArray>{
+  private fun splitVSingleSegment(splittingLength: Int): Array<DenseNDArray> {
 
-    require(this.length % splittingLength == 0){
+    require(this.length % splittingLength == 0) {
       "The length of the array must be a multiple of the splitting length"
     }
 
-    val result = arrayOfNulls<DenseNDArray>(this.length / splittingLength)
+    return Array(size = this.length / splittingLength, init = {
+      val startIndex = it * splittingLength
+      this.getRange(startIndex, startIndex + splittingLength)
+    })
+  }
 
-    var start = 0
-    var end = splittingLength
-    var i = 0
+  /**
+   * Split this NDArray according to the length of each [splittingLength] element.
+   *
+   * @param splittingLength the lengths for sub-array division
+   *
+   * @return an Array containing the split values
+   */
+  private fun splitVMultipleSegments(splittingLength: IntArray): Array<DenseNDArray> {
 
-    while (start < this.length){
-      result[i] = this.getRange(start, end)
-      start = end
-      end += splittingLength
-      i++
+    require(splittingLength.sum() == this.length) {
+      "The length of the array must be equal to the sum of each splitting length"
     }
 
-    return result.requireNoNulls()
+    var offset = 0
+
+    return Array(size = splittingLength.size, init = {
+      val startIndex = offset
+      offset = startIndex + splittingLength[it]
+      this.getRange(startIndex, offset)
+    })
   }
 
   /**

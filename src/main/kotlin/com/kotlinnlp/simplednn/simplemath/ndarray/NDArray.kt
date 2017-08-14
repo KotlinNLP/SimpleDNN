@@ -389,13 +389,16 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun concatV(a: SelfType): SelfType
 
   /**
-   * Splits this NDArray into multiple NDArray each with length [splittingLength]
+   * Split this NDArray into multiple NDArray.
    *
-   * @param splittingLength the length for sub-array division
+   * If the number of arguments is one, split this NDArray into multiple NDArray each with length [splittingLength].
+   * If there are multiple arguments, split this NDArray according to the length of each [splittingLength] element.
+   *
+   * @param splittingLength the length(s) for sub-array division
    *
    * @return an Array containing the split values
    */
-  fun splitV(splittingLength: Int): Array<SelfType>
+  fun splitV(vararg splittingLength: Int): Array<SelfType>
 
   /**
    *
