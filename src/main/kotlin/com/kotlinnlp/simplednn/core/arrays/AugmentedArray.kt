@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.arrays
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
@@ -128,13 +127,18 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   }
 
   /**
-   * Assign values to the array. WARNING: this operation resets the errors too!
+   * Assign values to the array.
+   * WARNING: this operation resets the errors too if they were assigned!
    *
    * @param values values to assign to this [ActivableArray]
    */
   override fun assignValues(values: NDArrayType) {
+
     super.assignValues(values)
-    this._errors = DenseNDArrayFactory.emptyArray(values.shape)
+
+    try {
+      this._errors.zeros()
+    } catch (e: RuntimeException) {}
   }
 
   /**
