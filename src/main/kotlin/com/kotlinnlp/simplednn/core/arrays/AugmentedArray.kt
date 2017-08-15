@@ -84,7 +84,12 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
     } catch (e: UninitializedPropertyAccessException) {
       require(errors.length == this.size)
 
-      this._errors = errors.copy()
+      if (this._values.columns == 1 && errors.rows == 1 || this._values.rows == 1 && errors.columns == 1) {
+        // Assignment between row and column vectors
+        this._errors = errors.T
+      } else {
+        this._errors = errors.copy()
+      }
     }
   }
 
