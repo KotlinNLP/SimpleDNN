@@ -74,8 +74,10 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    *
    * @param errors the [DenseNDArray] to assign as errors to this [AugmentedArray]. It must have the same size
    *               of the values of this [AugmentedArray].
+   *
+   * @return the errors of this [DenseNDArray]
    */
-  fun assignErrors(errors: DenseNDArray) {
+  fun assignErrors(errors: DenseNDArray): DenseNDArray {
     require(errors.length == this.size) { "Errors must have the same size of the values" }
 
     try {
@@ -91,6 +93,8 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
         this._errors = errors.copy()
       }
     }
+
+    return this._errors
   }
 
   /**
