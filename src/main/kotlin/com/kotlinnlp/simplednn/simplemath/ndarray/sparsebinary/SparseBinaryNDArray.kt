@@ -204,14 +204,14 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  private fun addElement(indicesMap: VectorsMap, key: Int, element: Int) {
+  private fun addElement(indicesMap: VectorsMap, key: Int, element: Int, sortElements: Boolean = true) {
 
     if (indicesMap.containsKey(key)) {
       // Key already existing
       if (indicesMap[key] != null) {
         if (!indicesMap[key]!!.contains(element)) {
           indicesMap[key]!!.add(element)
-          indicesMap[key]!!.sort()
+          if (sortElements) indicesMap[key]!!.sort()
         }
       } else {
         indicesMap[key] = arrayListOf(0, element)
@@ -310,18 +310,29 @@ class SparseBinaryNDArray(
    */
   override fun assignValues(a: NDArray<*>): SparseBinaryNDArray {
 
-    when(a) {
+    return when(a) {
       is DenseNDArray -> TODO("not implemented")
       is SparseNDArray -> TODO("not implemented")
-      is SparseBinaryNDArray ->{
-        this.activeIndicesByRow.clear()
-        this.activeIndicesByColumn.clear()
-        for ((i, j) in a) {
-          this.set(i, j)
-        }
-      }
+      is SparseBinaryNDArray -> this.assignValues(a)
       else -> throw RuntimeException("Invalid NDArray type")
     }
+  }
+
+  /**
+   *
+   */
+  private fun assignValues(a: SparseBinaryNDArray): SparseBinaryNDArray {
+
+    this.activeIndicesByRow.clear()
+    this.activeIndicesByColumn.clear()
+
+    for ((i, j) in a) {
+      this.addElement(this.activeIndicesByRow, key = i, element = j, sortElements = false)
+      this.addElement(this.activeIndicesByColumn, key = j, element = i, sortElements = false)
+    }
+
+    this.activeIndicesByRow.forEach { _, u -> u?.sort() }
+    this.activeIndicesByColumn.forEach { _, u -> u?.sort() }
 
     return this
   }
