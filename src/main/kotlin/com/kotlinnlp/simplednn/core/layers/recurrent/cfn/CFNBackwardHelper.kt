@@ -109,8 +109,6 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignLayerGradients() { this.layer.params as CFNLayerParameters
 
-    val gx: DenseNDArray = this.layer.inputArray.errors
-
     val wInG: DenseNDArray = this.layer.params.inputGate.weights.values as DenseNDArray
     val wForG: DenseNDArray = this.layer.params.forgetGate.weights.values as DenseNDArray
     val wC: DenseNDArray = this.layer.params.candidateWeights.values as DenseNDArray
@@ -119,7 +117,10 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gForG: DenseNDArray = this.layer.forgetGate.errors
     val gC: DenseNDArray = this.layer.candidate.errors
 
-    gx.assignValues(gForG.T.dot(wForG)).assignSum(gC.T.dot(wC)).assignSum(gInG.T.dot(wInG))
+    this.layer.inputArray
+      .assignErrors(gForG.T.dot(wForG))
+      .assignSum(gC.T.dot(wC))
+      .assignSum(gInG.T.dot(wInG))
   }
 
   /**

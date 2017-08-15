@@ -117,8 +117,6 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignLayerGradients() { this.layer.params as GRULayerParameters
 
-    val gx: DenseNDArray = this.layer.inputArray.errors
-
     val wp: DenseNDArray = this.layer.params.partitionGate.weights.values as DenseNDArray
     val wc: DenseNDArray = this.layer.params.candidate.weights.values as DenseNDArray
     val wr: DenseNDArray = this.layer.params.resetGate.weights.values as DenseNDArray
@@ -127,7 +125,10 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gc: DenseNDArray = this.layer.candidate.errors
     val gr: DenseNDArray = this.layer.resetGate.errors
 
-    gx.assignValues(gp.T.dot(wp)).assignSum(gc.T.dot(wc)).assignSum(gr.T.dot(wr))
+    this.layer.inputArray
+      .assignErrors(gp.T.dot(wp))
+      .assignSum(gc.T.dot(wc))
+      .assignSum(gr.T.dot(wr))
   }
 
   /**

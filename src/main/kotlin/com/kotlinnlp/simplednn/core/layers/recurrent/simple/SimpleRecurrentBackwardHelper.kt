@@ -72,9 +72,7 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
    */
   private fun assignLayerGradients() { this.layer.params as SimpleRecurrentLayerParameters
 
-    val gx: DenseNDArray = this.layer.inputArray.errors
-
-    gx.assignValues(this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit))
+    this.layer.inputArray.assignErrors(this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit))
   }
 
   /**

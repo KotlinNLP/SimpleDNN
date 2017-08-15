@@ -117,8 +117,6 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignLayerGradients() { this.layer.params as LSTMLayerParameters
 
-    val gx: DenseNDArray = this.layer.inputArray.errors
-
     val wInG: DenseNDArray = this.layer.params.inputGate.weights.values as DenseNDArray
     val wOutG: DenseNDArray = this.layer.params.outputGate.weights.values as DenseNDArray
     val wForG: DenseNDArray = this.layer.params.forgetGate.weights.values as DenseNDArray
@@ -129,7 +127,8 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gForG: DenseNDArray = this.layer.forgetGate.errors
     val gCand: DenseNDArray = this.layer.candidate.errors
 
-    gx.assignValues(gInG.T.dot(wInG))
+    this.layer.inputArray
+      .assignErrors(gInG.T.dot(wInG))
       .assignSum(gOutG.T.dot(wOutG))
       .assignSum(gForG.T.dot(wForG))
       .assignSum(gCand.T.dot(wCand))

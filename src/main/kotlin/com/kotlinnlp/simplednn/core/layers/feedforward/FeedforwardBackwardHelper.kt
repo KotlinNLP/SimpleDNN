@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.core.layers.feedforward
 import com.kotlinnlp.simplednn.core.layers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the backward on a [layer].
@@ -62,8 +61,6 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignLayerGradients() { this.layer.params as FeedforwardLayerParameters
 
-    val gx: DenseNDArray = this.layer.inputArray.errors
-
-    gx.assignValues(this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit))
+    this.layer.inputArray.assignErrors(this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit))
   }
 }

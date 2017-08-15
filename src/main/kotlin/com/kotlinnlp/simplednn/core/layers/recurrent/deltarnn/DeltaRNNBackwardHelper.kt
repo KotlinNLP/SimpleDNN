@@ -167,8 +167,6 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun assignInputGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
     this.layer.params as DeltaRNNLayerParameters
 
-    val gx: DenseNDArray = this.layer.inputArray.errors
-
     val gp: DenseNDArray = this.layer.partition.errors
     val gc: DenseNDArray = this.layer.candidate.errors
 
@@ -180,6 +178,6 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gxTmp: DenseNDArray = if (prevStateOutput != null) alpha.prod(wyRec).assignSum(beta1) else beta1
     gxTmp.assignProd(gc).assignSum(gp)
 
-    gx.assignValues(gxTmp.T.dot(w))
+    this.layer.inputArray.assignErrors(gxTmp.T.dot(w))
   }
 }
