@@ -459,8 +459,9 @@ class TreeEncoder(private val network: TreeRNN) {
     optimizer.newBatch()
 
     this.nodes.values.forEach {
-      if (it.getNodeErrors() != null) { // optimization
+      val errors: DenseNDArray? = it.getNodeErrors()
 
+      if (errors != null && (0 until errors.length).any { errors[it] != 0.0 }) { // optimization
         optimizer.newExample()
 
         optimizer.accumulate(TreeRNNParameters(
