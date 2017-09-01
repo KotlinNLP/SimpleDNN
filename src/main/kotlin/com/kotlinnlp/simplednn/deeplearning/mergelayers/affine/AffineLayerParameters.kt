@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.deeplearning.mergelayers.MergeLayerParameters
  * @property outputSize the size of the output
  * @property sparseInput whether the weights connected to the input are sparse or not
  */
-class AffineLayerParameters(
+open class AffineLayerParameters(
   inputSize1: Int,
   inputSize2: Int,
   outputSize: Int,
