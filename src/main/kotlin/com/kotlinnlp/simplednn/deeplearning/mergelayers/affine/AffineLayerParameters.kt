@@ -9,23 +9,28 @@ package com.kotlinnlp.simplednn.deeplearning.mergelayers.affine
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.deeplearning.mergelayers.MergeLayerParameters
 
 /**
  * The parameters of the affine layer.
  *
- * @property inputSize the size of the first input
+ * @property inputSize1 the size of the first input
  * @property inputSize2 the size of the second input
  * @property outputSize the size of the output
  * @property sparseInput whether the weights connected to the input are sparse or not
  */
 class AffineLayerParameters(
-  val inputSize1: Int,
-  val inputSize2: Int,
+  inputSize1: Int,
+  inputSize2: Int,
   outputSize: Int,
-  private val sparseInput: Boolean = false
-) : LayerParameters(inputSize = inputSize1, outputSize = outputSize) {
+  sparseInput: Boolean = false
+) : MergeLayerParameters(
+  inputSize1 = inputSize1,
+  inputSize2 = inputSize2,
+  outputSize = outputSize,
+  sparseInput = sparseInput
+) {
 
   companion object {
 
