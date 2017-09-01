@@ -33,7 +33,7 @@ class AffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val y = this.layer.outputArray.values
 
     val w1 = this.layer.params.w1.values as DenseNDArray
-    val w2 = this.layer.params.w1.values as DenseNDArray
+    val w2 = this.layer.params.w2.values as DenseNDArray
     val b = this.layer.params.b.values
 
     y.assignDot(w1, x1).assignSum(w2.dot(x2)).assignSum(b)
