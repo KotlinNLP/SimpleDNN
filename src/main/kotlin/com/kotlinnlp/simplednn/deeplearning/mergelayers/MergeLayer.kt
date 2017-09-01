@@ -31,4 +31,10 @@ abstract class MergeLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   outputArray = outputArray,
   params = params,
   activationFunction = activationFunction,
-  dropout = dropout)
+  dropout = dropout) {
+
+  /**
+   * @return the [LayerParameters] used to store errors, compatible with this type of [MergeLayer]
+   */
+  abstract fun parametersErrorsFactory(): LayerParameters
+}
