@@ -21,11 +21,11 @@ import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGener
  * @property sparseInput whether the weights connected to the input are sparse or not
  */
 class AffineLayerParameters(
-  inputSize: Int,
+  val inputSize1: Int,
   val inputSize2: Int,
   outputSize: Int,
   private val sparseInput: Boolean = false
-) : LayerParameters(inputSize = inputSize, outputSize = outputSize) {
+) : LayerParameters(inputSize = inputSize1, outputSize = outputSize) {
 
   companion object {
 
@@ -39,7 +39,7 @@ class AffineLayerParameters(
   /**
    * The weights connected to the first input array.
    */
-  val w1: UpdatableArray<*> = this.buildUpdatableArray(this.outputSize, this.inputSize)
+  val w1: UpdatableArray<*> = this.buildUpdatableArray(this.outputSize, this.inputSize1)
 
   /**
    * The parameters connected to the second input array.
