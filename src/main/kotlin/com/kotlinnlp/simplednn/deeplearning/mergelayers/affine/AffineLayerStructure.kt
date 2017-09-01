@@ -9,7 +9,6 @@ package com.kotlinnlp.simplednn.deeplearning.mergelayers.affine
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.deeplearning.mergelayers.MergeLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -29,7 +28,7 @@ class AffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray1: AugmentedArray<InputNDArrayType>,
   inputArray2: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
-  params: LayerParameters,
+  override val params: AffineLayerParameters,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
 ) : MergeLayer<InputNDArrayType>(
@@ -63,4 +62,14 @@ class AffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
       outputArray.setActivation(activationFunction)
     }
   }
+
+  /**
+   * @return the [AffineLayerParameters] used to store errors
+   */
+  override fun parametersErrorsFactory() = AffineLayerParameters(
+    inputSize1 = this.params.inputSize1,
+    inputSize2 = this.params.inputSize2,
+    outputSize = this.params.outputSize,
+    sparseInput = this.params.sparseInput
+  )
 }
