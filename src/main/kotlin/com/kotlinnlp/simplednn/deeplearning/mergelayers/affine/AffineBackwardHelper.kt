@@ -53,7 +53,7 @@ class AffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
   /**
    */
-  private fun assignLayerGradients() { this.layer.params as AffineLayerParameters
+  private fun assignLayerGradients() {
     TODO("not implemented")
   }
 }
