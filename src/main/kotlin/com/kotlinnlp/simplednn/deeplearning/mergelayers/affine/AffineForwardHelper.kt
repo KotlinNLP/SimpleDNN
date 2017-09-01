@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.mergelayers.affine
 import com.kotlinnlp.simplednn.core.layers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the forward on an affine [layer].
@@ -27,9 +28,17 @@ class AffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun forward() { this.layer.params as AffineLayerParameters
 
-    TODO("not implemented")
+    val x1 = this.layer.inputArray.values
+    val x2 = this.layer.inputArray2.values
+    val y = this.layer.outputArray.values
 
-//    this.layer.outputArray.activate()
+    val w1 = this.layer.params.w1.values as DenseNDArray
+    val w2 = this.layer.params.w1.values as DenseNDArray
+    val b = this.layer.params.b.values
+
+    y.assignDot(w1, x1).assignSum(w2.dot(x2)).assignSum(b)
+
+    this.layer.outputArray.activate()
   }
 
   /**
