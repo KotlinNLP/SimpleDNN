@@ -22,7 +22,7 @@ abstract class MergeLayerParameters(
   val inputSize1: Int,
   val inputSize2: Int,
   outputSize: Int,
-  private val sparseInput: Boolean
+  protected val sparseInput: Boolean
 ) : LayerParameters(
   inputSize = inputSize1,
   outputSize = outputSize
