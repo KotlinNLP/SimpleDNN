@@ -36,12 +36,12 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   dropout = dropout) {
 
   /**
-   * The helper which execute the forward
+   * The helper which executes the forward
    */
   override val forwardHelper = FeedforwardForwardHelper(layer = this)
 
   /**
-   * The helper which execute the backward
+   * The helper which executes the backward
    */
   override val backwardHelper = FeedforwardBackwardHelper(layer = this)
 

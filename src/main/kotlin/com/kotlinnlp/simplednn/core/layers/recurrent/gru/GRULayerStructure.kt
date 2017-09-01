@@ -57,12 +57,12 @@ class GRULayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   val partitionGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
-   * The helper which execute the forward
+   * The helper which executes the forward
    */
   override val forwardHelper = GRUForwardHelper(layer = this)
 
   /**
-   * The helper which execute the backward
+   * The helper which executes the backward
    */
   override val backwardHelper = GRUBackwardHelper(layer = this)
 

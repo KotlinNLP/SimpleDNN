@@ -69,12 +69,12 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   val cell = AugmentedArray<DenseNDArray>(values = DenseNDArrayFactory.emptyArray(Shape(outputArray.size)))
 
   /**
-   * The helper which execute the forward
+   * The helper which executes the forward
    */
   override val forwardHelper = LSTMForwardHelper(layer = this)
 
   /**
-   * The helper which execute the backward
+   * The helper which executes the backward
    */
   override val backwardHelper = LSTMBackwardHelper(layer = this)
 

@@ -57,12 +57,12 @@ class RANLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   val forgetGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
-   * The helper which execute the forward
+   * The helper which executes the forward
    */
   override val forwardHelper = RANForwardHelper(layer = this)
 
   /**
-   * The helper which execute the backward
+   * The helper which executes the backward
    */
   override val backwardHelper = RANBackwardHelper(layer = this)
 
