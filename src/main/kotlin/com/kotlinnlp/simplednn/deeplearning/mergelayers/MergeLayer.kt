@@ -29,7 +29,7 @@ abstract class MergeLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArray1: AugmentedArray<InputNDArrayType>,
   val inputArray2: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
-  params: MergeLayerParameters,
+  override val params: MergeLayerParameters,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
 ) : LayerStructure<InputNDArrayType>(
