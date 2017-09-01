@@ -28,7 +28,7 @@ class ParamsErrorsAccumulator(val neuralNetwork: NeuralNetwork) {
   private val paramsErrors: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
 
   /**
-   * A boolean indicating if some errors are accumulated.
+   * A boolean indicating if any errors are accumulated.
    */
   private val isEmpty: Boolean get() = this.count == 0
 
