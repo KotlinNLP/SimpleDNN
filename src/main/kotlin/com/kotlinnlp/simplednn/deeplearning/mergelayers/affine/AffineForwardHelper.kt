@@ -26,7 +26,7 @@ class AffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * y = f(w1 (dot) x1 + w2 (dot) x2 + b)
    */
-  override fun forward() { this.layer.params as AffineLayerParameters
+  override fun forward() {
 
     val x1 = this.layer.inputArray.values
     val x2 = this.layer.inputArray2.values
@@ -49,7 +49,6 @@ class AffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
   override fun forward(layerContributions: LayerParameters) {
-    this.layer.params as AffineLayerParameters
     layerContributions as AffineLayerParameters
 
     TODO("not implemented")
