@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.mergelayers.affine
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.*
+import com.kotlinnlp.simplednn.deeplearning.mergelayers.MergeLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -25,14 +26,15 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
 class AffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
-  inputArray: AugmentedArray<InputNDArrayType>,
-  val inputArray2: AugmentedArray<InputNDArrayType>,
+  inputArray1: AugmentedArray<InputNDArrayType>,
+  inputArray2: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
-) : LayerStructure<InputNDArrayType>(
-  inputArray = inputArray,
+) : MergeLayer<InputNDArrayType>(
+  inputArray1 = inputArray1,
+  inputArray2 = inputArray2,
   outputArray = outputArray,
   params = params,
   activationFunction = activationFunction,
