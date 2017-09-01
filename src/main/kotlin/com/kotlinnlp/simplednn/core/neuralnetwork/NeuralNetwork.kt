@@ -93,7 +93,7 @@ class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Seriali
   /**
    * Generate [NetworkParameters] compatible with the configuration of this network
    */
-  fun parametersFactory() = NetworkParameters(
+  private fun parametersFactory() = NetworkParameters(
     layersConfiguration = this.layersConfiguration,
     sparseInput = false)
 
