@@ -141,7 +141,7 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  protected fun applyDropout() {
+  private fun applyDropout() {
 
     if (this.dropout > 0.0) {
       val inputShape = this.inputArray.values.shape
