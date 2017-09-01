@@ -26,7 +26,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArray: AugmentedArray<InputNDArrayType>,
   open val outputArray: AugmentedArray<DenseNDArray>,
-  val params: LayerParameters,
+  open val params: LayerParameters,
   val activationFunction: ActivationFunction? = null,
   val dropout: Double = 0.0) {
 
