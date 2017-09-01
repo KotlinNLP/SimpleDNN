@@ -40,22 +40,22 @@ class AffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   dropout = dropout) {
 
   /**
-   * The helper which execute the forward
+   * The helper which execute the forward.
    */
   override val forwardHelper = AffineForwardHelper(layer = this)
 
   /**
-   * The helper which execute the backward
+   * The helper which execute the backward.
    */
   override val backwardHelper = AffineBackwardHelper(layer = this)
 
   /**
-   * The helper which calculates the relevance
+   * The helper which calculates the relevance.
    */
   override val relevanceHelper = AffineRelevanceHelper(layer = this)
 
   /**
-   * Initialization: set the activation function of the outputArray
+   * Initialization: set the activation function of the outputArray.
    */
   init {
     if (activationFunction != null) {
