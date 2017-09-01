@@ -42,7 +42,7 @@ class FeedforwardLayerParameters(
   /**
    *
    */
-  override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double): Unit {
+  override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double) {
     require(!this.sparseInput) { "Cannot randomize sparse weights" }
 
     this.unit.weights.values.randomize(randomGenerator)
