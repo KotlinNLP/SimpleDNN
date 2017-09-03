@@ -126,7 +126,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   override fun getRow(i: Int): DenseNDArray {
     val values = this.storage.getRow(i)
-    return DenseNDArrayFactory.arrayOf(arrayOf<DoubleArray>(values.toArray()))
+    return DenseNDArrayFactory.arrayOf(arrayOf(values.toArray()))
   }
 
   /**
@@ -376,7 +376,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  fun assignSub(a: SparseNDArray): DenseNDArray {
+  private fun assignSub(a: SparseNDArray): DenseNDArray {
     require(a.shape == this.shape) { "Arrays with different size" }
 
     for (k in 0 until a.values.size) {
@@ -433,23 +433,19 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
 
     val res = DenseNDArrayFactory.zeros(shape = Shape(this.rows, a.columns))
 
-    if (a.rows == 1) {
-      // Column vector (dot) row vector
-      for (j in a.activeIndicesByColumn.keys) {
-        for (i in 0 until this.rows) {
-          res.storage.put(i, j, this[i])
+    when {
+      a.rows == 1 -> // Column vector (dot) row vector
+        for (j in a.activeIndicesByColumn.keys) {
+          for (i in 0 until this.rows) {
+            res.storage.put(i, j, this[i])
+          }
         }
-      }
-
-    } else if (a.columns == 1) {
-      // n-dim array (dot) column vector
-      for (i in 0 until this.rows) {
-        res.storage.put(i, a.activeIndicesByRow.keys.sumByDouble { this[i, it] })
-      }
-
-    } else {
-      // n-dim array (dot) n-dim array
-      TODO("not implemented")
+      a.columns == 1 -> // n-dim array (dot) column vector
+        for (i in 0 until this.rows) {
+          res.storage.put(i, a.activeIndicesByRow.keys.sumByDouble { this[i, it] })
+        }
+      else -> // n-dim array (dot) n-dim array
+        TODO("not implemented")
     }
 
     return res
@@ -486,23 +482,19 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
 
     this.zeros()
 
-    if (b.rows == 1) {
-      // Column vector (dot) row vector
-      for (j in b.activeIndicesByColumn.keys) {
-        for (i in 0 until a.rows) {
-          this.storage.put(i, j, a[i])
+    when {
+      b.rows == 1 -> // Column vector (dot) row vector
+        for (j in b.activeIndicesByColumn.keys) {
+          for (i in 0 until a.rows) {
+            this.storage.put(i, j, a[i])
+          }
         }
-      }
-
-    } else if (b.columns == 1) {
-      // n-dim array (dot) column vector
-      for (i in 0 until a.rows) {
-        this.storage.put(i, b.activeIndicesByRow.keys.sumByDouble { a[i, it] })
-      }
-
-    } else {
-      // n-dim array (dot) n-dim array
-      TODO("not implemented")
+      b.columns == 1 -> // n-dim array (dot) column vector
+        for (i in 0 until a.rows) {
+          this.storage.put(i, b.activeIndicesByRow.keys.sumByDouble { a[i, it] })
+        }
+      else -> // n-dim array (dot) n-dim array
+        TODO("not implemented")
     }
 
     return this
