@@ -161,6 +161,29 @@ class SparseBinaryNDArray(
   )
 
   /**
+   * The mask representing the active indices of this [SparseBinaryNDArray].
+   */
+  val mask: NDArrayMask get() = this.buildMask()
+
+  /**
+   * @return the mask representing the active indices of this [SparseBinaryNDArray]
+   */
+  private fun buildMask(): NDArrayMask {
+    val rowIndices = arrayListOf<Int>()
+    val colIndices = arrayListOf<Int>()
+
+    this.activeIndicesByColumn.forEach { j, column ->
+      if (column != null)
+        column.forEach { i -> rowIndices.add(i); colIndices.add(j) }
+      else {
+        rowIndices.add(0); colIndices.add(j)
+      }
+    }
+
+    return NDArrayMask(dim1 = rowIndices.toTypedArray(), dim2 = colIndices.toTypedArray(), shape = this.shape)
+  }
+
+  /**
    *
    */
   override fun get(i: Int): Int {
