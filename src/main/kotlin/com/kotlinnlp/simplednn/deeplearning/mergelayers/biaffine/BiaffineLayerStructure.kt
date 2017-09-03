@@ -40,6 +40,14 @@ class BiaffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   dropout = dropout) {
 
   /**
+   * A support structure used for calculations. Each array wxi is obtained by: wi (dot) x1.
+   */
+  val wxArrays: Array<AugmentedArray<DenseNDArray>> = Array(
+    size = this.params.outputSize,
+    init = { AugmentedArray<DenseNDArray>(this.params.inputSize2) }
+  )
+
+  /**
    * The helper which execute the forward.
    */
   override val forwardHelper = BiaffineForwardHelper(layer = this)
