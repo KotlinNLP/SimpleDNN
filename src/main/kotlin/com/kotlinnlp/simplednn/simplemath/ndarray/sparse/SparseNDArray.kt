@@ -166,14 +166,10 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   override fun set(i: Int, value: Number) {
     require(i < this.length)
 
-    if (this.rows == 1) {
-      this[0, i] = value
-
-    } else if (this.columns == 1) {
-      this[i, 0] = value
-
-    } else {
-      this[i / this.columns, i % this.columns] = value
+    when {
+      this.rows == 1 -> this[0, i] = value
+      this.columns == 1 -> this[i, 0] = value
+      else -> this[i / this.columns, i % this.columns] = value
     }
   }
 
@@ -196,7 +192,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    */
   private fun setElement(row: Int, col: Int, value: Double) {
 
-    var index: Int = 0
+    var index = 0
 
     while (index < this.values.size && this.colIndices[index] != col) index++
     while (index < this.values.size && this.rowIndices[index] != row) index++
@@ -407,7 +403,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
     val rows = arrayListOf<Int>()
     val columns = arrayListOf<Int>()
 
-    for ((indices, value) in activeIndices.sortedWith(Comparator<SparseEntry> { (aIndices), (bIndices) ->
+    for ((indices, value) in activeIndices.sortedWith(Comparator { (aIndices), (bIndices) ->
       if (aIndices.second != bIndices.second) {
         aIndices.second - bIndices.second
       } else {
@@ -515,40 +511,42 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
     require(b.columns == this.columns) { "b.columns (%d) != this.columns (%d)".format(b.columns, this.columns) }
     require(a.columns == b.rows) { "a.columns (%d) != b.rows (%d)".format(a.columns, b.rows) }
 
-    if (b.rows == 1) {
-      // Column vector (dot) row vector
-      this.zeros()
+    when {
+      b.rows == 1 -> {
+        // Column vector (dot) row vector
+        this.zeros()
 
-      val valuesCount = b.activeIndicesByColumn.keys.size * a.rows
-      val values = Array(size = valuesCount, init = { 0.0 })
-      val rows = Array(size = valuesCount, init = { 0 })
-      val columns = Array(size = valuesCount, init = { 0 })
+        val valuesCount = b.activeIndicesByColumn.keys.size * a.rows
+        val values = Array(size = valuesCount, init = { 0.0 })
+        val rows = Array(size = valuesCount, init = { 0 })
+        val columns = Array(size = valuesCount, init = { 0 })
 
-      var k = 0
-      for (j in b.activeIndicesByColumn.keys) {
-         for (i in 0 until a.rows) {
-           values[k] = a[i]
-           rows[k] = i
-           columns[k] = j
-           k++
-         }
+        var k = 0
+        for (j in b.activeIndicesByColumn.keys) {
+          for (i in 0 until a.rows) {
+            values[k] = a[i]
+            rows[k] = i
+            columns[k] = j
+            k++
+          }
+        }
+
+        this.values = values
+        this.rowIndices = rows
+        this.colIndices = columns
+
       }
-
-      this.values = values
-      this.rowIndices = rows
-      this.colIndices = columns
-
-    } else if (b.columns == 1) {
-      // n-dim array (dot) column vector
-      this.zeros()
-      this.values = Array(size = a.rows, init = { i -> b.activeIndicesByRow.keys.sumByDouble { a[i, it] } })
-      this.rowIndices = Array(size = a.rows, init = { it })
-      this.colIndices = Array(size = a.rows, init = { 0 })
+      b.columns == 1 -> {
+        // n-dim array (dot) column vector
+        this.zeros()
+        this.values = Array(size = a.rows, init = { i -> b.activeIndicesByRow.keys.sumByDouble { a[i, it] } })
+        this.rowIndices = Array(size = a.rows, init = { it })
+        this.colIndices = Array(size = a.rows, init = { 0 })
 
 
-    } else {
-      // n-dim array (dot) n-dim array
-      TODO("not implemented")
+      }
+      else -> // n-dim array (dot) n-dim array
+        TODO("not implemented")
     }
 
     return this
