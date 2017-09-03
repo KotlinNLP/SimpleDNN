@@ -17,6 +17,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * The Biaffine Layer Structure.
+ * WARNING: actually the forward and backward operations are NOT OPTIMIZED for sparse inputs.
  *
  * @property inputArray the first input array of the layer
  * @property inputArray2 the second input array of the layer
