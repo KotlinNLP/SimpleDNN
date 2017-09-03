@@ -28,13 +28,13 @@ class AffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun forward() {
 
-    val x1 = this.layer.inputArray.values
-    val x2 = this.layer.inputArray2.values
-    val y = this.layer.outputArray.values
+    val x1: InputNDArrayType = this.layer.inputArray.values
+    val x2: InputNDArrayType = this.layer.inputArray2.values
+    val y: DenseNDArray = this.layer.outputArray.values
 
-    val w1 = this.layer.params.w1.values as DenseNDArray
-    val w2 = this.layer.params.w2.values as DenseNDArray
-    val b = this.layer.params.b.values
+    val w1: DenseNDArray = this.layer.params.w1.values as DenseNDArray
+    val w2: DenseNDArray = this.layer.params.w2.values as DenseNDArray
+    val b: DenseNDArray = this.layer.params.b.values
 
     y.assignDot(w1, x1).assignSum(w2.dot(x2)).assignSum(b)
 
