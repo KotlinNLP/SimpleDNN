@@ -44,7 +44,7 @@ class BiaffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     wArrays.forEachIndexed { i, wArray ->
       val wi: DenseNDArray = wArray.values as DenseNDArray
-      val wxi: DenseNDArray = this.layer.wxArrays[i].values
+      val wxi: DenseNDArray = this.layer.wxArrays[i]
 
       wxi.assignDot(wi, x1)
       w[i] = wxi.T.dot(x2)[0] // the result is an array with Shape (1, 1)
