@@ -40,6 +40,11 @@ abstract class MergeLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   dropout = dropout) {
 
   /**
+   * @return a Pair containing the errors of the input arrays
+   */
+  fun getInputErrors(): Pair<DenseNDArray, DenseNDArray> = Pair(this.inputArray1.errors, this.inputArray2.errors)
+
+  /**
    * @return the [MergeLayerParameters] used to store errors, compatible with this type of [MergeLayer]
    */
   abstract fun parametersErrorsFactory(): MergeLayerParameters
