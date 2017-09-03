@@ -11,7 +11,9 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.deeplearning.mergelayers.MergeLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * The Biaffine Layer Structure.
@@ -42,9 +44,9 @@ class BiaffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * A support structure used for calculations. Each array wxi is obtained by: wi (dot) x1.
    */
-  val wxArrays: Array<AugmentedArray<DenseNDArray>> = Array(
+  val wxArrays: Array<DenseNDArray> = Array(
     size = this.params.outputSize,
-    init = { AugmentedArray<DenseNDArray>(this.params.inputSize2) }
+    init = { DenseNDArrayFactory.emptyArray(Shape(this.params.inputSize2)) }
   )
 
   /**
