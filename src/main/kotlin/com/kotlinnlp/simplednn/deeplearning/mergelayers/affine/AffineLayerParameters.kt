@@ -44,12 +44,12 @@ open class AffineLayerParameters(
   /**
    * The weights connected to the first input array.
    */
-  val w1: UpdatableArray<*> = this.buildUpdatableArray(this.outputSize, this.inputSize1)
+  val w1: UpdatableArray<*> = this.buildUpdatableArray(this.outputSize, this.inputSize1, sparseInput = this.sparseInput)
 
   /**
    * The parameters connected to the second input array.
    */
-  val w2: UpdatableArray<*> = this.buildUpdatableArray(this.outputSize, this.inputSize2)
+  val w2: UpdatableArray<*> = this.buildUpdatableArray(this.outputSize, this.inputSize2, sparseInput = this.sparseInput)
 
   /**
    * The bias array.

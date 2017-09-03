@@ -45,7 +45,7 @@ class BiaffineLayerParameters(
    */
   val w: Array<UpdatableArray<*>> = Array(
     size = this.outputSize,
-    init = { this.buildUpdatableArray(this.inputSize2, this.inputSize1) }
+    init = { this.buildUpdatableArray(this.inputSize2, this.inputSize1, sparseInput = this.sparseInput) }
   )
 
   /**
