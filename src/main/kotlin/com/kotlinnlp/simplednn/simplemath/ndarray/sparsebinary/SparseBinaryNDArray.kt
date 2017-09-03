@@ -23,8 +23,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
  */
 class SparseBinaryNDArray(
   override val shape: Shape,
-  val activeIndicesByRow: VectorsMap = mutableMapOf<Int, VectorIndices?>(),
-  val activeIndicesByColumn: VectorsMap = mutableMapOf<Int, VectorIndices?>()
+  val activeIndicesByRow: VectorsMap = mutableMapOf(),
+  val activeIndicesByColumn: VectorsMap = mutableMapOf()
 ) : NDArray<SparseBinaryNDArray>,
     Iterable<Indices> {
 
@@ -45,32 +45,32 @@ class SparseBinaryNDArray(
     /**
      * The iterator of the map entries by row index (rowIndex, rowActiveIndices)
      */
-    val rowsIterator = this@SparseBinaryNDArray.activeIndicesByRow.toSortedMap().iterator()
+    private val rowsIterator = this@SparseBinaryNDArray.activeIndicesByRow.toSortedMap().iterator()
 
     /**
      * The iterator of the map entries by column index (columnIndex, columnActiveIndices)
      */
-    val columnsIterator = this@SparseBinaryNDArray.activeIndicesByColumn.toSortedMap().iterator()
+    private val columnsIterator = this@SparseBinaryNDArray.activeIndicesByColumn.toSortedMap().iterator()
 
     /**
      * The map entry (rowIndex, rowActiveIndices) of the current row
      */
-    var curRow: VectorsMapEntry? = if (this.rowsIterator.hasNext()) this.rowsIterator.next() else null
+    private var curRow: VectorsMapEntry? = if (this.rowsIterator.hasNext()) this.rowsIterator.next() else null
 
     /**
      * The map entry (rowIndex, rowActiveIndices) of the current column
      */
-    var curColumn: VectorsMapEntry? = if (this.columnsIterator.hasNext()) this.columnsIterator.next() else null
+    private var curColumn: VectorsMapEntry? = if (this.columnsIterator.hasNext()) this.columnsIterator.next() else null
 
     /**
      *
      */
-    var curRowIterator: Iterator<Int>? = this.curRow?.value?.iterator()
+    private var curRowIterator: Iterator<Int>? = this.curRow?.value?.iterator()
 
     /**
      *
      */
-    var curColumnIterator: Iterator<Int>? = this.curColumn?.value?.iterator()
+    private var curColumnIterator: Iterator<Int>? = this.curColumn?.value?.iterator()
 
     /**
      *
