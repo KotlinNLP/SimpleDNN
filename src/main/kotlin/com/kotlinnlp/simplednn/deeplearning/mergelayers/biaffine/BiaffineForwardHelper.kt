@@ -11,7 +11,9 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.layers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * The helper which executes the forward on a biaffine [layer].
@@ -25,7 +27,7 @@ class BiaffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward the input to the output combining it with the parameters.
    *
-   *   w = sumByI { (wi (dot) x1) (dot) x2 }
+   *   w[ i ] = (wi (dot) x1)' (dot) x2
    *   y = f(w + w1 (dot) x1 + w2 (dot) x2 + b)
    */
   override fun forward() {
@@ -35,16 +37,14 @@ class BiaffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val y: DenseNDArray = this.layer.outputArray.values
 
     val wArrays: Array<UpdatableArray<*>> = this.layer.params.w
-    val w: DenseNDArray
+    val w: DenseNDArray = DenseNDArrayFactory.emptyArray(Shape(y.length))
     val w1: DenseNDArray = this.layer.params.w1.values as DenseNDArray
     val w2: DenseNDArray = this.layer.params.w2.values as DenseNDArray
     val b: DenseNDArray = this.layer.params.b.values
 
-    w = wArrays.first().values.dot(x1).dot(x2)
-
-    (1 until wArrays.size).forEach { i ->
-      val wi: DenseNDArray = wArrays[i].values as DenseNDArray
-      w.assignSum(wi.dot(x1).dot(x2))
+    wArrays.forEachIndexed { i, wArray ->
+      val wi: DenseNDArray = wArray.values as DenseNDArray
+      w[i] = wi.dot(x1).T.dot(x2)[0] // the result is an array with Shape (1, 1)
     }
 
     y.assignDot(w1, x1).assignSum(w2.dot(x2)).assignSum(w).assignSum(b)
@@ -55,7 +55,7 @@ class BiaffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward the input to the output combining it with the parameters, saving the contributions.
    *
-   *   w = sumByI { (wi (dot) x1) (dot) x2 }
+   *   w[ i ] = (wi (dot) x1)' (dot) x2
    *   y = f(w + w1 (dot) x1 + w2 (dot) x2 + b
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
