@@ -41,7 +41,9 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer() as? LSTMLayerStructure
     val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer() as? LSTMLayerStructure
 
-    this.addOutputRecurrentGradients(nextStateLayer)
+    if (nextStateLayer != null) {
+      this.addOutputRecurrentGradients(nextStateLayer)
+    }
 
     this.assignGatesGradients(prevStateLayer = prevStateLayer, nextStateLayer = nextStateLayer)
     this.assignParamsGradients(prevStateOutput = prevStateLayer?.outputArray)
@@ -70,31 +72,25 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val candDeriv: DenseNDArray = this.layer.candidate.calculateActivationDeriv()
     val cellDeriv: DenseNDArray = this.layer.cell.calculateActivationDeriv()
 
-    val gInG: DenseNDArray = this.layer.inputGate.errors
-    val gOutG: DenseNDArray = this.layer.outputGate.errors
-    val gForG: DenseNDArray = this.layer.forgetGate.errors
-    val gCand: DenseNDArray = this.layer.candidate.errors
-    val gCell: DenseNDArray = this.layer.cell.errors
-
-    gCell.assignProd(outG, cellDeriv).assignProd(gy) // attention: must be calculated before others
-
-    if (nextStateLayer != null) { // add recurrent contribution to gCell
-      val forGNext: DenseNDArray = nextStateLayer.forgetGate.values
-      val gCellNext: DenseNDArray = nextStateLayer.cell.errors
-      gCell.assignSum(gCellNext.prod(forGNext))
+    // WARNING: gCell must be calculated before others
+    val gCell: DenseNDArray = this.layer.cell.assignErrorsByProd(outG, cellDeriv).assignProd(gy)
+    if (nextStateLayer != null) { // add recurrent contribution
+      gCell.assignSum(this.getCellRecurrentContribution(nextStateLayer))
     }
 
-    gOutG.assignProd(cell, outGDeriv).assignProd(gy)
-
-    gInG.assignProd(gCell, cand).assignProd(inGDeriv)
+    this.layer.outputGate.assignErrorsByProd(cell, outGDeriv).assignProd(gy)
+    this.layer.inputGate.assignErrorsByProd(gCell, cand).assignProd(inGDeriv)
 
     if (prevStateLayer != null) {
       val cellPrev: DenseNDArray = prevStateLayer.cell.valuesNotActivated
       val forGDeriv: DenseNDArray = this.layer.forgetGate.calculateActivationDeriv()
-      gForG.assignProd(gCell, cellPrev).assignProd(forGDeriv)
+      this.layer.forgetGate.assignErrorsByProd(gCell, cellPrev).assignProd(forGDeriv)
+
+    } else {
+      this.layer.forgetGate.assignZeroErrors()
     }
 
-    gCand.assignProd(gCell, inG).assignProd(candDeriv)
+    this.layer.candidate.assignErrorsByProd(gCell, inG).assignProd(candDeriv)
   }
 
   /**
@@ -128,7 +124,7 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gCand: DenseNDArray = this.layer.candidate.errors
 
     this.layer.inputArray
-      .assignErrors(gInG.T.dot(wInG))
+      .assignErrorsByDotT(gInG.T, wInG)
       .assignSum(gOutG.T.dot(wOutG))
       .assignSum(gForG.T.dot(wForG))
       .assignSum(gCand.T.dot(wCand))
@@ -138,17 +134,12 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun addOutputRecurrentGradients(nextStateLayer: LSTMLayerStructure<*>?) {
+  private fun addOutputRecurrentGradients(nextStateLayer: LSTMLayerStructure<*>) {
 
-    if (nextStateLayer != null) {
-      val gy: DenseNDArray = this.layer.outputArray.errors
-      val gCell: DenseNDArray = this.layer.cell.errors
-      val gyRec: DenseNDArray = this.getLayerRecurrentContribution(nextStateLayer)
-      val gCellRec: DenseNDArray = this.getCellRecurrentContribution(nextStateLayer)
+    val gy: DenseNDArray = this.layer.outputArray.errors
+    val gyRec: DenseNDArray = this.getLayerRecurrentContribution(nextStateLayer)
 
-      gy.assignSum(gyRec)
-      gCell.assignSum(gCellRec)
-    }
+    gy.assignSum(gyRec)
   }
 
   /**

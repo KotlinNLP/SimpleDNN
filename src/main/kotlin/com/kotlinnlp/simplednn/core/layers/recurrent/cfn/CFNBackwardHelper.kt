@@ -72,18 +72,17 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val inGDeriv: DenseNDArray = inputGate.calculateActivationDeriv()
     val cDeriv: DenseNDArray = candidate.calculateActivationDeriv()
 
-    val gInG: DenseNDArray = this.layer.inputGate.errors
-    val gc: DenseNDArray = this.layer.candidate.errors
-
-    gInG.assignProd(c, inGDeriv).assignProd(gy)
-    gc.assignProd(ingG, cDeriv).assignProd(gy)
+     this.layer.inputGate.assignErrorsByProd(c, inGDeriv).assignProd(gy)
+    this.layer.candidate.assignErrorsByProd(ingG, cDeriv).assignProd(gy)
 
     if (prevStateLayer != null) {
       val aPrev: DenseNDArray = this.layer.activatedPrevOutput!!
       val forGDeriv: DenseNDArray = forgetGate.calculateActivationDeriv()
-      val gForG: DenseNDArray = this.layer.forgetGate.errors
 
-      gForG.assignProd(aPrev, forGDeriv).assignProd(gy)
+      this.layer.forgetGate.assignErrorsByProd(aPrev, forGDeriv).assignProd(gy)
+
+    } else {
+      this.layer.forgetGate.assignZeroErrors()
     }
   }
 
@@ -118,7 +117,7 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gC: DenseNDArray = this.layer.candidate.errors
 
     this.layer.inputArray
-      .assignErrors(gForG.T.dot(wForG))
+      .assignErrorsByDotT(gForG.T, wForG)
       .assignSum(gC.T.dot(wC))
       .assignSum(gInG.T.dot(wInG))
   }

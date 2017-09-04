@@ -71,23 +71,19 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val pDeriv: DenseNDArray = partitionGate.calculateActivationDeriv()
     val cDeriv: DenseNDArray = candidate.calculateActivationDeriv()
 
-    val gr: DenseNDArray = this.layer.resetGate.errors
-    val gp: DenseNDArray = this.layer.partitionGate.errors
-    val gc: DenseNDArray = this.layer.candidate.errors
-
-    gc.assignProd(p, cDeriv).assignProd(gy)  // gc must be calculated before gr and gp
+    this.layer.candidate.assignErrorsByProd(p, cDeriv).assignProd(gy)  // gc must be calculated before gr and gp
 
     if (prevStateOutput == null) {
-      gr.zeros()
-      gp.assignProd(c, pDeriv).assignProd(gy)
+      this.layer.resetGate.assignZeroErrors()
+      this.layer.partitionGate.assignErrorsByProd(c, pDeriv).assignProd(gy)
 
     } else { // recurrent contribution
-
+      val gc: DenseNDArray = this.layer.candidate.errors
       val yPrev: DenseNDArray = prevStateOutput.values
       val wcr: DenseNDArray = this.layer.params.candidate.recurrentWeights.values
 
-      gr.assignValues(gc.T.dot(wcr)).assignProd(rDeriv).assignProd(yPrev)
-      gp.assignProd(c.sub(yPrev), pDeriv).assignProd(gy)
+      this.layer.resetGate.assignErrorsByDotT(gc.T, wcr).assignProd(rDeriv).assignProd(yPrev)
+      this.layer.partitionGate.assignErrorsByProd(c.sub(yPrev), pDeriv).assignProd(gy)
     }
   }
 
@@ -126,7 +122,7 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gr: DenseNDArray = this.layer.resetGate.errors
 
     this.layer.inputArray
-      .assignErrors(gp.T.dot(wp))
+      .assignErrorsByDotT(gp.T, wp)
       .assignSum(gc.T.dot(wc))
       .assignSum(gr.T.dot(wr))
   }

@@ -63,7 +63,7 @@ class AttentionLayerBackwardHelper(private val layer: AttentionLayerStructure<*>
     val score: DenseNDArray = this.layer.importanceScore
 
     for (i in 0 until this.layer.inputSequence.size) {
-      this.layer.inputSequence[i].errors.assignProd(outputErrors, score[i])
+      this.layer.inputSequence[i].assignErrorsByProd(outputErrors, score[i])
     }
   }
 
@@ -94,6 +94,6 @@ class AttentionLayerBackwardHelper(private val layer: AttentionLayerStructure<*>
    */
   private fun setAttentionErrors(attentionContextErrors: DenseNDArray) {
     val contextVect: DenseNDArray = this.layer.params.contextVector.values.T
-    this.layer.attentionMatrix.errors.assignDot(attentionContextErrors, contextVect)
+    this.layer.attentionMatrix.assignErrorsByDot(attentionContextErrors, contextVect)
   }
 }

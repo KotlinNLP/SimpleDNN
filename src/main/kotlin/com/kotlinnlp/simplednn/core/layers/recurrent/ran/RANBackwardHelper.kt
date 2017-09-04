@@ -71,18 +71,17 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     val inGDeriv: DenseNDArray = inputGate.calculateActivationDeriv()
 
-    val gInG: DenseNDArray = this.layer.inputGate.errors
-    val gc: DenseNDArray = this.layer.candidate.errors
-
-    gInG.assignProd(c, inGDeriv).assignProd(gy)
-    gc.assignProd(inG, gy)
+    this.layer.inputGate.assignErrorsByProd(c, inGDeriv).assignProd(gy)
+    this.layer.candidate.assignErrorsByProd(inG, gy)
 
     if (prevStateLayer != null) {
       val yPrev: DenseNDArray = prevStateLayer.outputArray.values
       val forGDeriv: DenseNDArray = forgetGate.calculateActivationDeriv()
-      val gForG: DenseNDArray = this.layer.forgetGate.errors
 
-      gForG.assignProd(yPrev, forGDeriv).assignProd(gy)
+      this.layer.forgetGate.assignErrorsByProd(yPrev, forGDeriv).assignProd(gy)
+
+    } else {
+      this.layer.forgetGate.assignZeroErrors()
     }
   }
 
@@ -101,6 +100,7 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gc: DenseNDArray = this.layer.candidate.errors
     val gwc: NDArray<*> = this.paramsErrors.candidate.weights.values
     val gbc: DenseNDArray = this.paramsErrors.candidate.biases.values
+
     gwc.assignDot(gc, x.T)
     gbc.assignValues(gc)
   }
@@ -119,7 +119,7 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gC: DenseNDArray = this.layer.candidate.errors
 
     this.layer.inputArray
-      .assignErrors(gForG.T.dot(wForG))
+      .assignErrorsByDotT(gForG.T, wForG)
       .assignSum(gC.T.dot(wC))
       .assignSum(gInG.T.dot(wInG))
   }
