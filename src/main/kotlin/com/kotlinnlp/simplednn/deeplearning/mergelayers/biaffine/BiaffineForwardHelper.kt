@@ -27,8 +27,8 @@ class BiaffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward the input to the output combining it with the parameters.
    *
-   *   w[ i ] = (wi (dot) x1)' (dot) x2
-   *   y = f(w + w1 (dot) x1 + w2 (dot) x2 + b)
+   *   wx[ i ] = (wi (dot) x1)' (dot) x2
+   *   y = f(wx + w1 (dot) x1 + w2 (dot) x2 + b)
    */
   override fun forward() {
 
@@ -37,7 +37,7 @@ class BiaffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val y: DenseNDArray = this.layer.outputArray.values
 
     val wArrays: Array<UpdatableArray<*>> = this.layer.params.w
-    val w: DenseNDArray = DenseNDArrayFactory.emptyArray(Shape(y.length))
+    val wx: DenseNDArray = DenseNDArrayFactory.emptyArray(Shape(y.length))
     val w1: DenseNDArray = this.layer.params.w1.values as DenseNDArray
     val w2: DenseNDArray = this.layer.params.w2.values as DenseNDArray
     val b: DenseNDArray = this.layer.params.b.values
@@ -47,10 +47,10 @@ class BiaffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       val wxi: DenseNDArray = this.layer.wxArrays[i]
 
       wxi.assignDot(wi, x1)
-      w[i] = wxi.T.dot(x2)[0] // the result is an array with Shape (1, 1)
+      wx[i] = wxi.T.dot(x2)[0] // the result is an array with Shape (1, 1)
     }
 
-    y.assignDot(w1, x1).assignSum(w2.dot(x2)).assignSum(w).assignSum(b)
+    y.assignDot(w1, x1).assignSum(w2.dot(x2)).assignSum(wx).assignSum(b)
 
     this.layer.outputArray.activate()
   }
