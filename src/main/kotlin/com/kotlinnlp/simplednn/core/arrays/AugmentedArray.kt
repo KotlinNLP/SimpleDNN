@@ -9,6 +9,8 @@ package com.kotlinnlp.simplednn.core.arrays
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * The [AugmentedArray] extends the [ActivableArray] with the errors and relevance.
@@ -75,7 +77,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    * @param errors the [DenseNDArray] to assign as errors to this [AugmentedArray]. It must have the same size
    *               of the values of this [AugmentedArray].
    *
-   * @return the errors of this [DenseNDArray]
+   * @return the errors of this [AugmentedArray]
    */
   fun assignErrors(errors: DenseNDArray): DenseNDArray {
     require(errors.length == this.size) { "Errors must have the same size of the values" }
@@ -92,6 +94,115 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
       } else {
         this._errors = errors.copy()
       }
+    }
+
+    return this._errors
+  }
+
+  /**
+   * Assign errors as array of zeros.
+   * This method optimizes the calculation avoiding the creation of a new [NDArray] when [errors] are already set.
+   * If [errors] are still not initialized a new [NDArray] is created.
+   *
+   * @return the errors of this [AugmentedArray]
+   */
+  fun assignZeroErrors(): DenseNDArray {
+
+    try {
+      this._errors.zeros()
+
+    } catch (e: UninitializedPropertyAccessException) {
+      this._errors = DenseNDArrayFactory.zeros(Shape(this.size))
+    }
+
+    return this._errors
+  }
+
+  /**
+   * Assign errors as product of [a] and [b].
+   * This method optimizes the calculation avoiding the creation of a new [NDArray] when [errors] are already set.
+   * If [errors] are still not initialized a new [NDArray] is created.
+   *
+   * @param a the first [DenseNDArray] factor
+   * @param b the second [DenseNDArray] factor
+   *
+   * @return the errors of this [AugmentedArray]
+   */
+  fun assignErrorsByProd(a: DenseNDArray, b: DenseNDArray): DenseNDArray {
+    require(a.length == this.size) { "Invalid arrays size" }
+
+    try {
+      this._errors.assignProd(a, b)
+
+    } catch (e: UninitializedPropertyAccessException) {
+      this._errors = a.prod(b)
+    }
+
+    return this._errors
+  }
+
+  /**
+   * Assign errors as product of [a] and [b].
+   * This method optimizes the calculation avoiding the creation of a new [NDArray] when [errors] are already set.
+   * If [errors] are still not initialized a new [NDArray] is created.
+   *
+   * @param a the first factor, as [DenseNDArray]
+   * @param b the second factor, as Double number
+   *
+   * @return the errors of this [AugmentedArray]
+   */
+  fun assignErrorsByProd(a: DenseNDArray, b: Double): DenseNDArray {
+    require(a.length == this.size) { "Invalid arrays size" }
+
+    try {
+      this._errors.assignProd(a, b)
+
+    } catch (e: UninitializedPropertyAccessException) {
+      this._errors = a.prod(b)
+    }
+
+    return this._errors
+  }
+
+  /**
+   * Assign errors as dot product of [a] by [b].
+   * This method optimizes the calculation avoiding the creation of a new [NDArray] when [errors] are already set.
+   * If [errors] are still not initialized a new [NDArray] is created.
+   *
+   * @param a the first [DenseNDArray] factor
+   * @param b the second [DenseNDArray] factor
+   *
+   * @return the errors of this [AugmentedArray]
+   */
+  fun assignErrorsByDot(a: DenseNDArray, b: NDArray<*>): DenseNDArray {
+
+    try {
+      this._errors.assignDot(a, b)
+
+    } catch (e: UninitializedPropertyAccessException) {
+      this._errors = a.dot(b)
+    }
+
+    return this._errors
+  }
+
+  /**
+   * Assign errors as the transpose of the dot product of [a] by [b].
+   * This method optimizes the calculation avoiding the creation of a new [NDArray] when [errors] are already set.
+   * If [errors] are still not initialized a new [NDArray] is created.
+   *
+   * @param a the first [DenseNDArray] factor
+   * @param b the second [DenseNDArray] factor
+   *
+   * @return the errors of this [AugmentedArray]
+   */
+  fun assignErrorsByDotT(a: DenseNDArray, b: NDArray<*>): DenseNDArray {
+
+    try {
+      this._errors.assignDot(a, b)
+
+    } catch (e: UninitializedPropertyAccessException) {
+      this._errors = a.dot(b).T
     }
 
     return this._errors
