@@ -20,7 +20,6 @@ import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
 
 /**
  *
@@ -41,6 +40,12 @@ class AugmentedArraySpec : Spek({
       on("with values not assigned") {
 
         val activableArray = AugmentedArray<DenseNDArray>(size = 9)
+
+        it("should throw an Exception when trying to get values") {
+          assertFailsWith<UninitializedPropertyAccessException> {
+            activableArray.values
+          }
+        }
 
         it("should throw an Exception when trying to get errors") {
           assertFailsWith<UninitializedPropertyAccessException> {
@@ -73,8 +78,8 @@ class AugmentedArraySpec : Spek({
           assertEquals(1, augmentedArray.values.columns)
         }
 
-        it("should contain zeros errors") {
-          assertTrue(DenseNDArrayFactory.zeros(initArray.shape).equals(augmentedArray.errors))
+        it("should throw an Exception when trying to get errors") {
+          assertFailsWith<UninitializedPropertyAccessException> { augmentedArray.errors }
         }
       }
     }
@@ -107,13 +112,12 @@ class AugmentedArraySpec : Spek({
         }
       }
 
-      on("after assignment, with values not initialized") {
+      on("with values not initialized") {
 
         val augmentedArray = AugmentedArray<DenseNDArray>(size = 9)
-        augmentedArray.assignErrors(errors)
 
-        it("should have the expected assigned errors") {
-          assertEquals(true, augmentedArray.errors.equals(errors, tolerance = 1.0e-08))
+        it("should throw an Exception when assigning errors") {
+          assertFailsWith<UninitializedPropertyAccessException> { augmentedArray.assignErrors(errors) }
         }
       }
     }
