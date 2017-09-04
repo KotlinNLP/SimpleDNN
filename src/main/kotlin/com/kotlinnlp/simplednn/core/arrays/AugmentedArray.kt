@@ -199,7 +199,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   fun assignErrorsByDotT(a: DenseNDArray, b: NDArray<*>): DenseNDArray {
 
     try {
-      this._errors.assignDot(a, b)
+      this._errors.assignValues(a.dot(b))
 
     } catch (e: UninitializedPropertyAccessException) {
       this._errors = a.dot(b).T
