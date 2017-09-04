@@ -47,7 +47,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Contains the errors of the current values
    */
-  lateinit protected var _errors: DenseNDArray
+  lateinit private var _errors: DenseNDArray
 
   /**
    * Contains the relevance of the current values
@@ -57,7 +57,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Contains the relevance of the current values
    */
-  lateinit protected var _relevance: NDArray<*>
+  lateinit private var _relevance: NDArray<*>
 
   /**
    * Contains the relevance of the current values when involved in recurrent calculations
@@ -67,7 +67,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Contains the relevance of the current values when involved in recurrent calculations
    */
-  lateinit protected var _recurrentRelevance: NDArray<*>
+  lateinit private var _recurrentRelevance: NDArray<*>
 
   /**
    * Assign errors to the array.
