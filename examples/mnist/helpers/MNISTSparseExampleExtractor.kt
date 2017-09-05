@@ -33,7 +33,7 @@ class MNISTSparseExampleExtractor(val outputSize: Int) : ExampleExtractor<Simple
     while (iterator.readArray()) {
 
       if (iterator.whatIsNext() == ValueType.ARRAY) {
-        features = iterator.readSparseBinaryNDArray()
+        features = iterator.readSparseBinaryNDArray(size = 784)
 
       } else if (iterator.whatIsNext() == ValueType.NUMBER) {
         goldIndex = iterator.readInt() // - 1

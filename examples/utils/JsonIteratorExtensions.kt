@@ -29,7 +29,7 @@ fun JsonIterator.readDenseNDArray(): DenseNDArray {
 /**
  *
  */
-fun JsonIterator.readSparseBinaryNDArray(): SparseBinaryNDArray {
+fun JsonIterator.readSparseBinaryNDArray(size: Int): SparseBinaryNDArray {
 
   val array = ArrayList<Int>()
   var index = 0
@@ -43,5 +43,5 @@ fun JsonIterator.readSparseBinaryNDArray(): SparseBinaryNDArray {
     index++
   }
 
-  return SparseBinaryNDArrayFactory.arrayOf(activeIndices = array.toIntArray(), shape = Shape(784))
+  return SparseBinaryNDArrayFactory.arrayOf(activeIndices = array.toIntArray(), shape = Shape(size))
 }
