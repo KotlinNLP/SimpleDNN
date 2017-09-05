@@ -123,8 +123,6 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     init = { i ->
       val inputErrors = this.sequence.getStateStructure(i).inputLayer.inputArray.errors
 
-      require(inputErrors is DenseNDArray) { "Input errors available only if input is dense" }
-
       if (copy) {
         inputErrors.copy()
       } else {
