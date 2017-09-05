@@ -13,37 +13,31 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 
 /**
- * The TreeRNNOptimizer is the optimizer of the TreeRNN which in turn aggregate
- * the optimizers of the sub-networks: leftRNN, rightRNN, concatNetwork.
- *
- * It is recommended to use the same UpdateMethod configuration for all the sub-networks.
+ * The TreeRNNOptimizer is the optimizer of the TreeRNN which in turn aggregates the optimizers of the sub-networks:
+ * leftRNN, rightRNN and concatNetwork.
  *
  * @param network the TreeRNN to optimize
- * @param leftUpdateMethod the [UpdateMethod] used for the left recurrent network
- * @param rightUpdateMethod the [UpdateMethod] used for the right recurrent network
- * @param concatUpdateMethod the [UpdateMethod] used for the feed-forward concatenation network
+ * @param updateMethod the [UpdateMethod] used to optimize the inner networks
  */
 class TreeRNNOptimizer(
   network: TreeRNN,
-  leftUpdateMethod: UpdateMethod = LearningRateMethod(learningRate = 0.0001),
-  rightUpdateMethod: UpdateMethod = LearningRateMethod(learningRate = 0.0001),
-  concatUpdateMethod: UpdateMethod = LearningRateMethod(learningRate = 0.0001)
-) : Optimizer {
+  updateMethod: UpdateMethod = LearningRateMethod(learningRate = 0.0001)
+) : Optimizer(updateMethod) {
 
   /**
-   * The [Optimizer] used for the left recurrent network
+   * The [Optimizer] used for the left recurrent network.
    */
-  private val leftOptimizer = ParamsOptimizer(network.leftRNN, leftUpdateMethod)
+  private val leftOptimizer = ParamsOptimizer(network.leftRNN, updateMethod)
 
   /**
-   * The [Optimizer] used for the right recurrent network
+   * The [Optimizer] used for the right recurrent network.
    */
-  private val rightOptimizer = ParamsOptimizer(network.rightRNN, rightUpdateMethod)
+  private val rightOptimizer = ParamsOptimizer(network.rightRNN, updateMethod)
 
   /**
-   * the [Optimizer] used for the feed-forward concatenation network
+   * The [Optimizer] used for the feed-forward concatenation network.
    */
-  private val concatOptimizer = ParamsOptimizer(network.concatNetwork, concatUpdateMethod)
+  private val concatOptimizer = ParamsOptimizer(network.concatNetwork, updateMethod)
 
   /**
    *
@@ -78,7 +72,7 @@ class TreeRNNOptimizer(
   }
 
   /**
-   * Update the params using the accumulated errors and reset the errors
+   * Update the params using the accumulated errors and reset the errors.
    */
   override fun update() {
     if (this.accumulatedErrors) {
@@ -90,7 +84,7 @@ class TreeRNNOptimizer(
   }
 
   /**
-   * Accumulate the params errors
+   * Accumulate the params errors.
    */
   fun accumulate(errors: TreeRNNParameters) {
     this.leftOptimizer.accumulate(errors.leftRNN)

@@ -24,8 +24,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class SWSLOptimizer(
   private val network: SWSLNetwork,
-  val updateMethod: UpdateMethod = ADAMMethod(stepSize = 0.001)
-) : Optimizer {
+  updateMethod: UpdateMethod = ADAMMethod(stepSize = 0.001)
+) : Optimizer(updateMethod) {
 
   /**
    * The [Optimizer] used to optimize the network
@@ -53,34 +53,10 @@ class SWSLOptimizer(
   }
 
   /**
-   * Method to call every new epoch.
-   */
-  override fun newEpoch() {
-    this.classifierOptimizer.newEpoch()
-    this.labelEmbeddingsOptimizer.newEpoch()
-  }
-
-  /**
-   * Method to call every new batch.
-   */
-  override fun newBatch() {
-    this.classifierOptimizer.newBatch()
-    this.labelEmbeddingsOptimizer.newBatch()
-  }
-
-  /**
-   * Method to call every new example.
-   */
-  override fun newExample() {
-    this.classifierOptimizer.newExample()
-    this.labelEmbeddingsOptimizer.newExample()
-  }
-
-  /**
    * Update the params (network params and labels embeddings) using the accumulated errors.
    * After the update the errors are cleared.
    */
-  override fun update(): Unit {
+  override fun update() {
     this.classifierOptimizer.update()
     this.labelEmbeddingsOptimizer.update()
   }

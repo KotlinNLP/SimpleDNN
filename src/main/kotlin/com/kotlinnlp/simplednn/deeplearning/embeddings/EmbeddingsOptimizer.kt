@@ -10,9 +10,6 @@ package com.kotlinnlp.simplednn.deeplearning.embeddings
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
-import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
-import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
  * The optimizer of the [EmbeddingsContainer].
@@ -22,7 +19,8 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  */
 class EmbeddingsOptimizer(
   val embeddingsContainer: EmbeddingsContainer,
-  val updateMethod: UpdateMethod) : Optimizer {
+  updateMethod: UpdateMethod
+) : Optimizer(updateMethod) {
 
   /**
    * A support structure to store errors.
@@ -33,36 +31,6 @@ class EmbeddingsOptimizer(
    * Map an embeddings index with its errors
    */
   private val embeddingsErrorsMap = mutableMapOf<Int, EmbeddingsErrors>()
-
-  /**
-   * Method to call every new epoch.
-   * In turn it calls the same method into the `updateMethod`.
-   */
-  override fun newEpoch() {
-    if (this.updateMethod is EpochScheduling) {
-      this.updateMethod.newEpoch()
-    }
-  }
-
-  /**
-   * Method to call every new batch.
-   * In turn it calls the same method into the `updateMethod`.
-   */
-  override fun newBatch() {
-    if (this.updateMethod is BatchScheduling) {
-      this.updateMethod.newBatch()
-    }
-  }
-
-  /**
-   * Method to call every new example.
-   * In turn it calls the same method into the `updateMethod`.
-   */
-  override fun newExample() {
-    if (this.updateMethod is ExampleScheduling) {
-      this.updateMethod.newExample()
-    }
-  }
 
   /**
    * Update the embeddings.

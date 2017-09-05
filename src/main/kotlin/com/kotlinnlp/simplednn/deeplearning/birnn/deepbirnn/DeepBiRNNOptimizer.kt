@@ -11,9 +11,6 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNOptimizer
-import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
-import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
-import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
  * The optimizer of the DeepBiRNN which in turn contains BiRNN sub-networks (or layers)
@@ -23,8 +20,8 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  */
 class DeepBiRNNOptimizer(
   network: DeepBiRNN,
-  val updateMethod: UpdateMethod = ADAMMethod(stepSize = 0.0001)
-) : Optimizer {
+  updateMethod: UpdateMethod = ADAMMethod(stepSize = 0.0001)
+) : Optimizer(updateMethod) {
 
   /**
    * Array of optimizers for all the stacked BiRNN layers.
@@ -36,7 +33,7 @@ class DeepBiRNNOptimizer(
   /**
    * Update the parameters using the accumulated errors and then reset the errors.
    */
-  override fun update(): Unit {
+  override fun update() {
     this.optimizers.forEach { it.update() }
   }
 
@@ -52,39 +49,6 @@ class DeepBiRNNOptimizer(
 
     this.optimizers.zip(errors.paramsPerBiRNN).forEach {
       it.first.accumulate(it.second)
-    }
-  }
-
-  /**
-   * Method to call every new epoch.
-   * In turn it calls the same method into the `updateMethod`
-   */
-  override fun newEpoch() {
-
-    if (this.updateMethod is EpochScheduling) {
-      this.updateMethod.newEpoch()
-    }
-  }
-
-  /**
-   * Method to call every new batch.
-   * In turn it calls the same method into the `updateMethod`
-   */
-  override fun newBatch() {
-
-    if (this.updateMethod is BatchScheduling) {
-      this.updateMethod.newBatch()
-    }
-  }
-
-  /**
-   * Method to call every new example.
-   * In turn it calls the same method into the `updateMethod`
-   */
-  override fun newExample() {
-
-    if (this.updateMethod is ExampleScheduling) {
-      this.updateMethod.newExample()
     }
   }
 }

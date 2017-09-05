@@ -12,9 +12,6 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
-import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
-import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
-import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
  * The optimizer of the parameters of the [AttentionNetwork]
@@ -22,7 +19,10 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  * @param model the [AttentionNetworkParameters] to optimize
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
-class AttentionNetworkOptimizer(val model: AttentionNetworkParameters, val updateMethod: UpdateMethod) : Optimizer {
+class AttentionNetworkOptimizer(
+  val model: AttentionNetworkParameters,
+  updateMethod: UpdateMethod
+) : Optimizer(updateMethod) {
 
   /**
    * The accumulator of errors of the network parameters.
@@ -32,39 +32,6 @@ class AttentionNetworkOptimizer(val model: AttentionNetworkParameters, val updat
     attentionSize = this.model.attentionSize,
     sparseInput = this.model.sparseInput
   )
-
-  /**
-   * Method to call every new epoch.
-   * In turn it calls the same method into the `updateMethod`
-   */
-  override fun newEpoch() {
-
-    if (this.updateMethod is EpochScheduling) {
-      this.updateMethod.newEpoch()
-    }
-  }
-
-  /**
-   * Method to call every new batch.
-   * In turn it calls the same method into the `updateMethod`
-   */
-  override fun newBatch() {
-
-    if (this.updateMethod is BatchScheduling) {
-      this.updateMethod.newBatch()
-    }
-  }
-
-  /**
-   * Method to call every new example.
-   * In turn it calls the same method into the `updateMethod`
-   */
-  override fun newExample() {
-
-    if (this.updateMethod is ExampleScheduling) {
-      this.updateMethod.newExample()
-    }
-  }
 
   /**
    * Calculate the errors average and update the params.

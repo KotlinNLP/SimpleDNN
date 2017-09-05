@@ -10,9 +10,6 @@ package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
-import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
-import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
  * The optimizer of the Attention Layer.
@@ -20,7 +17,10 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  * @property params the attention layer parameters to optimize
  * @property updateMethod the [UpdateMethod] for the optimization (e.g. ADAM, AdaGrad, ...)
  */
-class AttentionLayerOptimizer(val params: AttentionLayerParameters, val updateMethod: UpdateMethod) : Optimizer {
+class AttentionLayerOptimizer(
+  val params: AttentionLayerParameters,
+  updateMethod: UpdateMethod
+) : Optimizer(updateMethod) {
 
   /**
    * A support structure to store the errors of the context vector.
@@ -53,35 +53,5 @@ class AttentionLayerOptimizer(val params: AttentionLayerParameters, val updateMe
 
     this.contextVectorErrors.zeros()
     this.count = 0
-  }
-
-  /**
-   * Method to call every new epoch.
-   * In turn it calls the same method into the `updateMethod`.
-   */
-  override fun newEpoch() {
-    if (this.updateMethod is EpochScheduling) {
-      this.updateMethod.newEpoch()
-    }
-  }
-
-  /**
-   * Method to call every new batch.
-   * In turn it calls the same method into the `updateMethod`.
-   */
-  override fun newBatch() {
-    if (this.updateMethod is BatchScheduling) {
-      this.updateMethod.newBatch()
-    }
-  }
-
-  /**
-   * Method to call every new example.
-   * In turn it calls the same method into the `updateMethod`.
-   */
-  override fun newExample() {
-    if (this.updateMethod is ExampleScheduling) {
-      this.updateMethod.newExample()
-    }
   }
 }

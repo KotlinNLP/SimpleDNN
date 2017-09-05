@@ -334,11 +334,7 @@ class TreeEncoderSpec : Spek({
       val nodes: Map<Int, DenseNDArray> = TreeRNNUtils.buildNodes()
       val encodingErrors: Map<Int, DenseNDArray> = TreeRNNUtils.getEncodingErrors()
 
-      val optimizer = TreeRNNOptimizer(
-        network = treeRNN,
-        leftUpdateMethod = LearningRateMethod(learningRate = 0.1),
-        rightUpdateMethod = LearningRateMethod(learningRate = 0.1),
-        concatUpdateMethod = LearningRateMethod(learningRate = 0.1))
+      val optimizer = TreeRNNOptimizer(network = treeRNN, updateMethod = LearningRateMethod(learningRate = 0.1))
 
       nodes.forEach { nodeId, vector -> treeEncoder.addNode(id = nodeId, vector = vector) }
 

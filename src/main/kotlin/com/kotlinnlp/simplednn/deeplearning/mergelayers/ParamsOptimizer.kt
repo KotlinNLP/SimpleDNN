@@ -12,9 +12,6 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
-import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
-import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
-import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
  * The optimizer of the parameters of a merge layer.
@@ -22,45 +19,12 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  * @param layer the [MergeLayer] to optimize
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
-class ParamsOptimizer(val layer: MergeLayer<*>, val updateMethod: UpdateMethod) : Optimizer {
+class ParamsOptimizer(val layer: MergeLayer<*>, updateMethod: UpdateMethod) : Optimizer(updateMethod) {
 
   /**
    * The accumulator of errors of the merge layer parameters.
    */
   private val paramsErrorsAccumulator: ParamsErrorsAccumulator = ParamsErrorsAccumulator(this.layer)
-
-  /**
-   * Method to call every new epoch.
-   * In turn it calls the same method into the `updateMethod`
-   */
-  override fun newEpoch() {
-
-    if (this.updateMethod is EpochScheduling) {
-      this.updateMethod.newEpoch()
-    }
-  }
-
-  /**
-   * Method to call every new batch.
-   * In turn it calls the same method into the `updateMethod`
-   */
-  override fun newBatch() {
-
-    if (this.updateMethod is BatchScheduling) {
-      this.updateMethod.newBatch()
-    }
-  }
-
-  /**
-   * Method to call every new example.
-   * In turn it calls the same method into the `updateMethod`
-   */
-  override fun newExample() {
-
-    if (this.updateMethod is ExampleScheduling) {
-      this.updateMethod.newExample()
-    }
-  }
 
   /**
    * Calculate the errors average, update the params.

@@ -21,8 +21,8 @@ import java.util.*
  */
 class EmbeddingsHelper(
   val embeddings: EmbeddingsContainer,
-  val updateMethod: UpdateMethod,
-  val dropoutConfiguration: DropoutConfiguration): Optimizer {
+  updateMethod: UpdateMethod,
+  private val dropoutConfiguration: DropoutConfiguration): Optimizer(updateMethod) {
 
   /**
    * Dropout configuration.
@@ -98,29 +98,5 @@ class EmbeddingsHelper(
    */
   override fun update() {
     this.optimizer.update()
-  }
-
-  /**
-   * Method to call every new epoch.
-   * In turn it calls the same method into the `optimizer`.
-   */
-  override fun newEpoch() {
-    this.optimizer.newEpoch()
-  }
-
-  /**
-   * Method to call every new batch.
-   * In turn it calls the same method into the `optimizer`.
-   */
-  override fun newBatch() {
-    this.optimizer.newBatch()
-  }
-
-  /**
-   * Method to call every new example.
-   * In turn it calls the same method into the `optimizer`.
-   */
-  override fun newExample() {
-    this.optimizer.newExample()
   }
 }
