@@ -43,9 +43,9 @@ class BiaffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   dropout = dropout) {
 
   /**
-   * A support structure used for calculations. Each array wxi is obtained by: wi (dot) x1.
+   * A support structure used for calculations. Each array wx1i is obtained by: wi (dot) x1.
    */
-  val wxArrays: Array<DenseNDArray> = Array(
+  val wx1Arrays: Array<DenseNDArray> = Array(
     size = this.params.outputSize,
     init = { DenseNDArrayFactory.emptyArray(Shape(this.params.inputSize2)) }
   )
