@@ -133,13 +133,15 @@ class BiaffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gy: DenseNDArray = this.layer.outputArray.errors
     val gyT: DenseNDArray = gy.T
 
-    this.layer.inputArray1.assignErrors(w1.dot(gyT))
-    this.layer.inputArray2.assignErrors(w2.dot(gyT))
+    this.layer.inputArray1.assignErrorsByDotT(gyT, w1)
+    this.layer.inputArray2.assignErrorsByDotT(gyT, w2)
 
     wxErrors.forEachIndexed { i, wxError ->
       val wi: DenseNDArray = wArrays[i].values as DenseNDArray
-      this.layer.inputArray1.errors.assignSum(wi.dot(wxError))
-      this.layer.inputArray2.errors.assignSum(wxError.prod(gy[i]))
+      val wxi: DenseNDArray = this.layer.wxArrays[i]
+
+      this.layer.inputArray1.errors.assignSum(wxError.T.dot(wi))
+      this.layer.inputArray2.errors.assignSum(wxi.prod(gy[i]))
     }
   }
 }
