@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.mergelayers.affine
 import com.kotlinnlp.simplednn.core.layers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the backward on an affine [layer].
@@ -48,12 +49,31 @@ class AffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    */
   private fun assignParamsGradients() {
-    TODO("not implemented")
+
+    val x1: InputNDArrayType = this.layer.inputArray.values
+    val x2: InputNDArrayType = this.layer.inputArray2.values
+
+    val gy: DenseNDArray = this.layer.outputArray.errors
+    val gw1: NDArray<*> = this.paramsErrors.w1.values
+    val gw2: NDArray<*> = this.paramsErrors.w2.values
+    val gb: NDArray<*> = this.paramsErrors.b.values
+
+    gw1.assignDot(gy, x1.T)
+    gw2.assignDot(gy, x2.T)
+    gb.assignValues(gy)
   }
 
   /**
    */
   private fun assignLayerGradients() {
-    TODO("not implemented")
+
+    val w1: DenseNDArray = this.layer.params.w1.values as DenseNDArray
+    val w2: DenseNDArray = this.layer.params.w2.values as DenseNDArray
+
+    val gy: DenseNDArray = this.layer.outputArray.errors
+    val gyT: DenseNDArray = gy.T
+
+    this.layer.inputArray1.assignErrorsByDotT(gyT, w1)
+    this.layer.inputArray2.assignErrorsByDotT(gyT, w2)
   }
 }
