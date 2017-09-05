@@ -7,32 +7,53 @@
 
 package com.kotlinnlp.simplednn.core.optimizer
 
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
- * The Optimizer defines a module that optimizes the parameters of a neural element.
+ * The Optimizer is the module which optimizes the parameters of a neural element.
+ *
+ * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
-interface Optimizer : ExampleScheduling, BatchScheduling, EpochScheduling {
+abstract class Optimizer(val updateMethod: UpdateMethod) : ScheduledUpdater {
 
   /**
    * Update the parameters of the neural element associated to this optimizer.
    */
-  fun update()
+  override abstract fun update()
 
   /**
    * Method to call every new epoch.
+   * In turn it calls the same method into the `updateMethod`
    */
-  override fun newEpoch()
+  override fun newEpoch() {
+
+    if (this.updateMethod is EpochScheduling) {
+      this.updateMethod.newEpoch()
+    }
+  }
 
   /**
    * Method to call every new batch.
+   * In turn it calls the same method into the `updateMethod`
    */
-  override fun newBatch()
+  override fun newBatch() {
+
+    if (this.updateMethod is BatchScheduling) {
+      this.updateMethod.newBatch()
+    }
+  }
 
   /**
    * Method to call every new example.
+   * In turn it calls the same method into the `updateMethod`
    */
-  override fun newExample()
+  override fun newExample() {
+
+    if (this.updateMethod is ExampleScheduling) {
+      this.updateMethod.newExample()
+    }
+  }
 }
