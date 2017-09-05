@@ -32,16 +32,10 @@ fun JsonIterator.readDenseNDArray(): DenseNDArray {
 fun JsonIterator.readSparseBinaryNDArray(size: Int): SparseBinaryNDArray {
 
   val array = ArrayList<Int>()
-  var index = 0
 
   while (this.readArray()) {
-
-    if (Math.round(this.readDouble()).toInt() == 1) {
-      array.add(index)
-    }
-
-    index++
+    array.add(this.readInt())
   }
 
-  return SparseBinaryNDArrayFactory.arrayOf(activeIndices = array.toIntArray(), shape = Shape(size))
+  return SparseBinaryNDArrayFactory.arrayOf(activeIndices = array.sorted().toIntArray(), shape = Shape(size))
 }
