@@ -48,7 +48,7 @@ class ProgressiveSumTest(val dataset: Corpus<SequenceExample<DenseNDArray>>) {
   /**
    *
    */
-  fun start(): Unit {
+  fun start() {
 
     this.initialValidation()
     this.train()

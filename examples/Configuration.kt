@@ -38,7 +38,7 @@ data class Configuration(val mnist: ExampleConfiguration,
    */
   companion object{
 
-    private val defaultConfigurationPath = FileSystems.getDefault().getPath("examples", "config", "configuration.yaml")
+    private val defaultConfigurationPath = FileSystems.getDefault().getPath("SimpleDNN", "examples", "config", "configuration.yaml")
 
     /**
      *

@@ -52,7 +52,7 @@ class MNISTTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
   /**
    *
    */
-  fun start(): Unit {
+  fun start() {
     this.train()
   }
 
@@ -76,7 +76,7 @@ class MNISTTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
   /**
    *
    */
-  private fun train(): Unit {
+  private fun train() {
 
     println("\n-- TRAINING")
 

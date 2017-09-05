@@ -76,7 +76,7 @@ class MNISTSequenceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<Dense
   /**
    *
    */
-  fun train(): Unit {
+  fun train() {
 
     println("\n-- TRAINING")
 
