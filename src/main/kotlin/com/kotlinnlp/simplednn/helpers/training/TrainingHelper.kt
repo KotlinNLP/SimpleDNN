@@ -118,7 +118,7 @@ abstract class TrainingHelper<ExampleType: Example>(
 
     val loss = this.learnFromExample(example)
 
-    this.optimizer.accumulate(this.neuralProcessor.getParamsErrors())
+    this.optimizer.accumulate(this.neuralProcessor.getParamsErrors(), copy = batchSize > 1)
 
     if (this.statistics.exampleCount == batchSize) { // a batch is just ended
       this.optimizer.update()
