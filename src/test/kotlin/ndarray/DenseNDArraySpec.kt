@@ -36,10 +36,6 @@ class DenseNDArraySpec : Spek({
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
 
-        it("should return an NDArray") {
-          assertEquals(true, array is DenseNDArray)
-        }
-
         it("should have the expected number of rows") {
           assertEquals(true, array.rows == 4)
         }
@@ -69,10 +65,6 @@ class DenseNDArraySpec : Spek({
 
         val array = DenseNDArrayFactory.zeros(Shape(2, 3))
 
-        it("should return an NDArray") {
-          assertEquals(true, array is DenseNDArray)
-        }
-
         it("should have the expected number of rows") {
           assertEquals(true, array.rows == 2)
         }
@@ -89,10 +81,6 @@ class DenseNDArraySpec : Spek({
       on("ones()") {
 
         val array = DenseNDArrayFactory.ones(Shape(2, 3))
-
-        it("should return an NDArray") {
-          assertEquals(true, array is DenseNDArray)
-        }
 
         it("should have the expected number of rows") {
           assertEquals(true, array.rows == 2)
@@ -111,10 +99,6 @@ class DenseNDArraySpec : Spek({
 
         val array = DenseNDArrayFactory.emptyArray(Shape(3, 2))
 
-        it("should return an NDArray") {
-          assertEquals(true, array is DenseNDArray)
-        }
-
         it("should have the expected number of rows") {
           assertEquals(3, array.rows)
         }
@@ -127,10 +111,6 @@ class DenseNDArraySpec : Spek({
       on("oneHotEncoder()") {
 
         val array = DenseNDArrayFactory.oneHotEncoder(length = 4, oneAt = 2)
-
-        it("should return an NDArray") {
-          assertEquals(true, array is DenseNDArray)
-        }
 
         it("should have the expected length") {
           assertEquals(4, array.length)
@@ -148,10 +128,6 @@ class DenseNDArraySpec : Spek({
       on("random()") {
 
         val array = DenseNDArrayFactory.random(shape = Shape(216, 648), from = 0.5, to = 0.89)
-
-        it("should return an NDArray") {
-          assertEquals(true, array is DenseNDArray)
-        }
 
         it("should have the expected number of rows") {
           assertEquals(216, array.rows)

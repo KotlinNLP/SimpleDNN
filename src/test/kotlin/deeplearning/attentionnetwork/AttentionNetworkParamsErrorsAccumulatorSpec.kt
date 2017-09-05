@@ -8,7 +8,6 @@
 package deeplearning.attentionnetwork
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -30,11 +29,6 @@ class AttentionNetworkParamsErrorsAccumulatorSpec : Spek({
     on("initialization") {
 
       val accumulator = AttentionNetworkParamsErrorsAccumulator(inputSize = 2, attentionSize = 3, sparseInput = false)
-
-      it("should return a AttentionNetworkParameters object when calling getParamsErrors()") {
-        assertTrue { accumulator.getParamsErrors() is AttentionNetworkParameters }
-      }
-
       val errors = accumulator.getParamsErrors()
 
       it("should return zeros errors of the attention layer contextVector when calling getParamsErrors()") {

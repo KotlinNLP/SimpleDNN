@@ -9,7 +9,6 @@ package layers.parameters
 
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
@@ -95,12 +94,6 @@ class CFNLayerParametersSpec : Spek({
         val wFor = params.forgetGate.weights.values
         val wC = params.candidateWeights.values
 
-        val bIn = params.inputGate.biases.values
-        val bFor = params.forgetGate.biases.values
-
-        val wInr = params.inputGate.recurrentWeights.values
-        val wForr = params.forgetGate.recurrentWeights.values
-
         it("should contain sparse weights of the input gate") {
             assertTrue { wIn is SparseNDArray }
         }
@@ -111,22 +104,6 @@ class CFNLayerParametersSpec : Spek({
 
         it("should contain sparse weights of the candidate") {
             assertTrue { wC is SparseNDArray }
-        }
-
-        it("should contain dense biases of the input gate") {
-            assertTrue { bIn is DenseNDArray }
-        }
-
-        it("should contain dense biases of the forget gate") {
-            assertTrue { bFor is DenseNDArray }
-        }
-
-        it("should contain dense recurrent weights of the input gate") {
-            assertTrue { wInr is DenseNDArray }
-        }
-
-        it("should contain dense recurrent weights of the forget gate") {
-            assertTrue { wForr is DenseNDArray }
         }
 
         it("should throw an Exception when trying to initialize") {

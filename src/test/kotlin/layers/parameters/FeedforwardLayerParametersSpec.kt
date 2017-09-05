@@ -50,10 +50,6 @@ class FeedforwardLayerParametersSpec : Spek({
             assertTrue { w is DenseNDArray }
         }
 
-        it("should contain dense biases") {
-            assertTrue { b is DenseNDArray }
-        }
-
         it("should contain the expected initialized weights") {
           (0 until w.length).forEach { i -> assertEquals(initValues[i], w[i]) }
         }
@@ -68,14 +64,9 @@ class FeedforwardLayerParametersSpec : Spek({
         val params = FeedforwardLayerParameters(inputSize = 3, outputSize = 2, sparseInput = true)
 
         val w = params.unit.weights.values
-        val b = params.unit.biases.values
 
         it("should contain sparse weights") {
             assertTrue { w is SparseNDArray }
-        }
-
-        it("should contain dense biases") {
-            assertTrue { b is DenseNDArray }
         }
 
         it("should throw an Exception when trying to initialize") {

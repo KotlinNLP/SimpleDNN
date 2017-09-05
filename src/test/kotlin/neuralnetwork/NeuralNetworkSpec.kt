@@ -32,11 +32,8 @@ class NeuralNetworkSpec: Spek({
 
     on("loading from a byte array input stream") {
 
-      val inputStream = ByteArrayInputStream(SerializedNetwork.byteArray)
-      val network = NeuralNetwork.load(inputStream)
-
-      it("should return a NeuralNetwork") {
-        assertTrue { network is NeuralNetwork }
+      it("should load a NeuralNetwork without failing") {
+        NeuralNetwork.load(inputStream = ByteArrayInputStream(SerializedNetwork.byteArray))
       }
     }
 

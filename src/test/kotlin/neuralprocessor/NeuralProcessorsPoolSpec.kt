@@ -8,14 +8,9 @@
 package neuralprocessor
 
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
-import com.kotlinnlp.simplednn.core.neuralnetwork.preset.SimpleRecurrentNeuralNetwork
-import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
-import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
-import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessorsPool
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
@@ -138,40 +133,6 @@ class NeuralProcessorsPoolSpec : Spek({
 
       it("should return the expected processor 4") {
         assertTrue { processor4 === pool.getItem() }
-      }
-    }
-
-    context("FeedforwardNeuralProcessorsPool") {
-
-      val pool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
-        neuralNetwork = FeedforwardNeuralNetwork(
-          inputSize = 5,
-          hiddenSize = 3,
-          hiddenActivation = null,
-          outputSize = 2,
-          outputActivation = null))
-
-      val processor = pool.getItem()
-
-      it("should return a FeedforwardNeuralProcessor") {
-        assertTrue { processor is FeedforwardNeuralProcessor<DenseNDArray> }
-      }
-    }
-
-    context("RecurrentNeuralProcessorsPool") {
-
-      val pool = RecurrentNeuralProcessorsPool<DenseNDArray>(
-        neuralNetwork = SimpleRecurrentNeuralNetwork(
-          inputSize = 5,
-          hiddenSize = 3,
-          hiddenActivation = null,
-          outputSize = 2,
-          outputActivation = null))
-
-      val processor = pool.getItem()
-
-      it("should return a RecurrentNeuralProcessor") {
-        assertTrue { processor is RecurrentNeuralProcessor<DenseNDArray> }
       }
     }
   }

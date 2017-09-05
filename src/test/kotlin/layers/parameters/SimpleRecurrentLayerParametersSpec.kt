@@ -9,7 +9,6 @@ package layers.parameters
 
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
@@ -65,19 +64,9 @@ class SimpleRecurrentLayerParametersSpec : Spek({
         val params = SimpleRecurrentLayerParameters(inputSize = 3, outputSize = 2, sparseInput = true)
 
         val w = params.unit.weights.values
-        val b = params.unit.biases.values
-        val wr = params.unit.recurrentWeights.values
 
         it("should contain sparse weights") {
             assertTrue { w is SparseNDArray }
-        }
-
-        it("should contain dense biases") {
-            assertTrue { b is DenseNDArray }
-        }
-
-        it("should contain dense recurrent weights") {
-            assertTrue { wr is DenseNDArray }
         }
 
         it("should throw an Exception when trying to initialize") {

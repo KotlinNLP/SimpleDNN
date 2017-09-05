@@ -9,7 +9,6 @@ package layers.parameters
 
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
@@ -105,14 +104,6 @@ class GRULayerParametersSpec : Spek({
         val wp = params.partitionGate.weights.values
         val wc = params.candidate.weights.values
 
-        val br = params.resetGate.biases.values
-        val bp = params.partitionGate.biases.values
-        val bc = params.candidate.biases.values
-
-        val wrr = params.resetGate.recurrentWeights.values
-        val wpr = params.partitionGate.recurrentWeights.values
-        val wcr = params.candidate.recurrentWeights.values
-
         it("should contain sparse weights of the reset gate") {
             assertTrue { wr is SparseNDArray }
         }
@@ -123,30 +114,6 @@ class GRULayerParametersSpec : Spek({
 
         it("should contain sparse weights of the candidate") {
             assertTrue { wc is SparseNDArray }
-        }
-
-        it("should contain dense biases of the reset gate") {
-            assertTrue { br is DenseNDArray }
-        }
-
-        it("should contain dense biases of the partition gate") {
-            assertTrue { bp is DenseNDArray }
-        }
-
-        it("should contain dense biases of the candidate") {
-            assertTrue { bc is DenseNDArray }
-        }
-
-        it("should contain dense recurrent weights of the reset gate") {
-            assertTrue { wrr is DenseNDArray }
-        }
-
-        it("should contain dense recurrent weights of the partition gate") {
-            assertTrue { wpr is DenseNDArray }
-        }
-
-        it("should contain dense recurrent weights of the candidate") {
-            assertTrue { wcr is DenseNDArray }
         }
 
         it("should throw an Exception when trying to initialize") {

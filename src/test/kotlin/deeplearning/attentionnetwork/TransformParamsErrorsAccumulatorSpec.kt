@@ -8,7 +8,6 @@
 package deeplearning.attentionnetwork
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.TransformParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -30,10 +29,6 @@ class TransformParamsErrorsAccumulatorSpec : Spek({
     on("initialization") {
 
       val accumulator = TransformParamsErrorsAccumulator(inputSize = 2, attentionSize = 3, sparseInput = false)
-
-      it("should return a FeedforwardLayerParameters object when calling getParamsErrors()") {
-        assertTrue { accumulator.getParamsErrors() is FeedforwardLayerParameters }
-      }
 
       it("should return zeros errors when calling getParamsErrors()") {
         val errors = accumulator.getParamsErrors()
