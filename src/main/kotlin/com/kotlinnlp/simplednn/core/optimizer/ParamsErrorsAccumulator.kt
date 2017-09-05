@@ -68,7 +68,10 @@ class ParamsErrorsAccumulator(val neuralNetwork: NeuralNetwork) {
    * Divide the accumulated errors by the number of accumulations.
    */
   fun averageErrors() {
-    this.paramsErrors.assignDiv(this.count)
+
+    if (this.count != 1) {
+      this.paramsErrors.assignDiv(this.count)
+    }
   }
 
   /**
