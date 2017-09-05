@@ -32,7 +32,7 @@ fun JsonIterator.readDenseNDArray(): DenseNDArray {
 fun JsonIterator.readSparseBinaryNDArray(): SparseBinaryNDArray {
 
   val array = ArrayList<Int>()
-  var index: Int = 0
+  var index = 0
 
   while (this.readArray()) {
 
