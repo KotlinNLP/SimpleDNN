@@ -25,7 +25,12 @@ class ParamsErrorsAccumulator(val neuralNetwork: NeuralNetwork) {
   /**
    * The structure in which to accumulate the errors of the network parameters.
    */
-  private val paramsErrors: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
+  private var paramsErrors: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
+
+  /**
+   * A boolean which indicates if [paramsErrors] is a reference of one given by the user or is created privately.
+   */
+  private var paramsErrorsByReference: Boolean = false
 
   /**
    * A boolean indicating if any errors are accumulated.
@@ -78,10 +83,26 @@ class ParamsErrorsAccumulator(val neuralNetwork: NeuralNetwork) {
    * Accumulate the given [paramsErrors] into the accumulator.
    *
    * @param paramsErrors the network parameters errors to accumulate
+   * @param copy a Boolean indicating if the [paramsErrors] can be used as reference or must be copied. Set copy = false
+   *             to optimize the accumulation when the size of the examples batches is 1. (default = true)
    */
-  fun accumulate(paramsErrors: NetworkParameters) {
+  fun accumulate(paramsErrors: NetworkParameters, copy: Boolean = true) {
 
-    this.paramsErrors.let { if (this.isEmpty) it.assignValues(paramsErrors) else it.assignSum(paramsErrors) }
+    if (this.isEmpty) {
+      // Assignment
+      if (copy) {
+        this.paramsErrors.assignValues(paramsErrors)
+        this.paramsErrorsByReference = false
+      } else {
+        this.paramsErrors = paramsErrors
+        this.paramsErrorsByReference = true
+      }
+
+    } else {
+      // Summation
+      require(!this.paramsErrorsByReference) { "Cannot accumulate errors into paramsErrors given by reference" }
+      this.paramsErrors.assignSum(paramsErrors)
+    }
 
     this.count += 1
   }

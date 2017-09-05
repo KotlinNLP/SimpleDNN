@@ -77,9 +77,11 @@ class ParamsOptimizer(val neuralNetwork: NeuralNetwork, val updateMethod: Update
    * Accumulate the given [paramsErrors] into the accumulator.
    *
    * @param paramsErrors the network parameters errors to accumulate
+   * @param copy a Boolean indicating if the [paramsErrors] can be used as reference or must be copied. Set copy = false
+   *             to optimize the accumulation when the size of the examples batches is 1. (default = true)
    */
-  fun accumulate(paramsErrors: NetworkParameters) {
-    this.paramsErrorsAccumulator.accumulate(paramsErrors)
+  fun accumulate(paramsErrors: NetworkParameters, copy: Boolean = true) {
+    this.paramsErrorsAccumulator.accumulate(paramsErrors = paramsErrors, copy = copy)
   }
 
   /**
