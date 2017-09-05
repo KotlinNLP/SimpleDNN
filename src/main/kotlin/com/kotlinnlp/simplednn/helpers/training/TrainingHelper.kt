@@ -87,7 +87,7 @@ abstract class TrainingHelper<ExampleType: Example>(
    * @param batchSize the size of each batch (default 1)
    * @param shuffler the [Shuffler] to shuffle [trainingExamples] before training (default null)
    */
-  fun trainEpoch(trainingExamples: ArrayList<ExampleType>, batchSize: Int, shuffler: Shuffler? = null) {
+  private fun trainEpoch(trainingExamples: ArrayList<ExampleType>, batchSize: Int, shuffler: Shuffler? = null) {
 
     this.newEpoch()
 
@@ -108,7 +108,7 @@ abstract class TrainingHelper<ExampleType: Example>(
    *
    * @return the loss of the output compared to the expected gold
    */
-  fun trainExample(example: ExampleType, batchSize: Int = 1): Double {
+  private fun trainExample(example: ExampleType, batchSize: Int = 1): Double {
 
     if (this.statistics.exampleCount % batchSize == 0) { // A new batch starts
       this.newBatch()
@@ -142,7 +142,7 @@ abstract class TrainingHelper<ExampleType: Example>(
    *
    * In turn it calls the same method into the `optimizer`
    */
-  private fun newEpoch(): Unit {
+  private fun newEpoch() {
     this.statistics.newEpoch()
     this.optimizer.newEpoch()
   }
@@ -153,7 +153,7 @@ abstract class TrainingHelper<ExampleType: Example>(
    *
    * In turn it calls the same method into the `optimizer`
    */
-  private fun newBatch(): Unit {
+  private fun newBatch() {
     this.statistics.newBatch()
     this.optimizer.newBatch()
   }
@@ -164,7 +164,7 @@ abstract class TrainingHelper<ExampleType: Example>(
    *
    * In turn it calls the same method into the `optimizer`
    */
-  private fun newExample(): Unit {
+  private fun newExample() {
     this.statistics.newExample()
     this.optimizer.newExample()
   }
@@ -172,7 +172,7 @@ abstract class TrainingHelper<ExampleType: Example>(
   /**
    * Log when training starts.
    */
-  private fun logTrainingStart(epochIndex: Int): Unit {
+  private fun logTrainingStart(epochIndex: Int) {
 
     if (this.verbose) {
 
@@ -185,7 +185,7 @@ abstract class TrainingHelper<ExampleType: Example>(
   /**
    * Log when training ends.
    */
-  private fun logTrainingEnd(): Unit {
+  private fun logTrainingEnd() {
 
     if (this.verbose) { // TODO: replace lastLoss with another more valuable value
       println("Elapsed time: %s".format(this.formatElapsedTime()))
@@ -196,7 +196,7 @@ abstract class TrainingHelper<ExampleType: Example>(
   /**
    * Log when validation starts.
    */
-  private fun logValidationStart(): Unit {
+  private fun logValidationStart() {
 
     if (this.verbose) {
 
@@ -209,7 +209,7 @@ abstract class TrainingHelper<ExampleType: Example>(
   /**
    * Log when validation ends.
    */
-  private fun logValidationEnd(): Unit {
+  private fun logValidationEnd() {
 
     if (this.verbose) {
       println("Elapsed time: %s".format(this.formatElapsedTime()))
