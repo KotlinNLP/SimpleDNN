@@ -30,6 +30,7 @@ data class ExampleConfiguration(val datasets_paths: CorpusPaths)
  */
 data class Configuration(val mnist: ExampleConfiguration,
                          val mnist_sequence: ExampleConfiguration,
+                         val sparse_input: ExampleConfiguration,
                          val progressive_sum: ExampleConfiguration,
                          val han_classifier: ExampleConfiguration){
 
@@ -38,7 +39,8 @@ data class Configuration(val mnist: ExampleConfiguration,
    */
   companion object{
 
-    private val defaultConfigurationPath = FileSystems.getDefault().getPath("SimpleDNN", "examples", "config", "configuration.yaml")
+    private val defaultConfigurationPath
+      = FileSystems.getDefault().getPath("SimpleDNN", "examples", "config", "configuration.yaml")
 
     /**
      *

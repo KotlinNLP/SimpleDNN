@@ -10,6 +10,12 @@ mnist_sequence:
     validation: "<PATH>/<FILENAME>.jsonl"
     test: "<PATH>/<FILENAME>.jsonl"
 
+sparse_input:
+  datasets_paths:
+    training: "<PATH>/<FILENAME>.jsonl"
+    validation: "<PATH>/<FILENAME>.jsonl"
+    test: "<PATH>/<FILENAME>.jsonl"
+
 progressive_sum:
   datasets_paths:
     training: "<PATH>/<FILENAME>.jsonl"
