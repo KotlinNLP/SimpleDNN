@@ -35,7 +35,7 @@ abstract class ValidationHelper<ExampleType: Example>(
                onPrediction: (example: ExampleType, isCorrect: Boolean) -> Unit = {_, _ -> },
                saveContributions: Boolean = false): Double {
 
-    var correctPredictions: Int = 0
+    var correctPredictions = 0
 
     examples.forEach {
       val isCorrect = this.validate(it, saveContributions = saveContributions)
