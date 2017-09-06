@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.layers.*
+import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
@@ -47,23 +47,23 @@ class DeltaRNNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The candidate array.
    */
-  val candidate = AugmentedArray<DenseNDArray>(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
+  val candidate = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
 
   /**
    * The partition array.
    */
-  val partition = AugmentedArray<DenseNDArray>(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
+  val partition = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
 
   /**
    * The array which contains the result of the dot product between the input (x) and the input weights (w).
    */
-  val wx = AugmentedArray<DenseNDArray>(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
+  val wx = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
 
   /**
    * The array which contains the result of the dot product between the output in the previous state and the recurrent
    * weights.
    */
-  val wyRec = AugmentedArray<DenseNDArray>(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
+  val wyRec = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
 
   /**
    * The support structure used to save temporary results during a forward and using them to calculate the relevance
