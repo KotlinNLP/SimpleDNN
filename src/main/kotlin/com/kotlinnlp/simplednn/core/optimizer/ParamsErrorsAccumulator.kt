@@ -74,7 +74,7 @@ class ParamsErrorsAccumulator(val neuralNetwork: NeuralNetwork) {
    */
   fun averageErrors() {
 
-    if (this.count != 1) {
+    if (this.count > 1) {
       this.paramsErrors.assignDiv(this.count)
     }
   }
