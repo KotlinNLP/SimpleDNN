@@ -49,7 +49,7 @@ abstract class LayerParameters(
   /**
    * @param i the index of a parameter
    *
-   * @return the parameters at the given index
+   * @return the parameter at the given index
    */
   operator fun get(i: Int): UpdatableArray<*> {
     return this.paramsList[i]
