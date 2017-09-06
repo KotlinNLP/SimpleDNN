@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerParameters
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -40,10 +41,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * The accumulator of errors of the transform layer parameters.
    */
-  private val transformParamsErrorsAccumulator = TransformParamsErrorsAccumulator(
-    inputSize = this.model.inputSize,
-    attentionSize = this.model.attentionSize,
-    sparseInput = this.model.sparseInput)
+  private val transformParamsErrorsAccumulator = ParamsErrorsAccumulator<FeedforwardLayerParameters>()
 
   /**
    * The attention transform layer which creates an attention array from each array of an input sequence.

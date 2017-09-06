@@ -10,13 +10,13 @@ package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetwork
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworksPool
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncoder
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncodersPool
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -72,22 +72,17 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
   /**
    * An array containing params errors accumulator for each BiRNN encoder.
    */
-  private val encodersParamsErrorsAccumulators: Array<BiRNNParamsErrorsAccumulator> = Array(
+  private val encodersParamsErrorsAccumulators: Array<ParamsErrorsAccumulator<BiRNNParameters>> = Array(
     size = this.model.hierarchySize,
-    init = { i -> BiRNNParamsErrorsAccumulator(this.model.biRNNs[i]) }
+    init = { ParamsErrorsAccumulator<BiRNNParameters>() }
   )
 
   /**
    * An array containing params errors accumulator for each [AttentionNetwork].
    */
-  private val attentionNetworksParamsErrorsAccumulators: Array<AttentionNetworkParamsErrorsAccumulator> = Array(
+  private val attentionNetworksParamsErrorsAccumulators = Array(
     size = this.model.hierarchySize,
-    init = { i ->
-      AttentionNetworkParamsErrorsAccumulator(
-        inputSize = this.attentionNetworksPools[i].model.inputSize,
-        attentionSize = this.attentionNetworksPools[i].model.attentionSize,
-        sparseInput = false)
-    }
+    init = { ParamsErrorsAccumulator<AttentionNetworkParameters>() }
   )
 
   /**
@@ -171,14 +166,14 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
       size = this.model.hierarchySize,
       init = { i ->
         val paramsErrors = this.encodersParamsErrorsAccumulators[i].getParamsErrors()
-        if (copy) paramsErrors.clone() else paramsErrors
+        if (copy) paramsErrors.copy() else paramsErrors
       }
     )),
     attentionNetworks = arrayListOf(*Array(
       size = this.model.hierarchySize,
       init = { i ->
         val paramsErrors = this.attentionNetworksParamsErrorsAccumulators[i].getParamsErrors()
-        if (copy) paramsErrors.clone() else paramsErrors
+        if (copy) paramsErrors.copy() else paramsErrors
       }
     )),
     outputNetwork = this.outputProcessor.getParamsErrors(copy = copy)

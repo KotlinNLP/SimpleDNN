@@ -10,8 +10,8 @@ package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.*
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
@@ -36,7 +36,7 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
   /**
    *
    */
-  private val paramsErrorsAccumulator = NetworkParamsErrorsAccumulator(this.neuralNetwork)
+  private val paramsErrorsAccumulator = ParamsErrorsAccumulator<NetworkParameters>()
 
   /**
    * The number of states.

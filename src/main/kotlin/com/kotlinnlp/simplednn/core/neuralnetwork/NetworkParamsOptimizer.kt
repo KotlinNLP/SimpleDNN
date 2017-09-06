@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.neuralnetwork
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 
@@ -24,7 +25,7 @@ class NetworkParamsOptimizer(val neuralNetwork: NeuralNetwork, updateMethod: Upd
   /**
    * The accumulator of errors of the network parameters.
    */
-  private val paramsErrorsAccumulator = NetworkParamsErrorsAccumulator(this.neuralNetwork)
+  private val paramsErrorsAccumulator = ParamsErrorsAccumulator<NetworkParameters>()
 
   /**
    * Calculate the errors average, update the params.
