@@ -25,7 +25,7 @@ open class AffineLayerParameters(
   inputSize2: Int,
   outputSize: Int,
   sparseInput: Boolean = false
-) : MergeLayerParameters(
+) : MergeLayerParameters<AffineLayerParameters>(
   inputSize1 = inputSize1,
   inputSize2 = inputSize2,
   outputSize = outputSize,
@@ -57,15 +57,13 @@ open class AffineLayerParameters(
   val b: UpdatableDenseArray = this.buildDenseArray(this.outputSize)
 
   /**
-   * Initialize the parameters list.
+   * The list of all parameters.
    */
-  init {
-    this.paramsList = arrayListOf(
-      this.w1,
-      this.w2,
-      this.b
-    )
-  }
+  override val paramsList = arrayOf(
+    this.w1,
+    this.w2,
+    this.b
+  )
 
   /**
    * Initialize all parameters with random or predefined values.
@@ -76,5 +74,21 @@ open class AffineLayerParameters(
     this.w1.values.randomize(randomGenerator)
     this.w2.values.randomize(randomGenerator)
     this.b.values.assignValues(biasesInitValue)
+  }
+
+  /**
+   * @return a new [AffineLayerParameters] containing a copy of all parameters of this
+   */
+  override fun copy(): AffineLayerParameters {
+
+    val clonedParams = AffineLayerParameters(
+      inputSize1 = this.inputSize1,
+      inputSize2 = this.inputSize2,
+      outputSize = this.outputSize,
+      sparseInput = this.sparseInput)
+
+    clonedParams.assignValues(this)
+
+    return clonedParams
   }
 }

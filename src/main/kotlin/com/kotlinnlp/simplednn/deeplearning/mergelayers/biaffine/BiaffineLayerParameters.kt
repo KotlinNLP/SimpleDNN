@@ -51,16 +51,7 @@ class BiaffineLayerParameters(
   /**
    * Initialize the parameters list.
    */
-  init {
-
-    this.paramsList = arrayListOf(
-      this.w1,
-      this.w2,
-      this.b
-    )
-
-    this.w.forEach { this.paramsList.add(it) }
-  }
+  override val paramsList: Array<UpdatableArray<*>> = this.buildParamsList()
 
   /**
    * Initialize all parameters with random or predefined values.
@@ -73,5 +64,37 @@ class BiaffineLayerParameters(
     this.b.values.assignValues(biasesInitValue)
 
     this.w.forEach { it.values.randomize(randomGenerator) }
+  }
+
+  /**
+   * @return a new [BiaffineLayerParameters] containing a copy of all parameters of this
+   */
+  override fun copy(): BiaffineLayerParameters {
+
+    val clonedParams = BiaffineLayerParameters(
+      inputSize1 = this.inputSize1,
+      inputSize2 = this.inputSize2,
+      outputSize = this.outputSize,
+      sparseInput = this.sparseInput)
+
+    clonedParams.assignValues(this)
+
+    return clonedParams
+  }
+
+  /**
+   * @return the parameters list
+   */
+  private fun buildParamsList(): Array<UpdatableArray<*>> {
+
+    val paramsArrayList = arrayListOf(
+      this.w1,
+      this.w2,
+      this.b
+    )
+
+    paramsArrayList.addAll(this.w)
+
+    return paramsArrayList.toTypedArray()
   }
 }

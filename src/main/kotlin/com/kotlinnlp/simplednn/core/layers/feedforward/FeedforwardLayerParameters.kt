@@ -22,7 +22,7 @@ class FeedforwardLayerParameters(
   inputSize: Int,
   outputSize: Int,
   private val sparseInput: Boolean = false
-) : LayerParameters(inputSize = inputSize, outputSize = outputSize) {
+) : LayerParameters<FeedforwardLayerParameters>(inputSize = inputSize, outputSize = outputSize) {
 
   /**
    *
@@ -30,14 +30,12 @@ class FeedforwardLayerParameters(
   val unit = ParametersUnit(inputSize = this.inputSize, outputSize = this.outputSize, sparseInput = this.sparseInput)
 
   /**
-   *
+   * The list of all parameters.
    */
-  init {
-    this.paramsList = arrayListOf(
-      this.unit.weights,
-      this.unit.biases
-    )
-  }
+  override val paramsList = arrayOf(
+    this.unit.weights,
+    this.unit.biases
+  )
 
   /**
    *
@@ -47,5 +45,20 @@ class FeedforwardLayerParameters(
 
     this.unit.weights.values.randomize(randomGenerator)
     this.unit.biases.values.assignValues(biasesInitValue)
+  }
+
+  /**
+   * @return a new [FeedforwardLayerParameters] containing a copy of all parameters of this
+   */
+  override fun copy(): FeedforwardLayerParameters {
+
+    val clonedParams = FeedforwardLayerParameters(
+      inputSize = this.inputSize,
+      outputSize = this.outputSize,
+      sparseInput = this.sparseInput)
+
+    clonedParams.assignValues(this)
+
+    return clonedParams
   }
 }

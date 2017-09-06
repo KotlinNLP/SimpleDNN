@@ -24,7 +24,7 @@ class DeltaRNNLayerParameters(
   inputSize: Int,
   outputSize: Int,
   private val sparseInput: Boolean = false
-) : LayerParameters(inputSize = inputSize, outputSize = outputSize) {
+) : LayerParameters<DeltaRNNLayerParameters>(inputSize = inputSize, outputSize = outputSize) {
 
   /**
    *
@@ -55,19 +55,17 @@ class DeltaRNNLayerParameters(
   val beta2 = UpdatableDenseArray(shape = Shape(this.outputSize))
 
   /**
-   *
+   * The list of all parameters.
    */
-  init {
-    this.paramsList = arrayListOf(
-      this.feedforwardUnit.weights,
-      this.feedforwardUnit.biases,
-      this.recurrentUnit.weights,
-      this.recurrentUnit.biases,
-      this.alpha,
-      this.beta1,
-      this.beta2
-    )
-  }
+  override val paramsList = arrayOf(
+    this.feedforwardUnit.weights,
+    this.feedforwardUnit.biases,
+    this.recurrentUnit.weights,
+    this.recurrentUnit.biases,
+    this.alpha,
+    this.beta1,
+    this.beta2
+  )
 
   /**
    * Initialize values randomly.
@@ -87,5 +85,20 @@ class DeltaRNNLayerParameters(
     this.alpha.values.randomize(randomGenerator)
     this.beta1.values.randomize(randomGenerator)
     this.beta2.values.randomize(randomGenerator)
+  }
+
+  /**
+   * @return a new [DeltaRNNLayerParameters] containing a copy of all parameters of this
+   */
+  override fun copy(): DeltaRNNLayerParameters {
+
+    val clonedParams = DeltaRNNLayerParameters(
+      inputSize = this.inputSize,
+      outputSize = this.outputSize,
+      sparseInput = this.sparseInput)
+
+    clonedParams.assignValues(this)
+
+    return clonedParams
   }
 }

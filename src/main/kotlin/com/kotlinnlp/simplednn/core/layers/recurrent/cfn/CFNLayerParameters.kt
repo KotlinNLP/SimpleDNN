@@ -23,7 +23,7 @@ class CFNLayerParameters(
   inputSize: Int,
   outputSize: Int,
   private val sparseInput: Boolean = false
-) : LayerParameters(inputSize = inputSize, outputSize = outputSize) {
+) : LayerParameters<CFNLayerParameters>(inputSize = inputSize, outputSize = outputSize) {
 
   /**
    *
@@ -50,22 +50,20 @@ class CFNLayerParameters(
     sparseInput = this.sparseInput)
 
   /**
-   *
+   * The list of all parameters.
    */
-  init {
+  override val paramsList = arrayOf(
 
-    this.paramsList = arrayListOf(
-      this.inputGate.weights,
-      this.forgetGate.weights,
-      this.candidateWeights,
+    this.inputGate.weights,
+    this.forgetGate.weights,
+    this.candidateWeights,
 
-      this.inputGate.biases,
-      this.forgetGate.biases,
+    this.inputGate.biases,
+    this.forgetGate.biases,
 
-      this.inputGate.recurrentWeights,
-      this.forgetGate.recurrentWeights
-    )
-  }
+    this.inputGate.recurrentWeights,
+    this.forgetGate.recurrentWeights
+  )
 
   /**
    *
@@ -82,5 +80,20 @@ class CFNLayerParameters(
 
     this.inputGate.recurrentWeights.values.randomize(randomGenerator)
     this.forgetGate.recurrentWeights.values.randomize(randomGenerator)
+  }
+
+  /**
+   * @return a new [CFNLayerParameters] containing a copy of all parameters of this
+   */
+  override fun copy(): CFNLayerParameters {
+
+    val clonedParams = CFNLayerParameters(
+      inputSize = this.inputSize,
+      outputSize = this.outputSize,
+      sparseInput = this.sparseInput)
+
+    clonedParams.assignValues(this)
+
+    return clonedParams
   }
 }

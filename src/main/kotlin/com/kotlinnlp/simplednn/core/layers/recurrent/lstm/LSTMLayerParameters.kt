@@ -22,7 +22,7 @@ class LSTMLayerParameters(
   inputSize: Int,
   outputSize: Int,
   private val sparseInput: Boolean = false
-) : LayerParameters(inputSize = inputSize, outputSize = outputSize) {
+) : LayerParameters<LSTMLayerParameters>(inputSize = inputSize, outputSize = outputSize) {
 
   /**
    *
@@ -57,27 +57,24 @@ class LSTMLayerParameters(
     sparseInput = this.sparseInput)
 
   /**
-   *
+   * The list of all parameters.
    */
-  init {
+  override val paramsList = arrayOf(
+    this.inputGate.weights,
+    this.outputGate.weights,
+    this.forgetGate.weights,
+    this.candidate.weights,
 
-    this.paramsList = arrayListOf(
-      this.inputGate.weights,
-      this.outputGate.weights,
-      this.forgetGate.weights,
-      this.candidate.weights,
+    this.inputGate.biases,
+    this.outputGate.biases,
+    this.forgetGate.biases,
+    this.candidate.biases,
 
-      this.inputGate.biases,
-      this.outputGate.biases,
-      this.forgetGate.biases,
-      this.candidate.biases,
-
-      this.inputGate.recurrentWeights,
-      this.outputGate.recurrentWeights,
-      this.forgetGate.recurrentWeights,
-      this.candidate.recurrentWeights
-    )
-  }
+    this.inputGate.recurrentWeights,
+    this.outputGate.recurrentWeights,
+    this.forgetGate.recurrentWeights,
+    this.candidate.recurrentWeights
+  )
 
   /**
    *
@@ -99,5 +96,20 @@ class LSTMLayerParameters(
     this.outputGate.recurrentWeights.values.randomize(randomGenerator)
     this.forgetGate.recurrentWeights.values.randomize(randomGenerator)
     this.candidate.recurrentWeights.values.randomize(randomGenerator)
+  }
+
+  /**
+   * @return a new [LSTMLayerParameters] containing a copy of all parameters of this
+   */
+  override fun copy(): LSTMLayerParameters {
+
+    val clonedParams = LSTMLayerParameters(
+      inputSize = this.inputSize,
+      outputSize = this.outputSize,
+      sparseInput = this.sparseInput)
+
+    clonedParams.assignValues(this)
+
+    return clonedParams
   }
 }

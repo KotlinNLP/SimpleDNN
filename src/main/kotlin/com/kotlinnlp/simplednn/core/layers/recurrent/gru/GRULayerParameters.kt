@@ -22,7 +22,7 @@ class GRULayerParameters(
   inputSize: Int,
   outputSize: Int,
   private val sparseInput: Boolean = false
-) : LayerParameters(inputSize = inputSize, outputSize = outputSize) {
+) : LayerParameters<GRULayerParameters>(inputSize = inputSize, outputSize = outputSize) {
 
   /**
    *
@@ -49,24 +49,21 @@ class GRULayerParameters(
     sparseInput = this.sparseInput)
 
   /**
-   *
+   * The list of all parameters.
    */
-  init {
+  override val paramsList = arrayOf(
+    this.candidate.weights,
+    this.resetGate.weights,
+    this.partitionGate.weights,
 
-    this.paramsList = arrayListOf(
-      this.candidate.weights,
-      this.resetGate.weights,
-      this.partitionGate.weights,
+    this.candidate.biases,
+    this.resetGate.biases,
+    this.partitionGate.biases,
 
-      this.candidate.biases,
-      this.resetGate.biases,
-      this.partitionGate.biases,
-
-      this.candidate.recurrentWeights,
-      this.resetGate.recurrentWeights,
-      this.partitionGate.recurrentWeights
-    )
-  }
+    this.candidate.recurrentWeights,
+    this.resetGate.recurrentWeights,
+    this.partitionGate.recurrentWeights
+  )
 
   /**
    *
@@ -85,5 +82,20 @@ class GRULayerParameters(
     this.candidate.recurrentWeights.values.randomize(randomGenerator)
     this.resetGate.recurrentWeights.values.randomize(randomGenerator)
     this.partitionGate.recurrentWeights.values.randomize(randomGenerator)
+  }
+
+  /**
+   * @return a new [GRULayerParameters] containing a copy of all parameters of this
+   */
+  override fun copy(): GRULayerParameters {
+
+    val clonedParams = GRULayerParameters(
+      inputSize = this.inputSize,
+      outputSize = this.outputSize,
+      sparseInput = this.sparseInput)
+
+    clonedParams.assignValues(this)
+
+    return clonedParams
   }
 }

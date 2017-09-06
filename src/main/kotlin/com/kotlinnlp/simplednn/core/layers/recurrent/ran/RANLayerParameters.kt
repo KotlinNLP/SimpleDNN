@@ -23,7 +23,7 @@ class RANLayerParameters(
   inputSize: Int,
   outputSize: Int,
   private val sparseInput: Boolean = false
-) : LayerParameters(inputSize = inputSize, outputSize = outputSize) {
+) : LayerParameters<RANLayerParameters>(inputSize = inputSize, outputSize = outputSize) {
 
   /**
    *
@@ -50,23 +50,21 @@ class RANLayerParameters(
     sparseInput = this.sparseInput)
 
   /**
-   *
+   * The list of all parameters.
    */
-  init {
+  override val paramsList = arrayOf(
 
-    this.paramsList = arrayListOf(
-      this.inputGate.weights,
-      this.forgetGate.weights,
-      this.candidate.weights,
+    this.inputGate.weights,
+    this.forgetGate.weights,
+    this.candidate.weights,
 
-      this.inputGate.biases,
-      this.forgetGate.biases,
-      this.candidate.biases,
+    this.inputGate.biases,
+    this.forgetGate.biases,
+    this.candidate.biases,
 
-      this.inputGate.recurrentWeights,
-      this.forgetGate.recurrentWeights
-    )
-  }
+    this.inputGate.recurrentWeights,
+    this.forgetGate.recurrentWeights
+  )
 
   /**
    *
@@ -84,5 +82,20 @@ class RANLayerParameters(
 
     this.inputGate.recurrentWeights.values.randomize(randomGenerator)
     this.forgetGate.recurrentWeights.values.randomize(randomGenerator)
+  }
+
+  /**
+   * @return a new [RANLayerParameters] containing a copy of all parameters of this
+   */
+  override fun copy(): RANLayerParameters {
+
+    val clonedParams = RANLayerParameters(
+      inputSize = this.inputSize,
+      outputSize = this.outputSize,
+      sparseInput = this.sparseInput)
+
+    clonedParams.assignValues(this)
+
+    return clonedParams
   }
 }

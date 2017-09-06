@@ -22,7 +22,7 @@ class SimpleRecurrentLayerParameters(
   inputSize: Int,
   outputSize: Int,
   private val sparseInput: Boolean = false
-) : LayerParameters(inputSize = inputSize, outputSize = outputSize) {
+) : LayerParameters<SimpleRecurrentLayerParameters>(inputSize = inputSize, outputSize = outputSize) {
 
   /**
    *
@@ -33,15 +33,13 @@ class SimpleRecurrentLayerParameters(
     sparseInput = this.sparseInput)
 
   /**
-   *
+   * The list of all parameters.
    */
-  init {
-    this.paramsList = arrayListOf(
-      this.unit.weights,
-      this.unit.biases,
-      this.unit.recurrentWeights
-    )
-  }
+  override val paramsList = arrayOf(
+    this.unit.weights,
+    this.unit.biases,
+    this.unit.recurrentWeights
+  )
 
   /**
    *
@@ -55,5 +53,20 @@ class SimpleRecurrentLayerParameters(
     this.unit.weights.values.randomize(randomGenerator)
     this.unit.biases.values.assignValues(biasesInitValue)
     this.unit.recurrentWeights.values.randomize(randomGenerator)
+  }
+
+  /**
+   * @return a new [SimpleRecurrentLayerParameters] containing a copy of all parameters of this
+   */
+  override fun copy(): SimpleRecurrentLayerParameters {
+
+    val clonedParams = SimpleRecurrentLayerParameters(
+      inputSize = this.inputSize,
+      outputSize = this.outputSize,
+      sparseInput = this.sparseInput)
+
+    clonedParams.assignValues(this)
+
+    return clonedParams
   }
 }
