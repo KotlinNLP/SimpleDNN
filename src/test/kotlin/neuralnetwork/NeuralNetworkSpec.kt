@@ -52,6 +52,7 @@ class NeuralNetworkSpec: Spek({
 //        print("%d, ".format(b))
 //        if ((i + 1) % 20 == 0) print("\n")
 //      }
+//      print("\n")
 
       it("should write to the output stream") {
         assertTrue { outputStream.size() > 0 }
