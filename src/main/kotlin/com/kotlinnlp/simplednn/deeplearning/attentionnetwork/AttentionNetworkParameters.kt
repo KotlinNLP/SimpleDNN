@@ -7,31 +7,23 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.LayerParametersFactory
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerParameters
-import java.io.Serializable
 
 /**
  * The parameters of the Attention Network.
  */
-data class AttentionNetworkParameters(
+class AttentionNetworkParameters(
   val inputSize: Int,
   val attentionSize: Int,
   val sparseInput: Boolean = false
-) : Serializable {
-
-  companion object {
-
-    /**
-     * Private val used to serialize the class (needed from Serializable)
-     */
-    @Suppress("unused")
-    private const val serialVersionUID: Long = 1L
-  }
+) : IterableParams<AttentionNetworkParameters>() {
 
   /**
    * The size of the output array.
@@ -53,6 +45,14 @@ data class AttentionNetworkParameters(
   val attentionParams = AttentionLayerParameters(attentionSize = this.attentionSize)
 
   /**
+   * The list of all parameters.
+   */
+  override val paramsList: Array<UpdatableArray<*>> = Array(
+    size = this.transformParams.size + this.attentionParams.size,
+    init = { i -> if (i < this.transformParams.size) this.transformParams[i] else this.attentionParams[i] }
+  )
+
+  /**
    * Initialize the parameters of the sub-networks using the given random generator and value for the biases.
    *
    * @param randomGenerator a [RandomGenerator] (default: fixed range with radius 0.08)
@@ -70,9 +70,9 @@ data class AttentionNetworkParameters(
   }
 
   /**
-   * @return a new [AttentionNetworkParameters] containing a copy of all values of this one
+   * @return a new [AttentionNetworkParameters] containing a copy of all values of this
    */
-  fun clone(): AttentionNetworkParameters {
+  override fun copy(): AttentionNetworkParameters {
 
     val clonedParams = AttentionNetworkParameters(
       inputSize = this.inputSize,
