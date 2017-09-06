@@ -46,6 +46,18 @@ class FeedforwardLayerParametersSpec : Spek({
 
         params.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
 
+        it("should have the expected size") {
+            assertEquals(2, params.size)
+        }
+
+        it("should get the expected param at index 0") {
+            assertTrue { w === params[0].values }
+        }
+
+        it("should get the expected param at index 1") {
+            assertTrue { b === params[1].values  }
+        }
+
         it("should contain dense weights") {
             assertTrue { w is DenseNDArray }
         }
