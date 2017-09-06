@@ -2,7 +2,7 @@ package com.kotlinnlp.simplednn.deeplearning.sequenceencoder
 
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -23,7 +23,7 @@ class SequenceFeedforwardEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * Contains the errors accumulated from the [processorsList] during the encoding process.
    */
-  private val errorsAccumulator = NetworkParamsErrorsAccumulator(this.network.network)
+  private val errorsAccumulator = ParamsErrorsAccumulator<NetworkParameters>()
 
   /**
    * The amount of processors used at a given time.
