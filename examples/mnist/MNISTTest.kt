@@ -7,7 +7,7 @@
 
 package mnist
 
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
+import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
@@ -80,7 +80,7 @@ class MNISTTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
 
     println("\n-- TRAINING")
 
-    val optimizer = ParamsOptimizer(
+    val optimizer = NetworkParamsOptimizer(
       neuralNetwork = this.neuralNetwork,
       updateMethod = LearningRateMethod(
         learningRate = 0.01,

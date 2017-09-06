@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.birnn
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
+import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParamsOptimizer
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 
 /**
@@ -21,14 +21,14 @@ import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 class BiRNNOptimizer(network: BiRNN, updateMethod: UpdateMethod) : Optimizer(updateMethod) {
 
   /**
-   * The [ParamsOptimizer] for the left-to-right network.
+   * The [NetworkParamsOptimizer] for the left-to-right network.
    */
-  private val leftToRightOptimizer = ParamsOptimizer(network.leftToRightNetwork, updateMethod)
+  private val leftToRightOptimizer = NetworkParamsOptimizer(network.leftToRightNetwork, updateMethod)
 
   /**
-   * The [ParamsOptimizer] for the right-to-left network.
+   * The [NetworkParamsOptimizer] for the right-to-left network.
    */
-  private val rightToLeftOptimizer = ParamsOptimizer(network.rightToLeftNetwork, updateMethod)
+  private val rightToLeftOptimizer = NetworkParamsOptimizer(network.rightToLeftNetwork, updateMethod)
 
   /**
    * Update the parameters using the accumulated errors and then reset the errors.

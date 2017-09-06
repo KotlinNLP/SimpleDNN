@@ -9,12 +9,12 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softsign
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
+import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParamsOptimizer
 import com.kotlinnlp.simplednn.dataset.Corpus
 import com.kotlinnlp.simplednn.dataset.Shuffler
 import com.kotlinnlp.simplednn.dataset.SimpleExample
@@ -80,9 +80,10 @@ class SparseInputTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArray>>) {
 
     println("\n-- TRAINING")
 
-    val optimizer = ParamsOptimizer(
+    val optimizer = NetworkParamsOptimizer(
       neuralNetwork = this.neuralNetwork,
-      updateMethod = LearningRateMethod(learningRate = 0.01)
+      //      updateMethod = LearningRateMethod(learningRate = 0.01)
+      updateMethod = ADAMMethod(stepSize = 0.001)
     )
 
     val trainingHelper = FeedforwardTrainingHelper<SparseBinaryNDArray>(

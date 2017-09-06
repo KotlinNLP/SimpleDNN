@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.helpers.training
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.functionalities.losses.LossCalculator
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
+import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParamsOptimizer
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.dataset.SimpleExample
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  */
 class FeedforwardTrainingHelper<NDArrayType: NDArray<NDArrayType>>(
   override val neuralProcessor: FeedforwardNeuralProcessor<NDArrayType>,
-  optimizer: ParamsOptimizer,
+  optimizer: NetworkParamsOptimizer,
   lossCalculator: LossCalculator,
   verbose: Boolean = false
 ) : TrainingHelper<SimpleExample<NDArrayType>>(

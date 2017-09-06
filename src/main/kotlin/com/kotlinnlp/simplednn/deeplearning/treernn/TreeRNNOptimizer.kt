@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.deeplearning.treernn
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
+import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParamsOptimizer
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 
 /**
@@ -27,17 +27,17 @@ class TreeRNNOptimizer(
   /**
    * The [Optimizer] used for the left recurrent network.
    */
-  private val leftOptimizer = ParamsOptimizer(network.leftRNN, updateMethod)
+  private val leftOptimizer = NetworkParamsOptimizer(network.leftRNN, updateMethod)
 
   /**
    * The [Optimizer] used for the right recurrent network.
    */
-  private val rightOptimizer = ParamsOptimizer(network.rightRNN, updateMethod)
+  private val rightOptimizer = NetworkParamsOptimizer(network.rightRNN, updateMethod)
 
   /**
    * The [Optimizer] used for the feed-forward concatenation network.
    */
-  private val concatOptimizer = ParamsOptimizer(network.concatNetwork, updateMethod)
+  private val concatOptimizer = NetworkParamsOptimizer(network.concatNetwork, updateMethod)
 
   /**
    *

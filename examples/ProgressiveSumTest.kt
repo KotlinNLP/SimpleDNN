@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
+import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
@@ -94,7 +94,7 @@ class ProgressiveSumTest(val dataset: Corpus<SequenceExample<DenseNDArray>>) {
 
     println("\n-- TRAINING\n")
 
-    val optimizer = ParamsOptimizer(
+    val optimizer = NetworkParamsOptimizer(
       neuralNetwork = this.neuralNetwork,
       updateMethod = LearningRateMethod(learningRate = 0.1))
 

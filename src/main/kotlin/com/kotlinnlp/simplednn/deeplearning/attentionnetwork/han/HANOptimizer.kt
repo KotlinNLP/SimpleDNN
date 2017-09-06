@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
+import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParamsOptimizer
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkOptimizer
@@ -27,7 +27,7 @@ class HANOptimizer(
 ) : Optimizer(updateMethod) {
 
   /**
-   * The [ParamsOptimizer] for the BiRNNs.
+   * The [NetworkParamsOptimizer] for the BiRNNs.
    */
   private val biRNNsOptimizers = Array(
     size = model.hierarchySize,
@@ -35,7 +35,7 @@ class HANOptimizer(
   )
 
   /**
-   * The [ParamsOptimizer] for the AttentionNetworks.
+   * The [NetworkParamsOptimizer] for the AttentionNetworks.
    */
   private val attentionNetworksOptimizers = Array(
     size = model.hierarchySize,
@@ -45,9 +45,9 @@ class HANOptimizer(
   )
 
   /**
-   * The [ParamsOptimizer] for the output Feedforward network.
+   * The [NetworkParamsOptimizer] for the output Feedforward network.
    */
-  private val outputOptimizer = ParamsOptimizer(model.outputNetwork, updateMethod)
+  private val outputOptimizer = NetworkParamsOptimizer(model.outputNetwork, updateMethod)
 
   /**
    * Update the parameters using the accumulated errors and then reset the errors.

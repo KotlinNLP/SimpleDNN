@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGra
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
+import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParamsOptimizer
 import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -30,7 +30,7 @@ class SWSLOptimizer(
   /**
    * The [Optimizer] used to optimize the network
    */
-  private val classifierOptimizer = ParamsOptimizer(this.network.classifier, this.updateMethod)
+  private val classifierOptimizer = NetworkParamsOptimizer(this.network.classifier, this.updateMethod)
 
   /**
    * The [Optimizer] used to optimize the labels embeddings.
