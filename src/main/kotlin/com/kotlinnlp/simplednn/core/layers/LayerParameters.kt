@@ -21,10 +21,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  * @property inputSize input size
  * @property outputSize output size
  */
-abstract class LayerParameters(
+abstract class LayerParameters<ParamsType: LayerParameters<ParamsType>>(
   val inputSize: Int,
   val outputSize: Int
-) : IterableParams<LayerParameters>() {
+) : IterableParams<ParamsType>() {
 
   companion object {
 
@@ -57,7 +57,7 @@ abstract class LayerParameters(
   /**
    *
    */
-  private fun buildDenseArray(dim1: Int, dim2: Int = 1) = UpdatableDenseArray(Shape(dim1, dim2))
+  protected fun buildDenseArray(dim1: Int, dim2: Int = 1) = UpdatableDenseArray(Shape(dim1, dim2))
 
   /**
    *
