@@ -85,7 +85,9 @@ class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Seriali
   fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
                  biasesInitValue: Double = 0.0): NeuralNetwork {
 
-    this.model.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
+    this.model.paramsPerLayer.forEach {
+      it.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
+    }
 
     return this
   }
