@@ -46,7 +46,7 @@ class CFNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  val candidate = AugmentedArray<DenseNDArray>(values = DenseNDArrayFactory.emptyArray(Shape(outputArray.size)))
+  val candidate = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(outputArray.size)))
 
   /**
    *
