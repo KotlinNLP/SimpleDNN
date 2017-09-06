@@ -5,10 +5,11 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package deeplearning.attentionnetwork
+package optimizer
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.TransformParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import deeplearning.attentionnetwork.utils.AttentionLayerUtils
@@ -17,40 +18,28 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertFails
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 /**
  *
  */
-class TransformParamsErrorsAccumulatorSpec : Spek({
+class ParamsErrorsAccumulatorSpec : Spek({
 
-  describe("a TransformParamsErrorsAccumulator") {
+  describe("a ParamsErrorsAccumulator") {
 
     on("initialization") {
 
-      val accumulator = TransformParamsErrorsAccumulator(inputSize = 2, attentionSize = 3, sparseInput = false)
+      val accumulator = ParamsErrorsAccumulator<NetworkParameters>()
 
-      it("should return zeros errors when calling getParamsErrors()") {
-        val errors = accumulator.getParamsErrors()
-
-        assertTrue {
-          errors.all { it as UpdatableDenseArray
-            it.values.equals(it.values.zerosLike(), tolerance = 1.0e-08)
-          }
-        }
+      it("should raise an Exception when calling getParamsErrors() before accumulation") {
+        assertFailsWith<UninitializedPropertyAccessException> { accumulator.getParamsErrors() }
       }
     }
 
     on("accumulation") {
 
-      it("should raise an Exception with params errors not compatible") {
-
-        val accumulator = TransformParamsErrorsAccumulator(inputSize = 2, attentionSize = 3, sparseInput = false)
-
-        assertFails { accumulator.accumulate(paramsErrors = AttentionLayerUtils.buildTransformLayerParams1()) }
-      }
-
-      val accumulator = TransformParamsErrorsAccumulator(inputSize = 4, attentionSize = 2, sparseInput = false)
+      val accumulator = ParamsErrorsAccumulator<FeedforwardLayerParameters>()
       val errors1 = AttentionLayerUtils.buildTransformLayerParams1()
       val errors2 = AttentionLayerUtils.buildTransformLayerParams2()
 
@@ -84,19 +73,14 @@ class TransformParamsErrorsAccumulatorSpec : Spek({
 
       accumulator.reset()
 
-      it("should contain zeros errors after calling reset()") {
-        val resetErrors = accumulator.getParamsErrors()
-        assertTrue {
-          resetErrors.all { it as UpdatableDenseArray
-            it.values.equals(it.values.zerosLike(), tolerance = 1.0e-08)
-          }
-        }
+      it("should raise an error when calling getParamsErrors after a reset()") {
+        assertFails { accumulator.getParamsErrors() }
       }
     }
 
     on("average") {
 
-      val accumulator = TransformParamsErrorsAccumulator(inputSize = 4, attentionSize = 2, sparseInput = false)
+      val accumulator = ParamsErrorsAccumulator<FeedforwardLayerParameters>()
       val errors1 = AttentionLayerUtils.buildTransformLayerParams1()
       val errors2 = AttentionLayerUtils.buildTransformLayerParams2()
 
