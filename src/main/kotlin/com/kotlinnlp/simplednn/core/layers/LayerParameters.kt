@@ -42,6 +42,20 @@ abstract class LayerParameters(
   lateinit protected var paramsList: ArrayList<UpdatableArray<*>>
 
   /**
+   * The amount of parameters into this [LayerParameters].
+   */
+  val size: Int get() = this.paramsList.size
+
+  /**
+   * @param i the index of a parameter
+   *
+   * @return the parameters at the given index
+   */
+  operator fun get(i: Int): UpdatableArray<*> {
+    return this.paramsList[i]
+  }
+
+  /**
    *
    */
   private inner class LayerParametersIterator: Iterator<UpdatableArray<*>> {
