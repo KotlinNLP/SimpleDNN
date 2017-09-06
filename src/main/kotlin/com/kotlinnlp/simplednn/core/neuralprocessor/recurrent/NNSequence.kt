@@ -31,12 +31,12 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
   /**
    * Sequence of RNNStates
    */
-  val states = ArrayList<NNState>()
+  private val states = ArrayList<NNState>()
 
   /**
    *
    */
-  val paramsErrorsAccumulator = NetworkParamsErrorsAccumulator(this.neuralNetwork)
+  private val paramsErrorsAccumulator = NetworkParamsErrorsAccumulator(this.neuralNetwork)
 
   /**
    * The number of states.
