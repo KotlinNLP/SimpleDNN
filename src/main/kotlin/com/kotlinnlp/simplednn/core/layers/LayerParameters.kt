@@ -12,8 +12,8 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.arrays.UpdatableSparseArray
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-import java.io.Serializable
 
 /**
  * The parameters of a layer
@@ -24,8 +24,7 @@ import java.io.Serializable
 abstract class LayerParameters(
   val inputSize: Int,
   val outputSize: Int
-) : Serializable,
-    Iterable<UpdatableArray<*>> {
+) : IterableParams<LayerParameters>() {
 
   companion object {
 
@@ -35,50 +34,6 @@ abstract class LayerParameters(
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
   }
-
-  /**
-   *
-   */
-  lateinit protected var paramsList: ArrayList<UpdatableArray<*>>
-
-  /**
-   * The amount of parameters into this [LayerParameters].
-   */
-  val size: Int get() = this.paramsList.size
-
-  /**
-   * @param i the index of a parameter
-   *
-   * @return the parameter at the given index
-   */
-  operator fun get(i: Int): UpdatableArray<*> {
-    return this.paramsList[i]
-  }
-
-  /**
-   *
-   */
-  private inner class LayerParametersIterator: Iterator<UpdatableArray<*>> {
-    /**
-     *
-     */
-    private var nextParamsIndex: Int = 0
-
-    /**
-     *
-     */
-    override fun hasNext(): Boolean = nextParamsIndex < this@LayerParameters.paramsList.size
-
-    /**
-     *
-     */
-    override fun next(): UpdatableArray<*> = this@LayerParameters.paramsList[nextParamsIndex++]
-  }
-
-  /**
-   *
-   */
-  override fun iterator(): Iterator<UpdatableArray<*>> = this.LayerParametersIterator()
 
   /**
    *
@@ -102,7 +57,7 @@ abstract class LayerParameters(
   /**
    *
    */
-  protected fun buildDenseArray(dim1: Int, dim2: Int = 1) = UpdatableDenseArray(Shape(dim1, dim2))
+  private fun buildDenseArray(dim1: Int, dim2: Int = 1) = UpdatableDenseArray(Shape(dim1, dim2))
 
   /**
    *

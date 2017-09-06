@@ -7,9 +7,11 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
@@ -18,12 +20,17 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *
  * @property attentionSize the size of each array of attention
  */
-class AttentionLayerParameters(val attentionSize: Int) {
+class AttentionLayerParameters(val attentionSize: Int) : IterableParams<AttentionLayerParameters>() {
 
   /**
    * The context vector trainable parameter.
    */
   val contextVector = UpdatableDenseArray(values = DenseNDArrayFactory.zeros(Shape(this.attentionSize)))
+
+  /**
+   * The list of all parameters.
+   */
+  override val paramsList: Array<UpdatableArray<*>> = arrayOf(this.contextVector)
 
   /**
    * Initialize the context vector values randomly.
@@ -32,5 +39,17 @@ class AttentionLayerParameters(val attentionSize: Int) {
    */
   fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true)) {
     this.contextVector.values.randomize(randomGenerator)
+  }
+
+  /**
+   * @return a new [AttentionLayerParameters] containing a copy of all values of this
+   */
+  override fun copy(): AttentionLayerParameters {
+
+    val clonedParams = AttentionLayerParameters(this.attentionSize)
+
+    clonedParams.contextVector.values.assignValues(this.contextVector.values)
+
+    return clonedParams
   }
 }

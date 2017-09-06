@@ -9,9 +9,7 @@ package com.kotlinnlp.simplednn.core.neuralnetwork
 
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
-import java.io.Serializable
+import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 
 /**
  * [NetworkParameters] contains all the parameters of the layers defined in [layersConfiguration],
@@ -20,53 +18,10 @@ import java.io.Serializable
  * @property layersConfiguration a list of configurations, one per layer
  * @property sparseInput whether the input is sparse or not
  */
-class NetworkParameters(val layersConfiguration: List<LayerConfiguration>, private val sparseInput: Boolean = false) :
-  Serializable,
-  Iterable<UpdatableArray<*>> {
-
-  companion object {
-
-    /**
-     * Private val used to serialize the class (needed from Serializable)
-     */
-    @Suppress("unused")
-    private const val serialVersionUID: Long = 1L
-  }
-
-  /**
-   * The iterator inner class which iterates over all the parameters of all the layers
-   */
-  private inner class LayerParametersIterator: Iterator<UpdatableArray<*>> {
-    /**
-     *
-     */
-    private var curLayerIndex: Int = 0
-
-    /**
-     *
-     */
-    private var layerParamsIterator: Iterator<UpdatableArray<*>> =
-      this@NetworkParameters.paramsPerLayer.first().iterator()
-
-    /**
-     *
-     */
-    override fun hasNext(): Boolean {
-      return this.curLayerIndex < this@NetworkParameters.paramsPerLayer.lastIndex || this.layerParamsIterator.hasNext()
-    }
-
-    /**
-     *
-     */
-    override fun next(): UpdatableArray<*> {
-
-      if (!this.layerParamsIterator.hasNext()) {
-        this.layerParamsIterator = this@NetworkParameters.paramsPerLayer[++this.curLayerIndex].iterator()
-      }
-
-      return this.layerParamsIterator.next()
-    }
-  }
+class NetworkParameters(
+  val layersConfiguration: List<LayerConfiguration>,
+  private val sparseInput: Boolean = false
+) : IterableParams<NetworkParameters>() {
 
   /**
    * An [Array] containing a [LayerParameters] for each layer.
@@ -84,76 +39,14 @@ class NetworkParameters(val layersConfiguration: List<LayerConfiguration>, priva
   })
 
   /**
-   * The iterator to use to iterate over all the parameters of all the layers
-   *
-   * @return the iterator of all the parameters
+   * The list of all parameters.
    */
-  override fun iterator(): Iterator<UpdatableArray<*>> = this.LayerParametersIterator()
+  override val paramsList: Array<UpdatableArray<*>> = this.buildParamsList()
 
   /**
-   * Assign the values of each parameter of [assigningParameters] to the parameters of this [NetworkParameters].
-   *
-   * @param assigningParameters the [NetworkParameters] to assign to this
+   * @return a new [NetworkParameters] containing a copy of all parameters of this
    */
-  fun assignValues(assigningParameters: NetworkParameters) {
-    this.zip(assigningParameters).forEach {
-      it.first.values.assignValues(it.second.values)
-    }
-  }
-
-  /**
-   * Sum the values each parameter of [addingParameters] to the parameters of this [NetworkParameters].
-   *
-   * @param addingParameters the [NetworkParameters] to add to this
-   */
-  fun assignSum(addingParameters: NetworkParameters) {
-    this.zip(addingParameters).forEach {
-      val first = it.first.values
-      val second = it.second.values
-
-      if (first is SparseNDArray && second is SparseNDArray) {
-        first.assignSumMerging(second)
-      } else {
-        first.assignSum(second)
-      }
-    }
-  }
-
-  /**
-   * Divide the values of each parameter by [n].
-   *
-   * @param n an integer number
-   */
-  fun assignDiv(n: Int) {
-    if (n > 1) {
-      val nDouble = n.toDouble()
-      this.forEach { it.values.assignDiv(nDouble) }
-    }
-  }
-
-  /**
-   * Assign 0.0 to all parameters
-   */
-  fun reset() {
-    this.forEach { it.values.assignValues(0.0) }
-  }
-
-  /**
-   * Initialize the parameters using the given random generator and value for the biases.
-   *
-   * @param randomGenerator a [RandomGenerator]
-   * @param biasesInitValue the init value for all the biases
-   */
-  fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double) {
-    this.paramsPerLayer.forEach {
-      it.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
-    }
-  }
-
-  /**
-   * @return a new [NetworkParameters] containing a copy of all values of this one
-   */
-  fun clone(): NetworkParameters {
+  override fun copy(): NetworkParameters {
 
     val clonedParams = NetworkParameters(layersConfiguration = this.layersConfiguration, sparseInput = this.sparseInput)
 
@@ -162,5 +55,26 @@ class NetworkParameters(val layersConfiguration: List<LayerConfiguration>, priva
     }
 
     return clonedParams
+  }
+
+  /**
+   * @return the list with parameters of all layers
+   */
+  private fun buildParamsList(): Array<UpdatableArray<*>> {
+
+    var layerIndex = 0
+    var paramIndex = 0
+
+    return Array(
+      size = paramsPerLayer.sumBy { it.size },
+      init = {
+
+        if (paramIndex == this.paramsPerLayer[layerIndex].size) {
+          layerIndex++
+          paramIndex = 0
+        }
+
+        this.paramsPerLayer[layerIndex][paramIndex++] }
+    )
   }
 }
