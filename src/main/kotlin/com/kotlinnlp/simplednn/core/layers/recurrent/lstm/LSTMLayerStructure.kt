@@ -66,7 +66,7 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  val cell = AugmentedArray<DenseNDArray>(values = DenseNDArrayFactory.emptyArray(Shape(outputArray.size)))
+  val cell = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(outputArray.size)))
 
   /**
    * The helper which executes the forward
