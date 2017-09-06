@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
  *
  * @param neuralNetwork
  */
-class ParamsErrorsAccumulator(val neuralNetwork: NeuralNetwork) {
+class NetworkParamsErrorsAccumulator(val neuralNetwork: NeuralNetwork) {
 
   /**
    * A counter of times when errors were accumulated.

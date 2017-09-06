@@ -25,7 +25,7 @@ class ParamsOptimizer(val neuralNetwork: NeuralNetwork, updateMethod: UpdateMeth
   /**
    * The accumulator of errors of the network parameters.
    */
-  private val paramsErrorsAccumulator: ParamsErrorsAccumulator = ParamsErrorsAccumulator(this.neuralNetwork)
+  private val paramsErrorsAccumulator = NetworkParamsErrorsAccumulator(this.neuralNetwork)
 
   /**
    * Calculate the errors average, update the params.
