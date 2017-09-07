@@ -125,6 +125,15 @@ data class HAN(
   )
 
   /**
+   * All the parameters of this [HAN] model.
+   */
+  val params = HANParameters(
+    biRNNs = Array(size = this.biRNNs.size, init = { i -> this.biRNNs[i].model }),
+    attentionNetworks = Array(size = this.attentionNetworksParams.size, init = { i -> this.attentionNetworksParams[i]}),
+    outputNetwork = this.outputNetwork.model
+  )
+
+  /**
    * Initialize the parameters of the sub-networks using the given random generator and value for the biases.
    *
    * @param randomGenerator a [RandomGenerator] (default: fixed range with radius 0.08)
