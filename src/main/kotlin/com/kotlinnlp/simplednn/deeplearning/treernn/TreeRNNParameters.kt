@@ -33,19 +33,11 @@ class TreeRNNParameters(
   /**
    * @return a new [TreeRNNParameters] containing a copy of all parameters of this
    */
-  override fun copy(): TreeRNNParameters {
-
-    val clonedParams = TreeRNNParameters(
-      leftRNN = this.leftRNN,
-      rightRNN = this.rightRNN,
-      concatNetwork = this.concatNetwork)
-
-    clonedParams.zip(this) { cloned, params ->
-      cloned.values.assignValues(params.values)
-    }
-
-    return clonedParams
-  }
+  override fun copy() = TreeRNNParameters(
+    leftRNN = this.leftRNN.copy(),
+    rightRNN = this.rightRNN.copy(),
+    concatNetwork= this.concatNetwork.copy()
+  )
 
   /**
    * @return the list with parameters of all layers
