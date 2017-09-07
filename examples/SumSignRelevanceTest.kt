@@ -6,7 +6,7 @@
  * ------------------------------------------------------------------*/
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParamsOptimizer
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -117,8 +117,8 @@ class SumSignRelevanceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<De
 
     println("\n-- TRAINING\n")
 
-    val optimizer = NetworkParamsOptimizer(
-      neuralNetwork = this.neuralNetwork,
+    val optimizer = ParamsOptimizer(
+      params = this.neuralNetwork.model,
       updateMethod = LearningRateMethod(learningRate = 0.01))
 
     val trainingHelper = SequenceWithFinalOutputTrainingHelper<DenseNDArray>(

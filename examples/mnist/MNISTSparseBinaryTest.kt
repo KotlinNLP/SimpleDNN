@@ -7,7 +7,7 @@
 
 package mnist
 
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParamsOptimizer
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
@@ -87,8 +87,8 @@ class MNISTSparseBinaryTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArra
 
     println("\n-- TRAINING\n")
 
-    val optimizer = NetworkParamsOptimizer(
-      neuralNetwork = this.neuralNetwork,
+    val optimizer = ParamsOptimizer(
+      params = this.neuralNetwork.model,
       updateMethod = LearningRateMethod(
         learningRate = 0.01,
         decayMethod = HyperbolicDecay(decay = 0.5, initLearningRate = 0.01)))

@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeura
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessorsPool
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.simplemath.concatVectorsV
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -413,7 +414,7 @@ class TreeEncoder(val network: TreeRNN) {
    *
    * @param optimizer the optimizer in which to accumulate the errors of the parameters of the [TreeRNN]
    */
-  fun propagateErrors(optimizer: TreeRNNOptimizer) {
+  fun propagateErrors(optimizer: ParamsOptimizer<TreeRNNParameters>) {
 
     this.nodes.values.filter({ it.isRoot }).forEach { this.launchErrorsPropagation(it) }
     this.accumulateParamsErrors(optimizer)
@@ -454,7 +455,7 @@ class TreeEncoder(val network: TreeRNN) {
    *
    * @param optimizer the optimizer in which to accumulate the errors
    */
-  private fun accumulateParamsErrors(optimizer: TreeRNNOptimizer) {
+  private fun accumulateParamsErrors(optimizer: ParamsOptimizer<TreeRNNParameters>) {
 
     optimizer.newBatch()
 

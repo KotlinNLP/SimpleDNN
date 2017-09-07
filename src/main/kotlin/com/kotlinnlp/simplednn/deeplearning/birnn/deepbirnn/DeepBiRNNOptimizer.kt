@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.birnn.deepbirnn
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNOptimizer
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 
 /**
  * The optimizer of the DeepBiRNN which in turn contains BiRNN sub-networks (or layers)
@@ -27,7 +27,7 @@ class DeepBiRNNOptimizer(
    * Array of optimizers for all the stacked BiRNN layers.
    */
   private val optimizers = Array(size = network.numberOfLayers, init = {
-    BiRNNOptimizer(network = network.layers[it], updateMethod = this.updateMethod)
+    ParamsOptimizer(params = network.layers[it].model, updateMethod = this.updateMethod)
   })
 
   /**

@@ -10,9 +10,10 @@ import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HAN
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HANEncoder
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HANOptimizer
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HANParameters
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.toHierarchySequence
 import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsContainer
 import com.kotlinnlp.simplednn.helpers.training.utils.ExamplesIndices
@@ -105,7 +106,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
    */
   private fun train() {
 
-    val optimizer = HANOptimizer(model = this.classifier.model, updateMethod = ADAMMethod(stepSize = 0.005))
+    val optimizer = ParamsOptimizer(params = this.classifier.model.params, updateMethod = ADAMMethod(stepSize = 0.005))
     val shuffler = Shuffler(enablePseudoRandom = true, seed = 743)
     val trainingSize = Math.round(this.dataset.training.size * this.TRAINING_SET_PARTITION).toInt()
     val trainingSet = ArrayList(this.dataset.training.subList(0, trainingSize))
@@ -131,7 +132,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
    * @param trainingSet the training set
    * @param shuffler the [Shuffler] to shuffle examples before training
    */
-  private fun trainEpoch(optimizer: HANOptimizer,
+  private fun trainEpoch(optimizer: ParamsOptimizer<HANParameters>,
                          trainingSet: ArrayList<SimpleExample<DenseNDArray>>,
                          shuffler: Shuffler) {
 
@@ -163,7 +164,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
    */
   private fun validate(validationSet: ArrayList<SimpleExample<DenseNDArray>>) {
 
-    var correctPredictions: Int = 0
+    var correctPredictions = 0
 
     val progress = ProgressIndicatorBar(validationSet.size)
     val exampleIndices = ExamplesIndices(

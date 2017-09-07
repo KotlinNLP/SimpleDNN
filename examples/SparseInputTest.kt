@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParamsOptimizer
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.dataset.Corpus
 import com.kotlinnlp.simplednn.dataset.Shuffler
 import com.kotlinnlp.simplednn.dataset.SimpleExample
@@ -80,8 +80,8 @@ class SparseInputTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArray>>) {
 
     println("\n-- TRAINING")
 
-    val optimizer = NetworkParamsOptimizer(
-      neuralNetwork = this.neuralNetwork,
+    val optimizer = ParamsOptimizer(
+      params = this.neuralNetwork.model,
       updateMethod = LearningRateMethod(learningRate = 0.01)
     )
 

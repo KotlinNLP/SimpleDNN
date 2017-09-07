@@ -10,8 +10,8 @@ package deeplearning.treernn
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.deeplearning.treernn.TreeEncoder
-import com.kotlinnlp.simplednn.deeplearning.treernn.TreeRNNOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -253,7 +253,7 @@ class TreeEncoderSpec : Spek({
 
       encodingErrors.forEach { nodeId, errors -> treeEncoder.addEncodingErrors(nodeId = nodeId, errors = errors) }
 
-      val optimizer = TreeRNNOptimizer(treeRNN)
+      val optimizer = ParamsOptimizer(params = treeRNN.model, updateMethod = LearningRateMethod(learningRate = 0.01))
       treeEncoder.propagateErrors(optimizer)
 
       it("should match the expected vector errors of the node 1") {
@@ -334,7 +334,7 @@ class TreeEncoderSpec : Spek({
       val nodes: Map<Int, DenseNDArray> = TreeRNNUtils.buildNodes()
       val encodingErrors: Map<Int, DenseNDArray> = TreeRNNUtils.getEncodingErrors()
 
-      val optimizer = TreeRNNOptimizer(network = treeRNN, updateMethod = LearningRateMethod(learningRate = 0.1))
+      val optimizer = ParamsOptimizer(params = treeRNN.model, updateMethod = LearningRateMethod(learningRate = 0.1))
 
       nodes.forEach { nodeId, vector -> treeEncoder.addNode(id = nodeId, vector = vector) }
 

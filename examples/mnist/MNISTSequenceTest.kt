@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.GRUNeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParamsOptimizer
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
@@ -80,7 +80,7 @@ class MNISTSequenceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<Dense
 
     println("\n-- TRAINING")
 
-    val optimizer = NetworkParamsOptimizer(this.neuralNetwork, ADAMMethod(stepSize = 0.001))
+    val optimizer = ParamsOptimizer(params = this.neuralNetwork.model, updateMethod = ADAMMethod(stepSize = 0.001))
 
     val neuralProcessor = RecurrentNeuralProcessor<DenseNDArray>(this.neuralNetwork)
 

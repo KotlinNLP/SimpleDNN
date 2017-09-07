@@ -8,8 +8,9 @@
 package com.kotlinnlp.simplednn.helpers.training
 
 import com.kotlinnlp.simplednn.core.functionalities.losses.LossCalculator
+import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParamsOptimizer
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.helpers.training.utils.TrainingStatistics
 import com.kotlinnlp.simplednn.helpers.validation.ValidationHelper
 import com.kotlinnlp.simplednn.dataset.Example
@@ -22,7 +23,7 @@ import com.kotlinnlp.simplednn.utils.progressindicator.ProgressIndicatorBar
  */
 abstract class TrainingHelper<ExampleType: Example>(
   open val neuralProcessor: NeuralProcessor,
-  val optimizer: NetworkParamsOptimizer,
+  val optimizer: ParamsOptimizer<NetworkParameters>,
   val lossCalculator: LossCalculator,
   val verbose: Boolean = false) {
 
