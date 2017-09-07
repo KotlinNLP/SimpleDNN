@@ -46,6 +46,7 @@ class AttentionNetworkOptimizer(
    * @param paramsErrors the network parameters errors to accumulate
    */
   fun accumulate(paramsErrors: AttentionNetworkParameters) {
+    this.checkParamsCompatibility(paramsErrors)
     this.paramsErrorsAccumulator.accumulate(paramsErrors)
   }
 
@@ -69,6 +70,19 @@ class AttentionNetworkOptimizer(
         is SparseNDArray -> this.updateMethod.update(array = params as UpdatableDenseArray, errors = e)
         else -> throw RuntimeException("Invalid errors type")
       }
+    }
+  }
+
+  /**
+   * Check the compatibility of shape between parameters and their errors.
+   *
+   * @param paramsErrors the network parameters errors to accumulate
+   *
+   * @throws [IllegalArgumentException] if at least one parameter into [paramsErrors] is incompatible
+   */
+  private fun checkParamsCompatibility(paramsErrors: AttentionNetworkParameters) {
+    require(this.model.zip(paramsErrors).all{ (params, errors) -> params.values.shape == errors.values.shape }) {
+      "paramsErrors contains arrays with not compatible shape"
     }
   }
 }
