@@ -10,36 +10,51 @@ package com.kotlinnlp.simplednn.core.functionalities.updatemethods
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
+import kotlin.reflect.KClass
 
 /**
  * UpdateMethod implements different gradient-based optimization algorithm (e.g. LearningRate, Adagrad, ADAM).
  *
  * @property regularization
  */
-abstract class UpdateMethod(val regularization: WeightsRegularization?) {
+abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(val regularization: WeightsRegularization?) {
+
+  /**
+   * The Kotlin Class of the support structure of this updater.
+   */
+  abstract protected val structureClass: KClass<SupportStructureType>
+
+  /**
+   * @param array the array to update
+   *
+   * @return a new [UpdaterSupportStructure] to associate to the [array]
+   */
+  private fun structureFactory(array: UpdatableDenseArray): SupportStructureType
+    = this.structureClass.constructors.first().call(array.values.shape)
 
   /**
    *
    * @param array parameter
    * @return the update neuralnetwork for the parameter
    */
-  fun getSupportStructure(array: UpdatableDenseArray): UpdaterSupportStructure {
+  fun getSupportStructure(array: UpdatableDenseArray): SupportStructureType {
 
-    if (array.updaterSupportStructure == null) {
-      array.updaterSupportStructure = this.supportStructureFactory(array.values.shape)
+    try {
+      array.updaterSupportStructure
+    } catch (e: UninitializedPropertyAccessException) {
+      array.updaterSupportStructure = this.structureFactory(array)
     }
 
-    require(isSupportStructureCompatible(array.updaterSupportStructure!!)){
-      "Incompatible updaterSupportStructure"
-    }
+    require(this.structureClass.isInstance(array.updaterSupportStructure)) { "Incompatible updaterSupportStructure" }
 
-    return array.updaterSupportStructure!!
+    @Suppress("UNCHECKED_CAST")
+    return array.updaterSupportStructure as SupportStructureType
   }
 
   /**
+   * Update the given [array] with the given [errors].
    *
    * @param array the inputArray to update
    * @param errors errors to subtract to the inputArray, after being optimized
@@ -61,7 +76,7 @@ abstract class UpdateMethod(val regularization: WeightsRegularization?) {
    *
    * @return optimized errors
    */
-  protected fun <NDArrayType: NDArray<NDArrayType>> optimizeErrors(
+  private fun <NDArrayType: NDArray<NDArrayType>> optimizeErrors(
     errors: NDArrayType,
     array: UpdatableDenseArray
   ): NDArrayType = when (errors) {
@@ -98,18 +113,4 @@ abstract class UpdateMethod(val regularization: WeightsRegularization?) {
    * @return optimized dense errors
    */
   abstract protected fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray
-
-  /**
-   *
-   * @param shape shape
-   * @return a new support structure to update an array
-   */
-  abstract protected fun supportStructureFactory(shape: Shape): UpdaterSupportStructure
-
-  /**
-   *
-   * @param supportStructure supportStructure
-   * @return Boolean
-   */
-  abstract protected fun isSupportStructureCompatible(supportStructure: UpdaterSupportStructure): Boolean
 }
