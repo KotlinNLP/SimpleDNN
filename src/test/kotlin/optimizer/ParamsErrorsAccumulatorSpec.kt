@@ -33,7 +33,7 @@ class ParamsErrorsAccumulatorSpec : Spek({
       val accumulator = ParamsErrorsAccumulator<NetworkParameters>()
 
       it("should raise an Exception when calling getParamsErrors() before accumulation") {
-        assertFailsWith<UninitializedPropertyAccessException> { accumulator.getParamsErrors() }
+        assertFailsWith<IllegalArgumentException> { accumulator.getParamsErrors() }
       }
     }
 
