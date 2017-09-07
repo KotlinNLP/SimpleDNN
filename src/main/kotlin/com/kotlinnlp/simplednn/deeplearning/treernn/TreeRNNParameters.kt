@@ -7,7 +7,9 @@
 
 package com.kotlinnlp.simplednn.deeplearning.treernn
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 
 /**
  * The TreeRNNParameters contains the parameter of its sub-networks
@@ -17,7 +19,54 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
  * @property rightRNN network parameters of the right recurrent neural network
  * @property concatNetwork network parameters of the final feed-forward network
  */
-data class TreeRNNParameters(
+class TreeRNNParameters(
   val leftRNN: NetworkParameters,
   val rightRNN: NetworkParameters,
-  val concatNetwork: NetworkParameters)
+  val concatNetwork: NetworkParameters
+) : IterableParams<TreeRNNParameters>() {
+
+  /**
+   * The list of all parameters.
+   */
+  override val paramsList: Array<UpdatableArray<*>> = this.buildParamsList()
+
+  /**
+   * @return a new [TreeRNNParameters] containing a copy of all parameters of this
+   */
+  override fun copy(): TreeRNNParameters {
+
+    val clonedParams = TreeRNNParameters(
+      leftRNN = this.leftRNN,
+      rightRNN = this.rightRNN,
+      concatNetwork = this.concatNetwork)
+
+    clonedParams.zip(this) { cloned, params ->
+      cloned.values.assignValues(params.values)
+    }
+
+    return clonedParams
+  }
+
+  /**
+   * @return the list with parameters of all layers
+   */
+  private fun buildParamsList(): Array<UpdatableArray<*>> {
+
+    val leftParamsSize = this.leftRNN.size
+    val rightParamsSize = this.rightRNN.size
+    val concatParamsSize = this.concatNetwork.size
+    val rnnsSize = leftParamsSize + rightParamsSize
+
+    return Array(
+      size = leftParamsSize + rightParamsSize + concatParamsSize,
+      init = { i ->
+
+        when {
+          i < leftParamsSize -> this.leftRNN[i]
+          i < rnnsSize -> this.rightRNN[i - leftParamsSize]
+          else -> this.concatNetwork[i - rnnsSize]
+        }
+      }
+    )
+  }
+}
