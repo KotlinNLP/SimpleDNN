@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.mergelayers
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 
@@ -24,7 +25,7 @@ class ParamsOptimizer(val layer: MergeLayer<*>, updateMethod: UpdateMethod) : Op
   /**
    * The accumulator of errors of the merge layer parameters.
    */
-  private val paramsErrorsAccumulator: ParamsErrorsAccumulator = ParamsErrorsAccumulator(this.layer)
+  private val paramsErrorsAccumulator = ParamsErrorsAccumulator<MergeLayerParameters>()
 
   /**
    * Calculate the errors average, update the params.
@@ -41,7 +42,7 @@ class ParamsOptimizer(val layer: MergeLayer<*>, updateMethod: UpdateMethod) : Op
    *
    * @param paramsErrors the merge layer parameters errors to accumulate
    */
-  fun accumulate(paramsErrors: MergeLayerParameters<*>) {
+  fun accumulate(paramsErrors: MergeLayerParameters) {
     this.paramsErrorsAccumulator.accumulate(paramsErrors)
   }
 
