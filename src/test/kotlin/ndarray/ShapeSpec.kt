@@ -14,6 +14,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 /**
  *
@@ -26,6 +27,25 @@ class ShapeSpec : Spek({
 
       val shape = Shape(1, 1)
       val inverted = shape.inverse
+
+      on("equals") {
+
+        it("should return true if called passing a Shape with same dimensions") {
+          assertEquals(Shape(1, 1), shape)
+        }
+
+        it("should return true if called passing a Shape with inverted dimensions") {
+          assertEquals(inverted, shape)
+        }
+
+        it("should return true if called passing its inverse") {
+          assertEquals(inverted, shape)
+        }
+
+        it("should return false if called passing a Shape with different dimensions") {
+          assertNotEquals(Shape(5), shape)
+        }
+      }
 
       on("inverted") {
 
@@ -44,6 +64,25 @@ class ShapeSpec : Spek({
       val shape = Shape(4)
       val inverted = shape.inverse
 
+      on("equals") {
+
+        it("should return true if called passing a Shape with same dimensions") {
+          assertEquals(Shape(4), shape)
+        }
+
+        it("should return false if called passing a Shape with inverted dimensions") {
+          assertNotEquals(Shape(1, 4), shape)
+        }
+
+        it("should return false if called passing its inverse") {
+          assertNotEquals(inverted, shape)
+        }
+
+        it("should return false if called passing a Shape with different dimensions") {
+          assertNotEquals(Shape(6), shape)
+        }
+      }
+
       on("inverted") {
 
         it("should return a horizontal shape") {
@@ -61,6 +100,25 @@ class ShapeSpec : Spek({
       val shape = Shape(1, 4)
       val inverted = shape.inverse
 
+      on("equals") {
+
+        it("should return true if called passing a Shape with same dimensions") {
+          assertEquals(Shape(1, 4), shape)
+        }
+
+        it("should return false if called passing a Shape with inverted dimensions") {
+          assertNotEquals(Shape(4), shape)
+        }
+
+        it("should return false if called passing its inverse") {
+          assertNotEquals(inverted, shape)
+        }
+
+        it("should return false if called passing a Shape with different dimensions") {
+          assertNotEquals(Shape(6), shape)
+        }
+      }
+
       on("inverted") {
 
         it("should return a vertical shape") {
@@ -77,6 +135,25 @@ class ShapeSpec : Spek({
 
       val shape = Shape(3, 4)
       val inverted = shape.inverse
+
+      on("equals") {
+
+        it("should return true if called passing a Shape with same dimensions") {
+          assertEquals(Shape(3, 4), shape)
+        }
+
+        it("should return false if called passing a Shape with inverted dimensions") {
+          assertNotEquals(Shape(4, 3), shape)
+        }
+
+        it("should return false if called passing its inverse") {
+          assertNotEquals(inverted, shape)
+        }
+
+        it("should return false if called passing a Shape with different dimensions") {
+          assertNotEquals(Shape(4, 6), shape)
+        }
+      }
 
       on("inverted") {
 
