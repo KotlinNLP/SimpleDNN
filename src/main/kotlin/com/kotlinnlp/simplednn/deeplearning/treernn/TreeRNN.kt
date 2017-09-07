@@ -42,43 +42,51 @@ class TreeRNN(
   /**
    * The Recurrent Neural Network to encode the left-children sequence
    */
-  val leftRNN: NeuralNetwork
+  val leftRNN = NeuralNetwork(
+    LayerConfiguration(size = this.inputLayerSize),
+    LayerConfiguration(size = this.hiddenLayerSize,
+      activationFunction = Tanh(), // fixed
+      connectionType = this.hiddenLayerConnectionType)
+  )
 
   /**
    * The Recurrent Neural Network to encode the right-children sequence
    */
-  val rightRNN: NeuralNetwork
+  val rightRNN = NeuralNetwork(
+    LayerConfiguration(size = this.inputLayerSize),
+    LayerConfiguration(size = this.hiddenLayerSize,
+      activationFunction = Tanh(), // fixed
+      connectionType = this.hiddenLayerConnectionType)
+  )
 
   /**
    *  The output of the [leftRNN] and the [rightRNN] are concatenated, resulting in a 2d-dimensional vector,
    *  then the [concatNetwork] is used to reduced the output back to d-dimensions using a linear transformation
    *  followed by the non-linear activation function.
    */
-  val concatNetwork: NeuralNetwork
+  val concatNetwork = NeuralNetwork(
+    LayerConfiguration(size = this.hiddenLayerSize * 2),
+    LayerConfiguration(size = this.outputLayerSize,
+      activationFunction = Tanh(), // fixed
+      connectionType = LayerType.Connection.Feedforward)
+  )
 
+  /**
+   * The model of this [TreeRNN] containing its parameters.
+   */
+  val model = TreeRNNParameters(
+    leftRNN = this.leftRNN.model,
+    rightRNN = this.rightRNN.model,
+    concatNetwork = this.concatNetwork.model
+  )
+
+  /**
+   * Check hidden layer connection type.
+   */
   init {
-
     require(hiddenLayerConnectionType.property == LayerType.Property.Recurrent) {
       "required hiddenLayerConnectionType with Recurrent property"
     }
-
-    this.leftRNN = NeuralNetwork(
-      LayerConfiguration(size = this.inputLayerSize),
-      LayerConfiguration(size = this.hiddenLayerSize,
-        activationFunction = Tanh(), // fixed
-        connectionType = this.hiddenLayerConnectionType))
-
-    this.rightRNN = NeuralNetwork(
-      LayerConfiguration(size = this.inputLayerSize),
-      LayerConfiguration(size = this.hiddenLayerSize,
-        activationFunction = Tanh(), // fixed
-        connectionType = this.hiddenLayerConnectionType))
-
-    this.concatNetwork = NeuralNetwork(
-      LayerConfiguration(size = this.hiddenLayerSize * 2),
-      LayerConfiguration(size = this.outputLayerSize,
-        activationFunction = Tanh(), // fixed
-        connectionType = LayerType.Connection.Feedforward))
   }
 
   /**
