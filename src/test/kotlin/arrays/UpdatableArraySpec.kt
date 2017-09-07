@@ -18,7 +18,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 /**
@@ -42,8 +42,8 @@ class UpdatableArraySpec : Spek({
           assertEquals(7, updatableArray.values.columns)
         }
 
-        it("should contain a null support structure") {
-          assertNull(updatableArray.updaterSupportStructure)
+        it("should raise an Exception when trying to access its structure without setting it") {
+          assertFailsWith<UninitializedPropertyAccessException> { updatableArray.updaterSupportStructure }
         }
       }
     }
@@ -75,8 +75,8 @@ class UpdatableArraySpec : Spek({
           }
         }
 
-        it("should contain a null support structure") {
-          assertNull(updatableArray.updaterSupportStructure)
+        it("should raise an Exception when trying to access its structure without setting it") {
+          assertFailsWith<UninitializedPropertyAccessException> { updatableArray.updaterSupportStructure }
         }
       }
     }
@@ -102,8 +102,8 @@ class UpdatableArraySpec : Spek({
           assertEquals(0, updatableArray.values.values.size)
         }
 
-        it("should contain a null support structure") {
-          assertNull(updatableArray.updaterSupportStructure)
+        it("should raise an Exception when trying to access its structure without setting it") {
+          assertFailsWith<UninitializedPropertyAccessException> { updatableArray.updaterSupportStructure }
         }
       }
     }
