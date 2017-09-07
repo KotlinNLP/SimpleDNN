@@ -40,7 +40,7 @@ abstract class IterableParams<SelfType: IterableParams<SelfType>>
      * The hasNext() method of the Iterator.
      */
     override fun hasNext(): Boolean {
-      return this.nextParamIndex < this@IterableParams.paramsList.lastIndex
+      return this.nextParamIndex < this@IterableParams.paramsList.size
     }
 
     /**
