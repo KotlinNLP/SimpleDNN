@@ -10,7 +10,6 @@ package updatemethods
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.eq
@@ -31,16 +30,6 @@ class LearningRateSpec: Spek({
   describe("the Learning Rate update method") {
 
     context("update with dense errors") {
-
-      on("get support structure") {
-
-        val updateHelper = LearningRateMethod(learningRate = 0.001)
-        val updatableArray = Utils.buildUpdateableArray()
-
-        it("should return a support structure of the expected type") {
-          assertEquals(true, updateHelper.getSupportStructure(updatableArray) is LearningRateStructure)
-        }
-      }
 
       on("update") {
 

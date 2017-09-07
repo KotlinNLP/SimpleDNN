@@ -9,7 +9,6 @@ package updatemethods
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMStructure
 import com.kotlinnlp.simplednn.simplemath.equals
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -28,21 +27,11 @@ class ADAMSpec : Spek({
 
     context("update with dense errors") {
 
-      on("get support structure") {
-
-        val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
-        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-
-        it("should return a support structure of the expected type") {
-          assertEquals(true, updateHelper.getSupportStructure(updatableArray) is ADAMStructure)
-        }
-      }
-
       on("update") {
 
         val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
         val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-        val supportStructure = updateHelper.getSupportStructure(updatableArray) as ADAMStructure
+        val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.firstOrderMoments.assignValues(Utils.supportArray1())
         supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
@@ -63,7 +52,7 @@ class ADAMSpec : Spek({
 
         val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
         val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-        val supportStructure = updateHelper.getSupportStructure(updatableArray) as ADAMStructure
+        val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.firstOrderMoments.assignValues(Utils.supportArray1())
         supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())

@@ -9,7 +9,6 @@ package updatemethods
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGradMethod
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGradStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
@@ -27,21 +26,11 @@ class AdaGradSpec: Spek({
 
     context("update with dense errors") {
 
-      on("get support structure") {
-
-        val updateHelper = AdaGradMethod(learningRate = 0.001, epsilon = 1.0e-8)
-        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-
-        it("should return a support structure of the expected type") {
-          assertEquals(true, updateHelper.getSupportStructure(updatableArray) is AdaGradStructure)
-        }
-      }
-
       on("update") {
 
         val updateHelper = AdaGradMethod(learningRate = 0.001, epsilon = 1.0e-8)
         val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-        val supportStructure = updateHelper.getSupportStructure(updatableArray) as AdaGradStructure
+        val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
 
@@ -61,7 +50,7 @@ class AdaGradSpec: Spek({
 
         val updateHelper = AdaGradMethod(learningRate = 0.001, epsilon = 1.0e-8)
         val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-        val supportStructure = updateHelper.getSupportStructure(updatableArray) as AdaGradStructure
+        val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
 

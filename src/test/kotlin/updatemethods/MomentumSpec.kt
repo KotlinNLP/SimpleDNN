@@ -10,7 +10,6 @@ package updatemethods
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum.MomentumMethod
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum.MomentumStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.eq
@@ -32,21 +31,11 @@ class MomentumSpec: Spek({
 
     context("update with dense errors") {
 
-      on("get support structure") {
-
-        val updateHelper = MomentumMethod(learningRate = 0.001, momentum = 0.9)
-        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-
-        it("should return a support structure of the expected type") {
-          assertEquals(true, updateHelper.getSupportStructure(updatableArray) is MomentumStructure)
-        }
-      }
-
       on("update") {
 
         val updateHelper = MomentumMethod(learningRate = 0.001, momentum = 0.9)
         val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-        val supportStructure = updateHelper.getSupportStructure(updatableArray) as MomentumStructure
+        val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.v.assignValues(Utils.supportArray1())
 
@@ -66,7 +55,7 @@ class MomentumSpec: Spek({
 
         val updateHelper = MomentumMethod(learningRate = 0.001, momentum = 0.9)
         val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-        val supportStructure = updateHelper.getSupportStructure(updatableArray) as MomentumStructure
+        val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.v.assignValues(Utils.supportArray1())
 

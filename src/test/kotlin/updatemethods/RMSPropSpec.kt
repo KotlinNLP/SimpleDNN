@@ -9,7 +9,6 @@ package updatemethods
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop.RMSPropMethod
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop.RMSPropStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
@@ -27,21 +26,11 @@ class RMSPropSpec: Spek({
 
     context("update with dense errors") {
 
-      on("get support structure") {
-
-        val updateHelper = RMSPropMethod(learningRate = 0.001, epsilon = 1e-06, decay = 0.9)
-        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-
-        it("should return a support structure of the expected type") {
-          assertEquals(true, updateHelper.getSupportStructure(updatableArray) is RMSPropStructure)
-        }
-      }
-
       on("update") {
 
         val updateHelper = RMSPropMethod(learningRate = 0.001, epsilon = 1e-06, decay = 0.9)
         val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-        val supportStructure = updateHelper.getSupportStructure(updatableArray) as RMSPropStructure
+        val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
 
@@ -61,7 +50,7 @@ class RMSPropSpec: Spek({
 
         val updateHelper = RMSPropMethod(learningRate = 0.001, epsilon = 1e-06, decay = 0.9)
         val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
-        val supportStructure = updateHelper.getSupportStructure(updatableArray) as RMSPropStructure
+        val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
 
