@@ -39,7 +39,7 @@ class FeedforwardNetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   override fun <InputNDArrayType : NDArray<InputNDArrayType>> layerFactory(
     inputArray: AugmentedArray<InputNDArrayType>,
     outputConfiguration: LayerConfiguration,
-    params: LayerParameters,
+    params: LayerParameters<*>,
     dropout: Double): LayerStructure<InputNDArrayType> {
 
     require(outputConfiguration.connectionType == LayerType.Connection.Feedforward) {
