@@ -25,7 +25,7 @@ open class AffineLayerParameters(
   inputSize2: Int,
   outputSize: Int,
   sparseInput: Boolean = false
-) : MergeLayerParameters<AffineLayerParameters>(
+) : MergeLayerParameters(
   inputSize1 = inputSize1,
   inputSize2 = inputSize2,
   outputSize = outputSize,

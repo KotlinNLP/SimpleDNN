@@ -25,7 +25,7 @@ class BiaffineLayerParameters(
   inputSize2: Int,
   outputSize: Int,
   sparseInput: Boolean = false
-) : MergeLayerParameters<BiaffineLayerParameters>(
+) : MergeLayerParameters(
   inputSize1 = inputSize1,
   inputSize2 = inputSize2,
   outputSize = outputSize,

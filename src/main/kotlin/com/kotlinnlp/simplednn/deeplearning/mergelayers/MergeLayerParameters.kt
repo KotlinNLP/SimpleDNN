@@ -18,12 +18,12 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
  * @property outputSize the size of the output
  * @property sparseInput whether the weights connected to the input are sparse or not
  */
-abstract class MergeLayerParameters<ParamsType: LayerParameters<ParamsType>>(
+abstract class MergeLayerParameters(
   val inputSize1: Int,
   val inputSize2: Int,
   outputSize: Int,
   val sparseInput: Boolean
-) : LayerParameters<ParamsType>(
+) : LayerParameters<MergeLayerParameters>(
   inputSize = inputSize1,
   outputSize = outputSize
 )
