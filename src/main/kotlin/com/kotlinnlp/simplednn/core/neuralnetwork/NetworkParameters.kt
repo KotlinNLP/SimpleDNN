@@ -66,7 +66,7 @@ class NetworkParameters(
     var paramIndex = 0
 
     return Array(
-      size = paramsPerLayer.sumBy { it.size },
+      size = this.paramsPerLayer.sumBy { it.size },
       init = {
 
         if (paramIndex == this.paramsPerLayer[layerIndex].size) {
