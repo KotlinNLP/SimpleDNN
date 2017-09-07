@@ -27,7 +27,7 @@ open class UpdatableArray<NDArrayType: NDArray<NDArrayType>>(open val values: ND
   }
 
   /**
-   * The updater support structure to be used in combination with [com.kotlinnlp.simplednn.core.functionalities.updatemethods]
+   * The updater support structure used by [com.kotlinnlp.simplednn.core.functionalities.updatemethods].
    */
-  var updaterSupportStructure: UpdaterSupportStructure? = null
+  lateinit var updaterSupportStructure: UpdaterSupportStructure
 }
