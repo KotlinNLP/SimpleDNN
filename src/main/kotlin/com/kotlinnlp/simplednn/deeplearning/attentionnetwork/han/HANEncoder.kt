@@ -162,20 +162,20 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
    * @return the errors of the HAN parameters
    */
   fun getParamsErrors(copy: Boolean = true) = HANParameters(
-    biRNNs = arrayListOf(*Array(
+    biRNNs = Array(
       size = this.model.hierarchySize,
       init = { i ->
         val paramsErrors = this.encodersParamsErrorsAccumulators[i].getParamsErrors()
         if (copy) paramsErrors.copy() else paramsErrors
       }
-    )),
-    attentionNetworks = arrayListOf(*Array(
+    ),
+    attentionNetworks = Array(
       size = this.model.hierarchySize,
       init = { i ->
         val paramsErrors = this.attentionNetworksParamsErrorsAccumulators[i].getParamsErrors()
         if (copy) paramsErrors.copy() else paramsErrors
       }
-    )),
+    ),
     outputNetwork = this.outputProcessor.getParamsErrors(copy = copy)
   )
 
