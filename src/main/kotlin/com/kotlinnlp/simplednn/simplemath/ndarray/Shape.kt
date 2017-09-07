@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.simplemath.ndarray
 import java.io.Serializable
 
 /**
- * dim1 and dim2 of an NDArray
+ * The shape of an bi-dimensional NDArray containing its dimensions (first and second).
  */
 data class Shape(val dim1: Int, val dim2: Int = 1) : Serializable {
 
@@ -23,5 +23,29 @@ data class Shape(val dim1: Int, val dim2: Int = 1) : Serializable {
     private const val serialVersionUID: Long = 1L
   }
 
+  /**
+   * The inverse [Shape] of this.
+   */
   val inverse: Shape get() = Shape(this.dim2, this.dim1)
+
+  /**
+   * @param other any object
+   *
+   * @return a Boolean indicating if this [Shape] is equal to the given [other] object
+   */
+  override fun equals(other: Any?): Boolean {
+    return (other is Shape && other.dim1 == this.dim1 && other.dim2 == this.dim2)
+  }
+
+  /**
+   * @return the hash code representation of this [Shape]
+   */
+  override fun hashCode(): Int {
+
+    var hash = 7
+    hash = 83 * hash + this.dim1
+    hash = 83 * hash + this.dim2
+
+    return hash
+  }
 }
