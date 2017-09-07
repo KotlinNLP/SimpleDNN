@@ -49,7 +49,12 @@ class AttentionNetworkParameters(
    */
   override val paramsList: Array<UpdatableArray<*>> = Array(
     size = this.transformParams.size + this.attentionParams.size,
-    init = { i -> if (i < this.transformParams.size) this.transformParams[i] else this.attentionParams[i] }
+    init = { i ->
+      if (i < this.transformParams.size)
+        this.transformParams[i]
+      else
+        this.attentionParams[i - this.transformParams.size]
+    }
   )
 
   /**

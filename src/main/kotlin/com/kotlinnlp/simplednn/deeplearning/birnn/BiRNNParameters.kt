@@ -27,7 +27,7 @@ class BiRNNParameters(
    */
   override val paramsList: Array<UpdatableArray<*>> = Array(
     size = this.leftToRight.size + this.rightToLeft.size,
-    init = { i -> if (i < this.leftToRight.size) this.leftToRight[i] else this.rightToLeft[i] }
+    init = { i -> if (i < this.leftToRight.size) this.leftToRight[i] else this.rightToLeft[i - this.leftToRight.size] }
   )
 
   /**
