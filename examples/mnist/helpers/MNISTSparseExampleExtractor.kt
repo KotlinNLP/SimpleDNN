@@ -13,8 +13,8 @@ import com.kotlinnlp.simplednn.dataset.SimpleExample
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArrayFactory
 import utils.exampleextractor.ExampleExtractor
-import utils.readSparseBinaryNDArray
 
 /**
  *
@@ -42,5 +42,28 @@ class MNISTSparseExampleExtractor(val outputSize: Int) : ExampleExtractor<Simple
     }
 
     return SimpleExample(features!!, outputGold)
+  }
+
+
+  /**
+   *
+   */
+  private fun JsonIterator.readSparseBinaryNDArray(size: Int): SparseBinaryNDArray {
+
+    val array = ArrayList<Int>()
+    var index = 0
+
+    while (this.readArray()) {
+
+      val pixel: Double = this.readDouble()
+
+      if (pixel >= 0.5) {
+        array.add(index)
+      }
+
+      index++
+    }
+
+    return SparseBinaryNDArrayFactory.arrayOf(activeIndices = array.sorted().toIntArray(), shape = Shape(size))
   }
 }
