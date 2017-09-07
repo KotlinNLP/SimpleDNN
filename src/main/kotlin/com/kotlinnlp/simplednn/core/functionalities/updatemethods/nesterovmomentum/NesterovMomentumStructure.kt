@@ -7,20 +7,15 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.nesterovmomentum
 
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum.MomentumStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
- *
  * @param shape shape
  */
-class NesterovMomentumStructure(shape: Shape) : UpdaterSupportStructure(shape) {
-  /**
-   *
-   */
-  val v: DenseNDArray = DenseNDArrayFactory.zeros(shape)
+class NesterovMomentumStructure(shape: Shape) : MomentumStructure(shape) {
 
   /**
    * Used with Nesterov Momentum

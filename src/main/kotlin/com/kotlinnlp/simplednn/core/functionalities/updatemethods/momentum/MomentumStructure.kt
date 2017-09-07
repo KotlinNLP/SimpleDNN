@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  *
  * @param shape shape
  */
-class MomentumStructure(shape: Shape) : UpdaterSupportStructure(shape) {
+open class MomentumStructure(shape: Shape) : UpdaterSupportStructure(shape) {
 
   /**
    *
