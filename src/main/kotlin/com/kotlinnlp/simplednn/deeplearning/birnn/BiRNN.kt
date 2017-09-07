@@ -90,6 +90,11 @@ class BiRNN(
       connectionType = this.recurrentConnectionType))
 
   /**
+   * The model of this [BiRNN] containing its parameters.
+   */
+  val model = BiRNNParameters(leftToRight = this.leftToRightNetwork.model, rightToLeft = this.rightToLeftNetwork.model)
+
+  /**
    * Check connection to the output layer.
    */
   init {
