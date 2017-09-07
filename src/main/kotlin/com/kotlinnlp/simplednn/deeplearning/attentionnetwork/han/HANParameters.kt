@@ -7,7 +7,9 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
 
@@ -18,8 +20,37 @@ import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
  * @property attentionNetworks an array containing the parameters of the AttentionNetworks of the HAN
  * @property outputNetwork the parameters of the output Feedforward network
  */
-data class HANParameters(
-  val biRNNs: ArrayList<BiRNNParameters>,
-  val attentionNetworks: ArrayList<AttentionNetworkParameters>,
+class HANParameters(
+  val biRNNs: Array<BiRNNParameters>,
+  val attentionNetworks: Array<AttentionNetworkParameters>,
   val outputNetwork: NetworkParameters
-)
+) : IterableParams<HANParameters>() {
+
+  /**
+   * The list of all parameters.
+   */
+  override val paramsList: Array<UpdatableArray<*>> = this.buildParamsList()
+
+  /**
+   * @return a new [HANParameters] containing a copy of all values of this
+   */
+  override fun copy() = HANParameters(
+    biRNNs = Array(size = this.biRNNs.size, init = { i -> this.biRNNs[i].copy() }),
+    attentionNetworks = Array(size = this.attentionNetworks.size, init = { i -> this.attentionNetworks[i].copy() }),
+    outputNetwork = this.outputNetwork.copy()
+  )
+
+  /**
+   * @return a new [HANParameters] containing a copy of all values of this
+   */
+  private fun buildParamsList(): Array<UpdatableArray<*>> {
+
+    val params = arrayListOf<UpdatableArray<*>>()
+
+    this.biRNNs.forEach { birnnParams -> birnnParams.forEach { params.add(it) } }
+    this.attentionNetworks.forEach { attentionNetworkParams -> attentionNetworkParams.forEach { params.add(it) } }
+    outputNetwork.forEach { params.add(it) }
+
+    return params.toTypedArray()
+  }
+}
