@@ -7,16 +7,15 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum
 
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
+import kotlin.reflect.KClass
 
 /**
  * @param learningRate Double >= 0. Learning rate
@@ -28,7 +27,12 @@ open class MomentumMethod(
   val decayMethod: DecayMethod? = null,
   regularization: WeightsRegularization? = null
 ) : EpochScheduling,
-  UpdateMethod(regularization) {
+  UpdateMethod<MomentumStructure>(regularization) {
+
+  /**
+   * The Kotlin Class of the support structure of this updater.
+   */
+  override val structureClass: KClass<MomentumStructure> = MomentumStructure::class
 
   /**
    *
@@ -40,22 +44,6 @@ open class MomentumMethod(
    *
    */
   private var epochCount: Int = 0
-
-  /**
-   *
-   * @param shape shape
-   * @return helper update neuralnetwork
-   */
-  override fun supportStructureFactory(shape: Shape): UpdaterSupportStructure = MomentumStructure(shape)
-
-  /**
-   *
-   * @param supportStructure supportStructure
-   * @return Boolean
-   */
-  override fun isSupportStructureCompatible(supportStructure: UpdaterSupportStructure): Boolean {
-    return supportStructure is MomentumStructure
-  }
 
   /**
    * Method to call every new epoch
@@ -81,7 +69,7 @@ open class MomentumMethod(
    */
   override fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
 
-    val helperStructure = this.getSupportStructure(array) as MomentumStructure
+    val helperStructure: MomentumStructure = this.getSupportStructure(array)
     val v = helperStructure.v
 
     val mask = errors.mask
@@ -101,7 +89,7 @@ open class MomentumMethod(
    */
   override fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
 
-    val helperStructure = this.getSupportStructure(array) as MomentumStructure
+    val helperStructure: MomentumStructure = this.getSupportStructure(array)
     val v = helperStructure.v
 
     v.assignSum(errors.prod(this.alpha), v.prod(this.momentum))

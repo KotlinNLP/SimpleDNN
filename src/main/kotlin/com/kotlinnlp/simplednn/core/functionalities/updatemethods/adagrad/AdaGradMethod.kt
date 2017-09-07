@@ -7,13 +7,12 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad
 
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
-import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
+import kotlin.reflect.KClass
 
 /**
  * The AdaGrad method assigns a different learning rate to each parameter
@@ -30,23 +29,12 @@ class AdaGradMethod(
   val learningRate:Double = 0.01,
   val epsilon: Double = 1.0E-8,
   regularization: WeightsRegularization? = null
-) : UpdateMethod(regularization) {
+) : UpdateMethod<AdaGradStructure>(regularization) {
 
   /**
-   *
-   * @param shape shape
-   * @return helper update neuralnetwork
+   * The Kotlin Class of the support structure of this updater.
    */
-  override fun supportStructureFactory(shape: Shape): UpdaterSupportStructure = AdaGradStructure(shape)
-
-  /**
-   *
-   * @param supportStructure supportStructure
-   * @return Boolean
-   */
-  override fun isSupportStructureCompatible(supportStructure: UpdaterSupportStructure): Boolean {
-    return supportStructure is AdaGradStructure
-  }
+  override val structureClass: KClass<AdaGradStructure> = AdaGradStructure::class
 
   /**
    * Optimize sparse errors.
@@ -58,7 +46,7 @@ class AdaGradMethod(
    */
   override fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
 
-    val helperStructure = this.getSupportStructure(array) as AdaGradStructure
+    val helperStructure: AdaGradStructure = this.getSupportStructure(array)
     val m = helperStructure.secondOrderMoments
 
     m.assignSum(errors.prod(errors))
@@ -76,7 +64,7 @@ class AdaGradMethod(
    */
   override fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
 
-    val helperStructure = this.getSupportStructure(array) as AdaGradStructure
+    val helperStructure: AdaGradStructure = this.getSupportStructure(array)
     val m = helperStructure.secondOrderMoments
 
     m.assignSum(errors.prod(errors))

@@ -7,16 +7,15 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate
 
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
+import kotlin.reflect.KClass
 
 /**
  *
@@ -28,7 +27,12 @@ class LearningRateMethod(
   val decayMethod: DecayMethod? = null,
   regularization: WeightsRegularization? = null
 ) : EpochScheduling,
-    UpdateMethod(regularization) {
+    UpdateMethod<LearningRateStructure>(regularization) {
+
+  /**
+   * The Kotlin Class of the support structure of this updater.
+   */
+  override val structureClass: KClass<LearningRateStructure> = LearningRateStructure::class
 
   /**
    *
@@ -40,22 +44,6 @@ class LearningRateMethod(
    *
    */
   private var epochCount: Int = 0
-
-  /**
-   *
-   * @param shape shape
-   * @return helper update neuralnetwork
-   */
-  override fun supportStructureFactory(shape: Shape): UpdaterSupportStructure = LearningRateStructure(shape)
-
-  /**
-   *
-   * @param supportStructure supportStructure
-   * @return Boolean
-   */
-  override fun isSupportStructureCompatible(supportStructure: UpdaterSupportStructure): Boolean {
-    return supportStructure is LearningRateStructure
-  }
 
   /**
    * Method to call every new epoch
@@ -92,7 +80,7 @@ class LearningRateMethod(
    */
   override fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
 
-    val helperStructure = this.getSupportStructure(array) as LearningRateStructure
+    val helperStructure: LearningRateStructure = this.getSupportStructure(array)
     helperStructure.errors.assignProd(errors, this.alpha)
 
     return helperStructure.errors

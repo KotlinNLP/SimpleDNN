@@ -7,14 +7,13 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam
 
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
-import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
+import kotlin.reflect.KClass
 
 /**
  *
@@ -30,7 +29,12 @@ class ADAMMethod(
   val epsilon: Double = 1.0E-8,
   regularization: WeightsRegularization? = null
 ) : ExampleScheduling,
-    UpdateMethod(regularization) {
+    UpdateMethod<ADAMStructure>(regularization) {
+
+  /**
+   * The Kotlin Class of the support structure of this updater.
+   */
+  override val structureClass: KClass<ADAMStructure> = ADAMStructure::class
 
   /**
    *
@@ -42,22 +46,6 @@ class ADAMMethod(
    *
    */
   private var exampleCount: Double = 0.0
-
-  /**
-   *
-   * @param shape shape
-   * @return helper update neuralnetwork
-   */
-  override fun supportStructureFactory(shape: Shape): UpdaterSupportStructure = ADAMStructure(shape)
-
-  /**
-   *
-   * @param supportStructure supportStructure
-   * @return Boolean
-   */
-  override fun isSupportStructureCompatible(supportStructure: UpdaterSupportStructure): Boolean {
-    return supportStructure is ADAMStructure
-  }
 
   /**
    * Method to call every new example
@@ -77,7 +65,7 @@ class ADAMMethod(
    */
   override fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
 
-    val helperStructure = this.getSupportStructure(array) as ADAMStructure
+    val helperStructure: ADAMStructure = this.getSupportStructure(array)
     val v = helperStructure.firstOrderMoments
     val m = helperStructure.secondOrderMoments
     val mask = errors.mask
@@ -98,7 +86,7 @@ class ADAMMethod(
    */
   override fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
 
-    val helperStructure = this.getSupportStructure(array) as ADAMStructure
+    val helperStructure: ADAMStructure = this.getSupportStructure(array)
     val v = helperStructure.firstOrderMoments
     val m = helperStructure.secondOrderMoments
 

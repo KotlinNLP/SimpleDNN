@@ -7,44 +7,55 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.nesterovmomentum
 
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
+import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum.MomentumMethod
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
+import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
+import kotlin.reflect.KClass
 
 /**
  * @param learningRate Double >= 0. Learning rate
  * @param momentum  Double >= 0. Parameter updates momentum
  */
 class NesterovMomentumMethod(
-  learningRate: Double = 0.01,
-  momentum: Double = 0.9,
-  decayMethod: DecayMethod? = null,
+  val learningRate: Double = 0.01,
+  val momentum: Double = 0.9,
+  val decayMethod: DecayMethod? = null,
   regularization: WeightsRegularization? = null
-): MomentumMethod(
-  learningRate = learningRate,
-  momentum = momentum,
-  decayMethod = decayMethod,
-  regularization = regularization) {
+) : EpochScheduling,
+  UpdateMethod<NesterovMomentumStructure>(regularization) {
+
+  /**
+   * The Kotlin Class of the support structure of this updater.
+   */
+  override val structureClass: KClass<NesterovMomentumStructure> = NesterovMomentumStructure::class
 
   /**
    *
-   * @param shape shape
-   * @return helper update neuralnetwork
    */
-  override fun supportStructureFactory(shape: Shape): UpdaterSupportStructure = NesterovMomentumStructure(shape)
+  var alpha: Double = this.learningRate
+    private set
 
   /**
    *
-   * @param supportStructure supportStructure
-   * @return Boolean
    */
-  override fun isSupportStructureCompatible(supportStructure: UpdaterSupportStructure): Boolean {
-    return supportStructure is NesterovMomentumStructure
+  private var epochCount: Int = 0
+
+  /**
+   * Method to call every new epoch
+   */
+  override fun newEpoch() {
+
+    if (this.decayMethod != null) {
+      this.alpha = this.decayMethod.update(
+        learningRate = if (this.decayMethod is HyperbolicDecay) this.learningRate else this.alpha,
+        timeStep = ++this.epochCount
+      )
+    }
   }
 
   /**
@@ -57,7 +68,7 @@ class NesterovMomentumMethod(
    */
   override fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
 
-    val helperStructure = this.getSupportStructure(array) as NesterovMomentumStructure
+    val helperStructure: NesterovMomentumStructure = this.getSupportStructure(array)
     val v = helperStructure.v
     val vPrev = helperStructure.vPrev
 
@@ -80,7 +91,7 @@ class NesterovMomentumMethod(
    */
   override fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
 
-    val helperStructure = this.getSupportStructure(array) as NesterovMomentumStructure
+    val helperStructure: NesterovMomentumStructure = this.getSupportStructure(array)
     val v = helperStructure.v
     val vPrev = helperStructure.vPrev
 

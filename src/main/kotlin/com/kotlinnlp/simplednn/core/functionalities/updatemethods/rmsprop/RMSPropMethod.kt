@@ -7,13 +7,13 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop
 
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
+import kotlin.reflect.KClass
 
 /**
  * The RMSProp method is a variant of [com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGradMethod]
@@ -32,23 +32,12 @@ class RMSPropMethod(
   val epsilon: Double = 1e-08,
   val decay: Double = 0.95,
   regularization: WeightsRegularization? = null
-) : UpdateMethod(regularization) {
+) : UpdateMethod<RMSPropStructure>(regularization) {
 
   /**
-   *
-   * @param shape shape
-   * @return helper update neuralnetwork
+   * The Kotlin Class of the support structure of this updater.
    */
-  override fun supportStructureFactory(shape: Shape): UpdaterSupportStructure = RMSPropStructure(shape)
-
-  /**
-   *
-   * @param supportStructure supportStructure
-   * @return Boolean
-   */
-  override fun isSupportStructureCompatible(supportStructure: UpdaterSupportStructure): Boolean {
-    return supportStructure is RMSPropStructure
-  }
+  override val structureClass: KClass<RMSPropStructure> = RMSPropStructure::class
 
   /**
    * Optimize sparse errors.
@@ -60,7 +49,7 @@ class RMSPropMethod(
    */
   override fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
 
-    val helperStructure = this.getSupportStructure(array) as RMSPropStructure
+    val helperStructure: RMSPropStructure = this.getSupportStructure(array)
     val m = helperStructure.secondOrderMoments
 
     val mask: NDArrayMask = errors.mask
@@ -82,7 +71,7 @@ class RMSPropMethod(
    */
   override fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
 
-    val helperStructure = this.getSupportStructure(array) as RMSPropStructure
+    val helperStructure: RMSPropStructure = this.getSupportStructure(array)
     val m = helperStructure.secondOrderMoments
 
     m.assignSum(m.prod(this.decay), errors.prod(errors).assignProd(1.0 - this.decay))
