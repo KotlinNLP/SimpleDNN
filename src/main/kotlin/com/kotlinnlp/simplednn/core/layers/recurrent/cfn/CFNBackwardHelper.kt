@@ -23,20 +23,13 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
-   * A support variable to manage the errors on the parameters during the backward
-   */
-  lateinit private var paramsErrors: CFNLayerParameters
-
-  /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  override fun backward(paramsErrors: LayerParameters, propagateToInput: Boolean) {
-
-    this.paramsErrors = paramsErrors as CFNLayerParameters
+  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
     val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer() as? CFNLayerStructure
     val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer() as? CFNLayerStructure
@@ -46,7 +39,10 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     }
 
     this.assignGatesGradients(prevStateLayer)
-    this.assignParamsGradients(prevStateLayer?.outputArray)
+
+    this.assignParamsGradients(
+      paramsErrors = paramsErrors as CFNLayerParameters,
+      prevStateOutput = prevStateLayer?.outputArray)
 
     if (propagateToInput) {
       this.assignLayerGradients()
@@ -58,7 +54,7 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param prevStateLayer the layer in the previous state
    */
   private fun assignGatesGradients(prevStateLayer: CFNLayerStructure<*>?) {
-    this.layer.params as CFNLayerParameters
+
 
     val gy: DenseNDArray = this.layer.outputArray.errors
 
@@ -87,26 +83,28 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   *
+   * @param paramsErrors the errors of the parameters which will be filled
    * @param prevStateOutput the outputArray in the previous state
    */
-  private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
+  private fun assignParamsGradients(paramsErrors: CFNLayerParameters, prevStateOutput: AugmentedArray<DenseNDArray>?) {
 
     val x: InputNDArrayType = this.layer.inputArray.values
     val yPrev: DenseNDArray? = prevStateOutput?.values
 
-    this.layer.inputGate.assignParamsGradients(paramsErrors = this.paramsErrors.inputGate, x = x, yPrev = yPrev)
-    this.layer.forgetGate.assignParamsGradients(paramsErrors = this.paramsErrors.forgetGate, x = x, yPrev = yPrev)
+    this.layer.inputGate.assignParamsGradients(paramsErrors = paramsErrors.inputGate, x = x, yPrev = yPrev)
+    this.layer.forgetGate.assignParamsGradients(paramsErrors = paramsErrors.forgetGate, x = x, yPrev = yPrev)
 
     val gc: DenseNDArray = this.layer.candidate.errors
-    val gwc: NDArray<*> = this.paramsErrors.candidateWeights.values
+    val gwc: NDArray<*> = paramsErrors.candidateWeights.values
     gwc.assignDot(gc, x.T)
   }
 
   /**
    *
    */
-  private fun assignLayerGradients() { this.layer.params as CFNLayerParameters
+  private fun assignLayerGradients() {
+
+    this.layer.params as CFNLayerParameters
 
     val wInG: DenseNDArray = this.layer.params.inputGate.weights.values as DenseNDArray
     val wForG: DenseNDArray = this.layer.params.forgetGate.weights.values as DenseNDArray
@@ -139,6 +137,7 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param nextStateLayer the layer structure in the next state
    */
   private fun getLayerRecurrentContribution(nextStateLayer: CFNLayerStructure<*>): DenseNDArray {
+
     this.layer.params as CFNLayerParameters
 
     val inputGate = nextStateLayer.inputGate

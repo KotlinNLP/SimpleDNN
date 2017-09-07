@@ -22,24 +22,17 @@ class AffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
-   * A support variable to manage the errors on the parameters during the backward.
-   */
-  lateinit private var paramsErrors: AffineLayerParameters
-
-  /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  override fun backward(paramsErrors: LayerParameters, propagateToInput: Boolean) {
-
-    this.paramsErrors = paramsErrors as AffineLayerParameters
+  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
     this.layer.applyOutputActivationDeriv()
 
-    this.assignParamsGradients()
+    this.assignParamsGradients(paramsErrors as AffineLayerParameters)
 
     if (propagateToInput) {
       this.assignLayerGradients()
@@ -48,15 +41,15 @@ class AffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
   /**
    */
-  private fun assignParamsGradients() {
+  private fun assignParamsGradients(paramsErrors: AffineLayerParameters) {
 
     val x1: InputNDArrayType = this.layer.inputArray.values
     val x2: InputNDArrayType = this.layer.inputArray2.values
 
     val gy: DenseNDArray = this.layer.outputArray.errors
-    val gw1: NDArray<*> = this.paramsErrors.w1.values
-    val gw2: NDArray<*> = this.paramsErrors.w2.values
-    val gb: NDArray<*> = this.paramsErrors.b.values
+    val gw1: NDArray<*> = paramsErrors.w1.values
+    val gw2: NDArray<*> = paramsErrors.w2.values
+    val gb: NDArray<*> = paramsErrors.b.values
 
     gw1.assignDot(gy, x1.T)
     gw2.assignDot(gy, x2.T)

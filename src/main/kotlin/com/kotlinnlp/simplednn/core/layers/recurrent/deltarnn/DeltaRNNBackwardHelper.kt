@@ -21,12 +21,6 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: DeltaRNNLayerStructure<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
-
-  /**
-   * A support variable to manage the errors on the parameters during the backward
-   */
-  lateinit private var paramsErrors: DeltaRNNLayerParameters
-
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
@@ -34,9 +28,7 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  override fun backward(paramsErrors: LayerParameters, propagateToInput: Boolean) {
-
-    this.paramsErrors = paramsErrors as DeltaRNNLayerParameters
+  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
     val prevStateOutput = this.layer.layerContextWindow.getPrevStateLayer()?.outputArray
     val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer()
@@ -48,7 +40,9 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.applyOutputActivationDeriv() // must be applied AFTER having added the recurrent gradients
 
     this.assignArraysGradients(prevStateOutput)
-    this.assignParamsGradients(prevStateOutput)
+    this.assignParamsGradients(
+      paramsErrors = paramsErrors as DeltaRNNLayerParameters,
+      prevStateOutput = prevStateOutput)
 
     if (propagateToInput) {
       this.assignInputGradients(prevStateOutput)
@@ -94,6 +88,7 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return the error of the output in the next state in respect of the current state
    */
   private fun getLayerRecurrentContribution(nextStateLayer: DeltaRNNLayerStructure<*>): DenseNDArray {
+
     this.layer.params as DeltaRNNLayerParameters
 
     val gyNext: DenseNDArray = nextStateLayer.outputArray.errors
@@ -114,9 +109,12 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Assign the errors to the parameters of the layer.
    *
+   * @param paramsErrors the errors of the parameters which will be filled
    * @param prevStateOutput the output array in the previous state
    */
-  private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
+  private fun assignParamsGradients(paramsErrors: DeltaRNNLayerParameters,
+                                    prevStateOutput: AugmentedArray<DenseNDArray>?) {
+
     this.layer.params as DeltaRNNLayerParameters
 
     val x: InputNDArrayType = this.layer.inputArray.values
@@ -130,12 +128,12 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val beta1: DenseNDArray = this.layer.params.beta1.values
     val beta2: DenseNDArray = this.layer.params.beta2.values
 
-    val gw: NDArray<*> = this.paramsErrors.feedforwardUnit.weights.values
-    val gbc: DenseNDArray = this.paramsErrors.feedforwardUnit.biases.values
-    val gbp: DenseNDArray = this.paramsErrors.recurrentUnit.biases.values
-    val gAlpha: DenseNDArray = this.paramsErrors.alpha.values
-    val gBeta1: DenseNDArray = this.paramsErrors.beta1.values
-    val gBeta2: DenseNDArray = this.paramsErrors.beta2.values
+    val gw: NDArray<*> = paramsErrors.feedforwardUnit.weights.values
+    val gbc: DenseNDArray = paramsErrors.feedforwardUnit.biases.values
+    val gbp: DenseNDArray = paramsErrors.recurrentUnit.biases.values
+    val gAlpha: DenseNDArray = paramsErrors.alpha.values
+    val gBeta1: DenseNDArray = paramsErrors.beta1.values
+    val gBeta2: DenseNDArray = paramsErrors.beta2.values
 
     gbc.assignValues(gc)
     gbp.assignValues(gp)
@@ -149,7 +147,7 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     gw.assignDot(gwTmp, x.T)
 
     if (prevStateOutput != null) {
-      val gwRec: DenseNDArray = this.paramsErrors.recurrentUnit.weights.values as DenseNDArray
+      val gwRec: DenseNDArray = paramsErrors.recurrentUnit.weights.values as DenseNDArray
       val yPrev: DenseNDArray = prevStateOutput.values
 
       val gwRecTmp: DenseNDArray = alpha.prod(wx).assignSum(beta2).assignProd(gc)
@@ -163,6 +161,7 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param prevStateOutput the output array in the previous state
    */
   private fun assignInputGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
+
     this.layer.params as DeltaRNNLayerParameters
 
     val gp: DenseNDArray = this.layer.partition.errors

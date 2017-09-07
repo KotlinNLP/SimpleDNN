@@ -23,20 +23,13 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
-   * A support variable to manage the errors on the parameters during the backward
-   */
-  lateinit private var paramsErrors: LSTMLayerParameters
-
-  /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  override fun backward(paramsErrors: LayerParameters, propagateToInput: Boolean) {
-
-    this.paramsErrors = paramsErrors as LSTMLayerParameters
+  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
     val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer() as? LSTMLayerStructure
     val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer() as? LSTMLayerStructure
@@ -46,7 +39,10 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     }
 
     this.assignGatesGradients(prevStateLayer = prevStateLayer, nextStateLayer = nextStateLayer)
-    this.assignParamsGradients(prevStateOutput = prevStateLayer?.outputArray)
+
+    this.assignParamsGradients(
+      paramsErrors = paramsErrors as LSTMLayerParameters,
+      prevStateOutput = prevStateLayer?.outputArray)
 
     if (propagateToInput) {
       this.assignLayerGradients()
@@ -94,18 +90,18 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   *
+   * @param paramsErrors the errors of the parameters which will be filled
    * @param prevStateOutput the outputArray in the previous state
    */
-  private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
+  private fun assignParamsGradients(paramsErrors: LSTMLayerParameters, prevStateOutput: AugmentedArray<DenseNDArray>?) {
 
     val x: InputNDArrayType = this.layer.inputArray.values
     val yPrev: DenseNDArray? = prevStateOutput?.values
 
-    this.layer.inputGate.assignParamsGradients(paramsErrors = this.paramsErrors.inputGate, x = x, yPrev = yPrev)
-    this.layer.outputGate.assignParamsGradients(paramsErrors = this.paramsErrors.outputGate, x = x, yPrev = yPrev)
-    this.layer.forgetGate.assignParamsGradients(paramsErrors = this.paramsErrors.forgetGate, x = x, yPrev = yPrev)
-    this.layer.candidate.assignParamsGradients(paramsErrors = this.paramsErrors.candidate, x = x, yPrev = yPrev)
+    this.layer.inputGate.assignParamsGradients(paramsErrors = paramsErrors.inputGate, x = x, yPrev = yPrev)
+    this.layer.outputGate.assignParamsGradients(paramsErrors = paramsErrors.outputGate, x = x, yPrev = yPrev)
+    this.layer.forgetGate.assignParamsGradients(paramsErrors = paramsErrors.forgetGate, x = x, yPrev = yPrev)
+    this.layer.candidate.assignParamsGradients(paramsErrors = paramsErrors.candidate, x = x, yPrev = yPrev)
   }
 
   /**
@@ -147,6 +143,7 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param nextStateLayer the layer structure in the next state
    */
   private fun getLayerRecurrentContribution(nextStateLayer: LSTMLayerStructure<*>): DenseNDArray {
+
     this.layer.params as LSTMLayerParameters
 
     val gInGNext: DenseNDArray = nextStateLayer.inputGate.errors

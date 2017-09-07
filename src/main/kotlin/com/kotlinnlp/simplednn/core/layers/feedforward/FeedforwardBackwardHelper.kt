@@ -21,24 +21,17 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
-   * A support variable to manage the errors on the parameters during the backward
-   */
-  lateinit private var paramsErrors: FeedforwardLayerParameters
-
-  /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  override fun backward(paramsErrors: LayerParameters, propagateToInput: Boolean) {
-
-    this.paramsErrors = paramsErrors as FeedforwardLayerParameters
+  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
     this.layer.applyOutputActivationDeriv()
 
-    this.assignParamsGradients()
+    this.assignParamsGradients(paramsErrors as FeedforwardLayerParameters)
 
     if (propagateToInput) {
       this.assignLayerGradients()
@@ -48,11 +41,13 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * gb = gy * 1
    * gw = gy (dot) x
+   *
+   * @param paramsErrors the errors of the parameters which will be filled
    */
-  private fun assignParamsGradients() {
+  private fun assignParamsGradients(paramsErrors: FeedforwardLayerParameters) {
 
     this.layer.outputArray.assignParamsGradients(
-      paramsErrors = this.paramsErrors.unit,
+      paramsErrors = paramsErrors.unit,
       x = this.layer.inputArray.values)
   }
 
@@ -60,7 +55,6 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * gx = gy (dot) w
    */
   private fun assignLayerGradients() { this.layer.params as FeedforwardLayerParameters
-
     this.layer.inputArray.assignErrors(this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit))
   }
 }

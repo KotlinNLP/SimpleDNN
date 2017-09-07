@@ -23,20 +23,13 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
-   * A support variable to manage the errors on the parameters during the backward
-   */
-  lateinit private var paramsErrors: GRULayerParameters
-
-  /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  override fun backward(paramsErrors: LayerParameters, propagateToInput: Boolean) {
-
-    this.paramsErrors = paramsErrors as GRULayerParameters
+  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
     val prevStateOutput = this.layer.layerContextWindow.getPrevStateLayer()?.outputArray
     val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer()
@@ -44,7 +37,10 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.addOutputRecurrentGradients(nextStateLayer as? GRULayerStructure<*>)
 
     this.assignGatesGradients(prevStateOutput)
-    this.assignParamsGradients(prevStateOutput)
+
+    this.assignParamsGradients(
+      paramsErrors = paramsErrors as GRULayerParameters,
+      prevStateOutput = prevStateOutput)
 
     if (propagateToInput) {
       this.assignLayerGradients()
@@ -52,10 +48,10 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   *
    * @param prevStateOutput the outputArray in the previous state
    */
   private fun assignGatesGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
+
     this.layer.params as GRULayerParameters
 
     val gy: DenseNDArray = this.layer.outputArray.errors
@@ -88,21 +84,21 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   *
+   * @param paramsErrors the errors of the parameters which will be filled
    * @param prevStateOutput the outputArray in the previous state
    */
-  private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
+  private fun assignParamsGradients(paramsErrors: GRULayerParameters, prevStateOutput: AugmentedArray<DenseNDArray>?) {
 
     val x: InputNDArrayType = this.layer.inputArray.values
     val yPrev: DenseNDArray? = prevStateOutput?.values
 
-    this.layer.resetGate.assignParamsGradients(paramsErrors = this.paramsErrors.resetGate, x = x, yPrev = yPrev)
-    this.layer.partitionGate.assignParamsGradients(paramsErrors = this.paramsErrors.partitionGate, x = x, yPrev = yPrev)
-    this.layer.candidate.assignParamsGradients(paramsErrors = this.paramsErrors.candidate, x = x)
+    this.layer.resetGate.assignParamsGradients(paramsErrors = paramsErrors.resetGate, x = x, yPrev = yPrev)
+    this.layer.partitionGate.assignParamsGradients(paramsErrors = paramsErrors.partitionGate, x = x, yPrev = yPrev)
+    this.layer.candidate.assignParamsGradients(paramsErrors = paramsErrors.candidate, x = x)
 
     if (yPrev != null) { // add recurrent contribution to the recurrent weights of the candidate
       val r: DenseNDArray = this.layer.resetGate.values
-      val gwcr: DenseNDArray = this.paramsErrors.candidate.recurrentWeights.values
+      val gwcr: DenseNDArray = paramsErrors.candidate.recurrentWeights.values
       val gc: DenseNDArray = this.layer.candidate.errors
       gwcr.assignDot(gc, r.prod(yPrev).T)
     }
@@ -111,7 +107,9 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  private fun assignLayerGradients() { this.layer.params as GRULayerParameters
+  private fun assignLayerGradients() {
+
+    this.layer.params as GRULayerParameters
 
     val wp: DenseNDArray = this.layer.params.partitionGate.weights.values as DenseNDArray
     val wc: DenseNDArray = this.layer.params.candidate.weights.values as DenseNDArray
@@ -128,7 +126,6 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   *
    * @param nextStateLayer the layer structure in the next state
    */
   private fun addOutputRecurrentGradients(nextStateLayer: GRULayerStructure<*>?) {
@@ -142,10 +139,10 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   *
    * @param nextStateLayer the layer structure in the next state
    */
   private fun getLayerRecurrentContribution(nextStateLayer: GRULayerStructure<*>): DenseNDArray {
+
     this.layer.params as GRULayerParameters
 
     val resetGate = nextStateLayer.resetGate

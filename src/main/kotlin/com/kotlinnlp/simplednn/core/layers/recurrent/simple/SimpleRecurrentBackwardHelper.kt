@@ -23,20 +23,13 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
-   * A support variable to manage the errors on the parameters during the backward
-   */
-  lateinit private var paramsErrors: SimpleRecurrentLayerParameters
-
-  /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  override fun backward(paramsErrors: LayerParameters, propagateToInput: Boolean) {
-
-    this.paramsErrors = paramsErrors as SimpleRecurrentLayerParameters
+  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
     val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer()
     val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer()
@@ -47,7 +40,9 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
 
     this.layer.applyOutputActivationDeriv() // must be applied AFTER having added the recurrent contribution
 
-    this.assignParamsGradients(prevStateLayer?.outputArray)
+    this.assignParamsGradients(
+      paramsErrors = paramsErrors as SimpleRecurrentLayerParameters,
+      prevStateOutput = prevStateLayer?.outputArray)
 
     if (propagateToInput) {
       this.assignLayerGradients()
@@ -58,11 +53,15 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
    * gb = gy * 1
    * gw = gb (dot) x
    * gwRec = gy (dot) yPrev
+   *
+   * @param paramsErrors the errors of the parameters which will be filled
+   * @param prevStateOutput the output array in the previous state
    */
-  private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
+  private fun assignParamsGradients(paramsErrors: SimpleRecurrentLayerParameters,
+                                    prevStateOutput: AugmentedArray<DenseNDArray>?) {
 
     this.layer.outputArray.assignParamsGradients(
-      paramsErrors = this.paramsErrors.unit,
+      paramsErrors = paramsErrors.unit,
       x = this.layer.inputArray.values,
       yPrev = prevStateOutput?.values)
   }

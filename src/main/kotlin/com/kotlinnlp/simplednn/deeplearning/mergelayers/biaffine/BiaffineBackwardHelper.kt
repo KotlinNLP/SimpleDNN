@@ -25,26 +25,19 @@ class BiaffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
-   * A support variable to manage the errors on the parameters during the backward.
-   */
-  lateinit private var paramsErrors: BiaffineLayerParameters
-
-  /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  override fun backward(paramsErrors: LayerParameters, propagateToInput: Boolean) {
-
-    this.paramsErrors = paramsErrors as BiaffineLayerParameters
+  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
     this.layer.applyOutputActivationDeriv()
 
     val gwx: Array<DenseNDArray> = this.getWXArraysGradients()
 
-    this.assignParamsGradients(wxErrors = gwx)
+    this.assignParamsGradients(paramsErrors = paramsErrors as BiaffineLayerParameters, wxErrors = gwx)
 
     if (propagateToInput) {
       this.assignLayerGradients(wxErrors = gwx)
@@ -97,17 +90,17 @@ class BiaffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  private fun assignParamsGradients(wxErrors: Array<DenseNDArray>) {
+  private fun assignParamsGradients(paramsErrors: BiaffineLayerParameters, wxErrors: Array<DenseNDArray>) {
     // TODO: actually the wx errors are Sparse if the input is SparseBinary: calculations should be optimized
 
     val x1: InputNDArrayType = this.layer.inputArray.values
     val x2: InputNDArrayType = this.layer.inputArray2.values
 
     val gy: DenseNDArray = this.layer.outputArray.errors
-    val gwArrays: Array<UpdatableArray<*>> = this.paramsErrors.w
-    val gw1: NDArray<*> = this.paramsErrors.w1.values
-    val gw2: NDArray<*> = this.paramsErrors.w2.values
-    val gb: NDArray<*> = this.paramsErrors.b.values
+    val gwArrays: Array<UpdatableArray<*>> = paramsErrors.w
+    val gw1: NDArray<*> = paramsErrors.w1.values
+    val gw2: NDArray<*> = paramsErrors.w2.values
+    val gb: NDArray<*> = paramsErrors.b.values
 
     gwArrays.forEachIndexed { i, gwArray ->
       val gwi: DenseNDArray = gwArray.values as DenseNDArray
