@@ -25,7 +25,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   override val outputArray: LayerUnit<InputNDArrayType>,
-  params: LayerParameters,
+  params: LayerParameters<*>,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
 ) : LayerStructure<InputNDArrayType>(

@@ -58,10 +58,10 @@ class RecurrentNetworkStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
   override fun <InputNDArrayType : NDArray<InputNDArrayType>> layerFactory(
     inputArray: AugmentedArray<InputNDArrayType>,
     outputConfiguration: LayerConfiguration,
-    params: LayerParameters,
+    params: LayerParameters<*>,
     dropout: Double): LayerStructure<InputNDArrayType> {
 
-    return LayerStructureFactory<InputNDArrayType>(
+    return LayerStructureFactory(
       inputArray = inputArray,
       outputSize = outputConfiguration.size,
       params = params,

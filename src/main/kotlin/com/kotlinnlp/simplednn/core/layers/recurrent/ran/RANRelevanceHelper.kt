@@ -27,7 +27,7 @@ class RANRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  override fun propagateRelevanceToGates(layerContributions: LayerParameters) {
+  override fun propagateRelevanceToGates(layerContributions: LayerParameters<*>) {
 
     val (inputRelevance, recurrentRelevance) = this.getRelevancePartitions(layerContributions as RANLayerParameters)
     val halfInputRelevance: DenseNDArray = inputRelevance.assignDiv(2.0)
@@ -45,7 +45,7 @@ class RANRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the relevance of the input in respect of the output
    */
-  override fun getInputRelevance(layerContributions: LayerParameters): NDArray<*> {
+  override fun getInputRelevance(layerContributions: LayerParameters<*>): NDArray<*> {
     layerContributions as RANLayerParameters
 
     val x: InputNDArrayType = this.layer.inputArray.values
@@ -82,7 +82,7 @@ class RANRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  override fun setRecurrentRelevance(layerContributions: LayerParameters) {
+  override fun setRecurrentRelevance(layerContributions: LayerParameters<*>) {
     layerContributions as RANLayerParameters
 
     val prevStateOutput = this.layer.layerContextWindow.getPrevStateLayer()!!.outputArray

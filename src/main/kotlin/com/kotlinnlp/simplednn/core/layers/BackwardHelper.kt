@@ -26,5 +26,5 @@ interface BackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>> {
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  fun backward(paramsErrors: LayerParameters, propagateToInput: Boolean = false)
+  fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean = false)
 }

@@ -27,7 +27,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 class SimpleRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   override val outputArray: RecurrentLayerUnit<InputNDArrayType>,
-  params: LayerParameters,
+  params: LayerParameters<*>,
   layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0

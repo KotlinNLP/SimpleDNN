@@ -24,7 +24,7 @@ object LayerParametersFactory {
   operator fun invoke(inputSize: Int,
                       outputSize: Int,
                       connectionType: LayerType.Connection,
-                      sparseInput: Boolean = false): LayerParameters =
+                      sparseInput: Boolean = false): LayerParameters<*> =
 
     when(connectionType) {
 

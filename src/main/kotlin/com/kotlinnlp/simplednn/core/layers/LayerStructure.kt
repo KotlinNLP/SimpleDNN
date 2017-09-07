@@ -26,7 +26,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArray: AugmentedArray<InputNDArrayType>,
   open val outputArray: AugmentedArray<DenseNDArray>,
-  open val params: LayerParameters,
+  open val params: LayerParameters<*>,
   val activationFunction: ActivationFunction? = null,
   val dropout: Double = 0.0) {
 
@@ -93,7 +93,7 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param layerContributions the [LayerParameters] in which to save the contributions during calculations
    * @param useDropout whether to apply the dropout
    */
-  fun forward(layerContributions: LayerParameters, useDropout: Boolean = false) {
+  fun forward(layerContributions: LayerParameters<*>, useDropout: Boolean = false) {
 
     if (useDropout) {
       this.applyDropout()
@@ -107,7 +107,7 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  fun setInputRelevance(layerContributions: LayerParameters) {
+  fun setInputRelevance(layerContributions: LayerParameters<*>) {
     this.relevanceHelper.setInputRelevance(layerContributions = layerContributions)
   }
 
@@ -117,14 +117,14 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  fun addInputRelevance(layerContributions: LayerParameters) {
+  fun addInputRelevance(layerContributions: LayerParameters<*>) {
     this.relevanceHelper.addInputRelevance(layerContributions = layerContributions)
   }
 
   /**
    *
    */
-  fun backward(paramsErrors: LayerParameters, propagateToInput: Boolean = false) {
+  fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean = false) {
     this.backwardHelper.backward(paramsErrors = paramsErrors, propagateToInput = propagateToInput)
   }
 

@@ -29,7 +29,7 @@ object LayerStructureFactory {
   operator fun <InputNDArrayType : NDArray<InputNDArrayType>> invoke(
     inputArray: AugmentedArray<InputNDArrayType>,
     outputSize: Int,
-    params: LayerParameters,
+    params: LayerParameters<*>,
     activationFunction: ActivationFunction?,
     connectionType: LayerType.Connection,
     dropout: Double = 0.0,

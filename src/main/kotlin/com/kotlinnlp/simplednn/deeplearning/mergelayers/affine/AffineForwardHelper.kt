@@ -47,7 +47,7 @@ class AffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  override fun forward(layerContributions: LayerParameters) {
+  override fun forward(layerContributions: LayerParameters<*>) {
     layerContributions as AffineLayerParameters
 
     TODO("not implemented")

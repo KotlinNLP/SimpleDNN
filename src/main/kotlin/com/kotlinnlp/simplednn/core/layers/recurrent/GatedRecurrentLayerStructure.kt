@@ -27,7 +27,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 abstract class GatedRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
-  params: LayerParameters,
+  params: LayerParameters<*>,
   layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
@@ -47,7 +47,7 @@ abstract class GatedRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDAr
   /**
    * @param layerContributions the contributions saved during the last forward
    */
-  fun propagateRelevanceToGates(layerContributions: LayerParameters) {
+  fun propagateRelevanceToGates(layerContributions: LayerParameters<*>) {
     this.relevanceHelper.propagateRelevanceToGates(layerContributions)
   }
 }

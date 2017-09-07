@@ -27,5 +27,5 @@ abstract class RecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayT
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  abstract fun setRecurrentRelevance(layerContributions: LayerParameters)
+  abstract fun setRecurrentRelevance(layerContributions: LayerParameters<*>)
 }

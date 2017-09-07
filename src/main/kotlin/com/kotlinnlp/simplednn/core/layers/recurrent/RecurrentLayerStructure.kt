@@ -27,7 +27,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 abstract class RecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
-  params: LayerParameters,
+  params: LayerParameters<*>,
   val layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
@@ -49,7 +49,7 @@ abstract class RecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayTy
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  fun setRecurrentRelevance(layerContributions: LayerParameters) {
+  fun setRecurrentRelevance(layerContributions: LayerParameters<*>) {
     this.relevanceHelper.setRecurrentRelevance(layerContributions = layerContributions)
   }
 }

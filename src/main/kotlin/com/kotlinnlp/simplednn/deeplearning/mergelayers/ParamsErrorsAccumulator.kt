@@ -23,7 +23,7 @@ class ParamsErrorsAccumulator(val layer: MergeLayer<*>) {
   /**
    * The structure in which to accumulate the errors of the merge layer parameters.
    */
-  private val paramsErrors: MergeLayerParameters = this.layer.parametersErrorsFactory()
+  private val paramsErrors: MergeLayerParameters<*> = this.layer.parametersErrorsFactory()
 
   /**
    * A boolean indicating if any errors are accumulated.
@@ -40,10 +40,10 @@ class ParamsErrorsAccumulator(val layer: MergeLayer<*>) {
    *
    * @return the accumulated errors of the network parameters
    */
-  fun getParamsErrors(copy: Boolean = true): MergeLayerParameters {
+  fun getParamsErrors(copy: Boolean = true): MergeLayerParameters<*> {
     require(this.isNotEmpty) { "Cannot get params errors without accumulating before" }
 
-    val paramsErrors: MergeLayerParameters
+    val paramsErrors: MergeLayerParameters<*>
 
     return if (copy) {
 
@@ -79,7 +79,7 @@ class ParamsErrorsAccumulator(val layer: MergeLayer<*>) {
    *
    * @param paramsErrors the merge layer parameters errors to accumulate
    */
-  fun accumulate(paramsErrors: MergeLayerParameters) {
+  fun accumulate(paramsErrors: MergeLayerParameters<*>) {
 
     if (this.isEmpty) {
       this.paramsErrors.zip(paramsErrors).forEach { (errors, newErrors) ->

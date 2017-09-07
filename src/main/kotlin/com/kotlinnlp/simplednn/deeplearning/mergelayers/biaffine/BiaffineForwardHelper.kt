@@ -62,7 +62,7 @@ class BiaffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  override fun forward(layerContributions: LayerParameters) {
+  override fun forward(layerContributions: LayerParameters<*>) {
     layerContributions as BiaffineLayerParameters
 
     TODO("not implemented")

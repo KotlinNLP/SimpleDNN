@@ -152,7 +152,7 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun layerFactory(
     inputConfiguration: LayerConfiguration,
     outputConfiguration: LayerConfiguration,
-    params: LayerParameters): LayerStructure<*> {
+    params: LayerParameters<*>): LayerStructure<*> {
 
     require(outputConfiguration.connectionType != null) {
       "Output layer configurations must have a not null connectionType"
@@ -193,6 +193,6 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   abstract protected fun <InputNDArrayType : NDArray<InputNDArrayType>> layerFactory(
     inputArray: AugmentedArray<InputNDArrayType>,
     outputConfiguration: LayerConfiguration,
-    params: LayerParameters,
+    params: LayerParameters<*>,
     dropout: Double): LayerStructure<InputNDArrayType>
 }

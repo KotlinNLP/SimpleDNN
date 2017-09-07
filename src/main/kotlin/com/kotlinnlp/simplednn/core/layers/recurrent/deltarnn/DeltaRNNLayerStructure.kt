@@ -32,7 +32,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 class DeltaRNNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
-  params: LayerParameters,
+  params: LayerParameters<*>,
   layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0

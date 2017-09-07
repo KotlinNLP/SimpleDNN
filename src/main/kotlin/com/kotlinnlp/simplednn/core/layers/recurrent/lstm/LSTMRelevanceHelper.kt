@@ -25,7 +25,7 @@ class LSTMRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  override fun propagateRelevanceToGates(layerContributions: LayerParameters) {
+  override fun propagateRelevanceToGates(layerContributions: LayerParameters<*>) {
     TODO("not implemented")
   }
 
@@ -34,7 +34,7 @@ class LSTMRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the relevance of the input respect of the output
    */
-  override fun getInputRelevance(layerContributions: LayerParameters): NDArray<*> {
+  override fun getInputRelevance(layerContributions: LayerParameters<*>): NDArray<*> {
     TODO("not implemented")
   }
 
@@ -45,7 +45,7 @@ class LSTMRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  override fun setRecurrentRelevance(layerContributions: LayerParameters) {
+  override fun setRecurrentRelevance(layerContributions: LayerParameters<*>) {
     TODO("not implemented")
   }
 }

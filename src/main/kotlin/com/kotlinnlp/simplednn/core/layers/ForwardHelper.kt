@@ -31,7 +31,7 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  abstract fun forward(layerContributions: LayerParameters)
+  abstract fun forward(layerContributions: LayerParameters<*>)
 
   /**
    * Forward [x] to [y] combining it with [w] and [b], saving the contributions in [contributions].

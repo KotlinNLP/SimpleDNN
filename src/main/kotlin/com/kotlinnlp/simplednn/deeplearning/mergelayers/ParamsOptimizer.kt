@@ -41,7 +41,7 @@ class ParamsOptimizer(val layer: MergeLayer<*>, updateMethod: UpdateMethod) : Op
    *
    * @param paramsErrors the merge layer parameters errors to accumulate
    */
-  fun accumulate(paramsErrors: MergeLayerParameters) {
+  fun accumulate(paramsErrors: MergeLayerParameters<*>) {
     this.paramsErrorsAccumulator.accumulate(paramsErrors)
   }
 

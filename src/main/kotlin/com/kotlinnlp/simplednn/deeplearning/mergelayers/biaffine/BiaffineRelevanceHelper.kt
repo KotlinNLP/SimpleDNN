@@ -25,7 +25,7 @@ class BiaffineRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the relevance of the input respect of the output
    */
-  override fun getInputRelevance(layerContributions: LayerParameters): NDArray<*> {
+  override fun getInputRelevance(layerContributions: LayerParameters<*>): NDArray<*> {
     layerContributions as BiaffineLayerParameters
     TODO("not implemented")
   }

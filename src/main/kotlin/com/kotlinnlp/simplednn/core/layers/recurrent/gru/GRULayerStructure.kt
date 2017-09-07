@@ -29,7 +29,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 class GRULayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
-  params: LayerParameters,
+  params: LayerParameters<*>,
   layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0

@@ -57,7 +57,7 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  override fun forward(layerContributions: LayerParameters) {
+  override fun forward(layerContributions: LayerParameters<*>) {
     this.layer.params as DeltaRNNLayerParameters
     layerContributions as DeltaRNNLayerParameters
 
