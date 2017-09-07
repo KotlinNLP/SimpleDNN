@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
  */
 class ParamsOptimizer<ParamsType: IterableParams<ParamsType>>(
   val params: ParamsType,
-  updateMethod: UpdateMethod
+  updateMethod: UpdateMethod<*>
 ) : Optimizer(updateMethod) {
 
   /**

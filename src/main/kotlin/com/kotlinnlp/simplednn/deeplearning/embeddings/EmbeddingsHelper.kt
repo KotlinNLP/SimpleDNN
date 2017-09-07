@@ -21,7 +21,7 @@ import java.util.*
  */
 class EmbeddingsHelper(
   val embeddings: EmbeddingsContainer,
-  updateMethod: UpdateMethod,
+  updateMethod: UpdateMethod<*>,
   private val dropoutConfiguration: DropoutConfiguration): Optimizer(updateMethod) {
 
   /**

@@ -19,7 +19,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class EmbeddingsOptimizer(
   val embeddingsContainer: EmbeddingsContainer,
-  updateMethod: UpdateMethod
+  updateMethod: UpdateMethod<*>
 ) : Optimizer(updateMethod) {
 
   /**

@@ -19,7 +19,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class AttentionLayerOptimizer(
   val params: AttentionLayerParameters,
-  updateMethod: UpdateMethod
+  updateMethod: UpdateMethod<*>
 ) : Optimizer(updateMethod) {
 
   /**

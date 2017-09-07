@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
  */
 class DeepBiRNNOptimizer(
   network: DeepBiRNN,
-  updateMethod: UpdateMethod = ADAMMethod(stepSize = 0.0001)
+  updateMethod: UpdateMethod<*> = ADAMMethod(stepSize = 0.0001)
 ) : Optimizer(updateMethod) {
 
   /**

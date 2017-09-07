@@ -24,7 +24,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class SWSLOptimizer(
   private val network: SWSLNetwork,
-  updateMethod: UpdateMethod = ADAMMethod(stepSize = 0.001)
+  updateMethod: UpdateMethod<*> = ADAMMethod(stepSize = 0.001)
 ) : Optimizer(updateMethod) {
 
   /**

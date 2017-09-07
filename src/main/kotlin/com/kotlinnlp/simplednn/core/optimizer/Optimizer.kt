@@ -17,7 +17,7 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  *
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
-abstract class Optimizer(val updateMethod: UpdateMethod) : ScheduledUpdater {
+abstract class Optimizer(val updateMethod: UpdateMethod<*>) : ScheduledUpdater {
 
   /**
    * Update the parameters of the neural element associated to this optimizer.
