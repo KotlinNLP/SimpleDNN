@@ -5,43 +5,51 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package deeplearning.attentionnetwork
+package optimizer
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetwork
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import deeplearning.attentionnetwork.utils.AttentionLayerUtils
 import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import kotlin.test.assertFails
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 /**
  *
  */
-class AttentionNetworkParamsOptimizerSpec : Spek({
+class ParamsOptimizerSpec : Spek({
 
-  describe("an AttentionNetworkOptimizer") {
+  describe("a ParamsOptimizer") {
 
     val learningRateMethod = LearningRateMethod(learningRate = 0.1)
 
-    on("update") {
+    context("not compatible params errors") {
 
-      it("should raise an Exception with params errors not compatible") {
+      val optimizer = ParamsOptimizer(
+        params = AttentionNetworkParameters(inputSize = 2, attentionSize = 3, sparseInput = false),
+        updateMethod = learningRateMethod
+      )
 
-        val optimizer = AttentionNetworkOptimizer(
-          model = AttentionNetworkParameters(inputSize = 2, attentionSize = 3, sparseInput = false),
-          updateMethod = learningRateMethod
-        )
+      on("update") {
 
-        assertFails { optimizer.accumulate(paramsErrors = AttentionLayerUtils.buildAttentionNetworkParams1()) }
+        it("should raise an Exception") {
+          assertFailsWith<IllegalArgumentException> {
+            optimizer.accumulate(paramsErrors = AttentionLayerUtils.buildAttentionNetworkParams1())
+          }
+        }
       }
+    }
+
+    context("compatible params errors") {
 
       val network = AttentionNetwork<DenseNDArray>(
         model = AttentionNetworkParameters(inputSize = 4, attentionSize = 2),
@@ -51,7 +59,7 @@ class AttentionNetworkParamsOptimizerSpec : Spek({
       network.model.attentionParams.contextVector.values.assignValues(params.attentionParams.contextVector.values)
       network.model.transformParams.zip(params.transformParams).forEach { (a, b) -> a.values.assignValues(b.values) }
 
-      val optimizer = AttentionNetworkOptimizer(model = network.model, updateMethod = learningRateMethod)
+      val optimizer = ParamsOptimizer(params = network.model, updateMethod = learningRateMethod)
       val errors1 = AttentionLayerUtils.buildAttentionNetworkParams1()
       val errors2 = AttentionLayerUtils.buildAttentionNetworkParams2()
 
