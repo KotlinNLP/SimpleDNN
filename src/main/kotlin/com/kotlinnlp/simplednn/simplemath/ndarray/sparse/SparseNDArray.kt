@@ -381,49 +381,55 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
+   * Sum the values of [a] to this [SparseNDArray], updating the arrays [values], [rowIndices] and [colIndices] with all
+   * the entries which are in [a] and not in this [SparseNDArray] and adding the values of [a] at indices already active
+   * in this.
    *
+   * @param a the [SparseNDArray] to add to this
+   *
+   * @return this [SparseNDArray]
    */
   fun assignSumMerging(a: SparseNDArray): SparseNDArray {
     require(a.shape == this.shape) { "Arrays with different size" }
 
-    val activeIndices = Array(
-      size = this.values.size + a.values.size,
-      init = { i ->
-        val ref: SparseNDArray = if (i < this.values.size) this else a
-        val index: Int = i % this.values.size
+    fun SparseNDArray.getLinearIndex(arrayIndex: Int): Int {
+      return this.colIndices[arrayIndex] * this.shape.dim1 + this.rowIndices[arrayIndex]
+    }
 
-        val value: Double = ref.values[index]
-        val row: Int = ref.rowIndices[index]
-        val col: Int = ref.colIndices[index]
+    val thisSize = this.values.size
+    val aSize = a.values.size
+    val concatSize = thisSize + aSize
 
-        SparseEntry(Indices(row, col), value)
-      })
+    val reducedValues = DoubleArray(size = concatSize)
+    val reducedRows = IntArray(size = concatSize)
+    val reducedCols = IntArray(size = concatSize)
 
-    val values = arrayListOf<Double>()
-    val rows = arrayListOf<Int>()
-    val columns = arrayListOf<Int>()
+    var k = 0
+    var aK = 0
+    var lastIndex = -1
 
-    for ((indices, value) in activeIndices.sortedWith(Comparator { (aIndices), (bIndices) ->
-      if (aIndices.second != bIndices.second) {
-        aIndices.second - bIndices.second
+    for (i in 0 until concatSize) {
+      val thisRef: Boolean = aK >= aSize || (k < thisSize && this.getLinearIndex(k) < a.getLinearIndex(aK))
+      val ref: SparseNDArray = if (thisRef) this else a
+      val index: Int = if (thisRef) k++ else aK++
+
+      if (lastIndex >= 0
+        && ref.rowIndices[index] == reducedRows[lastIndex]
+        && ref.colIndices[index] == reducedCols[lastIndex]) {
+
+        reducedValues[lastIndex] = reducedValues[lastIndex] + ref.values[index]
+
       } else {
-        aIndices.first - bIndices.first
-      }
-    })) {
-      if (value != 0.0) {
-        if (values.size == 0 || columns.last() != indices.second || rows.last() != indices.first) {
-          values.add(value)
-          rows.add(indices.first)
-          columns.add(indices.second)
-        } else {
-          values[values.lastIndex] += value
-        }
+        lastIndex++
+        reducedValues[lastIndex] = ref.values[index]
+        reducedRows[lastIndex] = ref.rowIndices[index]
+        reducedCols[lastIndex] = ref.colIndices[index]
       }
     }
 
-    this.values = values.toTypedArray()
-    this.rowIndices = rows.toTypedArray()
-    this.colIndices = columns.toTypedArray()
+    this.values = reducedValues.copyOfRange(0, lastIndex + 1).toTypedArray()
+    this.rowIndices = reducedRows.copyOfRange(0, lastIndex + 1).toTypedArray()
+    this.colIndices= reducedCols.copyOfRange(0, lastIndex + 1).toTypedArray()
 
     return this
   }
@@ -912,39 +918,39 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    */
   private fun sortValues() {
     if (this.colIndices.size > 1) {
-      this.quicksort(0, this.colIndices.lastIndex)
+      this.quicksort(0, this.colIndices.lastIndex, this::compareArrays, this::swapArrays)
     }
   }
 
   /**
    *
    */
-  private fun quicksort(lo: Int, hi: Int) {
+  private fun quicksort(lo: Int, hi: Int, compare: (Int, Int) -> Int, swap: (Int, Int) -> Unit) {
 
     if (lo < hi) {
-      val p: Int = this.partition(lo, hi)
-      this.quicksort(lo, p - 1)
-      this.quicksort(p + 1, hi)
+      val p: Int = this.partition(lo, hi, compare, swap)
+      this.quicksort(lo, p - 1, compare, swap)
+      this.quicksort(p + 1, hi, compare, swap)
     }
   }
 
   /**
    *
    */
-  private fun partition(lo: Int, hi: Int): Int {
+  private fun partition(lo: Int, hi: Int, compare: (Int, Int) -> Int, swap: (Int, Int) -> Unit): Int {
 
     val pivot: Int = hi
     var i: Int = lo
 
-    while (i < pivot && this.compareArrays(i, pivot) <= 0) i++
+    while (i < pivot && compare(i, pivot) <= 0) i++
 
     for (j in (i + 1) until hi) {
-      if (this.compareArrays(j, pivot) <= 0) {
-        this.swap(i++, j)
+      if (compare(j, pivot) <= 0) {
+        swap(i++, j)
       }
     }
 
-    this.swap(i, pivot)
+    swap(i, pivot)
 
     return i
   }
@@ -962,7 +968,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  private fun swap(i: Int, j: Int) {
+  private fun swapArrays(i: Int, j: Int) {
     if (i != j) {
       this.swapArray(this.values, i, j)
       this.swapArray(this.rowIndices, i, j)
