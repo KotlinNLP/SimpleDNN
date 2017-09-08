@@ -35,9 +35,9 @@ abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(val r
     = this.structureClass.constructors.first().call(array.values.shape)
 
   /**
+   * @param array the array from which to extract the support structure
    *
-   * @param array parameter
-   * @return the update neuralnetwork for the parameter
+   * @return the [UpdaterSupportStructure] extracted from the given [array]
    */
   fun getSupportStructure(array: UpdatableDenseArray): SupportStructureType {
 
