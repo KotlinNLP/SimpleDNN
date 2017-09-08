@@ -9,7 +9,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softsign
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGradMethod
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
@@ -82,7 +82,7 @@ class SparseInputTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArray>>) {
 
     val optimizer = ParamsOptimizer(
       params = this.neuralNetwork.model,
-      updateMethod = LearningRateMethod(learningRate = 0.01)
+      updateMethod = AdaGradMethod(learningRate = 0.1)
     )
 
     val trainingHelper = FeedforwardTrainingHelper<SparseBinaryNDArray>(
