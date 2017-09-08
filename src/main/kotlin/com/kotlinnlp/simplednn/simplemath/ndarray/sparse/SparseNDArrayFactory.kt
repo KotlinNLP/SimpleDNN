@@ -69,13 +69,17 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
     val rows = arrayListOf<Int>()
     val columns = arrayListOf<Int>()
 
-    for ((indices, value) in activeIndicesValues.sortedWith(Comparator<SparseEntry> { (aIndices), (bIndices) ->
+    for ((indices, value) in activeIndicesValues.sortedWith(Comparator { (aIndices), (bIndices) ->
       if (aIndices.second != bIndices.second) {
         aIndices.second - bIndices.second
       } else {
         aIndices.first - bIndices.first
       }
     })) {
+      require(indices.first < shape.dim1 && indices.second < shape.dim2) {
+        "Indices out of bounds (%d, %d)".format(indices.first, indices.second)
+      }
+
       if (value != 0.0) {
         values.add(value)
         rows.add(indices.first)
