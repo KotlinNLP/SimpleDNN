@@ -84,7 +84,7 @@ class SparseNDArraySpec : Spek({
           activeIndicesValues = arrayOf(
             Pair(Pair(0, 1), 0.2),
             Pair(Pair(1, 0), 0.1),
-            Pair(Pair(1, 3), 0.1),
+            Pair(Pair(1, 2), 0.1),
             Pair(Pair(2, 2), 0.5),
             Pair(Pair(2, 1), 0.3)
           ),
@@ -94,8 +94,7 @@ class SparseNDArraySpec : Spek({
           activeIndicesValues = arrayOf(
             Pair(Pair(0, 1), 0.3),
             Pair(Pair(1, 0), 0.6),
-            Pair(Pair(1, 2), 0.1),
-            Pair(Pair(1, 3), 0.1),
+            Pair(Pair(1, 2), 0.2),
             Pair(Pair(2, 1), 0.3),
             Pair(Pair(2, 2), 0.7),
             Pair(Pair(3, 1), 0.3)
