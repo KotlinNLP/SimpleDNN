@@ -512,6 +512,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
+  @Suppress("UNCHECKED_CAST")
   fun assignDot(a: DenseNDArray, b: SparseBinaryNDArray): SparseNDArray {
     require(a.rows == this.rows) { "a.rows (%d) != this.rows (%d)".format(a.rows, this.rows) }
     require(b.columns == this.columns) { "b.columns (%d) != this.columns (%d)".format(b.columns, this.columns) }
@@ -520,15 +521,15 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
     when {
       b.rows == 1 -> {
         // Column vector (dot) row vector
-        this.zeros()
 
-        val valuesCount = b.activeIndicesByColumn.keys.size * a.rows
-        val values = Array(size = valuesCount, init = { 0.0 })
-        val rows = Array(size = valuesCount, init = { 0 })
-        val columns = Array(size = valuesCount, init = { 0 })
+        val bActiveIndices = b.activeIndicesByColumn.keys
+        val valuesCount = bActiveIndices.size * a.rows
+        val values = arrayOfNulls<Double>(size = valuesCount)
+        val rows = arrayOfNulls<Int>(size = valuesCount)
+        val columns = arrayOfNulls<Int>(size = valuesCount)
 
         var k = 0
-        for (j in b.activeIndicesByColumn.keys) {
+        for (j in bActiveIndices) {
           for (i in 0 until a.rows) {
             values[k] = a[i]
             rows[k] = i
@@ -537,9 +538,9 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
           }
         }
 
-        this.values = values
-        this.rowIndices = rows
-        this.colIndices = columns
+        this.values = values as Array<Double>
+        this.rowIndices = rows as Array<Int>
+        this.colIndices = columns as Array<Int>
 
       }
       b.columns == 1 -> {
