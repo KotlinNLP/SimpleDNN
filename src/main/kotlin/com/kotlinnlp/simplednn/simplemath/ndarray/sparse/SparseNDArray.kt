@@ -389,6 +389,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    *
    * @return this [SparseNDArray]
    */
+  @Suppress("UNCHECKED_CAST")
   fun assignSumMerging(a: SparseNDArray): SparseNDArray {
     require(a.shape == this.shape) { "Arrays with different size" }
 
@@ -400,9 +401,9 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
     val aSize = a.values.size
     val concatSize = thisSize + aSize
 
-    val reducedValues = DoubleArray(size = concatSize)
-    val reducedRows = IntArray(size = concatSize)
-    val reducedCols = IntArray(size = concatSize)
+    val reducedValues = arrayOfNulls<Double>(size = concatSize)
+    val reducedRows = arrayOfNulls<Int>(size = concatSize)
+    val reducedCols = arrayOfNulls<Int>(size = concatSize)
 
     var k = 0
     var aK = 0
@@ -417,7 +418,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
         && ref.rowIndices[index] == reducedRows[lastIndex]
         && ref.colIndices[index] == reducedCols[lastIndex]) {
 
-        reducedValues[lastIndex] = reducedValues[lastIndex] + ref.values[index]
+        reducedValues[lastIndex] = reducedValues[lastIndex]!! + ref.values[index]
 
       } else {
         lastIndex++
@@ -427,9 +428,9 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
       }
     }
 
-    this.values = reducedValues.copyOfRange(0, lastIndex + 1).toTypedArray()
-    this.rowIndices = reducedRows.copyOfRange(0, lastIndex + 1).toTypedArray()
-    this.colIndices= reducedCols.copyOfRange(0, lastIndex + 1).toTypedArray()
+    this.values = reducedValues.copyOfRange(0, lastIndex + 1) as Array<Double>
+    this.rowIndices = reducedRows.copyOfRange(0, lastIndex + 1) as Array<Int>
+    this.colIndices= reducedCols.copyOfRange(0, lastIndex + 1) as Array<Int>
 
     return this
   }
