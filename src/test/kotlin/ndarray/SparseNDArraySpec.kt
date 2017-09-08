@@ -15,6 +15,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -24,6 +25,27 @@ import kotlin.test.assertTrue
 class SparseNDArraySpec : Spek({
 
   describe("a SparseNDArray") {
+
+    context("initialization") {
+
+      on("indices out of bounds") {
+
+        it("should raise an Exception") {
+
+          assertFails {
+            SparseNDArrayFactory.arrayOf(
+              activeIndicesValues = arrayOf(
+                Pair(Pair(0, 1), 0.1),
+                Pair(Pair(1, 0), 0.5),
+                Pair(Pair(1, 3), 0.1),
+                Pair(Pair(2, 2), 0.2),
+                Pair(Pair(3, 1), 0.3)
+              ),
+              shape = Shape(4, 3))
+          }
+        }
+      }
+    }
 
     context("iteration") {
 
