@@ -18,7 +18,7 @@ class Shuffler(enablePseudoRandom: Boolean = true, seed: Long = 1) {
   /**
    *
    */
-  private fun swap(xs: IntArray, i: Int, j: Int) : Unit {
+  private fun swap(xs: IntArray, i: Int, j: Int) {
     val t = xs[i]
     xs[i] = xs[j]
     xs[j] = t
@@ -27,7 +27,7 @@ class Shuffler(enablePseudoRandom: Boolean = true, seed: Long = 1) {
   /**
    *
    */
-  operator fun invoke(xs: IntArray) : Unit {
+  operator fun invoke(xs: IntArray) {
     for (i in xs.indices.reversed()) {
       swap(xs, i, rndGenerator.nextInt(i + 1))
     }
