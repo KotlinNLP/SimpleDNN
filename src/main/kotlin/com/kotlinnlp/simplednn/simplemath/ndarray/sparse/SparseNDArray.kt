@@ -276,8 +276,21 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  fun assignValues(a: SparseNDArray): SparseNDArray {
+  override fun assignValues(a: NDArray<*>): SparseNDArray {
     require(a.shape == this.shape)
+
+    return when(a) {
+      is DenseNDArray -> TODO("not implemented")
+      is SparseNDArray -> this.assignValues(a)
+      is SparseBinaryNDArray -> TODO("not implemented")
+      else -> throw RuntimeException("Invalid NDArray type")
+    }
+  }
+
+  /**
+   *
+   */
+  private fun assignValues(a: SparseNDArray): SparseNDArray {
 
     this.values = a.values.copyOf()
     this.rowIndices = a.rowIndices.copyOf()
@@ -298,19 +311,6 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
     this.colIndices = colIndices.copyOf()
 
     return this
-  }
-
-  /**
-   *
-   */
-  override fun assignValues(a: NDArray<*>): SparseNDArray {
-
-    return when(a) {
-      is DenseNDArray -> TODO("not implemented")
-      is SparseNDArray -> this.assignValues(a)
-      is SparseBinaryNDArray -> TODO("not implemented")
-      else -> throw RuntimeException("Invalid NDArray type")
-    }
   }
 
   /**
@@ -369,7 +369,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  fun assignSum(a: SparseNDArray): SparseNDArray {
+  private fun assignSum(a: SparseNDArray): SparseNDArray {
     require(a.shape == this.shape) { "Arrays with different size" }
     require(a.values.size == this.values.size) { "Arrays with a different amount of active values" }
 
@@ -513,8 +513,22 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
+  override fun assignDot(a: DenseNDArray, b: NDArray<*>): SparseNDArray {
+
+    when(b) {
+      is DenseNDArray -> TODO("not implemented")
+      is SparseNDArray -> TODO("not implemented")
+      is SparseBinaryNDArray -> this.assignDot(a, b)
+    }
+
+    return this
+  }
+
+  /**
+   *
+   */
   @Suppress("UNCHECKED_CAST")
-  fun assignDot(a: DenseNDArray, b: SparseBinaryNDArray): SparseNDArray {
+  private fun assignDot(a: DenseNDArray, b: SparseBinaryNDArray): SparseNDArray {
     require(a.rows == this.rows) { "a.rows (%d) != this.rows (%d)".format(a.rows, this.rows) }
     require(b.columns == this.columns) { "b.columns (%d) != this.columns (%d)".format(b.columns, this.columns) }
     require(a.columns == b.rows) { "a.columns (%d) != b.rows (%d)".format(a.columns, b.rows) }
@@ -555,20 +569,6 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
       }
       else -> // n-dim array (dot) n-dim array
         TODO("not implemented")
-    }
-
-    return this
-  }
-
-  /**
-   *
-   */
-  override fun assignDot(a: DenseNDArray, b: NDArray<*>): SparseNDArray {
-
-    when(b) {
-      is DenseNDArray -> TODO("not implemented")
-      is SparseNDArray -> TODO("not implemented")
-      is SparseBinaryNDArray -> this.assignDot(a, b)
     }
 
     return this
@@ -709,19 +709,6 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override fun div(a: NDArray<*>): SparseNDArray {
-
-    return when(a) {
-      is DenseNDArray -> TODO("not implemented")
-      is SparseNDArray -> this.div(a)
-      is SparseBinaryNDArray -> TODO("not implemented")
-      else -> throw RuntimeException("Invalid NDArray type")
-    }
-  }
-
-  /**
-   *
-   */
   override fun div(a: SparseNDArray): SparseNDArray {
     require(a.shape == this.shape) { "Arrays with different size" }
     require(a.values.size == this.values.size) { "Arrays with a different amount of active values" }
@@ -731,6 +718,19 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
       values = Array(size = this.values.size, init = { i -> this.values[i] / a.values[i]}),
       rows = this.rowIndices.copyOf(),
       columns = this.colIndices.copyOf())
+  }
+
+  /**
+   *
+   */
+  override fun div(a: NDArray<*>): SparseNDArray {
+
+    return when(a) {
+      is DenseNDArray -> TODO("not implemented")
+      is SparseNDArray -> this.div(a)
+      is SparseBinaryNDArray -> TODO("not implemented")
+      else -> throw RuntimeException("Invalid NDArray type")
+    }
   }
 
   /**
