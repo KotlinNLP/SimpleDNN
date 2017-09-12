@@ -197,20 +197,19 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
-   * Assign the values of a to this DenseNDArray (it works also among rows and columns vectors)
+   * Assign the values of [a] to this [DenseNDArray] (it works also among rows and columns vectors).
+   *
+   * @param a a generic [NDArray]
+   *
+   * @return this [DenseNDArray]
    */
   override fun assignValues(a: NDArray<*>): DenseNDArray {
     require(this.shape == a.shape ||
       (this.isVector && a.isVector && this.length == a.length))
 
     when(a) {
-      is DenseNDArray -> System.arraycopy(a.storage.data, 0, this.storage.data, 0, this.length)
-      is SparseNDArray -> {
-        this.zeros()
-        for (k in 0 until a.values.size) {
-          this[a.rowIndices[k], a.colIndices[k]] = a.values[k]
-        }
-      }
+      is DenseNDArray -> this.assignValues(a)
+      is SparseNDArray -> this.assignValues(a)
       is SparseBinaryNDArray -> TODO("not implemented")
     }
 
@@ -218,9 +217,34 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   * Assign the values of [a] to this [DenseNDArray] (it works also among rows and columns vectors).
+   *
+   * @param a a [DenseNDArray]
+   */
+  private fun assignValues(a: DenseNDArray) {
+    System.arraycopy(a.storage.data, 0, this.storage.data, 0, this.length)
+  }
+
+  /**
+   * Assign the values of [a] to this [DenseNDArray] (it works also among rows and columns vectors).
+   *
+   * @param a a [SparseNDArray]
+   */
+  private fun assignValues(a: SparseNDArray) {
+
+    this.zeros()
+
+    for (k in 0 until a.values.size) {
+      this[a.rowIndices[k], a.colIndices[k]] = a.values[k]
+    }
+  }
+
+  /**
    *
    */
   override fun assignValues(a: NDArray<*>, mask: NDArrayMask): DenseNDArray {
+    require(a.shape == this.shape) { "Arrays with different size" }
+    require(mask.shape == this.shape) { "Mask has not compatible shape" }
 
     when(a) {
       is DenseNDArray -> this.assignValues(a, mask)
@@ -234,9 +258,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  fun assignValues(a: DenseNDArray, mask: NDArrayMask): DenseNDArray {
-    require(a.shape == this.shape) { "Arrays with different size" }
-    require(mask.shape == this.shape) { "Mask has not compatible shape" }
+  private fun assignValues(a: DenseNDArray, mask: NDArrayMask): DenseNDArray {
 
     for (index in 0 until mask.size) {
       val i = mask.dim1[index]
@@ -250,9 +272,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  fun assignValues(a: SparseNDArray, mask: NDArrayMask): DenseNDArray {
-    require(a.shape == this.shape) { "Arrays with different size" }
-    require(mask.shape == this.shape) { "Mask has not compatible shape" }
+  private fun assignValues(a: SparseNDArray, mask: NDArrayMask): DenseNDArray {
     require(a.values.size == mask.size) { "Mask has a different number of active values respect of a" }
 
     for (index in 0 until mask.size) {
@@ -308,7 +328,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  fun assignSum(a: SparseNDArray): DenseNDArray {
+  private fun assignSum(a: SparseNDArray): DenseNDArray {
 
     for (index in 0 until a.values.size) {
       this.storage.put(
@@ -477,7 +497,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  fun assignDot(a: DenseNDArray, b: SparseBinaryNDArray): DenseNDArray {
+  private fun assignDot(a: DenseNDArray, b: SparseBinaryNDArray): DenseNDArray {
     require(a.rows == this.rows && b.columns == this.columns && a.columns == b.rows)
 
     this.zeros()
