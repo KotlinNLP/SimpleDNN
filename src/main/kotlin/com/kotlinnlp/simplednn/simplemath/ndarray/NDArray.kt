@@ -408,6 +408,14 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
+  fun equals(a: Any, tolerance: Double = 10e-4): Boolean {
+    @Suppress("UNCHECKED_CAST")
+    return a::class.isInstance(this) && this.equals(a as SelfType, tolerance)
+  }
+
+  /**
+   *
+   */
   override fun toString(): String
 
   /**
