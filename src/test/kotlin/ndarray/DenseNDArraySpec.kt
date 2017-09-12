@@ -10,9 +10,12 @@ package ndarray
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.simplemath.concatVectorsV
 import com.kotlinnlp.simplednn.simplemath.equals
+import com.kotlinnlp.simplednn.simplemath.ndarray.Indices
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.SparseEntry
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArrayFactory
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.jetbrains.spek.api.Spek
@@ -149,6 +152,22 @@ class DenseNDArraySpec : Spek({
     context("equality with tolerance") {
 
       val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.123, 0.234, 0.345, 0.012))
+
+      on("comparison with different types") {
+
+        val arrayToCompare = SparseNDArrayFactory.arrayOf(
+          activeIndicesValues = arrayOf(
+            SparseEntry(Indices(0, 0), 0.123),
+            SparseEntry(Indices(1, 0), 0.234),
+            SparseEntry(Indices(2, 0), 0.345),
+            SparseEntry(Indices(3, 0), 0.012)
+          ),
+          shape = Shape(4))
+
+        it("should return false") {
+          assertFalse { array.equals(arrayToCompare, tolerance = 1.0e0-3) }
+        }
+      }
 
       on("comparison within the tolerance") {
 
