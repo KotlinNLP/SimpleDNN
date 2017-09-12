@@ -920,39 +920,39 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    */
   private fun sortValues() {
     if (this.colIndices.size > 1) {
-      this.quicksort(0, this.colIndices.lastIndex, this::compareArrays, this::swapArrays)
+      this.quicksort(0, this.colIndices.lastIndex)
     }
   }
 
   /**
    *
    */
-  private fun quicksort(lo: Int, hi: Int, compare: (Int, Int) -> Int, swap: (Int, Int) -> Unit) {
+  private fun quicksort(lo: Int, hi: Int) {
 
     if (lo < hi) {
-      val p: Int = this.partition(lo, hi, compare, swap)
-      this.quicksort(lo, p - 1, compare, swap)
-      this.quicksort(p + 1, hi, compare, swap)
+      val p: Int = this.partition(lo, hi)
+      this.quicksort(lo, p - 1)
+      this.quicksort(p + 1, hi)
     }
   }
 
   /**
    *
    */
-  private fun partition(lo: Int, hi: Int, compare: (Int, Int) -> Int, swap: (Int, Int) -> Unit): Int {
+  private fun partition(lo: Int, hi: Int): Int {
 
     val pivot: Int = hi
     var i: Int = lo
 
-    while (i < pivot && compare(i, pivot) <= 0) i++
+    while (i < pivot && this.compareArrays(i, pivot) <= 0) i++
 
     for (j in (i + 1) until hi) {
-      if (compare(j, pivot) <= 0) {
-        swap(i++, j)
+      if (this.compareArrays(j, pivot) <= 0) {
+        this.swapArrays(i++, j)
       }
     }
 
-    swap(i, pivot)
+    this.swapArrays(i, pivot)
 
     return i
   }
