@@ -17,10 +17,7 @@ import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import kotlin.test.assertEquals
-import kotlin.test.assertFails
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 /**
  *
@@ -173,6 +170,23 @@ class CFNLayerParametersSpec : Spek({
       on("iteration 8") {
         it("should return true when calling hasNext()") {
           assertFalse(iterator.hasNext())
+        }
+      }
+    }
+
+    context("copy") {
+
+      val params = CFNLayerParameters(inputSize = 3, outputSize = 2)
+      params.initialize()
+      val clonedParams = params.copy()
+
+      it("should return a new element") {
+        assertNotEquals(params, clonedParams)
+      }
+
+      it("should return params with same values") {
+        assertTrue {
+          params.zip(clonedParams).all { it.first.values.equals(it.second.values, tolerance = 1.0e-06) }
         }
       }
     }
