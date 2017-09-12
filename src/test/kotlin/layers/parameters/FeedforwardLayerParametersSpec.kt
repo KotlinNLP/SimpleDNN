@@ -28,7 +28,7 @@ import kotlin.test.assertTrue
  */
 class FeedforwardLayerParametersSpec : Spek({
 
-  describe("a FeedforwardNetworkParameters") {
+  describe("a FeedforwardLayerParameters") {
 
     context("initialization") {
 

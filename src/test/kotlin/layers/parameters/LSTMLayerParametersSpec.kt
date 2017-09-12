@@ -27,7 +27,7 @@ import kotlin.test.assertTrue
  */
 class LSTMLayerParametersSpec : Spek({
 
-  describe("a LSTMNetworkParameters") {
+  describe("a LSTMLayerParameters") {
 
     context("initialization") {
 

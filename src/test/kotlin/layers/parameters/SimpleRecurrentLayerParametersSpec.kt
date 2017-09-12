@@ -27,7 +27,7 @@ import kotlin.test.assertTrue
  */
 class SimpleRecurrentLayerParametersSpec : Spek({
 
-  describe("a SimpleRecurrentNetworkParameters") {
+  describe("a SimpleRecurrentLayerParameters") {
 
     context("initialization") {
 

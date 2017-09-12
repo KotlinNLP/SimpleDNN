@@ -27,7 +27,7 @@ import kotlin.test.assertTrue
  */
 class GRULayerParametersSpec : Spek({
 
-  describe("a GRUNetworkParameters") {
+  describe("a GRULayerParameters") {
 
     context("initialization") {
 

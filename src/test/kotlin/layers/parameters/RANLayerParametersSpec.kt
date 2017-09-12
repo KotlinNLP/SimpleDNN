@@ -27,7 +27,7 @@ import kotlin.test.assertTrue
  */
 class RANLayerParametersSpec : Spek({
 
-  describe("a RANNetworkParameters") {
+  describe("a RANLayerParameters") {
 
     context("initialization") {
 

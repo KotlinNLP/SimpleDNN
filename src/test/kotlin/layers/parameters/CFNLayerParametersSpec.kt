@@ -27,7 +27,7 @@ import kotlin.test.assertTrue
  */
 class CFNLayerParametersSpec : Spek({
 
-  describe("a CFNNetworkParameters") {
+  describe("a CFNLayerParameters") {
 
     context("initialization") {
 
