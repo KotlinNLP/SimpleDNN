@@ -259,7 +259,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
       propagateToInput = isNotLastLevel || propagateToInput)
 
     if (isNotLastLevel) {
-      this.encodersPools[levelIndex].getItem().getInputSequenceErrors().forEachIndexed { i, errors ->
+      this.usedEncodersPerLevel[levelIndex][groupIndex].getInputSequenceErrors().forEachIndexed { i, errors ->
         this.backwardHierarchicalGroup(
           outputErrors = errors,
           levelIndex = levelIndex + 1,
