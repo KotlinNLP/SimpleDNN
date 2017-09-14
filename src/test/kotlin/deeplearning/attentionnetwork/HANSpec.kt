@@ -35,7 +35,7 @@ class HANSpec : Spek({
         attentionSize = 5,
         outputSize = 30,
         outputActivation = Softmax(),
-        compressionFactors = arrayListOf(1.5, 2.0, 1.0))
+        compressionFactors = arrayOf(1.5, 2.0, 1.0))
 
       it("should have a BiRNN with the expected input size in the level 2") {
         assertEquals(10, han.biRNNs[2].inputSize)

@@ -34,7 +34,7 @@ import java.io.Serializable
  *                              input size of each hierarchical level in respect of its output, starting from the lowest
  *                              level. By default the first factor is 2.0, the others 1.0.
  */
-data class HAN(
+class HAN(
   val hierarchySize: Int = 2,
   val inputSize: Int,
   val biRNNsActivation: ActivationFunction?,
@@ -42,9 +42,9 @@ data class HAN(
   val attentionSize: Int,
   val outputSize: Int,
   val outputActivation: ActivationFunction?,
-  val compressionFactors: ArrayList<Double> = arrayListOf(*Array(
+  val compressionFactors: Array<Double> = Array(
     size = hierarchySize,
-    init = { i -> if (i == 0) 2.0 else 1.0 }))
+    init = { i -> if (i == 0) 2.0 else 1.0 })
 ) : Serializable {
 
   companion object {
