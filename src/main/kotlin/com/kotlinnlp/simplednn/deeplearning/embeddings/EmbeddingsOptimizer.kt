@@ -39,7 +39,7 @@ class EmbeddingsOptimizer(
 
     for ((embeddingIndex, embeddingsErrors) in this.embeddingsErrorsMap) {
       embeddingsErrors.errors.assignDiv(embeddingsErrors.count.toDouble()) // average errors
-      this.updateMethod.update(this.embeddingsContainer.getEmbedding(embeddingIndex).array, embeddingsErrors.errors)
+      this.updateMethod.update(this.embeddingsContainer.getEmbeddingByInt(embeddingIndex).array, embeddingsErrors.errors)
     }
 
     this.embeddingsErrorsMap.clear()

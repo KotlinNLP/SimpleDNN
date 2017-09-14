@@ -59,7 +59,7 @@ class EmbeddingsHelper(
     if (rndGenerator.nextDouble() < this.dropoutConfiguration.alpha / (occurrences + this.dropoutConfiguration.alpha)){
       this.embeddings.unknownEmbedding
     } else {
-      this.embeddings.getEmbedding(index)
+      this.embeddings.getEmbeddingByInt(index)
     }
 
   /**
@@ -71,7 +71,7 @@ class EmbeddingsHelper(
    *
    * @return the embedding at the given index
    */
-  fun getEmbedding(index: Int?): EmbeddingsContainer.Embedding = this.embeddings.getEmbedding(index)
+  fun getEmbedding(index: Int?): EmbeddingsContainer.Embedding = this.embeddings.getEmbeddingByInt(index)
 
   /**
    * @return the [EmbeddingsContainer.unknownEmbedding]
