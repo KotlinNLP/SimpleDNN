@@ -56,12 +56,11 @@ class EmbeddingsOptimizer(
    */
   fun accumulate(embeddingIndex: Int?, errors: DenseNDArray) {
 
-    val index: Int = if (embeddingIndex == null)
-      -2
-    else if (embeddingIndex in 0 until this.embeddingsContainer.count)
-      embeddingIndex
-    else
-      -1 // unknown
+    val index: Int = when (embeddingIndex) {
+      null -> -2
+      in 0 until this.embeddingsContainer.count -> embeddingIndex
+      else -> -1 // unknown
+    }
 
     val embeddingsErrors: EmbeddingsErrors? = this.embeddingsErrorsMap[index]
 
