@@ -55,6 +55,11 @@ class EmbeddingsContainer(val count: Int, val size: Int) : Serializable {
   private val lookupTable = Array(size = count, init = { index -> this.buildEmbedding(index) })
 
   /**
+   * Map strings to ids of embeddings.
+   */
+  private val idsMap = mutableMapOf<String, Int>()
+
+  /**
    * The Unknown Embedding.
    */
   val unknownEmbedding = this.buildEmbedding(index = -1)
@@ -65,26 +70,51 @@ class EmbeddingsContainer(val count: Int, val size: Int) : Serializable {
   val nullEmbedding = this.buildEmbedding(index = -2)
 
   /**
-   * Get the embedding at the given [index].
-   * If the [index] is null return the [nullEmbedding].
-   * If the [index] is negative or greater than [count] return the [unknownEmbedding].
+   * Get the embedding with the given [id] as Int.
+   * If the [id] is null return the [nullEmbedding].
+   * If the [id] is negative or greater than [count] return the [unknownEmbedding].
    *
-   * @param index (can be null)
+   * @param id (can be null)
    *
-   * @return the [Embedding] at the given [index] or [nullEmbedding] or [unknownEmbedding]
+   * @return the [Embedding] with the given [id] or [nullEmbedding] or [unknownEmbedding]
    */
-  fun getEmbedding(index: Int?): Embedding {
+  fun getEmbeddingByInt(id: Int?): Embedding {
 
-    return if (index != null) {
+    return if (id != null) {
 
-      if (index in 0 until this.count)
-        this.lookupTable[index]
+      if (id in 0 until this.count)
+        this.lookupTable[id]
 
       else
         this.unknownEmbedding
 
     } else {
       this.nullEmbedding
+    }
+  }
+
+  /**
+   * Get the embedding with the given [id] as String.
+   * If the [id] is null return the [nullEmbedding].
+   * If the [id] is negative or greater than [count] return the [unknownEmbedding].
+   *
+   * @param id (can be null)
+   *
+   * @return the [Embedding] with the given [id] or [nullEmbedding] or [unknownEmbedding]
+   */
+  fun getEmbeddingByString(id: String?): Embedding {
+
+    return if (id == null) {
+
+      this.getEmbeddingByInt(id = null)
+
+    } else {
+
+      if (!this.idsMap.containsKey(id)) {
+        this.idsMap[id] = this.idsMap.size
+      }
+
+      this.getEmbeddingByInt(this.idsMap[id]!!)
     }
   }
 
