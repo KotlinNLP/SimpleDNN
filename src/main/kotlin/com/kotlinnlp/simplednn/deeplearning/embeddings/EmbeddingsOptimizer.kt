@@ -28,7 +28,7 @@ class EmbeddingsOptimizer(
   private data class EmbeddingsErrors(val errors: DenseNDArray, var count: Int)
 
   /**
-   * Map an embeddings index with its errors
+   * Map an embeddings id with its errors
    */
   private val embeddingsErrorsMap = mutableMapOf<Int, EmbeddingsErrors>()
 
@@ -46,19 +46,19 @@ class EmbeddingsOptimizer(
   }
 
   /**
-   * Accumulate errors of the embeddings with the given [embeddingIndex].
-   * If [embeddingIndex] is null [errors] will be associated to the nullEmbedding.
-   * If [embeddingIndex] is negative or greater then the embeddings count [errors] will be associated to the
+   * Accumulate errors of the embeddings with the given [embeddingId].
+   * If [embeddingId] is null [errors] will be associated to the nullEmbedding.
+   * If [embeddingId] is negative or greater then the embeddings count [errors] will be associated to the
    * unknownEmbedding.
    *
-   * @param embeddingIndex index of the embedding on which to accumulate the [errors] (can be null)
+   * @param embeddingId id of the embedding on which to accumulate the [errors] (can be null)
    * @param errors errors to accumulate
    */
-  fun accumulate(embeddingIndex: Int?, errors: DenseNDArray) {
+  fun accumulate(embeddingId: Int?, errors: DenseNDArray) {
 
-    val index: Int = when (embeddingIndex) {
+    val index: Int = when (embeddingId) {
       null -> -2
-      in 0 until this.embeddingsContainer.count -> embeddingIndex
+      in 0 until this.embeddingsContainer.count -> embeddingId
       else -> -1 // unknown
     }
 

@@ -33,10 +33,10 @@ class EmbeddingsContainer(val count: Int, val size: Int) : Serializable {
   /**
    * An Embedding is a dense vectors of real numbers.
    *
-   * @property index the index of the Embedding in the lookupTable
+   * @property id the id of the Embedding in the lookupTable
    * @property array the values of the Embedding
    */
-  data class Embedding(val index: Int, val array: UpdatableDenseArray) : Serializable {
+  data class Embedding(val id: Int, val array: UpdatableDenseArray) : Serializable {
 
     companion object {
 
@@ -49,8 +49,7 @@ class EmbeddingsContainer(val count: Int, val size: Int) : Serializable {
   }
   
   /**
-   * Map from indices to vectors, i.e. index 7 to vector [0.18, 0.12, 0.87...].
-   * The last two elements of the look-up table are the 'unknown' and 'null' vectors.
+   * Map embeddings ids to vectors, i.e. id 7 to vector [0.18, 0.12, 0.87...].
    */
   private val lookupTable = Array(size = count, init = { index -> this.buildEmbedding(index) })
 
@@ -62,12 +61,12 @@ class EmbeddingsContainer(val count: Int, val size: Int) : Serializable {
   /**
    * The Unknown Embedding.
    */
-  val unknownEmbedding = this.buildEmbedding(index = -1)
+  val unknownEmbedding = this.buildEmbedding(id = -1)
 
   /**
    * The Null Embedding.
    */
-  val nullEmbedding = this.buildEmbedding(index = -2)
+  val nullEmbedding = this.buildEmbedding(id = -2)
 
   /**
    * Get the embedding with the given [id] as Int.
@@ -137,9 +136,9 @@ class EmbeddingsContainer(val count: Int, val size: Int) : Serializable {
   }
 
   /**
-   * @param index the index associated to the [Embedding] to build
+   * @param id the id associated to the [Embedding] to build
    *
-   * @return a new [Embedding] with the given [index]
+   * @return a new [Embedding] with the given [id]
    */
-  private fun buildEmbedding(index: Int) = Embedding(index = index, array = UpdatableDenseArray(Shape(this.size)))
+  private fun buildEmbedding(id: Int) = Embedding(id = id, array = UpdatableDenseArray(Shape(this.size)))
 }

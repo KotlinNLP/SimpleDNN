@@ -90,7 +90,7 @@ class EmbeddingsHelper(
    * @param outputErrors the errors to propagate on the [embedding]
    */
   fun propagateErrors(embedding: EmbeddingsContainer.Embedding, outputErrors: DenseNDArray) {
-    optimizer.accumulate(embeddingIndex = embedding.index, errors = outputErrors)
+    optimizer.accumulate(embeddingId = embedding.id, errors = outputErrors)
   }
 
   /**

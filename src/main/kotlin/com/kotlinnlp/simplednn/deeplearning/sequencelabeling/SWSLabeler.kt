@@ -239,7 +239,7 @@ class SWSLabeler(private val network: SWSLNetwork, private val optimizer: SWSLOp
 
     this.alignLabelsEmbeddingsErrors(errors).forEach { (embeddingIndex, embeddingErrors) ->
 
-      this.optimizer!!.accumulateLabelEmbeddingErrors(embeddingIndex = embeddingIndex, errors = embeddingErrors)
+      this.optimizer!!.accumulateLabelEmbeddingErrors(embeddingId = embeddingIndex, errors = embeddingErrors)
     }
   }
 

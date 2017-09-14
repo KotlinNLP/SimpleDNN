@@ -43,13 +43,13 @@ class SWSLOptimizer(
     updateMethod = AdaGradMethod(learningRate = 0.1))
 
   /**
-   * Accumulate the embeddings errors
+   * Accumulate embeddings errors.
    *
-   * @param embeddingIndex the index of an embedding
+   * @param embeddingId the id of an embedding
    * @param errors the errors of this embedding
    */
-  fun accumulateLabelEmbeddingErrors(embeddingIndex: Int, errors: DenseNDArray) {
-    this.labelEmbeddingsOptimizer.accumulate(embeddingIndex = embeddingIndex, errors = errors)
+  fun accumulateLabelEmbeddingErrors(embeddingId: Int, errors: DenseNDArray) {
+    this.labelEmbeddingsOptimizer.accumulate(embeddingId = embeddingId, errors = errors)
   }
 
   /**
@@ -62,7 +62,7 @@ class SWSLOptimizer(
   }
 
   /**
-   * Accumulate the network params errors
+   * Accumulate network params errors.
    *
    * @param errors the params errors to accumulate
    */
