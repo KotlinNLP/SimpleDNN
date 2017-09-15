@@ -25,7 +25,7 @@ import kotlin.reflect.KClass
 class ADAMMethod(
   val stepSize: Double = 0.001,
   val beta1: Double = 0.9,
-  val beta2: Double = 0.9,
+  val beta2: Double = 0.999,
   val epsilon: Double = 1.0E-8,
   regularization: WeightsRegularization? = null
 ) : ExampleScheduling,
