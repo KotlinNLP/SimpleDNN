@@ -27,10 +27,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *   Hierarchical Attention Networks for Document Classification](https://www.cs.cmu.edu/~diyiy/docs/naacl16.pdf)
  *
  * @property model the parameters of the model of the networks
- * @property dropout the probability of dropout (default 0.0) when generating the attention arrays for the Attention
- *                   Layers. If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
-class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
+class HANEncoder(val model: HAN) {
 
   /**
    * An array containing pools of encoders ([BiRNNEncoder]s), one for each level of the HAN.
@@ -49,7 +47,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
       AttentionNetworksPool<DenseNDArray>(
         model = this.model.attentionNetworksParams[i],
         inputType = LayerType.Input.Dense,
-        dropout = this.dropout)
+        dropout = this.model.dropout)
     }
   )
 
@@ -109,7 +107,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
    * The output of the top level is classified using a single Feedforward Layer.
    *
    * @param sequencesHierarchy the sequences hierarchy of input
-   * @param useDropout whether to apply the dropout to generate the attention arrays
+   * @param useDropout whether to apply the dropout
    *
    * @return the output [DenseNDArray]
    */
@@ -202,7 +200,7 @@ class HANEncoder(val model: HAN, val dropout: Double = 0.0) {
     this.usedEncodersPerLevel[levelIndex].add(encoder)
     this.usedAttentionNetworksPerLevel[levelIndex].add(attentionNetwork)
 
-    val encodedSequence = encoder.encode(inputSequence)
+    val encodedSequence = encoder.encode(inputSequence, useDropout = useDropout)
 
     return attentionNetwork.forward(
       inputSequence = arrayListOf(*Array(

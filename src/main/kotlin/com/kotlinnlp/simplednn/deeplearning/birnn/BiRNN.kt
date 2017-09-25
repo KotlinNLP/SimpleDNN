@@ -31,6 +31,7 @@ import java.io.Serializable
  * @property hiddenSize the size of the output layer of each RNN
  * @property hiddenActivation the activation function of the output layer
  * @property recurrentConnectionType type of recurrent neural network (e.g. LSTM, GRU, CFN, SimpleRNN)
+ * @property dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.25.
  * @property outputSize the size of the [BiRNN] output layer results from the concatenation
  *                      of the hidden layers of each RNN
  */
@@ -39,6 +40,7 @@ class BiRNN(
   val inputSize: Int,
   val hiddenSize: Int,
   val hiddenActivation: ActivationFunction?,
+  val dropout: Double = 0.0,
   val recurrentConnectionType: LayerType.Connection) : Serializable {
 
   companion object {
@@ -75,6 +77,7 @@ class BiRNN(
     LayerConfiguration(
       size = this.hiddenSize,
       activationFunction = this.hiddenActivation,
+      dropout = dropout,
       connectionType = this.recurrentConnectionType))
 
   /**

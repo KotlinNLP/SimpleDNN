@@ -44,12 +44,13 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * Encode the [sequence].
    *
    * @param sequence the sequence to encode
+   * @param useDropout whether to apply the dropout
    *
    * @return the encoded sequence
    */
-  fun encode(sequence: Array<InputNDArrayType>): Array<DenseNDArray> {
+  fun encode(sequence: Array<InputNDArrayType>, useDropout: Boolean = false): Array<DenseNDArray> {
 
-    val (leftToRightOut, rightToLeftOut) = this.biEncoding(sequence)
+    val (leftToRightOut, rightToLeftOut) = this.biEncoding(sequence = sequence, useDropout = useDropout)
 
     return BiRNNUtils.concatenate(leftToRightOut, rightToLeftOut)
   }
@@ -102,20 +103,27 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * Given a [sequence] return the encoded left-to-right and right-to-left representation.
    *
    * @param sequence the sequence to encode
+   * @param useDropout whether to apply the dropout
    *
    * @return a Pair with two arrays containing the outputs of the two RNNs
    */
-  private fun biEncoding(sequence: Array<InputNDArrayType>):
+  private fun biEncoding(sequence: Array<InputNDArrayType>, useDropout: Boolean):
     Pair<Array<DenseNDArray>, Array<DenseNDArray>> {
 
     val leftToRightOut = arrayOfNulls<DenseNDArray>(sequence.size)
     val rightToLeftOut = arrayOfNulls<DenseNDArray>(sequence.size)
 
-    var isFirstElement: Boolean = true
+    var isFirstElement = true
 
     sequence.indices.zip(sequence.indices.reversed()).forEach { (i, r) ->
-      leftToRightOut[i] = this.leftToRightProcessor.forward(sequence[i], firstState = isFirstElement)
-      rightToLeftOut[r] = this.rightToLeftProcessor.forward(sequence[r], firstState = isFirstElement)
+      leftToRightOut[i] = this.leftToRightProcessor.forward(
+        featuresArray = sequence[i],
+        firstState = isFirstElement,
+        useDropout = useDropout)
+      rightToLeftOut[r] = this.rightToLeftProcessor.forward(
+        featuresArray = sequence[r],
+        firstState = isFirstElement,
+        useDropout = useDropout)
 
       isFirstElement = false
     }
