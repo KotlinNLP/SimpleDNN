@@ -30,10 +30,10 @@ import java.io.Serializable
  * @property attentionSize the size of the attention arrays of the AttentionLayers
  * @property outputSize the size of the output layer
  * @property outputActivation the activation function of the output layer
- * @property dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.25.
  * @property compressionFactors an array with [hierarchySize] elements, which defines the compression factor of the
  *                              input size of each hierarchical level in respect of its output, starting from the lowest
  *                              level. By default the first factor is 2.0, the others 1.0.
+ * @param dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.25.
  */
 class HAN(
   val hierarchySize: Int = 2,
@@ -43,10 +43,10 @@ class HAN(
   val attentionSize: Int,
   val outputSize: Int,
   val outputActivation: ActivationFunction?,
-  val dropout: Double = 0.0,
   val compressionFactors: Array<Double> = Array(
     size = hierarchySize,
-    init = { i -> if (i == 0) 2.0 else 1.0 })
+    init = { i -> if (i == 0) 2.0 else 1.0 }),
+  dropout: Double = 0.0
 ) : Serializable {
 
   companion object {
@@ -91,7 +91,7 @@ class HAN(
         inputSize = inputSize,
         hiddenSize = this.getBiRNNOutputSize(inputSize = inputSize, levelIndex = i) / 2,
         hiddenActivation = this.biRNNsActivation,
-        dropout = this.dropout,
+        dropout = dropout,
         recurrentConnectionType = this.biRNNsConnectionType)
     }
   )
