@@ -46,8 +46,7 @@ class HANEncoder(val model: HAN) {
     init = { i ->
       AttentionNetworksPool<DenseNDArray>(
         model = this.model.attentionNetworksParams[i],
-        inputType = LayerType.Input.Dense,
-        dropout = this.model.dropout)
+        inputType = LayerType.Input.Dense)
     }
   )
 
