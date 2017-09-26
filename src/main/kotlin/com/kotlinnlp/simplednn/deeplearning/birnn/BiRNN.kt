@@ -73,11 +73,11 @@ class BiRNN(
   val leftToRightNetwork = NeuralNetwork(
     LayerConfiguration(
       size = this.inputSize,
-      inputType = this.inputType),
+      inputType = this.inputType,
+      dropout = dropout),
     LayerConfiguration(
       size = this.hiddenSize,
       activationFunction = this.hiddenActivation,
-      dropout = dropout,
       connectionType = this.recurrentConnectionType))
 
   /**
@@ -86,7 +86,8 @@ class BiRNN(
   val rightToLeftNetwork = NeuralNetwork(
     LayerConfiguration(
       size = this.inputSize,
-      inputType = this.inputType),
+      inputType = this.inputType,
+      dropout = dropout),
     LayerConfiguration(
       size = this.hiddenSize,
       activationFunction = this.hiddenActivation,
