@@ -79,7 +79,7 @@ abstract class EmbeddingsContainerBase<SelfType: EmbeddingsContainerBase<SelfTyp
    *
    * @return this [EmbeddingsContainerBase]
    */
-  fun randomize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true))
+  fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true))
     : SelfType {
 
     this.lookupTable.forEach { it.array.values.randomize(randomGenerator) }
