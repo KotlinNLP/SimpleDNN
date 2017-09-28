@@ -13,7 +13,12 @@ package com.kotlinnlp.simplednn.deeplearning.embeddings
  * @property count the number of embeddings in this [EmbeddingsContainer] (e.g. number of word in a vocabulary)
  * @property size the size of each embedding (typically a range between about 50 to a few hundreds)
  */
-class EmbeddingsContainerByStrings(count: Int, size: Int) : EmbeddingsContainer(count = count, size = size) {
+class EmbeddingsContainerByStrings(
+  count: Int,
+  size: Int
+) : EmbeddingsContainerBase<EmbeddingsContainerByStrings>(
+  count = count,
+  size = size) {
 
   /**
    * Map strings to ids of embeddings.

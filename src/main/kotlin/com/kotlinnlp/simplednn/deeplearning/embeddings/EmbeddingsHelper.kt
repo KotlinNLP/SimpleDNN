@@ -55,7 +55,7 @@ class EmbeddingsHelper(
   /**
    * Replace an embedding with the 'unknown' with probability that is inversely proportional to the [occurrences].
    */
-  fun getEmbeddingDropout(index: Int?, occurrences: Int): EmbeddingsContainer.Embedding =
+  fun getEmbeddingDropout(index: Int?, occurrences: Int): Embedding =
     if (rndGenerator.nextDouble() < this.dropoutConfiguration.alpha / (occurrences + this.dropoutConfiguration.alpha)){
       this.embeddings.unknownEmbedding
     } else {
@@ -71,7 +71,7 @@ class EmbeddingsHelper(
    *
    * @return the embedding at the given index
    */
-  fun getEmbedding(index: Int?): EmbeddingsContainer.Embedding = this.embeddings.getEmbedding(index)
+  fun getEmbedding(index: Int?): Embedding = this.embeddings.getEmbedding(index)
 
   /**
    * @return the [EmbeddingsContainer.unknownEmbedding]
@@ -89,7 +89,7 @@ class EmbeddingsHelper(
    * @param embedding embedding to which propagate the [outputErrors]
    * @param outputErrors the errors to propagate on the [embedding]
    */
-  fun propagateErrors(embedding: EmbeddingsContainer.Embedding, outputErrors: DenseNDArray) {
+  fun propagateErrors(embedding: Embedding, outputErrors: DenseNDArray) {
     optimizer.accumulate(embeddingId = embedding.id, errors = outputErrors)
   }
 
