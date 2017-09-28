@@ -96,7 +96,7 @@ class SWSLNetwork(
   fun initialize(): SWSLNetwork {
 
     this.classifier.initialize()
-    this.labelsEmbeddings.randomize()
+    this.labelsEmbeddings.initialize()
 
     return this
   }

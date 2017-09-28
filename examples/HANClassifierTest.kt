@@ -60,7 +60,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
   /**
    * The embeddings associated to each token.
    */
-  private val embeddings = EmbeddingsContainer(count = 100000, size = this.EMBEDDINGS_SIZE).randomize()
+  private val embeddings = EmbeddingsContainer(count = 100000, size = this.EMBEDDINGS_SIZE).initialize()
 
   /**
    * The [HANEncoder] used as classifier (Softmax output activation).
