@@ -14,12 +14,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import java.io.Serializable
 
 /**
- * The EmbeddingsContainer
+ * A container of Embeddings mapped to Int ids.
  *
  * @property count the number of embeddings in this [EmbeddingsContainer] (e.g. number of word in a vocabulary=
  * @property size the size of each embedding (typically a range between about 50 to a few hundreds)
  */
-class EmbeddingsContainer(val count: Int, val size: Int) : Serializable {
+open class EmbeddingsContainer(val count: Int, val size: Int) : Serializable {
 
   companion object {
 
@@ -54,11 +54,6 @@ class EmbeddingsContainer(val count: Int, val size: Int) : Serializable {
   private val lookupTable = Array(size = count, init = { index -> this.buildEmbedding(index) })
 
   /**
-   * Map strings to ids of embeddings.
-   */
-  private val idsMap = mutableMapOf<String, Int>()
-
-  /**
    * The Unknown Embedding.
    */
   val unknownEmbedding = this.buildEmbedding(id = -1)
@@ -89,31 +84,6 @@ class EmbeddingsContainer(val count: Int, val size: Int) : Serializable {
 
     } else {
       this.nullEmbedding
-    }
-  }
-
-  /**
-   * Get the embedding with the given [id] as String.
-   * If the [id] is null return the [nullEmbedding].
-   * If the [id] is negative or greater than [count] return the [unknownEmbedding].
-   *
-   * @param id (can be null)
-   *
-   * @return the [Embedding] with the given [id] or [nullEmbedding] or [unknownEmbedding]
-   */
-  fun getEmbeddingByString(id: String?): Embedding {
-
-    return if (id == null) {
-
-      this.getEmbeddingByInt(id = null)
-
-    } else {
-
-      if (!this.idsMap.containsKey(id)) {
-        this.idsMap[id] = this.idsMap.size
-      }
-
-      this.getEmbeddingByInt(this.idsMap[id]!!)
     }
   }
 
