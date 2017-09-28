@@ -72,7 +72,7 @@ open class EmbeddingsContainer(val count: Int, val size: Int) : Serializable {
    *
    * @return the [Embedding] with the given [id] or [nullEmbedding] or [unknownEmbedding]
    */
-  fun getEmbeddingByInt(id: Int?): Embedding {
+  fun getEmbedding(id: Int?): Embedding {
 
     return if (id != null) {
 

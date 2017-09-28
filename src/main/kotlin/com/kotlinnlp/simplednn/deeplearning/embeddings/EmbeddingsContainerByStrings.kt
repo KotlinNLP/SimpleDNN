@@ -33,7 +33,7 @@ class EmbeddingsContainerByStrings(count: Int, size: Int) : EmbeddingsContainer(
 
     return if (id == null) {
 
-      super.getEmbeddingByInt(id = null)
+      super.getEmbedding(id = null)
 
     } else {
 
@@ -41,7 +41,7 @@ class EmbeddingsContainerByStrings(count: Int, size: Int) : EmbeddingsContainer(
         this.idsMap[id] = this.idsMap.size
       }
 
-      super.getEmbeddingByInt(this.idsMap[id]!!)
+      super.getEmbedding(this.idsMap[id]!!)
     }
   }
 }

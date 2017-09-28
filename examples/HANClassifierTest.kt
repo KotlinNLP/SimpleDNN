@@ -211,7 +211,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
       size = example.features.length,
       init = { i ->
         val wordIndex = example.features[i].toInt()
-        this.embeddings.getEmbeddingByInt(wordIndex).array.values
+        this.embeddings.getEmbedding(wordIndex).array.values
       }
     )
   }
