@@ -16,7 +16,7 @@ import java.io.Serializable
 /**
  * A container of Embeddings mapped to Int ids.
  *
- * @property count the number of embeddings in this [EmbeddingsContainer] (e.g. number of word in a vocabulary=
+ * @property count the number of embeddings in this [EmbeddingsContainer] (e.g. number of word in a vocabulary)
  * @property size the size of each embedding (typically a range between about 50 to a few hundreds)
  */
 open class EmbeddingsContainer(val count: Int, val size: Int) : Serializable {
