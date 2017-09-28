@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property updateMethod the [UpdateMethod] for the optimization (e.g. ADAM, AdaGrad, ...)
  */
 class EmbeddingsOptimizer(
-  val embeddingsContainer: EmbeddingsContainer,
+  val embeddingsContainer: EmbeddingsContainerBase<*>,
   updateMethod: UpdateMethod<*>
 ) : Optimizer(updateMethod) {
 

@@ -13,14 +13,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import java.util.*
 
 /**
- * The EmbeddingsHelper is mainly a simple wrapper of the EmbeddingsContainer.
+ * The EmbeddingsHelper is mainly a simple wrapper of the [EmbeddingsContainerBase].
  * It adds dropout functionality and include the optimizer.
  *
  * @property embeddings the embeddings container
  * @property updateMethod the [UpdateMethod] used to update the [embeddings] during the optimization
  */
 class EmbeddingsHelper(
-  val embeddings: EmbeddingsContainer,
+  val embeddings: EmbeddingsContainerBase<*>,
   updateMethod: UpdateMethod<*>,
   private val dropoutConfiguration: DropoutConfiguration): Optimizer(updateMethod) {
 
@@ -64,8 +64,8 @@ class EmbeddingsHelper(
 
   /**
    * Get the embedding at the given [index].
-   * If the [index] is null return the [EmbeddingsContainer.nullEmbedding].
-   * If the [index] is negative or greater than [count] return the [EmbeddingsContainer.unknownEmbedding].
+   * If the [index] is null return the [EmbeddingsContainerBase.nullEmbedding].
+   * If the [index] is negative or greater than [count] return the [EmbeddingsContainerBase.unknownEmbedding].
    *
    * @param index (can be null)
    *
@@ -74,12 +74,12 @@ class EmbeddingsHelper(
   fun getEmbedding(index: Int?): Embedding = this.embeddings.getEmbedding(index)
 
   /**
-   * @return the [EmbeddingsContainer.unknownEmbedding]
+   * @return the [EmbeddingsContainerBase.unknownEmbedding]
    */
   fun getUnknownEmbedding() = this.embeddings.unknownEmbedding
 
   /**
-   * @return the [EmbeddingsContainer.nullEmbedding]
+   * @return the [EmbeddingsContainerBase.nullEmbedding]
    */
   fun getNullEmbedding() = this.embeddings.nullEmbedding
 
