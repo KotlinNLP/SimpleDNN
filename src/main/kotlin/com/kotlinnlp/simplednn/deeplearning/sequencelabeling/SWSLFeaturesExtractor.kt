@@ -45,24 +45,29 @@ class SWSLFeaturesExtractor(
    * @return an array containing the features of the elements in the left context
    */
   private fun extractLeftContextFeatures(): Array<DenseNDArray> {
+
     val leftContext = this.sequence.getLeftContext()
 
-    return Array(size = this.sequence.leftContextSize, init = {
-      val i = leftContext[it]
-      if (i != null) this.sequence[i] else this.network.emptyVector
-    })
+    return Array(
+      size = this.sequence.leftContextSize,
+      init = { i -> this.getWindowElement(index = leftContext[i]) }
+    )
   }
 
   /**
    * @return an array containing the features of the labels of the elements in the left context
    */
   private fun extractLeftContextLabelsFeatures(): Array<DenseNDArray> {
+
     val leftContext = this.sequence.getLeftContext()
 
-    return Array(size = this.sequence.leftContextSize, init = {
-      val i = leftContext[it]
-      if (i != null) this.getLabelEmbedding(this.labels[i].id).array.values else this.network.emptyLabelVector
-    })
+    return Array(
+      size = this.sequence.leftContextSize,
+      init = {
+        val i = leftContext[it]
+        if (i != null) this.getLabelEmbedding(this.labels[i].id).array.values else this.network.emptyLabelVector
+      }
+    )
   }
 
   /**
@@ -74,12 +79,13 @@ class SWSLFeaturesExtractor(
    * @return an array containing the features of the elements in the right context
    */
   private fun extractRightContextFeatures(): Array<DenseNDArray> {
+
     val rightContext = this.sequence.getRightContext()
 
-    return Array(size = this.sequence.rightContextSize, init = {
-      val i = rightContext[it]
-      if (i != null) this.sequence[i] else this.network.emptyVector
-    })
+    return Array(
+      size = this.sequence.rightContextSize,
+      init = { i -> this.getWindowElement(index = rightContext[i]) }
+    )
   }
 
   /**
@@ -88,4 +94,15 @@ class SWSLFeaturesExtractor(
    * @return the label embedding representation for a given [embeddingIndex]
    */
   private fun getLabelEmbedding(embeddingIndex: Int) = this.network.labelsEmbeddings.getEmbedding(embeddingIndex)
+
+  /**
+   * Get an element of the features window.
+   *
+   * @param index the index of an element (can be null)
+   *
+   * @return the element of the sequence at the given [index] or the emptyVector if [index] is null
+   */
+  private fun getWindowElement(index: Int?): DenseNDArray {
+    return if (index != null) this.sequence[index] else this.network.emptyVector
+  }
 }
