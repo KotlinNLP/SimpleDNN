@@ -32,7 +32,7 @@ class SlidingWindowSequence(
   val rightContextSize: Int = 3) {
 
   /**
-   * The index of the focus element [-1 .. sequence length]
+   * The index of the focus element [-1 .. sequence_length].
    */
   var focusIndex: Int = -1
     private set
@@ -50,7 +50,7 @@ class SlidingWindowSequence(
   operator fun get(index: Int) = this.elements[index]
 
   /**
-   * Set the focus at the specified [index]
+   * Set the focus at the specified [index].
    *
    * @param index of an element within the sequence
    */
@@ -72,7 +72,7 @@ class SlidingWindowSequence(
   fun hasNext(): Boolean = this.focusIndex < this.elements.lastIndex
 
   /**
-   * Shift the focus by one position
+   * Shift the focus by one position.
    */
   fun shift() {
     require(this.hasNext()) { "The focus element [${this.focusIndex}] is the last element of the sequence." }

@@ -24,7 +24,7 @@ class SWSLFeaturesExtractor(
   private val network: SWSLNetwork) {
 
   /**
-   * Return the features extracted in the current state of the sliding-window sequence
+   * Get the features extracted from current state of the sliding-window sequence.
    *
    * The features are obtained by a vector concatenation of
    *    - the dense representation of the previous labels embeddings
@@ -74,10 +74,10 @@ class SWSLFeaturesExtractor(
    * @return an array containing the features of the elements in the right context
    */
   private fun extractRightContextFeatures(): Array<DenseNDArray> {
-    val nextWindow = this.sequence.getRightContext()
+    val rightContext = this.sequence.getRightContext()
 
     return Array(size = this.sequence.rightContextSize, init = {
-      val i = nextWindow[it]
+      val i = rightContext[it]
       if (i != null) this.sequence[i] else this.network.emptyVector
     })
   }
