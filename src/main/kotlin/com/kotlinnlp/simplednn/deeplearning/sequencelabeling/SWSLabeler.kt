@@ -35,6 +35,16 @@ class SWSLabeler(private val network: SWSLNetwork) {
     val inputErrors: DenseNDArray)
 
   /**
+   * The output predicted label with the prediction score.
+   *
+   * @property id the label id
+   * @property score the prediction score (Double in range [0.0, 1.0])
+   */
+  data class Label(
+    val id: Int,
+    val score: Double)
+
+  /**
    * The Sliding Window Sequence which is being processed
    */
   private var sequence: SlidingWindowSequence? = null
@@ -43,7 +53,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
    * The list of labels parallel to the current sequence.
    * The max size is the length of the current sequence
    */
-  private val labels = ArrayList<Int>()
+  private val labels = ArrayList<Label>()
 
   /**
    * The feed-forward neural processor
@@ -66,9 +76,9 @@ class SWSLabeler(private val network: SWSLNetwork) {
    *
    * @param elements the input sequence to annotate
    *
-   * @return an array of labels of the same size of [elements]
+   * @return an array of [Label]s with the same size of [elements]
    */
-  fun annotate(elements: Array<DenseNDArray>): ArrayList<Int> {
+  fun annotate(elements: Array<DenseNDArray>): ArrayList<Label> {
 
     this.setNewSequence(elements)
 
@@ -131,19 +141,27 @@ class SWSLabeler(private val network: SWSLNetwork) {
   }
 
   /**
-   * Assign a label to the current sequence focus element
+   * Add the given [Label] to [labels].
+   *
+   * @param label a [Label]
    */
-  private fun addLabel(label: Int) = this.labels.add(label)
+  private fun addLabel(label: Label) = this.labels.add(label)
 
   /**
-   * @return the neural network best guess label for last the processed element
+   * @return the predicted [Label] of the last processed element
    */
-  private fun getBestLabel(): Int = this.processor.getOutput(copy = false).argMaxIndex()
+  private fun getBestLabel(): Label {
+
+    val output = this.processor.getOutput(copy = false)
+    val bestIndex = output.argMaxIndex()
+
+    return Label(id = bestIndex, score = output[bestIndex])
+  }
 
   /**
-   * @return the gold label for the focus element of the sequence
+   * @return the gold [Label] of the focus element of the sequence
    */
-  private fun getGoldLabel(goldLabels: IntArray): Int = goldLabels[this.sequence!!.focusIndex]
+  private fun getGoldLabel(goldLabels: IntArray) = Label(id = goldLabels[this.sequence!!.focusIndex], score = 1.0)
 
   /**
    * This function iterates the complete sequence to make a prediction
@@ -173,15 +191,15 @@ class SWSLabeler(private val network: SWSLNetwork) {
   }
 
   /**
-   * Calculate the errors of the last prediction respect to the [goldLabel]
+   * Calculate the errors of the last prediction respect to the [goldLabel].
    *
-   * @param goldLabel a gold label
+   * @param goldLabel the gold [Label] of the last prediction
    *
    * @return the errors
    */
-  private fun getOutputErrors(goldLabel: Int) = lossCalculator.calculateErrors(
+  private fun getOutputErrors(goldLabel: Label) = lossCalculator.calculateErrors(
     output = this.processor.getOutput(copy = false),
-    outputGold = DenseNDArrayFactory.oneHotEncoder(length = this.network.numberOfLabels, oneAt = goldLabel))
+    outputGold = DenseNDArrayFactory.oneHotEncoder(length = this.network.numberOfLabels, oneAt = goldLabel.id))
 
   /**
    * Propagate the last backward errors to the network parameters (params and label embeddings) and to the input
@@ -256,7 +274,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
       val firstIndex = maxOf(0, this.labels.size - splitErrors.size)
 
       (this.labels.lastIndex downTo firstIndex).mapIndexedTo(result) { k, i ->
-        Pair(this.labels[i], splitErrors[k])
+        Pair(this.labels[i].id, splitErrors[k])
       }
     }
 

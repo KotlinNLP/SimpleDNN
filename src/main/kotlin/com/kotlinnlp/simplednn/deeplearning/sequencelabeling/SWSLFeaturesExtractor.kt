@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class SWSLFeaturesExtractor(
   private val sequence: SlidingWindowSequence,
-  private val labels: ArrayList<Int>,
+  private val labels: ArrayList<SWSLabeler.Label>,
   private val network: SWSLNetwork) {
 
   /**
@@ -61,7 +61,7 @@ class SWSLFeaturesExtractor(
 
     return Array(size = this.sequence.leftContextSize, init = {
       val i = leftContext[it]
-      if (i != null) this.getLabelEmbedding(this.labels[i]).array.values else this.network.emptyLabelVector
+      if (i != null) this.getLabelEmbedding(this.labels[i].id).array.values else this.network.emptyLabelVector
     })
   }
 
