@@ -14,6 +14,7 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwor
 import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsContainer
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import java.io.Serializable
 
 /**
  * The Neural Network for the Sliding-Window Sequence Labeling.
@@ -46,7 +47,17 @@ class SWSLNetwork(
   val leftContextSize: Int = 3,
   val rightContextSize: Int = 3,
   val labelEmbeddingSize: Int = 25,
-  val dropout: Double = 0.0) {
+  val dropout: Double = 0.0
+) : Serializable {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed from Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
 
   /**
    * The size of the labels embeddings representation (labelEmbeddingSize * leftContextSize)
