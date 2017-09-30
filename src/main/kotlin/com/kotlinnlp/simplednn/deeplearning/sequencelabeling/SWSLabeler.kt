@@ -125,15 +125,15 @@ class SWSLabeler(private val network: SWSLNetwork) {
       this.inputSequenceErrors
 
   /**
-   * Set a new Sliding Window Sequence initialized with [elements].
+   * Set a new Sliding Window Sequence initialized with the elements of [inputSequence].
    * Clear the labels and the input errors.
    *
-   * @param elements the elements of the sequence
+   * @param inputSequence the inputSequence to annotate
    */
-  private fun setNewSequence(elements: Array<DenseNDArray>) {
+  private fun setNewSequence(inputSequence: Array<DenseNDArray>) {
 
     this.sequence = SlidingWindowSequence(
-      elements = elements,
+      elements = inputSequence,
       leftContextSize = this.network.leftContextSize,
       rightContextSize = this.network.rightContextSize)
 
