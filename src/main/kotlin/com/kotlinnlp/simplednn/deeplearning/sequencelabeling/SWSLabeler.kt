@@ -69,7 +69,8 @@ class SWSLabeler(private val network: SWSLNetwork) {
   /**
    * The input errors calculated during the back-propagation
    */
-  private var inputSequenceErrors: Array<DenseNDArray>? = null
+  lateinit var inputSequenceErrors: Array<DenseNDArray>
+    private set
 
   /**
    * This is the main function to annotate the input [elements] with labels
@@ -101,6 +102,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
             useDropout: Boolean = false) {
 
     this.setNewSequence(elements)
+    this.initInputErrors(elements.size)
 
     this.forwardSequence(
       callback = {
@@ -122,9 +124,9 @@ class SWSLabeler(private val network: SWSLNetwork) {
    */
   fun getInputSequenceErrors(copy: Boolean = true): Array<DenseNDArray> =
     if (copy)
-      Array(size = this.inputSequenceErrors!!.size, init = { i -> this.inputSequenceErrors!![i].copy() })
+      Array(size = this.inputSequenceErrors.size, init = { i -> this.inputSequenceErrors[i].copy() })
     else
-      this.inputSequenceErrors!!
+      this.inputSequenceErrors
 
   /**
    * Set a new Sliding Window Sequence initialized with [elements]
@@ -140,10 +142,14 @@ class SWSLabeler(private val network: SWSLNetwork) {
       rightContextSize = this.network.rightContextSize)
 
     this.labels.clear()
+  }
 
-    this.inputSequenceErrors = Array(size = elements.size, init = {
-      DenseNDArrayFactory.zeros(Shape(this.network.elementSize))
-    })
+  /**
+   *
+   */
+  private fun initInputErrors(size: Int) {
+
+    this.inputSequenceErrors = Array(size = size, init = { DenseNDArrayFactory.zeros(Shape(this.network.elementSize)) })
   }
 
   /**
@@ -258,7 +264,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
 
     this.sequence!!.getContext().zip(errors.splitV(this.network.elementSize)).forEach { (i, e) ->
 
-      if (i != null) this.inputSequenceErrors!![i].assignSum(e)
+      if (i != null) this.inputSequenceErrors[i].assignSum(e)
     }
   }
 
