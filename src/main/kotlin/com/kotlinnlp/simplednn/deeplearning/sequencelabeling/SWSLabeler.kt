@@ -77,6 +77,8 @@ class SWSLabeler(private val network: SWSLNetwork) {
    */
   fun annotate(inputSequence: Array<DenseNDArray>): ArrayList<Label> {
 
+    require(inputSequence.isNotEmpty())
+
     this.setNewSequence(inputSequence)
 
     this.forwardSequence(forEachPrediction = { this.addLabel(this.getBestLabel()) }, useDropout = false)
@@ -96,6 +98,8 @@ class SWSLabeler(private val network: SWSLNetwork) {
             goldLabels: IntArray,
             optimizer: SWSLOptimizer,
             useDropout: Boolean = false) {
+
+    require(inputSequence.isNotEmpty())
 
     this.setNewSequence(inputSequence)
     this.initInputErrors(inputSequence.size)
