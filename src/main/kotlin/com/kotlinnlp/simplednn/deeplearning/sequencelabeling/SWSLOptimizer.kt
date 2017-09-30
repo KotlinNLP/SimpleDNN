@@ -13,6 +13,7 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMetho
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
+import com.kotlinnlp.simplednn.core.optimizer.ScheduledUpdater
 import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
@@ -23,14 +24,14 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  * The SWSLOptimizer is the optimizer of the [SWSLNetwork].
  *
  * @property network the SWSLNetwork to optimize
- * @property updateMethod the [UpdateMethod] used to optimize the network params errors (default ADAM)
- * @property updateMethod the [UpdateMethod] used to optimize the embeddings (default AdaGrad)
+ * @property updateMethod the [UpdateMethod] to optimize the network params (default ADAM)
+ * @property embeddingsUpdateMethod the [UpdateMethod] to optimize the embeddings (default AdaGrad)
  */
 class SWSLOptimizer(
   private val network: SWSLNetwork,
-  updateMethod: UpdateMethod<*> = ADAMMethod(stepSize = 0.001),
-  embeddingsUpdateMethod: UpdateMethod<*> = AdaGradMethod(learningRate = 0.1)
-) : Optimizer(updateMethod) {
+  val updateMethod: UpdateMethod<*> = ADAMMethod(stepSize = 0.001),
+  val embeddingsUpdateMethod: UpdateMethod<*> = AdaGradMethod(learningRate = 0.1)
+) : ScheduledUpdater {
 
   /**
    * The [Optimizer] used to optimize the network
