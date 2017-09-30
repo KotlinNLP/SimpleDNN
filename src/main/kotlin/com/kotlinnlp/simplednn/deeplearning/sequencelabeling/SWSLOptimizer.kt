@@ -23,20 +23,20 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 /**
  * The SWSLOptimizer is the optimizer of the [SWSLNetwork].
  *
- * @property network the SWSLNetwork to optimize
- * @property updateMethod the [UpdateMethod] to optimize the network params (default ADAM)
+ * @property network the [SWSLNetwork] to optimize
+ * @property paramsUpdateMethod the [UpdateMethod] to optimize the network params (default ADAM)
  * @property embeddingsUpdateMethod the [UpdateMethod] to optimize the embeddings (default AdaGrad)
  */
 class SWSLOptimizer(
   private val network: SWSLNetwork,
-  val updateMethod: UpdateMethod<*> = ADAMMethod(stepSize = 0.001),
+  val paramsUpdateMethod: UpdateMethod<*> = ADAMMethod(stepSize = 0.001),
   val embeddingsUpdateMethod: UpdateMethod<*> = AdaGradMethod(learningRate = 0.1)
 ) : ScheduledUpdater {
 
   /**
    * The [Optimizer] used to optimize the network
    */
-  private val classifierOptimizer = ParamsOptimizer(this.network.classifier.model, this.updateMethod)
+  private val classifierOptimizer = ParamsOptimizer(this.network.classifier.model, this.paramsUpdateMethod)
 
   /**
    * The [Optimizer] used to optimize the labels embeddings.
@@ -63,8 +63,8 @@ class SWSLOptimizer(
    */
   override fun newEpoch() {
 
-    if (this.updateMethod is EpochScheduling) {
-      this.updateMethod.newEpoch()
+    if (this.paramsUpdateMethod is EpochScheduling) {
+      this.paramsUpdateMethod.newEpoch()
       this.labelEmbeddingsOptimizer.newEpoch()
     }
   }
@@ -75,8 +75,8 @@ class SWSLOptimizer(
    */
   override fun newBatch() {
 
-    if (this.updateMethod is BatchScheduling) {
-      this.updateMethod.newBatch()
+    if (this.paramsUpdateMethod is BatchScheduling) {
+      this.paramsUpdateMethod.newBatch()
       this.labelEmbeddingsOptimizer.newBatch()
     }
   }
@@ -87,8 +87,8 @@ class SWSLOptimizer(
    */
   override fun newExample() {
 
-    if (this.updateMethod is ExampleScheduling) {
-      this.updateMethod.newExample()
+    if (this.paramsUpdateMethod is ExampleScheduling) {
+      this.paramsUpdateMethod.newExample()
       this.labelEmbeddingsOptimizer.newExample()
     }
   }
