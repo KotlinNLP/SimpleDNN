@@ -78,7 +78,7 @@ class SlidingWindowSequence(
    * Shift the focus by one position.
    */
   fun shift() {
-    require(this.hasNext()) { "The focus element [${this.focusIndex}] is the last element of the sequence." }
+    require(this.focusInRange()) { "The focus element [${this.focusIndex}] is already out of range." }
 
     this.focusIndex++
   }
