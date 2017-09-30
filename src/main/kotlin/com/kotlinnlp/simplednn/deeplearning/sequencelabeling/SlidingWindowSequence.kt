@@ -54,8 +54,8 @@ class SlidingWindowSequence(
    *
    * @param index of an element within the sequence
    */
-  fun setFocus(index: Int){
-    require(index in -1 .. this.elements.size - 1)
+  fun setFocus(index: Int) {
+    require(index in -1 until this.elements.size)
 
     this.focusIndex = index
   }
@@ -69,15 +69,13 @@ class SlidingWindowSequence(
    *
    * @return False if the focus element is the last element of the sequence, True otherwise
    */
-  fun hasNext(): Boolean = this.focusIndex + 1 < this.elements.size
+  fun hasNext(): Boolean = this.focusIndex < this.elements.lastIndex
 
   /**
    * Shift the focus by one position
    */
   fun shift() {
-    require(this.hasNext()) {
-      "The focus element [${this.focusIndex}] is the last element of the sequence."
-    }
+    require(this.hasNext()) { "The focus element [${this.focusIndex}] is the last element of the sequence." }
 
     this.focusIndex++
   }
@@ -88,10 +86,9 @@ class SlidingWindowSequence(
    */
   fun getLeftContext(): Array<Int?> = Array(
     size = this.leftContextSize,
-    init = {
-      val i = this.leftContextSize - 1 - it
-      val k = this.focusIndex - 1 - i
-      if (k < 0) null else k
+    init = { i ->
+      val k = this.focusIndex - (this.leftContextSize - i)
+      if (k >= 0) k else null
     }
   )
 
@@ -101,9 +98,9 @@ class SlidingWindowSequence(
    */
   fun getRightContext(): Array<Int?> = Array(
     size = this.rightContextSize,
-    init = {
-      val k = this.focusIndex + 1 + it
-      if (k >= this.elements.size) null else k
+    init = { i ->
+      val k = this.focusIndex + i + 1
+      if (k < this.elements.size) k else null
     }
   )
 
