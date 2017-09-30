@@ -184,13 +184,13 @@ class SWSLabeler(private val network: SWSLNetwork) {
       labels = this.labels,
       network = this.network)
 
-    while (this.sequence.hasNext()) {
-
-      this.sequence.shift()
+    while (this.sequence.focusInRange()) {
 
       this.processor.forward(featuresExtractor.getFeatures(), useDropout = useDropout)
 
       forEachPrediction()
+
+      this.sequence.shift()
     }
   }
 
