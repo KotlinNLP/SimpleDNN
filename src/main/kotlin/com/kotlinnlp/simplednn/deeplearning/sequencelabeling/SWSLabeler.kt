@@ -79,7 +79,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
 
     this.setNewSequence(elements)
 
-    this.forwardSequence({ this.addLabel(this.getBestLabel()) }, useDropout = false)
+    this.forwardSequence(forEachPrediction = { this.addLabel(this.getBestLabel()) }, useDropout = false)
 
     return this.labels
   }
@@ -101,7 +101,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
     this.initInputErrors(elements.size)
 
     this.forwardSequence(
-      callback = {
+      forEachPrediction = {
         val goldLabel = this.getGoldLabel(goldLabels)
 
         this.processor.backward(outputErrors = this.getOutputErrors(goldLabel), propagateToInput = true)
@@ -174,10 +174,10 @@ class SWSLabeler(private val network: SWSLNetwork) {
    * This function iterates the complete sequence to make a prediction for each element using the
    * [FeedforwardNeuralProcessor].
    *
-   * @param callback the function called after the forward on each element
+   * @param forEachPrediction the callback called after the forward on each element
    * @param useDropout whether to apply the dropout
    */
-  private fun forwardSequence(callback: () -> Unit, useDropout: Boolean) {
+  private fun forwardSequence(forEachPrediction: () -> Unit, useDropout: Boolean) {
 
     val featuresExtractor = SWSLFeaturesExtractor(
       sequence = this.sequence,
@@ -190,7 +190,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
 
       this.processor.forward(featuresExtractor.getFeatures(), useDropout = useDropout)
 
-      callback()
+      forEachPrediction()
     }
   }
 
