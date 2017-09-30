@@ -16,9 +16,6 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.optimizer.ScheduledUpdater
 import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
-import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
-import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
  * The SWSLOptimizer is the optimizer of the [SWSLNetwork].
@@ -62,14 +59,8 @@ class SWSLOptimizer(
    * In turn it calls the same method into the `updateMethod`
    */
   override fun newEpoch() {
-
-    if (this.paramsUpdateMethod is EpochScheduling) {
-      this.paramsUpdateMethod.newEpoch()
-    }
-
-    if (this.embeddingsUpdateMethod is EpochScheduling) {
-      this.labelEmbeddingsOptimizer.newEpoch()
-    }
+    this.classifierOptimizer.newEpoch()
+    this.labelEmbeddingsOptimizer.newEpoch()
   }
 
   /**
@@ -77,14 +68,8 @@ class SWSLOptimizer(
    * In turn it calls the same method into the `updateMethod`
    */
   override fun newBatch() {
-
-    if (this.paramsUpdateMethod is BatchScheduling) {
-      this.paramsUpdateMethod.newBatch()
-    }
-
-    if (this.embeddingsUpdateMethod is BatchScheduling) {
-      this.labelEmbeddingsOptimizer.newBatch()
-    }
+    this.classifierOptimizer.newBatch()
+    this.labelEmbeddingsOptimizer.newBatch()
   }
 
   /**
@@ -92,14 +77,8 @@ class SWSLOptimizer(
    * In turn it calls the same method into the `updateMethod`
    */
   override fun newExample() {
-
-    if (this.paramsUpdateMethod is ExampleScheduling) {
-      this.paramsUpdateMethod.newExample()
-    }
-
-    if (this.embeddingsUpdateMethod is ExampleScheduling) {
-      this.labelEmbeddingsOptimizer.newExample()
-    }
+    this.classifierOptimizer.newExample()
+    this.labelEmbeddingsOptimizer.newExample()
   }
 
   /**
