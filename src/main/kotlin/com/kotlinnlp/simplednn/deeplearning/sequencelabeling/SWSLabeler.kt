@@ -69,15 +69,15 @@ class SWSLabeler(private val network: SWSLNetwork) {
   private lateinit var inputSequenceErrors: Array<DenseNDArray>
 
   /**
-   * This is the main function to annotate the input [elements] with labels
+   * Annotate each element of the given [inputSequence] with a label.
    *
-   * @param elements the input sequence to annotate
+   * @param inputSequence the input sequence to annotate
    *
-   * @return an array of [Label]s with the same size of [elements]
+   * @return an array of [Label]s, one for each element of the [inputSequence]
    */
-  fun annotate(elements: Array<DenseNDArray>): ArrayList<Label> {
+  fun annotate(inputSequence: Array<DenseNDArray>): ArrayList<Label> {
 
-    this.setNewSequence(elements)
+    this.setNewSequence(inputSequence)
 
     this.forwardSequence(forEachPrediction = { this.addLabel(this.getBestLabel()) }, useDropout = false)
 
@@ -87,18 +87,18 @@ class SWSLabeler(private val network: SWSLNetwork) {
   /**
    * Train the sequence labeler.
    *
-   * @param elements the input sequence to annotate
+   * @param inputSequence the input sequence to annotate
    * @param goldLabels the expected labels for each element
    * @param optimizer the optimize of parameters and embeddings
    * @param useDropout whether to apply the dropout (default = false)
    */
-  fun learn(elements: Array<DenseNDArray>,
+  fun learn(inputSequence: Array<DenseNDArray>,
             goldLabels: IntArray,
             optimizer: SWSLOptimizer,
             useDropout: Boolean = false) {
 
-    this.setNewSequence(elements)
-    this.initInputErrors(elements.size)
+    this.setNewSequence(inputSequence)
+    this.initInputErrors(inputSequence.size)
 
     this.forwardSequence(
       forEachPrediction = {
