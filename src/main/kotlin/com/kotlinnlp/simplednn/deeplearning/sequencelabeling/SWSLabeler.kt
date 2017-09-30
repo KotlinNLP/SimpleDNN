@@ -116,9 +116,15 @@ class SWSLabeler(private val network: SWSLNetwork) {
   }
 
   /**
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   *
    * @return the input errors
    */
-  fun getInputSequenceErrors(): Array<DenseNDArray> = this.inputSequenceErrors!!
+  fun getInputSequenceErrors(copy: Boolean = true): Array<DenseNDArray> =
+    if (copy)
+      Array(size = this.inputSequenceErrors!!.size, init = { i -> this.inputSequenceErrors!![i].copy() })
+    else
+      this.inputSequenceErrors!!
 
   /**
    * Set a new Sliding Window Sequence initialized with [elements]
