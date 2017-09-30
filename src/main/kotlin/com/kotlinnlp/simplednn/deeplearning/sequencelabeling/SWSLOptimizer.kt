@@ -15,16 +15,21 @@ import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
+import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
+import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
  * The SWSLOptimizer is the optimizer of the [SWSLNetwork].
  *
  * @property network the SWSLNetwork to optimize
  * @property updateMethod the [UpdateMethod] used to optimize the network params errors (default ADAM)
+ * @property updateMethod the [UpdateMethod] used to optimize the embeddings (default AdaGrad)
  */
 class SWSLOptimizer(
   private val network: SWSLNetwork,
-  updateMethod: UpdateMethod<*> = ADAMMethod(stepSize = 0.001)
+  updateMethod: UpdateMethod<*> = ADAMMethod(stepSize = 0.001),
+  embeddingsUpdateMethod: UpdateMethod<*> = AdaGradMethod(learningRate = 0.1)
 ) : Optimizer(updateMethod) {
 
   /**
@@ -40,17 +45,7 @@ class SWSLOptimizer(
    */
   private val labelEmbeddingsOptimizer = EmbeddingsOptimizer(
     embeddingsContainer = this.network.labelsEmbeddings,
-    updateMethod = AdaGradMethod(learningRate = 0.1))
-
-  /**
-   * Accumulate embeddings errors.
-   *
-   * @param embeddingId the id of an embedding
-   * @param errors the errors of this embedding
-   */
-  fun accumulateLabelEmbeddingErrors(embeddingId: Int, errors: DenseNDArray) {
-    this.labelEmbeddingsOptimizer.accumulate(embeddingId = embeddingId, errors = errors)
-  }
+    updateMethod = embeddingsUpdateMethod)
 
   /**
    * Update the params (network params and labels embeddings) using the accumulated errors.
@@ -62,11 +57,57 @@ class SWSLOptimizer(
   }
 
   /**
+   * Method to call every new epoch.
+   * In turn it calls the same method into the `updateMethod`
+   */
+  override fun newEpoch() {
+
+    if (this.updateMethod is EpochScheduling) {
+      this.updateMethod.newEpoch()
+      this.labelEmbeddingsOptimizer.newEpoch()
+    }
+  }
+
+  /**
+   * Method to call every new batch.
+   * In turn it calls the same method into the `updateMethod`
+   */
+  override fun newBatch() {
+
+    if (this.updateMethod is BatchScheduling) {
+      this.updateMethod.newBatch()
+      this.labelEmbeddingsOptimizer.newBatch()
+    }
+  }
+
+  /**
+   * Method to call every new example.
+   * In turn it calls the same method into the `updateMethod`
+   */
+  override fun newExample() {
+
+    if (this.updateMethod is ExampleScheduling) {
+      this.updateMethod.newExample()
+      this.labelEmbeddingsOptimizer.newExample()
+    }
+  }
+
+  /**
    * Accumulate network params errors.
    *
    * @param errors the params errors to accumulate
    */
   fun accumulateErrors(errors: NetworkParameters) {
     this.classifierOptimizer.accumulate(errors)
+  }
+
+  /**
+   * Accumulate embeddings errors.
+   *
+   * @param embeddingId the id of an embedding
+   * @param errors the errors of this embedding
+   */
+  fun accumulateLabelEmbeddingErrors(embeddingId: Int, errors: DenseNDArray) {
+    this.labelEmbeddingsOptimizer.accumulate(embeddingId = embeddingId, errors = errors)
   }
 }
