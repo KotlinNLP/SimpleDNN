@@ -12,17 +12,16 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * A simple implementation of a Sliding Window Sequence (SWS).
  *
- * SlidingWindowSequence implements convenient method to process a sequence,
- * viewed as an array of consecutive [elements].
+ * SlidingWindowSequence implements convenient method to process a sequence, viewed as an array of [DenseNDArray]s.
  * This class is useful when you need to see an element 'e' along with its left and right context 'c'.
  *
  * The base case has the form of c-3 c-2 c-1 e c+1 c+2 c+3.
  *
- * So, every element is once treated as a focus element, and when the window moves, it becomes a context element.
- * When the focus is the 1st element in the sequence, there are no context elements on the left,
- * when it's the 2nd element, there's only one context element on the left, and so on.
+ * Every element is once treated as a focus element, and when the window moves, it becomes a context element.
+ * When the focus is the 1st element in the sequence, there are no context elements on the left, when it's the 2nd
+ * element, there's only one context element on the left, and so on.
  *
- * @property elements the dense representation of the sequence elements
+ * @property elements an Array containing the elements of the sequence
  * @property leftContextSize the number of elements used to create the left context
  * @property rightContextSize the number of elements used to create the right context
  */
@@ -32,9 +31,9 @@ class SlidingWindowSequence(
   val rightContextSize: Int = 3) {
 
   /**
-   * The index of the focus element [-1 .. sequence_length].
+   * The index of the focus element [0 until sequence_length].
    */
-  var focusIndex: Int = -1
+  var focusIndex: Int = 0
     private set
 
   /**
@@ -55,7 +54,7 @@ class SlidingWindowSequence(
    * @param index of an element within the sequence
    */
   fun setFocus(index: Int) {
-    require(index in -1 until this.elements.size)
+    require(index in 0 until this.elements.size)
 
     this.focusIndex = index
   }
