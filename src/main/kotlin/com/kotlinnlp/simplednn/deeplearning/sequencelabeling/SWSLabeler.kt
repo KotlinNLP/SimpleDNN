@@ -72,7 +72,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
 
     this.setNewSequence(elements)
 
-    this.forwardSequence({ this.addLabel(this.getBestLabel()) })
+    this.forwardSequence({ this.addLabel(this.getBestLabel()) }, useDropout = false)
 
     return this.labels
   }
@@ -82,21 +82,27 @@ class SWSLabeler(private val network: SWSLNetwork) {
    *
    * @param elements the input sequence to annotate
    * @param goldLabels the expected labels for each element
+   * @param optimizer the optimize of parameters and embeddings
+   * @param useDropout whether to apply the dropout (default = false)
    */
-  fun learn(elements: Array<DenseNDArray>, goldLabels: IntArray, optimizer: SWSLOptimizer) {
+  fun learn(elements: Array<DenseNDArray>,
+            goldLabels: IntArray,
+            optimizer: SWSLOptimizer,
+            useDropout: Boolean = false) {
 
     this.setNewSequence(elements)
 
-    this.forwardSequence({
+    this.forwardSequence(
+      callback = {
+        val goldLabel = this.getGoldLabel(goldLabels)
 
-      val goldLabel = this.getGoldLabel(goldLabels)
+        this.processor.backward(outputErrors = this.getOutputErrors(goldLabel), propagateToInput = true)
 
-      this.processor.backward(outputErrors = this.getOutputErrors(goldLabel), propagateToInput = true)
+        this.accumulateErrors(optimizer)
 
-      this.accumulateErrors(optimizer)
-
-      this.addLabel(goldLabel)
-    })
+        this.addLabel(goldLabel)
+      },
+      useDropout = useDropout)
   }
 
   /**
@@ -147,8 +153,9 @@ class SWSLabeler(private val network: SWSLNetwork) {
    * after the forward on each element
    *
    * @param callback the function to invoke to read the intermediate neural processor results
+   * @param useDropout whether to apply the dropout
    */
-  private fun forwardSequence(callback: () -> Unit) {
+  private fun forwardSequence(callback: () -> Unit, useDropout: Boolean) {
 
     val featuresExtractor = SWSLFeaturesExtractor(
       sequence = this.sequence!!,
@@ -159,7 +166,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
 
       this.sequence!!.shift()
 
-      this.processor.forward(featuresExtractor.getFeatures())
+      this.processor.forward(featuresExtractor.getFeatures(), useDropout = useDropout)
 
       callback()
     }

@@ -36,6 +36,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @property leftContextSize the number of elements used to create the left context (default 3)
  * @property rightContextSize the number of elements used to create the right context (default 3)
  * @property labelEmbeddingSize the size of the dense-representation of a label (default 25)
+ * @property dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.25.
  */
 class SWSLNetwork(
   val elementSize: Int,
@@ -44,7 +45,8 @@ class SWSLNetwork(
   val numberOfLabels: Int,
   val leftContextSize: Int = 3,
   val rightContextSize: Int = 3,
-  val labelEmbeddingSize: Int = 25) {
+  val labelEmbeddingSize: Int = 25,
+  val dropout: Double = 0.0) {
 
   /**
    * The size of the labels embeddings representation (labelEmbeddingSize * leftContextSize)
@@ -75,7 +77,8 @@ class SWSLNetwork(
     hiddenSize = this.hiddenLayerSize,
     hiddenActivation = this.hiddenLayerActivation,
     outputSize = this.numberOfLabels,
-    outputActivation = Softmax()
+    outputActivation = Softmax(),
+    dropout = this.dropout
   )
 
   /**
