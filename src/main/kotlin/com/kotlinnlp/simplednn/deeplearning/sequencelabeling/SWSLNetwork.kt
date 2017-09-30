@@ -9,9 +9,8 @@ package com.kotlinnlp.simplednn.deeplearning.sequencelabeling
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsContainer
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -70,18 +69,14 @@ class SWSLNetwork(
   /**
    * The Neural Network to process the sequence left-to-right
    */
-  val classifier: NeuralNetwork = NeuralNetwork(
-    LayerConfiguration(
-      size = this.featuresSize,
-      inputType = LayerType.Input.Dense),
-    LayerConfiguration(
-      size = this.hiddenLayerSize,
-      activationFunction = this.hiddenLayerActivation,
-      connectionType = LayerType.Connection.Feedforward),
-    LayerConfiguration(
-      size = this.numberOfLabels,
-      activationFunction = Softmax(),
-      connectionType = LayerType.Connection.Feedforward))
+  val classifier = FeedforwardNeuralNetwork(
+    inputSize = this.featuresSize,
+    inputType = LayerType.Input.Dense,
+    hiddenSize = this.hiddenLayerSize,
+    hiddenActivation = this.hiddenLayerActivation,
+    outputSize = this.numberOfLabels,
+    outputActivation = Softmax()
+  )
 
   /**
    * Contains the trainable embedding-representation for each output label
