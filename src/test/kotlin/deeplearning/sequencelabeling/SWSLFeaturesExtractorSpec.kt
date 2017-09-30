@@ -8,6 +8,7 @@
 package deeplearning.sequencelabeling
 
 import com.kotlinnlp.simplednn.deeplearning.sequencelabeling.SWSLFeaturesExtractor
+import com.kotlinnlp.simplednn.deeplearning.sequencelabeling.SWSLabeler
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import deeplearning.sequencelabeling.utils.SWSLNetworkUtils
@@ -32,7 +33,7 @@ class SWSLFeaturesExtractorSpec: Spek({
 
       val sequence = SlidingWindowSequenceUtils.buildSlidingWindowSequence()
 
-      val labels = arrayListOf(0, 1)
+      val labels = arrayListOf(SWSLabeler.Label(0), SWSLabeler.Label(1))
 
       sequence.setFocus(2)
 
