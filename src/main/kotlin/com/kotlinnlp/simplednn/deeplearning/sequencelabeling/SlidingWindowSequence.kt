@@ -65,10 +65,14 @@ class SlidingWindowSequence(
   fun getFocusElement(): DenseNDArray = this.elements[this.focusIndex]
 
   /**
-   *
-   * @return False if the focus element is the last element of the sequence, True otherwise
+   * @return a Boolean indicating if the window can perform a shift
    */
   fun hasNext(): Boolean = this.focusIndex < this.elements.lastIndex
+
+  /**
+   * @return a Boolean indicating if the focus index is within the range of the elements of the sequence
+   */
+  fun focusInRange(): Boolean = this.focusIndex < this.elements.size
 
   /**
    * Shift the focus by one position.
