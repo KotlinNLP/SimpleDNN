@@ -86,7 +86,7 @@ class SWSLOptimizer(
    *
    * @param errors the params errors to accumulate
    */
-  fun accumulateErrors(errors: NetworkParameters) {
+  fun accumulateParamsErrors(errors: NetworkParameters) {
     this.classifierOptimizer.accumulate(errors)
   }
 

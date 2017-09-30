@@ -223,7 +223,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
 
     val networErrors = this.getNetworkErrors()
 
-    optimizer.accumulateErrors(networErrors.paramsErrors)
+    optimizer.accumulateParamsErrors(networErrors.paramsErrors)
     this.accumulateLabelsEmbeddingsErrors(networErrors.labelsEmbeddingsErrors, optimizer = optimizer)
     this.accumulateInputErrors(networErrors.inputErrors)
   }
