@@ -112,6 +112,6 @@ class SlidingWindowSequence(
   /**
    * @return a string representation of the focused context
    */
-  fun contextToString(): String =
+  override fun toString(): String =
     "[${this.getLeftContext().joinToString()}] $focusIndex [${this.getRightContext().joinToString()}]"
 }

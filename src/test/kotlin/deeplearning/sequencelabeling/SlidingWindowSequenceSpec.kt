@@ -77,43 +77,43 @@ class SlidingWindowSequenceSpec: Spek({
         }
       }
 
-      on("contextToString focus = 0"){
+      on("toString focus = 0"){
         sequence.setFocus(0)
 
         it("should have the expected window") {
-          assertEquals(true, "[null, null, null] 0 [1, 2, 3]" == sequence.contextToString())
+          assertEquals(true, "[null, null, null] 0 [1, 2, 3]" == sequence.toString())
         }
       }
 
-      on("contextToString focus = 1"){
+      on("toString focus = 1"){
         sequence.setFocus(1)
 
         it("should have the expected window") {
-          assertEquals(true, "[null, null, 0] 1 [2, 3, 4]" == sequence.contextToString())
+          assertEquals(true, "[null, null, 0] 1 [2, 3, 4]" == sequence.toString())
         }
       }
 
-      on("contextToString focus = 2"){
+      on("toString focus = 2"){
         sequence.setFocus(2)
 
         it("should have the expected window") {
-          assertEquals(true, "[null, 0, 1] 2 [3, 4, null]" == sequence.contextToString())
+          assertEquals(true, "[null, 0, 1] 2 [3, 4, null]" == sequence.toString())
         }
       }
 
-      on("contextToString focus = 3"){
+      on("toString focus = 3"){
         sequence.setFocus(3)
 
         it("should have the expected window") {
-          assertEquals(true, "[0, 1, 2] 3 [4, null, null]" == sequence.contextToString())
+          assertEquals(true, "[0, 1, 2] 3 [4, null, null]" == sequence.toString())
         }
       }
 
-      on("contextToString focus = 4"){
+      on("toString focus = 4"){
         sequence.setFocus(4)
 
         it("should have the expected window") {
-          assertEquals(true, "[1, 2, 3] 4 [null, null, null]" == sequence.contextToString())
+          assertEquals(true, "[1, 2, 3] 4 [null, null, null]" == sequence.toString())
         }
       }
     }
