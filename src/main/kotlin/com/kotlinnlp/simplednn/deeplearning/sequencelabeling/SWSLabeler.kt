@@ -40,9 +40,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
    * @property id the label id
    * @property score the prediction score (Double in range [0.0, 1.0], default = 1.0)
    */
-  data class Label(
-    val id: Int,
-    val score: Double = 1.0)
+  data class Label(val id: Int, val score: Double = 1.0)
 
   /**
    * The Sliding Window Sequence which is being processed
@@ -69,8 +67,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
   /**
    * The input errors calculated during the back-propagation
    */
-  lateinit var inputSequenceErrors: Array<DenseNDArray>
-    private set
+  private lateinit var inputSequenceErrors: Array<DenseNDArray>
 
   /**
    * This is the main function to annotate the input [elements] with labels
