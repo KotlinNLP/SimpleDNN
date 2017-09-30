@@ -43,29 +43,28 @@ class SWSLabeler(private val network: SWSLNetwork) {
   data class Label(val id: Int, val score: Double = 1.0)
 
   /**
-   * The Sliding Window Sequence which is being processed
+   * The Sliding Window Sequence which is being processed.
    */
   private var sequence: SlidingWindowSequence? = null
 
   /**
-   * The list of labels parallel to the current sequence.
-   * The max size is the length of the current sequence
+   * The list of labels, parallel to the current sequence.
+   * The max size is the length of the current sequence.
    */
   private val labels = ArrayList<Label>()
 
   /**
-   * The feed-forward neural processor
+   * The feed-forward neural processor.
    */
   private val processor = FeedforwardNeuralProcessor<DenseNDArray>(neuralNetwork = this.network.classifier)
 
   /**
-   * The loss calculator used to calculate the loss between
-   * the expected output and the predicted output
+   * The loss calculator used to calculate the loss between the expected output and the predicted output.
    */
   private val lossCalculator = MulticlassMSECalculator()
 
   /**
-   * The input errors calculated during the back-propagation
+   * The input errors calculated during the back-propagation.
    */
   private lateinit var inputSequenceErrors: Array<DenseNDArray>
 
@@ -86,7 +85,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
   }
 
   /**
-   * This is the main function to train the sequence labeler
+   * Train the sequence labeler.
    *
    * @param elements the input sequence to annotate
    * @param goldLabels the expected labels for each element
@@ -126,7 +125,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
       this.inputSequenceErrors
 
   /**
-   * Set a new Sliding Window Sequence initialized with [elements]
+   * Set a new Sliding Window Sequence initialized with [elements].
    * Clear the labels and the input errors.
    *
    * @param elements the elements of the sequence
@@ -142,10 +141,9 @@ class SWSLabeler(private val network: SWSLNetwork) {
   }
 
   /**
-   *
+   * Initialize input sequence errors.
    */
   private fun initInputErrors(size: Int) {
-
     this.inputSequenceErrors = Array(size = size, init = { DenseNDArrayFactory.zeros(Shape(this.network.elementSize)) })
   }
 
@@ -173,13 +171,10 @@ class SWSLabeler(private val network: SWSLNetwork) {
   private fun getGoldLabel(goldLabels: IntArray) = Label(id = goldLabels[this.sequence!!.focusIndex], score = 1.0)
 
   /**
-   * This function iterates the complete sequence to make a prediction
-   * for each element using the [FeedforwardNeuralProcessor].
+   * This function iterates the complete sequence to make a prediction for each element using the
+   * [FeedforwardNeuralProcessor].
    *
-   * The [callback] allows you to intercept the status of the neural processor
-   * after the forward on each element
-   *
-   * @param callback the function to invoke to read the intermediate neural processor results
+   * @param callback the function called after the forward on each element
    * @param useDropout whether to apply the dropout
    */
   private fun forwardSequence(callback: () -> Unit, useDropout: Boolean) {
@@ -266,7 +261,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
   }
 
   /**
-   * Align the errors on the labels embeddings to the current labels
+   * Align the errors on the labels embeddings to the current labels.
    *
    * @param errors the errors to align with the current labels
    *
