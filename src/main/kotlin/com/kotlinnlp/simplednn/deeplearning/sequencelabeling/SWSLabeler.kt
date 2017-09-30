@@ -45,7 +45,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
   /**
    * The Sliding Window Sequence which is being processed.
    */
-  private var sequence: SlidingWindowSequence? = null
+  lateinit private var sequence: SlidingWindowSequence
 
   /**
    * The list of labels, parallel to the current sequence.
@@ -168,7 +168,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
   /**
    * @return the gold [Label] of the focus element of the sequence
    */
-  private fun getGoldLabel(goldLabels: IntArray) = Label(id = goldLabels[this.sequence!!.focusIndex], score = 1.0)
+  private fun getGoldLabel(goldLabels: IntArray) = Label(id = goldLabels[this.sequence.focusIndex], score = 1.0)
 
   /**
    * This function iterates the complete sequence to make a prediction for each element using the
@@ -180,13 +180,13 @@ class SWSLabeler(private val network: SWSLNetwork) {
   private fun forwardSequence(callback: () -> Unit, useDropout: Boolean) {
 
     val featuresExtractor = SWSLFeaturesExtractor(
-      sequence = this.sequence!!,
+      sequence = this.sequence,
       labels = this.labels,
       network = this.network)
 
-    while (this.sequence!!.hasNext()) {
+    while (this.sequence.hasNext()) {
 
-      this.sequence!!.shift()
+      this.sequence.shift()
 
       this.processor.forward(featuresExtractor.getFeatures(), useDropout = useDropout)
 
@@ -254,7 +254,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
    */
   private fun accumulateInputErrors(errors: DenseNDArray) {
 
-    this.sequence!!.getContext().zip(errors.splitV(this.network.elementSize)).forEach { (i, e) ->
+    this.sequence.getContext().zip(errors.splitV(this.network.elementSize)).forEach { (i, e) ->
 
       if (i != null) this.inputSequenceErrors[i].assignSum(e)
     }
