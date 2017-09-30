@@ -94,9 +94,7 @@ class SWSLabeler(private val network: SWSLNetwork, private val optimizer: SWSLOp
 
       val goldLabel = this.getGoldLabel(goldLabels)
 
-      this.processor.backward(
-        outputErrors = this.getOutputErrors(goldLabel),
-        propagateToInput = true)
+      this.processor.backward(outputErrors = this.getOutputErrors(goldLabel), propagateToInput = true)
 
       this.accumulateErrors()
 
@@ -185,13 +183,13 @@ class SWSLabeler(private val network: SWSLNetwork, private val optimizer: SWSLOp
    * Propagate the last backward errors to the network parameters
    * (params and label embeddings) and to the input elements
    */
-  private fun accumulateErrors(){
+  private fun accumulateErrors() {
 
-    val (paramsErrors, labelsEmbeddingsErrors, inputErrors) = this.getNetworkErrors()
+    val networErrors = this.getNetworkErrors()
 
-    this.accumulateParamsErrors(paramsErrors)
-    this.accumulateLabelsEmbeddingsErrors(labelsEmbeddingsErrors)
-    this.accumulateInputErrors(inputErrors)
+    this.accumulateParamsErrors(networErrors.paramsErrors)
+    this.accumulateLabelsEmbeddingsErrors(networErrors.labelsEmbeddingsErrors)
+    this.accumulateInputErrors(networErrors.inputErrors)
   }
 
   /**
