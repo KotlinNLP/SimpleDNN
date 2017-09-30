@@ -65,6 +65,9 @@ class SWSLOptimizer(
 
     if (this.paramsUpdateMethod is EpochScheduling) {
       this.paramsUpdateMethod.newEpoch()
+    }
+
+    if (this.embeddingsUpdateMethod is EpochScheduling) {
       this.labelEmbeddingsOptimizer.newEpoch()
     }
   }
@@ -77,6 +80,9 @@ class SWSLOptimizer(
 
     if (this.paramsUpdateMethod is BatchScheduling) {
       this.paramsUpdateMethod.newBatch()
+    }
+
+    if (this.embeddingsUpdateMethod is BatchScheduling) {
       this.labelEmbeddingsOptimizer.newBatch()
     }
   }
@@ -89,6 +95,9 @@ class SWSLOptimizer(
 
     if (this.paramsUpdateMethod is ExampleScheduling) {
       this.paramsUpdateMethod.newExample()
+    }
+
+    if (this.embeddingsUpdateMethod is ExampleScheduling) {
       this.labelEmbeddingsOptimizer.newExample()
     }
   }
