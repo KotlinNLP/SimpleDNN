@@ -186,7 +186,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
       labels = this.labels,
       network = this.network)
 
-    while (this.sequence!!.hasNext()){
+    while (this.sequence!!.hasNext()) {
 
       this.sequence!!.shift()
 
