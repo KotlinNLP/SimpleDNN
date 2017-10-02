@@ -65,7 +65,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
   /**
    * The [HANEncoder] used as classifier (Softmax output activation).
    */
-  private val classifier: HANEncoder = this.buildClassifier()
+  private val classifier: HANEncoder<DenseNDArray> = this.buildClassifier()
 
   /**
    * When timing started.
@@ -87,11 +87,12 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
   /**
    * @return the HAN classifier
    */
-  private fun buildClassifier(): HANEncoder {
+  private fun buildClassifier(): HANEncoder<DenseNDArray> {
 
     val model = HAN(
       hierarchySize = 1,
       inputSize = this.EMBEDDINGS_SIZE,
+      inputType = LayerType.Input.Dense,
       biRNNsActivation = Tanh(),
       biRNNsConnectionType = LayerType.Connection.RAN,
       attentionSize = this.EMBEDDINGS_SIZE,
