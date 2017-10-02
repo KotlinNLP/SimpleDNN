@@ -12,13 +12,16 @@ package com.kotlinnlp.simplednn.deeplearning.embeddings
  *
  * @property count the number of embeddings in this [EmbeddingsContainer] (e.g. number of word in a vocabulary)
  * @property size the size of each embedding (typically a range between about 50 to a few hundreds)
+ * @property pseudoRandomDropout a Boolean indicating if Embeddings must be dropped out with pseudo random probability
  */
 class EmbeddingsContainerByStrings(
   count: Int,
-  size: Int
+  size: Int,
+  pseudoRandomDropout: Boolean = true
 ) : EmbeddingsContainerBase<EmbeddingsContainerByStrings>(
   count = count,
-  size = size) {
+  size = size,
+  pseudoRandomDropout = pseudoRandomDropout) {
 
   /**
    * Map strings to ids of embeddings.
@@ -31,14 +34,15 @@ class EmbeddingsContainerByStrings(
    * If the [id] is negative or greater than [count] return the [unknownEmbedding].
    *
    * @param id (can be null)
+   * @param dropout the probability to get the [unknownEmbedding] (default = 0.0 = no dropout)
    *
    * @return the Embedding with the given [id] or [nullEmbedding] or [unknownEmbedding]
    */
-  fun getEmbedding(id: String?): Embedding {
+  fun getEmbedding(id: String?, dropout: Double = 0.0): Embedding {
 
     return if (id == null) {
 
-      super.getEmbedding(id = null)
+      super.getEmbedding(id = null, dropout = dropout)
 
     } else {
 
@@ -46,7 +50,7 @@ class EmbeddingsContainerByStrings(
         this.idsMap[id] = this.idsMap.size
       }
 
-      super.getEmbedding(this.idsMap[id]!!)
+      super.getEmbedding(this.idsMap[id]!!, dropout = dropout)
     }
   }
 }

@@ -12,10 +12,13 @@ package com.kotlinnlp.simplednn.deeplearning.embeddings
  *
  * @property count the number of embeddings in this [EmbeddingsContainer] (e.g. number of word in a vocabulary)
  * @property size the size of each embedding (typically a range between about 50 to a few hundreds)
+ * @property pseudoRandomDropout a Boolean indicating if Embeddings must be dropped out with pseudo random probability
  */
 class EmbeddingsContainer(
   count: Int,
-  size: Int
+  size: Int,
+  pseudoRandomDropout: Boolean = true
 ) : EmbeddingsContainerBase<EmbeddingsContainer>(
   count = count,
-  size = size)
+  size = size,
+  pseudoRandomDropout = pseudoRandomDropout)
