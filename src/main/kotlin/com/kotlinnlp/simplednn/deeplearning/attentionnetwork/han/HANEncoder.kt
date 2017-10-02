@@ -17,6 +17,7 @@ import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworksPo
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncoder
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncodersPool
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -28,14 +29,19 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property model the parameters of the model of the networks
  */
-class HANEncoder(val model: HAN) {
+class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val model: HAN) {
 
   /**
    * An array containing pools of encoders ([BiRNNEncoder]s), one for each level of the HAN.
    */
-  private val encodersPools: Array<BiRNNEncodersPool<DenseNDArray>> = Array(
+  private val encodersPools: Array<BiRNNEncodersPool<*>> = Array(
     size = this.model.hierarchySize,
-    init = { i -> BiRNNEncodersPool<DenseNDArray>(this.model.biRNNs[i]) }
+    init = { i ->
+      if (this.model.isInputLevel((i)))
+        BiRNNEncodersPool<InputNDArrayType>(this.model.biRNNs[i])
+      else
+        BiRNNEncodersPool<DenseNDArray>(this.model.biRNNs[i])
+    }
   )
 
   /**
@@ -53,9 +59,9 @@ class HANEncoder(val model: HAN) {
   /**
    * Lists of encoders associated to each forwarded group, one per hierarchical level.
    */
-  private val usedEncodersPerLevel: List<ArrayList<BiRNNEncoder<DenseNDArray>>> = List(
+  private val usedEncodersPerLevel: List<ArrayList<BiRNNEncoder<*>>> = List(
     size = this.model.hierarchySize,
-    init = { arrayListOf<BiRNNEncoder<DenseNDArray>>() }
+    init = { arrayListOf<BiRNNEncoder<*>>() }
   )
 
   /**
@@ -185,21 +191,29 @@ class HANEncoder(val model: HAN) {
    *
    * @return the output array
    */
+  @Suppress("UNCHECKED_CAST")
   private fun forwardItem(item: HierarchyItem, levelIndex: Int, useDropout: Boolean): DenseNDArray {
 
-    val inputSequence = when (item) {
+    val inputSequence: Array<*> = when (item) {
       is HierarchyGroup -> this.buildInputSequence(group = item, levelIndex = levelIndex, useDropout = useDropout)
-      is HierarchySequence -> item.toTypedArray()
+      is HierarchySequence<*> -> item.toTypedArray() as Array<InputNDArrayType>
       else -> throw RuntimeException("Invalid hierarchy item type")
     }
 
-    val encoder: BiRNNEncoder<DenseNDArray> = this.encodersPools[levelIndex].getItem()
+    val encoder: BiRNNEncoder<*> = this.encodersPools[levelIndex].getItem()
     val attentionNetwork: AttentionNetwork<DenseNDArray> = this.attentionNetworksPools[levelIndex].getItem()
 
     this.usedEncodersPerLevel[levelIndex].add(encoder)
     this.usedAttentionNetworksPerLevel[levelIndex].add(attentionNetwork)
 
-    val encodedSequence = encoder.encode(inputSequence, useDropout = useDropout && this.isInputLevel(levelIndex))
+    val isInputLevel: Boolean = this.model.isInputLevel(levelIndex)
+    val encodedSequence: Array<DenseNDArray> = if (isInputLevel) {
+      (encoder as BiRNNEncoder<InputNDArrayType>)
+        .encode(inputSequence as Array<InputNDArrayType>, useDropout = useDropout && isInputLevel)
+    } else {
+      (encoder as BiRNNEncoder<DenseNDArray>)
+        .encode(inputSequence as Array<DenseNDArray>, useDropout = useDropout && isInputLevel)
+    }
 
     return attentionNetwork.forward(
       inputSequence = arrayListOf(*Array(
@@ -296,7 +310,7 @@ class HANEncoder(val model: HAN) {
   private fun backwardEncoder(levelIndex: Int, groupIndex: Int, propagateToInput: Boolean) {
 
     val accumulator = this.encodersParamsErrorsAccumulators[levelIndex]
-    val encoder: BiRNNEncoder<DenseNDArray> = this.usedEncodersPerLevel[levelIndex][groupIndex]
+    val encoder: BiRNNEncoder<*> = this.usedEncodersPerLevel[levelIndex][groupIndex]
 
     encoder.backward(
       outputErrorsSequence = this.usedAttentionNetworksPerLevel[levelIndex][groupIndex].getInputErrors(),
@@ -367,11 +381,4 @@ class HANEncoder(val model: HAN) {
         init = { i -> this.buildInputErrorsHierarchyItem(levelIndex = levelIndex + 1, groupIndex = i, copy = copy) }
       ))
   }
-
-  /**
-   * @param levelIndex a level index of the hierarchy
-   *
-   * @return a Boolean indicating if the level at the given [levelIndex] is the lowest of the hierarchy
-   */
-  private fun isInputLevel(levelIndex: Int): Boolean = levelIndex == (this.model.hierarchySize - 1)
 }

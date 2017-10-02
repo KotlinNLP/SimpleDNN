@@ -8,14 +8,15 @@
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * The HierarchySequence represents the lowest level of the input hierarchy of a [HANEncoder].
  *
  * It contains a list of [AugmentedArray]s as input sequence of the lowest level of a [HANEncoder].
  */
-class HierarchySequence(vararg arrays: DenseNDArray) : HierarchyItem, ArrayList<DenseNDArray>(arrays.size) {
+class HierarchySequence<NDArrayType: NDArray<NDArrayType>>(vararg arrays: NDArrayType)
+  : HierarchyItem, ArrayList<NDArrayType>(arrays.size) {
 
   init {
     arrays.forEach {

@@ -25,6 +25,7 @@ import java.io.Serializable
  *
  * @property hierarchySize the number of levels of the hierarchy
  * @property inputSize the size of each array of input
+ * @property inputType the type of the input arrays of the [HAN]
  * @property biRNNsActivation the activation function of the BiRNNs
  * @property biRNNsConnectionType the layer connection type of the BiRNNs
  * @property attentionSize the size of the attention arrays of the AttentionLayers
@@ -38,6 +39,7 @@ import java.io.Serializable
 class HAN(
   val hierarchySize: Int = 2,
   val inputSize: Int,
+  val inputType: LayerType.Input = LayerType.Input.Dense,
   val biRNNsActivation: ActivationFunction?,
   val biRNNsConnectionType: LayerType.Connection,
   val attentionSize: Int,
@@ -87,7 +89,7 @@ class HAN(
       val inputSize: Int = this.getLevelInputSize(i)
 
       BiRNN(
-        inputType = LayerType.Input.Dense,
+        inputType = if (i == 0) this.inputType else LayerType.Input.Dense, // the level 0 is the input of the HAN
         inputSize = inputSize,
         hiddenSize = this.getBiRNNOutputSize(inputSize = inputSize, levelIndex = i) / 2,
         hiddenActivation = this.biRNNsActivation,
@@ -162,6 +164,13 @@ class HAN(
    * @param outputStream the [OutputStream] in which to write this serialized [HAN]
    */
   fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
+
+  /**
+   * @param levelIndex a level index of the hierarchy
+   *
+   * @return a Boolean indicating if the level at the given [levelIndex] is the lowest of the hierarchy
+   */
+  fun isInputLevel(levelIndex: Int): Boolean = levelIndex == (this.hierarchySize - 1)
 
   /**
    * @param levelIndex the index of a level of the hierarchy
