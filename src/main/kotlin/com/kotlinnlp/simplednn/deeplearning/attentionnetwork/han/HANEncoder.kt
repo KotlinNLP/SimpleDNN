@@ -116,7 +116,7 @@ class HANEncoder(val model: HAN) {
 
     val topOutput: DenseNDArray = this.forwardItem(item = sequencesHierarchy, levelIndex = 0, useDropout = useDropout)
 
-    this.outputProcessor.forward(featuresArray = topOutput, useDropout = useDropout)
+    this.outputProcessor.forward(featuresArray = topOutput)
 
     return this.outputProcessor.getOutput()
   }
@@ -199,14 +199,13 @@ class HANEncoder(val model: HAN) {
     this.usedEncodersPerLevel[levelIndex].add(encoder)
     this.usedAttentionNetworksPerLevel[levelIndex].add(attentionNetwork)
 
-    val encodedSequence = encoder.encode(inputSequence, useDropout = useDropout)
+    val encodedSequence = encoder.encode(inputSequence, useDropout = useDropout && this.isInputLevel(levelIndex))
 
     return attentionNetwork.forward(
       inputSequence = arrayListOf(*Array(
         size = encodedSequence.size,
         init = { i -> AugmentedArray(encodedSequence[i])}
-      )),
-      useDropout = useDropout)
+      )))
   }
 
   /**
@@ -368,4 +367,11 @@ class HANEncoder(val model: HAN) {
         init = { i -> this.buildInputErrorsHierarchyItem(levelIndex = levelIndex + 1, groupIndex = i, copy = copy) }
       ))
   }
+
+  /**
+   * @param levelIndex a level index of the hierarchy
+   *
+   * @return a Boolean indicating if the level at the given [levelIndex] is the lowest of the hierarchy
+   */
+  private fun isInputLevel(levelIndex: Int): Boolean = levelIndex == (this.model.hierarchySize - 1)
 }
