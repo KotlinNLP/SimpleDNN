@@ -58,7 +58,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     this.inputSize = this.inputSequence.first().size
     this.checkInputArraysSize() // call it after the inputSize is been set
-    this.outputArray = AugmentedArray<DenseNDArray>(values = DenseNDArrayFactory.zeros(Shape(this.inputSize)))
+    this.outputArray = AugmentedArray(values = DenseNDArrayFactory.zeros(Shape(this.inputSize)))
     this.attentionMatrix = this.buildAttentionMatrix()
   }
 
