@@ -108,6 +108,17 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   }
 
   /**
+   * @param copy a Boolean indicating whether the returned importance score must be a copy or a reference
+   *
+   * @return the importance score of each array of input in a [DenseNDArray]
+   */
+  fun getImportanceScore(copy: Boolean = true): DenseNDArray =
+    if (copy)
+      this.attentionLayer.importanceScore.copy()
+    else
+      this.attentionLayer.importanceScore
+
+  /**
    * The factory of the transform layer.
    *
    * @return a new FeedforwardLayerStructure
