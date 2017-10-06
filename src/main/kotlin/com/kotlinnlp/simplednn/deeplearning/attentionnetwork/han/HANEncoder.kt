@@ -360,14 +360,15 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val model: HAN) {
   }
 
   /**
-   * Build the [HierarchyItem] of the given [levelIndex] of the hierarchy, related to the group with the given
-   * [groupIndex].
+   * Build the [HierarchyItem] of the given [levelIndex] of the hierarchy, related to the given [groupIndex] group.
    * If the level is the last the returned [HierarchyItem] is a [HierarchySequence] containing the input errors of the
-   * group with index [groupIndex].
+   * the given [groupIndex] group.
    *
    * @param levelIndex the index of a level of the hierarchy
    * @param groupIndex the index of a group in this level
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   *
+   * @return a [HierarchyItem] containing input errors on the lowest level
    */
   private fun buildInputErrorsHierarchyItem(levelIndex: Int, groupIndex: Int, copy: Boolean): HierarchyItem {
 
