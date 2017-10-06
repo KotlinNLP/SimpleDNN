@@ -155,8 +155,19 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val model: HAN) {
    * @return the errors of the input sequences, grouped with the same hierarchy as the given input
    */
   fun getInputSequenceErrors(copy: Boolean = true): HierarchyItem {
-
     return this.buildInputErrorsHierarchyItem(levelIndex = 0, groupIndex = 0, copy = copy)
+  }
+
+  /**
+   * The lowest level of the [HierarchyItem] contains [HierarchySequence]s containing only one [DenseNDArray] with the
+   * importance score of the related input sequence.
+   *
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   *
+   * @return the importance scores of the input sequences, grouped with the same hierarchy as the given input
+   */
+  fun getInputImportanceScores(copy: Boolean = true): HierarchyItem {
+    return this.buildImportanceScoreHierarchyItem(levelIndex = 0, groupIndex = 0, copy = copy)
   }
 
   /**
@@ -378,6 +389,28 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val model: HAN) {
       HierarchyGroup(*Array(
         size = this.usedEncodersPerLevel[levelIndex][groupIndex].getInputSequenceErrors(copy = false).size,
         init = { i -> this.buildInputErrorsHierarchyItem(levelIndex = levelIndex + 1, groupIndex = i, copy = copy) }
+      ))
+  }
+
+  /**
+   * Build the [HierarchyItem] of the given [levelIndex] of the hierarchy, related to the given [groupIndex] group.
+   * If the level is the last the returned [HierarchyItem] is a [HierarchySequence] containing the importance scores of
+   * the given [groupIndex] group.
+   *
+   * @param levelIndex the index of a level of the hierarchy
+   * @param groupIndex the index of a group in this level
+   * @param copy a Boolean indicating whether the returned importance score must be a copy or a reference
+   *
+   * @return a [HierarchyItem] containing the importance score on the lowest level
+   */
+  private fun buildImportanceScoreHierarchyItem(levelIndex: Int, groupIndex: Int, copy: Boolean): HierarchyItem {
+
+    return if (levelIndex == (this.model.hierarchySize - 1))
+      HierarchySequence(this.usedAttentionNetworksPerLevel[levelIndex][groupIndex].getImportanceScore())
+    else
+      HierarchyGroup(*Array(
+        size = this.usedEncodersPerLevel[levelIndex][groupIndex].getInputSequenceErrors(copy = copy).size,
+        init = { i -> this.buildImportanceScoreHierarchyItem(levelIndex = levelIndex + 1, groupIndex = i, copy = copy) }
       ))
   }
 }
