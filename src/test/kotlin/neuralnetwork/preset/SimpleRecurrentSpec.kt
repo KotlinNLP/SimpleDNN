@@ -34,7 +34,7 @@ class SimpleRecurrentSpec : Spek({
       hiddenActivation = hiddenActivation,
       outputSize = 4,
       outputActivation = outputActivation,
-      dropout = 0.25)
+      hiddenDropout = 0.25)
 
     context("initialization") {
 

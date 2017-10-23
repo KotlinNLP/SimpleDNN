@@ -89,7 +89,7 @@ class SWSLNetwork(
     hiddenActivation = this.hiddenLayerActivation,
     outputSize = this.numberOfLabels,
     outputActivation = Softmax(),
-    dropout = this.dropout
+    hiddenDropout = this.dropout
   )
 
   /**

@@ -23,16 +23,18 @@ object DeltaRNN {
                       outputSize: Int,
                       outputActivation: ActivationFunction?,
                       inputType: LayerType.Input = LayerType.Input.Dense,
-                      dropout: Double = 0.0) = NeuralNetwork(
+                      inputDropout: Double = 0.0,
+                      hiddenDropout: Double = 0.0) = NeuralNetwork(
     LayerConfiguration(
       size = inputSize,
-      inputType = inputType
+      inputType = inputType,
+      dropout = inputDropout
     ),
     LayerConfiguration(
       size = hiddenSize,
       activationFunction = hiddenActivation,
       connectionType = LayerType.Connection.DeltaRNN,
-      dropout = dropout
+      dropout = hiddenDropout
     ),
     LayerConfiguration(
       size = outputSize,
