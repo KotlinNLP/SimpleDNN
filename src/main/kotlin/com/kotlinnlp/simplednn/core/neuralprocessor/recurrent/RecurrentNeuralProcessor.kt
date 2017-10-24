@@ -201,7 +201,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Calculate the relevance of the input of a state respect of the output of another (or the same) state.
+   * Calculate the relevance of the input of a state respect to the output of another (or the same) state.
    *
    * @param stateFrom the index of the state from whose input to calculate the relevance
    * @param stateTo the index of the state whose output will be used as reference to calculate the relevance
@@ -277,7 +277,8 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Add a new state.
    *
-   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate relevance)
+   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate the
+   *        relevance)
    */
   private fun addNewState(saveContributions: Boolean = false) {
 
@@ -300,7 +301,8 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward the current state.
    *
    * @param featuresArray the features to forward from the input to the output
-   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate relevance)
+   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate the
+   *                          relevance)
    * @param useDropout whether to apply the dropout
    */
   private fun forwardCurrentState(

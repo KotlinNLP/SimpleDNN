@@ -136,7 +136,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Calculate the relevance of the input of respect of the output, propagating backward the given distribution on the
+   * Calculate the relevance of the input respect to the output, propagating backward the given distribution on the
    * outcomes.
    *
    * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
