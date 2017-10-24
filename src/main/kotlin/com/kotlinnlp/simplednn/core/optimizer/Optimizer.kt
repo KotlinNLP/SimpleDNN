@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 /**
  * The Optimizer is the module which optimizes the parameters of a neural element.
  *
- * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
+ * @property updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
 abstract class Optimizer(val updateMethod: UpdateMethod<*>) : ScheduledUpdater {
 
