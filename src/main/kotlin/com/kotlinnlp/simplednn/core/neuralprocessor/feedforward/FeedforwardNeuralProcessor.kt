@@ -46,8 +46,9 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   private val backwardParamsErrors: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
 
   /**
+   * @param copy a Boolean indicating whether the returned array must be a copy or a reference
    *
-   * @return
+   * @return the output array of the network
    */
   override fun getOutput(copy: Boolean): DenseNDArray {
     return if (copy) {
@@ -58,7 +59,9 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
+   * @return the errors of the network parameters
    */
   override fun getParamsErrors(copy: Boolean): NetworkParameters {
 
@@ -76,7 +79,9 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
+   * @return the errors of the input
    */
   fun getInputErrors(copy: Boolean = true): DenseNDArray {
     require(!this.neuralNetwork.sparseInput) { "Input errors available only if input is dense" }
