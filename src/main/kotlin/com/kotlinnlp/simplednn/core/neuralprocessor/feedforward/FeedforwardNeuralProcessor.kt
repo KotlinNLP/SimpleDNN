@@ -98,6 +98,8 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param featuresArray the features to forward from the input to the output
    * @param useDropout whether to apply the dropout
+   *
+   * @return the output array
    */
   fun forward(featuresArray: InputNDArrayType, useDropout: Boolean = false): DenseNDArray {
 
@@ -114,7 +116,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *                          the relevance)
    * @param useDropout whether to apply the dropout
    *
-   * @return the output [NDArray]
+   * @return the output array
    */
   fun forward(featuresArray: InputNDArrayType,
               saveContributions: Boolean,
