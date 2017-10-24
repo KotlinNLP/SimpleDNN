@@ -64,7 +64,7 @@ class MultiPredictionScorer<InputNDArrayType : NDArray<InputNDArrayType>>(val mo
 
     this.checkInputMapKeys(featuresMap)
 
-    this.resetProcessors()
+    this.initProcessors(featuresMap)
 
     return this.mapUsedProcessors { i, j, processor -> processor.forward(featuresMap[i]!![j], useDropout = useDropout) }
   }
@@ -86,7 +86,7 @@ class MultiPredictionScorer<InputNDArrayType : NDArray<InputNDArrayType>>(val mo
 
     this.checkInputMapKeys(featuresMap)
 
-    this.resetProcessors()
+    this.initProcessors(featuresMap)
 
     return this.mapUsedProcessors { i, j, processor ->
       processor.forward(featuresMap[i]!![j], saveContributions= saveContributions, useDropout = useDropout)
@@ -211,13 +211,22 @@ class MultiPredictionScorer<InputNDArrayType : NDArray<InputNDArrayType>>(val mo
   }
 
   /**
-   * Reset the processors used for the last scoring.
+   * Initialize processors.
+   *
+   * @param featuresMap the input features map
    */
-  private fun resetProcessors() {
+  private fun initProcessors(featuresMap: Map<Int, List<InputNDArrayType>>) {
 
     this.processorsPools.forEach { it.releaseAll() }
 
     this.usedProcessorsPerNetwork.clear()
+
+    featuresMap.forEach { (networkIndex, processorsList) ->
+      this.usedProcessorsPerNetwork[networkIndex] = List(
+        size = processorsList.size,
+        init = { this.processorsPools[networkIndex].getItem() }
+      )
+    }
   }
 
   /**
