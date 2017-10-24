@@ -145,7 +145,7 @@ class MultiPredictionScorer<InputNDArrayType : NDArray<InputNDArrayType>>(val mo
    * @param outputErrors a map of sub-networks indices to maps of prediction indices to outputs errors
    * @param propagateToInput whether to propagate the errors to the input
    */
-  fun backward(outputErrors: Map<Int, Map<Int, DenseNDArray>>, propagateToInput: Boolean = false) {
+  fun backward(outputErrors: Map<Int, Map<Int, DenseNDArray>>, propagateToInput: Boolean) {
 
     this.checkInputMapKeys(outputErrors)
     this.checkInputMapUsedKeys(outputErrors)
