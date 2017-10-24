@@ -10,7 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.1.4-3</kotlin.version>
+        <kotlin.version>1.1.51</kotlin.version>
         <slf4j.version>1.7.21</slf4j.version>
         <jblas.version>1.2.4</jblas.version>
         <jsoniter.version>0.9.2</jsoniter.version>
@@ -19,7 +19,7 @@
         <fasterxml.jackson-module-kotlin.version>${fasterxml.jackson.version}-2</fasterxml.jackson-module-kotlin.version>
         <mockit-kotlin.version>1.4.0</mockit-kotlin.version>
         <surfire.version>2.19.1</surfire.version>
-        <spek.version>1.1.0</spek.version>
+        <spek.version>1.1.4</spek.version>
         <dokka.version>0.9.13</dokka.version>
         <progressindicator.version>0.1.0</progressindicator.version>
     </properties>
