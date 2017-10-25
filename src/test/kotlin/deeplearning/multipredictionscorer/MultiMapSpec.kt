@@ -65,6 +65,25 @@ class MultiMapSpec : Spek({
       }
     }
 
+    on("forEach()") {
+
+      it("should loop over all the elements") {
+
+        val elements = setOf(
+          Pair(Pair(5, 0), 10),
+          Pair(Pair(5, 1), 11),
+          Pair(Pair(5, 2), 12),
+          Pair(Pair(6, 3), 13),
+          Pair(Pair(6, 4), 14)
+        )
+        val iterElements = mutableSetOf<Pair<Pair<Int, Int>, Int>>()
+
+        multimap.forEach { i, j, elm -> iterElements.add(Pair(Pair(i, j), elm)) }
+
+        assertEquals(elements, iterElements)
+      }
+    }
+
     on("map()") {
 
       val returnedMultimap = multimap.map { _, _, elm -> elm + 10}
