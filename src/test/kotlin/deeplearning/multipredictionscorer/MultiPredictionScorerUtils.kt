@@ -104,8 +104,7 @@ object MultiPredictionScorerUtils {
       1,
       listOf(
         DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.8)),
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, -1.0)),
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, -0.6))
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, -1.0))
       )
     )
   )
@@ -126,8 +125,7 @@ object MultiPredictionScorerUtils {
       1,
       mapOf(
         Pair(0, DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.1))),
-        Pair(1, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, -0.2))),
-        Pair(2, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.6)))
+        Pair(1, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, -0.2)))
       )
     )
   )

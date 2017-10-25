@@ -51,7 +51,7 @@ class MultiPredictionScorerSpec : Spek({
         }
 
         it("should return the expected number of sub-groups of the group 1") {
-          assertEquals(3, outputs[1]!!.size)
+          assertEquals(2, outputs[1]!!.size)
         }
 
         it("should return the expected output associated to the indices (0, 0)") {
@@ -98,15 +98,6 @@ class MultiPredictionScorerSpec : Spek({
             )
           }
         }
-
-        it("should return the expected output associated to the indices (1, 2)") {
-          assertTrue {
-            outputs[1]!![2].equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.532525, -1.076107)),
-              tolerance = 1.0e-06
-            )
-          }
-        }
       }
 
       on("backward") {
@@ -134,7 +125,7 @@ class MultiPredictionScorerSpec : Spek({
         }
 
         it("should return the expected number of sub-groups of the group 1") {
-          assertEquals(3, paramsErrors[1]!!.size)
+          assertEquals(2, paramsErrors[1]!!.size)
         }
 
         val errors00In = paramsErrors[0]!![0].paramsPerLayer[0] as FeedforwardLayerParameters
@@ -147,8 +138,6 @@ class MultiPredictionScorerSpec : Spek({
         val errors10Out = paramsErrors[1]!![0].paramsPerLayer[1] as FeedforwardLayerParameters
         val errors11In = paramsErrors[1]!![1].paramsPerLayer[0] as FeedforwardLayerParameters
         val errors11Out = paramsErrors[1]!![1].paramsPerLayer[1] as FeedforwardLayerParameters
-        val errors12In = paramsErrors[1]!![2].paramsPerLayer[0] as FeedforwardLayerParameters
-        val errors12Out = paramsErrors[1]!![2].paramsPerLayer[1] as FeedforwardLayerParameters
 
         val inputErrors = scorer.getInputErrors(copy = false)
 
@@ -406,57 +395,6 @@ class MultiPredictionScorerSpec : Spek({
             )
           }
         }
-
-        it("should return the expected output biases errors associated to the indices (1, 2)") {
-          assertTrue {
-            errors12Out.unit.biases.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.6)),
-              tolerance = 1.0e-06
-            )
-          }
-        }
-
-        it("should return the expected output weights errors associated to the indices (1, 2)") {
-          assertTrue {
-            errors12Out.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
-                doubleArrayOf(-0.039693, -0.078566),
-                doubleArrayOf(-0.238158, -0.471398)
-              )),
-              tolerance = 1.0e-06
-            )
-          }
-        }
-
-        it("should return the expected input biases errors associated to the indices (1, 2)") {
-          assertTrue {
-            errors12In.unit.biases.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.311705, 0.072719)),
-              tolerance = 1.0e-06
-            )
-          }
-        }
-
-        it("should return the expected input weights errors associated to the indices (1, 2)") {
-          assertTrue {
-            errors12In.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
-                doubleArrayOf(-0.249364, 0.187023),
-                doubleArrayOf(0.058175, -0.043631)
-              )),
-              tolerance = 1.0e-06
-            )
-          }
-        }
-
-        it("should return the expected input errors associated to the indices (1, 2)") {
-          assertTrue {
-            inputErrors[1]!![2].equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.097677, 0.300267)),
-              tolerance = 1.0e-06
-            )
-          }
-        }
       }
     }
 
@@ -477,7 +415,7 @@ class MultiPredictionScorerSpec : Spek({
         }
 
         it("should return the expected number of sub-groups of the group 1") {
-          assertEquals(3, outputs[1]!!.size)
+          assertEquals(2, outputs[1]!!.size)
         }
 
         it("should return the expected output associated to the indices (1, 0)") {
@@ -493,15 +431,6 @@ class MultiPredictionScorerSpec : Spek({
           assertTrue {
             outputs[1]!![1].equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.452723, -1.383420)),
-              tolerance = 1.0e-06
-            )
-          }
-        }
-
-        it("should return the expected output associated to the indices (1, 2)") {
-          assertTrue {
-            outputs[1]!![2].equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.532525, -1.076107)),
               tolerance = 1.0e-06
             )
           }
@@ -528,15 +457,13 @@ class MultiPredictionScorerSpec : Spek({
         }
 
         it("should return the expected number of sub-groups of the group 1") {
-          assertEquals(3, paramsErrors[1]!!.size)
+          assertEquals(2, paramsErrors[1]!!.size)
         }
 
         val errors10In = paramsErrors[1]!![0].paramsPerLayer[0] as FeedforwardLayerParameters
         val errors10Out = paramsErrors[1]!![0].paramsPerLayer[1] as FeedforwardLayerParameters
         val errors11In = paramsErrors[1]!![1].paramsPerLayer[0] as FeedforwardLayerParameters
         val errors11Out = paramsErrors[1]!![1].paramsPerLayer[1] as FeedforwardLayerParameters
-        val errors12In = paramsErrors[1]!![2].paramsPerLayer[0] as FeedforwardLayerParameters
-        val errors12Out = paramsErrors[1]!![2].paramsPerLayer[1] as FeedforwardLayerParameters
 
         val inputErrors = scorer.getInputErrors(copy = false)
 
@@ -637,57 +564,6 @@ class MultiPredictionScorerSpec : Spek({
           assertTrue {
             inputErrors[1]!![1].equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.029265, -0.119601)),
-              tolerance = 1.0e-06
-            )
-          }
-        }
-
-        it("should return the expected output biases errors associated to the indices (1, 2)") {
-          assertTrue {
-            errors12Out.unit.biases.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.6)),
-              tolerance = 1.0e-06
-            )
-          }
-        }
-
-        it("should return the expected output weights errors associated to the indices (1, 2)") {
-          assertTrue {
-            errors12Out.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
-                doubleArrayOf(-0.039693, -0.078566),
-                doubleArrayOf(-0.238158, -0.471398)
-              )),
-              tolerance = 1.0e-06
-            )
-          }
-        }
-
-        it("should return the expected input biases errors associated to the indices (1, 2)") {
-          assertTrue {
-            errors12In.unit.biases.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.311705, 0.072719)),
-              tolerance = 1.0e-06
-            )
-          }
-        }
-
-        it("should return the expected input weights errors associated to the indices (1, 2)") {
-          assertTrue {
-            errors12In.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
-                doubleArrayOf(-0.249364, 0.187023),
-                doubleArrayOf(0.058175, -0.043631)
-              )),
-              tolerance = 1.0e-06
-            )
-          }
-        }
-
-        it("should return the expected input errors associated to the indices (1, 2)") {
-          assertTrue {
-            inputErrors[1]!![2].equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.097677, 0.300267)),
               tolerance = 1.0e-06
             )
           }
