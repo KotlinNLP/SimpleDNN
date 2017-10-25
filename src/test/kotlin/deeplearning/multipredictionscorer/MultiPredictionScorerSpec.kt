@@ -17,7 +17,6 @@ import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
@@ -34,26 +33,6 @@ class MultiPredictionScorerSpec : Spek({
 
         val scorer = MultiPredictionScorer<DenseNDArray>(model = MultiPredictionScorerUtils.buildModel())
         val outputs = scorer.score(featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap())
-
-        it("should return the expected number of output groups") {
-          assertEquals(2, outputs.keys.size)
-        }
-
-        it("should return outputs that contain the group 0") {
-          assertTrue { 0 in outputs.keys }
-        }
-
-        it("should return outputs that contain the group 1") {
-          assertTrue { 1 in outputs.keys }
-        }
-
-        it("should return the expected number of sub-groups of the group 0") {
-          assertEquals(3, outputs[0]!!.size)
-        }
-
-        it("should return the expected number of sub-groups of the group 1") {
-          assertEquals(2, outputs[1]!!.size)
-        }
 
         it("should return the expected output associated to the indices (0, 0)") {
           assertTrue {
@@ -107,27 +86,8 @@ class MultiPredictionScorerSpec : Spek({
         scorer.score(featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap())
         scorer.backward(outputsErrors = MultiPredictionScorerUtils.buildOutputErrors(), propagateToInput = true)
 
+        val inputErrors = scorer.getInputErrors(copy = false)
         val paramsErrors = scorer.getParamsErrors(copy = false)
-
-        it("should return the expected number of errors groups") {
-          assertEquals(2, paramsErrors.keys.size)
-        }
-
-        it("should return errors that contain the group 0") {
-          assertTrue { 0 in paramsErrors.keys }
-        }
-
-        it("should return errors that contain the group 1") {
-          assertTrue { 1 in paramsErrors.keys }
-        }
-
-        it("should return the expected number of sub-groups of the group 0") {
-          assertEquals(3, paramsErrors[0]!!.size)
-        }
-
-        it("should return the expected number of sub-groups of the group 1") {
-          assertEquals(2, paramsErrors[1]!!.size)
-        }
 
         val errors00In = paramsErrors[0, 0]!!.paramsPerLayer[0] as FeedforwardLayerParameters
         val errors00Out = paramsErrors[0, 0]!!.paramsPerLayer[1] as FeedforwardLayerParameters
@@ -139,8 +99,6 @@ class MultiPredictionScorerSpec : Spek({
         val errors10Out = paramsErrors[1, 0]!!.paramsPerLayer[1] as FeedforwardLayerParameters
         val errors11In = paramsErrors[1, 1]!!.paramsPerLayer[0] as FeedforwardLayerParameters
         val errors11Out = paramsErrors[1, 1]!!.paramsPerLayer[1] as FeedforwardLayerParameters
-
-        val inputErrors = scorer.getInputErrors(copy = false)
 
         it("should return the expected output biases errors associated to the indices (0, 0)") {
           assertTrue {
@@ -407,18 +365,6 @@ class MultiPredictionScorerSpec : Spek({
         val scorer = MultiPredictionScorer<DenseNDArray>(model = MultiPredictionScorerUtils.buildModel())
         val outputs = scorer.score(featuresMap = MultiMap(mapOf(Pair(1, featuresMap[1]!!))))
 
-        it("should return the expected number of output groups") {
-          assertEquals(1, outputs.keys.size)
-        }
-
-        it("should return outputs that contain the group 1") {
-          assertTrue { 1 in outputs.keys }
-        }
-
-        it("should return the expected number of sub-groups of the group 1") {
-          assertEquals(2, outputs[1]!!.size)
-        }
-
         it("should return the expected output associated to the indices (1, 0)") {
           assertTrue {
             outputs[1, 0]!!.equals(
@@ -447,26 +393,13 @@ class MultiPredictionScorerSpec : Spek({
         val outputErrorsMap = MultiPredictionScorerUtils.buildOutputErrors()
         scorer.backward(outputsErrors = MultiMap(mapOf(Pair(1, outputErrorsMap[1]!!))), propagateToInput = true)
 
+        val inputErrors = scorer.getInputErrors(copy = false)
         val paramsErrors = scorer.getParamsErrors(copy = false)
-
-        it("should return the expected number of errors groups") {
-          assertEquals(1, paramsErrors.keys.size)
-        }
-
-        it("should return errors that contain the group 1") {
-          assertTrue { 1 in paramsErrors.keys }
-        }
-
-        it("should return the expected number of sub-groups of the group 1") {
-          assertEquals(2, paramsErrors[1]!!.size)
-        }
 
         val errors10In = paramsErrors[1, 0]!!.paramsPerLayer[0] as FeedforwardLayerParameters
         val errors10Out = paramsErrors[1, 0]!!.paramsPerLayer[1] as FeedforwardLayerParameters
         val errors11In = paramsErrors[1, 1]!!.paramsPerLayer[0] as FeedforwardLayerParameters
         val errors11Out = paramsErrors[1, 1]!!.paramsPerLayer[1] as FeedforwardLayerParameters
-
-        val inputErrors = scorer.getInputErrors(copy = false)
 
         it("should return the expected output biases errors associated to the indices (1, 0)") {
           assertTrue {
