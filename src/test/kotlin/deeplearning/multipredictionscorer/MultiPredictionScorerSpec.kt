@@ -8,6 +8,7 @@
 package deeplearning.multipredictionscorer
 
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.deeplearning.multipredictionscorer.MultiMap
 import com.kotlinnlp.simplednn.deeplearning.multipredictionscorer.MultiPredictionScorer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -35,15 +36,15 @@ class MultiPredictionScorerSpec : Spek({
         val outputs = scorer.score(featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap())
 
         it("should return the expected number of output groups") {
-          assertEquals(2, outputs.size)
+          assertEquals(2, outputs.keys.size)
         }
 
         it("should return outputs that contain the group 0") {
-          assertTrue { outputs.containsKey(0) }
+          assertTrue { 0 in outputs.keys }
         }
 
         it("should return outputs that contain the group 1") {
-          assertTrue { outputs.containsKey(1) }
+          assertTrue { 1 in outputs.keys }
         }
 
         it("should return the expected number of sub-groups of the group 0") {
@@ -56,7 +57,7 @@ class MultiPredictionScorerSpec : Spek({
 
         it("should return the expected output associated to the indices (0, 0)") {
           assertTrue {
-            outputs[0]!![0].equals(
+            outputs[0, 0]!!.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.309919, 0.510703)),
               tolerance = 1.0e-06
             )
@@ -65,7 +66,7 @@ class MultiPredictionScorerSpec : Spek({
 
         it("should return the expected output associated to the indices (0, 1)") {
           assertTrue {
-            outputs[0]!![1].equals(
+            outputs[0, 1]!!.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.226817, 0.366804)),
               tolerance = 1.0e-06
             )
@@ -74,7 +75,7 @@ class MultiPredictionScorerSpec : Spek({
 
         it("should return the expected output associated to the indices (0, 2)") {
           assertTrue {
-            outputs[0]!![2].equals(
+            outputs[0, 2]!!.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.268098, 1.204324)),
               tolerance = 1.0e-06
             )
@@ -83,7 +84,7 @@ class MultiPredictionScorerSpec : Spek({
 
         it("should return the expected output associated to the indices (1, 0)") {
           assertTrue {
-            outputs[1]!![0].equals(
+            outputs[1, 0]!!.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.031159, -0.360721)),
               tolerance = 1.0e-06
             )
@@ -92,7 +93,7 @@ class MultiPredictionScorerSpec : Spek({
 
         it("should return the expected output associated to the indices (1, 1)") {
           assertTrue {
-            outputs[1]!![1].equals(
+            outputs[1, 1]!!.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.452723, -1.383420)),
               tolerance = 1.0e-06
             )
@@ -104,20 +105,20 @@ class MultiPredictionScorerSpec : Spek({
 
         val scorer = MultiPredictionScorer<DenseNDArray>(model = MultiPredictionScorerUtils.buildModel())
         scorer.score(featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap())
-        scorer.backward(outputErrors = MultiPredictionScorerUtils.buildOutputErrors(), propagateToInput = true)
+        scorer.backward(outputsErrors = MultiPredictionScorerUtils.buildOutputErrors(), propagateToInput = true)
 
         val paramsErrors = scorer.getParamsErrors(copy = false)
 
         it("should return the expected number of errors groups") {
-          assertEquals(2, paramsErrors.size)
+          assertEquals(2, paramsErrors.keys.size)
         }
 
         it("should return errors that contain the group 0") {
-          assertTrue { paramsErrors.containsKey(0) }
+          assertTrue { 0 in paramsErrors.keys }
         }
 
         it("should return errors that contain the group 1") {
-          assertTrue { paramsErrors.containsKey(1) }
+          assertTrue { 1 in paramsErrors.keys }
         }
 
         it("should return the expected number of sub-groups of the group 0") {
@@ -128,16 +129,16 @@ class MultiPredictionScorerSpec : Spek({
           assertEquals(2, paramsErrors[1]!!.size)
         }
 
-        val errors00In = paramsErrors[0]!![0].paramsPerLayer[0] as FeedforwardLayerParameters
-        val errors00Out = paramsErrors[0]!![0].paramsPerLayer[1] as FeedforwardLayerParameters
-        val errors01In = paramsErrors[0]!![1].paramsPerLayer[0] as FeedforwardLayerParameters
-        val errors01Out = paramsErrors[0]!![1].paramsPerLayer[1] as FeedforwardLayerParameters
-        val errors02In = paramsErrors[0]!![2].paramsPerLayer[0] as FeedforwardLayerParameters
-        val errors02Out = paramsErrors[0]!![2].paramsPerLayer[1] as FeedforwardLayerParameters
-        val errors10In = paramsErrors[1]!![0].paramsPerLayer[0] as FeedforwardLayerParameters
-        val errors10Out = paramsErrors[1]!![0].paramsPerLayer[1] as FeedforwardLayerParameters
-        val errors11In = paramsErrors[1]!![1].paramsPerLayer[0] as FeedforwardLayerParameters
-        val errors11Out = paramsErrors[1]!![1].paramsPerLayer[1] as FeedforwardLayerParameters
+        val errors00In = paramsErrors[0, 0]!!.paramsPerLayer[0] as FeedforwardLayerParameters
+        val errors00Out = paramsErrors[0, 0]!!.paramsPerLayer[1] as FeedforwardLayerParameters
+        val errors01In = paramsErrors[0, 1]!!.paramsPerLayer[0] as FeedforwardLayerParameters
+        val errors01Out = paramsErrors[0, 1]!!.paramsPerLayer[1] as FeedforwardLayerParameters
+        val errors02In = paramsErrors[0, 2]!!.paramsPerLayer[0] as FeedforwardLayerParameters
+        val errors02Out = paramsErrors[0, 2]!!.paramsPerLayer[1] as FeedforwardLayerParameters
+        val errors10In = paramsErrors[1, 0]!!.paramsPerLayer[0] as FeedforwardLayerParameters
+        val errors10Out = paramsErrors[1, 0]!!.paramsPerLayer[1] as FeedforwardLayerParameters
+        val errors11In = paramsErrors[1, 1]!!.paramsPerLayer[0] as FeedforwardLayerParameters
+        val errors11Out = paramsErrors[1, 1]!!.paramsPerLayer[1] as FeedforwardLayerParameters
 
         val inputErrors = scorer.getInputErrors(copy = false)
 
@@ -185,7 +186,7 @@ class MultiPredictionScorerSpec : Spek({
 
         it("should return the expected input errors associated to the indices (0, 0)") {
           assertTrue {
-            inputErrors[0]!![0].equals(
+            inputErrors[0, 0]!!.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.059734, -0.419516)),
               tolerance = 1.0e-06
             )
@@ -236,7 +237,7 @@ class MultiPredictionScorerSpec : Spek({
 
         it("should return the expected input errors associated to the indices (0, 1)") {
           assertTrue {
-            inputErrors[0]!![1].equals(
+            inputErrors[0, 1]!!.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.100607, 0.536082)),
               tolerance = 1.0e-06
             )
@@ -287,7 +288,7 @@ class MultiPredictionScorerSpec : Spek({
 
         it("should return the expected input errors associated to the indices (0, 2)") {
           assertTrue {
-            inputErrors[0]!![2].equals(
+            inputErrors[0, 2]!!.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.05769, -0.204416)),
               tolerance = 1.0e-06
             )
@@ -338,7 +339,7 @@ class MultiPredictionScorerSpec : Spek({
 
         it("should return the expected input errors associated to the indices (1, 0)") {
           assertTrue {
-            inputErrors[1]!![0].equals(
+            inputErrors[1, 0]!!.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.170988, 0.156097)),
               tolerance = 1.0e-06
             )
@@ -389,7 +390,7 @@ class MultiPredictionScorerSpec : Spek({
 
         it("should return the expected input errors associated to the indices (1, 1)") {
           assertTrue {
-            inputErrors[1]!![1].equals(
+            inputErrors[1, 1]!!.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.029265, -0.119601)),
               tolerance = 1.0e-06
             )
@@ -404,14 +405,14 @@ class MultiPredictionScorerSpec : Spek({
 
         val featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap()
         val scorer = MultiPredictionScorer<DenseNDArray>(model = MultiPredictionScorerUtils.buildModel())
-        val outputs = scorer.score(featuresMap = mapOf(featuresMap.entries.last().toPair()))
+        val outputs = scorer.score(featuresMap = MultiMap(mapOf(Pair(1, featuresMap[1]!!))))
 
         it("should return the expected number of output groups") {
-          assertEquals(1, outputs.size)
+          assertEquals(1, outputs.keys.size)
         }
 
         it("should return outputs that contain the group 1") {
-          assertTrue { outputs.containsKey(1) }
+          assertTrue { 1 in outputs.keys }
         }
 
         it("should return the expected number of sub-groups of the group 1") {
@@ -420,7 +421,7 @@ class MultiPredictionScorerSpec : Spek({
 
         it("should return the expected output associated to the indices (1, 0)") {
           assertTrue {
-            outputs[1]!![0].equals(
+            outputs[1, 0]!!.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.031159, -0.360721)),
               tolerance = 1.0e-06
             )
@@ -429,7 +430,7 @@ class MultiPredictionScorerSpec : Spek({
 
         it("should return the expected output associated to the indices (1, 1)") {
           assertTrue {
-            outputs[1]!![1].equals(
+            outputs[1, 1]!!.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.452723, -1.383420)),
               tolerance = 1.0e-06
             )
@@ -441,29 +442,29 @@ class MultiPredictionScorerSpec : Spek({
 
         val featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap()
         val scorer = MultiPredictionScorer<DenseNDArray>(model = MultiPredictionScorerUtils.buildModel())
-        scorer.score(featuresMap = mapOf(featuresMap.entries.last().toPair()))
+        scorer.score(featuresMap = MultiMap(mapOf(Pair(1, featuresMap[1]!!))))
 
         val outputErrorsMap = MultiPredictionScorerUtils.buildOutputErrors()
-        scorer.backward(outputErrors = mapOf(outputErrorsMap.entries.last().toPair()), propagateToInput = true)
+        scorer.backward(outputsErrors = MultiMap(mapOf(Pair(1, outputErrorsMap[1]!!))), propagateToInput = true)
 
         val paramsErrors = scorer.getParamsErrors(copy = false)
 
         it("should return the expected number of errors groups") {
-          assertEquals(1, paramsErrors.size)
+          assertEquals(1, paramsErrors.keys.size)
         }
 
         it("should return errors that contain the group 1") {
-          assertTrue { paramsErrors.containsKey(1) }
+          assertTrue { 1 in paramsErrors.keys }
         }
 
         it("should return the expected number of sub-groups of the group 1") {
           assertEquals(2, paramsErrors[1]!!.size)
         }
 
-        val errors10In = paramsErrors[1]!![0].paramsPerLayer[0] as FeedforwardLayerParameters
-        val errors10Out = paramsErrors[1]!![0].paramsPerLayer[1] as FeedforwardLayerParameters
-        val errors11In = paramsErrors[1]!![1].paramsPerLayer[0] as FeedforwardLayerParameters
-        val errors11Out = paramsErrors[1]!![1].paramsPerLayer[1] as FeedforwardLayerParameters
+        val errors10In = paramsErrors[1, 0]!!.paramsPerLayer[0] as FeedforwardLayerParameters
+        val errors10Out = paramsErrors[1, 0]!!.paramsPerLayer[1] as FeedforwardLayerParameters
+        val errors11In = paramsErrors[1, 1]!!.paramsPerLayer[0] as FeedforwardLayerParameters
+        val errors11Out = paramsErrors[1, 1]!!.paramsPerLayer[1] as FeedforwardLayerParameters
 
         val inputErrors = scorer.getInputErrors(copy = false)
 
@@ -511,7 +512,7 @@ class MultiPredictionScorerSpec : Spek({
 
         it("should return the expected input errors associated to the indices (1, 0)") {
           assertTrue {
-            inputErrors[1]!![0].equals(
+            inputErrors[1, 0]!!.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.170988, 0.156097)),
               tolerance = 1.0e-06
             )
@@ -562,7 +563,7 @@ class MultiPredictionScorerSpec : Spek({
 
         it("should return the expected input errors associated to the indices (1, 1)") {
           assertTrue {
-            inputErrors[1]!![1].equals(
+            inputErrors[1, 1]!!.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.029265, -0.119601)),
               tolerance = 1.0e-06
             )
@@ -574,11 +575,11 @@ class MultiPredictionScorerSpec : Spek({
 
         val featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap()
         val scorer = MultiPredictionScorer<DenseNDArray>(model = MultiPredictionScorerUtils.buildModel())
-        scorer.score(featuresMap = mapOf(featuresMap.entries.last().toPair()))
+        scorer.score(featuresMap = MultiMap(mapOf(Pair(1, featuresMap[1]!!))))
 
         it("should raise an exception") {
           assertFailsWith<IllegalArgumentException> {
-            scorer.backward(outputErrors = MultiPredictionScorerUtils.buildOutputErrors(), propagateToInput = true)
+            scorer.backward(outputsErrors = MultiPredictionScorerUtils.buildOutputErrors(), propagateToInput = true)
           }
         }
       }

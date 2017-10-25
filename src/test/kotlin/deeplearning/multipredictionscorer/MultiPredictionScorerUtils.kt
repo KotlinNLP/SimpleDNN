@@ -10,6 +10,7 @@ package deeplearning.multipredictionscorer
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.deeplearning.multipredictionscorer.MultiMap
 import com.kotlinnlp.simplednn.deeplearning.multipredictionscorer.MultiPredictionModel
 import com.kotlinnlp.simplednn.deeplearning.multipredictionscorer.MultiPredictionNetworkConfig
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -91,28 +92,28 @@ object MultiPredictionScorerUtils {
   /**
    *
    */
-  fun buildInputFeaturesMap(): Map<Int, List<DenseNDArray>> = mapOf(
+  fun buildInputFeaturesMap(): MultiMap<DenseNDArray> = MultiMap(mapOf(
     Pair(
       0,
-      listOf(
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.5, 0.2)),
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.3)),
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.6, -0.9))
+      mapOf(
+        Pair(0, DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.5, 0.2))),
+        Pair(1, DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.3))),
+        Pair(2, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.6, -0.9)))
       )
     ),
     Pair(
       1,
-      listOf(
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.8)),
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, -1.0))
+      mapOf(
+        Pair(0, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.8))),
+        Pair(1, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, -1.0)))
       )
     )
-  )
+  ))
 
   /**
    *
    */
-  fun buildOutputErrors(): Map<Int, Map<Int, DenseNDArray>> = mapOf(
+  fun buildOutputErrors(): MultiMap<DenseNDArray> = MultiMap(mapOf(
     Pair(
       0,
       mapOf(
@@ -128,5 +129,5 @@ object MultiPredictionScorerUtils {
         Pair(1, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, -0.2)))
       )
     )
-  )
+  ))
 }
