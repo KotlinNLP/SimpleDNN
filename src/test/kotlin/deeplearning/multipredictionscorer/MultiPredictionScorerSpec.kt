@@ -628,6 +628,129 @@ class MultiPredictionScorerSpec : Spek({
         }
       }
 
+      on("two consecutive backwards") {
+
+        val featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap()
+        val scorer = MultiPredictionScorer<DenseNDArray>(model = MultiPredictionScorerUtils.buildModel())
+        val outputErrorsMap = MultiPredictionScorerUtils.buildOutputErrors()
+
+        scorer.score(featuresMap = MultiMap(mapOf(Pair(1, featuresMap[1]!!))))
+        scorer.backward(outputsErrors = MultiMap(mapOf(Pair(1, outputErrorsMap[1]!!))), propagateToInput = true)
+
+        scorer.score(featuresMap = MultiMap(mapOf(Pair(1, featuresMap[1]!!))))
+        scorer.backward(outputsErrors = MultiMap(mapOf(Pair(1, outputErrorsMap[1]!!))), propagateToInput = true)
+
+        val inputErrors = scorer.getInputErrors(copy = false)
+        val paramsErrors = scorer.getParamsErrors(copy = false)
+
+        val errors10In = paramsErrors[1, 0]!!.paramsPerLayer[0] as FeedforwardLayerParameters
+        val errors10Out = paramsErrors[1, 0]!!.paramsPerLayer[1] as FeedforwardLayerParameters
+        val errors11In = paramsErrors[1, 1]!!.paramsPerLayer[0] as FeedforwardLayerParameters
+        val errors11Out = paramsErrors[1, 1]!!.paramsPerLayer[1] as FeedforwardLayerParameters
+
+        it("should return the expected output biases errors associated to the indices (1, 0)") {
+          assertTrue {
+            errors10Out.unit.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.1)),
+              tolerance = 1.0e-06
+            )
+          }
+        }
+
+        it("should return the expected output weights errors associated to the indices (1, 0)") {
+          assertTrue {
+            errors10Out.unit.weights.values.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(0.343651, -0.123803),
+                doubleArrayOf(-0.085913, 0.030951)
+              )),
+              tolerance = 1.0e-06
+            )
+          }
+        }
+
+        it("should return the expected input biases errors associated to the indices (1, 0)") {
+          assertTrue {
+            errors10In.unit.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.005238, 0.217009)),
+              tolerance = 1.0e-06
+            )
+          }
+        }
+
+        it("should return the expected input weights errors associated to the indices (1, 0)") {
+          assertTrue {
+            errors10In.unit.weights.values.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(-0.001571, -0.004190),
+                doubleArrayOf(0.065103, 0.173607)
+              )),
+              tolerance = 1.0e-06
+            )
+          }
+        }
+
+        it("should return the expected input errors associated to the indices (1, 0)") {
+          assertTrue {
+            inputErrors[1, 0]!!.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.170988, 0.156097)),
+              tolerance = 1.0e-06
+            )
+          }
+        }
+
+        it("should return the expected output biases errors associated to the indices (1, 1)") {
+          assertTrue {
+            errors11Out.unit.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, -0.2)),
+              tolerance = 1.0e-06
+            )
+          }
+        }
+
+        it("should return the expected output weights errors associated to the indices (1, 1)") {
+          assertTrue {
+            errors11Out.unit.weights.values.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(0.0, 0.0),
+                doubleArrayOf(-0.029777, 0.147044)
+              )),
+              tolerance = 1.0e-06
+            )
+          }
+        }
+
+        it("should return the expected input biases errors associated to the indices (1, 1)") {
+          assertTrue {
+            errors11In.unit.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.117340, -0.036756)),
+              tolerance = 1.0e-06
+            )
+          }
+        }
+
+        it("should return the expected input weights errors associated to the indices (1, 1)") {
+          assertTrue {
+            errors11In.unit.weights.values.equals(
+              DenseNDArrayFactory.arrayOf(arrayOf(
+                doubleArrayOf(0.035202, -0.117340),
+                doubleArrayOf(-0.011027, 0.036756)
+              )),
+              tolerance = 1.0e-06
+            )
+          }
+        }
+
+        it("should return the expected input errors associated to the indices (1, 1)") {
+          assertTrue {
+            inputErrors[1, 1]!!.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.029265, -0.119601)),
+              tolerance = 1.0e-06
+            )
+          }
+        }
+      }
+
       on("backward with the output errors of all networks") {
 
         val featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap()
