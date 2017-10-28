@@ -17,7 +17,7 @@ import java.util.*
 class FixedRangeRandom(
   val radius: Double = 0.01,
   val enablePseudoRandom: Boolean = true,
-  val seed: Long = 1
+  val seed: Long = 743
 ) : RandomGenerator {
 
   /**
