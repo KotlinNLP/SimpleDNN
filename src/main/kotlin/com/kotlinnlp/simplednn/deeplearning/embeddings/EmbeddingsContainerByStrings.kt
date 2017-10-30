@@ -38,11 +38,11 @@ class EmbeddingsContainerByStrings(
   private val idsMap = mutableMapOf<String, Int>()
 
   /**
-   * Get the embedding with the given [id] as String.
+   * Get the embedding with the given [id] as [String].
    * If the [id] is null return the [nullEmbedding].
    * If the [id] is negative or greater than [count] return the [unknownEmbedding].
    *
-   * @param id (can be null)
+   * @param id the [String] id of an embedding (can be null)
    * @param dropout the probability to get the [unknownEmbedding] (default = 0.0 = no dropout)
    *
    * @return the Embedding with the given [id] or [nullEmbedding] or [unknownEmbedding]
@@ -62,4 +62,12 @@ class EmbeddingsContainerByStrings(
       super.getEmbedding(this.idsMap[id]!!, dropout = dropout)
     }
   }
+
+  /**
+   * @param id the [String] id of an embedding
+   *
+   * @return the [Int] id of to the element with the given [String] [id] or null if it is not associated to any
+   *         embedding
+   */
+  fun getIntId(id: String): Int? = if (this.idsMap.containsKey(id)) this.idsMap[id] else null
 }
