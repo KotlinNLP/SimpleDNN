@@ -23,43 +23,46 @@ class EmbeddingsOptimizer<in T>(
 ) : Optimizer(updateMethod) {
 
   /**
-   * A support data class to store errors and accumulations cou.
+   * A support data class to store errors and accumulations count.
    */
   private data class EmbeddingsErrors(val errors: DenseNDArray, var count: Int)
 
   /**
-   * The errors associated to the nullEmbedding.
+   * Map embeddings embeddings ids to their errors.
    */
-  private var nullEmbeddingErrors: EmbeddingsErrors? = null
-
-  /**
-   * The errors associated to the unknownEmbedding.
-   */
-  private var unknownEmbeddingErrors: EmbeddingsErrors? = null
-
-  /**
-   * Map embeddings keys to their errors.
-   */
-  private val embeddingsErrorsMap = mutableMapOf<T, EmbeddingsErrors>()
+  private val embeddingsErrorsMap = mutableMapOf<Int, EmbeddingsErrors>()
 
   /**
    * Update the embeddings.
    */
   override fun update() {
 
-    for ((key, embeddingErrors) in this.embeddingsErrorsMap) {
-      this.updateEmbedding(embedding = this.embeddingsMap.get(key), errors = embeddingErrors)
-    }
+    for ((id, embeddingErrors) in this.embeddingsErrorsMap) {
 
-    if (this.nullEmbeddingErrors != null) {
-      this.updateEmbedding(embedding = this.embeddingsMap.nullEmbedding, errors = this.nullEmbeddingErrors!!)
-    }
+      embeddingErrors.errors.assignDiv(embeddingErrors.count.toDouble()) // average errors
 
-    if (this.unknownEmbeddingErrors != null) {
-      this.updateEmbedding(embedding = this.embeddingsMap.unknownEmbedding, errors = this.unknownEmbeddingErrors!!)
+      this.updateMethod.update(this.embeddingsMap.getById(id)!!.array, embeddingErrors.errors)
     }
 
     this.embeddingsErrorsMap.clear()
+  }
+
+  /**
+   * Accumulate the [errors] of the given [embedding].
+   *
+   * @param embedding the embedding on which to accumulate the [errors]
+   * @param errors errors to accumulate
+   */
+  fun accumulate(embedding: Embedding, errors: DenseNDArray) {
+
+    if (embedding.id in this.embeddingsErrorsMap) {
+      val embeddingErrors: EmbeddingsErrors = this.embeddingsErrorsMap[embedding.id]!!
+      embeddingErrors.errors.assignSum(errors)
+      embeddingErrors.count += 1
+
+    } else {
+      this.embeddingsErrorsMap[embedding.id] = EmbeddingsErrors(errors = errors.copy(), count = 1)
+    }
   }
 
   /**
@@ -73,68 +76,12 @@ class EmbeddingsOptimizer<in T>(
    */
   fun accumulate(embeddingKey: T?, errors: DenseNDArray) {
 
-    when (embeddingKey) {
-
-      null -> this.accumulateNullEmbeddingErrors(errors) // null
-
-      !in this.embeddingsMap -> this.accumulateUnknownEmbeddingErrors(errors) // unknown
-
-      else -> { // other
-
-        if (embeddingKey in this.embeddingsErrorsMap) {
-          val embeddingErrors: EmbeddingsErrors = this.embeddingsErrorsMap[embeddingKey]!!
-          embeddingErrors.errors.assignSum(errors)
-          embeddingErrors.count += 1
-
-        } else {
-          this.embeddingsErrorsMap[embeddingKey] = EmbeddingsErrors(errors = errors.copy(), count = 1)
-        }
-      }
+    val embedding: Embedding = when (embeddingKey) {
+      null -> this.embeddingsMap.nullEmbedding
+      !in this.embeddingsMap -> this.embeddingsMap.unknownEmbedding
+      else -> this.embeddingsMap.get(embeddingKey)
     }
-  }
 
-  /**
-   * Accumulate errors of the nullEmbedding.
-   *
-   * @param errors the errors to accumulate
-   */
-  private fun accumulateNullEmbeddingErrors(errors: DenseNDArray) {
-
-    if (this.nullEmbeddingErrors != null) {
-      this.nullEmbeddingErrors!!.errors.assignSum(errors)
-      this.nullEmbeddingErrors!!.count += 1
-
-    } else {
-      this.nullEmbeddingErrors = EmbeddingsErrors(errors = errors.copy(), count = 1)
-    }
-  }
-
-  /**
-   * Accumulate errors of the unknownEmbedding.
-   *
-   * @param errors the errors to accumulate
-   */
-  private fun accumulateUnknownEmbeddingErrors(errors: DenseNDArray) {
-
-    if (this.unknownEmbeddingErrors != null) {
-      this.unknownEmbeddingErrors!!.errors.assignSum(errors)
-      this.unknownEmbeddingErrors!!.count += 1
-
-    } else {
-      this.unknownEmbeddingErrors = EmbeddingsErrors(errors = errors.copy(), count = 1)
-    }
-  }
-
-  /**
-   * Update an [embedding] given its [errors].
-   *
-   * @param embedding the embedding to update
-   * @param errors the embedding errors object
-   */
-  private fun updateEmbedding(embedding: Embedding, errors: EmbeddingsErrors) {
-
-    errors.errors.assignDiv(errors.count.toDouble()) // average errors
-
-    this.updateMethod.update(embedding.array, errors.errors)
+    this.accumulate(embedding = embedding, errors = errors)
   }
 }
