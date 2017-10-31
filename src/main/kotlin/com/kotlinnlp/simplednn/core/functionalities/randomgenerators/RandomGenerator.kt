@@ -7,10 +7,12 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.randomgenerators
 
+import java.io.Serializable
+
 /**
  * A generator of Double random numbers
  */
-interface RandomGenerator {
+interface RandomGenerator : Serializable {
 
   /**
    * Get a new random value.
