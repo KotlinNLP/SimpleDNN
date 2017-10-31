@@ -93,7 +93,7 @@ class SWSLFeaturesExtractor(
    *
    * @return the label embedding representation for a given [embeddingIndex]
    */
-  private fun getLabelEmbedding(embeddingIndex: Int) = this.network.labelsEmbeddings.getEmbedding(embeddingIndex)
+  private fun getLabelEmbedding(embeddingIndex: Int) = this.network.labelsEmbeddings.get(embeddingIndex)
 
   /**
    * Get an element of the features window.

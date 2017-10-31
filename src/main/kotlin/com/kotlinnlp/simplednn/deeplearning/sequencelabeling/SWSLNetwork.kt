@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
-import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsContainer
+import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsMap
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import java.io.Serializable
@@ -93,9 +93,9 @@ class SWSLNetwork(
   )
 
   /**
-   * Contains the trainable embedding-representation for each output label
+   * The embeddings associated to each output label
    */
-  val labelsEmbeddings = EmbeddingsContainer(count = this.numberOfLabels, size = this.labelEmbeddingSize)
+  val labelsEmbeddings = EmbeddingsMap<Int>(size = this.labelEmbeddingSize)
 
   /**
    * Initialize the weight of the [classifier] and the [labelsEmbeddings]
@@ -105,7 +105,6 @@ class SWSLNetwork(
   fun initialize(): SWSLNetwork {
 
     this.classifier.initialize()
-    this.labelsEmbeddings.initialize()
 
     return this
   }

@@ -15,10 +15,10 @@ import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HAN
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HANEncoder
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HANParameters
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.toHierarchySequence
-import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsContainer
 import com.kotlinnlp.simplednn.helpers.training.utils.ExamplesIndices
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.progressindicator.ProgressIndicatorBar
+import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsMap
 import utils.CorpusReader
 import utils.exampleextractor.ClassificationExampleExtractor
 
@@ -45,22 +45,22 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
   /**
    * The partition of training set used to train the classifier (the remaining part is used as validation set).
    */
-  private val TRAINING_SET_PARTITION: Double = 0.9
+  private val trainingSetPartition: Double = 0.9
 
   /**
    * The number of epochs for the training.
    */
-  private val EPOCHS: Int = 10
+  private val epochs: Int = 10
 
   /**
    * The size of the embeddings (used also for the attention arrays).
    */
-  private val EMBEDDINGS_SIZE: Int = 50
+  private val embeddingsSize: Int = 50
 
   /**
    * The embeddings associated to each token.
    */
-  private val embeddings = EmbeddingsContainer(count = 100000, size = this.EMBEDDINGS_SIZE).initialize()
+  private val embeddings = EmbeddingsMap<Int>(size = this.embeddingsSize)
 
   /**
    * The [HANEncoder] used as classifier (Softmax output activation).
@@ -91,11 +91,11 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
 
     val model = HAN(
       hierarchySize = 1,
-      inputSize = this.EMBEDDINGS_SIZE,
+      inputSize = this.embeddingsSize,
       inputType = LayerType.Input.Dense,
       biRNNsActivation = Tanh(),
       biRNNsConnectionType = LayerType.Connection.RAN,
-      attentionSize = this.EMBEDDINGS_SIZE,
+      attentionSize = this.embeddingsSize,
       outputSize = 2,
       outputActivation = Softmax()).initialize()
 
@@ -109,14 +109,14 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
 
     val optimizer = ParamsOptimizer(params = this.classifier.model.params, updateMethod = ADAMMethod(stepSize = 0.005))
     val shuffler = Shuffler(enablePseudoRandom = true, seed = 743)
-    val trainingSize = Math.round(this.dataset.training.size * this.TRAINING_SET_PARTITION).toInt()
+    val trainingSize = Math.round(this.dataset.training.size * this.trainingSetPartition).toInt()
     val trainingSet = ArrayList(this.dataset.training.subList(0, trainingSize))
     val validationSet = ArrayList(this.dataset.training.subList(trainingSize, this.dataset.training.size))
 
     println("Using %d/%d examples as training set and %d/%d as validation set.".format(
       trainingSize, this.dataset.training.size, this.dataset.training.size - trainingSize, this.dataset.training.size))
 
-    (0 until this.EPOCHS).forEach {
+    (0 until this.epochs).forEach {
 
       println("\nEpoch ${it + 1}")
       this.trainEpoch(optimizer = optimizer, trainingSet = trainingSet, shuffler = shuffler)
@@ -212,7 +212,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
       size = example.features.length,
       init = { i ->
         val wordIndex = example.features[i].toInt()
-        this.embeddings.getEmbedding(wordIndex).array.values
+        this.embeddings.getOrSet(wordIndex).array.values
       }
     )
   }

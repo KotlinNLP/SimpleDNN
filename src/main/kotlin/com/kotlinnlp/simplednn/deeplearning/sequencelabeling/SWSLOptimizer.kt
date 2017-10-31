@@ -26,8 +26,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class SWSLOptimizer(
   private val network: SWSLNetwork,
-  val paramsUpdateMethod: UpdateMethod<*> = ADAMMethod(stepSize = 0.001),
-  val embeddingsUpdateMethod: UpdateMethod<*> = AdaGradMethod(learningRate = 0.1)
+  private val paramsUpdateMethod: UpdateMethod<*> = ADAMMethod(stepSize = 0.001),
+  private val embeddingsUpdateMethod: UpdateMethod<*> = AdaGradMethod(learningRate = 0.1)
 ) : ScheduledUpdater {
 
   /**
@@ -42,7 +42,7 @@ class SWSLOptimizer(
    *
    */
   private val labelEmbeddingsOptimizer = EmbeddingsOptimizer(
-    embeddingsContainer = this.network.labelsEmbeddings,
+    embeddingsMap = this.network.labelsEmbeddings,
     updateMethod = embeddingsUpdateMethod)
 
   /**
@@ -97,6 +97,6 @@ class SWSLOptimizer(
    * @param errors the errors of this embedding
    */
   fun accumulateLabelEmbeddingErrors(embeddingId: Int, errors: DenseNDArray) {
-    this.labelEmbeddingsOptimizer.accumulate(embeddingId = embeddingId, errors = errors)
+    this.labelEmbeddingsOptimizer.accumulate(embeddingKey = embeddingId, errors = errors)
   }
 }
