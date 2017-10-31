@@ -65,7 +65,7 @@ class SWSLFeaturesExtractor(
       size = this.sequence.leftContextSize,
       init = {
         val i = leftContext[it]
-        if (i != null) this.getLabelEmbedding(this.labels[i].id).array.values else this.network.emptyLabelVector
+        if (i != null) this.getLabelEmbedding(this.labels[i].index).array.values else this.network.emptyLabelVector
       }
     )
   }
@@ -89,11 +89,11 @@ class SWSLFeaturesExtractor(
   }
 
   /**
-   * @param embeddingIndex an embedding index
+   * @param labelIndex a label index
    *
-   * @return the label embedding representation for a given [embeddingIndex]
+   * @return the label embedding representation for a given [labelIndex]
    */
-  private fun getLabelEmbedding(embeddingIndex: Int) = this.network.labelsEmbeddings.get(embeddingIndex)
+  private fun getLabelEmbedding(labelIndex: Int) = this.network.labelsEmbeddings.get(labelIndex)
 
   /**
    * Get an element of the features window.

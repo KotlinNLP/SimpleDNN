@@ -37,10 +37,10 @@ class SWSLabeler(private val network: SWSLNetwork) {
   /**
    * The output predicted label with the prediction score.
    *
-   * @property id the label id
+   * @property index the label index
    * @property score the prediction score (Double in range [0.0, 1.0], default = 1.0)
    */
-  data class Label(val id: Int, val score: Double = 1.0)
+  data class Label(val index: Int, val score: Double = 1.0)
 
   /**
    * The Sliding Window Sequence which is being processed.
@@ -166,13 +166,13 @@ class SWSLabeler(private val network: SWSLNetwork) {
     val output = this.processor.getOutput(copy = false)
     val bestIndex = output.argMaxIndex()
 
-    return Label(id = bestIndex, score = output[bestIndex])
+    return Label(index = bestIndex, score = output[bestIndex])
   }
 
   /**
    * @return the gold [Label] of the focus element of the sequence
    */
-  private fun getGoldLabel(goldLabels: IntArray) = Label(id = goldLabels[this.sequence.focusIndex], score = 1.0)
+  private fun getGoldLabel(goldLabels: IntArray) = Label(index = goldLabels[this.sequence.focusIndex], score = 1.0)
 
   /**
    * This function iterates the complete sequence to make a prediction for each element using the
@@ -207,7 +207,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
    */
   private fun getOutputErrors(goldLabel: Label) = lossCalculator.calculateErrors(
     output = this.processor.getOutput(copy = false),
-    outputGold = DenseNDArrayFactory.oneHotEncoder(length = this.network.numberOfLabels, oneAt = goldLabel.id))
+    outputGold = DenseNDArrayFactory.oneHotEncoder(length = this.network.numberOfLabels, oneAt = goldLabel.index))
 
   /**
    * Propagate the last backward errors to the network parameters (params and label embeddings) and to the input
@@ -269,7 +269,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
    *
    * @param errors the errors to align with the current labels
    *
-   * @return a list of pair <embeddingIndex, embeddingErrors>
+   * @return a list of pair <labelIndex, embeddingErrors>
    */
   private fun alignLabelsEmbeddingsErrors(errors: DenseNDArray): ArrayList<Pair<Int, DenseNDArray>> {
 
@@ -282,7 +282,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
       val firstIndex = maxOf(0, this.labels.size - splitErrors.size)
 
       (this.labels.lastIndex downTo firstIndex).mapIndexedTo(result) { k, i ->
-        Pair(this.labels[i].id, splitErrors[k])
+        Pair(this.labels[i].index, splitErrors[k])
       }
     }
 
