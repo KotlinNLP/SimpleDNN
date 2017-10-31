@@ -49,7 +49,7 @@ abstract class EmbeddingsContainerBase<SelfType: EmbeddingsContainerBase<SelfTyp
   /**
    * Map embeddings ids to vectors, i.e. id 7 to vector [0.18, 0.12, 0.87...].
    */
-  private val lookupTable = Array(size = count, init = { index -> this.buildEmbedding(index) })
+  private val embeddings = Array(size = count, init = { index -> this.buildEmbedding(index) })
 
   /**
    * The random generator used to decide if an Embedding must be dropped out.
@@ -71,7 +71,7 @@ abstract class EmbeddingsContainerBase<SelfType: EmbeddingsContainerBase<SelfTyp
 
     return when {
       dropout > 0.0 && this.mustBeDropped(dropout) -> this.unknownEmbedding
-      id != null -> if (id in 0 until this.count) this.lookupTable[id] else this.unknownEmbedding
+      id != null -> if (id in 0 until this.count) this.embeddings[id] else this.unknownEmbedding
       else -> this.nullEmbedding
     }
   }
@@ -86,7 +86,7 @@ abstract class EmbeddingsContainerBase<SelfType: EmbeddingsContainerBase<SelfTyp
   fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true))
     : SelfType {
 
-    this.lookupTable.forEach { it.array.values.randomize(randomGenerator) }
+    this.embeddings.forEach { it.array.values.randomize(randomGenerator) }
 
     this.nullEmbedding.array.values.randomize(randomGenerator)
     this.unknownEmbedding.array.values.randomize(randomGenerator)
