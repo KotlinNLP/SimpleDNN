@@ -148,7 +148,10 @@ open class EmbeddingsMap<in T>(
   /**
    * The map of ids to embeddings.
    */
-  private val embeddingsById = mutableMapOf<Int, Embedding>()
+  private val embeddingsById = mutableMapOf(
+    Pair(this.unknownEmbedding.id, this.unknownEmbedding),
+    Pair(this.nullEmbedding.id, this.nullEmbedding)
+  )
 
   /**
    * The random generator used to decide if an embedding must be dropped out.
