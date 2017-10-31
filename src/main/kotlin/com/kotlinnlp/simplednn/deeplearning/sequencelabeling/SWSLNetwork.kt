@@ -89,8 +89,7 @@ class SWSLNetwork(
     hiddenActivation = this.hiddenLayerActivation,
     outputSize = this.numberOfLabels,
     outputActivation = Softmax(),
-    hiddenDropout = this.dropout
-  )
+    hiddenDropout = this.dropout)
 
   /**
    * The embeddings associated to each output label
@@ -98,14 +97,14 @@ class SWSLNetwork(
   val labelsEmbeddings = EmbeddingsMap<Int>(size = this.labelEmbeddingSize)
 
   /**
-   * Initialize the weight of the [classifier] and the [labelsEmbeddings]
+   * Initialize the weights of the classifier and the labelsEmbeddings.
    *
    * @return this SWSLNetwork
    */
-  fun initialize(): SWSLNetwork {
+  init {
 
     this.classifier.initialize()
 
-    return this
+    (0 until this.numberOfLabels).forEach { labelIndex -> this.labelsEmbeddings.set(key = labelIndex) }
   }
 }

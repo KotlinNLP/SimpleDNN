@@ -29,7 +29,7 @@ class SWSLFeaturesExtractorSpec: Spek({
 
     context("input=2, hidden=5, output=10, prevWindow=3, nextWindow=3, labelEmbedding=2, sequence=5, focus=3") {
 
-      val network = SWSLNetworkUtils.buildNetwork().initialize()
+      val network = SWSLNetworkUtils.buildNetwork()
 
       val sequence = SlidingWindowSequenceUtils.buildSlidingWindowSequence()
 
