@@ -1,0 +1,249 @@
+/* Copyright 2016-present The KotlinNLP Authors. All Rights Reserved.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ * ------------------------------------------------------------------*/
+
+package com.kotlinnlp.simplednn.deeplearning.embeddings
+
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
+import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import java.io.File
+import java.io.InputStreamReader
+import java.io.Serializable
+import java.util.*
+
+/**
+ * A map of generic keys to Embeddings.
+ *
+ * @param size the size of each embedding
+ * @param randomGenerator a random generator to initialize the values of new embeddings (default = FixedRangeRandom)
+ * @param pseudoRandomDropout a Boolean indicating if embeddings must be dropped out with pseudo random probability
+ *                            (default = true)
+ */
+open class EmbeddingsMap<in T>(
+  val size: Int,
+  private val randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
+  private val pseudoRandomDropout: Boolean = true
+) : Serializable {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed from Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+
+    /**
+     * Load an [EmbeddingsMap] with [String] keys from file.
+     *
+     * The file must contain one header line and N following data lines:
+     *   - The header line must contain the number N of data lines and the size S of the vectors (the same for all),
+     *     separated by a space.
+     *   - Each data line must contain the key, followed by S double numbers, each separated by a space.
+     *
+     * @param filename the input filename
+     * @param pseudoRandomDropout the pseudoRandomDropout that is propagated to the [EmbeddingsMap] constructor
+     *
+     * @return an [EmbeddingsMap] of [String]s loaded from the given file
+     */
+    fun load(filename: String, pseudoRandomDropout: Boolean = true): EmbeddingsMap<String> {
+
+      val firstLine: String = this.readFirstLine(filename)
+      val firstLineSplit: List<String> = firstLine.split(delimiters = " ")
+
+      val count: Int = firstLineSplit[0].toInt()
+      val size: Int = firstLineSplit[1].toInt()
+
+      val embeddingsMap = EmbeddingsMap<String>(size = size, pseudoRandomDropout = pseudoRandomDropout)
+
+      this.forEachDataLine(filename = filename, vectorSize = size) { key, vector ->
+        embeddingsMap.set(
+          key = key,
+          embedding = Embedding(
+            id = embeddingsMap.count,
+            array = UpdatableDenseArray(values = DenseNDArrayFactory.arrayOf(vector)))
+        )
+      }
+
+      require(embeddingsMap.count == count) {
+        "Invalid file: wrong number of declared embeddings (%d != %d).".format(embeddingsMap.count, count)
+      }
+
+      return embeddingsMap
+    }
+
+    /**
+     * @param filename the name of a file
+     *
+     * @return the first line of the given file
+     */
+    private fun readFirstLine(filename: String): String {
+
+      val reader: InputStreamReader = File(filename).reader()
+      val firstLine = StringBuffer()
+      var char: Char = reader.read().toChar()
+
+      while (char != '\n') {
+        firstLine.append(char)
+        char = reader.read().toChar()
+      }
+
+      return firstLine.toString()
+    }
+
+    /**
+     * Loop the data lines of the given file.
+     *
+     * @param filename the input filename
+     * @param vectorSize the size of each vector
+     * @param callback the callback called for each line, passing it the key and the vector of the line
+     */
+    private fun forEachDataLine(filename: String,
+                                vectorSize: Int,
+                                callback: (key: String, vector: DoubleArray) -> Unit) {
+
+      var isFirstLine = true
+
+      File(filename).forEachLine { line ->
+
+        if (isFirstLine) {
+          isFirstLine = false
+
+        } else {
+          val elements: List<String> = line.split(delimiters = " ")
+          val vector = DoubleArray(size = vectorSize, init = { i -> elements[i + 1].toDouble() })
+
+          callback(elements.first(), vector)
+        }
+      }
+    }
+  }
+
+  /**
+   * The number of embeddings in this [EmbeddingsMap] (excluding the [unknownEmbedding] and the [nullEmbedding]).
+   */
+  val count: Int get() = this.embeddings.size
+
+  /**
+   * The Unknown Embedding.
+   */
+  val unknownEmbedding = this.buildEmbedding(id = -1)
+
+  /**
+   * The Null Embedding.
+   */
+  val nullEmbedding = this.buildEmbedding(id = -2)
+
+  /**
+   * The map of keys to embeddings.
+   */
+  private val embeddings = mutableMapOf<T, Embedding>()
+
+  /**
+   * The random generator used to decide if an embedding must be dropped out.
+   */
+  private val dropoutRandomGenerator = if (this.pseudoRandomDropout) Random(743) else Random()
+
+  /**
+   * Associate a new embedding to the given [key].
+   * It is required that the [key] is never been associated previously.
+   * If [embedding] is null a new randomly initialize [Embedding] is associated to the given [key].
+   *
+   * @param key the key to associate to the new embedding
+   * @param embedding the embedding to associate to the given [key] (optional, default = null)
+   *
+   * @return the [Embedding] set
+   */
+  fun set(key: T, embedding: Embedding? = null): Embedding {
+    require(key !in this.embeddings) { "Embedding with key %s already set.".format(key) }
+    require(embedding == null || embedding.array.values.length == this.size) {
+      "Embedding size not compatible (%d != %d).".format(embedding!!.array.values.length, this.size)
+    }
+
+    val newEmbedding: Embedding = embedding ?: this.buildEmbedding(id = this.count)
+
+    this.embeddings[key] = newEmbedding
+
+    return newEmbedding
+  }
+
+  /**
+   * Get the embedding with the given [key].
+   * If the [key] is null return the [nullEmbedding].
+   * If no embedding has the given [key] return the [unknownEmbedding].
+   *
+   * @param key the key associated to an embedding (can be null)
+   * @param dropout the probability to get the [unknownEmbedding] (default = 0.0 = no dropout)
+   *
+   * @return the [Embedding] with the given not-null [key] or [nullEmbedding] or [unknownEmbedding]
+   */
+  fun get(key: T?, dropout: Double = 0.0): Embedding {
+    require(dropout in 0.0 .. 1.0)
+
+    return when {
+      dropout > 0.0 && this.mustBeDropped(dropout) -> this.unknownEmbedding
+      key == null -> this.nullEmbedding
+      key in this.embeddings -> this.embeddings.getValue(key)
+      else -> this.unknownEmbedding
+    }
+  }
+
+  /**
+   * Get the embedding with the given [key].
+   * If the [key] is null return the [nullEmbedding].
+   * If no embedding has the given [key] associate a new initialized embedding to it and return it.
+   * If dropout > 0.0 and the dropout is applied, return the [unknownEmbedding].
+   *
+   * @param key the key of an embedding (can be null)
+   * @param dropout the probability to get the [unknownEmbedding] (default = 0.0 = no dropout)
+   *
+   * @return the [Embedding] with the given not-null [key] or [nullEmbedding] or [unknownEmbedding]
+   */
+  fun getOrSet(key: T?, dropout: Double = 0.0): Embedding {
+    require(dropout in 0.0 .. 1.0)
+
+    return when {
+      dropout > 0.0 && this.mustBeDropped(dropout) -> this.unknownEmbedding
+      key != null -> if (key in this.embeddings) this.embeddings[key]!! else this.set(key)
+      else -> this.nullEmbedding
+    }
+  }
+
+  /**
+   * @param key a key
+   *
+   * @return a [Boolean] indicating if the key is already associated to an embedding
+   */
+  operator fun contains(key: T): Boolean = key in this.embeddings
+
+  /**
+   * Build a new [Embedding] with randomly initialized values.
+   *
+   * @param id the Int id of the [Embedding] to build
+   *
+   * @return a new [Embedding] with the given [id]
+   */
+  private fun buildEmbedding(id: Int): Embedding {
+
+    val embedding = Embedding(id = id, array = UpdatableDenseArray(Shape(size)))
+
+    embedding.array.values.randomize(this.randomGenerator)
+
+    return embedding
+  }
+
+  /**
+   * @param dropout the probability of dropout
+   *
+   * @return a Boolean indicating if an Embedding must be dropped out
+   */
+  private fun mustBeDropped(dropout: Double): Boolean {
+    return this.dropoutRandomGenerator.nextDouble() < dropout
+  }
+}
