@@ -146,6 +146,11 @@ open class EmbeddingsMap<in T>(
   private val embeddings = mutableMapOf<T, Embedding>()
 
   /**
+   * The map of ids to embeddings.
+   */
+  private val embeddingsById = mutableMapOf<Int, Embedding>()
+
+  /**
    * The random generator used to decide if an embedding must be dropped out.
    */
   private val dropoutRandomGenerator = if (this.pseudoRandomDropout) Random(743) else Random()
@@ -169,6 +174,7 @@ open class EmbeddingsMap<in T>(
     val newEmbedding: Embedding = embedding ?: this.buildEmbedding(id = this.count)
 
     this.embeddings[key] = newEmbedding
+    this.embeddingsById[newEmbedding.id] = newEmbedding
 
     return newEmbedding
   }
@@ -193,6 +199,15 @@ open class EmbeddingsMap<in T>(
       else -> this.unknownEmbedding
     }
   }
+
+  /**
+   * Get the embedding with the given [id].
+   *
+   * @param id the id of an embedding
+   *
+   * @return the [Embedding] with the given [id] (including the [nullEmbedding] and the [unknownEmbedding])
+   */
+  fun getById(id: Int): Embedding? = this.embeddingsById[id]
 
   /**
    * Get the embedding with the given [key].
