@@ -35,6 +35,13 @@ class DictionarySet<T>{
   private val elementsBiMap: BiMap<T, Int> = HashBiMap.create()
 
   /**
+   * @param element an element
+   *
+   * @return a Boolean indicating if the dictionary contains the given element
+   */
+  operator fun contains(element: T): Boolean = this.elementsBiMap.containsKey(element)
+
+  /**
    * Add the given [element] to the dictionary, incrementing the count of its occurrences.
    *
    * @param element the element to add
