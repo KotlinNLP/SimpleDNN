@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.utils.DictionarySet
  * Only embeddings associated to elements contained in the [dictionary] can be get, otherwise the [unknownEmbedding] is
  * returned.
  *
- * @param dictionary a frequency dictionary set
+ * @param dictionary a dictionary set
  * @param size the size of each embedding (typically a range between about 50 to a few hundreds)
  * @param pseudoRandomDropout a Boolean indicating if Embeddings must be dropped out with pseudo random probability
  */
@@ -49,18 +49,13 @@ class EmbeddingsMapByDictionary(
   fun get(element: String?, dropoutCoefficient: Double = 0.0): Embedding {
     require(dropoutCoefficient in 0.0 .. 1.0)
 
-    return if (element == null) {
-      this.nullEmbedding
-
-    } else {
-      val id: Int? = this.dictionary.getId(element)
-
-      if (id != null) {
+    return when (element) {
+      null -> this.nullEmbedding
+      in this.dictionary -> {
+        val id: Int = this.dictionary.getId(element)!!
         this.getOrSet(key = id, dropout = this.getElementDropout(id = id, dropoutCoefficient = dropoutCoefficient))
-
-      } else {
-        this.unknownEmbedding
       }
+      else -> this.unknownEmbedding
     }
   }
 
