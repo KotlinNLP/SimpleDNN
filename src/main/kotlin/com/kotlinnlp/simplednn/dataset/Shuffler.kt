@@ -12,7 +12,7 @@ import java.util.*
 /**
  *
  */
-class Shuffler(enablePseudoRandom: Boolean = true, seed: Long = 1) {
+class Shuffler(enablePseudoRandom: Boolean = true, seed: Long = 743) {
   private val rndGenerator = if (enablePseudoRandom) Random(seed) else Random()
 
   /**
