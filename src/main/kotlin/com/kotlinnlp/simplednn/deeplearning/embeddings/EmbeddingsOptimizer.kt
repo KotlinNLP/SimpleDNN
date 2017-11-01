@@ -14,11 +14,11 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * The optimizer of the [EmbeddingsMap].
  *
- * @property embeddingsMap the [EmbeddingsMap] to optimize
- * @property updateMethod the [UpdateMethod] for the optimization (e.g. ADAM, AdaGrad, ...)
+ * @param embeddingsMap the [EmbeddingsMap] to optimize
+ * @param updateMethod the [UpdateMethod] for the optimization (e.g. ADAM, AdaGrad, ...)
  */
 class EmbeddingsOptimizer<in T>(
-  val embeddingsMap: EmbeddingsMap<T>,
+  private val embeddingsMap: EmbeddingsMap<T>,
   updateMethod: UpdateMethod<*>
 ) : Optimizer(updateMethod) {
 
