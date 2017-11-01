@@ -75,13 +75,6 @@ class EmbeddingsOptimizer<in T>(
    * @param errors errors to accumulate
    */
   fun accumulate(embeddingKey: T?, errors: DenseNDArray) {
-
-    val embedding: Embedding = when (embeddingKey) {
-      null -> this.embeddingsMap.nullEmbedding
-      !in this.embeddingsMap -> this.embeddingsMap.unknownEmbedding
-      else -> this.embeddingsMap.get(embeddingKey)
-    }
-
-    this.accumulate(embedding = embedding, errors = errors)
+    this.accumulate(embedding = this.embeddingsMap.get(embeddingKey), errors = errors)
   }
 }
