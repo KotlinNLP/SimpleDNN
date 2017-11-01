@@ -133,22 +133,22 @@ open class EmbeddingsMap<in T>(
   /**
    * The Unknown Embedding.
    */
-  val unknownEmbedding = this.buildEmbedding(id = -1)
+  val unknownEmbedding: Embedding = this.buildEmbedding(id = -1)
 
   /**
    * The Null Embedding.
    */
-  val nullEmbedding = this.buildEmbedding(id = -2)
+  val nullEmbedding: Embedding = this.buildEmbedding(id = -2)
 
   /**
    * The map of keys to embeddings.
    */
-  private val embeddings = mutableMapOf<T, Embedding>()
+  private val embeddings: MutableMap<T, Embedding> = mutableMapOf()
 
   /**
    * The map of ids to embeddings.
    */
-  private val embeddingsById = mutableMapOf(
+  private val embeddingsById: MutableMap<Int, Embedding> = mutableMapOf(
     Pair(this.unknownEmbedding.id, this.unknownEmbedding),
     Pair(this.nullEmbedding.id, this.nullEmbedding)
   )
