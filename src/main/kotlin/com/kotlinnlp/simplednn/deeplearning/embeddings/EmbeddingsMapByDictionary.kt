@@ -15,12 +15,12 @@ import com.kotlinnlp.simplednn.utils.DictionarySet
  * Only embeddings associated to elements contained in the [dictionary] can be get, otherwise the [unknownEmbedding] is
  * returned.
  *
- * @param dictionary a dictionary set
+ * @property dictionary a dictionary set
  * @param size the size of each embedding (typically a range between about 50 to a few hundreds)
  * @param pseudoRandomDropout a Boolean indicating if Embeddings must be dropped out with pseudo random probability
  */
 class EmbeddingsMapByDictionary(
-  private val dictionary: DictionarySet<String>,
+  val dictionary: DictionarySet<String>,
   size: Int,
   pseudoRandomDropout: Boolean = true
 ) : EmbeddingsMap<Int>(
