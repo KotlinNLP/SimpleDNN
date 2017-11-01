@@ -20,7 +20,7 @@ data class TrainingStatistics(
   /**
    *
    */
-  fun reset(): Unit {
+  fun reset() {
     this.epochCount = 0
     this.batchCount = 0
     this.exampleCount = 0
@@ -34,7 +34,7 @@ data class TrainingStatistics(
    * It increments the epochCount and sets the batchCount and the exampleCount to zero
    *
    */
-  fun newEpoch(): Unit {
+  fun newEpoch() {
     this.epochCount += 1
     this.batchCount = 0
     this.exampleCount = 0
@@ -46,7 +46,7 @@ data class TrainingStatistics(
    * It increments the batchCount and sets the exampleCount to zero
    *
    */
-  fun newBatch(): Unit {
+  fun newBatch() {
     this.batchCount += 1
     this.exampleCount = 0
   }
@@ -57,7 +57,7 @@ data class TrainingStatistics(
    * It increments the exampleCount
    *
    */
-  fun newExample(): Unit {
+  fun newExample() {
     this.exampleCount += 1
   }
 }
