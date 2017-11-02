@@ -161,13 +161,13 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val model: HAN) {
   /**
    * The lowest level of the [HierarchyItem] contains [HierarchySequence]s containing only one [DenseNDArray] with the
    * importance score of the related input sequence.
-   *
-   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   * Sum the scores of a group to obtain the score of the upper hierarchy level.
+   * The sum of the scores of all the input sequences is equal to 1.0.
    *
    * @return the importance scores of the input sequences, grouped with the same hierarchy as the given input
    */
-  fun getInputImportanceScores(copy: Boolean = true): HierarchyItem {
-    return this.buildImportanceScoreHierarchyItem(levelIndex = 0, groupIndex = 0, copy = copy)
+  fun getInputImportanceScores(): HierarchyItem {
+    return this.buildImportanceScoreHierarchyItem(levelIndex = 0, groupIndex = 0, refScore = 1.0)
   }
 
   /**
@@ -399,18 +399,29 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val model: HAN) {
    *
    * @param levelIndex the index of a level of the hierarchy
    * @param groupIndex the index of a group in this level
-   * @param copy a Boolean indicating whether the returned importance score must be a copy or a reference
+   * @param refScore the reference score on which to base the distribution of the scores of the given group
    *
    * @return a [HierarchyItem] containing the importance score on the lowest level
    */
-  private fun buildImportanceScoreHierarchyItem(levelIndex: Int, groupIndex: Int, copy: Boolean): HierarchyItem {
+  private fun buildImportanceScoreHierarchyItem(levelIndex: Int, groupIndex: Int, refScore: Double): HierarchyItem {
+
+    val importanceScores: DenseNDArray
+      = this.usedAttentionNetworksPerLevel[levelIndex][groupIndex].getImportanceScore(copy = false)
 
     return if (levelIndex == (this.model.hierarchySize - 1))
-      HierarchySequence(this.usedAttentionNetworksPerLevel[levelIndex][groupIndex].getImportanceScore(copy = copy))
+      HierarchySequence(
+        importanceScores.prod(refScore)
+      )
+
     else
       HierarchyGroup(*Array(
-        size = this.usedAttentionNetworksPerLevel[levelIndex][groupIndex].getImportanceScore(copy = false).length,
-        init = { i -> this.buildImportanceScoreHierarchyItem(levelIndex = levelIndex + 1, groupIndex = i, copy = copy) }
+        size = importanceScores.length,
+        init = { i ->
+          this.buildImportanceScoreHierarchyItem(
+            levelIndex = levelIndex + 1,
+            groupIndex = i,
+            refScore = importanceScores[i])
+        }
       ))
   }
 }
