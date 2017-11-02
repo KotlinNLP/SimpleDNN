@@ -406,10 +406,10 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val model: HAN) {
   private fun buildImportanceScoreHierarchyItem(levelIndex: Int, groupIndex: Int, copy: Boolean): HierarchyItem {
 
     return if (levelIndex == (this.model.hierarchySize - 1))
-      HierarchySequence(this.usedAttentionNetworksPerLevel[levelIndex][groupIndex].getImportanceScore())
+      HierarchySequence(this.usedAttentionNetworksPerLevel[levelIndex][groupIndex].getImportanceScore(copy = copy))
     else
       HierarchyGroup(*Array(
-        size = this.usedEncodersPerLevel[levelIndex][groupIndex].getInputSequenceErrors(copy = copy).size,
+        size = this.usedAttentionNetworksPerLevel[levelIndex][groupIndex].getImportanceScore(copy = false).length,
         init = { i -> this.buildImportanceScoreHierarchyItem(levelIndex = levelIndex + 1, groupIndex = i, copy = copy) }
       ))
   }
