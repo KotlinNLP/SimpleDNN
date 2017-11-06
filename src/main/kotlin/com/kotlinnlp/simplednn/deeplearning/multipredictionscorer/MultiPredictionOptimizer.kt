@@ -16,11 +16,11 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 /**
  * The [Optimizer] of the MultiPredictionScorer.
  *
- * @param scorer the [MultiPredictionScorer] to optimize
+ * @param model the [MultiPredictionModel] to optimize
  * @property updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
 class MultiPredictionOptimizer(
-  scorer: MultiPredictionScorer<*>,
+  model: MultiPredictionModel,
   updateMethod: UpdateMethod<*>
 ) : Optimizer(updateMethod) {
 
@@ -28,8 +28,8 @@ class MultiPredictionOptimizer(
    * A list of [ParamsOptimizer]s, one for each sub-network.
    */
   private val networksOptimizers: List<ParamsOptimizer<NetworkParameters>> = List(
-    size = scorer.model.networks.size,
-    init = { i -> ParamsOptimizer(params = scorer.model.networks[i].model, updateMethod = updateMethod) }
+    size = model.networks.size,
+    init = { i -> ParamsOptimizer(params = model.networks[i].model, updateMethod = updateMethod) }
   )
 
   /**
