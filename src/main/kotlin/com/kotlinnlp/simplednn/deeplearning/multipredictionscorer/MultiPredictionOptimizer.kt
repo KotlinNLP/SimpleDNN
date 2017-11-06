@@ -53,4 +53,17 @@ class MultiPredictionOptimizer(
       this.networksOptimizers[networkIndex].accumulate(errors, copy = copy)
     }
   }
+
+  /**
+   * Accumulate the given [errors] of the model sub-network with the given [networkIndex].
+   *
+   * @param networkIndex the index of a network of the model
+   * @param errors the errors of the network with the given [networkIndex]
+   * @param copy a Boolean indicating if the [errors] can be used as reference or must be copied.
+   *             Set copy = false to optimize the accumulation when the amount of the errors to accumulate is 1.
+   *             (default = true)
+   */
+  fun accumulate(networkIndex: Int, errors: NetworkParameters, copy: Boolean = true) {
+    this.networksOptimizers[networkIndex].accumulate(errors, copy = copy)
+  }
 }
