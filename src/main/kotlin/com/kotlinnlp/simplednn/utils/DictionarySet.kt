@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.utils
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 import com.google.common.collect.HashMultiset
-import com.google.common.collect.Multisets
 
 /**
  * A dictionary containing a set of elements.
@@ -93,7 +92,17 @@ class DictionarySet<T>{
   fun getFrequency(id: Int): Int = this.elementsMultiset.count(this.getElement(id)) / this.size
 
   /**
+   * @return a list of the elements in the dictionary
+   */
+  fun getElements(): List<T> = this.elementsMultiset.toList()
+
+  /**
+   * @return a set of the elements in the dictionary, sorted by ascending order of occurrences
+   */
+  fun getElementsSortedSet(): Set<T> = this.elementsMultiset.toSortedSet(compareBy { this.getCount(it) })
+
+  /**
    * @return a set of the elements in the dictionary, sorted by descending order of occurrences
    */
-  fun getSortedElements(): Set<T> = Multisets.copyHighestCountFirst(this.elementsMultiset).elementSet()
+  fun getElementsReversedSet(): Set<T> = this.elementsMultiset.toSortedSet(compareByDescending { this.getCount(it) })
 }
