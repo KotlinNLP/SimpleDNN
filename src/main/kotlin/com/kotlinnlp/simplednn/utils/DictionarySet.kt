@@ -99,10 +99,12 @@ class DictionarySet<T>{
   /**
    * @return a set of the elements in the dictionary, sorted by ascending order of occurrences
    */
-  fun getElementsSortedSet(): Set<T> = this.elementsMultiset.toSortedSet(compareBy { this.getCount(it) })
+  fun getElementsSortedSet(): Set<T>
+    = this.elementsMultiset.elementSet().sortedBy { this.getCount(it) }.toSet()
 
   /**
    * @return a set of the elements in the dictionary, sorted by descending order of occurrences
    */
-  fun getElementsReversedSet(): Set<T> = this.elementsMultiset.toSortedSet(compareByDescending { this.getCount(it) })
+  fun getElementsReversedSet(): Set<T>
+    = this.elementsMultiset.elementSet().sortedByDescending { this.getCount(it) }.toSet()
 }
