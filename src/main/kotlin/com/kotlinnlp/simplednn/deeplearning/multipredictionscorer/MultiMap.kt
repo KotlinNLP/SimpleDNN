@@ -49,6 +49,8 @@ class MultiMap<out T>(private val data: Map<Int, Map<Int, T>>) {
    * @param i a first level index
    * @param j a second level index
    *
+   * @throws KotlinNullPointerException if the element with the given indices doesn't exist
+   *
    * @return the element at the given indices, forced to be present
    */
   fun getValue(i: Int, j: Int): T = this[i, j]!!
