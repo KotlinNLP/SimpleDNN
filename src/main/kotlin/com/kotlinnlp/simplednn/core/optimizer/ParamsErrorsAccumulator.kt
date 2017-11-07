@@ -19,6 +19,16 @@ class ParamsErrorsAccumulator<ParamsErrorsType: IterableParams<ParamsErrorsType>
     private set
 
   /**
+   * A boolean indicating if any errors are accumulated.
+   */
+  val isEmpty: Boolean get() = this.count == 0
+
+  /**
+   * A boolean indicating if no errors were accumulated.
+   */
+  val isNotEmpty: Boolean get() = this.count > 0
+
+  /**
    * The structure in which to accumulate the parameters errors.
    */
   lateinit private var paramsErrors: ParamsErrorsType
@@ -27,16 +37,6 @@ class ParamsErrorsAccumulator<ParamsErrorsType: IterableParams<ParamsErrorsType>
    * A boolean which indicates if [paramsErrors] is a reference of one given by the user or is created privately.
    */
   private var paramsErrorsByReference: Boolean = false
-
-  /**
-   * A boolean indicating if any errors are accumulated.
-   */
-  private val isEmpty: Boolean get() = this.count == 0
-
-  /**
-   * A boolean indicating if no errors were accumulated.
-   */
-  private val isNotEmpty: Boolean get() = this.count > 0
 
   /**
    * @param copy a Boolean indicating if the returned errors must be a copy or a reference
