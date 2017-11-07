@@ -94,7 +94,7 @@ class DictionarySet<T>{
   /**
    * @return a list of the elements in the dictionary
    */
-  fun getElements(): List<T> = this.elementsMultiset.toList()
+  fun getElements(): List<T> = this.elementsMultiset.elementSet().toList()
 
   /**
    * @return a set of the elements in the dictionary, sorted by ascending order of occurrences
