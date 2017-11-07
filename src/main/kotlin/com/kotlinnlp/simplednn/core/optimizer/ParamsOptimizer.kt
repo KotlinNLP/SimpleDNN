@@ -29,27 +29,15 @@ class ParamsOptimizer<ParamsType: IterableParams<ParamsType>>(
   private val paramsErrorsAccumulator = ParamsErrorsAccumulator<ParamsType>()
 
   /**
-   * A Boolean indicating if errors have been accumulated.
-   */
-  private var isEmpty: Boolean = false
-
-  /**
-   * A Boolean indicating if no errors have been accumulated.
-   */
-  private val isNotEmpty: Boolean get() = !this.isEmpty
-
-  /**
    * Calculate the errors average, update the parameters.
    */
   override fun update() {
 
-    if (this.isNotEmpty) {
+    if (this.paramsErrorsAccumulator.isNotEmpty) {
       
       this.paramsErrorsAccumulator.averageErrors()
       this.updateParams()
       this.paramsErrorsAccumulator.reset()
-
-      this.isEmpty = true
     }
   }
 
@@ -67,8 +55,6 @@ class ParamsOptimizer<ParamsType: IterableParams<ParamsType>>(
     }
 
     this.paramsErrorsAccumulator.accumulate(paramsErrors = paramsErrors, copy = copy)
-
-    this.isEmpty = false
   }
 
   /**
