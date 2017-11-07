@@ -194,9 +194,9 @@ class MultiPredictionScorer<InputNDArrayType : NDArray<InputNDArrayType>>(val mo
 
         val processorsMap: Map<Int, FeedforwardNeuralProcessor<InputNDArrayType>> = this.usedProcessors[networkIndex]!!
 
-        require(predictionIndex in 0 until processorsMap.size ) {
-          "%d predictions done with the network %d, but %d given as prediction index"
-            .format(processorsMap.size, networkIndex, predictionIndex)
+        require(predictionIndex in processorsMap ) {
+          "Input multimap with invalid prediction index (%d) [available: %s]."
+            .format(predictionIndex, processorsMap.keys.joinToString { ", " })
         }
     }
   }
