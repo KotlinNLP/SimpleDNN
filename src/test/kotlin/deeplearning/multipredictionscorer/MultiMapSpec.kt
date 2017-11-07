@@ -13,6 +13,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 
 /**
@@ -62,6 +63,21 @@ class MultiMapSpec : Spek({
 
       it("should return the expected existing element") {
         assertEquals(12, multimap[5, 2])
+      }
+    }
+
+    on("getValue()") {
+
+      it("should throw an exception if getting a not existing second level key") {
+        assertFailsWith<KotlinNullPointerException> { multimap.getValue(5, 8) }
+      }
+
+      it("should throw an exception if getting a not existing combination of keys") {
+        assertFailsWith<KotlinNullPointerException> { multimap.getValue(8, 9) }
+      }
+
+      it("should return the expected existing element") {
+        assertEquals(12, multimap.getValue(5, 2))
       }
     }
 
