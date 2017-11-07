@@ -44,16 +44,18 @@ class MultiPredictionModel(vararg networksConfig: MultiPredictionNetworkConfig) 
    */
   val networks: List<NeuralNetwork> = List(
     size = networksConfig.size,
-    init = { i -> FeedforwardNeuralNetwork(
-      inputSize = networksConfig[i].inputSize,
-      hiddenSize = networksConfig[i].hiddenSize,
-      hiddenActivation = networksConfig[i].hiddenActivation,
-      outputSize = networksConfig[i].outputSize,
-      outputActivation = networksConfig[i].outputActivation,
-      inputType = networksConfig[i].inputType,
-      inputDropout = networksConfig[i].inputDropout,
-      hiddenDropout = networksConfig[i].hiddenDropout
-    ) }
+    init = { i ->
+      FeedforwardNeuralNetwork(
+        inputSize = networksConfig[i].inputSize,
+        hiddenSize = networksConfig[i].hiddenSize,
+        hiddenActivation = networksConfig[i].hiddenActivation,
+        outputSize = networksConfig[i].outputSize,
+        outputActivation = networksConfig[i].outputActivation,
+        inputType = networksConfig[i].inputType,
+        inputDropout = networksConfig[i].inputDropout,
+        hiddenDropout = networksConfig[i].hiddenDropout
+      ).initialize()
+    }
   )
 
   /**
