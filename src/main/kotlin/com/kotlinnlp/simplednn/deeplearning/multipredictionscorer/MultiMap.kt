@@ -41,9 +41,17 @@ class MultiMap<out T>(private val data: Map<Int, Map<Int, T>>) {
    * @param i a first level index
    * @param j a second level index
    *
-   * @return the the element at the given indices or null if not present
+   * @return the element at the given indices or null if not present
    */
   operator fun get(i: Int, j: Int): T? = if (this.data[i] != null) this.data[i]!![j] else null
+
+  /**
+   * @param i a first level index
+   * @param j a second level index
+   *
+   * @return the element at the given indices, forced to be present
+   */
+  fun getValue(i: Int, j: Int): T = this[i, j]!!
 
   /**
    * Call the given callback for each element of this [MultiMap], passing the first and second level indices and the
