@@ -196,7 +196,7 @@ class MultiPredictionScorer<InputNDArrayType : NDArray<InputNDArrayType>>(val mo
 
         require(predictionIndex in 0 until processorsMap.size ) {
           "%d predictions done with the network %d, but %d given as prediction index"
-            .format(networkIndex, processorsMap.size, predictionIndex)
+            .format(processorsMap.size, networkIndex, predictionIndex)
         }
     }
   }
