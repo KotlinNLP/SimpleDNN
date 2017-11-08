@@ -65,7 +65,7 @@ class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Seriali
   /**
    * Contains the parameters of each layer which can be trained
    */
-  val model = this.parametersFactory()
+  val model: NetworkParameters = this.parametersFactory()
 
   /**
    * Serialize this [NeuralNetwork] and write it to an output stream.
