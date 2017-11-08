@@ -1,0 +1,78 @@
+/* Copyright 2016-present The KotlinNLP Authors. All Rights Reserved.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ * ------------------------------------------------------------------*/
+
+package com.kotlinnlp.simplednn.deeplearning.sequenceencoder
+
+import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.optimizer.IterableParams
+import com.kotlinnlp.simplednn.utils.Serializer
+import java.io.InputStream
+import java.io.OutputStream
+
+/**
+ * The model of the [SequenceParallelEncoder].
+ *
+ * @property networks a list of sequence feedforward networks
+ */
+class ParallelEncoderModel(val networks: List<SequenceFeedforwardNetwork>) : IterableParams<ParallelEncoderModel>() {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed from Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+
+    /**
+     * Read a [ParallelEncoderModel] (serialized) from an input stream and decode it.
+     *
+     * @param inputStream the [InputStream] from which to read the serialized [ParallelEncoderModel]
+     *
+     * @return the [ParallelEncoderModel] read from [inputStream] and decoded
+     */
+    fun load(inputStream: InputStream): ParallelEncoderModel = Serializer.deserialize(inputStream)
+  }
+
+  /**
+   * The list of all parameters.
+   */
+  override val paramsList: Array<UpdatableArray<*>> = this.buildParamsList()
+
+  /**
+   * @return a new [ParallelEncoderModel] containing a copy of all parameters of this
+   */
+  override fun copy(): ParallelEncoderModel {
+
+    val clonedParams = ParallelEncoderModel(this.networks)
+
+    clonedParams.zip(this) { cloned, params ->
+      cloned.values.assignValues(params.values)
+    }
+
+    return clonedParams
+  }
+
+  /**
+   * Serialize this [ParallelEncoderModel] and write it to an output stream.
+   *
+   * @param outputStream the [OutputStream] in which to write this serialized [ParallelEncoderModel]
+   */
+  fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
+
+  /**
+   * @return the array containing all parameters
+   */
+  private fun buildParamsList(): Array<UpdatableArray<*>> {
+
+    val params = arrayListOf<UpdatableArray<*>>()
+
+    this.networks.forEach { params.addAll(it.network.model.paramsList) }
+
+    return params.toTypedArray()
+  }
+}
