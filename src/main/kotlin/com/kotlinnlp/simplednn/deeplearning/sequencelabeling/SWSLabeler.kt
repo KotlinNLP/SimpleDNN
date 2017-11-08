@@ -37,7 +37,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
   /**
    * The output predicted label with the prediction score.
    *
-   * @property index the label index
+   * @property index the outcome index to which this label is associated
    * @property score the prediction score (Double in range [0.0, 1.0], default = 1.0)
    */
   data class Label(val index: Int, val score: Double = 1.0)
