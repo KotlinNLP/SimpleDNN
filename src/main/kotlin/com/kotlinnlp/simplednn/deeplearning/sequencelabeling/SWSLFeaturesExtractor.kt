@@ -11,8 +11,8 @@ import com.kotlinnlp.simplednn.simplemath.concatVectorsV
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The SWSLFeaturesExtractor is a helper class to extract the relevant features
- * for the neural network [SWSLNetwork] from a given sliding-window sequence.
+ * The SWSLFeaturesExtractor is a helper to extract the relevant features for the neural network [SWSLNetwork] from a
+ * given sliding-window [sequence].
  *
  * @property sequence the sequence
  * @property labels the labels at the step t-1
