@@ -47,15 +47,7 @@ class AttentionNetworkParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: Array<UpdatableArray<*>> = Array(
-    size = this.transformParams.size + this.attentionParams.size,
-    init = { i ->
-      if (i < this.transformParams.size)
-        this.transformParams[i]
-      else
-        this.attentionParams[i - this.transformParams.size]
-    }
-  )
+  override val paramsList: Array<UpdatableArray<*>> = this.transformParams.paramsList + this.attentionParams.paramsList
 
   /**
    * Initialize the parameters of the sub-networks using the given random generator and value for the biases.

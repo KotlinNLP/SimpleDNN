@@ -42,23 +42,6 @@ class TreeRNNParameters(
   /**
    * @return the list with parameters of all layers
    */
-  private fun buildParamsList(): Array<UpdatableArray<*>> {
-
-    val leftParamsSize = this.leftRNN.size
-    val rightParamsSize = this.rightRNN.size
-    val concatParamsSize = this.concatNetwork.size
-    val rnnsSize = leftParamsSize + rightParamsSize
-
-    return Array(
-      size = leftParamsSize + rightParamsSize + concatParamsSize,
-      init = { i ->
-
-        when {
-          i < leftParamsSize -> this.leftRNN[i]
-          i < rnnsSize -> this.rightRNN[i - leftParamsSize]
-          else -> this.concatNetwork[i - rnnsSize]
-        }
-      }
-    )
-  }
+  private fun buildParamsList(): Array<UpdatableArray<*>>
+    = this.leftRNN.paramsList + this.rightRNN.paramsList + this.concatNetwork.paramsList
 }
