@@ -19,6 +19,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  *
@@ -29,18 +30,13 @@ class SWSLFeaturesExtractorSpec: Spek({
 
     context("input=2, hidden=5, output=10, prevWindow=3, nextWindow=3, labelEmbedding=2, sequence=5, focus=3") {
 
-      val network = SWSLNetworkUtils.buildNetwork()
-
       val sequence = SlidingWindowSequenceUtils.buildSlidingWindowSequence()
-
-      val labels = arrayListOf(SWSLabeler.Label(0), SWSLabeler.Label(1))
-
-      sequence.setFocus(2)
+      sequence.setFocus(1)
 
       val featuresExtractor = SWSLFeaturesExtractor(
         sequence = sequence,
-        labels = labels,
-        network = network)
+        labels = arrayListOf(SWSLabeler.Label(0)),
+        network = SWSLNetworkUtils.buildNetwork())
 
       on("getFeatures") {
 
@@ -51,9 +47,14 @@ class SWSLFeaturesExtractorSpec: Spek({
         }
 
         it("should return the expected precomputed features") {
-          assertEquals(true, DenseNDArrayFactory.arrayOf(doubleArrayOf(
-            0.0, 0.0, 0.036941, -0.014387, -0.046766, -0.026765, 0.0, 0.0,
-            10.0, 11.0, 20.0, 21.0, 30.0, 31.0, 40.0, 41.0, 50.0, 51.0, 0.0, 0.0)).equals(features))
+          assertTrue {
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(
+              0.0, 0.0, 0.0, 0.0, 0.4, -0.9, // left context labels
+              0.0, 0.0, 0.0, 0.0, 10.0, 11.0, // left context
+              20.0, 21.0, // focus element
+              30.0, 31.0, 40.0, 41.0, 50.0, 51.0 // right context
+            )).equals(features, tolerance = 1.0e-06)
+          }
         }
       }
     }
