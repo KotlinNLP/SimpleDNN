@@ -97,14 +97,9 @@ class SWSLNetwork(
   val labelsEmbeddings = EmbeddingsMap<Int>(size = this.labelEmbeddingSize)
 
   /**
-   * Initialize the weights of the classifier and the labelsEmbeddings.
-   *
-   * @return this SWSLNetwork
+   * Initialize the weights of the classifier.
    */
   init {
-
     this.classifier.initialize()
-
-    (0 until this.numberOfLabels).forEach { labelIndex -> this.labelsEmbeddings.set(key = labelIndex) }
   }
 }
