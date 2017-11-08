@@ -42,19 +42,6 @@ class SWSLFeaturesExtractor(
   )
 
   /**
-   * @return an array containing the features of the elements in the left context
-   */
-  private fun extractLeftContextFeatures(): Array<DenseNDArray> {
-
-    val leftContext = this.sequence.getLeftContext()
-
-    return Array(
-      size = this.sequence.leftContextSize,
-      init = { i -> this.getWindowElement(index = leftContext[i]) }
-    )
-  }
-
-  /**
    * @return an array containing the features of the labels of the elements in the left context
    */
   private fun extractLeftContextLabelsFeatures(): Array<DenseNDArray> {
@@ -67,6 +54,19 @@ class SWSLFeaturesExtractor(
         val i = leftContext[it]
         if (i != null) this.getLabelEmbedding(this.labels[i].index).array.values else this.network.emptyLabelVector
       }
+    )
+  }
+
+  /**
+   * @return an array containing the features of the elements in the left context
+   */
+  private fun extractLeftContextFeatures(): Array<DenseNDArray> {
+
+    val leftContext = this.sequence.getLeftContext()
+
+    return Array(
+      size = this.sequence.leftContextSize,
+      init = { i -> this.getWindowElement(index = leftContext[i]) }
     )
   }
 
