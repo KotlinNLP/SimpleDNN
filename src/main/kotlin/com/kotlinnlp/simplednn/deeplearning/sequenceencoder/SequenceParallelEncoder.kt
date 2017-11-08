@@ -1,3 +1,10 @@
+/* Copyright 2016-present The KotlinNLP Authors. All Rights Reserved.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ * ------------------------------------------------------------------*/
+
 package com.kotlinnlp.simplednn.deeplearning.sequenceencoder
 
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
@@ -6,12 +13,11 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * A Sequence Feedforward Encoder with multiple parallel outputs for each input.
- *
  * It encodes a sequence of arrays into another sequence of n parallel arrays using more [SequenceFeedforwardNetwork]s.
+ *
+ * @param model the model of the sequence parallel encoder
  */
-class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
-  val networks: Array<SequenceFeedforwardNetwork>
-) {
+class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val model: ParallelEncoderModel) {
 
   /**
    * A list of [SequenceFeedforwardEncoder]s which encode each input array into multiple vectors.
@@ -25,7 +31,7 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     val inputErrors: Array<DenseNDArray> = this.encoders[0].getInputSequenceErrors(copy = true)
 
-    for (encoderIndex in 1 until (this.networks.size - 1)) {
+    for (encoderIndex in 1 until (this.model.networks.size - 1)) {
       inputErrors.zip(this.encoders[encoderIndex].getInputSequenceErrors(copy = false)).forEach {
         (baseErrors, errors) -> baseErrors.assignSum(errors)
       }
@@ -40,7 +46,7 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @return the errors of the internal network
    */
   fun getParamsErrors(copy: Boolean = true): Array<NetworkParameters> = Array(
-    size = this.networks.size,
+    size = this.model.networks.size,
     init = { i -> this.encoders[i].getParamsErrors(copy = copy) }
   )
 
@@ -81,7 +87,7 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   private fun forward(sequence: Array<InputNDArrayType>): Array<Array<DenseNDArray>> {
 
     val outputsPerEncoder: Array<Array<DenseNDArray>> = Array(
-      size = this.networks.size,
+      size = this.model.networks.size,
       init = { i -> this.encoders[i].encode(sequence) }
     )
 
