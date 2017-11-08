@@ -19,8 +19,7 @@ import com.kotlinnlp.simplednn.utils.ItemsPool
  *
  * @property params the parameters of the [BiaffineLayerStructure]s of the pool
  * @property activationFunction the activation function of the [BiaffineLayerStructure]s of the pool
- * @property dropout the probability of dropout (default 0.0) when generating the attention arrays for the Attention
- *                   Layer. If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
+ * @property dropout the probability of dropout (default = 0.0 -> if applying it, the usual value is 0.25)
  */
 class DenseBiaffineLayersPool(
   val params: BiaffineLayerParameters,
