@@ -23,6 +23,15 @@ class NetworkParameters(
   private val sparseInput: Boolean = false
 ) : IterableParams<NetworkParameters>() {
 
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed by Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
+
   /**
    * An [Array] containing a [LayerParameters] for each layer.
    *

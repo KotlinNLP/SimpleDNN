@@ -22,6 +22,15 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  */
 class AttentionLayerParameters(val attentionSize: Int) : IterableParams<AttentionLayerParameters>() {
 
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed by Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
+
   /**
    * The context vector trainable parameter.
    */

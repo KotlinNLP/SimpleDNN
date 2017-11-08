@@ -22,6 +22,15 @@ class BiRNNParameters(
   val rightToLeft: NetworkParameters
 ) : IterableParams<BiRNNParameters>() {
 
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed by Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
+
   /**
    * The list of all parameters.
    */
