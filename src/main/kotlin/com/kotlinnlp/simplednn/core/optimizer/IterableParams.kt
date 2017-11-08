@@ -54,7 +54,7 @@ abstract class IterableParams<SelfType: IterableParams<SelfType>>
   /**
    * The list of all parameters.
    */
-  abstract protected val paramsList: Array<UpdatableArray<*>>
+  abstract val paramsList: Array<UpdatableArray<*>>
 
   /**
    * The amount of parameters into this [IterableParams].
