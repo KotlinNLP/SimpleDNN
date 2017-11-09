@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.deeplearning.mergelayers.biaffine
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.utils.ItemsPool
 
@@ -17,13 +16,11 @@ import com.kotlinnlp.simplednn.utils.ItemsPool
  * creating a new one.
  * It is useful to optimize the creation of new structures every time a new encoder is created.
  *
- * @property params the parameters of the [BiaffineLayerStructure]s of the pool
- * @property activationFunction the activation function of the [BiaffineLayerStructure]s of the pool
+ * @property model the model of a dense biaffine layer
  * @property dropout the probability of dropout (default = 0.0 -> if applying it, the usual value is 0.25)
  */
 class DenseBiaffineLayersPool(
-  val params: BiaffineLayerParameters,
-  val activationFunction: ActivationFunction,
+  val model: BiaffineLayerModel,
   val dropout: Double = 0.0
 ) : ItemsPool<BiaffineLayerStructure<DenseNDArray>>() {
 
@@ -35,11 +32,11 @@ class DenseBiaffineLayersPool(
    * @return a new [BiaffineLayerStructure] with the given [id]
    */
   override fun itemFactory(id: Int) = BiaffineLayerStructure<DenseNDArray>(
-    inputArray1 = AugmentedArray(this.params.inputSize1),
-    inputArray2 = AugmentedArray(this.params.inputSize2),
-    outputArray = AugmentedArray(this.params.outputSize),
-    params = this.params,
-    activationFunction = this.activationFunction,
+    inputArray1 = AugmentedArray(this.model.params.inputSize1),
+    inputArray2 = AugmentedArray(this.model.params.inputSize2),
+    outputArray = AugmentedArray(this.model.params.outputSize),
+    params = this.model.params,
+    activationFunction = this.model.activationFunction,
     dropout = this.dropout,
     id = id)
 }
