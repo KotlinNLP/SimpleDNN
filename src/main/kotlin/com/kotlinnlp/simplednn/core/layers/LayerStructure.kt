@@ -51,9 +51,9 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   abstract protected val relevanceHelper: RelevanceHelper<InputNDArrayType>
 
   /**
-   * Set the errors of the inputArray
+   * Set the values of the inputArray
    *
-   * @param values the errors to set into the inputArray
+   * @param values the values to set into the inputArray
    */
   fun setInput(values: InputNDArrayType) = this.inputArray.assignValues(values)
 
