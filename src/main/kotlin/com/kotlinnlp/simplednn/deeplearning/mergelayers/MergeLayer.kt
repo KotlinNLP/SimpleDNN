@@ -40,6 +40,20 @@ abstract class MergeLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   dropout = dropout) {
 
   /**
+   * Set the values of the inputArray1
+   *
+   * @param values the values to set into the inputArray1
+   */
+  fun setInput1(values: InputNDArrayType) = this.inputArray1.assignValues(values)
+
+  /**
+   * Set the values of the inputArray2
+   *
+   * @param values the values to set into the inputArray2
+   */
+  fun setInput2(values: InputNDArrayType) = this.inputArray2.assignValues(values)
+
+  /**
    * @return a Pair containing the errors of the input arrays
    */
   fun getInputErrors(): Pair<DenseNDArray, DenseNDArray> = Pair(this.inputArray1.errors, this.inputArray2.errors)
