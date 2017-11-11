@@ -54,9 +54,14 @@ abstract class MergeLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun setInput2(values: InputNDArrayType) = this.inputArray2.assignValues(values)
 
   /**
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   *
    * @return a Pair containing the errors of the input arrays
    */
-  fun getInputErrors(): Pair<DenseNDArray, DenseNDArray> = Pair(this.inputArray1.errors, this.inputArray2.errors)
+  fun getInputErrors(copy: Boolean = true): Pair<DenseNDArray, DenseNDArray> = if (copy)
+    Pair(this.inputArray1.errors.copy(), this.inputArray2.errors.copy())
+  else
+    Pair(this.inputArray1.errors, this.inputArray2.errors)
 
   /**
    * @return the [MergeLayerParameters] used to store errors, compatible with this type of [MergeLayer]
