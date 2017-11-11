@@ -54,11 +54,9 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val m
    *
    * @param sequence the sequence to encode
    *
-   * @return the encoded sequence
+   * @return a list containing the forwarded sequence for each network
    */
-  fun encode(sequence: Array<InputNDArrayType>): List<List<DenseNDArray>> {
-    return this.forward(sequence)
-  }
+  fun encode(sequence: Array<InputNDArrayType>): List<List<DenseNDArray>> = this.forward(sequence)
 
   /**
    * Execute the backward for each element of the input sequence, given sequence of output errors (one for
@@ -84,7 +82,7 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val m
    *
    * @param sequence the sequence to forward
    *
-   * @return an array containing one forwarded sequence for each network
+   * @return a list containing the forwarded sequence for each network
    */
   private fun forward(sequence: Array<InputNDArrayType>): List<List<DenseNDArray>> {
 
