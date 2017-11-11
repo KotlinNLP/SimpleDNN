@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property network the [DeepBiRNN] of this encoder
  */
-class DeepBiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(private val network: DeepBiRNN) {
+class DeepBiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val network: DeepBiRNN) {
 
   /**
    * Array of encoders for all the stacked [BiRNN] layers.
