@@ -41,9 +41,8 @@ abstract class LayerParameters<ParamsType: LayerParameters<ParamsType>>(
    * @param biasesInitValue biasesInitValue
    * @return
    */
-  abstract fun initialize(
-    randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
-    biasesInitValue: Double = 0.01)
+  abstract fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
+                          biasesInitValue: Double = 0.01)
 
   /**
    *
