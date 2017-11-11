@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.deeplearning.sequenceencoder
 
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -45,12 +44,10 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val m
   /**
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
-   * @return the errors of the internal network
+   * @return the parameters errors of the sub-networks
    */
-  fun getParamsErrors(copy: Boolean = true): Array<NetworkParameters> = Array(
-    size = this.model.networks.size,
-    init = { i -> this.encoders[i].getParamsErrors(copy = copy) }
-  )
+  fun getParamsErrors(copy: Boolean = true)
+    = ParallelEncoderParameters(this.encoders.map { it.getParamsErrors(copy = copy) })
 
   /**
    * Encode the [sequence].
