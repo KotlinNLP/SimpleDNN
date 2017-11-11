@@ -56,7 +56,7 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val m
    *
    * @return the encoded sequence
    */
-  fun encode(sequence: Array<InputNDArrayType>): Array<Array<DenseNDArray>> {
+  fun encode(sequence: Array<InputNDArrayType>): List<List<DenseNDArray>> {
     return this.forward(sequence)
   }
 
@@ -86,17 +86,14 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val m
    *
    * @return an array containing one forwarded sequence for each network
    */
-  private fun forward(sequence: Array<InputNDArrayType>): Array<Array<DenseNDArray>> {
+  private fun forward(sequence: Array<InputNDArrayType>): List<List<DenseNDArray>> {
 
-    val outputsPerEncoder: Array<Array<DenseNDArray>> = Array(
-      size = this.model.networks.size,
-      init = { i -> this.encoders[i].encode(sequence) }
-    )
+    val encodersOutputs: List<Array<DenseNDArray>> = this.encoders.map { it.encode(sequence) }
 
-    return Array(
+    return List(
       size = sequence.size,
       init = { elementIndex ->
-        Array(size = this.encoders.size, init = { encoderIndex -> outputsPerEncoder[encoderIndex][elementIndex] })
+        List(size = this.encoders.size, init = { encoderIndex -> encodersOutputs[encoderIndex][elementIndex] })
       }
     )
   }
