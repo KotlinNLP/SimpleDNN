@@ -64,17 +64,20 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val m
   }
 
   /**
-   * Execute the backward for each element of the input sequence, given the array of output errors sequences (one for
+   * Execute the backward for each element of the input sequence, given sequence of output errors (one for
    * each network), and return its input errors.
    *
-   * @param outputErrorsSequences the output errors of the sequence to propagate, grouped for each network
+   * @param outputErrorsSequence the sequence of output errors to propagate, grouped for each network
    * @param propagateToInput whether to propagate the output errors to the input or not
    */
-  fun backward(outputErrorsSequences: Array<Array<DenseNDArray>>, propagateToInput: Boolean) {
+  fun backward(outputErrorsSequence: Array<Array<DenseNDArray>>, propagateToInput: Boolean) {
 
-    this.encoders.forEachIndexed { i, it ->
-      it.backward(
-        outputErrorsSequence = Array(size = outputErrorsSequences.size, init = { k -> outputErrorsSequences[k][i] }),
+    this.encoders.forEachIndexed { encoderIndex, encoder ->
+      encoder.backward(
+        outputErrorsSequence = Array(
+          size = outputErrorsSequence.size,
+          init = { elementIndex -> outputErrorsSequence[elementIndex][encoderIndex] }
+        ),
         propagateToInput = propagateToInput)
     }
   }
