@@ -73,7 +73,7 @@ class DeltaRNNLayerParameters(
    * @param randomGenerator randomGenerator
    * @param biasesInitValue biasesInitValue
    */
-  override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double) {
+  override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double): DeltaRNNLayerParameters {
     require(!this.sparseInput) { "Cannot randomize sparse weights" }
 
     this.feedforwardUnit.weights.values.randomize(randomGenerator)
@@ -85,6 +85,8 @@ class DeltaRNNLayerParameters(
     this.alpha.values.randomize(randomGenerator)
     this.beta1.values.randomize(randomGenerator)
     this.beta2.values.randomize(randomGenerator)
+
+    return this
   }
 
   /**

@@ -68,12 +68,14 @@ open class AffineLayerParameters(
   /**
    * Initialize all parameters with random or predefined values.
    */
-  override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double) {
+  override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double): AffineLayerParameters {
     require(!this.sparseInput) { "Cannot randomize sparse weights" }
 
     this.w1.values.randomize(randomGenerator)
     this.w2.values.randomize(randomGenerator)
     this.b.values.assignValues(biasesInitValue)
+
+    return this
   }
 
   /**

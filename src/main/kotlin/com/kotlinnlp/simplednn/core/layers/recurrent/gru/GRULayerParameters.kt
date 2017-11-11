@@ -68,7 +68,7 @@ class GRULayerParameters(
   /**
    *
    */
-  override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double) {
+  override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double): GRULayerParameters {
     require(!this.sparseInput) { "Cannot randomize sparse weights" }
 
     this.candidate.weights.values.randomize(randomGenerator)
@@ -82,6 +82,8 @@ class GRULayerParameters(
     this.candidate.recurrentWeights.values.randomize(randomGenerator)
     this.resetGate.recurrentWeights.values.randomize(randomGenerator)
     this.partitionGate.recurrentWeights.values.randomize(randomGenerator)
+
+    return this
   }
 
   /**

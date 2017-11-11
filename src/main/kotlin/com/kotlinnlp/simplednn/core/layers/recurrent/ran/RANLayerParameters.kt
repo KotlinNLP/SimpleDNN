@@ -69,7 +69,7 @@ class RANLayerParameters(
   /**
    *
    */
-  override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double) {
+  override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double): RANLayerParameters {
     require(!this.sparseInput) { "Cannot randomize sparse weights" }
 
     this.inputGate.weights.values.randomize(randomGenerator)
@@ -82,6 +82,8 @@ class RANLayerParameters(
 
     this.inputGate.recurrentWeights.values.randomize(randomGenerator)
     this.forgetGate.recurrentWeights.values.randomize(randomGenerator)
+
+    return this
   }
 
   /**

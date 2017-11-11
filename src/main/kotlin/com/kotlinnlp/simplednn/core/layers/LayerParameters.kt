@@ -21,10 +21,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  * @property inputSize input size
  * @property outputSize output size
  */
-abstract class LayerParameters<ParamsType: LayerParameters<ParamsType>>(
+abstract class LayerParameters<SelfType: LayerParameters<SelfType>>(
   val inputSize: Int,
   val outputSize: Int
-) : IterableParams<ParamsType>() {
+) : IterableParams<SelfType>() {
 
   companion object {
 
@@ -42,7 +42,7 @@ abstract class LayerParameters<ParamsType: LayerParameters<ParamsType>>(
    * @return
    */
   abstract fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
-                          biasesInitValue: Double = 0.01)
+                          biasesInitValue: Double = 0.01): SelfType
 
   /**
    *

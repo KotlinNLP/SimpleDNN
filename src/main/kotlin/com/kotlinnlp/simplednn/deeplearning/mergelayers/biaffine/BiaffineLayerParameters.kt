@@ -72,7 +72,8 @@ class BiaffineLayerParameters(
   /**
    * Initialize all parameters with random or predefined values.
    */
-  override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double) {
+  override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double): BiaffineLayerParameters {
+
     require(!this.sparseInput) { "Cannot randomize sparse weights" }
 
     this.w1.values.randomize(randomGenerator)
@@ -80,6 +81,8 @@ class BiaffineLayerParameters(
     this.b.values.assignValues(biasesInitValue)
 
     this.w.forEach { it.values.randomize(randomGenerator) }
+
+    return this
   }
 
   /**
