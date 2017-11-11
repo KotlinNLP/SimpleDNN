@@ -124,7 +124,7 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean = false) {
+  fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
     this.backwardHelper.backward(paramsErrors = paramsErrors, propagateToInput = propagateToInput)
   }
 
