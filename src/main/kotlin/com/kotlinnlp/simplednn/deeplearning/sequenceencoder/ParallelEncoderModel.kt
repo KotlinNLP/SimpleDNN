@@ -7,18 +7,17 @@
 
 package com.kotlinnlp.simplednn.deeplearning.sequenceencoder
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream
+import java.io.Serializable
 
 /**
  * The model of the [SequenceParallelEncoder].
  *
  * @property networks a list of sequence feedforward networks
  */
-class ParallelEncoderModel(val networks: List<SequenceFeedforwardNetwork>) : IterableParams<ParallelEncoderModel>() {
+class ParallelEncoderModel(val networks: List<SequenceFeedforwardNetwork>) : Serializable {
 
   companion object {
 
@@ -39,23 +38,9 @@ class ParallelEncoderModel(val networks: List<SequenceFeedforwardNetwork>) : Ite
   }
 
   /**
-   * The list of all parameters.
+   * The parameters of all networks.
    */
-  override val paramsList: Array<UpdatableArray<*>> = this.buildParamsList()
-
-  /**
-   * @return a new [ParallelEncoderModel] containing a copy of all parameters of this
-   */
-  override fun copy(): ParallelEncoderModel {
-
-    val clonedParams = ParallelEncoderModel(this.networks)
-
-    clonedParams.zip(this) { cloned, params ->
-      cloned.values.assignValues(params.values)
-    }
-
-    return clonedParams
-  }
+  val params = ParallelEncoderParameters(this.networks.map { it.network.model })
 
   /**
    * Serialize this [ParallelEncoderModel] and write it to an output stream.
@@ -63,16 +48,4 @@ class ParallelEncoderModel(val networks: List<SequenceFeedforwardNetwork>) : Ite
    * @param outputStream the [OutputStream] in which to write this serialized [ParallelEncoderModel]
    */
   fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
-
-  /**
-   * @return the array containing all parameters
-   */
-  private fun buildParamsList(): Array<UpdatableArray<*>> {
-
-    val params = arrayListOf<UpdatableArray<*>>()
-
-    this.networks.forEach { params.addAll(it.network.model.paramsList) }
-
-    return params.toTypedArray()
-  }
 }
