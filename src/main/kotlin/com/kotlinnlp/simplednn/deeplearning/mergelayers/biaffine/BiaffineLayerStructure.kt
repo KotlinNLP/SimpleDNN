@@ -41,12 +41,34 @@ class BiaffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) :
   ItemsPool.IDItem,
   MergeLayer<InputNDArrayType>(
-  inputArray1 = inputArray1,
-  inputArray2 = inputArray2,
-  outputArray = outputArray,
-  params = params,
-  activationFunction = activationFunction,
-  dropout = dropout) {
+    inputArray1 = inputArray1,
+    inputArray2 = inputArray2,
+    outputArray = outputArray,
+    params = params,
+    activationFunction = activationFunction,
+    dropout = dropout) {
+
+  /**
+   * Constructor by params.
+   *
+   * @property params the parameters which connect the input to the output
+   * @property activationFunction the activation function of the layer
+   * @property dropout the probability of dropout (default 0.0).
+   *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
+   * @property id a unique id for this item (default = 0)
+   */
+  constructor(params: BiaffineLayerParameters,
+              activationFunction: ActivationFunction? = null,
+              dropout: Double = 0.0,
+              id: Int = 0): this(
+    inputArray1 = AugmentedArray<InputNDArrayType>(size = params.inputSize1),
+    inputArray2 = AugmentedArray<InputNDArrayType>(size = params.inputSize2),
+    outputArray = AugmentedArray<DenseNDArray>(size = params.outputSize),
+    params = params,
+    activationFunction = activationFunction,
+    dropout = dropout,
+    id = id
+  )
 
   /**
    * A support structure used for calculations. Each array wx1i is obtained by: wi (dot) x1.
