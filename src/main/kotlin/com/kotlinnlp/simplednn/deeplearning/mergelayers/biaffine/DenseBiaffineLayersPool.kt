@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.deeplearning.mergelayers.biaffine
 
-import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.utils.ItemsPool
 
@@ -32,9 +31,6 @@ class DenseBiaffineLayersPool(
    * @return a new [BiaffineLayerStructure] with the given [id]
    */
   override fun itemFactory(id: Int) = BiaffineLayerStructure<DenseNDArray>(
-    inputArray1 = AugmentedArray(this.model.params.inputSize1),
-    inputArray2 = AugmentedArray(this.model.params.inputSize2),
-    outputArray = AugmentedArray(this.model.params.outputSize),
     params = this.model.params,
     activationFunction = this.model.activationFunction,
     dropout = this.dropout,
