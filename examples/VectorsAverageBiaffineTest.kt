@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.dataset.Shuffler
 import com.kotlinnlp.simplednn.deeplearning.mergelayers.biaffine.BiaffineLayerParameters
@@ -57,7 +57,7 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
    */
   private val optimizer = ParamsOptimizer(
     params = this.biaffineLayer.params,
-    updateMethod = LearningRateMethod(learningRate = 0.01))
+    updateMethod = ADAMMethod(stepSize = 0.001, beta1 = 0.99, beta2 = 0.99999))
 
   /**
    *
@@ -69,7 +69,7 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
     val testSet = dataset.subList(fromIndex = 0, toIndex = testSetSize)
     val trainingSet = dataset.subList(fromIndex = testSetSize, toIndex = dataset.size)
 
-    val epochs = 100
+    val epochs = 25
 
     println("\n-- TRAINING ON ${trainingSet.size} EXAMPLES")
 
@@ -109,7 +109,13 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
    *
    */
   private fun trainEpoch(trainingExamples: List<Example>) {
-    this.loopExamples(trainingExamples, this::trainExample)
+
+    this.loopExamples(trainingExamples) { example ->
+
+      this.optimizer.newEpoch()
+
+      this.trainExample(example)
+    }
   }
 
   /**
@@ -135,6 +141,9 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
    *
    */
   private fun trainExample(example: Example) {
+
+    this.optimizer.newBatch()
+    this.optimizer.newExample()
 
     this.biaffineLayer.setErrors(errors = this.predict(example).sub(example.third))
 
