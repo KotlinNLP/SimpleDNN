@@ -32,7 +32,8 @@ data class Configuration(val mnist: ExampleConfiguration,
                          val mnist_sequence: ExampleConfiguration,
                          val sparse_input: ExampleConfiguration,
                          val progressive_sum: ExampleConfiguration,
-                         val han_classifier: ExampleConfiguration){
+                         val han_classifier: ExampleConfiguration,
+                         val vectors_average: ExampleConfiguration){
 
   /**
    *

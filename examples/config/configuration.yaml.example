@@ -27,3 +27,9 @@ han_classifier:
     training: "<PATH>/<FILENAME>.jsonl"
     validation: "<PATH>/<FILENAME>.jsonl"
     test: "<PATH>/<FILENAME>.jsonl"
+
+vectors_average:
+  datasets_paths:
+    training:  "<PATH>/<FILENAME>.csv"
+    validation: ""
+    test: ""
