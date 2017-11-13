@@ -40,7 +40,7 @@ class BiaffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.assignParamsGradients(paramsErrors = paramsErrors as BiaffineLayerParameters, wx1Errors = gwx1)
 
     if (propagateToInput) {
-      this.assignLayerGradients(wxErrors = gwx1)
+      this.assignLayerGradients(wx1Errors = gwx1)
     }
   }
 
@@ -117,7 +117,7 @@ class BiaffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  private fun assignLayerGradients(wxErrors: Array<DenseNDArray>) {
+  private fun assignLayerGradients(wx1Errors: Array<DenseNDArray>) {
     // TODO: actually the wx errors are Sparse if the input is SparseBinary: calculations should be optimized
 
     val w1: DenseNDArray = this.layer.params.w1.values as DenseNDArray
@@ -130,11 +130,11 @@ class BiaffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.inputArray1.assignErrorsByDotT(gyT, w1)
     this.layer.inputArray2.assignErrorsByDotT(gyT, w2)
 
-    wxErrors.forEachIndexed { i, wxError ->
+    wx1Errors.forEachIndexed { i, wx1Error ->
       val wi: DenseNDArray = wArrays[i].values as DenseNDArray
       val wx1i: DenseNDArray = this.layer.wx1Arrays[i]
 
-      this.layer.inputArray1.errors.assignSum(wxError.T.dot(wi))
+      this.layer.inputArray1.errors.assignSum(wx1Error.T.dot(wi))
       this.layer.inputArray2.errors.assignSum(wx1i.prod(gy[i]))
     }
   }
