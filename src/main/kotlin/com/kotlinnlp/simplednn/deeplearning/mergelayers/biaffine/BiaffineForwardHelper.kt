@@ -32,7 +32,7 @@ class BiaffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun forward() {
 
-    val x1: InputNDArrayType = this.layer.inputArray.values
+    val x1: InputNDArrayType = this.layer.inputArray1.values
     val x2: InputNDArrayType = this.layer.inputArray2.values
 
     val wArrays: Array<UpdatableArray<*>> = this.layer.params.w
