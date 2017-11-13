@@ -25,6 +25,15 @@ class RANLayerParameters(
   private val sparseInput: Boolean = false
 ) : LayerParameters<RANLayerParameters>(inputSize = inputSize, outputSize = outputSize) {
 
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed by Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
+
   /**
    *
    */
