@@ -10,6 +10,10 @@ package com.kotlinnlp.simplednn.deeplearning.birnn.deepbirnn
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN
+import com.kotlinnlp.simplednn.utils.Serializer
+import java.io.InputStream
+import java.io.OutputStream
+import java.io.Serializable
 
 /**
  * The DeepBiRNN.
@@ -31,7 +35,25 @@ class DeepBiRNN(val inputType: LayerType.Input,
                 val inputSize: Int,
                 val hiddenActivation: ActivationFunction?,
                 val recurrentConnectionType: LayerType.Connection,
-                val numberOfLayers: Int = 1){
+                val numberOfLayers: Int = 1) : Serializable {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed from Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+
+    /**
+     * Read a [DeepBiRNN] (serialized) from an input stream and decode it.
+     *
+     * @param inputStream the [InputStream] from which to read the serialized [DeepBiRNN]
+     *
+     * @return the [DeepBiRNN] read from [inputStream] and decoded
+     */
+    fun load(inputStream: InputStream): BiRNN = Serializer.deserialize(inputStream)
+  }
 
   /**
    * Stacked BiRNNs
@@ -88,4 +110,11 @@ class DeepBiRNN(val inputType: LayerType.Input,
     this.layers.forEach { it.initialize() }
     return this
   }
+
+  /**
+   * Serialize this [DeepBiRNN] and write it to an output stream.
+   *
+   * @param outputStream the [OutputStream] in which to write this serialized [DeepBiRNN]
+   */
+  fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
 }
