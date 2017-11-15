@@ -10,13 +10,14 @@ package com.kotlinnlp.simplednn.utils
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 import com.google.common.collect.HashMultiset
+import java.io.Serializable
 
 /**
  * A dictionary containing a set of elements.
  * Elements are mapped bi-univocally to ids.
  * It provides methods to get information about elements, like their occurrences count and frequency.
  */
-class DictionarySet<T>{
+class DictionarySet<T> : Serializable {
 
   /**
    * The number of distinct element of this set.
