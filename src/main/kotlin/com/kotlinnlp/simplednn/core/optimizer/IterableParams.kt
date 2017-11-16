@@ -17,6 +17,15 @@ import java.io.Serializable
 abstract class IterableParams<SelfType: IterableParams<SelfType>>
   : Serializable, Iterable<com.kotlinnlp.simplednn.core.arrays.UpdatableArray<*>> {
 
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed by Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
+
   /**
    * The iterator inner class which iterates over all the parameters of all the layers
    */
