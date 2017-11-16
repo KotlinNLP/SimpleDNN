@@ -52,7 +52,7 @@ class DeepBiRNN(val inputType: LayerType.Input,
      *
      * @return the [DeepBiRNN] read from [inputStream] and decoded
      */
-    fun load(inputStream: InputStream): BiRNN = Serializer.deserialize(inputStream)
+    fun load(inputStream: InputStream): DeepBiRNN = Serializer.deserialize(inputStream)
   }
 
   /**
