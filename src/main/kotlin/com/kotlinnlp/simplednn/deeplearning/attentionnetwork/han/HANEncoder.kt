@@ -19,6 +19,7 @@ import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncodersPool
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.utils.ItemsPool
 
 /**
  * Encoder based on Hierarchical Attention Networks.
@@ -28,8 +29,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *   Hierarchical Attention Networks for Document Classification](https://www.cs.cmu.edu/~diyiy/docs/naacl16.pdf)
  *
  * @property model the parameters of the model of the networks
+ * @property id an identification number useful to track a specific [HANEncoder]
  */
-class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val model: HAN) {
+class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
+  val model: HAN,
+  override val id: Int = 0
+) : ItemsPool.IDItem {
 
   /**
    * An array containing pools of encoders ([BiRNNEncoder]s), one for each level of the HAN.
