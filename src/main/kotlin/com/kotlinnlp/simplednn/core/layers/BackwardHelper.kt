@@ -28,13 +28,14 @@ interface BackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>> {
    *
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
-   * @param mePropK the k factor of the 'meProp' algorithm to propagate from top k (in percentage) output nodes
-   *                (ignored if null)
+   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
+   *                the top errors (ignored if null, the default)
    */
   fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean = false, mePropK: Double?)
 
   /**
-   * @param mePropK the k factor of the 'meProp' algorithm (the percentage of the top k nodes)
+   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
+   *                the top errors
    *
    * @return the mask of the top k ([mePropK]) elements of the output array.
    */
