@@ -44,7 +44,7 @@ class BiaffineLayerStructureSpec : Spek({
       layer.forward()
 
       layer.outputArray.assignErrors(layer.outputArray.values.sub(BiaffineLayerUtils.getOutputGold()))
-      layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+      layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
 
       it("should match the expected errors of the outputArray") {
         assertEquals(true, layer.outputArray.errors.equals(

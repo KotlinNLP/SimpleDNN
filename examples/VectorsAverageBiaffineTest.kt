@@ -147,7 +147,7 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
 
     this.biaffineLayer.setErrors(errors = this.predict(example).sub(example.third))
 
-    this.biaffineLayer.backward(this.paramsErrors, propagateToInput = false)
+    this.biaffineLayer.backward(this.paramsErrors, propagateToInput = false, mePropK = null)
 
     this.optimizer.accumulate(this.paramsErrors)
     this.optimizer.update()

@@ -130,7 +130,8 @@ class FeedforwardNetworkStructureSpec : Spek({
         structure.backward(
           outputErrors = structure.outputLayer.outputArray.values.sub(outputGold),
           paramsErrors = NetworkParameters(layersConfiguration),
-          propagateToInput = true)
+          propagateToInput = true,
+          mePropK = null)
 
         val inputErrors = structure.inputLayer.inputArray.errors
         val expectedInputErrors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.32, -0.14, -0.06, 0.07))

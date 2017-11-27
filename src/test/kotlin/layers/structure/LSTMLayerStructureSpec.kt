@@ -128,7 +128,7 @@ class LSTMLayerStructureSpec : Spek({
           outputGold = LSTMLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
 
         it("should match the expected errors of the outputArray") {
           assertEquals(true, layer.outputArray.errors.equals(
@@ -305,7 +305,7 @@ class LSTMLayerStructureSpec : Spek({
           outputGold = LSTMLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
 
         it("should match the expected errors of the outputArray") {
           assertEquals(true, layer.outputArray.errors.equals(
@@ -482,7 +482,7 @@ class LSTMLayerStructureSpec : Spek({
           outputGold = LSTMLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
 
         it("should match the expected errors of the outputArray") {
           assertEquals(true, layer.outputArray.errors.equals(
@@ -659,7 +659,7 @@ class LSTMLayerStructureSpec : Spek({
           outputGold = LSTMLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
 
         it("should match the expected errors of the outputArray") {
           assertEquals(true, layer.outputArray.errors.equals(
