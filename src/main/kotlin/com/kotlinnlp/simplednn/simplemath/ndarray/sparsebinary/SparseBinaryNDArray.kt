@@ -180,7 +180,7 @@ class SparseBinaryNDArray(
       }
     }
 
-    return NDArrayMask(dim1 = rowIndices.toTypedArray(), dim2 = colIndices.toTypedArray(), shape = this.shape)
+    return NDArrayMask(dim1 = rowIndices.toTypedArray(), dim2 = colIndices.toTypedArray())
   }
 
   /**

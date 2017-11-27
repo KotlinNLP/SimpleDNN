@@ -239,7 +239,6 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   override fun assignValues(a: NDArray<*>, mask: NDArrayMask): DenseNDArray {
     require(a.shape == this.shape) { "Arrays with different size" }
-    require(mask.shape == this.shape) { "Mask has not compatible shape" }
 
     when(a) {
       is DenseNDArray -> this.assignValues(a, mask)
@@ -549,7 +548,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
 
     val values = Array(size = mask.size, init = { this.storage[mask.dim1[it], mask.dim2[it]] * n })
 
-    return SparseNDArray(shape = mask.shape, values = values, rows = mask.dim1, columns = mask.dim2)
+    return SparseNDArray(shape = this.shape, values = values, rows = mask.dim1, columns = mask.dim2)
   }
 
   /**
@@ -677,7 +676,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
 
     val values = Array(size = mask.size, init = { Math.sqrt(this.storage[mask.dim1[it], mask.dim2[it]]) })
 
-    return SparseNDArray(shape = mask.shape, values = values, rows = mask.dim1, columns = mask.dim2)
+    return SparseNDArray(shape = this.shape, values = values, rows = mask.dim1, columns = mask.dim2)
   }
 
 

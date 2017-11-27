@@ -144,7 +144,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  val mask: NDArrayMask get() = NDArrayMask(dim1 = this.rowIndices, dim2 = this.colIndices, shape = this.shape)
+  val mask: NDArrayMask get() = NDArrayMask(dim1 = this.rowIndices, dim2 = this.colIndices)
 
   /**
    *
