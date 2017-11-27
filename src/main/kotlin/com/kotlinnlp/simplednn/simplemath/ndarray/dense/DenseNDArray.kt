@@ -779,16 +779,12 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override fun concatH(a: DenseNDArray): DenseNDArray {
-    return DenseNDArray(concatHorizontally(this.storage, a.storage))
-  }
+  override fun concatH(a: DenseNDArray): DenseNDArray = DenseNDArray(concatHorizontally(this.storage, a.storage))
 
   /**
    *
    */
-  override fun concatV(a: DenseNDArray): DenseNDArray {
-    return DenseNDArray(concatVertically(this.storage, a.storage))
-  }
+  override fun concatV(a: DenseNDArray): DenseNDArray = DenseNDArray(concatVertically(this.storage, a.storage))
 
   /**
    * Split this NDArray into multiple NDArray.
@@ -868,16 +864,12 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override fun equals(other: Any?): Boolean {
-    return other is DenseNDArray && this.equals(other)
-  }
+  override fun equals(other: Any?): Boolean = other is DenseNDArray && this.equals(other)
 
   /**
    *
    */
-  override fun hashCode(): Int {
-    return this.storage.hashCode()
-  }
+  override fun hashCode(): Int = this.storage.hashCode()
 
   /**
    *
@@ -892,7 +884,5 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  fun toDoubleArray(): DoubleArray {
-    return this.storage.dup().data
-  }
+  fun toDoubleArray(): DoubleArray = this.storage.dup().data
 }
