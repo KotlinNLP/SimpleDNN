@@ -77,9 +77,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    * Iterator over active indices with the related values
    */
-  override fun iterator(): Iterator<SparseEntry> {
-    return LinearIterator()
-  }
+  override fun iterator(): Iterator<SparseEntry> = LinearIterator()
 
   /**
    *
@@ -323,9 +321,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override fun sum(): Double {
-    return (0 until this.values.size).sumByDouble { i -> this.values[i] }
-  }
+  override fun sum(): Double = (0 until this.values.size).sumByDouble { i -> this.values[i] }
 
   /**
    *
@@ -356,14 +352,11 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override fun assignSum(a: NDArray<*>): SparseNDArray {
-
-    return when(a) {
-      is DenseNDArray -> TODO("not implemented")
-      is SparseNDArray -> this.assignSum(a)
-      is SparseBinaryNDArray -> TODO("not implemented")
-      else -> throw RuntimeException("Invalid NDArray type")
-    }
+  override fun assignSum(a: NDArray<*>): SparseNDArray = when(a) {
+    is DenseNDArray -> TODO("not implemented")
+    is SparseNDArray -> this.assignSum(a)
+    is SparseBinaryNDArray -> TODO("not implemented")
+    else -> throw RuntimeException("Invalid NDArray type")
   }
 
   /**
@@ -393,9 +386,8 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   fun assignSumMerging(a: SparseNDArray): SparseNDArray {
     require(a.shape == this.shape) { "Arrays with different size" }
 
-    fun SparseNDArray.getLinearIndex(arrayIndex: Int): Int {
-      return this.colIndices[arrayIndex] * this.shape.dim1 + this.rowIndices[arrayIndex]
-    }
+    fun SparseNDArray.getLinearIndex(arrayIndex: Int): Int =
+      this.colIndices[arrayIndex] * this.shape.dim1 + this.rowIndices[arrayIndex]
 
     val thisSize = this.values.size
     val aSize = a.values.size
@@ -904,9 +896,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override fun equals(other: Any?): Boolean {
-    return other is SparseNDArray && this.equals(other)
-  }
+  override fun equals(other: Any?): Boolean = other is SparseNDArray && this.equals(other)
 
   /**
    *
