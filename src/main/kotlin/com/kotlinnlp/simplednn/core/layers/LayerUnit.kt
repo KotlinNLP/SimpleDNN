@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
@@ -49,28 +50,36 @@ open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : 
    *
    * @param paramsErrors the parameters associated to this unit
    * @param x the input of the unit
+   * @param mePropMask the mask of the top k output nodes, in order to execute the 'meProp' algorithm
    */
-  fun assignParamsGradients(paramsErrors: ParametersUnit, x: InputNDArrayType) {
+  fun assignParamsGradients(paramsErrors: ParametersUnit, x: InputNDArrayType, mePropMask: NDArrayMask? = null) {
 
     val gb: DenseNDArray = paramsErrors.biases.values
     val gw: NDArray<*> = paramsErrors.weights.values
 
-    gb.assignValues(this.errors)
-    gw.assignDot(this.errors, x.T)
+    if (mePropMask != null && gw is DenseNDArray && x is DenseNDArray) {
+      gb.assignValues(this.errors, mask = mePropMask)
+      gw.assignDot(this.errors, x.T, aMask = mePropMask)
+
+    } else {
+      gb.assignValues(this.errors)
+      gw.assignDot(this.errors, x.T)
+    }
   }
 
   /**
    * Get the errors of the input of the unit. The errors of the output must be already set.
    *
    * @param parameters the parameters associated to this unit
+   * @param mePropMask the mask of the top k output nodes, in order to execute the 'meProp' algorithm
    *
    * @return the errors of the input of this unit
    */
-  fun getInputErrors(parameters: ParametersUnit): DenseNDArray {
+  fun getInputErrors(parameters: ParametersUnit, mePropMask: NDArrayMask? = null): DenseNDArray {
 
     val w: DenseNDArray = parameters.weights.values as DenseNDArray
 
-    return this.errors.T.dot(w)
+    return if (mePropMask != null) this.errors.maskBy(mePropMask).T.dot(w) else this.errors.T.dot(w)
   }
 
   /**

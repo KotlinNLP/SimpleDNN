@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.layers
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
@@ -46,17 +47,24 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    * @param paramsErrors the parameters errors associated to this unit
    * @param x the input of the unit
    * @param yPrev the output array as contribution from the previous state
+   * @param mePropMask the mask of the top k output nodes, in order to execute the 'meProp' algorithm
    */
   fun assignParamsGradients(paramsErrors: RecurrentParametersUnit,
                             x: InputNDArrayType,
-                            yPrev: DenseNDArray? = null) {
+                            yPrev: DenseNDArray? = null,
+                            mePropMask: NDArrayMask? = null) {
 
-    super.assignParamsGradients(paramsErrors = paramsErrors, x = x)
+    super.assignParamsGradients(paramsErrors = paramsErrors, x = x, mePropMask = mePropMask)
 
     val gwRec: DenseNDArray = paramsErrors.recurrentWeights.values
 
     if (yPrev != null) {
-      gwRec.assignDot(this.errors, yPrev.T)
+
+      if (mePropMask != null)
+        gwRec.assignDot(this.errors, yPrev.T, aMask = mePropMask)
+      else
+        gwRec.assignDot(this.errors, yPrev.T)
+
     } else {
       gwRec.zeros()
     }
