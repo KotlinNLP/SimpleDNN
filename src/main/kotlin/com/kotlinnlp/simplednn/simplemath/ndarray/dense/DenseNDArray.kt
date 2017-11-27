@@ -94,6 +94,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
+  @Suppress()
   override val T: DenseNDArray
     get() = DenseNDArray(this.storage.transpose())
 
@@ -136,9 +137,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    *
    * @return the selected column as a new DenseNDArray
    */
-  override fun getColumn(i: Int): DenseNDArray {
-    return DenseNDArray(this.storage.getColumn(i))
-  }
+  override fun getColumn(i: Int): DenseNDArray = DenseNDArray(this.storage.getColumn(i))
 
   /**
    * Get a one-dimensional DenseNDArray sub-vector of a vertical vector.
@@ -172,16 +171,12 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override fun zerosLike(): DenseNDArray {
-    return DenseNDArray(DoubleMatrix.zeros(this.shape.dim1, shape.dim2))
-  }
+  override fun zerosLike(): DenseNDArray = DenseNDArray(DoubleMatrix.zeros(this.shape.dim1, shape.dim2))
 
   /**
    * @return a new [DenseNDArray] with the same shape of this, filled with ones.
    */
-  fun onesLike(): DenseNDArray {
-    return DenseNDArray(DoubleMatrix.ones(this.shape.dim1, shape.dim2))
-  }
+  fun onesLike(): DenseNDArray = DenseNDArray(DoubleMatrix.ones(this.shape.dim1, shape.dim2))
 
   /**
    *
@@ -292,16 +287,12 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override fun sum(n: Double): DenseNDArray {
-    return DenseNDArray(this.storage.add(n))
-  }
+  override fun sum(n: Double): DenseNDArray = DenseNDArray(this.storage.add(n))
 
   /**
    *
    */
-  override fun sum(a: DenseNDArray): DenseNDArray {
-    return DenseNDArray(this.storage.add(a.storage))
-  }
+  override fun sum(a: DenseNDArray): DenseNDArray = DenseNDArray(this.storage.add(a.storage))
 
   /**
    *
@@ -360,16 +351,12 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override fun sub(n: Double): DenseNDArray {
-    return DenseNDArray(this.storage.sub(n))
-  }
+  override fun sub(n: Double): DenseNDArray = DenseNDArray(this.storage.sub(n))
 
   /**
    *
    */
-  override fun sub(a: DenseNDArray): DenseNDArray {
-    return DenseNDArray(this.storage.sub(a.storage))
-  }
+  override fun sub(a: DenseNDArray): DenseNDArray = DenseNDArray(this.storage.sub(a.storage))
 
   /**
    * In-place subtraction by number
@@ -409,9 +396,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override fun reverseSub(n: Double): DenseNDArray {
-    return DenseNDArray(this.storage.rsub(n))
-  }
+  override fun reverseSub(n: Double): DenseNDArray = DenseNDArray(this.storage.rsub(n))
 
   /**
    * Dot product between this [DenseNDArray] and a [DenseNDArray] masked by [mask]
@@ -428,22 +413,17 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override fun dot(a: NDArray<*>): DenseNDArray {
-
-    return when(a) {
-      is DenseNDArray -> this.dot(a)
-      is SparseNDArray -> TODO("not implemented")
-      is SparseBinaryNDArray -> this.dot(a)
-      else -> throw RuntimeException("Invalid NDArray type")
-    }
+  override fun dot(a: NDArray<*>): DenseNDArray = when(a) {
+    is DenseNDArray -> this.dot(a)
+    is SparseNDArray -> TODO("not implemented")
+    is SparseBinaryNDArray -> this.dot(a)
+    else -> throw RuntimeException("Invalid NDArray type")
   }
 
   /**
    *
    */
-  private fun dot(a: DenseNDArray): DenseNDArray {
-    return DenseNDArray(this.storage.mmul(a.storage))
-  }
+  private fun dot(a: DenseNDArray): DenseNDArray = DenseNDArray(this.storage.mmul(a.storage))
 
   /**
    *
@@ -523,21 +503,16 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override fun prod(n: Double): DenseNDArray {
-    return DenseNDArray(this.storage.mul(n))
-  }
+  override fun prod(n: Double): DenseNDArray = DenseNDArray(this.storage.mul(n))
 
   /**
    *
    */
-  override fun prod(a: NDArray<*>): DenseNDArray {
-
-    return when(a) {
-      is DenseNDArray -> this.prod(a)
-      is SparseNDArray -> TODO("not implemented")
-      is SparseBinaryNDArray -> TODO("not implemented")
-      else -> throw RuntimeException("Invalid NDArray type")
-    }
+  override fun prod(a: NDArray<*>): DenseNDArray = when(a) {
+    is DenseNDArray -> this.prod(a)
+    is SparseNDArray -> TODO("not implemented")
+    is SparseBinaryNDArray -> TODO("not implemented")
+    else -> throw RuntimeException("Invalid NDArray type")
   }
 
   /**
@@ -624,21 +599,16 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override fun div(n: Double): DenseNDArray {
-    return DenseNDArray(this.storage.div(n))
-  }
+  override fun div(n: Double): DenseNDArray = DenseNDArray(this.storage.div(n))
 
   /**
    *
    */
-  override fun div(a: NDArray<*>): DenseNDArray {
-
-    return when(a) {
-      is DenseNDArray -> DenseNDArray(this.storage.div(a.storage))
-      is SparseNDArray -> TODO("not implemented")
-      is SparseBinaryNDArray -> TODO("not implemented")
-      else -> throw RuntimeException("Invalid NDArray type")
-    }
+  override fun div(a: NDArray<*>): DenseNDArray = when(a) {
+    is DenseNDArray -> DenseNDArray(this.storage.div(a.storage))
+    is SparseNDArray -> TODO("not implemented")
+    is SparseBinaryNDArray -> TODO("not implemented")
+    else -> throw RuntimeException("Invalid NDArray type")
   }
 
   /**
@@ -681,25 +651,20 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    *
    * @return a new [DenseNDArray] containing the results of the function sign() applied element-wise
    */
-  override fun sign(): DenseNDArray {
-    return DenseNDArray(MatrixFunctions.signum(this.storage))
-  }
+  override fun sign(): DenseNDArray = DenseNDArray(MatrixFunctions.signum(this.storage))
 
   /**
    * Non-zero sign function.
    *
    * @return a new [DenseNDArray] containing +1 or -1 values depending on the sign element-wise (+1 if the value is 0)
    */
-  fun nonZeroSign(): DenseNDArray {
-    return DenseNDArray(MatrixFunctions.signum(MatrixFunctions.signum(this.storage).addi(0.1)))
-  }
+  fun nonZeroSign(): DenseNDArray
+    = DenseNDArray(MatrixFunctions.signum(MatrixFunctions.signum(this.storage).addi(0.1)))
 
   /**
    *
    */
-  override fun sqrt(): DenseNDArray {
-    return DenseNDArray(MatrixFunctions.sqrt(this.storage))
-  }
+  override fun sqrt(): DenseNDArray = DenseNDArray(MatrixFunctions.sqrt(this.storage))
 
   /**
    * Square root of this [DenseNDArray] masked by [mask]
@@ -723,9 +688,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    *
    * @return a new [DenseNDArray] containing the values of this to the power of [power]
    */
-  override fun pow(power: Double): DenseNDArray {
-    return DenseNDArray(MatrixFunctions.pow(this.storage, power))
-  }
+  override fun pow(power: Double): DenseNDArray = DenseNDArray(MatrixFunctions.pow(this.storage, power))
 
   /**
    * In-place power
