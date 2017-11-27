@@ -7,7 +7,10 @@
 
 package ndarray
 
+import com.kotlinnlp.simplednn.simplemath.ndarray.Indices
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.SparseEntry
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
@@ -131,6 +134,46 @@ class SparseNDArraySpec : Spek({
 
         it("should contain the expected values") {
           assertTrue(expectedArray.equals(res))
+        }
+      }
+    }
+
+    context("math methods returning a new NDArray") {
+
+      on("dot(denseArray) method") {
+
+        val a1 = SparseNDArrayFactory.arrayOf(
+          activeIndicesValues = arrayOf(
+            SparseEntry(Indices(0, 0), 0.5),
+            SparseEntry(Indices(1, 1), 0.5)
+          ),
+          shape = Shape(3, 2))
+
+        val a2 = DenseNDArrayFactory.arrayOf(arrayOf(
+          doubleArrayOf(0.2, 0.9),
+          doubleArrayOf(0.5, 0.6)
+        ))
+
+        val a3 = DenseNDArrayFactory.arrayOf(arrayOf(
+          doubleArrayOf(0.2, 0.9),
+          doubleArrayOf(0.5, 0.6),
+          doubleArrayOf(0.1, 0.4)
+        ))
+
+        val expectedArray = DenseNDArrayFactory.arrayOf(arrayOf(
+          doubleArrayOf(0.1, 0.45),
+          doubleArrayOf(0.25, 0.3),
+          doubleArrayOf(0.0, 0.0)
+        ))
+
+        val res = a1.dot(a2)
+
+        it("should throw an error with not compatible shapes") {
+          assertFails { a1.dot(a3) }
+        }
+
+        it("should assign the expected values") {
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
     }
