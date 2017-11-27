@@ -179,7 +179,7 @@ abstract class TrainingHelper<ExampleType: Example>(
 
       this.startTiming()
 
-      println("Epoch ${epochIndex + 1}")
+      println("\nEpoch ${epochIndex + 1}")
     }
   }
 
