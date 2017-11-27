@@ -502,6 +502,23 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
+  fun assignDot(a: DenseNDArray, b: DenseNDArray, aMask: NDArrayMask): DenseNDArray {
+    require(a.rows == this.rows && b.columns == this.columns && a.columns == b.rows)
+
+    this.zeros()
+
+    for (bCol in 0 until b.shape.dim2) {
+      for ((aRow, aCol) in aMask) {
+        this[aRow, bCol] += a[aRow, aCol] * b[aCol, bCol]
+      }
+    }
+
+    return this
+  }
+
+  /**
+   *
+   */
   override fun prod(n: Double): DenseNDArray = DenseNDArray(this.storage.mul(n))
 
   /**
