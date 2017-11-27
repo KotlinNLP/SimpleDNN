@@ -17,12 +17,14 @@ import com.kotlinnlp.simplednn.dataset.SimpleExample
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
- *
+ * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
+ *                the top errors of each layer excluded the last (ignored if null, the default)
  */
 class FeedforwardTrainingHelper<NDArrayType: NDArray<NDArrayType>>(
   override val neuralProcessor: FeedforwardNeuralProcessor<NDArrayType>,
   optimizer: ParamsOptimizer<NetworkParameters>,
   lossCalculator: LossCalculator,
+  private val mePropK: Double? = null,
   verbose: Boolean = false
 ) : TrainingHelper<SimpleExample<NDArrayType>>(
   neuralProcessor = neuralProcessor,
@@ -57,7 +59,7 @@ class FeedforwardTrainingHelper<NDArrayType: NDArray<NDArrayType>>(
     val output = this.neuralProcessor.forward(example.features)
     val errors = this.lossCalculator.calculateErrors(output, example.outputGold)
 
-    this.neuralProcessor.backward(errors)
+    this.neuralProcessor.backward(errors, mePropK = this.mePropK)
 
     return this.lossCalculator.calculateLoss(output, example.outputGold).avg()
   }
