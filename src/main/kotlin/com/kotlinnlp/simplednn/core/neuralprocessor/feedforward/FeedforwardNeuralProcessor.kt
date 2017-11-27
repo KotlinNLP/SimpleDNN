@@ -141,7 +141,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
    *                                     as reference to calculate the relevance of the input
-   * @param copy whether to return a copy of the relevance or not
+   * @param copy whether to return a copy of the relevance or not (default = true)
    *
    * @return the input relevance array (If the input is Dense it is Dense, if the input is Sparse or SparseBinary it
    *         is Sparse)
@@ -164,12 +164,15 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param outputErrors the errors of the output
    * @param propagateToInput whether to propagate the errors to the input
+   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
+   *                the top errors of each layer excluded the last (ignored if null, the default)
    */
-  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false) {
+  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false, mePropK: Double? = null) {
 
     this.structure.backward(
       outputErrors = outputErrors,
       paramsErrors = this.backwardParamsErrors,
-      propagateToInput = propagateToInput)
+      propagateToInput = propagateToInput,
+      mePropK = mePropK)
   }
 }

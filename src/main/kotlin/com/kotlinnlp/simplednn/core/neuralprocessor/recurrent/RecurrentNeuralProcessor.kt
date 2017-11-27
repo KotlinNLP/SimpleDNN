@@ -235,24 +235,28 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Backward errors.
    *
    * @param outputErrors the errors of the output
-   * @param propagateToInput whether to propagate the errors to the input
+   * @param propagateToInput whether to propagate the errors to the input (default = false)
+   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
+   *                the top errors of each layer excluded the last (ignored if null, the default)
    */
-  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false) {
+  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false, mePropK: Double? = null) {
 
     val outputErrorsSequence = Array(
       size = this.statesSize,
       init = { i -> if (i == this.lastStateIndex) outputErrors else this.zeroErrors })
 
-    this.backward(outputErrorsSequence = outputErrorsSequence, propagateToInput = propagateToInput)
+    this.backward(outputErrorsSequence = outputErrorsSequence, propagateToInput = propagateToInput, mePropK = mePropK)
   }
 
   /**
    * Backward errors of a sequence.
    *
    * @param outputErrorsSequence output errors for each item of the sequence
-   * @param propagateToInput whether to propagate the errors to the input
+   * @param propagateToInput whether to propagate the errors to the input (default = false)
+   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
+   *                the top errors of each layer excluded the last (ignored if null, the default)
    */
-  fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean = false) {
+  fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean = false, mePropK: Double? = null) {
 
     require(outputErrorsSequence.size == (this.statesSize)) {
       "Number of errors (%d) does not reflect the length of the sequence (%d)"
@@ -266,7 +270,8 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
       this.sequence.getStateStructure(i).backward(
         outputErrors = outputErrorsSequence[i],
         paramsErrors = this.backwardParamsErrors,
-        propagateToInput = propagateToInput)
+        propagateToInput = propagateToInput,
+        mePropK = mePropK)
 
       this.paramsErrorsAccumulator.accumulate(this.backwardParamsErrors)
     }

@@ -127,16 +127,22 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param outputErrors the errors to propagate from the output
    * @param paramsErrors the structure in which to save the errors of the parameters
    * @param propagateToInput whether to propagate the errors to the input
+   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
+   *                the top errors of each layer excluded the last (ignored if null)
    */
   fun backward(outputErrors: DenseNDArray,
                paramsErrors: NetworkParameters,
-               propagateToInput: Boolean = false) {
+               propagateToInput: Boolean = false,
+               mePropK: Double?) {
 
     this.outputLayer.setErrors(outputErrors)
 
     for ((i, layer) in this.layers.withIndex().reversed()) {
       this.curLayerIndex = i
-      layer.backward(paramsErrors = paramsErrors.paramsPerLayer[i], propagateToInput = (i > 0 || propagateToInput))
+      layer.backward(
+        paramsErrors = paramsErrors.paramsPerLayer[i],
+        propagateToInput = (i > 0 || propagateToInput),
+        mePropK = if (i < this.layers.lastIndex) mePropK else null)
     }
   }
 
