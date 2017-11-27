@@ -137,8 +137,10 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @param outputErrors the errors of the output
    * @param propagateToInput whether to propagate the output errors to the input or not
+   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
+   *                the top errors of the transform layers(ignored if null, the default)
    */
-  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean) {
+  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean, mePropK: Double? = null) {
 
     this.resetAccumulators()
 
@@ -148,7 +150,8 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
       outputErrors = this.outputProcessor.getInputErrors(copy = false),
       levelIndex = 0,
       groupIndex = 0,
-      propagateToInput = propagateToInput
+      propagateToInput = propagateToInput,
+      mePropK = mePropK
     )
 
     this.averageAccumulatedErrors()
@@ -266,18 +269,22 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @param levelIndex the index of the propagating level of the hierarchy
    * @param groupIndex the index of the propagating group of this level
    * @param propagateToInput whether to propagate the errors to the input or not
+   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
+   *                the top errors of the transform layers(ignored if null)
    */
   private fun backwardHierarchicalGroup(outputErrors: DenseNDArray,
                                         levelIndex: Int,
                                         groupIndex: Int,
-                                        propagateToInput: Boolean) {
+                                        propagateToInput: Boolean,
+                                        mePropK: Double?) {
 
     val isNotLastLevel = levelIndex < (this.model.hierarchySize - 1)
 
     this.backwardAttentionNetwork(
       outputErrors = outputErrors,
       levelIndex = levelIndex,
-      groupIndex = groupIndex)
+      groupIndex = groupIndex,
+      mePropK = mePropK)
 
     this.backwardEncoder(
       levelIndex = levelIndex,
@@ -290,7 +297,8 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
           outputErrors = errors,
           levelIndex = levelIndex + 1,
           groupIndex = i,
-          propagateToInput = propagateToInput
+          propagateToInput = propagateToInput,
+          mePropK = mePropK
         )
       }
     }
@@ -302,8 +310,10 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @param outputErrors the errors of the output of the [AttentionNetwork] at the given [levelIndex]
    * @param levelIndex the index of a level in the hierarchy
    * @param groupIndex the index of the propagating group of this level
+   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
+   *                the top errors of the transform layers(ignored if null)
    */
-  private fun backwardAttentionNetwork(outputErrors: DenseNDArray, levelIndex: Int, groupIndex: Int) {
+  private fun backwardAttentionNetwork(outputErrors: DenseNDArray, levelIndex: Int, groupIndex: Int, mePropK: Double?) {
 
     val accumulator = this.attentionNetworksParamsErrorsAccumulators[levelIndex]
     val paramsErrors = this.attentionNetworksParamsErrors[levelIndex]
@@ -311,7 +321,8 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
     this.usedAttentionNetworksPerLevel[levelIndex][groupIndex].backward(
       outputErrors = outputErrors,
       paramsErrors = paramsErrors,
-      propagateToInput = true)
+      propagateToInput = true,
+      mePropK = mePropK)
 
     accumulator.accumulate(paramsErrors)
   }
