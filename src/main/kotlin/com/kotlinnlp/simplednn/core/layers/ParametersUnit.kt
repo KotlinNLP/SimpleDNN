@@ -40,13 +40,13 @@ open class ParametersUnit(
    *
    */
   val weights: UpdatableArray<*> = this.buildUpdatableArray(
-    dim1 = this.outputSize, dim2 = this.inputSize, sparseInput = this.sparseInput)
+    dim1 = this.outputSize, dim2 = this.inputSize, sparse = this.sparseInput)
 
   /**
    *
    */
-  private fun buildUpdatableArray(dim1: Int, dim2: Int = 1, sparseInput: Boolean = false): UpdatableArray<*> =
-    if (sparseInput)
+  private fun buildUpdatableArray(dim1: Int, dim2: Int = 1, sparse: Boolean = false): UpdatableArray<*> =
+    if (sparse)
       this.buildSparseArray(dim1, dim2)
     else
       this.buildDenseArray(dim1, dim2)
