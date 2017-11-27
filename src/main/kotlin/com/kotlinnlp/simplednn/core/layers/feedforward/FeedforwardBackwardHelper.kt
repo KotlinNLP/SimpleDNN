@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.layers.feedforward
 import com.kotlinnlp.simplednn.core.layers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
 
 /**
  * The helper which executes the backward on a [layer].
@@ -26,15 +27,19 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
+   * @param mePropK the k factor of the 'meProp' algorithm to propagate from top k (in percentage) output nodes
+   *                (ignored if null)
    */
-  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
+  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean, mePropK: Double?) {
 
     this.layer.applyOutputActivationDeriv()
 
-    this.assignParamsGradients(paramsErrors as FeedforwardLayerParameters)
+    val mask: NDArrayMask? = if (mePropK != null) this.getOutputMask(mePropK) else null
+
+    this.assignParamsGradients(paramsErrors as FeedforwardLayerParameters, mePropMask = mask)
 
     if (propagateToInput) {
-      this.assignLayerGradients()
+      this.assignLayerGradients(mePropMask = mask)
     }
   }
 
@@ -44,17 +49,20 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param paramsErrors the errors of the parameters which will be filled
    */
-  private fun assignParamsGradients(paramsErrors: FeedforwardLayerParameters) {
+  private fun assignParamsGradients(paramsErrors: FeedforwardLayerParameters, mePropMask: NDArrayMask?) {
 
     this.layer.outputArray.assignParamsGradients(
       paramsErrors = paramsErrors.unit,
-      x = this.layer.inputArray.values)
+      x = this.layer.inputArray.values,
+      mePropMask = mePropMask)
   }
 
   /**
    * gx = gy (dot) w
    */
-  private fun assignLayerGradients() { this.layer.params as FeedforwardLayerParameters
-    this.layer.inputArray.assignErrors(this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit))
+  private fun assignLayerGradients(mePropMask: NDArrayMask?) { this.layer.params as FeedforwardLayerParameters
+    this.layer.inputArray.assignErrors(
+      errors = this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit, mePropMask = mePropMask)
+    )
   }
 }
