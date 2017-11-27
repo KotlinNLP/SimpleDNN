@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.simplemath.equals
 import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import java.util.*
 
 /**
@@ -479,8 +480,31 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override fun dot(a: NDArray<*>): DenseNDArray {
-    TODO("not implemented")
+  override fun dot(a: NDArray<*>): DenseNDArray = when(a) {
+    is DenseNDArray -> this.dot(a)
+    is SparseNDArray -> TODO("not implemented")
+    is SparseBinaryNDArray -> TODO("not implemented")
+    else -> throw RuntimeException("Invalid NDArray type")
+  }
+
+  /**
+   *
+   */
+  private fun dot(a: DenseNDArray): DenseNDArray {
+    require(this.columns == a.rows)
+
+    val ret: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.rows, a.columns))
+
+    for (aCol in 0 until a.shape.dim2) {
+      for (k in 0 until this.values.size) {
+        val row: Int = this.rowIndices[k]
+        val col: Int = this.colIndices[k]
+
+        ret[row, aCol] += this.values[k] * a[col, aCol]
+      }
+    }
+
+    return ret
   }
 
   /**
