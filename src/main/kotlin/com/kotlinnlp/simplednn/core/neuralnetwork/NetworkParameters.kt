@@ -39,13 +39,16 @@ class NetworkParameters(
    * contains layers as input-output pairs [x-y, y-z].
    * The output of a layer is a reference of the input of the next layer.
    */
-  val paramsPerLayer: Array<LayerParameters<*>> = Array(size = layersConfiguration.size - 1, init = {
-    LayerParametersFactory(
-      inputSize = layersConfiguration[it].size,
-      outputSize = layersConfiguration[it + 1].size,
-      connectionType = layersConfiguration[it + 1].connectionType!!,
-      sparseInput = this.sparseInput && it == 0)
-  })
+  val paramsPerLayer: Array<LayerParameters<*>> = Array(
+    size = layersConfiguration.size - 1,
+    init = { i ->
+      LayerParametersFactory(
+        inputSize = layersConfiguration[i].size,
+        outputSize = layersConfiguration[i + 1].size,
+        connectionType = layersConfiguration[i + 1].connectionType!!,
+        sparseInput = this.sparseInput && i == 0)
+    }
+  )
 
   /**
    * The list of all parameters.
