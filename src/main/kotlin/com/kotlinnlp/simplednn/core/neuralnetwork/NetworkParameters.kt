@@ -20,7 +20,8 @@ import com.kotlinnlp.simplednn.core.optimizer.IterableParams
  */
 class NetworkParameters(
   val layersConfiguration: List<LayerConfiguration>,
-  private val sparseInput: Boolean = false
+  private val sparseInput: Boolean = false,
+  private val meProp: Boolean = false
 ) : IterableParams<NetworkParameters>() {
 
   companion object {
@@ -33,6 +34,11 @@ class NetworkParameters(
   }
 
   /**
+   * The number of layers.
+   */
+  private val numOfLayers: Int = this.layersConfiguration.size - 1
+
+  /**
    * An [Array] containing a [LayerParameters] for each layer.
    *
    * In [layersConfiguration] layers are defined as a list [x, y, z], but the structure
@@ -40,13 +46,14 @@ class NetworkParameters(
    * The output of a layer is a reference of the input of the next layer.
    */
   val paramsPerLayer: Array<LayerParameters<*>> = Array(
-    size = layersConfiguration.size - 1,
+    size = this.numOfLayers,
     init = { i ->
       LayerParametersFactory(
-        inputSize = layersConfiguration[i].size,
-        outputSize = layersConfiguration[i + 1].size,
-        connectionType = layersConfiguration[i + 1].connectionType!!,
-        sparseInput = this.sparseInput && i == 0)
+        inputSize = this.layersConfiguration[i].size,
+        outputSize = this.layersConfiguration[i + 1].size,
+        connectionType = this.layersConfiguration[i + 1].connectionType!!,
+        sparseInput = this.sparseInput && i == 0,
+        meProp = this.meProp && i < (this.numOfLayers - 1))
     }
   )
 

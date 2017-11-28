@@ -24,7 +24,8 @@ object FeedforwardNeuralNetwork {
                       outputActivation: ActivationFunction?,
                       inputType: LayerType.Input = LayerType.Input.Dense,
                       inputDropout: Double = 0.0,
-                      hiddenDropout: Double = 0.0) = NeuralNetwork(
+                      hiddenDropout: Double = 0.0,
+                      meProp: Boolean = false) = NeuralNetwork(
     LayerConfiguration(
       size = inputSize,
       inputType = inputType,
@@ -39,6 +40,8 @@ object FeedforwardNeuralNetwork {
     LayerConfiguration(
       size = outputSize,
       activationFunction = outputActivation,
-      connectionType = LayerType.Connection.Feedforward)
+      connectionType = LayerType.Connection.Feedforward
+    ),
+    meProp = meProp
   )
 }

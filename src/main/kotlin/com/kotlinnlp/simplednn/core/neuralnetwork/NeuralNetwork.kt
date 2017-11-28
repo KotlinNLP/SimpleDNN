@@ -24,7 +24,10 @@ import java.io.Serializable
  *
  * @property layersConfiguration a list of configurations, one per layer
  */
-class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Serializable {
+class NeuralNetwork(
+  val layersConfiguration: List<LayerConfiguration>,
+  private val meProp: Boolean = false
+) : Serializable {
 
   /**
    * Secondary constructor
@@ -32,7 +35,12 @@ class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Seriali
    * @param layerConfiguration the layersConfiguration of a layer
    * @return a new NeuralNetwork
    */
-  constructor(vararg layerConfiguration: LayerConfiguration): this(layersConfiguration = layerConfiguration.toList())
+  constructor(
+    vararg layerConfiguration: LayerConfiguration,
+    meProp: Boolean = false
+  ): this(
+    layersConfiguration = layerConfiguration.toList(),
+    meProp = meProp)
 
   companion object {
 
@@ -97,12 +105,14 @@ class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Seriali
    */
   private fun parametersFactory() = NetworkParameters(
     layersConfiguration = this.layersConfiguration,
-    sparseInput = false)
+    sparseInput = false,
+    meProp = false)
 
   /**
    * Generate [NetworkParameters] used to store errors, compatible with the configuration of this network
    */
   fun parametersErrorsFactory() = NetworkParameters(
     layersConfiguration = this.layersConfiguration,
-    sparseInput = this.sparseInput)
+    sparseInput = this.sparseInput,
+    meProp = this.meProp)
 }
