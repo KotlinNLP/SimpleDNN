@@ -70,10 +70,11 @@ abstract class TrainingHelper<ExampleType: Example>(
       this.logTrainingEnd()
 
       if (validationHelper != null) {
+        require(validationExamples != null)
 
-        this.logValidationStart()
+        this.logValidationStart(validationExamples!!.size)
 
-        this.statistics.lastAccuracy = validationHelper.validate(validationExamples!!)
+        this.statistics.lastAccuracy = validationHelper.validate(validationExamples)
 
         this.logValidationEnd()
       }
@@ -197,13 +198,13 @@ abstract class TrainingHelper<ExampleType: Example>(
   /**
    * Log when validation starts.
    */
-  private fun logValidationStart() {
+  private fun logValidationStart(validationExamplesSize: Int) {
 
     if (this.verbose) {
 
       this.startTiming()
 
-      println("Start validation")
+      println("Validate on $validationExamplesSize examples")
     }
   }
 
