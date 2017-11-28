@@ -13,6 +13,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 
 /**
  * The basic unit of the layer, which extends the [AugmentedArray] with forward and backward methods.
@@ -54,12 +55,19 @@ open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : 
    */
   fun assignParamsGradients(paramsErrors: ParametersUnit, x: InputNDArrayType, mePropMask: NDArrayMask? = null) {
 
-    val gb: DenseNDArray = paramsErrors.biases.values
     val gw: NDArray<*> = paramsErrors.weights.values
+    val gb: NDArray<*> = paramsErrors.biases.values
 
-    if (mePropMask != null && gw is DenseNDArray && x is DenseNDArray) {
+    if (mePropMask != null) {
+      require(x is DenseNDArray) { "Cannot apply 'meProp' method if input is not dense" }
+      require(gw is SparseNDArray && gb is SparseNDArray) {
+        "Cannot apply 'meProp' method with errors not sparse. Ensure to enable 'meProp' into the params."
+      }
+
+      x as DenseNDArray; gw as SparseNDArray; gb as SparseNDArray
+
       gb.assignValues(this.errors, mask = mePropMask)
-      gw.assignDot(this.errors, x.T, aMask = mePropMask)
+      gw.assignDot(this.errors.maskBy(mePropMask), x.T)
 
     } else {
       gb.assignValues(this.errors)
