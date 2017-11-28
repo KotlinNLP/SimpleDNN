@@ -27,6 +27,8 @@ object LayerParametersFactory {
                       sparseInput: Boolean = false,
                       meProp: Boolean = false): LayerParameters<*> = when(connectionType) {
 
+    // TODO: set 'meProp' param for all connection types
+
     LayerType.Connection.Feedforward -> FeedforwardLayerParameters(
       inputSize = inputSize,
       outputSize = outputSize,
