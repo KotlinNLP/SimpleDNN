@@ -52,7 +52,7 @@ interface BackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>> {
     (0 until gy.length).forEach { i -> minHeap.add(Pair(i, Math.abs(gy[i]))) } // pairs of <index, value>
 
     return NDArrayMask(
-      dim1 = Array(size = nTopElements, init = { minHeap.remove().first }), // get top errors indices
+      dim1 = Array(size = nTopElements, init = { minHeap.remove().first }).sortedArray(), // get top errors indices
       dim2 = Array(size = nTopElements, init = { 0 }))
   }
 }
