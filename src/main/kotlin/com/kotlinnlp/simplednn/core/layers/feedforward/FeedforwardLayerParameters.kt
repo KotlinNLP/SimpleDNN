@@ -21,7 +21,8 @@ import com.kotlinnlp.simplednn.core.layers.ParametersUnit
 class FeedforwardLayerParameters(
   inputSize: Int,
   outputSize: Int,
-  private val sparseInput: Boolean = false
+  private val sparseInput: Boolean = false,
+  private val meProp: Boolean = false
 ) : LayerParameters<FeedforwardLayerParameters>(inputSize = inputSize, outputSize = outputSize) {
 
   companion object {
@@ -36,7 +37,11 @@ class FeedforwardLayerParameters(
   /**
    *
    */
-  val unit = ParametersUnit(inputSize = this.inputSize, outputSize = this.outputSize, sparseInput = this.sparseInput)
+  val unit = ParametersUnit(
+    inputSize = this.inputSize,
+    outputSize = this.outputSize,
+    sparseInput = this.sparseInput,
+    meProp = this.meProp)
 
   /**
    * The list of all parameters.

@@ -24,14 +24,16 @@ object LayerParametersFactory {
   operator fun invoke(inputSize: Int,
                       outputSize: Int,
                       connectionType: LayerType.Connection,
-                      sparseInput: Boolean = false): LayerParameters<*> =
+                      sparseInput: Boolean = false,
+                      meProp: Boolean = false): LayerParameters<*> =
 
     when(connectionType) {
 
       LayerType.Connection.Feedforward -> FeedforwardLayerParameters(
         inputSize = inputSize,
         outputSize = outputSize,
-        sparseInput = sparseInput)
+        sparseInput = sparseInput,
+        meProp = meProp)
 
       LayerType.Connection.SimpleRecurrent -> SimpleRecurrentLayerParameters(
         inputSize = inputSize,
