@@ -315,8 +315,37 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override fun assignValues(a: NDArray<*>, mask: NDArrayMask): SparseNDArray {
-    TODO("not implemented")
+  override fun assignValues(a: NDArray<*>, mask: NDArrayMask): SparseNDArray = when(a) {
+    is DenseNDArray -> this.assignValues(a, mask = mask)
+    is SparseNDArray -> TODO("not implemented")
+    is SparseBinaryNDArray -> TODO("not implemented")
+    else -> throw RuntimeException("Invalid NDArray type")
+  }
+
+  /**
+   *
+   */
+  @Suppress("UNCHECKED_CAST")
+  private fun assignValues(a: DenseNDArray, mask: NDArrayMask): SparseNDArray {
+    require(this.shape == a.shape)
+
+    val values = arrayOfNulls<Double>(mask.size)
+    val rows = arrayOfNulls<Int>(mask.size)
+    val cols = arrayOfNulls<Int>(mask.size)
+    var k = 0
+
+    mask.forEach { (i, j) ->
+      values[k] = a[i, j]
+      rows[k] = i
+      cols[k] = j
+      k++
+    }
+
+    this.values = values.copyOfRange(0, mask.size) as Array<Double>
+    this.rowIndices = rows.copyOfRange(0, mask.size) as Array<Int>
+    this.colIndices= cols.copyOfRange(0, mask.size) as Array<Int>
+
+    return this
   }
 
   /**
@@ -536,6 +565,40 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
       is SparseNDArray -> TODO("not implemented")
       is SparseBinaryNDArray -> this.assignDot(a, b)
     }
+
+    return this
+  }
+
+  /**
+   *
+   */
+  @Suppress("UNCHECKED_CAST")
+  fun assignDot(a: SparseNDArray, b: DenseNDArray): SparseNDArray {
+    require(a.rows == this.rows && b.columns == this.columns && a.columns == b.rows)
+    require(a.columns == 1 && b.rows == 1) // TODO: extend to all shapes
+
+    val resultValuesSize = a.values.size * b.length
+
+    val values = arrayOfNulls<Double>(size = resultValuesSize)
+    val rows = arrayOfNulls<Int>(size = resultValuesSize)
+    val cols = arrayOfNulls<Int>(size = resultValuesSize)
+    var k = 0
+
+    for (aK in 0 until a.values.size) {
+      val aRow = a.rowIndices[aK]
+      val value = a.values[aK]
+
+      for (bCol in 0 until b.length) {
+        values[k] = value * b[bCol]
+        rows[k] = aRow
+        cols[k] = bCol
+        k++
+      }
+    }
+
+    this.values = values.copyOfRange(0, resultValuesSize) as Array<Double>
+    this.rowIndices = rows.copyOfRange(0, resultValuesSize) as Array<Int>
+    this.colIndices= cols.copyOfRange(0, resultValuesSize) as Array<Int>
 
     return this
   }
