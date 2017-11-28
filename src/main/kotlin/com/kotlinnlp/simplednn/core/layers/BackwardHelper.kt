@@ -37,22 +37,22 @@ interface BackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>> {
    * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
    *                the top errors
    *
-   * @return the mask of the top k ([mePropK]) elements of the output array.
+   * @return the mask of the k output nodes with the top errors
    */
   fun getOutputMask(mePropK: Double): NDArrayMask {
 
-    val y: DenseNDArray = this.layer.outputArray.values
-    val nTopElements: Int = Math.round(mePropK * y.length).toInt()
+    val gy: DenseNDArray = this.layer.outputArray.errors
+    val nTopElements: Int = Math.round(mePropK * gy.length).toInt()
 
-    val minHeap = PriorityQueue<Pair<Int, Double>>(y.length, Comparator({ a, b ->
-      val diff: Double = a.second - b.second
-      if (diff > 0.0) -1 else if (diff < 0.0) 1 else 0
+    val minHeap = PriorityQueue<Pair<Int, Double>>(gy.length, Comparator({ a, b ->
+      val diff: Double = a.second - b.second // compare errors values
+      if (diff > 0.0) -1 else if (diff < 0.0) 1 else 0 // descending order
     }))
 
-    (0 until y.length).forEach { i -> minHeap.add(Pair(i, y[i])) }
+    (0 until gy.length).forEach { i -> minHeap.add(Pair(i, Math.abs(gy[i]))) } // pairs of <index, value>
 
     return NDArrayMask(
-      dim1 = Array(size = nTopElements, init = { minHeap.remove().first }),
+      dim1 = Array(size = nTopElements, init = { minHeap.remove().first }), // get top errors indices
       dim2 = Array(size = nTopElements, init = { 0 }))
   }
 }
