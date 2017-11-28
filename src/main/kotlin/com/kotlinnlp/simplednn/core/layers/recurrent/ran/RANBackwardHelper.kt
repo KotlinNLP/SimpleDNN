@@ -96,7 +96,7 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     val gc: DenseNDArray = this.layer.candidate.errors
     val gwc: NDArray<*> = paramsErrors.candidate.weights.values
-    val gbc: DenseNDArray = paramsErrors.candidate.biases.values
+    val gbc: DenseNDArray = paramsErrors.candidate.biases.values as DenseNDArray
 
     gwc.assignDot(gc, x.T)
     gbc.assignValues(gc)

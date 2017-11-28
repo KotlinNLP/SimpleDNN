@@ -132,7 +132,7 @@ class RANRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
                                        contributions: RANLayerParameters): Pair<DenseNDArray, DenseNDArray?> {
 
     val y: DenseNDArray = this.layer.outputArray.valuesNotActivated
-    val yRec: DenseNDArray = contributions.candidate.biases.values
+    val yRec: DenseNDArray = contributions.candidate.biases.values as DenseNDArray
     val yInput: DenseNDArray = y.sub(yRec)
 
     val inputRelevance: DenseNDArray = RelevanceUtils.getRelevancePartition1(

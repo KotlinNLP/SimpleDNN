@@ -69,7 +69,7 @@ class ParamsOptimizerSpec : Spek({
 
       val contextVector: DenseNDArray = network.model.attentionParams.contextVector.values
       val w: DenseNDArray = network.model.transformParams.unit.weights.values as DenseNDArray
-      val b: DenseNDArray = network.model.transformParams.unit.biases.values
+      val b: DenseNDArray = network.model.transformParams.unit.biases.values as DenseNDArray
 
       it("should match the expected updated context vector") {
         assertTrue {

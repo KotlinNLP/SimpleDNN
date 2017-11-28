@@ -112,7 +112,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
   private fun getInputRelevancePartitioned(x: InputNDArrayType, contributions: RecurrentParametersUnit): NDArray<*> {
 
     val y: DenseNDArray = this.valuesNotActivated
-    val yRec: DenseNDArray = contributions.biases.values
+    val yRec: DenseNDArray = contributions.biases.values as DenseNDArray
     val yInput: DenseNDArray = y.sub(yRec)
     val yInputRelevance: DenseNDArray = RelevanceUtils.getRelevancePartition1(
       yRelevance = this.relevance as DenseNDArray,
@@ -139,7 +139,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    */
   fun getRecurrentRelevance(contributions: RecurrentParametersUnit, yPrev: DenseNDArray): DenseNDArray {
 
-    val yRec: DenseNDArray = contributions.biases.values
+    val yRec: DenseNDArray = contributions.biases.values as DenseNDArray
     val yRecRelevance: DenseNDArray = RelevanceUtils.getRelevancePartition2(
       yRelevance = this.relevance as DenseNDArray,
       y = this.valuesNotActivated,

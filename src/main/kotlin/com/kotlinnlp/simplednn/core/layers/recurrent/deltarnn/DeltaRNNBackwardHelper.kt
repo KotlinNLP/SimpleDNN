@@ -133,8 +133,8 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val beta2: DenseNDArray = this.layer.params.beta2.values
 
     val gw: NDArray<*> = paramsErrors.feedforwardUnit.weights.values
-    val gbc: DenseNDArray = paramsErrors.feedforwardUnit.biases.values
-    val gbp: DenseNDArray = paramsErrors.recurrentUnit.biases.values
+    val gbc: DenseNDArray = paramsErrors.feedforwardUnit.biases.values as DenseNDArray
+    val gbp: DenseNDArray = paramsErrors.recurrentUnit.biases.values as DenseNDArray
     val gAlpha: DenseNDArray = paramsErrors.alpha.values
     val gBeta1: DenseNDArray = paramsErrors.beta1.values
     val gBeta2: DenseNDArray = paramsErrors.beta2.values

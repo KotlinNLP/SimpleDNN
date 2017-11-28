@@ -48,7 +48,7 @@ class ParamsErrorsAccumulatorSpec : Spek({
 
       val accumulatedErrors = accumulator.getParamsErrors()
       val w: DenseNDArray = accumulatedErrors.unit.weights.values as DenseNDArray
-      val b: DenseNDArray = accumulatedErrors.unit.biases.values
+      val b: DenseNDArray = accumulatedErrors.unit.biases.values as DenseNDArray
 
       it("should match the expected accumulated weights errors") {
         assertTrue {
@@ -90,7 +90,7 @@ class ParamsErrorsAccumulatorSpec : Spek({
 
       val accumulatedErrors = accumulator.getParamsErrors()
       val w: DenseNDArray = accumulatedErrors.unit.weights.values as DenseNDArray
-      val b: DenseNDArray = accumulatedErrors.unit.biases.values
+      val b: DenseNDArray = accumulatedErrors.unit.biases.values as DenseNDArray
 
       it("should match the expected average of the weights errors") {
         assertTrue {
