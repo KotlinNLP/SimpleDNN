@@ -19,7 +19,8 @@ import java.io.Serializable
 open class ParametersUnit(
   val inputSize: Int,
   val outputSize: Int,
-  private val sparseInput: Boolean = false
+  private val sparseInput: Boolean = false,
+  private val meProp: Boolean = false
 ) : Serializable {
 
   companion object {
@@ -34,13 +35,13 @@ open class ParametersUnit(
   /**
    *
    */
-  val biases: UpdatableDenseArray = this.buildDenseArray(this.outputSize)
+  val biases: UpdatableArray<*> =  this.buildUpdatableArray(dim1 = this.outputSize, sparse = this.meProp)
 
   /**
    *
    */
   val weights: UpdatableArray<*> = this.buildUpdatableArray(
-    dim1 = this.outputSize, dim2 = this.inputSize, sparse = this.sparseInput)
+    dim1 = this.outputSize, dim2 = this.inputSize, sparse = this.sparseInput || this.meProp)
 
   /**
    *
