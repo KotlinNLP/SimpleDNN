@@ -25,44 +25,42 @@ object LayerParametersFactory {
                       outputSize: Int,
                       connectionType: LayerType.Connection,
                       sparseInput: Boolean = false,
-                      meProp: Boolean = false): LayerParameters<*> =
+                      meProp: Boolean = false): LayerParameters<*> = when(connectionType) {
 
-    when(connectionType) {
+    LayerType.Connection.Feedforward -> FeedforwardLayerParameters(
+      inputSize = inputSize,
+      outputSize = outputSize,
+      sparseInput = sparseInput,
+      meProp = meProp)
 
-      LayerType.Connection.Feedforward -> FeedforwardLayerParameters(
-        inputSize = inputSize,
-        outputSize = outputSize,
-        sparseInput = sparseInput,
-        meProp = meProp)
+    LayerType.Connection.SimpleRecurrent -> SimpleRecurrentLayerParameters(
+      inputSize = inputSize,
+      outputSize = outputSize,
+      sparseInput = sparseInput)
 
-      LayerType.Connection.SimpleRecurrent -> SimpleRecurrentLayerParameters(
-        inputSize = inputSize,
-        outputSize = outputSize,
-        sparseInput = sparseInput)
+    LayerType.Connection.GRU -> GRULayerParameters(
+      inputSize = inputSize,
+      outputSize = outputSize,
+      sparseInput = sparseInput)
 
-      LayerType.Connection.GRU -> GRULayerParameters(
-        inputSize = inputSize,
-        outputSize = outputSize,
-        sparseInput = sparseInput)
+    LayerType.Connection.LSTM -> LSTMLayerParameters(
+      inputSize = inputSize,
+      outputSize = outputSize,
+      sparseInput = sparseInput)
 
-      LayerType.Connection.LSTM -> LSTMLayerParameters(
-        inputSize = inputSize,
-        outputSize = outputSize,
-        sparseInput = sparseInput)
+    LayerType.Connection.CFN -> CFNLayerParameters(
+      inputSize = inputSize,
+      outputSize = outputSize,
+      sparseInput = sparseInput)
 
-      LayerType.Connection.CFN -> CFNLayerParameters(
-        inputSize = inputSize,
-        outputSize = outputSize,
-        sparseInput = sparseInput)
+    LayerType.Connection.RAN -> RANLayerParameters(
+      inputSize = inputSize,
+      outputSize = outputSize,
+      sparseInput = sparseInput)
 
-      LayerType.Connection.RAN -> RANLayerParameters(
-        inputSize = inputSize,
-        outputSize = outputSize,
-        sparseInput = sparseInput)
-
-      LayerType.Connection.DeltaRNN -> DeltaRNNLayerParameters(
-        inputSize = inputSize,
-        outputSize = outputSize,
-        sparseInput = sparseInput)
-    }
+    LayerType.Connection.DeltaRNN -> DeltaRNNLayerParameters(
+      inputSize = inputSize,
+      outputSize = outputSize,
+      sparseInput = sparseInput)
+  }
 }
