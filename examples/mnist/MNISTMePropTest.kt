@@ -65,9 +65,9 @@ class MNISTMePropTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
       inputSize = 784,
       hiddenSize = 500,
       hiddenActivation = ReLU(),
+      hiddenMeProp = true,
       outputSize = 10,
-      outputActivation = Softmax(),
-      meProp = true)
+      outputActivation = Softmax())
 
     nn.initialize()
 
@@ -89,7 +89,7 @@ class MNISTMePropTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
       neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork),
       optimizer = optimizer,
       lossCalculator = SoftmaxCrossEntropyCalculator(),
-      mePropK = 0.16,
+      mePropK = listOf(0.16, null),
       verbose = true)
 
     val validationHelper = FeedforwardValidationHelper<DenseNDArray>(
