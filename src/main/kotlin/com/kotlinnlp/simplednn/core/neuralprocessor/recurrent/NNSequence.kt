@@ -81,7 +81,7 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
     this.states.add(
       NNState(
         structure = structure,
-        contributions = if (saveContributions) this.neuralNetwork.parametersErrorsFactory() else null
+        contributions = if (saveContributions) this.neuralNetwork.parametersFactory(forceDense = false) else null
       )
     )
   }
