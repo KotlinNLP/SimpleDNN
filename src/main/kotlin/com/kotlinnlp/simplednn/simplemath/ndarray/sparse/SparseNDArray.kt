@@ -341,9 +341,9 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
       k++
     }
 
-    this.values = values.copyOfRange(0, mask.size) as Array<Double>
-    this.rowIndices = rows.copyOfRange(0, mask.size) as Array<Int>
-    this.colIndices= cols.copyOfRange(0, mask.size) as Array<Int>
+    this.values = values.copyOf() as Array<Double>
+    this.rowIndices = rows.copyOf() as Array<Int>
+    this.colIndices= cols.copyOf() as Array<Int>
 
     return this
   }
@@ -596,9 +596,9 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
       }
     }
 
-    this.values = values.copyOfRange(0, resultValuesSize) as Array<Double>
-    this.rowIndices = rows.copyOfRange(0, resultValuesSize) as Array<Int>
-    this.colIndices= cols.copyOfRange(0, resultValuesSize) as Array<Int>
+    this.values = values.copyOf() as Array<Double>
+    this.rowIndices = rows.copyOf() as Array<Int>
+    this.colIndices= cols.copyOf() as Array<Int>
 
     return this
   }
