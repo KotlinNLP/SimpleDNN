@@ -60,7 +60,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The errors of the network model parameters calculated during a single backward
    */
-  private var backwardParamsErrors: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
+  private var backwardParamsErrors: NetworkParameters = this.neuralNetwork.parametersFactory(forceDense = false)
 
   /**
    *
@@ -236,10 +236,10 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param outputErrors the errors of the output
    * @param propagateToInput whether to propagate the errors to the input (default = false)
-   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
-   *                the top errors of each layer excluded the last (ignored if null, the default)
+   * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
+   *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
    */
-  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false, mePropK: Double? = null) {
+  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false, mePropK: List<Double?>? = null) {
 
     val outputErrorsSequence = Array(
       size = this.statesSize,
@@ -253,10 +253,12 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param outputErrorsSequence output errors for each item of the sequence
    * @param propagateToInput whether to propagate the errors to the input (default = false)
-   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
-   *                the top errors of each layer excluded the last (ignored if null, the default)
+   * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
+   *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
    */
-  fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean = false, mePropK: Double? = null) {
+  fun backward(outputErrorsSequence: Array<DenseNDArray>,
+               propagateToInput: Boolean = false,
+               mePropK: List<Double?>? = null) {
 
     require(outputErrorsSequence.size == (this.statesSize)) {
       "Number of errors (%d) does not reflect the length of the sequence (%d)"

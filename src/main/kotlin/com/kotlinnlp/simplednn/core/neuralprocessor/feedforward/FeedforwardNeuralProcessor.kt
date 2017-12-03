@@ -38,12 +38,12 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The structure in which to save the contributions of the calculations during the forward (needed to calculate the
    * relevance of the input in respect of the output)
    */
-  private val forwardContributions: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
+  private val forwardContributions: NetworkParameters = this.neuralNetwork.parametersFactory(forceDense = false)
 
   /**
    * The errors of the network model parameters
    */
-  private val backwardParamsErrors: NetworkParameters = this.neuralNetwork.parametersErrorsFactory()
+  private val backwardParamsErrors: NetworkParameters = this.neuralNetwork.parametersFactory(forceDense = false)
 
   /**
    * @param copy a Boolean indicating whether the returned array must be a copy or a reference
@@ -68,7 +68,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     val paramsError: NetworkParameters
 
     if (copy) {
-      paramsError = this.neuralNetwork.parametersErrorsFactory()
+      paramsError = this.neuralNetwork.parametersFactory(forceDense = false)
       paramsError.assignValues(this.backwardParamsErrors)
 
     } else {
@@ -164,10 +164,10 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param outputErrors the errors of the output
    * @param propagateToInput whether to propagate the errors to the input
-   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
-   *                the top errors of each layer excluded the last (ignored if null, the default)
+   * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
+   *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
    */
-  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false, mePropK: Double? = null) {
+  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false, mePropK: List<Double?>? = null) {
 
     this.structure.backward(
       outputErrors = outputErrors,
