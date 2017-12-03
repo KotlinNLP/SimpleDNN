@@ -329,21 +329,9 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   private fun assignValues(a: DenseNDArray, mask: NDArrayMask): SparseNDArray {
     require(this.shape == a.shape)
 
-    val values = arrayOfNulls<Double>(mask.size)
-    val rows = arrayOfNulls<Int>(mask.size)
-    val cols = arrayOfNulls<Int>(mask.size)
-    var k = 0
-
-    mask.forEach { (i, j) ->
-      values[k] = a[i, j]
-      rows[k] = i
-      cols[k] = j
-      k++
-    }
-
-    this.values = values.copyOf() as Array<Double>
-    this.rowIndices = rows.copyOf() as Array<Int>
-    this.colIndices= cols.copyOf() as Array<Int>
+    this.values = Array(size = mask.size, init = { k -> a[mask.dim1[k], mask.dim2[k]] })
+    this.rowIndices = mask.dim1.copyOf()
+    this.colIndices = mask.dim2.copyOf()
 
     return this
   }
@@ -578,27 +566,13 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
     require(a.columns == 1 && b.rows == 1) // TODO: extend to all shapes
 
     val resultValuesSize = a.values.size * b.length
+    val activeRowIndicesSize: Int = a.rowIndices.size
 
-    val values = arrayOfNulls<Double>(size = resultValuesSize)
-    val rows = arrayOfNulls<Int>(size = resultValuesSize)
-    val cols = arrayOfNulls<Int>(size = resultValuesSize)
-    var k = 0
+    val cols = Array(size = resultValuesSize, init = { k -> k / activeRowIndicesSize })
 
-    for (aK in 0 until a.values.size) {
-      val aRow = a.rowIndices[aK]
-      val value = a.values[aK]
-
-      for (bCol in 0 until b.length) {
-        values[k] = value * b[bCol]
-        rows[k] = aRow
-        cols[k] = bCol
-        k++
-      }
-    }
-
-    this.values = values.copyOf() as Array<Double>
-    this.rowIndices = rows.copyOf() as Array<Int>
-    this.colIndices= cols.copyOf() as Array<Int>
+    this.values = Array(size = resultValuesSize, init = { k -> a.values[k % activeRowIndicesSize] * b[cols[k]] })
+    this.rowIndices = Array(size = resultValuesSize, init = { k -> a.rowIndices[k % activeRowIndicesSize] })
+    this.colIndices = cols
 
     return this
   }
