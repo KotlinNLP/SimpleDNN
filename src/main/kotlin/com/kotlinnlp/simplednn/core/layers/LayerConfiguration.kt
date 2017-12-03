@@ -11,13 +11,14 @@ import java.io.Serializable
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 
 /**
- *
+ * @property meProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
  */
 data class LayerConfiguration(
   val size: Int,
   val inputType: LayerType.Input = LayerType.Input.Dense,
   val connectionType: LayerType.Connection? = null,
   val activationFunction: ActivationFunction? = null,
+  val meProp: Boolean = false,
   val dropout: Double = 0.0
 ) : Serializable {
 

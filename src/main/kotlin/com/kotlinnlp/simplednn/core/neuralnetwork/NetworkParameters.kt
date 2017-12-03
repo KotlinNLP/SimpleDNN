@@ -16,12 +16,11 @@ import com.kotlinnlp.simplednn.core.optimizer.IterableParams
  * grouped per layer.
  *
  * @property layersConfiguration a list of configurations, one per layer
- * @property sparseInput whether the input is sparse or not
+ * @param forceDense force all parameters to be dense (false by default)
  */
 class NetworkParameters(
   val layersConfiguration: List<LayerConfiguration>,
-  private val sparseInput: Boolean = false,
-  private val meProp: Boolean = false
+  private val forceDense: Boolean = false
 ) : IterableParams<NetworkParameters>() {
 
   companion object {
@@ -52,8 +51,8 @@ class NetworkParameters(
         inputSize = this.layersConfiguration[i].size,
         outputSize = this.layersConfiguration[i + 1].size,
         connectionType = this.layersConfiguration[i + 1].connectionType!!,
-        sparseInput = this.sparseInput && i == 0,
-        meProp = this.meProp && i < (this.numOfLayers - 1))
+        sparseInput = !this.forceDense && this.layersConfiguration[i].inputType == LayerType.Input.SparseBinary,
+        meProp = !this.forceDense && this.layersConfiguration[i + 1].meProp)
     }
   )
 
@@ -67,7 +66,7 @@ class NetworkParameters(
    */
   override fun copy(): NetworkParameters {
 
-    val clonedParams = NetworkParameters(layersConfiguration = this.layersConfiguration, sparseInput = this.sparseInput)
+    val clonedParams = NetworkParameters(layersConfiguration = this.layersConfiguration, forceDense = this.forceDense)
 
     clonedParams.zip(this) { cloned, params ->
       cloned.values.assignValues(params.values)
