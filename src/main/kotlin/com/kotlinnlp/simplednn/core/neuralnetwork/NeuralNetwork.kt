@@ -24,23 +24,16 @@ import java.io.Serializable
  *
  * @property layersConfiguration a list of configurations, one per layer
  */
-class NeuralNetwork(
-  val layersConfiguration: List<LayerConfiguration>,
-  private val meProp: Boolean = false
-) : Serializable {
+class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Serializable {
 
   /**
-   * Secondary constructor
+   * Secondary constructor.
    *
    * @param layerConfiguration the layersConfiguration of a layer
+   *
    * @return a new NeuralNetwork
    */
-  constructor(
-    vararg layerConfiguration: LayerConfiguration,
-    meProp: Boolean = false
-  ): this(
-    layersConfiguration = layerConfiguration.toList(),
-    meProp = meProp)
+  constructor(vararg layerConfiguration: LayerConfiguration): this(layerConfiguration.toList())
 
   companion object {
 
@@ -71,9 +64,9 @@ class NeuralNetwork(
   val sparseInput: Boolean = this.inputType == LayerType.Input.SparseBinary
 
   /**
-   * Contains the parameters of each layer which can be trained
+   * The model containing all the trainable parameters of the network.
    */
-  val model: NetworkParameters = this.parametersFactory()
+  val model: NetworkParameters = this.parametersFactory(forceDense = true)
 
   /**
    * Serialize this [NeuralNetwork] and write it to an output stream.
@@ -102,17 +95,12 @@ class NeuralNetwork(
 
   /**
    * Generate [NetworkParameters] compatible with the configuration of this network
+   *
+   * @param forceDense force all parameters to be dense (false by default)
+   *
+   * @return an object containing parameters compatible with the configuration of this network
    */
-  private fun parametersFactory() = NetworkParameters(
+  fun parametersFactory(forceDense: Boolean) = NetworkParameters(
     layersConfiguration = this.layersConfiguration,
-    sparseInput = false,
-    meProp = false)
-
-  /**
-   * Generate [NetworkParameters] used to store errors, compatible with the configuration of this network
-   */
-  fun parametersErrorsFactory() = NetworkParameters(
-    layersConfiguration = this.layersConfiguration,
-    sparseInput = this.sparseInput,
-    meProp = this.meProp)
+    forceDense = forceDense)
 }
