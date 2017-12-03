@@ -18,14 +18,15 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 object FeedforwardNeuralNetwork {
 
   operator fun invoke(inputSize: Int,
-                      hiddenSize: Int,
-                      hiddenActivation: ActivationFunction?,
-                      outputSize: Int,
-                      outputActivation: ActivationFunction?,
                       inputType: LayerType.Input = LayerType.Input.Dense,
                       inputDropout: Double = 0.0,
+                      hiddenSize: Int,
+                      hiddenActivation: ActivationFunction?,
                       hiddenDropout: Double = 0.0,
-                      meProp: Boolean = false) = NeuralNetwork(
+                      hiddenMeProp: Boolean = false,
+                      outputSize: Int,
+                      outputActivation: ActivationFunction?,
+                      outputMeProp: Boolean = false) = NeuralNetwork(
     LayerConfiguration(
       size = inputSize,
       inputType = inputType,
@@ -35,13 +36,14 @@ object FeedforwardNeuralNetwork {
       size = hiddenSize,
       activationFunction = hiddenActivation,
       connectionType = LayerType.Connection.Feedforward,
-      dropout = hiddenDropout
+      dropout = hiddenDropout,
+      meProp = hiddenMeProp
     ),
     LayerConfiguration(
       size = outputSize,
       activationFunction = outputActivation,
-      connectionType = LayerType.Connection.Feedforward
-    ),
-    meProp = meProp
+      connectionType = LayerType.Connection.Feedforward,
+      meProp = outputMeProp
+    )
   )
 }
