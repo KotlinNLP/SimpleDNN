@@ -35,7 +35,7 @@ fun main(args: Array<String>) {
 
   MNISTMePropTest(dataset).start()
 
-  println("End.")
+  println("\nEnd.")
 }
 
 /**
@@ -116,6 +116,8 @@ class MNISTMePropTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
 
     println("\n-- EVALUATION ON %d TEST SENTENCES".format(this.dataset.test.size))
 
-    validationHelper.validate(this.dataset.test)
+    val accuracy: Double = validationHelper.validate(this.dataset.test)
+
+    println("Accuracy: %.2f%%".format(100.0 * accuracy))
   }
 }
