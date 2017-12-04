@@ -46,7 +46,7 @@ open class ParametersUnit(
   /**
    *
    */
-  private fun buildUpdatableArray(dim1: Int, dim2: Int = 1, sparse: Boolean = false): UpdatableArray<*> =
+  protected fun buildUpdatableArray(dim1: Int, dim2: Int = 1, sparse: Boolean = false): UpdatableArray<*> =
     if (sparse)
       this.buildSparseArray(dim1, dim2)
     else
@@ -55,7 +55,7 @@ open class ParametersUnit(
   /**
    *
    */
-  protected fun buildDenseArray(dim1: Int, dim2: Int = 1) = UpdatableDenseArray(Shape(dim1, dim2))
+  private fun buildDenseArray(dim1: Int, dim2: Int = 1) = UpdatableDenseArray(Shape(dim1, dim2))
 
   /**
    *
