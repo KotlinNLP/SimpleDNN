@@ -7,22 +7,32 @@
 
 package com.kotlinnlp.simplednn.core.layers
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 
 /**
  * The parameters associated to a [RecurrentLayerUnit].
+ *
+ * @property inputSize input size
+ * @property outputSize output size
+ * @param sparseInput whether the weights connected to the input are sparse or not (default false)
+ * @param meProp whether to use the 'meProp' errors propagation algorithm (params are sparse) (default false)
  */
 class RecurrentParametersUnit(
   inputSize: Int,
   outputSize: Int,
-  sparseInput: Boolean = false
+  sparseInput: Boolean = false,
+  meProp: Boolean = false
 ) : ParametersUnit(
   inputSize = inputSize,
   outputSize = outputSize,
-  sparseInput = sparseInput) {
+  sparseInput = sparseInput,
+  meProp = meProp) {
 
   /**
    *
    */
-  val recurrentWeights: UpdatableDenseArray = this.buildDenseArray(dim1 = this.outputSize, dim2 = this.outputSize)
+  val recurrentWeights: UpdatableArray<*> = this.buildUpdatableArray(
+    dim1 = this.outputSize,
+    dim2 = this.outputSize,
+    sparse = meProp)
 }
