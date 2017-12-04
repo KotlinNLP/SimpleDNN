@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers
 
+import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -34,15 +35,16 @@ interface BackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>> {
   fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean = false, mePropK: Double?)
 
   /**
-   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
-   *                the top errors
+   * Build the 'meProp' mask of this array.
    *
-   * @return the mask of the k output nodes with the top errors
+   * @param k the factor of the 'meProp' algorithm to extract the k (in percentage) array elements with the top errors
+   *
+   * @return the mask of the k elements with the top errors
    */
-  fun getOutputMask(mePropK: Double): NDArrayMask {
+  fun AugmentedArray<DenseNDArray>.getMePropMask(k: Double): NDArrayMask {
 
-    val gy: DenseNDArray = this.layer.outputArray.errors
-    val nTopElements: Int = Math.round(mePropK * gy.length).toInt()
+    val gy: DenseNDArray = this.errors
+    val nTopElements: Int = Math.round(k * gy.length).toInt()
 
     val minHeap = PriorityQueue<Pair<Int, Double>>(gy.length, Comparator({ a, b ->
       val diff: Double = a.second - b.second // compare errors values

@@ -35,12 +35,12 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.applyOutputActivationDeriv()
 
     // Be careful: the mask must be get after applying the output activation derivative.
-    val mask: NDArrayMask? = if (mePropK != null) this.getOutputMask(mePropK) else null
+    val outputMask: NDArrayMask? = if (mePropK != null) this.layer.outputArray.getMePropMask(mePropK) else null
 
-    this.assignParamsGradients(paramsErrors as FeedforwardLayerParameters, mePropMask = mask)
+    this.assignParamsGradients(paramsErrors as FeedforwardLayerParameters, mePropMask = outputMask)
 
     if (propagateToInput) {
-      this.assignLayerGradients(mePropMask = mask)
+      this.assignLayerGradients(mePropMask = outputMask)
     }
   }
 
