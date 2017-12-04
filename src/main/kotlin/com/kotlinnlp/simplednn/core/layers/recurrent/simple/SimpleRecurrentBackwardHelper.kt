@@ -86,7 +86,7 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
     this.layer.params as SimpleRecurrentLayerParameters
 
     val gy: DenseNDArray = this.layer.outputArray.errors
-    val gRec: DenseNDArray = nextStateLayer.outputArray.getRecurrentErrors(parameters = this.layer.params.unit)
+    val gRec: NDArray<*> = nextStateLayer.outputArray.getRecurrentErrors(parameters = this.layer.params.unit)
 
     gy.assignSum(gRec)
   }
