@@ -75,14 +75,18 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    * already set.
    *
    * @param parameters the parameters associated to this unit
+   * @param mePropMask the mask of the top k output nodes, in order to execute the 'meProp' algorithm
    *
    * @return the errors of the recursion of this unit
    */
-  fun getRecurrentErrors(parameters: RecurrentParametersUnit): DenseNDArray {
+  fun getRecurrentErrors(parameters: RecurrentParametersUnit, mePropMask: NDArrayMask? = null): NDArray<*> {
 
     val wRec: DenseNDArray = parameters.recurrentWeights.values as DenseNDArray
 
-    return this.errors.T.dot(wRec)
+    return if (mePropMask != null)
+      this.errors.T.dot(wRec, mask = mePropMask)
+    else
+      this.errors.T.dot(wRec)
   }
 
   /**
