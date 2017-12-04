@@ -35,7 +35,7 @@ open class ParametersUnit(
   /**
    *
    */
-  val biases: UpdatableArray<*> =  this.buildUpdatableArray(dim1 = this.outputSize, sparse = this.meProp)
+  val biases: UpdatableArray<*> = this.buildUpdatableArray(dim1 = this.outputSize, sparse = this.meProp)
 
   /**
    *
