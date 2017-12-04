@@ -16,7 +16,8 @@ import com.kotlinnlp.simplednn.core.layers.ParametersUnit
  *
  * @property inputSize input size
  * @property outputSize output size
- * @property sparseInput whether the weights connected to the input are sparse or not
+ * @param sparseInput whether the weights connected to the input are sparse or not
+ * @param meProp whether to use the 'meProp' errors propagation algorithm (params are sparse)
  */
 class FeedforwardLayerParameters(
   inputSize: Int,
