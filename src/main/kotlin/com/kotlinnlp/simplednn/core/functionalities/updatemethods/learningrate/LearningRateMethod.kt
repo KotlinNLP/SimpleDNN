@@ -66,9 +66,8 @@ class LearningRateMethod(
    *
    * @return optimized sparse errors
    */
-  override fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
-    return errors.prod(this.alpha)
-  }
+  override fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray =
+    errors.prod(this.alpha)
 
   /**
    * Optimize dense errors.
