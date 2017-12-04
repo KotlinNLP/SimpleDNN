@@ -74,9 +74,9 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
         yPrev = prevStateLayer.outputArray.values,
         yRec = layerContributions.unit.biases.values as DenseNDArray, // a tricky way to save the recurrent contribution
         y = this.layer.outputArray.values,                            // (b.size == y.size)
-        wRec = this.layer.params.unit.recurrentWeights.values,
+        wRec = this.layer.params.unit.recurrentWeights.values as DenseNDArray,
         b = bContrib,
-        contributions = layerContributions.unit.recurrentWeights.values
+        contributions = layerContributions.unit.recurrentWeights.values as DenseNDArray
       )
     }
 

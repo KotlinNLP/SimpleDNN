@@ -80,7 +80,7 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     } else { // recurrent contribution
       val gc: DenseNDArray = this.layer.candidate.errors
       val yPrev: DenseNDArray = prevStateOutput.values
-      val wcr: DenseNDArray = this.layer.params.candidate.recurrentWeights.values
+      val wcr: DenseNDArray = this.layer.params.candidate.recurrentWeights.values as DenseNDArray
 
       this.layer.resetGate.assignErrorsByDotT(gc.T, wcr).assignProd(rDeriv).assignProd(yPrev)
       this.layer.partitionGate.assignErrorsByProd(c.sub(yPrev), pDeriv).assignProd(gy)
@@ -102,7 +102,7 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     if (yPrev != null) { // add recurrent contribution to the recurrent weights of the candidate
       val r: DenseNDArray = this.layer.resetGate.values
-      val gwcr: DenseNDArray = paramsErrors.candidate.recurrentWeights.values
+      val gwcr: DenseNDArray = paramsErrors.candidate.recurrentWeights.values as DenseNDArray
       val gc: DenseNDArray = this.layer.candidate.errors
       gwcr.assignDot(gc, r.prod(yPrev).T)
     }
@@ -162,9 +162,9 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gp: DenseNDArray = partitionGate.errors
     val gc: DenseNDArray = candidate.errors
 
-    val wrr: DenseNDArray = this.layer.params.resetGate.recurrentWeights.values
-    val wpr: DenseNDArray = this.layer.params.partitionGate.recurrentWeights.values
-    val wcr: DenseNDArray = this.layer.params.candidate.recurrentWeights.values
+    val wrr: DenseNDArray = this.layer.params.resetGate.recurrentWeights.values as DenseNDArray
+    val wpr: DenseNDArray = this.layer.params.partitionGate.recurrentWeights.values as DenseNDArray
+    val wcr: DenseNDArray = this.layer.params.candidate.recurrentWeights.values as DenseNDArray
 
     val gRec1: DenseNDArray = gr.T.dot(wrr)
     val gRec2: DenseNDArray = gp.T.dot(wpr)

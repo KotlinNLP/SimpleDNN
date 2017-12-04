@@ -159,8 +159,8 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gInG: DenseNDArray = inputGate.errors
     val gForG: DenseNDArray = forgetGate.errors
 
-    val wrInG: DenseNDArray = this.layer.params.inputGate.recurrentWeights.values
-    val wrForG: DenseNDArray = this.layer.params.forgetGate.recurrentWeights.values
+    val wrInG: DenseNDArray = this.layer.params.inputGate.recurrentWeights.values as DenseNDArray
+    val wrForG: DenseNDArray = this.layer.params.forgetGate.recurrentWeights.values as DenseNDArray
 
     val gRec1: DenseNDArray = forG.prod(yDeriv).assignProd(gyNext)
     val gRec2: DenseNDArray = gInG.T.dot(wrInG)

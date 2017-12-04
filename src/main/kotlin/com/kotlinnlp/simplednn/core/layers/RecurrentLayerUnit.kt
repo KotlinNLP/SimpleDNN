@@ -56,7 +56,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
 
     super.assignParamsGradients(paramsErrors = paramsErrors, x = x, mePropMask = mePropMask)
 
-    val gwRec: DenseNDArray = paramsErrors.recurrentWeights.values
+    val gwRec: DenseNDArray = paramsErrors.recurrentWeights.values as DenseNDArray
 
     if (yPrev != null) {
 
@@ -80,7 +80,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    */
   fun getRecurrentErrors(parameters: RecurrentParametersUnit): DenseNDArray {
 
-    val wRec: DenseNDArray = parameters.recurrentWeights.values
+    val wRec: DenseNDArray = parameters.recurrentWeights.values as DenseNDArray
 
     return this.errors.T.dot(wRec)
   }
@@ -149,7 +149,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
       x = yPrev,
       y = yRec,
       yRelevance = yRecRelevance,
-      contributions = contributions.recurrentWeights.values
+      contributions = contributions.recurrentWeights.values as DenseNDArray
     )
   }
 }

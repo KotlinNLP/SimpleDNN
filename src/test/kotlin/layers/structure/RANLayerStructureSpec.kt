@@ -264,7 +264,7 @@ class RANLayerStructureSpec : Spek({
         }
 
         it("should match the expected recurrent contributions of the input gate") {
-          val inputGateContrib: DenseNDArray = contributions.inputGate.recurrentWeights.values
+          val inputGateContrib: DenseNDArray = contributions.inputGate.recurrentWeights.values as DenseNDArray
           assertTrue {
             inputGateContrib.equals(
               DenseNDArrayFactory.arrayOf(arrayOf(
@@ -279,7 +279,7 @@ class RANLayerStructureSpec : Spek({
         }
 
         it("should match the expected recurrent contributions of the forget gate") {
-          val forgetGateContrib: DenseNDArray = contributions.forgetGate.recurrentWeights.values
+          val forgetGateContrib: DenseNDArray = contributions.forgetGate.recurrentWeights.values as DenseNDArray
           assertTrue {
             forgetGateContrib.equals(
               DenseNDArrayFactory.arrayOf(arrayOf(

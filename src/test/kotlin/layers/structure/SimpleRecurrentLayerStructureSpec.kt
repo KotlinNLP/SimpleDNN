@@ -144,7 +144,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         }
 
         it("should match the expected recurrent contributions") {
-          val wRecContr: DenseNDArray = contributions.unit.recurrentWeights.values
+          val wRecContr: DenseNDArray = contributions.unit.recurrentWeights.values as DenseNDArray
           assertTrue {
             wRecContr.equals(
               DenseNDArrayFactory.arrayOf(arrayOf(

@@ -155,10 +155,10 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gForGNext: DenseNDArray = nextStateLayer.forgetGate.errors
     val gCandNext: DenseNDArray = nextStateLayer.candidate.errors
 
-    val wInGRec: DenseNDArray = this.layer.params.inputGate.recurrentWeights.values
-    val wOutGRec: DenseNDArray = this.layer.params.outputGate.recurrentWeights.values
-    val wForGRec: DenseNDArray = this.layer.params.forgetGate.recurrentWeights.values
-    val wCandRec: DenseNDArray = this.layer.params.candidate.recurrentWeights.values
+    val wInGRec: DenseNDArray = this.layer.params.inputGate.recurrentWeights.values as DenseNDArray
+    val wOutGRec: DenseNDArray = this.layer.params.outputGate.recurrentWeights.values as DenseNDArray
+    val wForGRec: DenseNDArray = this.layer.params.forgetGate.recurrentWeights.values as DenseNDArray
+    val wCandRec: DenseNDArray = this.layer.params.candidate.recurrentWeights.values as DenseNDArray
 
     val gRec1: DenseNDArray = gInGNext.T.dot(wInGRec)
     val gRec2: DenseNDArray = gOutGNext.T.dot(wOutGRec)
