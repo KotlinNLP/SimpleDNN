@@ -23,7 +23,7 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward the input to the output through the gates, combining it with the parameters.
    *
-   * y = f(inG * c + yPrev * forG)
+   * y = f(inG * c + forG * yPrev)
    */
   override fun forward() {
 
@@ -39,7 +39,7 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     // y = inG * c
     y.assignProd(inG, c)
 
-    // y += yPrev * forG
+    // y += forG * yPrev
     if (prevStateLayer != null) {
       val yPrev: DenseNDArray = prevStateLayer.outputArray.valuesNotActivated
       y.assignSum(yPrev.prod(forG))
@@ -53,7 +53,7 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward the input to the output through the gates, combining it with the parameters and saving the contributions
    * of the input array in respect of each gate.
    *
-   * y = f(inG * c + yPrev * forG)
+   * y = f(inG * c + forG * yPrev)
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
@@ -72,7 +72,7 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     // y = inG * c
     y.assignProd(inG, c)
 
-    // y += yPrev * forG
+    // y += forG * yPrev
     if (prevStateLayer != null) {
       val yPrev: DenseNDArray = prevStateLayer.outputArray.valuesNotActivated
       val yRec: DenseNDArray = layerContributions.candidate.biases.values as DenseNDArray
