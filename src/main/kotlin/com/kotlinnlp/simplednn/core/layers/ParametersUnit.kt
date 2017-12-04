@@ -15,6 +15,11 @@ import java.io.Serializable
 
 /**
  * The parameters associated to a [LayerUnit].
+ *
+ * @property inputSize input size
+ * @property outputSize output size
+ * @param sparseInput whether the weights connected to the input are sparse or not (default false)
+ * @param meProp whether to use the 'meProp' errors propagation algorithm (params are sparse) (default false)
  */
 open class ParametersUnit(
   val inputSize: Int,
