@@ -630,26 +630,21 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override fun prod(n: Double): SparseNDArray {
-
-    return SparseNDArray(
-      shape = this.shape,
-      values = Array(size = this.values.size, init = { i -> this.values[i] * n }),
-      rows = this.rowIndices.copyOf(),
-      columns = this.colIndices.copyOf())
-  }
+  override fun prod(n: Double) = SparseNDArray(
+    shape = this.shape,
+    values = Array(size = this.values.size, init = { i -> this.values[i] * n }),
+    rows = this.rowIndices.copyOf(),
+    columns = this.colIndices.copyOf()
+  )
 
   /**
    *
    */
-  override fun prod(a: NDArray<*>): SparseNDArray {
-
-    return when(a) {
-      is DenseNDArray -> this.prod(a)
-      is SparseNDArray -> this.prod(a)
-      is SparseBinaryNDArray -> TODO("not implemented")
-      else -> throw RuntimeException("Invalid NDArray type")
-    }
+  override fun prod(a: NDArray<*>): SparseNDArray = when(a) {
+    is DenseNDArray -> this.prod(a)
+    is SparseNDArray -> this.prod(a)
+    is SparseBinaryNDArray -> TODO("not implemented")
+    else -> throw RuntimeException("Invalid NDArray type")
   }
 
   /**
