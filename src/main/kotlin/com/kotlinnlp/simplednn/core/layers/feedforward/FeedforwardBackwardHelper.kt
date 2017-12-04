@@ -49,6 +49,7 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * gw = gy (dot) x
    *
    * @param paramsErrors the errors of the parameters which will be filled
+   * @param mePropMask the mask of the k output nodes with the top errors
    */
   private fun assignParamsGradients(paramsErrors: FeedforwardLayerParameters, mePropMask: NDArrayMask?) {
 
@@ -60,8 +61,13 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
   /**
    * gx = gy (dot) w
+   *
+   * @param mePropMask the mask of the k output nodes with the top errors
    */
-  private fun assignLayerGradients(mePropMask: NDArrayMask?) { this.layer.params as FeedforwardLayerParameters
+  private fun assignLayerGradients(mePropMask: NDArrayMask?) {
+
+    this.layer.params as FeedforwardLayerParameters
+
     this.layer.inputArray.assignErrors(
       errors = this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit, mePropMask = mePropMask)
     )
