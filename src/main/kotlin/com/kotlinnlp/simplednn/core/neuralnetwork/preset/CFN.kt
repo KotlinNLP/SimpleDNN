@@ -8,6 +8,8 @@
 package com.kotlinnlp.simplednn.core.neuralnetwork.preset
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
@@ -24,7 +26,9 @@ object CFN {
                       outputActivation: ActivationFunction?,
                       inputType: LayerType.Input = LayerType.Input.Dense,
                       inputDropout: Double = 0.0,
-                      hiddenDropout: Double = 0.0) = NeuralNetwork(
+                      hiddenDropout: Double = 0.0,
+                      weightsInitializer: Initializer? = GlorotInitializer(),
+                      biasesInitializer: Initializer? = GlorotInitializer()) = NeuralNetwork(
     LayerConfiguration(
       size = inputSize,
       inputType = inputType,
@@ -39,6 +43,9 @@ object CFN {
     LayerConfiguration(
       size = outputSize,
       activationFunction = outputActivation,
-      connectionType = LayerType.Connection.Feedforward)
+      connectionType = LayerType.Connection.Feedforward
+    ),
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer
   )
 }
