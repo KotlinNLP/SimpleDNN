@@ -26,7 +26,6 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
    *
    */
   val isVector: Boolean
-    get
 
   /**
    * Whether the array is a bi-dimensional matrix
@@ -37,37 +36,31 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
    *
    */
   val isOneHotEncoder: Boolean
-    get
 
   /**
    *
    */
   val rows: Int
-    get
 
   /**
    *
    */
   val columns: Int
-    get
 
   /**
    *
    */
   val length: Int
-    get
 
   /**
    *
    */
   val shape: Shape
-    get
 
   /**
    * Transpose
    */
   val T: SelfType
-    get
 
   /**
    *
