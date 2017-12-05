@@ -25,7 +25,11 @@ class UpdatableSparseArray(override val values: SparseNDArray) : UpdatableArray<
     private const val serialVersionUID: Long = 1L
 
     /**
+     * Build an [UpdatableSparseArray] with values initialized to zeros.
      *
+     * @param shape the shape of the [values] array
+     *
+     * @return a new array with values initialized to zeros
      */
     operator fun invoke(shape: Shape) = UpdatableSparseArray(SparseNDArrayFactory.zeros(shape))
   }

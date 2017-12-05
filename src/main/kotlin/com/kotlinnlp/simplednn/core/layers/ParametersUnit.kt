@@ -58,12 +58,22 @@ open class ParametersUnit(
       this.buildDenseArray(dim1, dim2)
 
   /**
+   * Build an [UpdatableDenseArray] with values initialized to zeros.
    *
+   * @param dim1 the first dimension of the array
+   * @param dim2 the second dimension of the array (default = 1)
+   *
+   * @return a new dense array with values initialized to zeros
    */
   private fun buildDenseArray(dim1: Int, dim2: Int = 1) = UpdatableDenseArray(Shape(dim1, dim2))
 
   /**
+   * Build an [UpdatableSparseArray] with values initialized to zeros.
    *
+   * @param dim1 the first dimension of the array
+   * @param dim2 the second dimension of the array (default = 1)
+   *
+   * @return a new dense array with values initialized to zeros
    */
   private fun buildSparseArray(dim1: Int, dim2: Int = 1) = UpdatableSparseArray(Shape(dim1, dim2))
 }

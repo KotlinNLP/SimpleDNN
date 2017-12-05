@@ -25,7 +25,11 @@ class UpdatableDenseArray(override val values: DenseNDArray) : UpdatableArray<De
     private const val serialVersionUID: Long = 1L
 
     /**
+     * Build an [UpdatableDenseArray] with values initialized to zeros.
      *
+     * @param shape the shape of the [values] array
+     *
+     * @return a new array with values initialized to zeros
      */
     operator fun invoke(shape: Shape) = UpdatableDenseArray(DenseNDArrayFactory.zeros(shape))
   }
