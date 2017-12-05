@@ -32,10 +32,10 @@ class FixedRangeRandom(
   /**
    *
    */
-  private val rndGenerator = if (enablePseudoRandom) Random(seed) else Random()
+  private val rndGenerator = if (this.enablePseudoRandom) Random(this.seed) else Random()
 
   /**
    * @return a pseudo-random value in the range [-radius, radius]
    * */
-  override fun next(): Double = (2.0 * rndGenerator.nextDouble() * radius) - radius
+  override fun next(): Double = (2.0 * this.rndGenerator.nextDouble() * this.radius) - this.radius
 }
