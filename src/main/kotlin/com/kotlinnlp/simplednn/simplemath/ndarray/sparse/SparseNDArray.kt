@@ -977,7 +977,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
 
     while (i < pivot && this.compareArrays(i, pivot) <= 0) i++
 
-    for (j in (i + 1) until hi) {
+    ((i + 1) until hi).forEach { j ->
       if (this.compareArrays(j, pivot) <= 0) {
         this.swapArrays(i++, j)
       }
