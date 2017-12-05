@@ -398,6 +398,27 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   override fun reverseSub(n: Double): DenseNDArray = DenseNDArray(this.storage.rsub(n))
 
   /**
+   * Dot product between this [DenseNDArray] and a [DenseNDArray] masked by [mask].
+   *
+   * @param a the [DenseNDArray] by which is calculated the dot product
+   * @param mask the mask applied to a
+   *
+   * @return a new [DenseNDArray]
+   */
+  fun dot(a: DenseNDArray, mask: NDArrayMask): DenseNDArray {
+    require(this.columns == a.rows)
+    require(this.rows == 1) // TODO: extend to all shapes
+
+    val ret = DenseNDArrayFactory.zeros(shape = Shape(this.rows, a.columns))
+
+    (0 until a.columns).forEach { j ->
+      ret[j] = mask.dim1.sumByDouble { k -> this[k] * a[k, j] }
+    }
+
+    return ret
+  }
+
+  /**
    *
    */
   override fun dot(a: NDArray<*>): DenseNDArray = when(a) {
