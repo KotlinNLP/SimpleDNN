@@ -9,6 +9,8 @@ package com.kotlinnlp.simplednn.core.neuralnetwork
 
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 
 /**
@@ -16,10 +18,14 @@ import com.kotlinnlp.simplednn.core.optimizer.IterableParams
  * grouped per layer.
  *
  * @property layersConfiguration a list of configurations, one per layer
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  * @param forceDense force all parameters to be dense (false by default)
  */
 class NetworkParameters(
   val layersConfiguration: List<LayerConfiguration>,
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = GlorotInitializer(),
   private val forceDense: Boolean = false
 ) : IterableParams<NetworkParameters>() {
 
@@ -51,6 +57,8 @@ class NetworkParameters(
         inputSize = this.layersConfiguration[i].size,
         outputSize = this.layersConfiguration[i + 1].size,
         connectionType = this.layersConfiguration[i + 1].connectionType!!,
+        weightsInitializer = weightsInitializer,
+        biasesInitializer = biasesInitializer,
         sparseInput = !this.forceDense && this.layersConfiguration[i].inputType == LayerType.Input.SparseBinary,
         meProp = !this.forceDense && this.layersConfiguration[i + 1].meProp)
     }

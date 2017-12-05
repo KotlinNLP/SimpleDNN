@@ -7,9 +7,9 @@
 
 package com.kotlinnlp.simplednn.core.neuralnetwork
 
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.utils.Serializer
 import java.io.InputStream
@@ -23,17 +23,33 @@ import java.io.Serializable
  * This information is contained in the [layersConfiguration].
  *
  * @property layersConfiguration a list of configurations, one per layer
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
-class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Serializable {
+class NeuralNetwork(
+  val layersConfiguration: List<LayerConfiguration>,
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = GlorotInitializer()
+) : Serializable {
 
   /**
    * Secondary constructor.
    *
    * @param layerConfiguration the layersConfiguration of a layer
+   * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+   * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
    *
    * @return a new NeuralNetwork
    */
-  constructor(vararg layerConfiguration: LayerConfiguration): this(layerConfiguration.toList())
+  constructor(
+    vararg layerConfiguration: LayerConfiguration,
+    weightsInitializer: Initializer? = GlorotInitializer(),
+    biasesInitializer: Initializer? = GlorotInitializer()
+  ): this(
+    layersConfiguration = layerConfiguration.toList(),
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer
+  )
 
   companion object {
 
@@ -54,19 +70,22 @@ class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Seriali
   }
 
   /**
-   *
+   * The type of the input array.
    */
   val inputType: LayerType.Input = this.layersConfiguration.first().inputType
 
   /**
-   *
+   * Whether the input array is sparse binary.
    */
   val sparseInput: Boolean = this.inputType == LayerType.Input.SparseBinary
 
   /**
    * The model containing all the trainable parameters of the network.
    */
-  val model: NetworkParameters = this.parametersFactory(forceDense = true)
+  val model: NetworkParameters = this.parametersFactory(
+    forceDense = true,
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer)
 
   /**
    * Serialize this [NeuralNetwork] and write it to an output stream.
@@ -76,31 +95,20 @@ class NeuralNetwork(val layersConfiguration: List<LayerConfiguration>) : Seriali
   fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
 
   /**
-   * Initialize the parameters of the model using the given random generator and value for the biases.
-   *
-   * @param randomGenerator a [RandomGenerator] (default: fixed range with radius 0.08)
-   * @param biasesInitValue the init value for all the biases (default: 0.0)
-   *
-   * @return this [NeuralNetwork]
-   */
-  fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
-                 biasesInitValue: Double = 0.0): NeuralNetwork {
-
-    this.model.paramsPerLayer.forEach {
-      it.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
-    }
-
-    return this
-  }
-
-  /**
    * Generate [NetworkParameters] compatible with the configuration of this network
    *
    * @param forceDense force all parameters to be dense (false by default)
+   * @param weightsInitializer the initializer of the weights (null by default)
+   * @param biasesInitializer the initializer of the biases (null by default)
    *
    * @return an object containing parameters compatible with the configuration of this network
    */
-  fun parametersFactory(forceDense: Boolean) = NetworkParameters(
+  fun parametersFactory(forceDense: Boolean,
+                        weightsInitializer: Initializer? = null,
+                        biasesInitializer: Initializer? = null) = NetworkParameters(
     layersConfiguration = this.layersConfiguration,
-    forceDense = forceDense)
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer,
+    forceDense = forceDense
+  )
 }
