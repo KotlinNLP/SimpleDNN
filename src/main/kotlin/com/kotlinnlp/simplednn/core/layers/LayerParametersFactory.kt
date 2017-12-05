@@ -58,7 +58,8 @@ object LayerParametersFactory {
     LayerType.Connection.RAN -> RANLayerParameters(
       inputSize = inputSize,
       outputSize = outputSize,
-      sparseInput = sparseInput)
+      sparseInput = sparseInput,
+      meProp = meProp)
 
     LayerType.Connection.DeltaRNN -> DeltaRNNLayerParameters(
       inputSize = inputSize,
