@@ -115,9 +115,7 @@ class SparseBinaryNDArray(
   /**
    * Iterator over active indices
    */
-  override fun iterator(): Iterator<Indices> {
-    return LinearIndicesIterator()
-  }
+  override fun iterator(): Iterator<Indices> = LinearIndicesIterator()
 
   /**
    *
