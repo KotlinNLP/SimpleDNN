@@ -109,6 +109,8 @@ class BiaffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     inputSize1 = this.params.inputSize1,
     inputSize2 = this.params.inputSize2,
     outputSize = this.params.outputSize,
-    sparseInput = this.params.sparseInput
+    sparseInput = this.params.sparseInput,
+    weightsInitializer = null,
+    biasesInitializer = null
   )
 }
