@@ -124,10 +124,10 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gCand: DenseNDArray = this.layer.candidate.errors
 
     this.layer.inputArray
-      .assignErrorsByDotT(gInG.T, wInG)
-      .assignSum(gOutG.T.dot(wOutG))
-      .assignSum(gForG.T.dot(wForG))
-      .assignSum(gCand.T.dot(wCand))
+      .assignErrorsByDotT(gInG.t, wInG)
+      .assignSum(gOutG.t.dot(wOutG))
+      .assignSum(gForG.t.dot(wForG))
+      .assignSum(gCand.t.dot(wCand))
   }
 
   /**
@@ -160,10 +160,10 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val wForGRec: DenseNDArray = this.layer.params.forgetGate.recurrentWeights.values as DenseNDArray
     val wCandRec: DenseNDArray = this.layer.params.candidate.recurrentWeights.values as DenseNDArray
 
-    val gRec1: DenseNDArray = gInGNext.T.dot(wInGRec)
-    val gRec2: DenseNDArray = gOutGNext.T.dot(wOutGRec)
-    val gRec3: DenseNDArray = gForGNext.T.dot(wForGRec)
-    val gRec4: DenseNDArray = gCandNext.T.dot(wCandRec)
+    val gRec1: DenseNDArray = gInGNext.t.dot(wInGRec)
+    val gRec2: DenseNDArray = gOutGNext.t.dot(wOutGRec)
+    val gRec3: DenseNDArray = gForGNext.t.dot(wForGRec)
+    val gRec4: DenseNDArray = gCandNext.t.dot(wCandRec)
 
     return gRec1.assignSum(gRec2).assignSum(gRec3).assignSum(gRec4)
   }

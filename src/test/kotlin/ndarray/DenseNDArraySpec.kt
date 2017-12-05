@@ -265,7 +265,7 @@ class DenseNDArraySpec : Spek({
 
       on("transpose") {
 
-        val transposedArray = array.T
+        val transposedArray = array.t
 
         it("should give a transposed array with the expected shape") {
           assertEquals(true, transposedArray.shape == Shape(1, 4))
@@ -381,7 +381,7 @@ class DenseNDArraySpec : Spek({
           doubleArrayOf(0.12, 0.09, 0.15, 0.21),
           doubleArrayOf(0.0, 0.0, 0.0, 0.0)
         ))
-        val res = array.dot(a.T)
+        val res = array.dot(a.t)
 
         it("should return a new DenseNDArray") {
           assertEquals(false, array === res)
@@ -681,7 +681,7 @@ class DenseNDArraySpec : Spek({
         }
 
         it("should throw an error with not compatible shapes") {
-          assertFails({ array.assignDot(a, b.T) })
+          assertFails({ array.assignDot(a, b.t) })
         }
 
         it("should assign the expected values") {
@@ -718,7 +718,7 @@ class DenseNDArraySpec : Spek({
             doubleArrayOf(0.3, 0.5),
             doubleArrayOf(0.7, 0.5)
           ))
-          assertFails({ array.assignDot(a.T, m2) })
+          assertFails({ array.assignDot(a.t, m2) })
         }
 
         it("should assign the expected values") {
@@ -1022,7 +1022,7 @@ class DenseNDArraySpec : Spek({
 
       on("transpose") {
 
-        val transposedArray = array.T
+        val transposedArray = array.t
 
         it("should give a transposed array with the expected shape") {
           assertEquals(true, transposedArray.shape == Shape(4, 2))

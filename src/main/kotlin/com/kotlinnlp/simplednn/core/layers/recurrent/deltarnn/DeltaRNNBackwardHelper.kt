@@ -105,7 +105,7 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val beta2: DenseNDArray = this.layer.params.beta2.values
 
     val gRec1: DenseNDArray = pNext.reverseSub(1.0).assignProd(gyNext)
-    val gRec2: DenseNDArray = alpha.prod(wxNext).assignSum(beta2).assignProd(gcNext).T.dot(wRec)
+    val gRec2: DenseNDArray = alpha.prod(wxNext).assignSum(beta2).assignProd(gcNext).t.dot(wRec)
 
     return gRec1.assignSum(gRec2)
   }
@@ -148,14 +148,14 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     val gwTmp: DenseNDArray = if (prevStateOutput != null) alpha.prod(wyRec).assignSum(beta1) else beta1.copy()
     gwTmp.assignProd(gc).assignSum(gp)
-    gw.assignDot(gwTmp, x.T)
+    gw.assignDot(gwTmp, x.t)
 
     if (prevStateOutput != null) {
       val gwRec: DenseNDArray = paramsErrors.recurrentUnit.weights.values as DenseNDArray
       val yPrev: DenseNDArray = prevStateOutput.values
 
       val gwRecTmp: DenseNDArray = alpha.prod(wx).assignSum(beta2).assignProd(gc)
-      gwRec.assignDot(gwRecTmp, yPrev.T)
+      gwRec.assignDot(gwRecTmp, yPrev.t)
     }
   }
 
@@ -179,6 +179,6 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gxTmp: DenseNDArray = if (prevStateOutput != null) alpha.prod(wyRec).assignSum(beta1) else beta1
     gxTmp.assignProd(gc).assignSum(gp)
 
-    this.layer.inputArray.assignErrorsByDotT(gxTmp.T, w)
+    this.layer.inputArray.assignErrorsByDotT(gxTmp.t, w)
   }
 }

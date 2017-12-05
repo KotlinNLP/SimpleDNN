@@ -67,11 +67,11 @@ open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : 
       x as DenseNDArray; gw as SparseNDArray; gb as SparseNDArray
 
       gb.assignValues(this.errors, mask = mePropMask)
-      gw.assignDot(this.errors.maskBy(mePropMask), x.T)
+      gw.assignDot(this.errors.maskBy(mePropMask), x.t)
 
     } else {
       gb.assignValues(this.errors)
-      gw.assignDot(this.errors, x.T)
+      gw.assignDot(this.errors, x.t)
     }
   }
 
@@ -87,7 +87,7 @@ open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : 
 
     val w: DenseNDArray = parameters.weights.values as DenseNDArray
 
-    return if (mePropMask != null) this.errors.maskBy(mePropMask).T.dot(w) else this.errors.T.dot(w)
+    return if (mePropMask != null) this.errors.maskBy(mePropMask).t.dot(w) else this.errors.t.dot(w)
   }
 
   /**

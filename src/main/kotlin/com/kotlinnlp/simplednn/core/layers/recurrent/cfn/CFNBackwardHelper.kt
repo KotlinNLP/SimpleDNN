@@ -100,7 +100,7 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     val gc: DenseNDArray = this.layer.candidate.errors
     val gwc: NDArray<*> = paramsErrors.candidateWeights.values
-    gwc.assignDot(gc, x.T)
+    gwc.assignDot(gc, x.t)
   }
 
   /**
@@ -119,9 +119,9 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gC: DenseNDArray = this.layer.candidate.errors
 
     this.layer.inputArray
-      .assignErrorsByDotT(gForG.T, wForG)
-      .assignSum(gC.T.dot(wC))
-      .assignSum(gInG.T.dot(wInG))
+      .assignErrorsByDotT(gForG.t, wForG)
+      .assignSum(gC.t.dot(wC))
+      .assignSum(gInG.t.dot(wInG))
   }
 
   /**
@@ -163,8 +163,8 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val wrForG: DenseNDArray = this.layer.params.forgetGate.recurrentWeights.values as DenseNDArray
 
     val gRec1: DenseNDArray = forG.prod(yDeriv).assignProd(gyNext)
-    val gRec2: DenseNDArray = gInG.T.dot(wrInG)
-    val gRec3: DenseNDArray = gForG.T.dot(wrForG)
+    val gRec2: DenseNDArray = gInG.t.dot(wrInG)
+    val gRec3: DenseNDArray = gForG.t.dot(wrForG)
 
     return gRec1.assignSum(gRec2).assignSum(gRec3)
   }

@@ -55,8 +55,8 @@ class AffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gw2: NDArray<*> = paramsErrors.w2.values
     val gb: NDArray<*> = paramsErrors.b.values
 
-    gw1.assignDot(gy, x1.T)
-    gw2.assignDot(gy, x2.T)
+    gw1.assignDot(gy, x1.t)
+    gw2.assignDot(gy, x2.t)
     gb.assignValues(gy)
   }
 
@@ -68,7 +68,7 @@ class AffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val w2: DenseNDArray = this.layer.params.w2.values as DenseNDArray
 
     val gy: DenseNDArray = this.layer.outputArray.errors
-    val gyT: DenseNDArray = gy.T
+    val gyT: DenseNDArray = gy.t
 
     this.layer.inputArray1.assignErrorsByDotT(gyT, w1)
     this.layer.inputArray2.assignErrorsByDotT(gyT, w2)

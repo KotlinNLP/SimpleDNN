@@ -94,8 +94,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  @Suppress()
-  override val T: DenseNDArray
+  override val t: DenseNDArray
     get() = DenseNDArray(this.storage.transpose())
 
   /**

@@ -82,7 +82,7 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       val yPrev: DenseNDArray = prevStateOutput.values
       val wcr: DenseNDArray = this.layer.params.candidate.recurrentWeights.values as DenseNDArray
 
-      this.layer.resetGate.assignErrorsByDotT(gc.T, wcr).assignProd(rDeriv).assignProd(yPrev)
+      this.layer.resetGate.assignErrorsByDotT(gc.t, wcr).assignProd(rDeriv).assignProd(yPrev)
       this.layer.partitionGate.assignErrorsByProd(c.sub(yPrev), pDeriv).assignProd(gy)
     }
   }
@@ -104,7 +104,7 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       val r: DenseNDArray = this.layer.resetGate.values
       val gwcr: DenseNDArray = paramsErrors.candidate.recurrentWeights.values as DenseNDArray
       val gc: DenseNDArray = this.layer.candidate.errors
-      gwcr.assignDot(gc, r.prod(yPrev).T)
+      gwcr.assignDot(gc, r.prod(yPrev).t)
     }
   }
 
@@ -124,9 +124,9 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gr: DenseNDArray = this.layer.resetGate.errors
 
     this.layer.inputArray
-      .assignErrorsByDotT(gp.T, wp)
-      .assignSum(gc.T.dot(wc))
-      .assignSum(gr.T.dot(wr))
+      .assignErrorsByDotT(gp.t, wp)
+      .assignSum(gc.t.dot(wc))
+      .assignSum(gr.t.dot(wr))
   }
 
   /**
@@ -166,10 +166,10 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val wpr: DenseNDArray = this.layer.params.partitionGate.recurrentWeights.values as DenseNDArray
     val wcr: DenseNDArray = this.layer.params.candidate.recurrentWeights.values as DenseNDArray
 
-    val gRec1: DenseNDArray = gr.T.dot(wrr)
-    val gRec2: DenseNDArray = gp.T.dot(wpr)
-    val gRec3: DenseNDArray = gc.T.dot(wcr).prod(r)
-    val gRec4: DenseNDArray = p.reverseSub(1.0).assignProd(gy).T
+    val gRec1: DenseNDArray = gr.t.dot(wrr)
+    val gRec2: DenseNDArray = gp.t.dot(wpr)
+    val gRec3: DenseNDArray = gc.t.dot(wcr).prod(r)
+    val gRec4: DenseNDArray = p.reverseSub(1.0).assignProd(gy).t
 
     return gRec1.assignSum(gRec2).assignSum(gRec3).assignSum(gRec4)
   }

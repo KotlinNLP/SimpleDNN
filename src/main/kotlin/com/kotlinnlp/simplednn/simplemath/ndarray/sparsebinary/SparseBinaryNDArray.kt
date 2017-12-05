@@ -152,7 +152,7 @@ class SparseBinaryNDArray(
   /**
    * Transpose
    */
-  override val T: SparseBinaryNDArray get() = SparseBinaryNDArray(
+  override val t: SparseBinaryNDArray get() = SparseBinaryNDArray(
     activeIndicesByRow = this.copyIndices(this.activeIndicesByColumn),
     activeIndicesByColumn = this.copyIndices(this.activeIndicesByRow),
     shape = this.shape.inverse

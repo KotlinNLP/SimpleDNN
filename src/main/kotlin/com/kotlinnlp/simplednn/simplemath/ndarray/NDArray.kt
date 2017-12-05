@@ -60,7 +60,7 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    * Transpose
    */
-  val T: SelfType
+  val t: SelfType
 
   /**
    *

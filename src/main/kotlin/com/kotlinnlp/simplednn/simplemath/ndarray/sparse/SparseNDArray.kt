@@ -133,7 +133,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    * Transpose
    */
-  override val T: SparseNDArray get() = SparseNDArray(
+  override val t: SparseNDArray get() = SparseNDArray(
     shape = this.shape.inverse,
     values = this.values.copyOf(),
     rows = this.colIndices.copyOf(),

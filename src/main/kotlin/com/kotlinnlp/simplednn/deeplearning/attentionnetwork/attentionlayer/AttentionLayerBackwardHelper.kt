@@ -44,7 +44,7 @@ class AttentionLayerBackwardHelper(private val layer: AttentionLayerStructure<*>
     val softmaxGradients: DenseNDArray = Softmax().df(this.layer.importanceScore)
     val acErrors: DenseNDArray = softmaxGradients.dot(scoreErrors)
 
-    paramsErrors.contextVector.values.assignValues(acErrors.T.dot(this.layer.attentionMatrix.values).T)
+    paramsErrors.contextVector.values.assignValues(acErrors.t.dot(this.layer.attentionMatrix.values).t)
 
     if (propagateToInput) {
       this.setInputErrors()
@@ -93,7 +93,7 @@ class AttentionLayerBackwardHelper(private val layer: AttentionLayerStructure<*>
    * @param attentionContextErrors the errors of the attention context.
    */
   private fun setAttentionErrors(attentionContextErrors: DenseNDArray) {
-    val contextVect: DenseNDArray = this.layer.params.contextVector.values.T
+    val contextVect: DenseNDArray = this.layer.params.contextVector.values.t
     this.layer.attentionMatrix.assignErrorsByDot(attentionContextErrors, contextVect)
   }
 }

@@ -90,7 +90,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
 
       if (this._values.columns == 1 && errors.rows == 1 || this._values.rows == 1 && errors.columns == 1) {
         // Assignment between row and column vectors
-        this._errors = errors.T
+        this._errors = errors.t
       } else {
         this._errors = errors.copy()
       }
@@ -202,7 +202,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
       this._errors.assignValues(a.dot(b))
 
     } catch (e: UninitializedPropertyAccessException) {
-      this._errors = a.dot(b).T
+      this._errors = a.dot(b).t
     }
 
     return this._errors

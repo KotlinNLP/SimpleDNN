@@ -69,10 +69,10 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
 
         x as DenseNDArray; gwRec as SparseNDArray
 
-        gwRec.assignDot(this.errors.maskBy(mePropMask), yPrev.T)
+        gwRec.assignDot(this.errors.maskBy(mePropMask), yPrev.t)
 
       } else {
-        gwRec.assignDot(this.errors, yPrev.T)
+        gwRec.assignDot(this.errors, yPrev.t)
       }
 
     } else {
@@ -94,9 +94,9 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
     val wRec: DenseNDArray = parameters.recurrentWeights.values as DenseNDArray
 
     return if (mePropMask != null)
-      this.errors.T.dot(wRec, mask = mePropMask)
+      this.errors.t.dot(wRec, mask = mePropMask)
     else
-      this.errors.T.dot(wRec)
+      this.errors.t.dot(wRec)
   }
 
   /**

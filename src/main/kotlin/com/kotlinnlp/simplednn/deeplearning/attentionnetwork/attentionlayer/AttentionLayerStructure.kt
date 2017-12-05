@@ -67,7 +67,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   fun getAttentionErrors(): Array<DenseNDArray> = Array(
     size = this.attentionMatrix.values.shape.dim1,
-    init = { i -> this.attentionMatrix.errors.getRow(i).T }
+    init = { i -> this.attentionMatrix.errors.getRow(i).t }
   )
 
   /**
