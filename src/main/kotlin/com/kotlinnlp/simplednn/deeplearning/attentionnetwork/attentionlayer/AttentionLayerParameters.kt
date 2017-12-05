@@ -9,18 +9,21 @@ package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * Attention Layer parameters.
  *
  * @property attentionSize the size of each array of attention
+ * @param initializer the initializer of the context vector (zeros if null, default: Glorot)
  */
-class AttentionLayerParameters(val attentionSize: Int) : IterableParams<AttentionLayerParameters>() {
+class AttentionLayerParameters(
+  val attentionSize: Int,
+  initializer: Initializer? = GlorotInitializer()
+) : IterableParams<AttentionLayerParameters>() {
 
   companion object {
 
@@ -34,7 +37,7 @@ class AttentionLayerParameters(val attentionSize: Int) : IterableParams<Attentio
   /**
    * The context vector trainable parameter.
    */
-  val contextVector = UpdatableDenseArray(values = DenseNDArrayFactory.zeros(Shape(this.attentionSize)))
+  val contextVector = UpdatableDenseArray(Shape(this.attentionSize))
 
   /**
    * The list of all parameters.
@@ -42,12 +45,10 @@ class AttentionLayerParameters(val attentionSize: Int) : IterableParams<Attentio
   override val paramsList: Array<UpdatableArray<*>> = arrayOf(this.contextVector)
 
   /**
-   * Initialize the context vector values randomly.
-   *
-   * @param randomGenerator a generator of random values
+   * Initialize the values of the context vector.
    */
-  fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true)) {
-    this.contextVector.values.randomize(randomGenerator)
+  init {
+    initializer?.initialize(this.contextVector.values)
   }
 
   /**
