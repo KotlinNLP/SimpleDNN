@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 
 /**
  * The basic unit of the recurrent layer, which extends the [LayerUnit] with the recurrent contribution.
@@ -56,14 +57,23 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
 
     super.assignParamsGradients(paramsErrors = paramsErrors, x = x, mePropMask = mePropMask)
 
-    val gwRec: DenseNDArray = paramsErrors.recurrentWeights.values as DenseNDArray
+    val gwRec: NDArray<*> = paramsErrors.recurrentWeights.values
 
     if (yPrev != null) {
 
-      if (mePropMask != null)
-        gwRec.assignDot(this.errors, yPrev.T, aMask = mePropMask)
-      else
+      if (mePropMask != null) {
+        require(x is DenseNDArray) { "Cannot apply 'meProp' method if input is not dense" }
+        require(gwRec is SparseNDArray) {
+          "Cannot apply 'meProp' method with errors not sparse. Ensure to enable 'meProp' into the params."
+        }
+
+        x as DenseNDArray; gwRec as SparseNDArray
+
+        gwRec.assignDot(this.errors.maskBy(mePropMask), yPrev.T)
+
+      } else {
         gwRec.assignDot(this.errors, yPrev.T)
+      }
 
     } else {
       gwRec.zeros()
