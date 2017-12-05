@@ -9,10 +9,10 @@ package deeplearning.attentionnetwork
 
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import deeplearning.attentionnetwork.utils.AttentionLayerUtils
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -32,7 +32,7 @@ class AttentionLayerParametersSpec : Spek({
       var i = 0.0
       whenever(randomGenerator.next()).thenAnswer { i++ }
 
-      val params = AttentionLayerUtils.buildAttentionParams(initializer = RandomInitializer(randomGenerator))
+      val params = AttentionLayerParameters(attentionSize = 2, initializer = RandomInitializer(randomGenerator))
 
       it("should have a context vector with the expected initialized values") {
         assertTrue {
