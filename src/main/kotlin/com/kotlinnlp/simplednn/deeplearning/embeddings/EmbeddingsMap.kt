@@ -8,8 +8,8 @@
 package com.kotlinnlp.simplednn.deeplearning.embeddings
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import java.io.File
@@ -21,13 +21,13 @@ import java.util.*
  * A map of generic keys to Embeddings.
  *
  * @param size the size of each embedding
- * @param randomGenerator a random generator to initialize the values of new embeddings (default = FixedRangeRandom)
+ * @param initializer the initializer of the values of the embeddings (zeros if null)
  * @param pseudoRandomDropout a Boolean indicating if embeddings must be dropped out with pseudo random probability
  *                            (default = true)
  */
 open class EmbeddingsMap<in T>(
   val size: Int,
-  private val randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
+  private val initializer: Initializer? = GlorotInitializer(),
   private val pseudoRandomDropout: Boolean = true
 ) : Serializable {
 
@@ -60,7 +60,10 @@ open class EmbeddingsMap<in T>(
       val count: Int = firstLineSplit[0].toInt()
       val size: Int = firstLineSplit[1].toInt()
 
-      val embeddingsMap = EmbeddingsMap<String>(size = size, pseudoRandomDropout = pseudoRandomDropout)
+      val embeddingsMap = EmbeddingsMap<String>(
+        size = size,
+        pseudoRandomDropout = pseudoRandomDropout,
+        initializer = null)
 
       this.forEachDataLine(filename = filename, vectorSize = size) { key, vector ->
         embeddingsMap.set(
@@ -251,7 +254,7 @@ open class EmbeddingsMap<in T>(
 
     val embedding = Embedding(id = id, array = UpdatableDenseArray(Shape(size)))
 
-    embedding.array.values.randomize(this.randomGenerator)
+    this.initializer?.initialize(embedding.array.values)
 
     return embedding
   }
@@ -261,7 +264,5 @@ open class EmbeddingsMap<in T>(
    *
    * @return a Boolean indicating if an Embedding must be dropped out
    */
-  private fun mustBeDropped(dropout: Double): Boolean {
-    return this.dropoutRandomGenerator.nextDouble() < dropout
-  }
+  private fun mustBeDropped(dropout: Double): Boolean = this.dropoutRandomGenerator.nextDouble() < dropout
 }
