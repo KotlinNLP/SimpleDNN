@@ -99,7 +99,11 @@ class DeltaRNNLayerStructureSpec : Spek({
       on("without previous state context") {
 
         val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Empty())
-        val contributions = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5)
+        val contributions = DeltaRNNLayerParameters(
+          inputSize = 4,
+          outputSize = 5,
+          weightsInitializer = null,
+          biasesInitializer = null)
 
         layer.forward(layerContributions = contributions)
 
@@ -352,7 +356,11 @@ class DeltaRNNLayerStructureSpec : Spek({
       on("without previous and next state") {
 
         val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Empty())
-        val paramsErrors = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5)
+        val paramsErrors = DeltaRNNLayerParameters(
+          inputSize = 4,
+          outputSize = 5,
+          weightsInitializer = null,
+          biasesInitializer = null)
 
         layer.forward()
 
@@ -576,7 +584,11 @@ class DeltaRNNLayerStructureSpec : Spek({
       on("with next state only") {
 
         val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Front())
-        val paramsErrors = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5)
+        val paramsErrors = DeltaRNNLayerParameters(
+          inputSize = 4,
+          outputSize = 5,
+          weightsInitializer = null,
+          biasesInitializer = null)
 
         layer.forward()
 
