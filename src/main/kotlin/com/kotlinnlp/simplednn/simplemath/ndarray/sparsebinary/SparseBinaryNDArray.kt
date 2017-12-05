@@ -329,14 +329,11 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  override fun assignValues(a: NDArray<*>): SparseBinaryNDArray {
-
-    return when(a) {
-      is DenseNDArray -> TODO("not implemented")
-      is SparseNDArray -> TODO("not implemented")
-      is SparseBinaryNDArray -> this.assignValues(a)
-      else -> throw RuntimeException("Invalid NDArray type")
-    }
+  override fun assignValues(a: NDArray<*>): SparseBinaryNDArray = when(a) {
+    is DenseNDArray -> TODO("not implemented")
+    is SparseNDArray -> TODO("not implemented")
+    is SparseBinaryNDArray -> this.assignValues(a)
+    else -> throw RuntimeException("Invalid NDArray type")
   }
 
   /**
