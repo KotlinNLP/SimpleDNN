@@ -459,18 +459,6 @@ class SparseBinaryNDArray(
   }
 
   /**
-   * Dot product between this [SparseBinaryNDArray] and a [DenseNDArray] masked by [mask]
-   *
-   * @param a the [DenseNDArray] by which is calculated the dot product
-   * @param mask the mask applied to a
-   *
-   * @return a [SparseNDArray]
-   */
-  override fun dot(a: DenseNDArray, mask: NDArrayMask): SparseNDArray {
-    TODO("not implemented")
-  }
-
-  /**
    *
    */
   override fun assignDot(a: SparseBinaryNDArray, b: SparseBinaryNDArray): SparseBinaryNDArray {

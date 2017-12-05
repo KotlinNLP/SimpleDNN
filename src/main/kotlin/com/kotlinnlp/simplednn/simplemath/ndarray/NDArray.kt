@@ -213,16 +213,6 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun dot(a: NDArray<*>): DenseNDArray
 
   /**
-   * Dot product between this [NDArray] and a [DenseNDArray] masked by [mask]
-   *
-   * @param a the [DenseNDArray] by which is calculated the dot product
-   * @param mask the mask applied to a
-   *
-   * @return a [SparseNDArray]
-   */
-  fun dot(a: DenseNDArray, mask: NDArrayMask): SparseNDArray
-
-  /**
    *
    */
   fun assignDot(a: SelfType, b: SelfType): SelfType
