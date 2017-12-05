@@ -15,14 +15,17 @@ import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralPro
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- *
+ * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
+ *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
  */
 class SequenceTrainingHelper<NDArrayType: NDArray<NDArrayType>>(
   override val neuralProcessor: RecurrentNeuralProcessor<NDArrayType>,
   optimizer: ParamsOptimizer<NetworkParameters>,
   lossCalculator: LossCalculator,
+  private val mePropK: List<Double?>? = null,
   verbose: Boolean = false
 ) : TrainingHelper<SequenceExample<NDArrayType>>(
   neuralProcessor = neuralProcessor,
@@ -56,9 +59,12 @@ class SequenceTrainingHelper<NDArrayType: NDArray<NDArrayType>>(
 
     this.neuralProcessor.forward(example.sequenceFeatures)
 
-    val outputSequence = this.neuralProcessor.getOutputSequence()
+    val outputSequence: Array<DenseNDArray> = this.neuralProcessor.getOutputSequence()
+    val outputGoldSequence: Array<DenseNDArray> = example.sequenceOutputGold.toTypedArray()
 
-    this.neuralProcessor.backward(this.lossCalculator.calculateErrors(outputSequence, example.sequenceOutputGold.toTypedArray()))
+    this.neuralProcessor.backward(
+      outputErrorsSequence = this.lossCalculator.calculateErrors(outputSequence, outputGoldSequence),
+      mePropK = this.mePropK)
 
     return this.lossCalculator.calculateMeanLoss(outputSequence, example.sequenceOutputGold.toTypedArray())
   }
