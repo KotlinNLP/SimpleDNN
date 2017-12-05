@@ -210,18 +210,18 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       yPrev = yPrev,
       yRec = layerContributions.inputGate.biases.values as DenseNDArray, // a tricky way to save the contribution coming
       y = this.layer.inputGate.values,                                   // from recursion (b.size == y.size)
-      wRec = inGParams.recurrentWeights.values,
+      wRec = inGParams.recurrentWeights.values as DenseNDArray,
       b = bInG,
-      contributions = layerContributions.inputGate.recurrentWeights.values
+      contributions = layerContributions.inputGate.recurrentWeights.values as DenseNDArray
     )
 
     this.addRecurrentContribution(
       yPrev = yPrev,
       yRec = layerContributions.forgetGate.biases.values as DenseNDArray, // a tricky way to save the contribution
       y = this.layer.forgetGate.values,                                   // coming from recursion (b.size == y.size)
-      wRec = forGParams.recurrentWeights.values,
+      wRec = forGParams.recurrentWeights.values as DenseNDArray,
       b = bForG,
-      contributions = layerContributions.forgetGate.recurrentWeights.values
+      contributions = layerContributions.forgetGate.recurrentWeights.values as DenseNDArray
     )
   }
 }
