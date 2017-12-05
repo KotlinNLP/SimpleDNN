@@ -88,6 +88,13 @@ open class AffineLayerParameters(
   )
 
   /**
+   * Initialize all parameters values.
+   */
+  init {
+    this.initialize()
+  }
+
+  /**
    * @return a new [AffineLayerParameters] containing a copy of all parameters of this
    */
   override fun copy(): AffineLayerParameters {
