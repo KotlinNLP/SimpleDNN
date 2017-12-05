@@ -58,7 +58,12 @@ object IterableParamsUtils {
    */
   fun buildSparseParams1(): FeedforwardLayerParameters {
 
-    val params = FeedforwardLayerParameters(inputSize = 3, outputSize = 2, sparseInput = true)
+    val params = FeedforwardLayerParameters(
+      inputSize = 3,
+      outputSize = 2,
+      sparseInput = true,
+      weightsInitializer = null,
+      biasesInitializer = null)
 
     params.unit.weights.values.assignValues(SparseNDArrayFactory.arrayOf(
       activeIndicesValues = arrayOf(
@@ -78,7 +83,12 @@ object IterableParamsUtils {
    */
   fun buildSparseParams2(): FeedforwardLayerParameters {
 
-    val params = FeedforwardLayerParameters(inputSize = 3, outputSize = 2, sparseInput = true)
+    val params = FeedforwardLayerParameters(
+      inputSize = 3,
+      outputSize = 2,
+      sparseInput = true,
+      weightsInitializer = null,
+      biasesInitializer = null)
 
     params.unit.weights.values.assignValues(SparseNDArrayFactory.arrayOf(
       activeIndicesValues = arrayOf(

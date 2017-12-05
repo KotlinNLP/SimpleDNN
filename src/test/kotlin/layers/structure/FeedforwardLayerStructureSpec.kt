@@ -126,7 +126,12 @@ class FeedforwardLayerStructureSpec : Spek({
       on("sparse input") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer53SparseBinary()
-        val contributions = FeedforwardLayerParameters(inputSize = 5, outputSize = 3, sparseInput = true)
+        val contributions = FeedforwardLayerParameters(
+          inputSize = 5,
+          outputSize = 3,
+          sparseInput = true,
+          weightsInitializer = null,
+          biasesInitializer = null)
 
         layer.forward(layerContributions = contributions)
 
