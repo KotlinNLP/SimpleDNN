@@ -8,11 +8,12 @@
 package com.kotlinnlp.simplednn.core.functionalities.initializers
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import java.io.Serializable
 
 /**
  * An initializer of the values of dense arrays.
  */
-interface Initializer {
+interface Initializer : Serializable {
 
   /**
    * Initialize the values of the given [array].

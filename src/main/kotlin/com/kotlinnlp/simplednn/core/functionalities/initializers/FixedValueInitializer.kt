@@ -16,6 +16,15 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class FixedValueInitializer(val value: Double) : Initializer {
 
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed from Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
+
   /**
    * Initialize the values of the given [array].
    *
