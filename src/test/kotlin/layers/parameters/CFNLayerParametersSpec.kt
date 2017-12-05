@@ -7,6 +7,8 @@
 
 package layers.parameters
 
+import com.kotlinnlp.simplednn.core.functionalities.initializers.FixedValueInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -30,18 +32,6 @@ class CFNLayerParametersSpec : Spek({
 
       on("dense input") {
 
-        val params = CFNLayerParameters(inputSize = 3, outputSize = 2)
-
-        val wIn = params.inputGate.weights.values
-        val wFor = params.forgetGate.weights.values
-        val wC = params.candidateWeights.values
-
-        val bIn = params.inputGate.biases.values
-        val bFor = params.forgetGate.biases.values
-
-        val wInr = params.inputGate.recurrentWeights.values
-        val wForr = params.forgetGate.recurrentWeights.values
-
         var k = 0
         val initValues = doubleArrayOf(
           0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
@@ -52,7 +42,21 @@ class CFNLayerParametersSpec : Spek({
         val randomGenerator = mock<RandomGenerator>()
         whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
-        params.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
+        val params = CFNLayerParameters(
+          inputSize = 3,
+          outputSize = 2,
+          weightsInitializer = RandomInitializer(randomGenerator),
+          biasesInitializer = FixedValueInitializer(0.9))
+
+        val wIn = params.inputGate.weights.values
+        val wFor = params.forgetGate.weights.values
+        val wC = params.candidateWeights.values
+
+        val bIn = params.inputGate.biases.values
+        val bFor = params.forgetGate.biases.values
+
+        val wInr = params.inputGate.recurrentWeights.values
+        val wForr = params.forgetGate.recurrentWeights.values
 
         it("should contain the expected initialized weights of the input gate") {
           (0 until wIn.length).forEach { i -> assertEquals(initValues[i], wIn[i]) }
@@ -85,26 +89,38 @@ class CFNLayerParametersSpec : Spek({
 
       on("sparse input") {
 
-        val params = CFNLayerParameters(inputSize = 3, outputSize = 2, sparseInput = true)
+        val params = CFNLayerParameters(
+          inputSize = 3,
+          outputSize = 2,
+          sparseInput = true,
+          weightsInitializer = null,
+          biasesInitializer = null)
 
         val wIn = params.inputGate.weights.values
         val wFor = params.forgetGate.weights.values
         val wC = params.candidateWeights.values
 
         it("should contain sparse weights of the input gate") {
-            assertTrue { wIn is SparseNDArray }
+          assertTrue { wIn is SparseNDArray }
         }
 
         it("should contain sparse weights of the forget gate") {
-            assertTrue { wFor is SparseNDArray }
+          assertTrue { wFor is SparseNDArray }
         }
 
         it("should contain sparse weights of the candidate") {
-            assertTrue { wC is SparseNDArray }
+          assertTrue { wC is SparseNDArray }
         }
 
         it("should throw an Exception when trying to initialize") {
-            assertFails { params.initialize() }
+          assertFails {
+            CFNLayerParameters(
+              inputSize = 3,
+              outputSize = 2,
+              sparseInput = true,
+              weightsInitializer = FixedValueInitializer(0.1),
+              biasesInitializer = FixedValueInitializer(0.1))
+          }
         }
       }
     }
@@ -177,7 +193,6 @@ class CFNLayerParametersSpec : Spek({
     context("copy") {
 
       val params = CFNLayerParameters(inputSize = 3, outputSize = 2)
-      params.initialize()
       val clonedParams = params.copy()
 
       it("should return a new element") {

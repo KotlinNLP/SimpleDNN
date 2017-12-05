@@ -9,6 +9,7 @@ package deeplearning.attentionnetwork.utils
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerStructureFactory
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
@@ -26,9 +27,9 @@ object AttentionLayerUtils {
   /**
    *
    */
-  fun buildAttentionParams(): AttentionLayerParameters {
+  fun buildAttentionParams(initializer: Initializer? = null): AttentionLayerParameters {
 
-    val params = AttentionLayerParameters(attentionSize = 2)
+    val params = AttentionLayerParameters(attentionSize = 2, initializer = initializer)
 
     params.contextVector.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, -0.5)))
 

@@ -7,6 +7,8 @@
 
 package deeplearning.mergelayers.affine
 
+import com.kotlinnlp.simplednn.core.functionalities.initializers.FixedValueInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.deeplearning.mergelayers.affine.AffineLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -31,18 +33,21 @@ class AffineLayerParametersSpec : Spek({
 
       on("dense input") {
 
-        val params = AffineLayerParameters(inputSize1 = 2, inputSize2 = 3, outputSize = 2)
-
-        val w1 = params.w1.values
-        val w2 = params.w2.values
-        val b = params.b.values
-
         var k = 0
         val initValues = doubleArrayOf(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
         val randomGenerator = mock<RandomGenerator>()
         whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
-        params.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
+        val params = AffineLayerParameters(
+          inputSize1 = 2,
+          inputSize2 = 3,
+          outputSize = 2,
+          weightsInitializer = RandomInitializer(randomGenerator),
+          biasesInitializer = FixedValueInitializer(0.9))
+
+        val w1 = params.w1.values
+        val w2 = params.w2.values
+        val b = params.b.values
 
         it("should contain a dense w1") {
           assertTrue { w1 is DenseNDArray }
@@ -67,7 +72,13 @@ class AffineLayerParametersSpec : Spek({
 
       on("sparse input") {
 
-        val params = AffineLayerParameters(inputSize1 = 2, inputSize2 = 3, outputSize = 2, sparseInput = true)
+        val params = AffineLayerParameters(
+          inputSize1 = 2,
+          inputSize2 = 3,
+          outputSize = 2,
+          sparseInput = true,
+          weightsInitializer = null,
+          biasesInitializer = null)
 
         val w1 = params.w1.values
         val w2 = params.w2.values
@@ -80,8 +91,16 @@ class AffineLayerParametersSpec : Spek({
           assertTrue { w2 is SparseNDArray }
         }
 
-        it("should throw an Exception when trying to initialize") {
-          assertFails { params.initialize() }
+        it("should throw an Exception when trying to initialize them") {
+          assertFails {
+            AffineLayerParameters(
+              inputSize1 = 2,
+              inputSize2 = 3,
+              outputSize = 2,
+              sparseInput = true,
+              weightsInitializer = FixedValueInitializer(0.1),
+              biasesInitializer = FixedValueInitializer(0.1))
+          }
         }
       }
     }

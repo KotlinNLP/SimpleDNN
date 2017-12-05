@@ -7,6 +7,8 @@
 
 package layers.parameters
 
+import com.kotlinnlp.simplednn.core.functionalities.initializers.FixedValueInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -31,32 +33,34 @@ class FeedforwardLayerParametersSpec : Spek({
 
       on("dense input") {
 
-        val params = FeedforwardLayerParameters(inputSize = 3, outputSize = 2)
-
-        val w = params.unit.weights.values
-        val b = params.unit.biases.values
-
         var k = 0
         val initValues = doubleArrayOf(0.1, 0.2, 0.3, 0.4, 0.5, 0.6)
         val randomGenerator = mock<RandomGenerator>()
         whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
-        params.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
+        val params = FeedforwardLayerParameters(
+          inputSize = 3,
+          outputSize = 2,
+          weightsInitializer = RandomInitializer(randomGenerator),
+          biasesInitializer = FixedValueInitializer(0.9))
+
+        val w = params.unit.weights.values
+        val b = params.unit.biases.values
 
         it("should have the expected size") {
-            assertEquals(2, params.size)
+          assertEquals(2, params.size)
         }
 
         it("should get the expected param at index 0") {
-            assertTrue { w === params[0].values }
+          assertTrue { w === params[0].values }
         }
 
         it("should get the expected param at index 1") {
-            assertTrue { b === params[1].values  }
+          assertTrue { b === params[1].values  }
         }
 
         it("should contain dense weights") {
-            assertTrue { w is DenseNDArray }
+          assertTrue { w is DenseNDArray }
         }
 
         it("should contain the expected initialized weights") {
@@ -70,16 +74,28 @@ class FeedforwardLayerParametersSpec : Spek({
 
       on("sparse input") {
 
-        val params = FeedforwardLayerParameters(inputSize = 3, outputSize = 2, sparseInput = true)
+        val params = FeedforwardLayerParameters(
+          inputSize = 3,
+          outputSize = 2,
+          sparseInput = true,
+          weightsInitializer = null,
+          biasesInitializer = null)
 
         val w = params.unit.weights.values
 
         it("should contain sparse weights") {
-            assertTrue { w is SparseNDArray }
+          assertTrue { w is SparseNDArray }
         }
 
         it("should throw an Exception when trying to initialize") {
-            assertFails { params.initialize() }
+          assertFails {
+            FeedforwardLayerParameters(
+              inputSize = 3,
+              outputSize = 2,
+              sparseInput = true,
+              weightsInitializer = FixedValueInitializer(0.1),
+              biasesInitializer = FixedValueInitializer(0.1))
+          }
         }
       }
     }
@@ -115,7 +131,6 @@ class FeedforwardLayerParametersSpec : Spek({
     context("copy") {
 
       val params = FeedforwardLayerParameters(inputSize = 3, outputSize = 2)
-      params.initialize()
       val clonedParams = params.copy()
 
       it("should return a new element") {

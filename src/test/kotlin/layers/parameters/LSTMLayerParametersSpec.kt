@@ -7,6 +7,8 @@
 
 package layers.parameters
 
+import com.kotlinnlp.simplednn.core.functionalities.initializers.FixedValueInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -30,7 +32,23 @@ class LSTMLayerParametersSpec : Spek({
 
       on("dense input") {
 
-        val params = LSTMLayerParameters(inputSize = 3, outputSize = 2)
+        var k = 0
+        val initValues = doubleArrayOf(
+          0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
+          0.7, 0.8, 0.9, 1.0, 1.1, 1.2,
+          1.3, 1.4, 1.5, 1.6, 1.7, 1.8,
+          1.9, 2.0, 2.1, 2.2, 2.3, 2.4,
+          2.5, 2.6, 2.7, 2.8, 2.9, 3.0,
+          3.1, 3.2, 3.3, 3.4, 3.5, 3.6,
+          3.7, 3.8, 3.9, 4.0)
+        val randomGenerator = mock<RandomGenerator>()
+        whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
+
+        val params = LSTMLayerParameters(
+          inputSize = 3,
+          outputSize = 2,
+          weightsInitializer = RandomInitializer(randomGenerator),
+          biasesInitializer = FixedValueInitializer(0.9))
 
         val wIn = params.inputGate.weights.values
         val wOut = params.outputGate.weights.values
@@ -46,20 +64,6 @@ class LSTMLayerParametersSpec : Spek({
         val wOutr = params.outputGate.recurrentWeights.values
         val wForr = params.forgetGate.recurrentWeights.values
         val wCr = params.candidate.recurrentWeights.values
-
-        var k = 0
-        val initValues = doubleArrayOf(
-          0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
-          0.7, 0.8, 0.9, 1.0, 1.1, 1.2,
-          1.3, 1.4, 1.5, 1.6, 1.7, 1.8,
-          1.9, 2.0, 2.1, 2.2, 2.3, 2.4,
-          2.5, 2.6, 2.7, 2.8, 2.9, 3.0,
-          3.1, 3.2, 3.3, 3.4, 3.5, 3.6,
-          3.7, 3.8, 3.9, 4.0)
-        val randomGenerator = mock<RandomGenerator>()
-        whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
-
-        params.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
 
         it("should contain the expected initialized weights of the input gate") {
           (0 until wIn.length).forEach { i -> assertEquals(initValues[i], wIn[i]) }
@@ -112,7 +116,12 @@ class LSTMLayerParametersSpec : Spek({
 
       on("sparse input") {
 
-        val params = LSTMLayerParameters(inputSize = 3, outputSize = 2, sparseInput = true)
+        val params = LSTMLayerParameters(
+          inputSize = 3,
+          outputSize = 2,
+          sparseInput = true,
+          weightsInitializer = null,
+          biasesInitializer = null)
 
         val wIn = params.inputGate.weights.values
         val wOut = params.outputGate.weights.values
@@ -120,15 +129,15 @@ class LSTMLayerParametersSpec : Spek({
         val wC = params.candidate.weights.values
 
         it("should contain sparse weights of the input gate") {
-            assertTrue { wIn is SparseNDArray }
+          assertTrue { wIn is SparseNDArray }
         }
 
         it("should contain sparse weights of the output gate") {
-            assertTrue { wOut is SparseNDArray }
+          assertTrue { wOut is SparseNDArray }
         }
 
         it("should contain sparse weights of the forget gate") {
-            assertTrue { wFor is SparseNDArray }
+          assertTrue { wFor is SparseNDArray }
         }
 
         it("should contain sparse weights of the candidate") {
@@ -136,7 +145,14 @@ class LSTMLayerParametersSpec : Spek({
         }
 
         it("should throw an Exception when trying to initialize") {
-            assertFails { params.initialize() }
+          assertFails {
+            LSTMLayerParameters(
+              inputSize = 3,
+              outputSize = 2,
+              sparseInput = true,
+              weightsInitializer = FixedValueInitializer(0.1),
+              biasesInitializer = FixedValueInitializer(0.1))
+          }
         }
       }
     }
@@ -244,7 +260,6 @@ class LSTMLayerParametersSpec : Spek({
     context("copy") {
 
       val params = LSTMLayerParameters(inputSize = 3, outputSize = 2)
-      params.initialize()
       val clonedParams = params.copy()
 
       it("should return a new element") {

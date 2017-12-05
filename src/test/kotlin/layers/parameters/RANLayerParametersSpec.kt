@@ -7,6 +7,8 @@
 
 package layers.parameters
 
+import com.kotlinnlp.simplednn.core.functionalities.initializers.FixedValueInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -30,7 +32,21 @@ class RANLayerParametersSpec : Spek({
 
       on("dense input") {
 
-        val params = RANLayerParameters(inputSize = 3, outputSize = 2)
+        var k = 0
+        val initValues = doubleArrayOf(
+          0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
+          0.7, 0.8, 0.9, 1.0, 1.1, 1.2,
+          1.3, 1.4, 1.5, 1.6, 1.7, 1.8,
+          1.9, 2.0, 2.1, 2.2, 2.3, 2.4,
+          2.5, 2.6)
+        val randomGenerator = mock<RandomGenerator>()
+        whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
+
+        val params = RANLayerParameters(
+          inputSize = 3,
+          outputSize = 2,
+          weightsInitializer = RandomInitializer(randomGenerator),
+          biasesInitializer = FixedValueInitializer(0.9))
 
         val wIn = params.inputGate.weights.values
         val wFor = params.forgetGate.weights.values
@@ -42,18 +58,6 @@ class RANLayerParametersSpec : Spek({
 
         val wInr = params.inputGate.recurrentWeights.values
         val wForr = params.forgetGate.recurrentWeights.values
-
-        var k = 0
-        val initValues = doubleArrayOf(
-          0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
-          0.7, 0.8, 0.9, 1.0, 1.1, 1.2,
-          1.3, 1.4, 1.5, 1.6, 1.7, 1.8,
-          1.9, 2.0, 2.1, 2.2, 2.3, 2.4,
-          2.5, 2.6)
-        val randomGenerator = mock<RandomGenerator>()
-        whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
-
-        params.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
 
         it("should contain the expected initialized weights of the input gate") {
           (0 until wIn.length).forEach { i -> assertEquals(initValues[i], wIn[i]) }
@@ -90,26 +94,38 @@ class RANLayerParametersSpec : Spek({
 
       on("sparse input") {
 
-        val params = RANLayerParameters(inputSize = 3, outputSize = 2, sparseInput = true)
+        val params = RANLayerParameters(
+          inputSize = 3,
+          outputSize = 2,
+          sparseInput = true,
+          weightsInitializer = null,
+          biasesInitializer = null)
 
         val wIn = params.inputGate.weights.values
         val wFor = params.forgetGate.weights.values
         val wC = params.candidate.weights.values
 
         it("should contain sparse weights of the input gate") {
-            assertTrue { wIn is SparseNDArray }
+          assertTrue { wIn is SparseNDArray }
         }
 
         it("should contain sparse weights of the forget gate") {
-            assertTrue { wFor is SparseNDArray }
+          assertTrue { wFor is SparseNDArray }
         }
 
         it("should contain sparse weights of the candidate") {
-            assertTrue { wC is SparseNDArray }
+          assertTrue { wC is SparseNDArray }
         }
 
         it("should throw an Exception when trying to initialize") {
-            assertFails { params.initialize() }
+          assertFails {
+            RANLayerParameters(
+              inputSize = 3,
+              outputSize = 2,
+              sparseInput = true,
+              weightsInitializer = FixedValueInitializer(0.1),
+              biasesInitializer = FixedValueInitializer(0.1))
+          }
         }
       }
     }
@@ -189,7 +205,6 @@ class RANLayerParametersSpec : Spek({
     context("copy") {
 
       val params = RANLayerParameters(inputSize = 3, outputSize = 2)
-      params.initialize()
       val clonedParams = params.copy()
 
       it("should return a new element") {

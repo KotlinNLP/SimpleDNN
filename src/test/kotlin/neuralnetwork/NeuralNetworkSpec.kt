@@ -7,6 +7,8 @@
 
 package neuralnetwork
 
+import com.kotlinnlp.simplednn.core.functionalities.initializers.FixedValueInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
@@ -48,11 +50,11 @@ class NeuralNetworkSpec: Spek({
 
       network.dump(outputStream)
 
-//      outputStream.toByteArray().forEachIndexed { i, b ->
-//        print("%d, ".format(b))
-//        if ((i + 1) % 20 == 0) print("\n")
-//      }
-//      print("\n")
+      //      outputStream.toByteArray().forEachIndexed { i, b ->
+      //        print("%d, ".format(b))
+      //        if ((i + 1) % 20 == 0) print("\n")
+      //      }
+      //      print("\n")
 
       it("should write to the output stream") {
         assertTrue { outputStream.size() > 0 }
@@ -61,17 +63,17 @@ class NeuralNetworkSpec: Spek({
 
     on("initialization") {
 
-      val network = NeuralNetwork(
-        LayerConfiguration(size = 3),
-        LayerConfiguration(size = 2, connectionType = LayerType.Connection.Feedforward)
-      )
-
       var k = 0
       val initValues = doubleArrayOf(0.1, 0.2, 0.3, 0.4, 0.5, 0.6)
       val randomGenerator = mock<RandomGenerator>()
       whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
-      network.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
+      val network = NeuralNetwork(
+        LayerConfiguration(size = 3),
+        LayerConfiguration(size = 2, connectionType = LayerType.Connection.Feedforward),
+        weightsInitializer = RandomInitializer(randomGenerator),
+        biasesInitializer = FixedValueInitializer(0.9)
+      )
 
       val params = network.model.paramsPerLayer[0] as FeedforwardLayerParameters
       val w = params.unit.weights.values

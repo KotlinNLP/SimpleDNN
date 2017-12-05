@@ -7,6 +7,7 @@
 
 package deeplearning.attentionnetwork
 
+import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.nhaarman.mockito_kotlin.mock
@@ -27,13 +28,11 @@ class AttentionLayerParametersSpec : Spek({
 
     context("initialization") {
 
-      val params = AttentionLayerUtils.buildAttentionParams()
       val randomGenerator = mock<RandomGenerator>()
-
-      var i: Double = 0.0
+      var i = 0.0
       whenever(randomGenerator.next()).thenAnswer { i++ }
 
-      params.initialize(randomGenerator)
+      val params = AttentionLayerUtils.buildAttentionParams(initializer = RandomInitializer(randomGenerator))
 
       it("should have a context vector with the expected initialized values") {
         assertTrue {

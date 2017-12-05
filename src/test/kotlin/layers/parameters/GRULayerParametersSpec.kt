@@ -7,6 +7,8 @@
 
 package layers.parameters
 
+import com.kotlinnlp.simplednn.core.functionalities.initializers.FixedValueInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -30,7 +32,21 @@ class GRULayerParametersSpec : Spek({
 
       on("dense input") {
 
-        val params = GRULayerParameters(inputSize = 3, outputSize = 2)
+        var k = 0
+        val initValues = doubleArrayOf(
+          0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
+          0.7, 0.8, 0.9, 1.0, 1.1, 1.2,
+          1.3, 1.4, 1.5, 1.6, 1.7, 1.8,
+          1.9, 2.0, 2.1, 2.2, 2.3, 2.4,
+          2.5, 2.6, 2.7, 2.8, 2.9, 3.0)
+        val randomGenerator = mock<RandomGenerator>()
+        whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
+
+        val params = GRULayerParameters(
+          inputSize = 3,
+          outputSize = 2,
+          weightsInitializer = RandomInitializer(randomGenerator),
+          biasesInitializer = FixedValueInitializer(0.9))
 
         val wc = params.candidate.weights.values
         val wr = params.resetGate.weights.values
@@ -43,18 +59,6 @@ class GRULayerParametersSpec : Spek({
         val wcr = params.candidate.recurrentWeights.values
         val wrr = params.resetGate.recurrentWeights.values
         val wpr = params.partitionGate.recurrentWeights.values
-
-        var k = 0
-        val initValues = doubleArrayOf(
-          0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
-          0.7, 0.8, 0.9, 1.0, 1.1, 1.2,
-          1.3, 1.4, 1.5, 1.6, 1.7, 1.8,
-          1.9, 2.0, 2.1, 2.2, 2.3, 2.4,
-          2.5, 2.6, 2.7, 2.8, 2.9, 3.0)
-        val randomGenerator = mock<RandomGenerator>()
-        whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
-
-        params.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
 
         it("should contain the expected initialized weights of the candidate") {
           (0 until wc.length).forEach { i -> assertEquals(initValues[i], wc[i]) }
@@ -95,26 +99,38 @@ class GRULayerParametersSpec : Spek({
 
       on("sparse input") {
 
-        val params = GRULayerParameters(inputSize = 3, outputSize = 2, sparseInput = true)
+        val params = GRULayerParameters(
+          inputSize = 3,
+          outputSize = 2,
+          sparseInput = true,
+          weightsInitializer = null,
+          biasesInitializer = null)
 
         val wr = params.resetGate.weights.values
         val wp = params.partitionGate.weights.values
         val wc = params.candidate.weights.values
 
         it("should contain sparse weights of the reset gate") {
-            assertTrue { wr is SparseNDArray }
+          assertTrue { wr is SparseNDArray }
         }
 
         it("should contain sparse weights of the partition gate") {
-            assertTrue { wp is SparseNDArray }
+          assertTrue { wp is SparseNDArray }
         }
 
         it("should contain sparse weights of the candidate") {
-            assertTrue { wc is SparseNDArray }
+          assertTrue { wc is SparseNDArray }
         }
 
         it("should throw an Exception when trying to initialize") {
-            assertFails { params.initialize() }
+          assertFails {
+            GRULayerParameters(
+              inputSize = 3,
+              outputSize = 2,
+              sparseInput = true,
+              weightsInitializer = FixedValueInitializer(0.1),
+              biasesInitializer = FixedValueInitializer(0.1))
+          }
         }
       }
     }
@@ -201,7 +217,6 @@ class GRULayerParametersSpec : Spek({
     context("copy") {
 
       val params = GRULayerParameters(inputSize = 3, outputSize = 2)
-      params.initialize()
       val clonedParams = params.copy()
 
       it("should return a new element") {

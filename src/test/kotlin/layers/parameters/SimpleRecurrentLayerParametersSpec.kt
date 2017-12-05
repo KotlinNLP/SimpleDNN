@@ -7,6 +7,8 @@
 
 package layers.parameters
 
+import com.kotlinnlp.simplednn.core.functionalities.initializers.FixedValueInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -30,18 +32,20 @@ class SimpleRecurrentLayerParametersSpec : Spek({
 
       on("dense input") {
 
-        val params = SimpleRecurrentLayerParameters(inputSize = 3, outputSize = 2)
-
-        val w = params.unit.weights.values
-        val b = params.unit.biases.values
-        val wr = params.unit.recurrentWeights.values
-
         var k = 0
         val initValues = doubleArrayOf(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
         val randomGenerator = mock<RandomGenerator>()
         whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
-        params.initialize(randomGenerator = randomGenerator, biasesInitValue = 0.9)
+        val params = SimpleRecurrentLayerParameters(
+          inputSize = 3,
+          outputSize = 2,
+          weightsInitializer = RandomInitializer(randomGenerator),
+          biasesInitializer = FixedValueInitializer(0.9))
+
+        val w = params.unit.weights.values
+        val b = params.unit.biases.values
+        val wr = params.unit.recurrentWeights.values
 
         it("should contain the expected initialized weights") {
           (0 until w.length).forEach { i -> assertEquals(initValues[i], w[i]) }
@@ -58,16 +62,28 @@ class SimpleRecurrentLayerParametersSpec : Spek({
 
       on("sparse input") {
 
-        val params = SimpleRecurrentLayerParameters(inputSize = 3, outputSize = 2, sparseInput = true)
+        val params = SimpleRecurrentLayerParameters(
+          inputSize = 3,
+          outputSize = 2,
+          sparseInput = true,
+          weightsInitializer = null,
+          biasesInitializer = null)
 
         val w = params.unit.weights.values
 
         it("should contain sparse weights") {
-            assertTrue { w is SparseNDArray }
+          assertTrue { w is SparseNDArray }
         }
 
         it("should throw an Exception when trying to initialize") {
-            assertFails { params.initialize() }
+          assertFails {
+            SimpleRecurrentLayerParameters(
+              inputSize = 3,
+              outputSize = 2,
+              sparseInput = true,
+              weightsInitializer = FixedValueInitializer(0.1),
+              biasesInitializer = FixedValueInitializer(0.1))
+          }
         }
       }
     }
@@ -110,7 +126,6 @@ class SimpleRecurrentLayerParametersSpec : Spek({
     context("copy") {
 
       val params = SimpleRecurrentLayerParameters(inputSize = 3, outputSize = 2)
-      params.initialize()
       val clonedParams = params.copy()
 
       it("should return a new element") {
