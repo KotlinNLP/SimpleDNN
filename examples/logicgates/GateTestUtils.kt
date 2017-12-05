@@ -99,8 +99,8 @@ object GateTestUtils {
                            epochs: Int): Double {
 
     val updateMethod = LearningRateMethod(
-        learningRate = 0.01,
-        decayMethod = HyperbolicDecay(decay = 0.0, initLearningRate = 0.01))
+      learningRate = 0.01,
+      decayMethod = HyperbolicDecay(decay = 0.0, initLearningRate = 0.01))
 
     val optimizer = ParamsOptimizer(
       params = neuralNetwork.model,
@@ -114,8 +114,8 @@ object GateTestUtils {
       lossCalculator = SoftmaxCrossEntropyCalculator())
 
     val validationHelper =  FeedforwardValidationHelper(
-        neuralProcessor = neuralProcessor,
-        outputEvaluationFunction = evaluationFunction)
+      neuralProcessor = neuralProcessor,
+      outputEvaluationFunction = evaluationFunction)
 
     trainingHelper.train(
       trainingExamples = examples,
@@ -127,5 +127,4 @@ object GateTestUtils {
 
     return trainingHelper.statistics.lastAccuracy
   }
-
 }
