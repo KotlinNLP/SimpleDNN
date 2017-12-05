@@ -22,7 +22,8 @@ import com.kotlinnlp.simplednn.core.layers.ParametersUnit
 class RANLayerParameters(
   inputSize: Int,
   outputSize: Int,
-  private val sparseInput: Boolean = false
+  private val sparseInput: Boolean = false,
+  private val meProp: Boolean = false
 ) : LayerParameters<RANLayerParameters>(inputSize = inputSize, outputSize = outputSize) {
 
   companion object {
@@ -40,7 +41,8 @@ class RANLayerParameters(
   val inputGate = RecurrentParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
-    sparseInput = this.sparseInput)
+    sparseInput = this.sparseInput,
+    meProp = this.meProp)
 
   /**
    *
@@ -48,7 +50,8 @@ class RANLayerParameters(
   val forgetGate = RecurrentParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
-    sparseInput = this.sparseInput)
+    sparseInput = this.sparseInput,
+    meProp = this.meProp)
 
   /**
    *
@@ -56,7 +59,8 @@ class RANLayerParameters(
   val candidate = ParametersUnit(
     inputSize = inputSize,
     outputSize = outputSize,
-    sparseInput = this.sparseInput)
+    sparseInput = this.sparseInput,
+    meProp = this.meProp)
 
   /**
    * The list of all parameters.

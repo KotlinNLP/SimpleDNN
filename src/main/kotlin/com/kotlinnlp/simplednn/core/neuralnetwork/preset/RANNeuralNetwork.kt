@@ -18,13 +18,15 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 object RANNeuralNetwork {
 
   operator fun invoke(inputSize: Int,
-                      hiddenSize: Int,
-                      hiddenActivation: ActivationFunction?,
-                      outputSize: Int,
-                      outputActivation: ActivationFunction?,
                       inputType: LayerType.Input = LayerType.Input.Dense,
                       inputDropout: Double = 0.0,
-                      hiddenDropout: Double = 0.0) = NeuralNetwork(
+                      hiddenSize: Int,
+                      hiddenActivation: ActivationFunction?,
+                      hiddenDropout: Double = 0.0,
+                      hiddenMeProp: Boolean = false,
+                      outputSize: Int,
+                      outputActivation: ActivationFunction?,
+                      outputMeProp: Boolean = false) = NeuralNetwork(
     LayerConfiguration(
       size = inputSize,
       inputType = inputType,
@@ -34,11 +36,14 @@ object RANNeuralNetwork {
       size = hiddenSize,
       activationFunction = hiddenActivation,
       connectionType = LayerType.Connection.RAN,
-      dropout = hiddenDropout
+      dropout = hiddenDropout,
+      meProp = hiddenMeProp
     ),
     LayerConfiguration(
       size = outputSize,
       activationFunction = outputActivation,
-      connectionType = LayerType.Connection.Feedforward)
+      connectionType = LayerType.Connection.Feedforward,
+      meProp = outputMeProp
+    )
   )
 }
