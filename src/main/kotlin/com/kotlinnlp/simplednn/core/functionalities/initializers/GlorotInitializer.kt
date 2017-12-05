@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.functionalities.initializers
 
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import java.util.*
 
 /**
  * An initializer of dense arrays with the 'Glorot Initialization', as explained by Xavier Glorot.
@@ -32,6 +33,11 @@ class GlorotInitializer(private val enablePseudoRandom: Boolean = true, private 
   }
 
   /**
+   * The random generator of seeds for the pseudo-random initialization.
+   */
+  private val seedGenerator = Random(this.seed)
+
+  /**
    * Initialize the values of the given [array].
    *
    * @param array a dense array
@@ -41,7 +47,7 @@ class GlorotInitializer(private val enablePseudoRandom: Boolean = true, private 
     val randomGenerator = FixedRangeRandom(
       radius = Math.sqrt(6.0 / (array.rows + array.columns)),
       enablePseudoRandom = this.enablePseudoRandom,
-      seed = this.seed)
+      seed = this.seedGenerator.nextLong())
 
     array.randomize(randomGenerator)
   }
