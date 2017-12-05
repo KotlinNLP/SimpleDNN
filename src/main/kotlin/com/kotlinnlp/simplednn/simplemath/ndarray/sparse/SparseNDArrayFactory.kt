@@ -27,9 +27,11 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
    *
    * @return a new empty [SparseNDArray]
    */
-  override fun emptyArray(shape: Shape): SparseNDArray {
-    TODO("not implemented")
-  }
+  override fun emptyArray(shape: Shape) = SparseNDArray(
+    shape = shape,
+    rows = arrayOf(),
+    columns = arrayOf(),
+    values = arrayOf())
 
   /**
    *
