@@ -8,6 +8,8 @@
 package com.kotlinnlp.simplednn.deeplearning.sequenceencoder
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
@@ -25,12 +27,16 @@ import java.io.Serializable
  * @property inputSize the size of the input layer
  * @property outputSize the size of the output layer
  * @property outputActivation the activation function of the output layer (could be null)
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
 class SequenceFeedforwardNetwork(
   val inputType: LayerType.Input,
   val inputSize: Int,
   val outputSize: Int,
-  val outputActivation: ActivationFunction?) : Serializable {
+  val outputActivation: ActivationFunction?,
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = GlorotInitializer()) : Serializable {
 
   companion object {
 
@@ -60,7 +66,11 @@ class SequenceFeedforwardNetwork(
     LayerConfiguration(
       size = this.outputSize,
       activationFunction = this.outputActivation,
-      connectionType = LayerType.Connection.Feedforward))
+      connectionType = LayerType.Connection.Feedforward
+    ),
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer
+  )
 
   /**
    * Serialize this [SequenceFeedforwardNetwork] and write it to an output stream.
@@ -68,14 +78,4 @@ class SequenceFeedforwardNetwork(
    * @param outputStream the [OutputStream] in which to write this serialized [SequenceFeedforwardNetwork]
    */
   fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
-
-  /**
-   * Initialize the weight of the network using the default random generator.
-   *
-   * @return this BiRNN
-   */
-  fun initialize(): SequenceFeedforwardNetwork {
-    this.network.initialize()
-    return this
-  }
 }

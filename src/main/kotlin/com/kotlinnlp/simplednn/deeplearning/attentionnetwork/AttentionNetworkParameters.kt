@@ -8,8 +8,8 @@
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerParametersFactory
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
@@ -18,11 +18,19 @@ import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.Atte
 
 /**
  * The parameters of the Attention Network.
+ *
+ * @property inputSize the size of the input arrays
+ * @property attentionSize the size of the attention arrays
+ * @property sparseInput whether the input arrays are sparse
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
 class AttentionNetworkParameters(
   val inputSize: Int,
   val attentionSize: Int,
-  val sparseInput: Boolean = false
+  val sparseInput: Boolean = false,
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = GlorotInitializer()
 ) : IterableParams<AttentionNetworkParameters>() {
 
   companion object {
@@ -46,34 +54,19 @@ class AttentionNetworkParameters(
     inputSize = this.inputSize,
     outputSize = this.attentionSize,
     connectionType = LayerType.Connection.Feedforward,
-    sparseInput = this.sparseInput) as FeedforwardLayerParameters
+    sparseInput = this.sparseInput,
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer) as FeedforwardLayerParameters
 
   /**
    * The parameters of the attention layer.
    */
-  val attentionParams = AttentionLayerParameters(attentionSize = this.attentionSize)
+  val attentionParams = AttentionLayerParameters(attentionSize = this.attentionSize, initializer = weightsInitializer)
 
   /**
    * The list of all parameters.
    */
   override val paramsList: Array<UpdatableArray<*>> = this.transformParams.paramsList + this.attentionParams.paramsList
-
-  /**
-   * Initialize the parameters of the sub-networks using the given random generator and value for the biases.
-   *
-   * @param randomGenerator a [RandomGenerator] (default: fixed range with radius 0.08)
-   * @param biasesInitValue the init value for all the biases (default: 0.0)
-   *
-   * @return this [AttentionNetworkParameters]
-   */
-  fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
-                 biasesInitValue: Double = 0.0): AttentionNetworkParameters {
-
-    this.transformParams.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
-    this.attentionParams.initialize(randomGenerator = randomGenerator)
-
-    return this
-  }
 
   /**
    * @return a new [AttentionNetworkParameters] containing a copy of all values of this

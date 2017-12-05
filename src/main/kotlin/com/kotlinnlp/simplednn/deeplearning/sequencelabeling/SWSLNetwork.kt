@@ -9,6 +9,8 @@ package com.kotlinnlp.simplednn.deeplearning.sequencelabeling
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.deeplearning.embeddings.EmbeddingsMap
@@ -38,6 +40,8 @@ import java.io.Serializable
  * @property rightContextSize the number of elements used to create the right context (default 3)
  * @property labelEmbeddingSize the size of the dense-representation of a label (default 25)
  * @property dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.25.
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
 class SWSLNetwork(
   val elementSize: Int,
@@ -47,7 +51,9 @@ class SWSLNetwork(
   val leftContextSize: Int = 3,
   val rightContextSize: Int = 3,
   val labelEmbeddingSize: Int = 25,
-  val dropout: Double = 0.0
+  val dropout: Double = 0.0,
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = GlorotInitializer()
 ) : Serializable {
 
   companion object {
@@ -89,17 +95,13 @@ class SWSLNetwork(
     hiddenActivation = this.hiddenLayerActivation,
     outputSize = this.numberOfLabels,
     outputActivation = Softmax(),
-    hiddenDropout = this.dropout)
+    hiddenDropout = this.dropout,
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer
+  )
 
   /**
    * The embeddings associated to each output label
    */
   val labelsEmbeddings = EmbeddingsMap<Int>(size = this.labelEmbeddingSize)
-
-  /**
-   * Initialize the weights of the classifier.
-   */
-  init {
-    this.classifier.initialize()
-  }
 }

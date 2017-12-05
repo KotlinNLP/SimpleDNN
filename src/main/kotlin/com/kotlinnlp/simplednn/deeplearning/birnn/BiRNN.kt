@@ -8,8 +8,8 @@
 package com.kotlinnlp.simplednn.deeplearning.birnn
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
@@ -34,6 +34,8 @@ import java.io.Serializable
  * @property dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.25.
  * @property outputSize the size of the [BiRNN] output layer results from the concatenation
  *                      of the hidden layers of each RNN
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
 class BiRNN(
   val inputType: LayerType.Input,
@@ -41,7 +43,9 @@ class BiRNN(
   val hiddenSize: Int,
   val hiddenActivation: ActivationFunction?,
   val dropout: Double = 0.0,
-  val recurrentConnectionType: LayerType.Connection) : Serializable {
+  val recurrentConnectionType: LayerType.Connection,
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = GlorotInitializer()) : Serializable {
 
   companion object {
 
@@ -78,7 +82,11 @@ class BiRNN(
     LayerConfiguration(
       size = this.hiddenSize,
       activationFunction = this.hiddenActivation,
-      connectionType = this.recurrentConnectionType))
+      connectionType = this.recurrentConnectionType
+    ),
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer
+  )
 
   /**
    * The Recurrent Neural Network to process the sequence right-to-left.
@@ -91,7 +99,11 @@ class BiRNN(
     LayerConfiguration(
       size = this.hiddenSize,
       activationFunction = this.hiddenActivation,
-      connectionType = this.recurrentConnectionType))
+      connectionType = this.recurrentConnectionType
+    ),
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer
+  )
 
   /**
    * The model of this [BiRNN] containing its parameters.
@@ -113,22 +125,4 @@ class BiRNN(
    * @param outputStream the [OutputStream] in which to write this serialized [BiRNN]
    */
   fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
-
-  /**
-   * Initialize the weight of the sub-networks [leftToRightNetwork] and [rightToLeftNetwork] using given random
-   * generator and value for the biases.
-   *
-   * @param randomGenerator a [RandomGenerator] (default: fixed range with radius 0.08)
-   * @param biasesInitValue the init value for all the biases (default: 0.0)
-   *
-   * @return this BiRNN
-   */
-  fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
-                 biasesInitValue: Double = 0.0): BiRNN {
-
-    this.leftToRightNetwork.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
-    this.rightToLeftNetwork.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
-
-    return this
-  }
 }

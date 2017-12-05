@@ -8,6 +8,8 @@
 package com.kotlinnlp.simplednn.deeplearning.birnn.deepbirnn
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN
 import com.kotlinnlp.simplednn.utils.Serializer
@@ -28,14 +30,20 @@ import java.io.Serializable
  * @property hiddenActivation the activation function of the hidden layer
  * @property recurrentConnectionType type of recurrent neural network (e.g. LSTM, GRU, CFN, SimpleRNN)
  * @property numberOfLayers number of stacked BiRNNs
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  *
  * Note: each BiRNN has the hidden layer of the same size as of its input.
  */
-class DeepBiRNN(val inputType: LayerType.Input,
-                val inputSize: Int,
-                val hiddenActivation: ActivationFunction?,
-                val recurrentConnectionType: LayerType.Connection,
-                val numberOfLayers: Int = 1) : Serializable {
+class DeepBiRNN(
+  val inputType: LayerType.Input,
+  val inputSize: Int,
+  val hiddenActivation: ActivationFunction?,
+  val recurrentConnectionType: LayerType.Connection,
+  val numberOfLayers: Int = 1,
+  private val weightsInitializer: Initializer? = GlorotInitializer(),
+  private val biasesInitializer: Initializer? = GlorotInitializer()
+) : Serializable {
 
   companion object {
 
@@ -58,58 +66,12 @@ class DeepBiRNN(val inputType: LayerType.Input,
   /**
    * Stacked BiRNNs
    */
-  val layers: Array<BiRNN>
+  val layers: List<BiRNN> = this.buildBiRNNLayers()
 
   /**
    * The size of the output layer (of the last BiRNN)
    */
-  val outputSize: Int get() = layers.last().outputSize
-
-  init {
-    require(this.numberOfLayers > 0) {
-      "required at least one BiRNN layer"
-    }
-
-    require(this.recurrentConnectionType.property == LayerType.Property.Recurrent) {
-      "required recurrentConnectionType with Recurrent property"
-    }
-
-    val initLayers = arrayOfNulls<BiRNN>(size = this.numberOfLayers)
-
-    for (i in 0 until this.numberOfLayers){
-
-      initLayers[i] = if (i == 0) {
-
-        BiRNN(
-          inputSize = this.inputSize,
-          hiddenSize = this.inputSize,
-          hiddenActivation = this.hiddenActivation,
-          recurrentConnectionType = this.recurrentConnectionType,
-          inputType = this.inputType)
-
-      } else {
-
-        BiRNN(
-          inputSize = initLayers[i - 1]!!.outputSize,
-          hiddenSize = initLayers[i - 1]!!.outputSize,
-          hiddenActivation = this.hiddenActivation,
-          recurrentConnectionType = this.recurrentConnectionType,
-          inputType = LayerType.Input.Dense)
-      }
-    }
-
-    this.layers = initLayers.requireNoNulls()
-  }
-
-  /**
-   * Initialize the weight of all the [BiRNN] contained in the [layers]
-   *
-   * @return this DeepBiRNN
-   */
-  fun initialize(): DeepBiRNN {
-    this.layers.forEach { it.initialize() }
-    return this
-  }
+  val outputSize: Int = this.layers.last().outputSize
 
   /**
    * Serialize this [DeepBiRNN] and write it to an output stream.
@@ -117,4 +79,47 @@ class DeepBiRNN(val inputType: LayerType.Input,
    * @param outputStream the [OutputStream] in which to write this serialized [DeepBiRNN]
    */
   fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
+
+  /**
+   *
+   */
+  private fun buildBiRNNLayers(): List<BiRNN> {
+    require(this.numberOfLayers > 0) { "required at least one BiRNN layer" }
+    require(this.recurrentConnectionType.property == LayerType.Property.Recurrent) {
+      "required recurrentConnectionType with Recurrent property"
+    }
+
+    var prevInputSize: Int = this.inputSize
+
+    return List(
+      size = this.numberOfLayers,
+      init = { i ->
+
+        val biRNN = this.buildBiRNN(
+          inputSize = prevInputSize,
+          inputType = if (i == 0) this.inputType else LayerType.Input.Dense,
+          hiddenSize = prevInputSize)
+
+        prevInputSize = biRNN.outputSize
+
+        biRNN
+      }
+    )
+  }
+
+  /**
+   * @param inputSize the size of the input arrays
+   * @param inputSize the type of the input arrays
+   * @param hiddenSize the output size of each RNN
+   *
+   * @return a new BiRNN
+   */
+  private fun buildBiRNN(inputSize: Int, inputType: LayerType.Input, hiddenSize: Int) = BiRNN(
+    inputSize = inputSize,
+    inputType = inputType,
+    hiddenSize = hiddenSize,
+    hiddenActivation = this.hiddenActivation,
+    recurrentConnectionType = this.recurrentConnectionType,
+    weightsInitializer = this.weightsInitializer,
+    biasesInitializer = this.biasesInitializer)
 }

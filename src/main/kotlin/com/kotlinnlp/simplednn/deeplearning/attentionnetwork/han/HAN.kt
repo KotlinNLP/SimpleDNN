@@ -8,8 +8,8 @@
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
@@ -34,6 +34,8 @@ import java.io.Serializable
  * @property compressionFactors an array with [hierarchySize] elements, which defines the compression factor of the
  *                              input size of each hierarchical level in respect of its output, starting from the lowest
  *                              level. By default the first factor is 2.0, the others 1.0.
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  * @param dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.25.
  */
 class HAN(
@@ -48,6 +50,8 @@ class HAN(
   val compressionFactors: Array<Double> = Array(
     size = hierarchySize,
     init = { i -> if (i == 0) 2.0 else 1.0 }),
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = GlorotInitializer(),
   dropout: Double = 0.0
 ) : Serializable {
 
@@ -94,7 +98,9 @@ class HAN(
         hiddenSize = this.getBiRNNOutputSize(inputSize = inputSize, levelIndex = i) / 2,
         hiddenActivation = this.biRNNsActivation,
         dropout = dropout,
-        recurrentConnectionType = this.biRNNsConnectionType)
+        recurrentConnectionType = this.biRNNsConnectionType,
+        weightsInitializer = weightsInitializer,
+        biasesInitializer = biasesInitializer)
     }
   )
 
@@ -108,7 +114,9 @@ class HAN(
       AttentionNetworkParameters(
         inputSize = this.biRNNs[i].outputSize,
         attentionSize = this.attentionSize,
-        sparseInput = false
+        sparseInput = false,
+        weightsInitializer = weightsInitializer,
+        biasesInitializer = biasesInitializer
       )
     }
   )
@@ -126,7 +134,9 @@ class HAN(
       size = this.outputSize,
       activationFunction = this.outputActivation,
       connectionType = LayerType.Connection.Feedforward
-    )
+    ),
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer
   )
 
   /**
@@ -137,26 +147,6 @@ class HAN(
     attentionNetworks = Array(size = this.attentionNetworksParams.size, init = { i -> this.attentionNetworksParams[i]}),
     outputNetwork = this.outputNetwork.model
   )
-
-  /**
-   * Initialize the parameters of the sub-networks using the given random generator and value for the biases.
-   *
-   * @param randomGenerator a [RandomGenerator] (default: fixed range with radius 0.08)
-   * @param biasesInitValue the init value for all the biases (default: 0.0)
-   *
-   * @return this [HAN]
-   */
-  fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
-                 biasesInitValue: Double = 0.0): HAN {
-
-    this.biRNNs.forEach { it.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue) }
-    this.attentionNetworksParams.forEach {
-      it.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
-    }
-    this.outputNetwork.initialize(randomGenerator = randomGenerator, biasesInitValue = biasesInitValue)
-
-    return this
-  }
 
   /**
    * Serialize this [HAN] and write it to an output stream.

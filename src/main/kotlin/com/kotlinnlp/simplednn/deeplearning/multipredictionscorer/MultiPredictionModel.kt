@@ -7,6 +7,8 @@
 
 package com.kotlinnlp.simplednn.deeplearning.multipredictionscorer
 
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.utils.Serializer
@@ -18,8 +20,14 @@ import java.io.Serializable
  * The MultiPredictionModel contains the models of the sub-networks of a MultiPredictionScorer.
  *
  * @param networksConfig the list of configurations of the [FeedforwardNeuralNetwork]s
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
-class MultiPredictionModel(vararg networksConfig: MultiPredictionNetworkConfig) : Serializable {
+class MultiPredictionModel(
+  vararg networksConfig: MultiPredictionNetworkConfig,
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = GlorotInitializer()
+) : Serializable {
 
   companion object {
 
@@ -53,8 +61,10 @@ class MultiPredictionModel(vararg networksConfig: MultiPredictionNetworkConfig) 
         outputActivation = networksConfig[i].outputActivation,
         inputType = networksConfig[i].inputType,
         inputDropout = networksConfig[i].inputDropout,
-        hiddenDropout = networksConfig[i].hiddenDropout
-      ).initialize()
+        hiddenDropout = networksConfig[i].hiddenDropout,
+        weightsInitializer = weightsInitializer,
+        biasesInitializer = biasesInitializer
+      )
     }
   )
 

@@ -8,6 +8,8 @@
 package com.kotlinnlp.simplednn.deeplearning.treernn
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
@@ -28,18 +30,22 @@ import java.io.Serializable
  *
  * @property inputLayerSize size of the input layer
  * @property hiddenLayerSize size of the hidden layer
- * @property hiddenLayerConnectionType type of the recurrent layer (GRU, LSTM, CFN)
+ * @property hiddenLayerConnectionType type of the recurrent layer
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
 class TreeRNN(
   val inputLayerSize: Int,
   val hiddenLayerSize: Int,
-  val hiddenLayerConnectionType: LayerType.Connection = LayerType.Connection.GRU
-) : Serializable {
+  val hiddenLayerConnectionType: LayerType.Connection = LayerType.Connection.GRU,
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = GlorotInitializer()
+) {
 
   companion object {
 
     /**
-     * Private val used to serialize the class (needed from Serializable)
+     * Private val used to serialize the class (needed from Serializable).
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
@@ -57,7 +63,9 @@ class TreeRNN(
     LayerConfiguration(size = this.inputLayerSize),
     LayerConfiguration(size = this.hiddenLayerSize,
       activationFunction = Tanh(), // fixed
-      connectionType = this.hiddenLayerConnectionType)
+      connectionType = this.hiddenLayerConnectionType),
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer
   )
 
   /**
@@ -67,7 +75,9 @@ class TreeRNN(
     LayerConfiguration(size = this.inputLayerSize),
     LayerConfiguration(size = this.hiddenLayerSize,
       activationFunction = Tanh(), // fixed
-      connectionType = this.hiddenLayerConnectionType)
+      connectionType = this.hiddenLayerConnectionType),
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer
   )
 
   /**
@@ -79,7 +89,9 @@ class TreeRNN(
     LayerConfiguration(size = this.hiddenLayerSize * 2),
     LayerConfiguration(size = this.outputLayerSize,
       activationFunction = Tanh(), // fixed
-      connectionType = LayerType.Connection.Feedforward)
+      connectionType = LayerType.Connection.Feedforward),
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer
   )
 
   /**
@@ -98,20 +110,5 @@ class TreeRNN(
     require(hiddenLayerConnectionType.property == LayerType.Property.Recurrent) {
       "required hiddenLayerConnectionType with Recurrent property"
     }
-  }
-
-  /**
-   * Initialize the weight of the sub-networks [leftRNN], [rightRNN], [concatNetwork]
-   * using the default random generator.
-   *
-   * @return this [TreeRNN]
-   */
-  fun initialize(): TreeRNN {
-
-    this.leftRNN.initialize()
-    this.rightRNN.initialize()
-    this.concatNetwork.initialize()
-
-    return this
   }
 }
