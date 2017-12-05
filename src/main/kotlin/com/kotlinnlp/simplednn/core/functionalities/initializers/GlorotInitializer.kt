@@ -18,10 +18,15 @@ import java.util.*
  * [Understanding the difficulty of training deep feedforward neural networks]
  * (http://proceedings.mlr.press/v9/glorot10a/glorot10a.pdf)
  *
- * @param enablePseudoRandom if true use pseudo-random with a seed
- * @param seed seed used for the pseudo-random
+ * @param gain the gain that determines the scale of the generated values (default = 1.0)
+ * @param enablePseudoRandom if true use pseudo-random with a seed (default = true)
+ * @param seed seed used for the pseudo-random (default = 743)
  */
-class GlorotInitializer(private val enablePseudoRandom: Boolean = true, private val seed: Long = 743) : Initializer {
+class GlorotInitializer(
+  private val gain: Double = 1.0,
+  private val enablePseudoRandom: Boolean = true,
+  private val seed: Long = 743
+) : Initializer {
 
   companion object {
 
@@ -45,7 +50,7 @@ class GlorotInitializer(private val enablePseudoRandom: Boolean = true, private 
   override fun initialize(array: DenseNDArray) {
 
     val randomGenerator = FixedRangeRandom(
-      radius = Math.sqrt(6.0 / (array.rows + array.columns)),
+      radius = this.gain * Math.sqrt(6.0 / (array.rows + array.columns)),
       enablePseudoRandom = this.enablePseudoRandom,
       seed = this.seedGenerator.nextLong())
 
