@@ -89,7 +89,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    *
    * @return the errors of the recursion of this unit
    */
-  fun getRecurrentErrors(parameters: RecurrentParametersUnit, mePropMask: NDArrayMask? = null): NDArray<*> {
+  fun getRecurrentErrors(parameters: RecurrentParametersUnit, mePropMask: NDArrayMask? = null): DenseNDArray {
 
     val wRec: DenseNDArray = parameters.recurrentWeights.values as DenseNDArray
 
