@@ -33,7 +33,12 @@ object GateTestUtils {
    */
   fun testAccuracyWithSoftmax(inputSize: Int, examples: ArrayList<SimpleExample<DenseNDArray>>, epochs: Int): Double {
 
-    val neuralNetwork = this.buildSoftmaxNetwork(inputSize)
+    val neuralNetwork = FeedforwardNeuralNetwork(
+      inputSize = inputSize,
+      hiddenSize = 10,
+      hiddenActivation = ELU(),
+      outputSize = 2,
+      outputActivation = Softmax())
 
     return this.testAccuracy(
       neuralNetwork = neuralNetwork,
@@ -47,47 +52,18 @@ object GateTestUtils {
    */
   fun testAccuracyWithSigmoid(inputSize: Int, examples: ArrayList<SimpleExample<DenseNDArray>>, epochs: Int): Double {
 
-    val neuralNetwork = this.buildSigmoidNetwork(inputSize)
-
-    return this.testAccuracy(
-      neuralNetwork = neuralNetwork,
-      examples = examples,
-      evaluationFunction = MulticlassEvaluation(),
-      epochs = epochs)
-  }
-
-  /**
-   *
-   */
-  private fun buildSigmoidNetwork(inputSize: Int): NeuralNetwork {
-
-    val nn = FeedforwardNeuralNetwork(
+    val neuralNetwork = FeedforwardNeuralNetwork(
       inputSize = inputSize,
       hiddenSize = 10,
       hiddenActivation = ELU(),
       outputSize = 1,
       outputActivation = Sigmoid())
 
-    nn.initialize()
-
-    return nn
-  }
-
-  /**
-   *
-   */
-  private fun buildSoftmaxNetwork(inputSize: Int): NeuralNetwork {
-
-    val nn = FeedforwardNeuralNetwork(
-      inputSize = inputSize,
-      hiddenSize = 10,
-      hiddenActivation = ELU(),
-      outputSize = 2,
-      outputActivation = Softmax())
-
-    nn.initialize()
-
-    return nn
+    return this.testAccuracy(
+      neuralNetwork = neuralNetwork,
+      examples = examples,
+      evaluationFunction = MulticlassEvaluation(),
+      epochs = epochs)
   }
 
   /**

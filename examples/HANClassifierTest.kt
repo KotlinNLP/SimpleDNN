@@ -97,7 +97,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
       biRNNsConnectionType = LayerType.Connection.RAN,
       attentionSize = this.embeddingsSize,
       outputSize = 2,
-      outputActivation = Softmax()).initialize()
+      outputActivation = Softmax())
 
     return HANEncoder(model)
   }

@@ -9,7 +9,6 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.helpers.training.SequenceTrainingHelper
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.dataset.*
@@ -43,7 +42,12 @@ class ProgressiveSumTest(val dataset: Corpus<SequenceExample<DenseNDArray>>) {
   /**
    *
    */
-  private val neuralNetwork = this.buildNetwork()
+  private val neuralNetwork = CFN(
+      inputSize = 1,
+      hiddenSize = 100,
+      hiddenActivation = Tanh(),
+      outputSize = 11,
+      outputActivation = Softmax())
 
   /**
    *
@@ -52,23 +56,6 @@ class ProgressiveSumTest(val dataset: Corpus<SequenceExample<DenseNDArray>>) {
 
     this.initialValidation()
     this.train()
-  }
-
-  /**
-   *
-   */
-  private fun buildNetwork(): NeuralNetwork {
-
-    val nn = CFN(
-      inputSize = 1,
-      hiddenSize = 100,
-      hiddenActivation = Tanh(),
-      outputSize = 11,
-      outputActivation = Softmax())
-
-    nn.initialize(biasesInitValue = 0.0)
-
-    return nn
   }
 
   /**

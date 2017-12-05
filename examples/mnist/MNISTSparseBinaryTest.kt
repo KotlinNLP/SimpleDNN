@@ -51,7 +51,13 @@ class MNISTSparseBinaryTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArra
   /**
    *
    */
-  private val neuralNetwork = this.buildNetwork()
+  private val neuralNetwork = FeedforwardNeuralNetwork(
+    inputSize = 784,
+    inputType = LayerType.Input.SparseBinary,
+    hiddenSize = 100,
+    hiddenActivation = ELU(),
+    outputSize = 10,
+    outputActivation = Softmax())
 
   /**
    *
@@ -60,24 +66,6 @@ class MNISTSparseBinaryTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArra
 
     this.train()
     this.printImages(examples = ArrayList(this.dataset.validation.subList(0, 20))) // reduced sublist
-  }
-
-  /**
-   *
-   */
-  private fun buildNetwork(): NeuralNetwork {
-
-    val nn = FeedforwardNeuralNetwork(
-      inputSize = 784,
-      inputType = LayerType.Input.SparseBinary,
-      hiddenSize = 100,
-      hiddenActivation = ELU(),
-      outputSize = 10,
-      outputActivation = Softmax())
-
-    nn.initialize()
-
-    return nn
   }
 
   /**
@@ -146,7 +134,7 @@ class MNISTSparseBinaryTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArra
 
     for (i in 0 until 28) {
       for (j in 0 until 28) {
-          print(if (image[i * 28 + j] > 0.0) "# " else "  ")
+        print(if (image[i * 28 + j] > 0.0) "# " else "  ")
       }
       println()
     }

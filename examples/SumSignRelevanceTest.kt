@@ -12,7 +12,6 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.L
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
@@ -77,12 +76,17 @@ class SumSignRelevanceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<De
   /**
    * The number of examples to print.
    */
-  private val EXAMPLES_TO_PRINT: Int = 20
+  private val examplesToPrint: Int = 20
 
   /**
    *
    */
-  private val neuralNetwork = this.buildNetwork()
+  private val neuralNetwork = SimpleRecurrentNeuralNetwork(
+    inputSize = 1,
+    hiddenSize = 10,
+    hiddenActivation = Tanh(),
+    outputSize = 3,
+    outputActivation = Softmax())
 
   /**
    * Start the test.
@@ -91,23 +95,6 @@ class SumSignRelevanceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<De
 
     this.train()
     this.printRelevance()
-  }
-
-  /**
-   * @return a new neural network
-   */
-  private fun buildNetwork(): NeuralNetwork {
-
-    val nn = SimpleRecurrentNeuralNetwork(
-      inputSize = 1,
-      hiddenSize = 10,
-      hiddenActivation = Tanh(),
-      outputSize = 3,
-      outputActivation = Softmax())
-
-    nn.initialize(biasesInitValue = 0.0)
-
-    return nn
   }
 
   /**
@@ -145,7 +132,7 @@ class SumSignRelevanceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<De
    */
   private fun printRelevance() {
 
-    println("\n-- PRINT RELEVANCE OF %d EXAMPLES\n".format(this.EXAMPLES_TO_PRINT))
+    println("\n-- PRINT RELEVANCE OF %d EXAMPLES\n".format(this.examplesToPrint))
 
     val validationProcessor = RecurrentNeuralProcessor<DenseNDArray>(neuralNetwork)
 
@@ -159,7 +146,7 @@ class SumSignRelevanceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<De
       examples = this.dataset.test,
       saveContributions = true,
       onPrediction = { example, isCorrect ->
-        if (isCorrect && exampleIndex < this.EXAMPLES_TO_PRINT) {
+        if (isCorrect && exampleIndex < this.examplesToPrint) {
           this.printSequenceRelevance(
             neuralProcessor = validationProcessor,
             example = example,

@@ -9,7 +9,6 @@ package mnist
 
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.helpers.training.FeedforwardTrainingHelper
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
@@ -46,7 +45,13 @@ class MNISTMePropTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
   /**
    *
    */
-  private val neuralNetwork = this.buildNetwork()
+  private val neuralNetwork = FeedforwardNeuralNetwork(
+    inputSize = 784,
+    hiddenSize = 500,
+    hiddenActivation = ReLU(),
+    hiddenMeProp = true,
+    outputSize = 10,
+    outputActivation = Softmax())
 
   /**
    *
@@ -54,24 +59,6 @@ class MNISTMePropTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
   fun start() {
     this.train()
     this.evaluate()
-  }
-
-  /**
-   *
-   */
-  private fun buildNetwork(): NeuralNetwork {
-
-    val nn = FeedforwardNeuralNetwork(
-      inputSize = 784,
-      hiddenSize = 500,
-      hiddenActivation = ReLU(),
-      hiddenMeProp = true,
-      outputSize = 10,
-      outputActivation = Softmax())
-
-    nn.initialize()
-
-    return nn
   }
 
   /**

@@ -24,6 +24,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import utils.exampleextractor.ClassificationExampleExtractor
 import utils.CorpusReader
 import Configuration
+import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 
 fun main(args: Array<String>) {
 
@@ -47,7 +49,12 @@ class MNISTTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
   /**
    *
    */
-  private val neuralNetwork = this.buildNetwork()
+  private val neuralNetwork = FeedforwardNeuralNetwork(
+    inputSize = 784,
+    hiddenSize = 500,
+    hiddenActivation = ReLU(),
+    outputSize = 10,
+    outputActivation = Softmax())
 
   /**
    *
@@ -59,32 +66,13 @@ class MNISTTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
   /**
    *
    */
-  private fun buildNetwork(): NeuralNetwork {
-
-    val nn = FeedforwardNeuralNetwork(
-      inputSize = 784,
-      hiddenSize = 100,
-      hiddenActivation = ELU(),
-      outputSize = 10,
-      outputActivation = Softmax())
-
-    nn.initialize()
-
-    return nn
-  }
-
-  /**
-   *
-   */
   private fun train() {
 
     println("\n-- TRAINING")
 
     val optimizer = ParamsOptimizer(
       params = this.neuralNetwork.model,
-      updateMethod = LearningRateMethod(
-        learningRate = 0.01,
-        decayMethod = HyperbolicDecay(decay = 0.5, initLearningRate = 0.01)))
+      updateMethod = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999))
 
     val trainingHelper = FeedforwardTrainingHelper<DenseNDArray>(
       neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork),
@@ -99,7 +87,7 @@ class MNISTTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
     trainingHelper.train(
       trainingExamples = this.dataset.training,
       validationExamples = this.dataset.validation,
-      epochs = 3,
+      epochs = 15,
       batchSize = 1,
       shuffler = Shuffler(enablePseudoRandom = true, seed = 1),
       validationHelper = validationHelper)

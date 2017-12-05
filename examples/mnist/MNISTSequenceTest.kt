@@ -9,7 +9,6 @@ package mnist
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.GRUNeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
@@ -45,7 +44,12 @@ class MNISTSequenceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<Dense
   /**
    *
    */
-  val neuralNetwork = this.buildNetwork()
+  val neuralNetwork = GRUNeuralNetwork(
+    inputSize = 2,
+    hiddenSize = 200,
+    hiddenActivation = Tanh(),
+    outputSize = 10,
+    outputActivation = Softmax())
 
   /**
    *
@@ -53,24 +57,6 @@ class MNISTSequenceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<Dense
   fun start() {
 
     this.train()
-  }
-
-  /**
-   *
-   */
-  fun buildNetwork(): NeuralNetwork {
-
-    val nn = GRUNeuralNetwork(
-      inputSize = 2,
-      hiddenSize = 200,
-      hiddenActivation = Tanh(),
-      outputSize = 10,
-      outputActivation = Softmax()
-    )
-
-    nn.initialize()
-
-    return nn
   }
 
   /**

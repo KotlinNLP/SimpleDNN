@@ -11,7 +11,6 @@ import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCa
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGradMethod
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
@@ -46,31 +45,19 @@ class SparseInputTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArray>>) {
   /**
    *
    */
-  private val neuralNetwork = this.buildNetwork()
+  private val neuralNetwork = FeedforwardNeuralNetwork(
+    inputSize = 356425,
+    inputType = LayerType.Input.SparseBinary,
+    hiddenSize = 200,
+    hiddenActivation = Softsign(),
+    outputSize = 86,
+    outputActivation = Softmax())
 
   /**
    *
    */
   fun start() {
     this.train()
-  }
-
-  /**
-   *
-   */
-  private fun buildNetwork(): NeuralNetwork {
-
-    val nn = FeedforwardNeuralNetwork(
-      inputSize = 356425,
-      inputType = LayerType.Input.SparseBinary,
-      hiddenSize = 200,
-      hiddenActivation = Softsign(),
-      outputSize = 86,
-      outputActivation = Softmax())
-
-    nn.initialize()
-
-    return nn
   }
 
   /**
