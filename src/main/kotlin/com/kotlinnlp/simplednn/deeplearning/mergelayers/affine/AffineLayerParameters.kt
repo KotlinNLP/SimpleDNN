@@ -9,7 +9,8 @@ package com.kotlinnlp.simplednn.deeplearning.mergelayers.affine
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.deeplearning.mergelayers.MergeLayerParameters
 
 /**
@@ -18,17 +19,23 @@ import com.kotlinnlp.simplednn.deeplearning.mergelayers.MergeLayerParameters
  * @property inputSize1 the size of the first input
  * @property inputSize2 the size of the second input
  * @property outputSize the size of the output
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  * @property sparseInput whether the weights connected to the input are sparse or not
  */
 open class AffineLayerParameters(
   inputSize1: Int,
   inputSize2: Int,
   outputSize: Int,
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = GlorotInitializer(),
   sparseInput: Boolean = false
 ) : MergeLayerParameters(
   inputSize1 = inputSize1,
   inputSize2 = inputSize2,
   outputSize = outputSize,
+  weightsInitializer = weightsInitializer,
+  biasesInitializer = biasesInitializer,
   sparseInput = sparseInput
 ) {
 
@@ -66,22 +73,19 @@ open class AffineLayerParameters(
   )
 
   /**
-   * Initialize all parameters with random or predefined values.
-   *
-   * @param randomGenerator a [RandomGenerator] (default: fixed range with radius 0.08)
-   * @param biasesInitValue the init value for all the biases (default: 0.0)
-   *
-   * @return this initialized parameters
+   * The list of weights parameters.
    */
-  override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double): AffineLayerParameters {
-    require(!this.sparseInput) { "Cannot randomize sparse weights" }
+  override val weightsList: List<UpdatableArray<*>> = listOf(
+    this.w1,
+    this.w2
+  )
 
-    this.w1.values.randomize(randomGenerator)
-    this.w2.values.randomize(randomGenerator)
-    this.b.values.assignValues(biasesInitValue)
-
-    return this
-  }
+  /**
+   * The list of biases parameters.
+   */
+  override val biasesList: List<UpdatableArray<*>> = listOf(
+    this.b
+  )
 
   /**
    * @return a new [AffineLayerParameters] containing a copy of all parameters of this

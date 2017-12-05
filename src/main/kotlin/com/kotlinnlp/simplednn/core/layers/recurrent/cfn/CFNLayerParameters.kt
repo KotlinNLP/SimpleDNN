@@ -8,22 +8,31 @@
 package com.kotlinnlp.simplednn.core.layers.recurrent.cfn
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.RecurrentParametersUnit
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 
 /**
  * The parameters of the layer of type CFN.
  *
  * @property inputSize input size
  * @property outputSize output size
- * @property sparseInput whether the weights connected to the input are sparse or not
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
+ * @param sparseInput whether the weights connected to the input are sparse or not
  */
 class CFNLayerParameters(
   inputSize: Int,
   outputSize: Int,
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = GlorotInitializer(),
   private val sparseInput: Boolean = false
-) : LayerParameters<CFNLayerParameters>(inputSize = inputSize, outputSize = outputSize) {
+) : LayerParameters<CFNLayerParameters>(
+  inputSize = inputSize,
+  outputSize = outputSize,
+  weightsInitializer = weightsInitializer,
+  biasesInitializer = biasesInitializer) {
 
   companion object {
 
@@ -75,22 +84,31 @@ class CFNLayerParameters(
   )
 
   /**
-   *
+   * The list of weights parameters.
    */
-  override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double): CFNLayerParameters {
-    require(!this.sparseInput) { "Cannot randomize sparse weights" }
+  override val weightsList: List<UpdatableArray<*>> = listOf(
 
-    this.inputGate.weights.values.randomize(randomGenerator)
-    this.forgetGate.weights.values.randomize(randomGenerator)
-    this.candidateWeights.values.randomize(randomGenerator)
+    this.inputGate.weights,
+    this.forgetGate.weights,
+    this.candidateWeights,
 
-    this.inputGate.biases.values.assignValues(biasesInitValue)
-    this.forgetGate.biases.values.assignValues(biasesInitValue)
+    this.inputGate.recurrentWeights,
+    this.forgetGate.recurrentWeights
+  )
 
-    this.inputGate.recurrentWeights.values.randomize(randomGenerator)
-    this.forgetGate.recurrentWeights.values.randomize(randomGenerator)
+  /**
+   * The list of biases parameters.
+   */
+  override val biasesList: List<UpdatableArray<*>> = listOf(
+    this.inputGate.biases,
+    this.forgetGate.biases
+  )
 
-    return this
+  /**
+   * Initialize all parameters values.
+   */
+  init {
+    this.initialize()
   }
 
   /**

@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.simplednn.deeplearning.mergelayers
 
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 
 /**
@@ -16,14 +17,20 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
  * @property inputSize1 the size of the first input
  * @property inputSize2 the size of the second input
  * @property outputSize the size of the output
+ * @param weightsInitializer the initializer of the weights (zeros if null)
+ * @param biasesInitializer the initializer of the biases (zeros if null)
  * @property sparseInput whether the weights connected to the input are sparse or not
  */
 abstract class MergeLayerParameters(
   val inputSize1: Int,
   val inputSize2: Int,
   outputSize: Int,
+  weightsInitializer: Initializer?,
+  biasesInitializer: Initializer?,
   val sparseInput: Boolean
 ) : LayerParameters<MergeLayerParameters>(
   inputSize = inputSize1,
-  outputSize = outputSize
+  outputSize = outputSize,
+  weightsInitializer = weightsInitializer,
+  biasesInitializer = biasesInitializer
 )

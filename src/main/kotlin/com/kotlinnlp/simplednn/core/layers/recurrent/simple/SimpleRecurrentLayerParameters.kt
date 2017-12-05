@@ -7,8 +7,10 @@
 
 package com.kotlinnlp.simplednn.core.layers.recurrent.simple
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.RecurrentParametersUnit
 
 /**
@@ -16,13 +18,21 @@ import com.kotlinnlp.simplednn.core.layers.RecurrentParametersUnit
  *
  * @property inputSize input size
  * @property outputSize output size
- * @property sparseInput whether the weights connected to the input are sparse or not
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
+ * @param sparseInput whether the weights connected to the input are sparse or not
  */
 class SimpleRecurrentLayerParameters(
   inputSize: Int,
   outputSize: Int,
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = GlorotInitializer(),
   private val sparseInput: Boolean = false
-) : LayerParameters<SimpleRecurrentLayerParameters>(inputSize = inputSize, outputSize = outputSize) {
+) : LayerParameters<SimpleRecurrentLayerParameters>(
+  inputSize = inputSize,
+  outputSize = outputSize,
+  weightsInitializer = weightsInitializer,
+  biasesInitializer = biasesInitializer) {
 
   companion object {
 
@@ -51,19 +61,25 @@ class SimpleRecurrentLayerParameters(
   )
 
   /**
-   *
-   * @param randomGenerator randomGenerator
-   * @param biasesInitValue biasesInitValue
-   * @return
+   * The list of weights parameters.
    */
-  override fun initialize(randomGenerator: RandomGenerator, biasesInitValue: Double): SimpleRecurrentLayerParameters {
-    require(!this.sparseInput) { "Cannot randomize sparse weights" }
+  override val weightsList: List<UpdatableArray<*>> = listOf(
+    this.unit.weights,
+    this.unit.recurrentWeights
+  )
 
-    this.unit.weights.values.randomize(randomGenerator)
-    this.unit.biases.values.assignValues(biasesInitValue)
-    this.unit.recurrentWeights.values.randomize(randomGenerator)
+  /**
+   * The list of biases parameters.
+   */
+  override val biasesList: List<UpdatableArray<*>> = listOf(
+    this.unit.biases
+  )
 
-    return this
+  /**
+   * Initialize all parameters values.
+   */
+  init {
+    this.initialize()
   }
 
   /**

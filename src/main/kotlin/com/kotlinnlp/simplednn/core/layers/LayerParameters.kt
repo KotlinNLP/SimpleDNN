@@ -10,20 +10,24 @@ package com.kotlinnlp.simplednn.core.layers
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.arrays.UpdatableSparseArray
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
-import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The parameters of a layer
  *
  * @property inputSize input size
  * @property outputSize output size
+ * @param weightsInitializer the initializer of the weights (zeros if null)
+ * @param biasesInitializer the initializer of the biases (zeros if null)
  */
 abstract class LayerParameters<SelfType: LayerParameters<SelfType>>(
   val inputSize: Int,
-  val outputSize: Int
+  val outputSize: Int,
+  private val weightsInitializer: Initializer?,
+  private val biasesInitializer: Initializer?
 ) : IterableParams<SelfType>() {
 
   companion object {
@@ -36,13 +40,33 @@ abstract class LayerParameters<SelfType: LayerParameters<SelfType>>(
   }
 
   /**
-   *
-   * @param randomGenerator randomGenerator
-   * @param biasesInitValue biasesInitValue
-   * @return
+   * The list of weights parameters.
    */
-  abstract fun initialize(randomGenerator: RandomGenerator = FixedRangeRandom(radius = 0.08, enablePseudoRandom = true),
-                          biasesInitValue: Double = 0.01): SelfType
+  abstract protected val weightsList: List<UpdatableArray<*>>
+
+  /**
+   * The list of biases parameters.
+   */
+  abstract protected val biasesList: List<UpdatableArray<*>>
+
+  /**
+   * Initialize the values of the parameters with the given [weightsInitializer] and [biasesInitializer].
+   * If an initializer is null, its related parameters are initialized to zeros.
+   *
+   * Note: this method should be called into the 'init' block.
+   */
+  protected fun initialize() {
+
+    if (this.weightsInitializer != null) {
+      require(this.weightsList.all { it is UpdatableDenseArray }) { "Cannot initialize weights not dense" }
+      this.weightsList.forEach { this.weightsInitializer.initialize(it.values as DenseNDArray) }
+    }
+
+    if (this.biasesInitializer!= null) {
+      require(this.biasesList.all { it is UpdatableDenseArray }) { "Cannot initialize biases not dense" }
+      this.biasesList.forEach { this.biasesInitializer.initialize(it.values as DenseNDArray) }
+    }
+  }
 
   /**
    *
