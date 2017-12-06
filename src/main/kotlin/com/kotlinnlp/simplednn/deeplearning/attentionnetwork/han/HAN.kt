@@ -47,9 +47,7 @@ class HAN(
   val attentionSize: Int,
   val outputSize: Int,
   val outputActivation: ActivationFunction?,
-  val gainFactors: Array<Double> = Array(
-    size = hierarchySize,
-    init = { i -> if (i == 0) 2.0 else 1.0 }),
+  val gainFactors: Array<Double> = Array(size = hierarchySize, init = { i -> if (i == 0) 2.0 else 1.0 }),
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   dropout: Double = 0.0
