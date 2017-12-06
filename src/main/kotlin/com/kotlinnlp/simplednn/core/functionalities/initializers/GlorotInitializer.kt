@@ -7,6 +7,9 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.initializers
 
+import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
+import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
+import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.FixedRangeRandom
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import java.util.*
@@ -35,6 +38,17 @@ class GlorotInitializer(
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
+
+    /**
+     * @param activationFunction the activation function of a layer (can be null)
+     *
+     * @return the gain to apply to a [GlorotInitializer] in relation to the given [activationFunction]
+     */
+    fun getGain(activationFunction: ActivationFunction?): Double = when (activationFunction) {
+      is ReLU -> 0.5
+      is Sigmoid -> 4.0
+      else -> 1.0
+    }
   }
 
   /**
