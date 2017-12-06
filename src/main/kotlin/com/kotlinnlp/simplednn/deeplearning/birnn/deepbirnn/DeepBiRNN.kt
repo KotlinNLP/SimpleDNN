@@ -151,7 +151,7 @@ class DeepBiRNN(
    */
   private fun getBiRNNOutputSize(inputSize: Int, layerIndex: Int): Int {
 
-    val gain: Double = this.gainFactors.reversed()[layerIndex]
+    val gain: Double = this.gainFactors[layerIndex]
     val roughOutputSize = Math.round(gain * inputSize).toInt()
 
     return if (roughOutputSize % 2 == 0) roughOutputSize else roughOutputSize + 1
