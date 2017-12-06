@@ -76,7 +76,9 @@ class AttentionNetworkParameters(
     val clonedParams = AttentionNetworkParameters(
       inputSize = this.inputSize,
       attentionSize = this.attentionSize,
-      sparseInput = this.sparseInput)
+      sparseInput = this.sparseInput,
+      weightsInitializer = null,
+      biasesInitializer = null)
 
     clonedParams.transformParams.zip(this.transformParams) { cloned, params ->
       cloned.values.assignValues(params.values)

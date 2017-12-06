@@ -104,7 +104,9 @@ class BiaffineLayerParameters(
       inputSize1 = this.inputSize1,
       inputSize2 = this.inputSize2,
       outputSize = this.outputSize,
-      sparseInput = this.sparseInput)
+      sparseInput = this.sparseInput,
+      weightsInitializer = null,
+      biasesInitializer = null)
 
     clonedParams.assignValues(this)
 

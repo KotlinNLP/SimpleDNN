@@ -56,7 +56,7 @@ class AttentionLayerParameters(
    */
   override fun copy(): AttentionLayerParameters {
 
-    val clonedParams = AttentionLayerParameters(this.attentionSize)
+    val clonedParams = AttentionLayerParameters(attentionSize = this.attentionSize, initializer = null)
 
     clonedParams.contextVector.values.assignValues(this.contextVector.values)
 

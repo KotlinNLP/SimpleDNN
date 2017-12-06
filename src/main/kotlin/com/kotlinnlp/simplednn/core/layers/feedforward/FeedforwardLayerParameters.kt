@@ -91,7 +91,9 @@ class FeedforwardLayerParameters(
     val clonedParams = FeedforwardLayerParameters(
       inputSize = this.inputSize,
       outputSize = this.outputSize,
-      sparseInput = this.sparseInput)
+      sparseInput = this.sparseInput,
+      weightsInitializer = null,
+      biasesInitializer = null)
 
     clonedParams.assignValues(this)
 

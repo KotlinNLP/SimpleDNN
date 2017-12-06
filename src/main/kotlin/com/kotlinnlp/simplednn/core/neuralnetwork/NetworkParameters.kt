@@ -74,7 +74,11 @@ class NetworkParameters(
    */
   override fun copy(): NetworkParameters {
 
-    val clonedParams = NetworkParameters(layersConfiguration = this.layersConfiguration, forceDense = this.forceDense)
+    val clonedParams = NetworkParameters(
+      layersConfiguration = this.layersConfiguration,
+      forceDense = this.forceDense,
+      weightsInitializer = null,
+      biasesInitializer = null)
 
     clonedParams.zip(this) { cloned, params ->
       cloned.values.assignValues(params.values)
