@@ -30,6 +30,8 @@ import java.io.Serializable
  * @property hiddenActivation the activation function of the hidden layer
  * @property recurrentConnectionType type of recurrent neural network (e.g. LSTM, GRU, CFN, SimpleRNN)
  * @property numberOfLayers number of stacked BiRNNs
+ * @param gainFactors an array with [numberOfLayers] elements, which defines the gain factor of the output size of
+ *                    each layer in respect of its input. By default the first factor is 2.0, the others 1.0.
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  *
@@ -41,6 +43,7 @@ class DeepBiRNN(
   val hiddenActivation: ActivationFunction?,
   val recurrentConnectionType: LayerType.Connection,
   val numberOfLayers: Int = 1,
+  private val gainFactors: Array<Double> = Array(size = numberOfLayers, init = { i -> if (i == 0) 2.0 else 1.0 }),
   private val weightsInitializer: Initializer? = GlorotInitializer(),
   private val biasesInitializer: Initializer? = GlorotInitializer()
 ) : Serializable {
@@ -89,18 +92,19 @@ class DeepBiRNN(
       "required recurrentConnectionType with Recurrent property"
     }
 
-    var prevInputSize: Int = this.inputSize
+    var inputSize: Int = this.inputSize
 
     return List(
       size = this.numberOfLayers,
       init = { i ->
 
+        val outputSize: Int = this.getBiRNNOutputSize(inputSize = inputSize, layerIndex = i)
         val biRNN = this.buildBiRNN(
-          inputSize = prevInputSize,
+          inputSize = inputSize,
           inputType = if (i == 0) this.inputType else LayerType.Input.Dense,
-          hiddenSize = prevInputSize)
+          hiddenSize = outputSize / 2)
 
-        prevInputSize = biRNN.outputSize
+        inputSize = outputSize
 
         biRNN
       }
@@ -122,4 +126,24 @@ class DeepBiRNN(
     recurrentConnectionType = this.recurrentConnectionType,
     weightsInitializer = this.weightsInitializer,
     biasesInitializer = this.biasesInitializer)
+
+  /**
+   * Get the size of the output of the BiRNN at the given [layerIndex], combining its [inputSize] with the related gain
+   * factor.
+   *
+   * Since the output of the BiRNN is the concatenation of the outputs of 2 RNNs, the output size must be rounded to
+   * an odd integer (the next following in this case).
+   *
+   * @param inputSize the size of the input at the given [layerIndex]
+   * @param layerIndex the index of a layer
+   *
+   * @return the output size of the BiRNN at the given [layerIndex]
+   */
+  private fun getBiRNNOutputSize(inputSize: Int, layerIndex: Int): Int {
+
+    val gain: Double = this.gainFactors.reversed()[layerIndex]
+    val roughOutputSize = Math.round(gain * inputSize).toInt()
+
+    return if (roughOutputSize % 2 == 0) roughOutputSize else roughOutputSize + 1
+  }
 }
