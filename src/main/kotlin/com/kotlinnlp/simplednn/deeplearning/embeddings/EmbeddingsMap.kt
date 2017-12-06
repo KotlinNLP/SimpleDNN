@@ -21,13 +21,13 @@ import java.util.*
  * A map of generic keys to Embeddings.
  *
  * @param size the size of each embedding
- * @param initializer the initializer of the values of the embeddings (zeros if null, default: Glorot with gain 0.7)
+ * @param initializer the initializer of the values of the embeddings (zeros if null, default: Glorot)
  * @param pseudoRandomDropout a Boolean indicating if embeddings must be dropped out with pseudo random probability
  *                            (default = true)
  */
 open class EmbeddingsMap<in T>(
   val size: Int,
-  private val initializer: Initializer? = GlorotInitializer(gain = 0.7), // gain ~= sqrt(0.5)
+  private val initializer: Initializer? = GlorotInitializer(),
   private val pseudoRandomDropout: Boolean = true
 ) : Serializable {
 
