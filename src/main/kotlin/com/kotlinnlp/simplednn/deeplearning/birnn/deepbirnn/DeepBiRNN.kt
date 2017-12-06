@@ -77,6 +77,17 @@ class DeepBiRNN(
   val outputSize: Int = this.layers.last().outputSize
 
   /**
+   * Check the compatibility of the arguments.
+   */
+  init {
+    require(this.numberOfLayers > 0) { "The number of layers must be >= 1" }
+    require(this.gainFactors.size == this.numberOfLayers) {
+      "The number of gain factors (%d) doesn't match the number of layers (%d)"
+        .format(this.gainFactors.size, this.numberOfLayers)
+    }
+  }
+
+  /**
    * Serialize this [DeepBiRNN] and write it to an output stream.
    *
    * @param outputStream the [OutputStream] in which to write this serialized [DeepBiRNN]
