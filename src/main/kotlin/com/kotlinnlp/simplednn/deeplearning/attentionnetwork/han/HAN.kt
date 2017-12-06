@@ -177,11 +177,11 @@ class HAN(
   }
 
   /**
-   * Get the size of the output of the BiRNN at the given [levelIndex], combining the [inputSize] with the related gain
+   * Get the size of the output of the BiRNN at the given [levelIndex], combining its [inputSize] with the related gain
    * factor.
    *
-   * Since the output of the BiRNN is the concatenation of the outputs of 2 RNNs, the output size could be rounded to
-   * the next odd integer.
+   * Since the output of the BiRNN is the concatenation of the outputs of 2 RNNs, the output size must be rounded to
+   * an odd integer (the next following in this case).
    *
    * @param inputSize the size of the input at the given [levelIndex]
    * @param levelIndex the index of a level of the hierarchy
