@@ -31,9 +31,9 @@ import java.io.Serializable
  * @property attentionSize the size of the attention arrays of the AttentionLayers
  * @property outputSize the size of the output layer
  * @property outputActivation the activation function of the output layer
- * @property compressionFactors an array with [hierarchySize] elements, which defines the compression factor of the
- *                              input size of each hierarchical level in respect of its output, starting from the lowest
- *                              level. By default the first factor is 2.0, the others 1.0.
+ * @property gainFactors an array with [hierarchySize] elements, which defines the gain factor of the output size of
+ *                       each hierarchical level in respect of its input, starting from the lowest level. By default
+ *                       the first factor is 2.0, the others 1.0.
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  * @param dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.25.
@@ -47,7 +47,7 @@ class HAN(
   val attentionSize: Int,
   val outputSize: Int,
   val outputActivation: ActivationFunction?,
-  val compressionFactors: Array<Double> = Array(
+  val gainFactors: Array<Double> = Array(
     size = hierarchySize,
     init = { i -> if (i == 0) 2.0 else 1.0 }),
   weightsInitializer: Initializer? = GlorotInitializer(),
@@ -78,9 +78,9 @@ class HAN(
    */
   init {
     require(this.hierarchySize > 0) { "The number of hierarchical levels must be >= 1" }
-    require(this.compressionFactors.size == hierarchySize) {
-      "The number of compression factors (%d) doesn't match the number of levels of the hierarchy (%d)"
-        .format(this.compressionFactors.size, this.hierarchySize)
+    require(this.gainFactors.size == hierarchySize) {
+      "The number of gain factors (%d) doesn't match the number of levels of the hierarchy (%d)"
+        .format(this.gainFactors.size, this.hierarchySize)
     }
   }
 
@@ -179,8 +179,8 @@ class HAN(
   }
 
   /**
-   * Get the size of the output of the BiRNN at the given [levelIndex], compressing the [inputSize] with the
-   * corresponding compression factor.
+   * Get the size of the output of the BiRNN at the given [levelIndex], combining the [inputSize] with the related gain
+   * factor.
    *
    * Since the output of the BiRNN is the concatenation of the outputs of 2 RNNs, the output size could be rounded to
    * the next odd integer.
@@ -192,7 +192,7 @@ class HAN(
    */
   private fun getBiRNNOutputSize(inputSize: Int, levelIndex: Int): Int {
 
-    val compressedInputSize = Math.round(inputSize * this.compressionFactors.reversed()[levelIndex]).toInt()
+    val compressedInputSize = Math.round(inputSize * this.gainFactors.reversed()[levelIndex]).toInt()
 
     return if (compressedInputSize % 2 == 0) compressedInputSize else compressedInputSize + 1
   }
