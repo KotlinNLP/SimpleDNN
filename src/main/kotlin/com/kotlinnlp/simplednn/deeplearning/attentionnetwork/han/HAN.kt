@@ -190,8 +190,9 @@ class HAN(
    */
   private fun getBiRNNOutputSize(inputSize: Int, levelIndex: Int): Int {
 
-    val compressedInputSize = Math.round(inputSize * this.gainFactors.reversed()[levelIndex]).toInt()
+    val gain: Double = this.gainFactors.reversed()[levelIndex]
+    val roughOutputSize = Math.round(gain * inputSize).toInt()
 
-    return if (compressedInputSize % 2 == 0) compressedInputSize else compressedInputSize + 1
+    return if (roughOutputSize % 2 == 0) roughOutputSize else roughOutputSize + 1
   }
 }
