@@ -7,7 +7,7 @@
 
 package deeplearning.mergelayers.biaffine
 
-import com.kotlinnlp.simplednn.core.functionalities.initializers.FixedValueInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.deeplearning.mergelayers.biaffine.BiaffineLayerParameters
@@ -45,7 +45,7 @@ class BiaffineLayerParametersSpec : Spek({
           inputSize2 = 3,
           outputSize = 2,
           weightsInitializer = RandomInitializer(randomGenerator),
-          biasesInitializer = FixedValueInitializer(0.9))
+          biasesInitializer = ConstantInitializer(0.9))
 
         val w1 = params.w1.values
         val w2 = params.w2.values
@@ -134,8 +134,8 @@ class BiaffineLayerParametersSpec : Spek({
               inputSize2 = 3,
               outputSize = 2,
               sparseInput = true,
-              weightsInitializer = FixedValueInitializer(0.1),
-              biasesInitializer = FixedValueInitializer(0.1))
+              weightsInitializer = ConstantInitializer(0.1),
+              biasesInitializer = ConstantInitializer(0.1))
           }
         }
       }

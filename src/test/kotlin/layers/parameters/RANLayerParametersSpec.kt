@@ -7,7 +7,7 @@
 
 package layers.parameters
 
-import com.kotlinnlp.simplednn.core.functionalities.initializers.FixedValueInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerParameters
@@ -46,7 +46,7 @@ class RANLayerParametersSpec : Spek({
           inputSize = 3,
           outputSize = 2,
           weightsInitializer = RandomInitializer(randomGenerator),
-          biasesInitializer = FixedValueInitializer(0.9))
+          biasesInitializer = ConstantInitializer(0.9))
 
         val wIn = params.inputGate.weights.values
         val wFor = params.forgetGate.weights.values
@@ -123,8 +123,8 @@ class RANLayerParametersSpec : Spek({
               inputSize = 3,
               outputSize = 2,
               sparseInput = true,
-              weightsInitializer = FixedValueInitializer(0.1),
-              biasesInitializer = FixedValueInitializer(0.1))
+              weightsInitializer = ConstantInitializer(0.1),
+              biasesInitializer = ConstantInitializer(0.1))
           }
         }
       }

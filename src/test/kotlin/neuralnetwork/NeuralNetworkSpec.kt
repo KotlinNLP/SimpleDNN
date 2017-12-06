@@ -7,7 +7,7 @@
 
 package neuralnetwork
 
-import com.kotlinnlp.simplednn.core.functionalities.initializers.FixedValueInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
@@ -72,7 +72,7 @@ class NeuralNetworkSpec: Spek({
         LayerConfiguration(size = 3),
         LayerConfiguration(size = 2, connectionType = LayerType.Connection.Feedforward),
         weightsInitializer = RandomInitializer(randomGenerator),
-        biasesInitializer = FixedValueInitializer(0.9)
+        biasesInitializer = ConstantInitializer(0.9)
       )
 
       val params = network.model.paramsPerLayer[0] as FeedforwardLayerParameters

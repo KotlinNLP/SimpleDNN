@@ -7,7 +7,7 @@
 
 package layers.parameters
 
-import com.kotlinnlp.simplednn.core.functionalities.initializers.FixedValueInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
@@ -42,7 +42,7 @@ class FeedforwardLayerParametersSpec : Spek({
           inputSize = 3,
           outputSize = 2,
           weightsInitializer = RandomInitializer(randomGenerator),
-          biasesInitializer = FixedValueInitializer(0.9))
+          biasesInitializer = ConstantInitializer(0.9))
 
         val w = params.unit.weights.values
         val b = params.unit.biases.values
@@ -93,8 +93,8 @@ class FeedforwardLayerParametersSpec : Spek({
               inputSize = 3,
               outputSize = 2,
               sparseInput = true,
-              weightsInitializer = FixedValueInitializer(0.1),
-              biasesInitializer = FixedValueInitializer(0.1))
+              weightsInitializer = ConstantInitializer(0.1),
+              biasesInitializer = ConstantInitializer(0.1))
           }
         }
       }
