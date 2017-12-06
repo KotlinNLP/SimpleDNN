@@ -76,7 +76,7 @@ class HAN(
    */
   init {
     require(this.hierarchySize > 0) { "The number of hierarchical levels must be >= 1" }
-    require(this.gainFactors.size == hierarchySize) {
+    require(this.gainFactors.size == this.hierarchySize) {
       "The number of gain factors (%d) doesn't match the number of levels of the hierarchy (%d)"
         .format(this.gainFactors.size, this.hierarchySize)
     }
