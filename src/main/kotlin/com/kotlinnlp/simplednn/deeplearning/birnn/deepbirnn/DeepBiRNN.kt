@@ -20,10 +20,9 @@ import java.io.Serializable
 /**
  * The DeepBiRNN.
  *
- * A deep bidirectional RNN (or k-layer BiRNN) is composed of k BiRNN
- * BiRNN(1), ..., BiRNN(k) that feed into each other: the output of BIRNN(i)
- * becomes the input of BiRNN(i+1). Stacking BiRNNs in this way has been empirically
- * shown to be effective (Irsoy and Cardie, 2014).
+ * A deep bidirectional RNN (or k-layer BiRNN) is composed of k BiRNNs that feed into each other: the output of a
+ * BIRNN(i) becomes the input of BiRNN(i+1). Stacking BiRNNs in this way has been empirically shown to be effective
+ * (Irsoy and Cardie, 2014).
  *
  * @property inputType the type of the input layer (Dense, Sparse, SparseBinary)
  * @property inputSize the size of the input layer
