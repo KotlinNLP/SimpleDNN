@@ -31,7 +31,7 @@ class DictionarySet<T> : Serializable {
      *
      * @return a new dictionary set containing the given [elements]
      */
-    fun <T> invoke(elements: List<T>): DictionarySet<T> {
+    operator fun <T> invoke(elements: List<T>): DictionarySet<T> {
 
       val dictionary = DictionarySet<T>()
 
