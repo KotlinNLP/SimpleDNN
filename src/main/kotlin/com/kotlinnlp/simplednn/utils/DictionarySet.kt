@@ -20,6 +20,28 @@ import java.io.Serializable
 class DictionarySet<T> : Serializable {
 
   /**
+   * A [DictionarySet] factory.
+   */
+  companion object Factory {
+
+    /**
+     * Build a [DictionarySet] containing the given [elements].
+     *
+     * @param elements the elements to insert into the building dictionary
+     *
+     * @return a new dictionary set containing the given [elements]
+     */
+    fun <T> invoke(elements: List<T>): DictionarySet<T> {
+
+      val dictionary = DictionarySet<T>()
+
+      elements.forEach { dictionary.add(it) }
+
+      return  dictionary
+    }
+  }
+
+  /**
    * The number of distinct element of this set.
    */
   val size: Int get() = this.elementsMultiset.elementSet().size
