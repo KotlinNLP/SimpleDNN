@@ -33,71 +33,68 @@ object LayerStructureFactory {
     activationFunction: ActivationFunction?,
     connectionType: LayerType.Connection,
     dropout: Double = 0.0,
-    contextWindow: LayerContextWindow? = null): LayerStructure<InputNDArrayType> {
+    contextWindow: LayerContextWindow? = null): LayerStructure<InputNDArrayType> = when(connectionType) {
 
-    return when(connectionType) {
+    LayerType.Connection.Feedforward -> FeedforwardLayerStructure(
+      inputArray = inputArray,
+      outputArray = LayerUnit(outputSize),
+      params = params,
+      activationFunction = activationFunction,
+      dropout = dropout
+    )
 
-      LayerType.Connection.Feedforward -> FeedforwardLayerStructure(
-        inputArray = inputArray,
-        outputArray = LayerUnit(outputSize),
-        params = params,
-        activationFunction = activationFunction,
-        dropout = dropout
-      )
+    LayerType.Connection.SimpleRecurrent -> SimpleRecurrentLayerStructure(
+      inputArray = inputArray,
+      outputArray = RecurrentLayerUnit(outputSize),
+      params = params,
+      activationFunction = activationFunction,
+      dropout = dropout,
+      layerContextWindow = contextWindow!!
+    )
 
-      LayerType.Connection.SimpleRecurrent -> SimpleRecurrentLayerStructure(
-        inputArray = inputArray,
-        outputArray = RecurrentLayerUnit(outputSize),
-        params = params,
-        activationFunction = activationFunction,
-        dropout = dropout,
-        layerContextWindow = contextWindow!!
-      )
+    LayerType.Connection.GRU -> GRULayerStructure(
+      inputArray = inputArray,
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
+      params = params,
+      activationFunction = activationFunction,
+      dropout = dropout,
+      layerContextWindow = contextWindow!!
+    )
 
-      LayerType.Connection.GRU -> GRULayerStructure(
-        inputArray = inputArray,
-        outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
-        params = params,
-        activationFunction = activationFunction,
-        dropout = dropout,
-        layerContextWindow = contextWindow!!
-      )
+    LayerType.Connection.LSTM -> LSTMLayerStructure(
+      inputArray = inputArray,
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
+      params = params,
+      activationFunction = activationFunction,
+      dropout = dropout,
+      layerContextWindow = contextWindow!!
+    )
 
-      LayerType.Connection.LSTM -> LSTMLayerStructure(
-        inputArray = inputArray,
-        outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
-        params = params,
-        activationFunction = activationFunction,
-        dropout = dropout,
-        layerContextWindow = contextWindow!!
-      )
+    LayerType.Connection.CFN -> CFNLayerStructure(
+      inputArray = inputArray,
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
+      params = params,
+      activationFunction = activationFunction,
+      dropout = dropout,
+      layerContextWindow = contextWindow!!
+    )
 
-      LayerType.Connection.CFN -> CFNLayerStructure(
-        inputArray = inputArray,
-        outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
-        params = params,
-        activationFunction = activationFunction,
-        dropout = dropout,
-        layerContextWindow = contextWindow!!
-      )
+    LayerType.Connection.RAN -> RANLayerStructure(
+      inputArray = inputArray,
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
+      params = params,
+      activationFunction = activationFunction,
+      dropout = dropout,
+      layerContextWindow = contextWindow!!
+    )
 
-      LayerType.Connection.RAN -> RANLayerStructure(
-        inputArray = inputArray,
-        outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
-        params = params,
-        activationFunction = activationFunction,
-        dropout = dropout,
-        layerContextWindow = contextWindow!!
-      )
-
-      LayerType.Connection.DeltaRNN -> DeltaRNNLayerStructure(
-        inputArray = inputArray,
-        outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
-        params = params,
-        activationFunction = activationFunction,
-        dropout = dropout,
-        layerContextWindow = contextWindow!!
-      )
-    }
+    LayerType.Connection.DeltaRNN -> DeltaRNNLayerStructure(
+      inputArray = inputArray,
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
+      params = params,
+      activationFunction = activationFunction,
+      dropout = dropout,
+      layerContextWindow = contextWindow!!
+    )
   }
 }
