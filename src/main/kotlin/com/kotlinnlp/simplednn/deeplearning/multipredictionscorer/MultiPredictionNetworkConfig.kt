@@ -21,8 +21,10 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
  * @property hiddenActivation the activation function of the hidden layer
  * @property hiddenDropout the probability of dropout of the hidden layer (default 0.0).
  *                         If applying it, the usual value is 0.5.
+ * @property hiddenMeProp whether to use the 'meProp' errors propagation algorithm for the hidden layer (default false)
  * @property outputSize the size of the output layer
  * @property outputActivation the activation function of the output layer
+ * @property outputMeProp whether to use the 'meProp' errors propagation algorithm for the output layer (default false)
  */
 data class MultiPredictionNetworkConfig(
   val inputSize: Int,
@@ -31,6 +33,8 @@ data class MultiPredictionNetworkConfig(
   val hiddenSize: Int,
   val hiddenActivation: ActivationFunction?,
   val hiddenDropout: Double = 0.0,
+  val hiddenMeProp: Boolean = false,
   val outputSize: Int,
-  val outputActivation: ActivationFunction?
+  val outputActivation: ActivationFunction?,
+  val outputMeProp: Boolean = false
 )
