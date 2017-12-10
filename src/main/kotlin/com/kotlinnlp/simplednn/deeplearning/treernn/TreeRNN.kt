@@ -40,7 +40,7 @@ class TreeRNN(
   val hiddenLayerConnectionType: LayerType.Connection = LayerType.Connection.GRU,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
-) {
+) : Serializable {
 
   companion object {
 
