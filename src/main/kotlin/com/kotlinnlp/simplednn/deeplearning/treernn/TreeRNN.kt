@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import java.io.Serializable
 
 /**
  * The TreeRNN treats the children of a node as a sequence, and encode this sequence using
@@ -32,7 +33,17 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 class TreeRNN(
   val inputLayerSize: Int,
   val hiddenLayerSize: Int,
-  val hiddenLayerConnectionType: LayerType.Connection = LayerType.Connection.GRU) {
+  val hiddenLayerConnectionType: LayerType.Connection = LayerType.Connection.GRU
+) : Serializable {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed from Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
 
   /**
    * The size of the output layer
