@@ -15,22 +15,22 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
  *
  * @property inputSize the size of the input layer
  * @property inputType the type of the input arrays (default Dense)
- * @property hiddenSize the size of the hidden layer
- * @property hiddenActivation the activation function of the hidden layer
- * @property outputSize the size of the output layer
- * @property outputActivation the activation function of the output layer
  * @property inputDropout the probability of dropout of the input layer (default 0.0).
  *                        If applying it, the usual value is 0.25.
+ * @property hiddenSize the size of the hidden layer
+ * @property hiddenActivation the activation function of the hidden layer
  * @property hiddenDropout the probability of dropout of the hidden layer (default 0.0).
  *                         If applying it, the usual value is 0.5.
+ * @property outputSize the size of the output layer
+ * @property outputActivation the activation function of the output layer
  */
 data class MultiPredictionNetworkConfig(
   val inputSize: Int,
   val inputType: LayerType.Input = LayerType.Input.Dense,
+  val inputDropout: Double = 0.0,
   val hiddenSize: Int,
   val hiddenActivation: ActivationFunction?,
+  val hiddenDropout: Double = 0.0,
   val outputSize: Int,
-  val outputActivation: ActivationFunction?,
-  val inputDropout: Double = 0.0,
-  val hiddenDropout: Double = 0.0
+  val outputActivation: ActivationFunction?
 )
