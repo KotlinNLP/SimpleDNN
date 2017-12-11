@@ -25,12 +25,12 @@ class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The neural processor of the input network.
    */
-  private val inputProcessor = FeedforwardNeuralProcessor<InputNDArrayType>(this.model.inputNetwork)
+  val inputProcessor = FeedforwardNeuralProcessor<InputNDArrayType>(this.model.inputNetwork)
 
   /**
    * The list of neural processors of the output networks.
    */
-  private val outputProcessors: List<FeedforwardNeuralProcessor<DenseNDArray>> =
+  val outputProcessors: List<FeedforwardNeuralProcessor<DenseNDArray>> =
     this.model.outputNetworks.map { FeedforwardNeuralProcessor<DenseNDArray>(it) }
 
   /**
