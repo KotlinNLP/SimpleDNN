@@ -44,17 +44,11 @@ class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
   )
 
   /**
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   *
    * @return the errors of the input
    */
-  fun getInputErrors(): DenseNDArray {
-
-    val inputErrors: DenseNDArray = this.inputProcessor.getInputErrors(copy = true)
-
-    this.outputProcessors.forEach { inputErrors.assignSum(it.getInputErrors(copy = false)) }
-
-    return inputErrors
-  }
-
+  fun getInputErrors(copy: Boolean = true): DenseNDArray = this.inputProcessor.getInputErrors(copy = copy)
 
   /**
    * Forward features.
