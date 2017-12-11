@@ -126,32 +126,56 @@ class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Backward errors.
    *
-   * @param outputErrorsList the list of output errors, one for each output network
+   * @param outputErrorsList the list of output errors, one for each output network (null errors are ignored)
    * @param propagateToInput whether to propagate the errors to the input
    * @param inputMePropK the input layer k factor of the 'meProp' algorithm to propagate from the k (in percentage)
    *                     hidden nodes with the top errors (can be null)
    * @param outputMePropK a list of k factors (one for each output layer) of the 'meProp' algorithm to propagate from
    *                      the k (in percentage) output nodes with the top errors (the list and each element can be null)
    */
-  fun backward(outputErrorsList: List<DenseNDArray>,
+  fun backward(outputErrorsList: List<DenseNDArray?>,
                propagateToInput: Boolean = false,
                inputMePropK: Double? = null,
                outputMePropK: List<Double?>? = null) {
 
+    val hiddenErrors: DenseNDArray =
+      this.backwardOutputProcessors(outputErrorsList = outputErrorsList, outputMePropK = outputMePropK)
+
+    this.inputProcessor
+      .backward(outputErrors = hiddenErrors, propagateToInput = propagateToInput, mePropK = listOf(inputMePropK))
+  }
+
+  /**
+   * Output processors backwards.
+   *
+   * @param outputErrorsList the list of output errors, one for each output network (null errors are ignored)
+   * @param outputMePropK a list of k factors (one for each output layer) of the 'meProp' algorithm to propagate from
+   *                      the k (in percentage) output nodes with the top errors (the list and each element can be null)
+   *
+   * @return the sum of the input errors of each output network
+   */
+  private fun backwardOutputProcessors(outputErrorsList: List<DenseNDArray?>,
+                                       outputMePropK: List<Double?>? = null): DenseNDArray {
+
     require(outputErrorsList.size == this.outputProcessors.size) {
       "The list of output errors must have a size equal to the number of output networks."
     }
+    require(outputErrorsList.any { it != null }) { "At list one output errors array must be not null." }
+
+    var hiddenErrors: DenseNDArray? = null
 
     this.outputProcessors.zip(outputErrorsList).forEachIndexed { i, (processor, errors) ->
-      processor.backward(outputErrors = errors, propagateToInput = true, mePropK = listOf(outputMePropK?.get(i)))
+
+      if (errors != null) {
+        processor.backward(outputErrors = errors, propagateToInput = true, mePropK = listOf(outputMePropK?.get(i)))
+
+        if (hiddenErrors == null)
+          hiddenErrors = processor.getInputErrors(copy = true)
+        else
+          hiddenErrors!!.assignSum(processor.getInputErrors(copy = false))
+      }
     }
 
-    val hiddenErrors: DenseNDArray = this.outputProcessors.first().getInputErrors(copy = true)
-    this.outputProcessors.subList(1, this.outputProcessors.size).forEach {
-      hiddenErrors.assignSum(it.getInputErrors(copy = false))
-    }
-
-    this.inputProcessor.backward(
-      outputErrors = hiddenErrors, propagateToInput = propagateToInput, mePropK = listOf(inputMePropK))
+    return hiddenErrors!!
   }
 }
