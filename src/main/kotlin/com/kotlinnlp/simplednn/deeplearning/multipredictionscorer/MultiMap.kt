@@ -7,6 +7,8 @@
 
 package com.kotlinnlp.simplednn.deeplearning.multipredictionscorer
 
+import java.io.Serializable
+
 /**
  * A MultiMap of [Int] indices to [Map]s of [Int] indices to generic elements.
  *
@@ -23,7 +25,16 @@ package com.kotlinnlp.simplednn.deeplearning.multipredictionscorer
  *   }
  * }
  */
-class MultiMap<out T>(private val data: Map<Int, Map<Int, T>>) {
+class MultiMap<out T>(private val data: Map<Int, Map<Int, T>>) : Serializable {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed from Serializable)
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
 
   /**
    * The set of first level keys.
