@@ -39,7 +39,7 @@ class MultiMap<out T>(private val data: Map<Int, Map<Int, T>>) : Serializable {
   /**
    * The set of first level keys.
    */
-  val keys: Set<Int> = this.data.keys
+  val keys: HashSet<Int> = HashSet(this.data.keys)
 
   /**
    * @param i a first level index
