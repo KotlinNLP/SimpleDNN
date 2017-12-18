@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.multipredictionscorer
+package com.kotlinnlp.simplednn.utils
 
 import java.io.Serializable
 

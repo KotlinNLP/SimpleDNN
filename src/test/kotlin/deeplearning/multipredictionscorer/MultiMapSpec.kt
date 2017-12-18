@@ -7,7 +7,7 @@
 
 package deeplearning.multipredictionscorer
 
-import com.kotlinnlp.simplednn.deeplearning.multipredictionscorer.MultiMap
+import com.kotlinnlp.simplednn.utils.MultiMap
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it

@@ -10,7 +10,7 @@ package deeplearning.multipredictionscorer
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.deeplearning.multipredictionscorer.MultiMap
+import com.kotlinnlp.simplednn.utils.MultiMap
 import com.kotlinnlp.simplednn.deeplearning.multipredictionscorer.MultiPredictionModel
 import com.kotlinnlp.simplednn.deeplearning.multipredictionscorer.MultiPredictionNetworkConfig
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
