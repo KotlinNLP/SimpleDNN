@@ -77,6 +77,15 @@ training process.
 
 ## Getting Started
 
+### Import with Maven
+
+```xml
+<dependency>
+    <groupId>com.kotlinnlp</groupId>
+    <artifactId>simplednn</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
 
 ### Examples
 
