@@ -12,3 +12,7 @@ os:
 
 jdk:
   - oraclejdk8
+
+install: true
+
+script: mvn test compile -B -Dmaven.javadoc.skip=true
