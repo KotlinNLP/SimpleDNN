@@ -49,10 +49,13 @@ open class EmbeddingsMap<in T>(
      *
      * @param filename the input filename
      * @param pseudoRandomDropout the pseudoRandomDropout that is propagated to the [EmbeddingsMap] constructor
+     * @param initializer the initializer of the values of the other embeddings (zeros if null, default: Glorot)
      *
      * @return an [EmbeddingsMap] of [String]s loaded from the given file
      */
-    fun load(filename: String, pseudoRandomDropout: Boolean = true): EmbeddingsMap<String> {
+    fun load(filename: String,
+             pseudoRandomDropout: Boolean = true,
+             initializer: Initializer? = GlorotInitializer()): EmbeddingsMap<String> {
 
       val firstLine: String = this.readFirstLine(filename)
       val firstLineSplit: List<String> = firstLine.split(delimiters = " ")
@@ -63,7 +66,7 @@ open class EmbeddingsMap<in T>(
       val embeddingsMap = EmbeddingsMap<String>(
         size = size,
         pseudoRandomDropout = pseudoRandomDropout,
-        initializer = null)
+        initializer = initializer)
 
       this.forEachDataLine(filename = filename, vectorSize = size) { key, vector ->
         embeddingsMap.set(
