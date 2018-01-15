@@ -114,25 +114,42 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     = this.paramsErrorsAccumulator.getParamsErrors(copy = copy)
 
   /**
+   * Get the input errors of all the elements of the last forwarded sequence, in the same order.
+   * This method should be called after a backward.
+   *
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
    * @return an array containing the errors of the input sequence
    */
   fun getInputSequenceErrors(copy: Boolean = true): Array<DenseNDArray> = Array(
     size = this.statesSize,
-    init = { i ->
-      val inputErrors = this.sequence.getStateStructure(i).inputLayer.inputArray.errors
-
-      if (copy) {
-        inputErrors.copy()
-      } else {
-        inputErrors
-      }
-    }
+    init = { i -> this.getInputErrors(elementIndex = i, copy = copy) }
   )
 
   /**
+   * Get the input errors of an element of the last forwarded sequence.
+   * This method should be called after a backward.
    *
+   * @param elementIndex the index of an element of the input sequence
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   *
+   * @return the input errors of the element at the given index
+   */
+  fun getInputErrors(elementIndex: Int, copy: Boolean = true): DenseNDArray {
+
+    val inputErrors = this.sequence.getStateStructure(elementIndex).inputLayer.inputArray.errors
+
+    return if (copy) {
+      inputErrors.copy()
+    } else {
+      inputErrors
+    }
+  }
+
+  /**
+   * @param copy a Boolean indicating whether the returned arrays must be a copy or a reference
+   *
+   * @return the output sequence
    */
   fun getOutputSequence(copy: Boolean = true): Array<DenseNDArray> = Array(
     size = this.statesSize,
