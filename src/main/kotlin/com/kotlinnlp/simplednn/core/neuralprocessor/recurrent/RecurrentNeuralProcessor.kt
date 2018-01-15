@@ -190,7 +190,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.addNewState(saveContributions = saveContributions)
 
-    this.curStateIndex = this.lastStateIndex
+    this.curStateIndex = this.lastStateIndex // crucial to provide the right context
 
     this.forwardCurrentState(
       featuresArray = featuresArray,
@@ -262,23 +262,45 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     require(outputErrorsSequence.size == (this.statesSize)) {
       "Number of errors (%d) does not reflect the length of the sequence (%d)"
-          .format(outputErrorsSequence.size, this.statesSize)
+        .format(outputErrorsSequence.size, this.statesSize)
     }
 
     for (i in (0 .. this.lastStateIndex).reversed()) {
+      this.backwardStep(outputErrors = outputErrorsSequence[i], propagateToInput = propagateToInput, mePropK = mePropK)
+    }
+  }
 
-      this.curStateIndex = i // crucial to provide the right context
+  /**
+   * One single step of backward, respect to the last forwarded sequence, starting from the last element.
+   * Each time this function is called, the focus state index decrease of 1.
+   *
+   * @param outputErrors output errors of the current item of the sequence
+   * @param propagateToInput whether to propagate the errors to the input (default = false)
+   * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
+   *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
+   */
+  fun backwardStep(outputErrors: DenseNDArray,
+                   propagateToInput: Boolean = false,
+                   mePropK: List<Double?>? = null) {
 
-      this.sequence.getStateStructure(i).backward(
-        outputErrors = outputErrorsSequence[i],
-        paramsErrors = this.backwardParamsErrors,
-        propagateToInput = propagateToInput,
-        mePropK = mePropK)
-
-      this.paramsErrorsAccumulator.accumulate(this.backwardParamsErrors)
+    require(this.curStateIndex <= this.lastStateIndex) {
+      "The current state (%d) cannot be greater then the last state index (%d)."
+        .format(this.curStateIndex, this.lastStateIndex)
     }
 
-    this.paramsErrorsAccumulator.averageErrors()
+    this.sequence.getStateStructure(this.curStateIndex).backward(
+      outputErrors = outputErrors,
+      paramsErrors = this.backwardParamsErrors,
+      propagateToInput = propagateToInput,
+      mePropK = mePropK)
+
+    this.paramsErrorsAccumulator.accumulate(this.backwardParamsErrors)
+
+    if (this.curStateIndex == 0) {
+      this.paramsErrorsAccumulator.averageErrors()
+    }
+
+    this.curStateIndex--
   }
 
   /**
