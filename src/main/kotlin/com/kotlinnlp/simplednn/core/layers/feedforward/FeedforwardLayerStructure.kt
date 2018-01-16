@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.utils.ItemsPool
 
 /**
  * The Feedforward Layer Structure.
@@ -21,19 +22,23 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
+ * @property id an identification number useful to track a specific layer (default: 0)
  */
 class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   override val outputArray: LayerUnit<InputNDArrayType>,
   params: LayerParameters<*>,
   activationFunction: ActivationFunction? = null,
-  dropout: Double = 0.0
-) : LayerStructure<InputNDArrayType>(
-  inputArray = inputArray,
-  outputArray = outputArray,
-  params = params,
-  activationFunction = activationFunction,
-  dropout = dropout) {
+  dropout: Double = 0.0,
+  override val id: Int = 0
+) : ItemsPool.IDItem,
+  LayerStructure<InputNDArrayType>(
+    inputArray = inputArray,
+    outputArray = outputArray,
+    params = params,
+    activationFunction = activationFunction,
+    dropout = dropout
+  ) {
 
   /**
    * The helper which executes the forward
