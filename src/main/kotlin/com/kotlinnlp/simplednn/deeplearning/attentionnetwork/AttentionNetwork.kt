@@ -17,8 +17,6 @@ import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.Atte
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import com.kotlinnlp.simplednn.utils.ItemsPool
 
 /**
@@ -44,9 +42,19 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   private val transformParamsErrorsAccumulator = ParamsErrorsAccumulator<FeedforwardLayerParameters>()
 
   /**
-   * The attention transform layer which creates an attention array from each array of an input sequence.
+   * The transform layer which creates an attention array from each array of an input sequence.
    */
   lateinit private var transformLayers: Array<FeedforwardLayerStructure<InputNDArrayType>>
+
+  /**
+   * The transform layers pool.
+   */
+  private var transformLayersPool = FeedforwardLayersPool<InputNDArrayType>(
+    params = this.model.transformParams,
+    inputType = this.inputType,
+    activationFunction = Tanh(),
+    dropout = this.dropout
+  )
 
   /**
    * The Attention Layer of input.
@@ -162,30 +170,6 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
       this.attentionLayer.importanceScore
 
   /**
-   * The factory of the transform layer.
-   *
-   * @return a new FeedforwardLayerStructure
-   */
-  private fun transformLayerFactory(): FeedforwardLayerStructure<InputNDArrayType> {
-
-    @Suppress("UNCHECKED_CAST")
-    val inputArray = when (this.inputType) {
-      LayerType.Input.Dense -> AugmentedArray<DenseNDArray>(size = this.model.inputSize)
-      LayerType.Input.Sparse -> AugmentedArray<SparseNDArray>(size = this.model.inputSize)
-      LayerType.Input.SparseBinary -> AugmentedArray<SparseBinaryNDArray>(size = this.model.inputSize)
-    } as AugmentedArray<InputNDArrayType>
-
-    return LayerStructureFactory(
-      inputArray = inputArray,
-      outputSize = this.model.attentionSize,
-      params = this.model.transformParams,
-      activationFunction = Tanh(),
-      connectionType = LayerType.Connection.Feedforward,
-      dropout = this.dropout
-    ) as FeedforwardLayerStructure
-  }
-
-  /**
    * Set the input sequence.
    *
    * @param inputSequence the list of arrays of input
@@ -212,7 +196,9 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
     useDropout: Boolean
   ): ArrayList<DenseNDArray> {
 
-    this.transformLayers = Array(size = inputSequence.size, init = { this.transformLayerFactory() })
+    this.transformLayersPool.releaseAll()
+
+    this.transformLayers = Array(size = inputSequence.size, init = { this.transformLayersPool.getItem() })
 
     return ArrayList(inputSequence.mapIndexed { i, inputArray ->
 
