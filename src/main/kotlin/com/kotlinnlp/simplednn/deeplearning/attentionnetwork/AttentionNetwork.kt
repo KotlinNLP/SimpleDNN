@@ -173,21 +173,17 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
     useDropout: Boolean
   ): ArrayList<DenseNDArray> {
 
-    val attentionSequence = ArrayList<DenseNDArray>()
-
     this.transformLayers = Array(size = inputSequence.size, init = { this.transformLayerFactory() })
 
-    inputSequence.forEachIndexed { i, inputArray ->
+    return ArrayList(inputSequence.mapIndexed { i, inputArray ->
 
       val layer = this.transformLayers[i]
 
       layer.setInput(inputArray.values)
       layer.forward(useDropout = useDropout)
 
-      attentionSequence.add(layer.outputArray.values)
-    }
-
-    return attentionSequence
+      layer.outputArray.values
+    })
   }
 
   /**
