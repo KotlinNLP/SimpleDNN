@@ -52,6 +52,9 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   init {
     require(this.inputSequence.size > 0) { "The input sequence cannot be empty." }
     require(this.attentionSequence.size > 0) { "The attention sequence cannot be empty." }
+    require(this.attentionSequence.all { it.length == this.params.attentionSize }) {
+      "The attention arrays must have the expected size (%d).".format(this.params.attentionSize)
+    }
     require(this.inputSequence.size == this.attentionSequence.size) {
       "The input sequence must have the same length of the attention sequence."
     }
