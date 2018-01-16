@@ -54,9 +54,15 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   lateinit private var attentionLayer: AttentionLayerStructure<InputNDArrayType>
 
   /**
-   * Forward an input sequence.
+   * A boolean indicating if attention arrays automatically generated have been used during the last forward.
+   */
+  private var internalAttentionArraysUsed: Boolean = false
+
+  /**
+   * Forward an input sequence, building the attention arrays automatically, encoding the [inputSequence] through a
+   * Feedforward Neural Layer.
    *
-   * @param inputSequence the list of arrays of input
+   * @param inputSequence the list of input arrays
    * @param useDropout whether to apply the dropout to generate the attention arrays
    *
    * @return the output [DenseNDArray]
@@ -64,7 +70,32 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   fun forward(inputSequence: ArrayList<AugmentedArray<InputNDArrayType>>,
               useDropout: Boolean = false): DenseNDArray {
 
+    this.internalAttentionArraysUsed = true
+
     this.setInputSequence(inputSequence = inputSequence, useDropout = useDropout)
+    this.attentionLayer.forward()
+
+    return this.attentionLayer.outputArray.values
+  }
+
+  /**
+   * Forward an input sequence, given its related attention arrays.
+   *
+   * @param inputSequence the list of input arrays
+   * @param attentionSequence the list of attention arrays
+   *
+   * @return the output [DenseNDArray]
+   */
+  fun forward(inputSequence: ArrayList<AugmentedArray<InputNDArrayType>>,
+              attentionSequence: ArrayList<DenseNDArray>): DenseNDArray {
+
+    this.internalAttentionArraysUsed = false
+
+    this.attentionLayer = AttentionLayerStructure(
+      inputSequence = inputSequence,
+      attentionSequence = attentionSequence,
+      params = this.model.attentionParams)
+
     this.attentionLayer.forward()
 
     return this.attentionLayer.outputArray.values
@@ -89,19 +120,22 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
       paramsErrors = paramsErrors.attentionParams,
       propagateToInput = propagateToInput)
 
-    // WARNING: call it after the backward of the attention layer
-    this.backwardTransformLayers(
-      paramsErrors = paramsErrors.transformParams,
-      propagateToInput = propagateToInput,
-      mePropK = mePropK)
+    if (this.internalAttentionArraysUsed) {
 
-    if (propagateToInput) {
-      this.addTransformErrorsToInput()
+      // WARNING: call it after the backward of the attention layer
+      this.backwardTransformLayers(
+        paramsErrors = paramsErrors.transformParams,
+        propagateToInput = propagateToInput,
+        mePropK = mePropK)
+
+      if (propagateToInput) {
+        this.addTransformErrorsToInput()
+      }
     }
   }
 
   /**
-   * @return the errors of the arrays of input.
+   * @return the errors of the arrays of input
    */
   fun getInputErrors(): Array<DenseNDArray> {
 
@@ -110,6 +144,11 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
       init = { i -> this.attentionLayer.inputSequence[i].errors }
     )
   }
+
+  /**
+   * @return the errors of the attention arrays
+   */
+  fun getAttentionErrors(): Array<DenseNDArray> = this.attentionLayer.getAttentionErrors()
 
   /**
    * @param copy a Boolean indicating whether the returned importance score must be a copy or a reference
@@ -213,7 +252,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
                                       propagateToInput: Boolean = false,
                                       mePropK: Double?) {
 
-    val attentionErrors: Array<DenseNDArray> = this.attentionLayer.getAttentionErrors()
+    val attentionErrors: Array<DenseNDArray> = this.getAttentionErrors()
 
     // Accumulate errors into the accumulator
     this.transformLayers.forEachIndexed { i, layer ->
