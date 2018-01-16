@@ -56,7 +56,8 @@ class FeedforwardLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
       outputArray = LayerUnit(this.params.outputSize),
       params = this.params,
       activationFunction = this.activationFunction,
-      dropout = this.dropout
+      dropout = this.dropout,
+      id = id
     )
   }
 }
