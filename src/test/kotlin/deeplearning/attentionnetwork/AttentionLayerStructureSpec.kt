@@ -47,7 +47,7 @@ class AttentionLayerStructureSpec : Spek({
         assertFails {
           AttentionLayerStructure(
             inputSequence = inputSequence,
-            attentionSequence = ArrayList<DenseNDArray>(),
+            attentionSequence = ArrayList(),
             params = params)
         }
       }
@@ -56,6 +56,20 @@ class AttentionLayerStructureSpec : Spek({
 
         val wrongAttentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence)
         wrongAttentionSequence.removeAt(1)
+
+        assertFails {
+          AttentionLayerStructure(
+            inputSequence = inputSequence,
+            attentionSequence = wrongAttentionSequence,
+            params = params)
+        }
+      }
+
+      it("should raise an Exception with a attention arrays with a not expected size") {
+
+        val wrongAttentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence)
+        wrongAttentionSequence.removeAt(1)
+        wrongAttentionSequence.add(DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.1, 0.3)))
 
         assertFails {
           AttentionLayerStructure(
