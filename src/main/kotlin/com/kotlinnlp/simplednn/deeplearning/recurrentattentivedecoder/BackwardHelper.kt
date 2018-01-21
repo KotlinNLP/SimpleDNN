@@ -229,8 +229,6 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
       this.contextErrors!!.assignSum(contextPart)
       this.sequenceErrors!![itemIndex].assignSum(sequencePart.sum(inputErrors[itemIndex]))
     }
-
-
   }
 
   /**
