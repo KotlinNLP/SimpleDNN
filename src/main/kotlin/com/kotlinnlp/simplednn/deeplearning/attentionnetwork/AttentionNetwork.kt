@@ -143,6 +143,17 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   }
 
   /**
+   * @param copy a Boolean indicating whether the returned value must be a copy or a reference
+   *
+   * @return the output of the last forward() in a [DenseNDArray]
+   */
+  fun getOutput(copy: Boolean = true): DenseNDArray =
+    if (copy)
+      this.attentionLayer.outputArray.values.copy()
+    else
+      this.attentionLayer.outputArray.values
+
+  /**
    * @return the errors of the arrays of input
    */
   fun getInputErrors(): Array<DenseNDArray> {
