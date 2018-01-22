@@ -17,24 +17,24 @@ import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkPar
 /**
  * The model of the [RecurrentAttentiveNetwork].
  *
- * @param inputSize the size of the input items of a sequence
- * @param attentionSize the size of the attention
- * @param contextSize the size of the recurrent context
+ * @property inputSize the size of the input items of a sequence
+ * @property attentionSize the size of the attention arrays
+ * @property recurrentContextSize the size of the recurrent context
+ * @property outputSize the output size of the final output network
+ * @property labelSize the size of the label resulting form a final prediction
  * @param contextActivation the activation of the recurrent network that encode the context
  * @param contextRecurrenceType the recurrent layer type (e.g. LSTM, GRU, RAN, ...)
- * @param labelSize the size of the label resulting form a final prediction
  * @param outputActivationFunction the activation function of the final output network
- * @param outputSize the output size of the final output network
  */
 class RecurrentAttentiveNetworkModel(
   val inputSize: Int,
   val attentionSize: Int,
-  val contextSize: Int,
-  val contextActivation: ActivationFunction,
-  val contextRecurrenceType: LayerType.Connection,
+  val recurrentContextSize: Int,
+  val outputSize: Int,
   val labelSize: Int,
-  val outputActivationFunction: ActivationFunction,
-  val outputSize: Int
+  contextActivation: ActivationFunction,
+  contextRecurrenceType: LayerType.Connection,
+  outputActivationFunction: ActivationFunction
 ){
 
   /**
@@ -48,11 +48,11 @@ class RecurrentAttentiveNetworkModel(
    * The parameters of the transform layers used to create the attention arrays of the [attentionParams].
    */
   val transformParams = FeedforwardLayerParameters(
-    inputSize = this.inputSize + this.contextSize,
+    inputSize = this.inputSize + this.recurrentContextSize,
     outputSize = this.attentionSize)
 
   /**
-   * The RNN used to encode the state
+   * The RNN used to encode the state.
    */
   val contextNetwork = NeuralNetwork(
     LayerConfiguration(
@@ -60,24 +60,24 @@ class RecurrentAttentiveNetworkModel(
       inputType = LayerType.Input.Dense
     ),
     LayerConfiguration(
-      size = this.contextSize,
-      activationFunction = this.contextActivation,
-      connectionType = this.contextRecurrenceType
+      size = this.recurrentContextSize,
+      activationFunction = contextActivation,
+      connectionType = contextRecurrenceType
     )
   )
 
   /**
-   * The output network
+   * The output network.
    */
   val outputNetwork = NeuralNetwork(
     LayerConfiguration(
-      size = this.attentionParams.outputSize + this.contextSize,
+      size = this.attentionParams.outputSize + this.recurrentContextSize,
       inputType = LayerType.Input.Dense,
       dropout = 0.0),
     LayerConfiguration(
       size = this.outputSize,
       connectionType = LayerType.Connection.Feedforward,
-      activationFunction = this.outputActivationFunction,
+      activationFunction = outputActivationFunction,
       meProp = false)
   )
 }
