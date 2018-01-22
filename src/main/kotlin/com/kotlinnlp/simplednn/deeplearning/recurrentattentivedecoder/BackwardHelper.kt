@@ -187,7 +187,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
 
       val (prevStateEncodingErrors, contextLabelErrors) = this.recurrentContextBackwardStep()
 
-      this.contextLabelsErrors.add(contextLabelErrors)
+      this.contextLabelsErrors.add(0, contextLabelErrors)
 
       this.recurrentStateEncodingErrors = prevStateEncodingErrors
     }
