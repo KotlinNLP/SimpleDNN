@@ -22,6 +22,8 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
  * The backward helper of the [RecurrentAttentiveNetwork].
+ *
+ * @property network the recurrent attentive network of this helper
  */
 class BackwardHelper(private val network: RecurrentAttentiveNetwork) : ScheduledUpdater {
 
