@@ -30,8 +30,6 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
 
     if (firstState) this.resetHistory()
 
-    val outputProcessor = this.getOutputProcessor()
-
     val context: DenseNDArray = if (firstState)
       this.network.initialStateEncoding
     else
@@ -39,7 +37,7 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
 
     val attention: DenseNDArray = this.encodeState(sequence = inputSequence, context = context)
 
-    return outputProcessor.forward(concatVectorsV(attention, context))
+    return this.getOutputProcessor().forward(concatVectorsV(attention, context))
   }
 
   /**
@@ -138,7 +136,7 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
   }
 
   /**
-   * Get an available feed-forward processor.
+   * Get an available output processor.
    *
    * @return an available feed-forward layer
    */
