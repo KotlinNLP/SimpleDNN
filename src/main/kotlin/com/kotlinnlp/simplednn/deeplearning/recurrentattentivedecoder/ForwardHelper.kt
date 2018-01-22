@@ -20,6 +20,11 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
 
   /**
+   * The index of the current state.
+   */
+  private var stateIndex: Int = -1
+
+  /**
    * @param inputSequence the input sequence
    * @param lastPredictionLabel the context label vector used to encode the memory of the last prediction (can be null
    *                            if it is the first state)
@@ -33,10 +38,12 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
 
     if (firstState) this.resetHistory()
 
+    this.stateIndex++
+
     val recurrentContext: DenseNDArray = if (firstState)
       this.network.initialRecurrentContext
     else
-      this.forwardRecurrentContext(firstState = firstState, lastPredictionLabel = lastPredictionLabel!!)
+      this.forwardRecurrentContext(lastPredictionLabel = lastPredictionLabel!!)
 
     val stateEncoding: DenseNDArray = this.encodeState(sequence = inputSequence, recurrentContext = recurrentContext)
 
@@ -47,6 +54,8 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
    * Reset the recurrent history of the network.
    */
   private fun resetHistory() {
+
+    this.stateIndex = -1
 
     this.network.transformLayersPool.releaseAll()
     this.network.usedTransformLayers.clear()
@@ -60,14 +69,13 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
 
   /***
    * @param lastPredictionLabel the context label vector used to encode the memory of the last prediction
-   * @param firstState a boolean indicating if this is first state
    *
    * @return the recurrent context for the current state
    */
-  private fun forwardRecurrentContext(lastPredictionLabel: DenseNDArray, firstState: Boolean): DenseNDArray =
+  private fun forwardRecurrentContext(lastPredictionLabel: DenseNDArray): DenseNDArray =
     this.network.recurrentContextProcessor.forward(
       featuresArray = concatVectorsV(this.getLastEncodedState(), lastPredictionLabel),
-      firstState = firstState)
+      firstState = this.stateIndex == 1)
 
   /**
    * Encode the current state.
