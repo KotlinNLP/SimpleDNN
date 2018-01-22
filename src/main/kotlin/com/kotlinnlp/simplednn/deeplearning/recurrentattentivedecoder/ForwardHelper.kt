@@ -50,7 +50,7 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
    */
   private fun forwardContext(firstState: Boolean, lastPrediction: DenseNDArray?): DenseNDArray =
     if (firstState)
-      this.network.initialEncodedState
+      this.network.initialStateEncoding
     else
       this.network.contextProcessor.forward(
         featuresArray = concatVectorsV(this.getLastAttention(), lastPrediction!!),
