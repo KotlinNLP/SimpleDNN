@@ -60,9 +60,9 @@ class RecurrentAttentiveNetwork(
       params = this.model.transformParams)
 
   /**
-   * A pool of Attention Networks.
+   * A pool of Attention Networks used to encode the current state.
    */
-  val attentionNetworksPool: AttentionNetworksPool<DenseNDArray> =
+  val stateEncodersPool: AttentionNetworksPool<DenseNDArray> =
     AttentionNetworksPool(
       model = this.model.attentionParams,
       inputType = LayerType.Input.Dense)
@@ -70,7 +70,7 @@ class RecurrentAttentiveNetwork(
   /**
    * The processor for the recurrent context network.
    */
-  val contextProcessor: RecurrentNeuralProcessor<DenseNDArray> =
+  val recurrentContextProcessor: RecurrentNeuralProcessor<DenseNDArray> =
     RecurrentNeuralProcessor(this.model.recurrentContextNetwork)
 
   /**

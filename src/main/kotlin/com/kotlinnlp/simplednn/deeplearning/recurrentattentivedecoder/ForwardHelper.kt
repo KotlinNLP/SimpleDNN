@@ -52,7 +52,7 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
     if (firstState)
       this.network.initialStateEncoding
     else
-      this.network.contextProcessor.forward(
+      this.network.recurrentContextProcessor.forward(
         featuresArray = concatVectorsV(this.getLastAttention(), lastPrediction!!),
         firstState = firstState)
 
@@ -153,10 +153,10 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
 
     if (firstState) {
       this.network.usedAttentionNetworks.clear()
-      this.network.attentionNetworksPool.releaseAll()
+      this.network.stateEncodersPool.releaseAll()
     }
 
-    val attentionNetwork = this.network.attentionNetworksPool.getItem()
+    val attentionNetwork = this.network.stateEncodersPool.getItem()
 
     // TODO: use always the first of the pool during training
     this.network.usedAttentionNetworks.add(attentionNetwork)

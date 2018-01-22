@@ -160,7 +160,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
       }
     }
 
-    this.contextNetworkOptimizer.accumulate(this.network.contextProcessor.getParamsErrors(copy = true))
+    this.contextNetworkOptimizer.accumulate(this.network.recurrentContextProcessor.getParamsErrors(copy = true))
   }
 
   /**
@@ -286,11 +286,11 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
    */
   private fun contextBackwardStep(): Pair<DenseNDArray, DenseNDArray> {
 
-    this.network.contextProcessor.backwardStep(
+    this.network.recurrentContextProcessor.backwardStep(
       outputErrors = this.contextErrors!!,
       propagateToInput = true)
 
-    return this.splitContextInputErrors(this.network.contextProcessor.getInputErrors(
+    return this.splitContextInputErrors(this.network.recurrentContextProcessor.getInputErrors(
       elementIndex = this.stepIndex - 1, // important
       copy = true))
   }
