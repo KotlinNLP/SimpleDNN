@@ -61,7 +61,7 @@ class RecurrentAttentiveNetwork(
   /**
    * The zeros array used as null memory encoding.
    */
-  val initialEncodedState = DenseNDArrayFactory.zeros(Shape(this.model.contextSize))
+  val initialEncodedState = DenseNDArrayFactory.zeros(Shape(this.model.recurrentContextSize))
 
   /**
    * The list of active Attention Networks

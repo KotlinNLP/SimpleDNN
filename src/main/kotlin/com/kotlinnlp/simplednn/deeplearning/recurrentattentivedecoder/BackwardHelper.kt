@@ -181,7 +181,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
 
     val splitErrors: Array<DenseNDArray> = inputErrors.splitV(
       this.network.model.attentionParams.outputSize,
-      this.network.model.contextSize
+      this.network.model.recurrentContextSize
     )
 
     return Pair(splitErrors[0], splitErrors[1])
@@ -235,7 +235,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
    * Set the [contextErrors] to zeros.
    */
   fun resetContextErrors() {
-    this.contextErrors = DenseNDArrayFactory.zeros(Shape(this.network.model.contextSize))
+    this.contextErrors = DenseNDArrayFactory.zeros(Shape(this.network.model.recurrentContextSize))
   }
 
   /**
@@ -304,7 +304,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
 
     val splitErrors: Array<DenseNDArray> = errors.splitV(
       this.network.model.inputSize,
-      this.network.model.contextSize)
+      this.network.model.recurrentContextSize)
 
     return Pair(splitErrors[0], splitErrors[1])
   }
