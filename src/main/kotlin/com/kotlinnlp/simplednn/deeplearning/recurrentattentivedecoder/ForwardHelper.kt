@@ -51,8 +51,8 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
     this.network.transformLayersPool.releaseAll()
     this.network.usedTransformLayers.clear()
 
-    this.network.stateEncodersPool.releaseAll()
-    this.network.usedStateEncoders.clear()
+    this.network.attentionNetworksPool.releaseAll()
+    this.network.usedAttentionNetworks.clear()
 
     this.network.outputNetworkPool.releaseAll()
     this.network.usedOutputProcessors.clear()
@@ -125,17 +125,17 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
   }
 
   /**
-   * Get an available Attention Network, adding it into the usedStateEncoders list.
+   * Get an available Attention Network, adding it into the usedAttentionNetworks list.
    *
    * @return an available Attention Network
    */
   private fun getAttentionNetwork(): AttentionNetwork<DenseNDArray> {
 
-    if (this.network.trainingMode || this.network.usedStateEncoders.isEmpty()) {
-      this.network.usedStateEncoders.add(this.network.stateEncodersPool.getItem())
+    if (this.network.trainingMode || this.network.usedAttentionNetworks.isEmpty()) {
+      this.network.usedAttentionNetworks.add(this.network.attentionNetworksPool.getItem())
     }
 
-    return this.network.usedStateEncoders.last()
+    return this.network.usedAttentionNetworks.last()
   }
 
   /**
@@ -155,5 +155,5 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
   /**
    * @return the last encoded state
    */
-  private fun getLastEncodedState(): DenseNDArray = this.network.usedStateEncoders.last().getOutput()
+  private fun getLastEncodedState(): DenseNDArray = this.network.usedAttentionNetworks.last().getOutput()
 }

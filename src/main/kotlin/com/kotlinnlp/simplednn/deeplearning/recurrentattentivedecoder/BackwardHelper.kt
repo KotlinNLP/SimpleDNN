@@ -234,7 +234,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
    */
   private fun backwardStateEncoder(stateEncodingErrors: DenseNDArray): List<Pair<DenseNDArray, DenseNDArray>> {
 
-    val attentionNetwork = this.network.usedStateEncoders[this.stateIndex]
+    val attentionNetwork = this.network.usedAttentionNetworks[this.stateIndex]
     val paramsErrors = this.getAttentionParamsErrors()
 
     attentionNetwork.backward(outputErrors = stateEncodingErrors, paramsErrors = paramsErrors, propagateToInput = true)
@@ -349,7 +349,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   private fun getAttentionParamsErrors(): AttentionNetworkParameters = try {
     this.attentionNetworkParamsErrors
   } catch (e: UninitializedPropertyAccessException) {
-    this.attentionNetworkParamsErrors = this.network.usedStateEncoders.last().model.copy()
+    this.attentionNetworkParamsErrors = this.network.usedAttentionNetworks.last().model.copy()
     this.attentionNetworkParamsErrors
   }
 }

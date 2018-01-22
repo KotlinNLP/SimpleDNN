@@ -68,7 +68,7 @@ class RecurrentAttentiveNetwork(
   /**
    * A pool of Attention Networks used to encode the current state.
    */
-  val stateEncodersPool: AttentionNetworksPool<DenseNDArray> =
+  val attentionNetworksPool: AttentionNetworksPool<DenseNDArray> =
     AttentionNetworksPool(
       model = this.model.attentionParams,
       inputType = LayerType.Input.Dense)
@@ -99,7 +99,7 @@ class RecurrentAttentiveNetwork(
   /**
    * The list of Attention Networks used to encode all the states of the current input sequence.
    */
-  val usedStateEncoders = mutableListOf<AttentionNetwork<DenseNDArray>>()
+  val usedAttentionNetworks = mutableListOf<AttentionNetwork<DenseNDArray>>()
 
   /**
    * The output processors used during the last forward.
