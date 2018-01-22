@@ -20,79 +20,83 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
 
   /**
-   * @param firstState a boolean indicating if this is the first state
    * @param inputSequence the input sequence
    * @param lastPredictionLabel the context label vector used to encode the memory of the last prediction
+   * @param firstState a boolean indicating if this is the first state
    */
-  fun forward(firstState: Boolean,
-              inputSequence: List<DenseNDArray>,
-              lastPredictionLabel: DenseNDArray?): DenseNDArray {
+  fun forward(inputSequence: List<DenseNDArray>,
+              lastPredictionLabel: DenseNDArray?,
+              firstState: Boolean): DenseNDArray {
 
-    val processor = this.getFeedforwardProcessor(firstState = firstState)
+    if (firstState) this.resetHistory()
 
-    val context: DenseNDArray = this.forwardContext(
-      firstState = firstState,
-      lastPrediction = lastPredictionLabel)
+    val outputProcessor = this.getOutputProcessor()
 
-    val attention: DenseNDArray = this.forwardAttention(
-      firstState = firstState,
-      sequence = inputSequence,
-      context = context)
+    val context: DenseNDArray = if (firstState)
+      this.network.initialStateEncoding
+    else
+      this.forwardContext(firstState = firstState, lastPredictionLabel = lastPredictionLabel)
 
-    return processor.forward(concatVectorsV(attention, context))
+    val attention: DenseNDArray = this.forwardAttention(sequence = inputSequence, context = context)
+
+    return outputProcessor.forward(concatVectorsV(attention, context))
+  }
+
+  /**
+   * Reset the recurrent history of the network.
+   */
+  private fun resetHistory() {
+
+    this.network.transformLayersPool.releaseAll()
+    this.network.usedTransformLayers.clear()
+
+    this.network.stateEncodersPool.releaseAll()
+    this.network.usedStateEncoders.clear()
+
+    this.network.outputNetworkPool.releaseAll()
+    this.network.usedOutputProcessors.clear()
   }
 
   /***
+   * @param lastPredictionLabel the context label vector used to encode the memory of the last prediction
    * @param firstState a boolean indicating if this is first state
-   * @param lastPrediction the dense representation of the last prediction
    *
    * @return the recurrent context for the current state
    */
-  private fun forwardContext(firstState: Boolean, lastPrediction: DenseNDArray?): DenseNDArray =
-    if (firstState)
-      this.network.initialStateEncoding
-    else
-      this.network.recurrentContextProcessor.forward(
-        featuresArray = concatVectorsV(this.getLastAttention(), lastPrediction!!),
-        firstState = firstState)
+  private fun forwardContext(lastPredictionLabel: DenseNDArray?, firstState: Boolean): DenseNDArray =
+    this.network.recurrentContextProcessor.forward(
+      featuresArray = concatVectorsV(this.getLastAttention(), lastPredictionLabel!!),
+      firstState = firstState)
 
   /**
-   * @param firstState a boolean indicating if this is first state
    * @param sequence the sequence to decode
    * @param context the recurrent context
    *
    * @return the result of the [AttentionNetwork]
    */
-  private fun forwardAttention(firstState: Boolean,
-                               sequence: List<DenseNDArray>,
-                               context: DenseNDArray): DenseNDArray {
+  private fun forwardAttention(sequence: List<DenseNDArray>, context: DenseNDArray): DenseNDArray {
 
-    val attentionNetwork = this.getAttentionNetwork(firstState = firstState)
+    val attentionNetwork = this.getAttentionNetwork()
 
     return attentionNetwork.forward(
       inputSequence = ArrayList(sequence.map { AugmentedArray(values = it) }),
-      attentionSequence = this.buildAttentionSequence(
-        firstState = firstState,
-        sequence = sequence,
-        context = context))
+      attentionSequence = this.buildAttentionSequence(sequence = sequence, context = context))
   }
 
   /**
-   * @param firstState a boolean indicating if this is the first state
-   * @param sequence the sequence to ecnode
+   * @param sequence the input sequence
    * @param context the recurrent context
    *
-   * @return the attention sequence
+   * @return the sequence of attention arrays
    */
-  private fun buildAttentionSequence(firstState: Boolean,
-                                     sequence: List<DenseNDArray>,
+  private fun buildAttentionSequence(sequence: List<DenseNDArray>,
                                      context: DenseNDArray): ArrayList<DenseNDArray> {
 
-    val transformLayers = this.getTransformLayers(firstState = firstState, size = sequence.size)
+    val transformLayers = this.getTransformLayers(size = sequence.size)
 
-    return ArrayList(transformLayers.zip(sequence).map { (layer, item) ->
+    return ArrayList(transformLayers.zip(sequence).map { (layer, inputArray) ->
 
-      layer.setInput(concatVectorsV(item, context))
+      layer.setInput(concatVectorsV(inputArray, context))
       layer.forward()
 
       layer.outputArray.values.copy()
@@ -102,16 +106,11 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
   /**
    * Get an available transform layer.
    *
-   * @param firstState a boolean indicating if this is the first state
+   * @param size the number of transform layer to build
    *
    * @return an available transform layer
    */
-  private fun getTransformLayers(firstState: Boolean, size: Int): List<FeedforwardLayerStructure<DenseNDArray>> {
-
-    if (firstState) {
-      this.network.transformLayersPool.releaseAll()
-      this.network.usedTransformLayers.clear()
-    }
+  private fun getTransformLayers(size: Int): List<FeedforwardLayerStructure<DenseNDArray>> {
 
     val layers = List(size = size, init = { this.network.transformLayersPool.getItem() })
 
@@ -123,16 +122,9 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
   /**
    * Get an available feed-forward processor.
    *
-   * @param firstState a boolean indicating if this is the first state
-   *
    * @return an available feed-forward layer
    */
-  private fun getFeedforwardProcessor(firstState: Boolean): FeedforwardNeuralProcessor<DenseNDArray> {
-
-    if (firstState) {
-      this.network.usedOutputProcessors.clear()
-      this.network.outputNetworkPool.releaseAll()
-    }
+  private fun getOutputProcessor(): FeedforwardNeuralProcessor<DenseNDArray> {
 
     val processor = this.network.outputNetworkPool.getItem()
 
@@ -145,16 +137,9 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
   /**
    * Get an available Attention Network.
    *
-   * @param firstState a boolean indicating if this is the first state
-   *
    * @return an available Attention Network
    */
-  private fun getAttentionNetwork(firstState: Boolean): AttentionNetwork<DenseNDArray> {
-
-    if (firstState) {
-      this.network.usedStateEncoders.clear()
-      this.network.stateEncodersPool.releaseAll()
-    }
+  private fun getAttentionNetwork(): AttentionNetwork<DenseNDArray> {
 
     val attentionNetwork = this.network.stateEncodersPool.getItem()
 
