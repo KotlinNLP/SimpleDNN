@@ -45,7 +45,7 @@ class RecurrentAttentiveNetwork(
 ) : ScheduledUpdater {
 
   /**
-   * The size of the processing sequence (set at the first forward state).
+   * The size of the currently processing sequence (set at the first forward state).
    */
   var sequenceSize: Int = 0
     private set
@@ -68,20 +68,20 @@ class RecurrentAttentiveNetwork(
       inputType = LayerType.Input.Dense)
 
   /**
-   * The processor for the recurrent context network.
+   * The processor of the recurrent context network.
    */
   val recurrentContextProcessor: RecurrentNeuralProcessor<DenseNDArray> =
     RecurrentNeuralProcessor(this.model.recurrentContextNetwork)
 
   /**
-   * The pool of Feedforward Neural Processors used to interpolate the output of the Attention Network together with the
-   * recurrent context.
+   * The pool of Feedforward Neural Processors used to interpolate the encoded state together with the recurrent
+   * context.
    */
   val outputNetworkPool: FeedforwardNeuralProcessorsPool<DenseNDArray> =
     FeedforwardNeuralProcessorsPool(this.model.outputNetwork)
 
   /**
-   * The zeros array used as null state encoding.
+   * The zeros array used as encoding of the initial state.
    */
   val initialStateEncoding = DenseNDArrayFactory.zeros(Shape(this.model.recurrentContextSize))
 
