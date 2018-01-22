@@ -258,14 +258,14 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
         layer = transformLayers[itemIndex],
         outputErrors = attentionArrayErrors)
 
-      val (inputArrayPart, focusContextPart) = this.splitTransformErrors(errors = transformErrors)
+      val (inputArrayTransformPart, focusContextPart) = this.splitTransformErrors(errors = transformErrors)
 
       this.focusContextErrors = if (itemIndex == 0)
         focusContextPart
       else
         this.focusContextErrors.assignSum(focusContextPart)
 
-      this.inputSequenceErrors[itemIndex].assignSum(inputArrayPart.sum(inputArrayErrors))
+      this.inputSequenceErrors[itemIndex].assignSum(inputArrayTransformPart.sum(inputArrayErrors))
     }
   }
 
