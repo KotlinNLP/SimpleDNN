@@ -137,6 +137,11 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   fun getInputErrors(elementIndex: Int, copy: Boolean = true): DenseNDArray {
 
+    require(elementIndex in 0 .. this.lastStateIndex) {
+      "element index (%d) must be within the length of the sequence in the range [0, %d]"
+        .format(elementIndex, this.lastStateIndex)
+    }
+
     val inputErrors = this.sequence.getStateStructure(elementIndex).inputLayer.inputArray.errors
 
     return if (copy) {
