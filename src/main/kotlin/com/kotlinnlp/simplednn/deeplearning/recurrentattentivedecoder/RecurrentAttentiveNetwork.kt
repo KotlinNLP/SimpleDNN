@@ -30,14 +30,6 @@ class RecurrentAttentiveNetwork(
   val updateMethod: UpdateMethod<*>) : ScheduledUpdater {
 
   /**
-   * A pool of Attention Networks.
-   */
-  val attentionNetworksPool: AttentionNetworksPool<DenseNDArray> =
-    AttentionNetworksPool(
-      model = this.model.attentionParams,
-      inputType = LayerType.Input.Dense)
-
-  /**
    * A pool of Feedforward Layers used to build the attention arrays of the Attention Network.
    */
   val transformLayersPool: FeedforwardLayersPool<DenseNDArray> =
@@ -47,11 +39,12 @@ class RecurrentAttentiveNetwork(
       params = this.model.transformParams)
 
   /**
-   * The pool of Feedforward Neural Processors used to interpolate the output of the Attention Network together with the
-   * recurrent context.
+   * A pool of Attention Networks.
    */
-  val outputNetworkPool: FeedforwardNeuralProcessorsPool<DenseNDArray> =
-    FeedforwardNeuralProcessorsPool(this.model.outputNetwork)
+  val attentionNetworksPool: AttentionNetworksPool<DenseNDArray> =
+    AttentionNetworksPool(
+      model = this.model.attentionParams,
+      inputType = LayerType.Input.Dense)
 
   /**
    * The processor for the recurrent context network.
@@ -60,9 +53,21 @@ class RecurrentAttentiveNetwork(
     RecurrentNeuralProcessor(this.model.recurrentContextNetwork)
 
   /**
-   * The zeros array used as null memory encoding.
+   * The pool of Feedforward Neural Processors used to interpolate the output of the Attention Network together with the
+   * recurrent context.
+   */
+  val outputNetworkPool: FeedforwardNeuralProcessorsPool<DenseNDArray> =
+    FeedforwardNeuralProcessorsPool(this.model.outputNetwork)
+
+  /**
+   * The zeros array used as null state encoding.
    */
   val initialEncodedState = DenseNDArrayFactory.zeros(Shape(this.model.recurrentContextSize))
+
+  /**
+   * The list of transform layers groups used during the last forward.
+   */
+  val usedTransformLayers = mutableListOf<List<FeedforwardLayerStructure<DenseNDArray>>>()
 
   /**
    * The list of Attention Networks used during the last forward.
@@ -75,14 +80,10 @@ class RecurrentAttentiveNetwork(
   val usedOutputProcessors = mutableListOf<FeedforwardNeuralProcessor<DenseNDArray>>()
 
   /**
-   * The list of transform layers groups used during the last forward.
-   */
-  val usedTransformLayers = mutableListOf<List<FeedforwardLayerStructure<DenseNDArray>>>()
-
-  /**
-   * The size of the processing sequence (updated at the first forward state).
+   * The size of the processing sequence (set at the first forward state).
    */
   var sequenceSize: Int = 0
+    private set
 
   /**
    * The forward helper.
