@@ -35,7 +35,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   /**
    * The error of the processing sequence.
    */
-  lateinit var sequenceErrors: Array<DenseNDArray>
+  lateinit var sequenceErrors: List<DenseNDArray>
     private set
 
   /**
@@ -170,7 +170,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
    * Initialize the [sequenceErrors] with arrays of zeros (an amount equal to the size of the current input sequence).
    */
   private fun initSequenceErrors() {
-    this.sequenceErrors = Array(
+    this.sequenceErrors = List(
       size = this.network.sequenceSize,
       init = { DenseNDArrayFactory.zeros(Shape(this.network.model.inputSize)) })
   }
