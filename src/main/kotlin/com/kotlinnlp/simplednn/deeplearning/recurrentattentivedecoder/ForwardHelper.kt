@@ -21,22 +21,22 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
 
   /**
    * @param firstState a boolean indicating if this is the first state
-   * @param sequence the sequence to decode
-   * @param lastPrediction the dense representation of the last prediction
+   * @param inputSequence the input sequence
+   * @param lastPredictionLabel the context label vector used to encode the memory of the last prediction
    */
   fun forward(firstState: Boolean,
-              sequence: List<DenseNDArray>,
-              lastPrediction: DenseNDArray?): DenseNDArray {
+              inputSequence: List<DenseNDArray>,
+              lastPredictionLabel: DenseNDArray?): DenseNDArray {
 
     val processor = this.getFeedforwardProcessor(firstState = firstState)
 
     val context: DenseNDArray = this.forwardContext(
       firstState = firstState,
-      lastPrediction = lastPrediction)
+      lastPrediction = lastPredictionLabel)
 
     val attention: DenseNDArray = this.forwardAttention(
       firstState = firstState,
-      sequence = sequence,
+      sequence = inputSequence,
       context = context)
 
     return processor.forward(concatVectorsV(attention, context))

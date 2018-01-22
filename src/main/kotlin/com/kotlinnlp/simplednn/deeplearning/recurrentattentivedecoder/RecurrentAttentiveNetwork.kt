@@ -114,18 +114,21 @@ class RecurrentAttentiveNetwork(
    * Forward.
    *
    * @param firstState a boolean indicating if this is the first state
-   * @param sequence the sequence
-   * @param lastPrediction the dense representation of the last prediction
+   * @param inputSequence the input sequence
+   * @param lastPredictionLabel the context label vector used to encode the memory of the last prediction
    *
    * @return the output array of the network
    */
   fun forward(firstState: Boolean,
-              sequence: List<DenseNDArray>,
-              lastPrediction: DenseNDArray?): DenseNDArray {
+              inputSequence: List<DenseNDArray>,
+              lastPredictionLabel: DenseNDArray?): DenseNDArray {
 
-    if (firstState) this.sequenceSize = sequence.size
+    if (firstState) this.sequenceSize = inputSequence.size
 
-    return this.forwardHelper.forward(firstState = firstState, sequence = sequence, lastPrediction = lastPrediction)
+    return this.forwardHelper.forward(
+      firstState = firstState,
+      inputSequence = inputSequence,
+      lastPredictionLabel = lastPredictionLabel)
   }
 
   /**
