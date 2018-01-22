@@ -252,8 +252,6 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
 
     val transformLayers = this.network.usedTransformLayers[this.stateIndex]
 
-    this.resetFocusContextErrors()
-
     stateEncoderInputErrors.forEachIndexed { itemIndex, (inputArrayErrors, attentionArrayErrors) ->
 
       val transformErrors: DenseNDArray = this.backwardTransformLayer(
@@ -262,16 +260,13 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
 
       val (inputArrayPart, focusContextPart) = this.splitTransformErrors(errors = transformErrors)
 
-      this.focusContextErrors.assignSum(focusContextPart)
+      this.focusContextErrors = if (itemIndex == 0)
+        focusContextPart
+      else
+        this.focusContextErrors.assignSum(focusContextPart)
+
       this.inputSequenceErrors[itemIndex].assignSum(inputArrayPart.sum(inputArrayErrors))
     }
-  }
-
-  /**
-   * Set the [focusContextErrors] to zeros.
-   */
-  private fun resetFocusContextErrors() {
-    this.focusContextErrors = DenseNDArrayFactory.zeros(Shape(this.network.model.recurrentContextSize))
   }
 
   /**
