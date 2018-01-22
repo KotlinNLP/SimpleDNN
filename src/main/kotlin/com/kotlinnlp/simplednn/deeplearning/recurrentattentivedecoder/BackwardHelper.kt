@@ -44,11 +44,6 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   private var stateIndex: Int = 0
 
   /**
-   * The recurrent errors of the context.
-   */
-  private lateinit var contextErrors: DenseNDArray
-
-  /**
    * The structure used to store the params errors of the transform layers during the backward.
    */
   private lateinit var transformLayerParamsErrors: FeedforwardLayerParameters
@@ -57,6 +52,16 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
    * The structure used to store the params errors of the Attention Network during the backward.
    */
   private lateinit var attentionNetworkParamsErrors: AttentionNetworkParameters
+
+  /**
+   * The recurrent errors of the context.
+   */
+  private lateinit var contextErrors: DenseNDArray
+
+  /**
+   * The recurrent errors of the state encoding.
+   */
+  private lateinit var recurrentStateEncodingErrors: DenseNDArray
 
   /**
    * The optimizer of the transform layers.
@@ -136,31 +141,11 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
     this.initSequenceErrors()
     this.predictionsErrors.clear()
 
-    var recurrentAttentionErrors: DenseNDArray? = null
-
     (0 until outputErrors.size).reversed().forEach { stateIndex ->
 
-      this.stateIndex = stateIndex // important
+      this.stateIndex = stateIndex
 
-      val (attentionPart, contextPart) = this.getAttentionAndContextOutputErrors(
-        outputErrors = outputErrors[stateIndex])
-
-      // update the context errors and the sequence errors
-      this.backwardAttentionAndTransform(
-        outputErrors = if (stateIndex == outputErrors.lastIndex)
-          attentionPart
-        else
-          attentionPart.assignSum(recurrentAttentionErrors!!))
-
-      if (stateIndex > 0) {
-        this.contextErrors.assignSum(contextPart)
-
-        val (prevAttentionErrors, prevPredictionErrors) = this.contextBackwardStep()
-
-        this.predictionsErrors.add(prevPredictionErrors)
-
-        recurrentAttentionErrors = prevAttentionErrors
-      }
+      this.backwardStep(outputErrors = outputErrors[stateIndex], isLastState = stateIndex == outputErrors.lastIndex)
     }
 
     this.contextNetworkOptimizer.accumulate(this.network.recurrentContextProcessor.getParamsErrors(copy = false))
@@ -173,6 +158,28 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
     this.sequenceErrors = List(
       size = this.network.sequenceSize,
       init = { DenseNDArrayFactory.zeros(Shape(this.network.model.inputSize)) })
+  }
+
+  /**
+   *
+   */
+  private fun backwardStep(outputErrors: DenseNDArray, isLastState: Boolean) {
+
+    val (attentionPart, contextPart) = this.getAttentionAndContextOutputErrors(outputErrors)
+
+    // update the context errors and the sequence errors
+    this.backwardAttentionAndTransform(
+      outputErrors = if (isLastState) attentionPart else attentionPart.assignSum(this.recurrentStateEncodingErrors))
+
+    if (stateIndex > 0) {
+      this.contextErrors.assignSum(contextPart)
+
+      val (prevAttentionErrors, prevPredictionErrors) = this.contextBackwardStep()
+
+      this.predictionsErrors.add(prevPredictionErrors)
+
+      this.recurrentStateEncodingErrors = prevAttentionErrors
+    }
   }
 
   /**
