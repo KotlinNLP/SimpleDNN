@@ -81,9 +81,9 @@ class RecurrentAttentiveNetwork(
     FeedforwardNeuralProcessorsPool(this.model.outputNetwork)
 
   /**
-   * The zeros array used as encoding of the initial state.
+   * The zeros array used as recurrent context of the initial state.
    */
-  val initialStateEncoding = DenseNDArrayFactory.zeros(Shape(this.model.recurrentContextSize))
+  val initialRecurrentContext = DenseNDArrayFactory.zeros(Shape(this.model.recurrentContextSize))
 
   /**
    * The list of transform layers groups used during the last forward.

@@ -31,7 +31,7 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
     if (firstState) this.resetHistory()
 
     val recurrentContext: DenseNDArray = if (firstState)
-      this.network.initialStateEncoding
+      this.network.initialRecurrentContext
     else
       this.forwardRecurrentContext(firstState = firstState, lastPredictionLabel = lastPredictionLabel)
 
