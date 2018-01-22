@@ -107,7 +107,7 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
   }
 
   /**
-   * Get an available transform layer.
+   * Get an available group of transform layers, adding it into the usedTransformLayers list.
    *
    * @param size the number of transform layer to build
    *
@@ -115,42 +115,41 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
    */
   private fun getTransformLayers(size: Int): List<FeedforwardLayerStructure<DenseNDArray>> {
 
-    val layers = List(size = size, init = { this.network.transformLayersPool.getItem() })
+    if (this.network.trainingMode || this.network.usedTransformLayers.isEmpty()) {
+      this.network.usedTransformLayers.add(
+        List(size = size, init = { this.network.transformLayersPool.getItem() })
+      )
+    }
 
-    // TODO: use always the first of the pool during training
-    this.network.usedTransformLayers.add(layers)
-
-    return layers
+    return this.network.usedTransformLayers.last()
   }
 
   /**
-   * Get an available Attention Network.
+   * Get an available Attention Network, adding it into the usedStateEncoders list.
    *
    * @return an available Attention Network
    */
   private fun getAttentionNetwork(): AttentionNetwork<DenseNDArray> {
 
-    val attentionNetwork = this.network.stateEncodersPool.getItem()
+    if (this.network.trainingMode || this.network.usedStateEncoders.isEmpty()) {
+      this.network.usedStateEncoders.add(this.network.stateEncodersPool.getItem())
+    }
 
-    // TODO: use always the first of the pool during training
-    this.network.usedStateEncoders.add(attentionNetwork)
-
-    return attentionNetwork
+    return this.network.usedStateEncoders.last()
   }
 
   /**
-   * Get an available output processor.
+   * Get an available output processor, adding it into the usedOutputProcessors list.
    *
    * @return an available output processor
    */
   private fun getOutputProcessor(): FeedforwardNeuralProcessor<DenseNDArray> {
 
-    val processor = this.network.outputNetworkPool.getItem()
+    if (this.network.trainingMode || this.network.usedOutputProcessors.isEmpty()) {
+      this.network.usedOutputProcessors.add(this.network.outputNetworkPool.getItem())
+    }
 
-    // TODO: use always the first of the pool during training
-    this.network.usedOutputProcessors.add(processor)
-
-    return processor
+    return this.network.usedOutputProcessors.last()
   }
 
   /**
