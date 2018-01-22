@@ -28,14 +28,14 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 class BackwardHelper(private val network: RecurrentAttentiveNetwork) : ScheduledUpdater {
 
   /**
-   * The error of the predictions.
+   * The error of the context label vectors.
    */
-  val predictionsErrors = mutableListOf<DenseNDArray>()
+  val contextLabelsErrors = mutableListOf<DenseNDArray>()
 
   /**
-   * The error of the processing sequence.
+   * The list of errors of the current input sequence.
    */
-  lateinit var sequenceErrors: List<DenseNDArray>
+  lateinit var inputSequenceErrors: List<DenseNDArray>
     private set
 
   /**
@@ -54,9 +54,9 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   private lateinit var attentionNetworkParamsErrors: AttentionNetworkParameters
 
   /**
-   * The recurrent errors of the context.
+   * The recurrent errors of the recurrent context used as focus to build the attention arrays.
    */
-  private lateinit var contextErrors: DenseNDArray
+  private lateinit var focusContextErrors: DenseNDArray
 
   /**
    * The recurrent errors of the state encoding.
@@ -85,7 +85,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
     updateMethod = this.network.updateMethod)
 
   /**
-   * The optimizer of the recurrent network.
+   * The optimizer of the recurrent context network.
    */
   private val contextNetworkOptimizer: ParamsOptimizer<NetworkParameters> = ParamsOptimizer(
     params = this.network.model.recurrentContextNetwork.model,
@@ -139,7 +139,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   fun backward(outputErrors: List<DenseNDArray>) {
 
     this.initSequenceErrors()
-    this.predictionsErrors.clear()
+    this.contextLabelsErrors.clear()
 
     (0 until outputErrors.size).reversed().forEach { stateIndex ->
 
@@ -152,46 +152,54 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   }
 
   /**
-   * Initialize the [sequenceErrors] with arrays of zeros (an amount equal to the size of the current input sequence).
+   * Initialize the [inputSequenceErrors] with arrays of zeros (an amount equal to the size of the current input
+   * sequence).
    */
   private fun initSequenceErrors() {
-    this.sequenceErrors = List(
+    this.inputSequenceErrors = List(
       size = this.network.sequenceSize,
       init = { DenseNDArrayFactory.zeros(Shape(this.network.model.inputSize)) })
   }
 
   /**
+   * A single step of backward.
    *
+   * @param outputErrors the errors of a single output array
+   * @param isLastState a boolean indicating if this is the last state of the sequence (the first of the backward)
    */
   private fun backwardStep(outputErrors: DenseNDArray, isLastState: Boolean) {
 
-    val (attentionPart, contextPart) = this.getAttentionAndContextOutputErrors(outputErrors)
+    val (stateEncodingPart, recurrentContextPart) = this.splitOutputNetworkErrors(
+      outputNetworkErrors = this.getOutputNetworkInputErrors(outputErrors)
+    )
 
-    // update the context errors and the sequence errors
-    this.backwardAttentionAndTransform(
-      outputErrors = if (isLastState) attentionPart else attentionPart.assignSum(this.recurrentStateEncodingErrors))
+    val stateEncoderInputErrors = this.backwardStateEncoder(stateEncodingErrors = if (isLastState)
+      stateEncodingPart
+    else
+      stateEncodingPart.assignSum(this.recurrentStateEncodingErrors))
 
-    if (stateIndex > 0) {
-      this.contextErrors.assignSum(contextPart)
+    this.propagateStateEncodingErrors(stateEncoderInputErrors)
 
-      val (prevAttentionErrors, prevPredictionErrors) = this.contextBackwardStep()
+    if (this.stateIndex > 0) {
 
-      this.predictionsErrors.add(prevPredictionErrors)
+      this.focusContextErrors.assignSum(recurrentContextPart)
 
-      this.recurrentStateEncodingErrors = prevAttentionErrors
+      val (prevStateEncodingErrors, contextLabelErrors) = this.recurrentContextBackwardStep()
+
+      this.contextLabelsErrors.add(contextLabelErrors)
+
+      this.recurrentStateEncodingErrors = prevStateEncodingErrors
     }
   }
 
   /**
-   * @param outputErrors the output errors of the output network
+   * @param outputNetworkErrors the input errors of the output network
    *
-   * @return the partitions of the errors between the Attention and the Context
+   * @return the partitions of the errors between the state encoding and the recurrent context
    */
-  private fun getAttentionAndContextOutputErrors(outputErrors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
+  private fun splitOutputNetworkErrors(outputNetworkErrors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
 
-    val inputErrors = this.getOutputNetworkInputErrors(outputErrors = outputErrors)
-
-    val splitErrors: Array<DenseNDArray> = inputErrors.splitV(
+    val splitErrors: Array<DenseNDArray> = outputNetworkErrors.splitV(
       this.network.model.attentionParams.outputSize,
       this.network.model.recurrentContextSize
     )
@@ -217,59 +225,52 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   }
 
   /**
-   * Backward of the Attention Network used during the given decoding [stateIndex].
+   * Backward of the Attention Network used to encode the state at the [stateIndex] step.
    *
-   * @param outputErrors the output errors of the given Attention Network
+   * @param stateEncodingErrors the errors of the state encoding at the [stateIndex] step
    *
-   * @return the context-errors
+   * @return a list of Pairs of input arrays errors and attention arrays errors
    */
-  private fun backwardAttentionAndTransform(outputErrors: DenseNDArray) {
-
-    val transformLayers = this.network.usedTransformLayers[this.stateIndex]
-    val (inputErrors, attentionErrors) = this.backwardAttention(outputErrors = outputErrors)
-
-    this.resetContextErrors()
-
-    attentionErrors.forEachIndexed { itemIndex, errors ->
-
-      val transformErrors: DenseNDArray = this.backwardTransformLayer(
-        layer = transformLayers[itemIndex],
-        outputErrors = errors)
-
-      val (sequencePart, contextPart) = this.splitTransformErrors(errors = transformErrors)
-
-      this.contextErrors.assignSum(contextPart)
-      this.sequenceErrors[itemIndex].assignSum(sequencePart.sum(inputErrors[itemIndex]))
-    }
-  }
-
-  /**
-   * Set the [contextErrors] to zeros.
-   */
-  private fun resetContextErrors() {
-    this.contextErrors = DenseNDArrayFactory.zeros(Shape(this.network.model.recurrentContextSize))
-  }
-
-  /**
-   * Backward of the Attention Network.
-   *
-   * @param outputErrors the output errors
-   *
-   * @return a Pair of InputErrors, AttentionErrors
-   */
-  private fun backwardAttention(outputErrors: DenseNDArray): Pair<Array<DenseNDArray>, Array<DenseNDArray>> {
+  private fun backwardStateEncoder(stateEncodingErrors: DenseNDArray): List<Pair<DenseNDArray, DenseNDArray>> {
 
     val attentionNetwork = this.network.usedStateEncoders[this.stateIndex]
     val paramsErrors = this.getAttentionParamsErrors()
 
-    attentionNetwork.backward(
-      outputErrors = outputErrors,
-      paramsErrors = paramsErrors,
-      propagateToInput = true)
+    attentionNetwork.backward(outputErrors = stateEncodingErrors, paramsErrors = paramsErrors, propagateToInput = true)
 
     this.attentionNetworkOptimizer.accumulate(paramsErrors)
 
-    return Pair(attentionNetwork.getInputErrors(), attentionNetwork.getAttentionErrors())
+    return attentionNetwork.getInputErrors().zip(attentionNetwork.getAttentionErrors())
+  }
+
+  /**
+   *
+   * @param stateEncoderInputErrors the input errors of the state encoder used at the [stateIndex] step
+   */
+  private fun propagateStateEncodingErrors(stateEncoderInputErrors: List<Pair<DenseNDArray, DenseNDArray>>) {
+
+    val transformLayers = this.network.usedTransformLayers[this.stateIndex]
+
+    this.resetFocusContextErrors()
+
+    stateEncoderInputErrors.forEachIndexed { itemIndex, (inputArrayErrors, attentionArrayErrors) ->
+
+      val transformErrors: DenseNDArray = this.backwardTransformLayer(
+        layer = transformLayers[itemIndex],
+        outputErrors = attentionArrayErrors)
+
+      val (inputArrayPart, focusContextPart) = this.splitTransformErrors(errors = transformErrors)
+
+      this.focusContextErrors.assignSum(focusContextPart)
+      this.inputSequenceErrors[itemIndex].assignSum(inputArrayPart.sum(inputArrayErrors))
+    }
+  }
+
+  /**
+   * Set the [focusContextErrors] to zeros.
+   */
+  private fun resetFocusContextErrors() {
+    this.focusContextErrors = DenseNDArrayFactory.zeros(Shape(this.network.model.recurrentContextSize))
   }
 
   /**
@@ -294,23 +295,23 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   }
 
   /**
-   * A single backward step of the recurrent network.
+   * A single backward step of the recurrent context network.
+   *
+   * @return the partitions of the errors between the state encoding and the context label
    */
-  private fun contextBackwardStep(): Pair<DenseNDArray, DenseNDArray> {
+  private fun recurrentContextBackwardStep(): Pair<DenseNDArray, DenseNDArray> {
 
-    this.network.recurrentContextProcessor.backwardStep(
-      outputErrors = this.contextErrors,
-      propagateToInput = true)
+    this.network.recurrentContextProcessor.backwardStep(outputErrors = this.focusContextErrors, propagateToInput = true)
 
-    return this.splitContextInputErrors(this.network.recurrentContextProcessor.getInputErrors(
-      elementIndex = this.stateIndex - 1, // important
+    return this.splitRNNInputErrors(errors = this.network.recurrentContextProcessor.getInputErrors(
+      elementIndex = this.stateIndex - 1, // the recurrent context is built with the previous state encoding
       copy = false))
   }
 
   /**
    * @param errors the errors of an encoded attention array of the Attention Network
    *
-   * @return a Pair containing partitions of the input item and context errors
+   * @return the partitions of the errors between the input array and the recurrent context used as focus
    */
   private fun splitTransformErrors(errors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
 
@@ -322,11 +323,11 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   }
 
   /**
-   * @param errors the input errors of a memory encoding
+   * @param errors the input errors of a recurrent context encoding
    *
-   * @return a Pair (attentionErrors, predictionErrors)
+   * @return the partitions of the errors between the state encoding and the context label
    */
-  private fun splitContextInputErrors(errors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
+  private fun splitRNNInputErrors(errors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
 
     val splitErrors: Array<DenseNDArray> = errors.splitV(
       this.network.model.attentionParams.outputSize,

@@ -141,12 +141,12 @@ class RecurrentAttentiveNetwork(
   /**
    * @return the errors of the sequence
    */
-  fun getItemsErrors(): List<DenseNDArray> = this.backwardHelper.sequenceErrors
+  fun getItemsErrors(): List<DenseNDArray> = this.backwardHelper.inputSequenceErrors
 
   /**
    * @return the errors of the predictions
    */
-  fun getPredictionsErrors(): List<DenseNDArray> = this.backwardHelper.predictionsErrors
+  fun getPredictionsErrors(): List<DenseNDArray> = this.backwardHelper.contextLabelsErrors
 
   /**
    * Update the parameters of the neural elements associated to this [ScheduledUpdater].
