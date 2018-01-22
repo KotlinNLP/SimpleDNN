@@ -49,12 +49,12 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   /**
    * The structure used to store the params errors of the transform layers during the backward.
    */
-  private lateinit var _transformLayerParamsErrors: FeedforwardLayerParameters
+  private lateinit var transformLayerParamsErrors: FeedforwardLayerParameters
 
   /**
    * The structure used to store the params errors of the Attention Network during the backward.
    */
-  private lateinit var _attentionNetworkParamsErrors: AttentionNetworkParameters
+  private lateinit var attentionNetworkParamsErrors: AttentionNetworkParameters
 
   /**
    * The optimizer of the transform layers.
@@ -328,20 +328,20 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
    * @return the transform layers params errors
    */
   private fun getTransformParamsErrors(): FeedforwardLayerParameters = try {
-      this._transformLayerParamsErrors
+      this.transformLayerParamsErrors
     } catch (e: UninitializedPropertyAccessException) {
-      this._transformLayerParamsErrors =
+      this.transformLayerParamsErrors =
         this.network.usedTransformLayers.last().last().params.copy() as FeedforwardLayerParameters
-      this._transformLayerParamsErrors
+      this.transformLayerParamsErrors
     }
 
   /**
    * @return the Attention Network params errors
    */
   private fun getAttentionParamsErrors(): AttentionNetworkParameters = try {
-      this._attentionNetworkParamsErrors
+      this.attentionNetworkParamsErrors
     } catch (e: UninitializedPropertyAccessException) {
-      this._attentionNetworkParamsErrors = this.network.usedStateEncoders.last().model.copy()
-      this._attentionNetworkParamsErrors
+      this.attentionNetworkParamsErrors = this.network.usedStateEncoders.last().model.copy()
+      this.attentionNetworkParamsErrors
     }
 }
