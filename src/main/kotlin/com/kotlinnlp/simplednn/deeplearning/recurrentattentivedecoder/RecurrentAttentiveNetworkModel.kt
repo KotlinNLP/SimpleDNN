@@ -13,6 +13,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
+import java.io.Serializable
 
 /**
  * The model of the [RecurrentAttentiveNetwork].
@@ -35,7 +36,16 @@ class RecurrentAttentiveNetworkModel(
   contextActivation: ActivationFunction,
   contextRecurrenceType: LayerType.Connection,
   outputActivationFunction: ActivationFunction
-){
+) : Serializable {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed from Serializable).
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
 
   /**
    * The parameters of the attention network.
