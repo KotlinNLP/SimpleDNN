@@ -21,19 +21,22 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
 
   /**
    * @param inputSequence the input sequence
-   * @param lastPredictionLabel the context label vector used to encode the memory of the last prediction
+   * @param lastPredictionLabel the context label vector used to encode the memory of the last prediction (can be null
+   *                            if it is the first state)
    * @param firstState a boolean indicating if this is the first state
    */
   fun forward(inputSequence: List<DenseNDArray>,
               lastPredictionLabel: DenseNDArray?,
               firstState: Boolean): DenseNDArray {
 
+    require(firstState || lastPredictionLabel != null) { "" }
+
     if (firstState) this.resetHistory()
 
     val recurrentContext: DenseNDArray = if (firstState)
       this.network.initialRecurrentContext
     else
-      this.forwardRecurrentContext(firstState = firstState, lastPredictionLabel = lastPredictionLabel)
+      this.forwardRecurrentContext(firstState = firstState, lastPredictionLabel = lastPredictionLabel!!)
 
     val stateEncoding: DenseNDArray = this.encodeState(sequence = inputSequence, recurrentContext = recurrentContext)
 
@@ -61,9 +64,9 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
    *
    * @return the recurrent context for the current state
    */
-  private fun forwardRecurrentContext(lastPredictionLabel: DenseNDArray?, firstState: Boolean): DenseNDArray =
+  private fun forwardRecurrentContext(lastPredictionLabel: DenseNDArray, firstState: Boolean): DenseNDArray =
     this.network.recurrentContextProcessor.forward(
-      featuresArray = concatVectorsV(this.getLastEncodedState(), lastPredictionLabel!!),
+      featuresArray = concatVectorsV(this.getLastEncodedState(), lastPredictionLabel),
       firstState = firstState)
 
   /**
