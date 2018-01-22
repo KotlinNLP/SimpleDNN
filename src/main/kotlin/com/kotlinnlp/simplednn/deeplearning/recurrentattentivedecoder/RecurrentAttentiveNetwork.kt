@@ -56,7 +56,7 @@ class RecurrentAttentiveNetwork(
    * The processor for the recurrent network
    */
   val contextProcessor: RecurrentNeuralProcessor<DenseNDArray> =
-    RecurrentNeuralProcessor(this.model.contextNetwork)
+    RecurrentNeuralProcessor(this.model.recurrentContextNetwork)
 
   /**
    * The zeros array used as null memory encoding.

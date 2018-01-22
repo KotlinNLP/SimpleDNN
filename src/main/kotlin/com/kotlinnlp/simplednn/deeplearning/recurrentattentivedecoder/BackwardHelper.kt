@@ -60,7 +60,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
    * The optimizer of the recurrent network.
    */
   private val contextNetworkOptimizer: ParamsOptimizer<NetworkParameters> = ParamsOptimizer(
-    params = this.network.model.contextNetwork.model,
+    params = this.network.model.recurrentContextNetwork.model,
     updateMethod = this.network.updateMethod)
 
   /**

@@ -52,11 +52,11 @@ class RecurrentAttentiveNetworkModel(
     outputSize = this.attentionSize)
 
   /**
-   * The RNN used to encode the state.
+   * The RNN used to merge the Attention Network output together with the context vector.
    */
-  val contextNetwork = NeuralNetwork(
+  val recurrentContextNetwork = NeuralNetwork(
     LayerConfiguration(
-      size = this.attentionParams.outputSize + labelSize,
+      size = this.attentionParams.outputSize + this.labelSize,
       inputType = LayerType.Input.Dense
     ),
     LayerConfiguration(
