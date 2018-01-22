@@ -35,7 +35,7 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
     else
       this.forwardRecurrentContext(firstState = firstState, lastPredictionLabel = lastPredictionLabel)
 
-    val stateEncoding: DenseNDArray = this.encodeState(sequence = inputSequence, context = recurrentContext)
+    val stateEncoding: DenseNDArray = this.encodeState(sequence = inputSequence, recurrentContext = recurrentContext)
 
     return this.getOutputProcessor().forward(concatVectorsV(stateEncoding, recurrentContext))
   }
@@ -70,33 +70,33 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
    * Encode the current state.
    *
    * @param sequence the sequence to decode
-   * @param context the recurrent context
+   * @param recurrentContext the recurrent context
    *
    * @return the encoded state as result of the [AttentionNetwork]
    */
-  private fun encodeState(sequence: List<DenseNDArray>, context: DenseNDArray): DenseNDArray {
+  private fun encodeState(sequence: List<DenseNDArray>, recurrentContext: DenseNDArray): DenseNDArray {
 
     val attentionNetwork = this.getAttentionNetwork()
 
     return attentionNetwork.forward(
       inputSequence = ArrayList(sequence.map { AugmentedArray(values = it) }),
-      attentionSequence = this.buildAttentionSequence(sequence = sequence, context = context))
+      attentionSequence = this.buildAttentionSequence(sequence = sequence, recurrentContext = recurrentContext))
   }
 
   /**
    * @param sequence the input sequence
-   * @param context the recurrent context
+   * @param recurrentContext the recurrent context
    *
    * @return the sequence of attention arrays
    */
   private fun buildAttentionSequence(sequence: List<DenseNDArray>,
-                                     context: DenseNDArray): ArrayList<DenseNDArray> {
+                                     recurrentContext: DenseNDArray): ArrayList<DenseNDArray> {
 
     val transformLayers = this.getTransformLayers(size = sequence.size)
 
     return ArrayList(transformLayers.zip(sequence).map { (layer, inputArray) ->
 
-      layer.setInput(concatVectorsV(inputArray, context))
+      layer.setInput(concatVectorsV(inputArray, recurrentContext))
       layer.forward()
 
       layer.outputArray.values
