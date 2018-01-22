@@ -26,6 +26,27 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 class BackwardHelper(private val network: RecurrentAttentiveNetwork) : ScheduledUpdater {
 
   /**
+   * The error of the predictions.
+   */
+  val predictionsErrors = mutableListOf<DenseNDArray>()
+
+  /**
+   * The error of the processing sequence.
+   */
+  lateinit var sequenceErrors: Array<DenseNDArray>
+    private set
+
+  /**
+   * The index of the current state (the backward process the states in inverted order).
+   */
+  private var stateIndex: Int = 0
+
+  /**
+   * The recurrent errors of the context.
+   */
+  private lateinit var contextErrors: DenseNDArray
+
+  /**
    * The structure used to store the params errors of the transform layers during the backward.
    */
   private lateinit var _transformLayerParamsErrors: FeedforwardLayerParameters
@@ -62,26 +83,6 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   private val contextNetworkOptimizer: ParamsOptimizer<NetworkParameters> = ParamsOptimizer(
     params = this.network.model.recurrentContextNetwork.model,
     updateMethod = this.network.updateMethod)
-
-  /**
-   * The recurrent errors of the context.
-   */
-  var contextErrors: DenseNDArray? = null
-
-  /**
-   * The error of the processing sequence.
-   */
-  var sequenceErrors: Array<DenseNDArray>? = null
-
-  /**
-   * The error of the predictions.
-   */
-  val predictionsErrors = mutableListOf<DenseNDArray>()
-
-  /**
-   * The index of the current state (the backward process the states in inverted order).
-   */
-  private var stateIndex: Int = 0
 
   /**
    * Update the parameters.
@@ -150,7 +151,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
           attentionPart.assignSum(recurrentAttentionErrors!!))
 
       if (stateIndex > 0) {
-        this.contextErrors!!.assignSum(contextPart)
+        this.contextErrors.assignSum(contextPart)
 
         val (prevAttentionErrors, prevPredictionErrors) = this.contextBackwardStep()
 
@@ -226,8 +227,8 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
 
       val (sequencePart, contextPart) = this.splitTransformErrors(errors = transformErrors)
 
-      this.contextErrors!!.assignSum(contextPart)
-      this.sequenceErrors!![itemIndex].assignSum(sequencePart.sum(inputErrors[itemIndex]))
+      this.contextErrors.assignSum(contextPart)
+      this.sequenceErrors[itemIndex].assignSum(sequencePart.sum(inputErrors[itemIndex]))
     }
   }
 
@@ -287,7 +288,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   private fun contextBackwardStep(): Pair<DenseNDArray, DenseNDArray> {
 
     this.network.recurrentContextProcessor.backwardStep(
-      outputErrors = this.contextErrors!!,
+      outputErrors = this.contextErrors,
       propagateToInput = true)
 
     return this.splitContextInputErrors(this.network.recurrentContextProcessor.getInputErrors(

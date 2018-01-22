@@ -141,7 +141,7 @@ class RecurrentAttentiveNetwork(
   /**
    * @return the errors of the sequence
    */
-  fun getItemsErrors(): Array<DenseNDArray> = this.backwardHelper.sequenceErrors!!
+  fun getItemsErrors(): Array<DenseNDArray> = this.backwardHelper.sequenceErrors
 
   /**
    * @return the errors of the predictions
