@@ -30,7 +30,7 @@ class RecurrentAttentiveNetwork(
   val updateMethod: UpdateMethod<*>) : ScheduledUpdater {
 
   /**
-   * The pool of layers used to create the attention arrays of the Attention Network.
+   * A pool of Attention Networks.
    */
   val attentionNetworksPool: AttentionNetworksPool<DenseNDArray> =
     AttentionNetworksPool(
@@ -38,7 +38,7 @@ class RecurrentAttentiveNetwork(
       inputType = LayerType.Input.Dense)
 
   /**
-   * The pool attention networks used to encode the state.
+   * A pool of Feedforward Layers used to build the attention arrays of the Attention Network.
    */
   val transformLayersPool: FeedforwardLayersPool<DenseNDArray> =
     FeedforwardLayersPool(
@@ -47,13 +47,14 @@ class RecurrentAttentiveNetwork(
       params = this.model.transformParams)
 
   /**
-   * The pool of FeedforwardNeuralProcessors layers used to encode the output.
+   * The pool of Feedforward Neural Processors used to interpolate the output of the Attention Network together with the
+   * recurrent context.
    */
   val outputNetworkPool: FeedforwardNeuralProcessorsPool<DenseNDArray> =
     FeedforwardNeuralProcessorsPool(this.model.outputNetwork)
 
   /**
-   * The processor for the recurrent network
+   * The processor for the recurrent context network.
    */
   val contextProcessor: RecurrentNeuralProcessor<DenseNDArray> =
     RecurrentNeuralProcessor(this.model.recurrentContextNetwork)
@@ -64,24 +65,22 @@ class RecurrentAttentiveNetwork(
   val initialEncodedState = DenseNDArrayFactory.zeros(Shape(this.model.recurrentContextSize))
 
   /**
-   * The list of active Attention Networks
+   * The list of Attention Networks used during the last forward.
    */
   val usedAttentionNetworks = mutableListOf<AttentionNetwork<DenseNDArray>>()
 
   /**
    * The features layers used during the last forward.
-   * (Its usage makes the training no thread safe).
    */
   val usedOutputProcessors = mutableListOf<FeedforwardNeuralProcessor<DenseNDArray>>()
 
   /**
    * The list of transform layers groups used during the last forward.
-   * (Its usage makes the training no thread safe).
    */
   val usedTransformLayers = mutableListOf<List<FeedforwardLayerStructure<DenseNDArray>>>()
 
   /**
-   * The size of the processing sequence (updated at the first forward state)
+   * The size of the processing sequence (updated at the first forward state).
    */
   var sequenceSize: Int = 0
 
