@@ -24,6 +24,20 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * The [RecurrentAttentiveNetwork].
+ *
+ * It encodes an input sequence of N arrays into a parallel output sequence of N arrays, giving the focus to the i-th
+ * array at the i-th encoding step thanks to a recurrent context network.
+ *
+ * At each step the current state is encoded combining the whole input sequence with the recurrent context (that is
+ * the memory of this system). Then the encoded state is forwarded to the output through the output network together
+ * with the recurrent context.
+ *
+ * The recurrent context is encoded using an RNN that receives the last encoded state and a context label vector as
+ * input.
+ *
+ *
+ * @property model the model of the network
+ * @property updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
 class RecurrentAttentiveNetwork(
   val model: RecurrentAttentiveNetworkModel,
