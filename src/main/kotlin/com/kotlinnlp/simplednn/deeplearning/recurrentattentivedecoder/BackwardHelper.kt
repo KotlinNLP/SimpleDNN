@@ -131,7 +131,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
    */
   fun backward(outputErrors: List<DenseNDArray>) {
 
-    this.sequenceErrors = this.initSequenceErrors()
+    this.initSequenceErrors()
     this.predictionsErrors.clear()
 
     var recurrentAttentionErrors: DenseNDArray? = null
@@ -165,11 +165,13 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   }
 
   /**
-   * @return an array of DenseNDArray initialized at zero with the same size of the current sequence
+   * Initialize the [sequenceErrors] with arrays of zeros (an amount equal to the size of the current input sequence).
    */
-  private fun initSequenceErrors() = Array(
-    size = this.network.sequenceSize,
-    init = { DenseNDArrayFactory.zeros(Shape(this.network.model.inputSize)) })
+  private fun initSequenceErrors() {
+    this.sequenceErrors = Array(
+      size = this.network.sequenceSize,
+      init = { DenseNDArrayFactory.zeros(Shape(this.network.model.inputSize)) })
+  }
 
   /**
    * @param outputErrors the output errors of the output network
@@ -328,20 +330,20 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
    * @return the transform layers params errors
    */
   private fun getTransformParamsErrors(): FeedforwardLayerParameters = try {
-      this.transformLayerParamsErrors
-    } catch (e: UninitializedPropertyAccessException) {
-      this.transformLayerParamsErrors =
-        this.network.usedTransformLayers.last().last().params.copy() as FeedforwardLayerParameters
-      this.transformLayerParamsErrors
-    }
+    this.transformLayerParamsErrors
+  } catch (e: UninitializedPropertyAccessException) {
+    this.transformLayerParamsErrors =
+      this.network.usedTransformLayers.last().last().params.copy() as FeedforwardLayerParameters
+    this.transformLayerParamsErrors
+  }
 
   /**
    * @return the Attention Network params errors
    */
   private fun getAttentionParamsErrors(): AttentionNetworkParameters = try {
-      this.attentionNetworkParamsErrors
-    } catch (e: UninitializedPropertyAccessException) {
-      this.attentionNetworkParamsErrors = this.network.usedStateEncoders.last().model.copy()
-      this.attentionNetworkParamsErrors
-    }
+    this.attentionNetworkParamsErrors
+  } catch (e: UninitializedPropertyAccessException) {
+    this.attentionNetworkParamsErrors = this.network.usedStateEncoders.last().model.copy()
+    this.attentionNetworkParamsErrors
+  }
 }
