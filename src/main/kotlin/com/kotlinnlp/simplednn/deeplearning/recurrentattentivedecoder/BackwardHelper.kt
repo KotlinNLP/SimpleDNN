@@ -160,7 +160,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
       }
     }
 
-    this.contextNetworkOptimizer.accumulate(this.network.recurrentContextProcessor.getParamsErrors(copy = true))
+    this.contextNetworkOptimizer.accumulate(this.network.recurrentContextProcessor.getParamsErrors(copy = false))
   }
 
   /**
@@ -199,9 +199,9 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
     val processor = this.network.usedOutputProcessors[this.stepIndex]
 
     processor.backward(outputErrors, propagateToInput = true)
-    this.outputNetworkOptimizer.accumulate(processor.getParamsErrors(copy = true))
+    this.outputNetworkOptimizer.accumulate(processor.getParamsErrors(copy = false))
 
-    return processor.getInputErrors(copy = true)
+    return processor.getInputErrors(copy = false)
   }
 
   /**
@@ -278,7 +278,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
 
     this.transformLayerOptimizer.accumulate(paramsErrors)
 
-    return layer.inputArray.errors.copy()
+    return layer.inputArray.errors
   }
 
   /**
@@ -292,7 +292,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
 
     return this.splitContextInputErrors(this.network.recurrentContextProcessor.getInputErrors(
       elementIndex = this.stepIndex - 1, // important
-      copy = true))
+      copy = false))
   }
 
   /**
@@ -329,7 +329,8 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   private fun getTransformParamsErrors(): FeedforwardLayerParameters = try {
       this._transformLayerParamsErrors
     } catch (e: UninitializedPropertyAccessException) {
-      this._transformLayerParamsErrors = this.network.usedTransformLayers.last().last().params.copy() as FeedforwardLayerParameters
+      this._transformLayerParamsErrors =
+        this.network.usedTransformLayers.last().last().params.copy() as FeedforwardLayerParameters
       this._transformLayerParamsErrors
     }
 

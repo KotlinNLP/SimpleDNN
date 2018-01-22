@@ -99,7 +99,7 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
       layer.setInput(concatVectorsV(inputArray, context))
       layer.forward()
 
-      layer.outputArray.values.copy()
+      layer.outputArray.values
     })
   }
 
@@ -153,5 +153,5 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
   /**
    * @return the last encoded state
    */
-  private fun getLastEncodedState(): DenseNDArray = this.network.usedStateEncoders.last().getOutput(copy = true)
+  private fun getLastEncodedState(): DenseNDArray = this.network.usedStateEncoders.last().getOutput()
 }
