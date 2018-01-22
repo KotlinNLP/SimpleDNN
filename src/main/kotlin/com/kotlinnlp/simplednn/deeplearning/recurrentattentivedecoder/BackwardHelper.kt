@@ -237,7 +237,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   /**
    * Set the [contextErrors] to zeros.
    */
-  fun resetContextErrors() {
+  private fun resetContextErrors() {
     this.contextErrors = DenseNDArrayFactory.zeros(Shape(this.network.model.recurrentContextSize))
   }
 
