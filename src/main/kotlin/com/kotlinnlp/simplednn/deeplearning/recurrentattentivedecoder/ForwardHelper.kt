@@ -138,7 +138,7 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
   /**
    * Get an available output processor.
    *
-   * @return an available feed-forward layer
+   * @return an available output processor
    */
   private fun getOutputProcessor(): FeedforwardNeuralProcessor<DenseNDArray> {
 
