@@ -51,6 +51,12 @@ class RecurrentAttentiveNetwork(
     private set
 
   /**
+   * A boolean that indicates that the network is being trained.
+   */
+  var trainingMode: Boolean = false
+    private set
+
+  /**
    * A pool of Feedforward Layers used to build the attention arrays of the Attention Network.
    */
   val transformLayersPool: FeedforwardLayersPool<DenseNDArray> =
@@ -116,14 +122,18 @@ class RecurrentAttentiveNetwork(
    * @param inputSequence the input sequence
    * @param lastPredictionLabel the context label vector used to encode the memory of the last prediction
    * @param firstState a boolean indicating if this is the first state
+   * @param trainingMode a boolean to enable when the network is being trained (necessary to call a backward later)
    *
    * @return the output array of the network
    */
   fun forward(inputSequence: List<DenseNDArray>,
               lastPredictionLabel: DenseNDArray?,
-              firstState: Boolean): DenseNDArray {
+              firstState: Boolean,
+              trainingMode: Boolean): DenseNDArray {
 
     if (firstState) this.sequenceSize = inputSequence.size
+
+    this.trainingMode = trainingMode
 
     return this.forwardHelper.forward(
       firstState = firstState,
@@ -136,7 +146,12 @@ class RecurrentAttentiveNetwork(
    *
    * @param outputErrors the output errors
    */
-  fun backward(outputErrors: List<DenseNDArray>) = this.backwardHelper.backward(outputErrors = outputErrors)
+  fun backward(outputErrors: List<DenseNDArray>) {
+
+    require(this.trainingMode) { "Cannot call a backward if the network has not being forwarded in training mode" }
+
+    this.backwardHelper.backward(outputErrors = outputErrors)
+  }
 
   /**
    * @return the errors of the sequence
