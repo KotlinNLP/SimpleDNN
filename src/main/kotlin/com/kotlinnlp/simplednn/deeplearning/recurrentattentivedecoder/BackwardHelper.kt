@@ -318,7 +318,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
 
     val splitErrors: Array<DenseNDArray> = errors.splitV(
       this.network.model.attentionParams.outputSize,
-      this.network.model.labelSize)
+      this.network.model.contextLabelSize)
 
     return Pair(splitErrors[0], splitErrors[1])
   }

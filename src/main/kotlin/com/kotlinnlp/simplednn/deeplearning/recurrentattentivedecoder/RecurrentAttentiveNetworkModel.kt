@@ -17,12 +17,12 @@ import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkPar
 /**
  * The model of the [RecurrentAttentiveNetwork].
  *
- * @property inputSize the size of the input items of a sequence
+ * @property inputSize the size of the input sequence arrays
  * @property attentionSize the size of the attention arrays
- * @property recurrentContextSize the size of the recurrent context
- * @property outputSize the output size of the final output network
- * @property labelSize the size of the label resulting form a final prediction
- * @param contextActivation the activation of the recurrent network that encode the context
+ * @property recurrentContextSize the size of the recurrent context (the output of the recurrent context network)
+ * @property contextLabelSize the size of the context label vector (as input of the recurrent context network)
+ * @property outputSize the output size
+ * @param contextActivation the activation of the recurrent network that encodes the context
  * @param contextRecurrenceType the recurrent layer type (e.g. LSTM, GRU, RAN, ...)
  * @param outputActivationFunction the activation function of the final output network
  */
@@ -30,8 +30,8 @@ class RecurrentAttentiveNetworkModel(
   val inputSize: Int,
   val attentionSize: Int,
   val recurrentContextSize: Int,
+  val contextLabelSize: Int,
   val outputSize: Int,
-  val labelSize: Int,
   contextActivation: ActivationFunction,
   contextRecurrenceType: LayerType.Connection,
   outputActivationFunction: ActivationFunction
@@ -56,7 +56,7 @@ class RecurrentAttentiveNetworkModel(
    */
   val recurrentContextNetwork = NeuralNetwork(
     LayerConfiguration(
-      size = this.attentionParams.outputSize + this.labelSize,
+      size = this.attentionParams.outputSize + this.contextLabelSize,
       inputType = LayerType.Input.Dense
     ),
     LayerConfiguration(
