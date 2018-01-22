@@ -91,9 +91,9 @@ class RecurrentAttentiveNetwork(
   val usedTransformLayers = mutableListOf<List<FeedforwardLayerStructure<DenseNDArray>>>()
 
   /**
-   * The list of Attention Networks used during the last forward.
+   * The list of Attention Networks used to encode all the states of the current input sequence.
    */
-  val usedAttentionNetworks = mutableListOf<AttentionNetwork<DenseNDArray>>()
+  val usedStateEncoders = mutableListOf<AttentionNetwork<DenseNDArray>>()
 
   /**
    * The output processors used during the last forward.

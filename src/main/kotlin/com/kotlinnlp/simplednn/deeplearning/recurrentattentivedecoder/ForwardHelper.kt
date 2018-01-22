@@ -152,14 +152,14 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
   private fun getAttentionNetwork(firstState: Boolean): AttentionNetwork<DenseNDArray> {
 
     if (firstState) {
-      this.network.usedAttentionNetworks.clear()
+      this.network.usedStateEncoders.clear()
       this.network.stateEncodersPool.releaseAll()
     }
 
     val attentionNetwork = this.network.stateEncodersPool.getItem()
 
     // TODO: use always the first of the pool during training
-    this.network.usedAttentionNetworks.add(attentionNetwork)
+    this.network.usedStateEncoders.add(attentionNetwork)
 
     return attentionNetwork
   }
@@ -167,5 +167,5 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
   /**
    * @return the output values of the last attention
    */
-  private fun getLastAttention(): DenseNDArray = this.network.usedAttentionNetworks.last().getOutput(copy = true)
+  private fun getLastAttention(): DenseNDArray = this.network.usedStateEncoders.last().getOutput(copy = true)
 }
