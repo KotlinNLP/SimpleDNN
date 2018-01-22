@@ -75,7 +75,7 @@ class RecurrentAttentiveNetwork(
   val usedAttentionNetworks = mutableListOf<AttentionNetwork<DenseNDArray>>()
 
   /**
-   * The features layers used during the last forward.
+   * The output processors used during the last forward.
    */
   val usedOutputProcessors = mutableListOf<FeedforwardNeuralProcessor<DenseNDArray>>()
 
@@ -96,9 +96,13 @@ class RecurrentAttentiveNetwork(
   private val backwardHelper = BackwardHelper(network = this)
 
   /**
+   * Forward.
+   *
    * @param firstState a boolean indicating if this is the first state
    * @param sequence the sequence
    * @param lastPrediction the dense representation of the last prediction
+   *
+   * @return the output array of the network
    */
   fun forward(firstState: Boolean,
               sequence: List<DenseNDArray>,
@@ -113,7 +117,7 @@ class RecurrentAttentiveNetwork(
   }
 
   /**
-   * Start the back-propagation of the errors.
+   * Back-propagation of the errors.
    *
    * @param outputErrors the output errors
    */
