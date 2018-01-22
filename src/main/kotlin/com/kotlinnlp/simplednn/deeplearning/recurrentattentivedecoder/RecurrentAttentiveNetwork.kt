@@ -27,7 +27,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  */
 class RecurrentAttentiveNetwork(
   val model: RecurrentAttentiveNetworkModel,
-  val updateMethod: UpdateMethod<*>) : ScheduledUpdater {
+  val updateMethod: UpdateMethod<*>
+) : ScheduledUpdater {
+
+  /**
+   * The size of the processing sequence (set at the first forward state).
+   */
+  var sequenceSize: Int = 0
+    private set
 
   /**
    * A pool of Feedforward Layers used to build the attention arrays of the Attention Network.
@@ -80,12 +87,6 @@ class RecurrentAttentiveNetwork(
   val usedOutputProcessors = mutableListOf<FeedforwardNeuralProcessor<DenseNDArray>>()
 
   /**
-   * The size of the processing sequence (set at the first forward state).
-   */
-  var sequenceSize: Int = 0
-    private set
-
-  /**
    * The forward helper.
    */
   private val forwardHelper = ForwardHelper(network = this)
@@ -110,10 +111,7 @@ class RecurrentAttentiveNetwork(
 
     if (firstState) this.sequenceSize = sequence.size
 
-    return this.forwardHelper.forward(
-      firstState = firstState,
-      sequence = sequence,
-      lastPrediction = lastPrediction)
+    return this.forwardHelper.forward(firstState = firstState, sequence = sequence, lastPrediction = lastPrediction)
   }
 
   /**
@@ -121,8 +119,7 @@ class RecurrentAttentiveNetwork(
    *
    * @param outputErrors the output errors
    */
-  fun backward(outputErrors: List<DenseNDArray>)
-    = this.backwardHelper.backward(outputErrors = outputErrors)
+  fun backward(outputErrors: List<DenseNDArray>) = this.backwardHelper.backward(outputErrors = outputErrors)
 
   /**
    * @return the errors of the sequence
