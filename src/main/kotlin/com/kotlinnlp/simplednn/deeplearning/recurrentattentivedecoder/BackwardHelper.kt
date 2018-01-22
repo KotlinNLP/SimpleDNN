@@ -173,10 +173,11 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
       outputNetworkErrors = this.getOutputNetworkInputErrors(outputErrors)
     )
 
-    val stateEncoderInputErrors = this.backwardStateEncoder(stateEncodingErrors = if (isLastState)
-      stateEncodingPart
-    else
-      stateEncodingPart.assignSum(this.recurrentStateEncodingErrors))
+    val stateEncoderInputErrors = this.backwardStateEncoder(
+      stateEncodingErrors = if (isLastState)
+        stateEncodingPart
+      else
+        stateEncodingPart.assignSum(this.recurrentStateEncodingErrors))
 
     this.propagateStateEncodingErrors(stateEncoderInputErrors)
 
