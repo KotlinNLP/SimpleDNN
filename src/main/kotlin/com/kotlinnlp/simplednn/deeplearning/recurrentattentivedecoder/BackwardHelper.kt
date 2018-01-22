@@ -210,7 +210,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   /**
    * Perform a backward of the output network.
    *
-   * @param outputErrors the input errors of the output network
+   * @param outputErrors the errors of the output at the [stateIndex] state
    *
    * @return the input errors of the output network
    */
@@ -225,9 +225,9 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   }
 
   /**
-   * Backward of the Attention Network used to encode the state at the [stateIndex] step.
+   * Backward of the Attention Network used to encode the state at the [stateIndex] state.
    *
-   * @param stateEncodingErrors the errors of the state encoding at the [stateIndex] step
+   * @param stateEncodingErrors the errors of the state encoding at the [stateIndex] state
    *
    * @return a list of Pairs of input arrays errors and attention arrays errors
    */
@@ -245,7 +245,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
 
   /**
    *
-   * @param stateEncoderInputErrors the input errors of the state encoder used at the [stateIndex] step
+   * @param stateEncoderInputErrors the input errors of the state encoder used at the [stateIndex] state
    */
   private fun propagateStateEncodingErrors(stateEncoderInputErrors: List<Pair<DenseNDArray, DenseNDArray>>) {
 
