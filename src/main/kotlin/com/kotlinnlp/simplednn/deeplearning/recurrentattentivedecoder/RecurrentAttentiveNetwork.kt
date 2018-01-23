@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.deeplearning.recurrentattentivedecoder
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
@@ -35,9 +34,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * input.
  *
  * @property model the model of the network
- * @property updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
-class RecurrentAttentiveNetwork(val model: RecurrentAttentiveNetworkModel, val updateMethod: UpdateMethod<*>) {
+class RecurrentAttentiveNetwork(val model: RecurrentAttentiveNetworkModel) {
 
   /**
    * The size of the currently processing sequence (set at the first forward state).
