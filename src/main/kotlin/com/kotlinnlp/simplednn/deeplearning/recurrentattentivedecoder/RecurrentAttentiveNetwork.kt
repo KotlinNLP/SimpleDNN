@@ -14,7 +14,6 @@ import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
-import com.kotlinnlp.simplednn.core.optimizer.ScheduledUpdater
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetwork
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworksPool
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.FeedforwardLayersPool
@@ -35,14 +34,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * The recurrent context is encoded using an RNN that receives the last encoded state and a context label vector as
  * input.
  *
- *
  * @property model the model of the network
  * @property updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
-class RecurrentAttentiveNetwork(
-  val model: RecurrentAttentiveNetworkModel,
-  val updateMethod: UpdateMethod<*>
-) : ScheduledUpdater {
+class RecurrentAttentiveNetwork(val model: RecurrentAttentiveNetworkModel, val updateMethod: UpdateMethod<*>) {
 
   /**
    * The size of the currently processing sequence (set at the first forward state).
@@ -170,32 +165,4 @@ class RecurrentAttentiveNetwork(
    * @return the errors of the context label vectors
    */
   fun getContextLabelsErrors(): List<DenseNDArray> = this.backwardHelper.contextLabelsErrors
-
-  /**
-   * Update the parameters of the neural elements associated to this [ScheduledUpdater].
-   */
-  override fun update() {
-    this.backwardHelper.update()
-  }
-
-  /**
-   * Method to call every new epoch.
-   */
-  override fun newEpoch() {
-    this.backwardHelper.newEpoch()
-  }
-
-  /**
-   * Method to call every new batch.
-   */
-  override fun newBatch() {
-    this.backwardHelper.newBatch()
-  }
-
-  /**
-   * Method to call every new example.
-   */
-  override fun newExample() {
-    this.backwardHelper.newExample()
-  }
 }
