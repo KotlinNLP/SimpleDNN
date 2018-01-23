@@ -10,22 +10,18 @@ package com.kotlinnlp.simplednn.deeplearning.recurrentattentivedecoder
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
-import com.kotlinnlp.simplednn.core.optimizer.ScheduledUpdater
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
-import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
-import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
  * The backward helper of the [RecurrentAttentiveNetwork].
  *
  * @property network the recurrent attentive network of this helper
  */
-class BackwardHelper(private val network: RecurrentAttentiveNetwork) : ScheduledUpdater {
+class BackwardHelper(private val network: RecurrentAttentiveNetwork) {
 
   /**
    * The error of the context label vectors.
@@ -64,72 +60,24 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
   private lateinit var recurrentStateEncodingErrors: DenseNDArray
 
   /**
-   * The optimizer of the transform layers.
+   * The params errors accumulator of the transform layer.
    */
-  private val transformLayerOptimizer: ParamsOptimizer<FeedforwardLayerParameters> = ParamsOptimizer(
-    params = this.network.model.transformParams,
-    updateMethod = this.network.updateMethod)
+  private lateinit var transformLayerAccumulator: ParamsErrorsAccumulator<FeedforwardLayerParameters>
 
   /**
-   * The optimizer of the attention network.
+   * The params errors accumulator of the attention network.
    */
-  private val attentionNetworkOptimizer: ParamsOptimizer<AttentionNetworkParameters> = ParamsOptimizer(
-    params = this.network.model.attentionParams,
-    updateMethod = this.network.updateMethod)
+  private lateinit var attentionNetworkAccumulator: ParamsErrorsAccumulator<AttentionNetworkParameters>
 
   /**
-   * The optimizer of the final feed-forward network.
+   * The params errors accumulator of the recurrent context network.
    */
-  private val outputNetworkOptimizer: ParamsOptimizer<NetworkParameters> = ParamsOptimizer(
-    params = this.network.model.outputNetwork.model,
-    updateMethod = this.network.updateMethod)
+  private lateinit var contextErrorsAccumulator: ParamsErrorsAccumulator<NetworkParameters>
 
   /**
-   * The optimizer of the recurrent context network.
+   * The params errors accumulator of the output network.
    */
-  private val contextNetworkOptimizer: ParamsOptimizer<NetworkParameters> = ParamsOptimizer(
-    params = this.network.model.recurrentContextNetwork.model,
-    updateMethod = this.network.updateMethod)
-
-  /**
-   * Update the parameters.
-   */
-  override fun update() {
-    this.outputNetworkOptimizer.update()
-    this.transformLayerOptimizer.update()
-    this.attentionNetworkOptimizer.update()
-    this.contextNetworkOptimizer.update()
-  }
-
-  /**
-   * Method to call every new epoch.
-   */
-  override fun newEpoch() {
-
-    if (this.network.updateMethod is EpochScheduling) {
-      this.network.updateMethod.newEpoch()
-    }
-  }
-
-  /**
-   * Method to call every new batch.
-   */
-  override fun newBatch() {
-
-    if (this.network.updateMethod is BatchScheduling) {
-      this.network.updateMethod.newBatch()
-    }
-  }
-
-  /**
-   * Method to call every new example.
-   */
-  override fun newExample() {
-
-    if (this.network.updateMethod is ExampleScheduling) {
-      this.network.updateMethod.newExample()
-    }
-  }
+  private lateinit var outputErrorsAccumulator: ParamsErrorsAccumulator<NetworkParameters>
 
   /**
    * Perform the back-propagation from the output errors.
@@ -138,8 +86,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
    */
   fun backward(outputErrors: List<DenseNDArray>) {
 
-    this.initSequenceErrors()
-    this.contextLabelsErrors.clear()
+    this.initBackward()
 
     (0 until outputErrors.size).reversed().forEach { stateIndex ->
 
@@ -148,7 +95,33 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
       this.backwardStep(outputErrors = outputErrors[stateIndex], isLastState = stateIndex == outputErrors.lastIndex)
     }
 
-    this.contextNetworkOptimizer.accumulate(this.network.recurrentContextProcessor.getParamsErrors(copy = false))
+    this.contextErrorsAccumulator.accumulate(this.network.recurrentContextProcessor.getParamsErrors(copy = false))
+  }
+
+  /**
+   * @param copy a Boolean indicating if the returned errors must be a copy or a reference
+   *
+   * @return the params errors of this network
+   */
+  fun getParamsErrors(copy: Boolean = true) = RecurrentAttentiveNetworkParameters(
+    transformParams = this.transformLayerAccumulator.getParamsErrors(copy = copy),
+    attentionParams = this.attentionNetworkAccumulator.getParamsErrors(copy = copy),
+    recurrentContextParams = this.contextErrorsAccumulator.getParamsErrors(copy = copy),
+    outputParams = this.outputErrorsAccumulator.getParamsErrors(copy = copy))
+
+  /**
+   * Initialize the structures used during a backward.
+   */
+  private fun initBackward() {
+
+    this.initSequenceErrors()
+
+    this.contextLabelsErrors.clear()
+
+    this.transformLayerAccumulator.reset()
+    this.attentionNetworkAccumulator.reset()
+    this.contextErrorsAccumulator.reset()
+    this.outputErrorsAccumulator.reset()
   }
 
   /**
@@ -220,7 +193,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
     val processor = this.network.usedOutputProcessors[this.stateIndex]
 
     processor.backward(outputErrors, propagateToInput = true)
-    this.outputNetworkOptimizer.accumulate(processor.getParamsErrors(copy = false))
+    this.outputErrorsAccumulator.accumulate(processor.getParamsErrors(copy = false))
 
     return processor.getInputErrors(copy = false)
   }
@@ -239,7 +212,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
 
     attentionNetwork.backward(outputErrors = stateEncodingErrors, paramsErrors = paramsErrors, propagateToInput = true)
 
-    this.attentionNetworkOptimizer.accumulate(paramsErrors)
+    this.attentionNetworkAccumulator.accumulate(paramsErrors)
 
     return attentionNetwork.getInputErrors().zip(attentionNetwork.getAttentionErrors())
   }
@@ -285,7 +258,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) : Scheduled
     layer.setErrors(outputErrors)
     layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
 
-    this.transformLayerOptimizer.accumulate(paramsErrors)
+    this.transformLayerAccumulator.accumulate(paramsErrors)
 
     return layer.inputArray.errors
   }
