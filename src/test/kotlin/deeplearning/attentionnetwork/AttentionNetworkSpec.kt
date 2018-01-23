@@ -43,6 +43,27 @@ class AttentionNetworkSpec : Spek({
       }
     }
 
+    on("forward with external attention arrays") {
+
+      val network = AttentionNetwork<DenseNDArray>(
+        inputType = LayerType.Input.Dense,
+        model = AttentionLayerUtils.buildAttentionNetworkParams1())
+
+      val inputSequence = AttentionLayerUtils.buildInputSequence()
+
+      val output = network.forward(
+        inputSequence = inputSequence,
+        attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence))
+
+      it("should match the expected output") {
+        assertTrue {
+          output.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.191447, 0.282824, 0.030317, 0.530541)),
+            tolerance = 1.0e-06)
+        }
+      }
+    }
+
     on("backward") {
 
       val network = AttentionNetwork<DenseNDArray>(
