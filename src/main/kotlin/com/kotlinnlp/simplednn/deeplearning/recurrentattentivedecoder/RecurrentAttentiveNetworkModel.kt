@@ -90,4 +90,13 @@ class RecurrentAttentiveNetworkModel(
       activationFunction = outputActivationFunction,
       meProp = false)
   )
+
+  /**
+   * The structure containing all the parameters of this model.
+   */
+  val params = RecurrentAttentiveNetworkParameters(
+    attentionParams = this.attentionParams,
+    transformParams = this.transformParams,
+    recurrentContextParams = this.recurrentContextNetwork.model,
+    outputParams = this.outputNetwork.model)
 }
