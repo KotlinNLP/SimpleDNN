@@ -36,10 +36,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 class RecurrentAttentiveNetwork(val model: RecurrentAttentiveNetworkModel) {
 
   /**
-   * The size of the currently processing sequence (set at the first forward state).
+   * The size of the currently processing sequence (set with the [setInputSequence] method).
    */
-  var sequenceSize: Int = 0
-    private set
+  val sequenceSize: Int get() = this.inputSequence.size
 
   /**
    * A boolean that indicates that the network is being trained.
@@ -93,6 +92,16 @@ class RecurrentAttentiveNetwork(val model: RecurrentAttentiveNetworkModel) {
   val usedOutputProcessors = mutableListOf<FeedforwardNeuralProcessor<DenseNDArray>>()
 
   /**
+   * A boolean indicating if the current is the first state.
+   */
+  private var firstState: Boolean = true
+
+  /**
+   * The input sequence that must be set using the [setInputSequence] method.
+   */
+  private lateinit var inputSequence: List<DenseNDArray>
+
+  /**
    * The forward helper.
    */
   private val forwardHelper = ForwardHelper(network = this)
@@ -103,28 +112,36 @@ class RecurrentAttentiveNetwork(val model: RecurrentAttentiveNetworkModel) {
   private val backwardHelper = BackwardHelper(network = this)
 
   /**
-   * Forward.
+   * Set the input sequence.
    *
    * @param inputSequence the input sequence
+   */
+  fun setInputSequence(inputSequence: List<DenseNDArray>) {
+
+    this.firstState = true
+    this.inputSequence = inputSequence
+  }
+
+  /**
+   * Forward.
+   *
    * @param lastPredictionLabel the context label vector used to encode the memory of the last prediction
-   * @param firstState a boolean indicating if this is the first state
    * @param trainingMode a boolean to enable when the network is being trained (necessary to call a backward later)
    *
    * @return the output array of the network
    */
-  fun forward(inputSequence: List<DenseNDArray>,
-              lastPredictionLabel: DenseNDArray?,
-              firstState: Boolean,
-              trainingMode: Boolean): DenseNDArray {
-
-    if (firstState) this.sequenceSize = inputSequence.size
+  fun forward(lastPredictionLabel: DenseNDArray?, trainingMode: Boolean): DenseNDArray {
 
     this.trainingMode = trainingMode
 
-    return this.forwardHelper.forward(
-      firstState = firstState,
-      inputSequence = inputSequence,
+    val output: DenseNDArray = this.forwardHelper.forward(
+      firstState = this.firstState,
+      inputSequence = this.inputSequence,
       lastPredictionLabel = lastPredictionLabel)
+
+    this.firstState = false
+
+    return output
   }
 
   /**
