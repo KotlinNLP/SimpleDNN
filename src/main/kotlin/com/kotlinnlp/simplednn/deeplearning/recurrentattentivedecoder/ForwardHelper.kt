@@ -128,11 +128,9 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
    */
   private fun getTransformLayers(size: Int): List<FeedforwardLayerStructure<DenseNDArray>> {
 
-    if (this.network.trainingMode || this.network.usedTransformLayers.isEmpty()) {
-      this.network.usedTransformLayers.add(
-        List(size = size, init = { this.network.transformLayersPool.getItem() })
-      )
-    }
+    this.network.usedTransformLayers.add(
+      List(size = size, init = { this.network.transformLayersPool.getItem() })
+    )
 
     return this.network.usedTransformLayers.last()
   }
@@ -144,9 +142,7 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
    */
   private fun getAttentionNetwork(): AttentionNetwork<DenseNDArray> {
 
-    if (this.network.trainingMode || this.network.usedAttentionNetworks.isEmpty()) {
-      this.network.usedAttentionNetworks.add(this.network.attentionNetworksPool.getItem())
-    }
+    this.network.usedAttentionNetworks.add(this.network.attentionNetworksPool.getItem())
 
     return this.network.usedAttentionNetworks.last()
   }
@@ -158,9 +154,7 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
    */
   private fun getOutputProcessor(): FeedforwardNeuralProcessor<DenseNDArray> {
 
-    if (this.network.trainingMode || this.network.usedOutputProcessors.isEmpty()) {
-      this.network.usedOutputProcessors.add(this.network.outputNetworkPool.getItem())
-    }
+    this.network.usedOutputProcessors.add(this.network.outputNetworkPool.getItem())
 
     return this.network.usedOutputProcessors.last()
   }
