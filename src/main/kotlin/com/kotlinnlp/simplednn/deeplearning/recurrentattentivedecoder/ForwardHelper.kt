@@ -29,7 +29,7 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
   /**
    * The previous state encoding used in first state.
    */
-  private val initEncodedState: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.network.model.inputSize))
+  private val initStateEncoding: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.network.model.inputSize))
 
   /**
    * @param inputSequence the input sequence
@@ -79,7 +79,7 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
    */
   private fun forwardRecurrentContext(lastPredictionLabel: DenseNDArray, firstState: Boolean): DenseNDArray =
     this.network.recurrentContextProcessor.forward(
-      featuresArray = concatVectorsV(this.getLastEncodedState(firstState = firstState), lastPredictionLabel),
+      featuresArray = concatVectorsV(this.getLastStateEncoding(firstState = firstState), lastPredictionLabel),
       firstState = firstState) // when state index is 0 the 'initialRecurrentContext' is used
 
   /**
@@ -88,7 +88,7 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
    * @param sequence the sequence to decode
    * @param recurrentContext the recurrent context
    *
-   * @return the encoded state as result of the [AttentionNetwork]
+   * @return the state encoding as result of the [AttentionNetwork]
    */
   private fun encodeState(sequence: List<DenseNDArray>, recurrentContext: DenseNDArray): DenseNDArray {
 
@@ -168,10 +168,10 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
   /**
    * @param firstState a boolean indicating if this is the first state
    *
-   * @return the last encoded state
+   * @return the last state encoding
    */
-  private fun getLastEncodedState(firstState: Boolean): DenseNDArray = if (firstState)
-    this.initEncodedState
+  private fun getLastStateEncoding(firstState: Boolean): DenseNDArray = if (firstState)
+    this.initStateEncoding
   else
     this.network.usedAttentionNetworks.last().getOutput()
 }
