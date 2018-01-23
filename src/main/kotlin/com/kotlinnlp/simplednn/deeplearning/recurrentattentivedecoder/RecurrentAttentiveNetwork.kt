@@ -70,7 +70,7 @@ class RecurrentAttentiveNetwork(val model: RecurrentAttentiveNetworkModel) {
     RecurrentNeuralProcessor(this.model.recurrentContextNetwork)
 
   /**
-   * The pool of Feedforward Neural Processors used to interpolate the encoded state together with the recurrent
+   * The pool of Feedforward Neural Processors used to interpolate the state encoding together with the recurrent
    * context.
    */
   val outputNetworkPool: FeedforwardNeuralProcessorsPool<DenseNDArray> =
