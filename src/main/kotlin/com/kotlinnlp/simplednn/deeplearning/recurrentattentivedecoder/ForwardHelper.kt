@@ -34,7 +34,9 @@ class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
               lastPredictionLabel: DenseNDArray?,
               firstState: Boolean): DenseNDArray {
 
-    require(firstState || lastPredictionLabel != null) { "" }
+    require(firstState || lastPredictionLabel != null) {
+      "The last prediction label cannot be null for states after the first."
+    }
 
     if (firstState) this.resetHistory()
 
