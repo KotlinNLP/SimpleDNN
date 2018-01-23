@@ -15,12 +15,17 @@ import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkPar
 
 /**
  * The parameters of the [RecurrentAttentiveNetwork].
+ *
+ * @property attentionParams the parameters of the attention network
+ * @property transformParams the parameters of the transform layer
+ * @property recurrentContextParams the parameters of the recurrent context network
+ * @property outputParams the parameters of the output network
  */
 class RecurrentAttentiveNetworkParameters(
-  private val attentionParams: AttentionNetworkParameters,
-  private val transformParams: FeedforwardLayerParameters,
-  private val recurrentContextParams: NetworkParameters,
-  private val outputParams: NetworkParameters
+  val attentionParams: AttentionNetworkParameters,
+  val transformParams: FeedforwardLayerParameters,
+  val recurrentContextParams: NetworkParameters,
+  val outputParams: NetworkParameters
 ) : IterableParams<RecurrentAttentiveNetworkParameters>() {
 
   companion object {
