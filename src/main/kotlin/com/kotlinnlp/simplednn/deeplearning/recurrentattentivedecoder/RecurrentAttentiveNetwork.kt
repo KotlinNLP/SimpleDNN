@@ -154,6 +154,14 @@ class RecurrentAttentiveNetwork(
   }
 
   /**
+   * @param copy a Boolean indicating if the returned errors must be a copy or a reference
+   *
+   * @return the params errors of this network
+   */
+  fun getParamsErrors(copy: Boolean = true): RecurrentAttentiveNetworkParameters =
+    this.backwardHelper.getParamsErrors(copy = copy)
+
+  /**
    * @return the errors of the sequence
    */
   fun getInputSequenceErrors(): List<DenseNDArray> = this.backwardHelper.inputSequenceErrors
