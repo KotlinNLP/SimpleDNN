@@ -158,12 +158,8 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) {
 
     val (prevStateEncodingErrors, contextLabelErrors) = this.recurrentContextBackwardStep()
 
-    if (this.stateIndex > 0) {
-
-      this.contextLabelsErrors.add(0, contextLabelErrors)
-
-      this.recurrentStateEncodingErrors = prevStateEncodingErrors
-    }
+    this.contextLabelsErrors.add(0, contextLabelErrors)
+    this.recurrentStateEncodingErrors = prevStateEncodingErrors
   }
 
   /**
