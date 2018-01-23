@@ -40,6 +40,26 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) {
   private var stateIndex: Int = 0
 
   /**
+   * The params errors accumulator of the transform layer.
+   */
+  private var transformLayerAccumulator = ParamsErrorsAccumulator<FeedforwardLayerParameters>()
+
+  /**
+   * The params errors accumulator of the attention network.
+   */
+  private var attentionNetworkAccumulator = ParamsErrorsAccumulator<AttentionNetworkParameters>()
+
+  /**
+   * The params errors accumulator of the recurrent context network.
+   */
+  private var contextErrorsAccumulator = ParamsErrorsAccumulator<NetworkParameters>()
+
+  /**
+   * The params errors accumulator of the output network.
+   */
+  private var outputErrorsAccumulator = ParamsErrorsAccumulator<NetworkParameters>()
+
+  /**
    * The structure used to store the params errors of the transform layers during the backward.
    */
   private lateinit var transformLayerParamsErrors: FeedforwardLayerParameters
@@ -58,26 +78,6 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) {
    * The recurrent errors of the state encoding.
    */
   private lateinit var recurrentStateEncodingErrors: DenseNDArray
-
-  /**
-   * The params errors accumulator of the transform layer.
-   */
-  private lateinit var transformLayerAccumulator: ParamsErrorsAccumulator<FeedforwardLayerParameters>
-
-  /**
-   * The params errors accumulator of the attention network.
-   */
-  private lateinit var attentionNetworkAccumulator: ParamsErrorsAccumulator<AttentionNetworkParameters>
-
-  /**
-   * The params errors accumulator of the recurrent context network.
-   */
-  private lateinit var contextErrorsAccumulator: ParamsErrorsAccumulator<NetworkParameters>
-
-  /**
-   * The params errors accumulator of the output network.
-   */
-  private lateinit var outputErrorsAccumulator: ParamsErrorsAccumulator<NetworkParameters>
 
   /**
    * Perform the back-propagation from the output errors.
