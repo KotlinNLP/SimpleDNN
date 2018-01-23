@@ -35,7 +35,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) {
     private set
 
   /**
-   * The index of the current state (the backward process the states in inverted order).
+   * The index of the current state (the backward processes the states in inverted order).
    */
   private var stateIndex: Int = 0
 
@@ -154,11 +154,11 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) {
 
     this.propagateStateEncodingErrors(stateEncoderInputErrors)
 
+    this.focusContextErrors.assignSum(recurrentContextPart)
+
+    val (prevStateEncodingErrors, contextLabelErrors) = this.recurrentContextBackwardStep()
+
     if (this.stateIndex > 0) {
-
-      this.focusContextErrors.assignSum(recurrentContextPart)
-
-      val (prevStateEncodingErrors, contextLabelErrors) = this.recurrentContextBackwardStep()
 
       this.contextLabelsErrors.add(0, contextLabelErrors)
 
@@ -266,14 +266,14 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) {
   /**
    * A single backward step of the recurrent context network.
    *
-   * @return the partitions of the errors between the state encoding and the context label
+   * @return the partitions of the errors between the previous state encoding and the context label
    */
   private fun recurrentContextBackwardStep(): Pair<DenseNDArray, DenseNDArray> {
 
     this.network.recurrentContextProcessor.backwardStep(outputErrors = this.focusContextErrors, propagateToInput = true)
 
     return this.splitRNNInputErrors(errors = this.network.recurrentContextProcessor.getInputErrors(
-      elementIndex = this.stateIndex - 1, // the recurrent context is built with the previous state encoding
+      elementIndex = this.stateIndex,
       copy = false))
   }
 
