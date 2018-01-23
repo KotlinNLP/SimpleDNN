@@ -16,9 +16,7 @@ import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralPro
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetwork
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworksPool
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.FeedforwardLayersPool
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * The [RecurrentAttentiveNetwork].
@@ -78,11 +76,6 @@ class RecurrentAttentiveNetwork(val model: RecurrentAttentiveNetworkModel) {
    */
   val outputNetworkPool: FeedforwardNeuralProcessorsPool<DenseNDArray> =
     FeedforwardNeuralProcessorsPool(this.model.outputNetwork)
-
-  /**
-   * The zeros array used as recurrent context of the initial state.
-   */
-  val initialRecurrentContext = DenseNDArrayFactory.zeros(Shape(this.model.recurrentContextSize))
 
   /**
    * The list of transform layers groups used during the last forward.
