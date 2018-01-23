@@ -101,7 +101,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) {
   /**
    * @param copy a Boolean indicating if the returned errors must be a copy or a reference
    *
-   * @return the params errors of this network
+   * @return the params errors of the [network]
    */
   fun getParamsErrors(copy: Boolean = true) = RecurrentAttentiveNetworkParameters(
     transformParams = this.transformLayerAccumulator.getParamsErrors(copy = copy),
