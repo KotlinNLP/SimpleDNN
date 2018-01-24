@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.recurrentattentivedecoder
+package com.kotlinnlp.simplednn.deeplearning.attentiverecurrentnetwork
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
@@ -14,19 +14,19 @@ import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
 
 /**
- * The parameters of the [RecurrentAttentiveNetwork].
+ * The parameters of the [AttentiveRecurrentNetwork].
  *
  * @property attentionParams the parameters of the attention network
  * @property transformParams the parameters of the transform layer
  * @property recurrentContextParams the parameters of the recurrent context network
  * @property outputParams the parameters of the output network
  */
-class RecurrentAttentiveNetworkParameters(
+class AttentiveRecurrentNetworkParameters(
   val attentionParams: AttentionNetworkParameters,
   val transformParams: FeedforwardLayerParameters,
   val recurrentContextParams: NetworkParameters,
   val outputParams: NetworkParameters
-) : IterableParams<RecurrentAttentiveNetworkParameters>() {
+) : IterableParams<AttentiveRecurrentNetworkParameters>() {
 
   companion object {
 
@@ -47,9 +47,9 @@ class RecurrentAttentiveNetworkParameters(
 
 
   /**
-   * @return a new [RecurrentAttentiveNetworkParameters] containing a copy of all values of this
+   * @return a new [AttentiveRecurrentNetworkParameters] containing a copy of all values of this
    */
-  override fun copy() = RecurrentAttentiveNetworkParameters(
+  override fun copy() = AttentiveRecurrentNetworkParameters(
     attentionParams = this.attentionParams.copy(),
     transformParams = this.transformParams.copy(),
     recurrentContextParams = this.recurrentContextParams.copy(),

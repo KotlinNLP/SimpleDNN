@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.recurrentattentivedecoder
+package com.kotlinnlp.simplednn.deeplearning.attentiverecurrentnetwork
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
@@ -16,10 +16,9 @@ import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkPar
 import java.io.Serializable
 
 /**
- * The model of the [RecurrentAttentiveNetwork].
+ * The model of the [AttentiveRecurrentNetwork].
  *
  * @property inputSize the size of the input sequence arrays
- * @property attentionSize the size of the attention arrays
  * @property recurrentContextSize the size of the recurrent context (the output of the recurrent context network)
  * @property contextLabelSize the size of the context label vector (as input of the recurrent context network)
  * @property outputSize the output size
@@ -27,7 +26,7 @@ import java.io.Serializable
  * @param contextRecurrenceType the recurrent layer type (e.g. LSTM, GRU, RAN, ...)
  * @param outputActivationFunction the activation function of the final output network
  */
-class RecurrentAttentiveNetworkModel(
+class AttentiveRecurrentNetworkModel(
   val inputSize: Int,
   val attentionSize: Int,
   val recurrentContextSize: Int,
@@ -53,7 +52,7 @@ class RecurrentAttentiveNetworkModel(
   val attentionParams = AttentionNetworkParameters(
     inputSize = this.inputSize,
     attentionSize = this.attentionSize)
-  
+
   /**
    * The parameters of the transform layers used to create the attention arrays of the [attentionParams].
    */
@@ -94,7 +93,7 @@ class RecurrentAttentiveNetworkModel(
   /**
    * The structure containing all the parameters of this model.
    */
-  val params = RecurrentAttentiveNetworkParameters(
+  val params = AttentiveRecurrentNetworkParameters(
     attentionParams = this.attentionParams,
     transformParams = this.transformParams,
     recurrentContextParams = this.recurrentContextNetwork.model,

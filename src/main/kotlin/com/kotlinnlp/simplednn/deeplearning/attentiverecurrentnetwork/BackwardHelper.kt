@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.recurrentattentivedecoder
+package com.kotlinnlp.simplednn.deeplearning.attentiverecurrentnetwork
 
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
@@ -17,11 +17,11 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
- * The backward helper of the [RecurrentAttentiveNetwork].
+ * The backward helper of the [AttentiveRecurrentNetwork].
  *
- * @property network the recurrent attentive network of this helper
+ * @property network the attentive recurrent network of this helper
  */
-class BackwardHelper(private val network: RecurrentAttentiveNetwork) {
+class BackwardHelper(private val network: AttentiveRecurrentNetwork) {
 
   /**
    * The error of the context label vectors.
@@ -108,7 +108,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) {
    *
    * @return the params errors of the [network]
    */
-  fun getParamsErrors(copy: Boolean = true) = RecurrentAttentiveNetworkParameters(
+  fun getParamsErrors(copy: Boolean = true) = AttentiveRecurrentNetworkParameters(
     transformParams = this.transformLayerAccumulator.getParamsErrors(copy = copy),
     attentionParams = this.attentionNetworkAccumulator.getParamsErrors(copy = copy),
     recurrentContextParams = this.contextErrorsAccumulator.getParamsErrors(copy = copy),

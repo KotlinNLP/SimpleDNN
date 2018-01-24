@@ -5,28 +5,28 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package deeplearning.recurrentattentivenetwork.utils
+package deeplearning.attentiverecurrentnetwork.utils
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
-import com.kotlinnlp.simplednn.deeplearning.recurrentattentivedecoder.RecurrentAttentiveNetworkModel
-import com.kotlinnlp.simplednn.deeplearning.recurrentattentivedecoder.RecurrentAttentiveNetworkParameters
+import com.kotlinnlp.simplednn.deeplearning.attentiverecurrentnetwork.AttentiveRecurrentNetworkModel
+import com.kotlinnlp.simplednn.deeplearning.attentiverecurrentnetwork.AttentiveRecurrentNetworkParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  *
  */
-object RecurrentAttentiveNetworkUtils {
+object AttentiveRecurrentNetworkUtils {
 
   /**
    *
    */
-  fun buildModel(): RecurrentAttentiveNetworkModel {
+  fun buildModel(): AttentiveRecurrentNetworkModel {
 
-    val model = RecurrentAttentiveNetworkModel(
+    val model = AttentiveRecurrentNetworkModel(
       inputSize = 2,
       attentionSize = 2,
       recurrentContextSize = 2,
@@ -110,9 +110,9 @@ object RecurrentAttentiveNetworkUtils {
   /**
    *
    */
-  fun getExpectedParamsErrors1(): RecurrentAttentiveNetworkParameters {
+  fun getExpectedParamsErrors1(): AttentiveRecurrentNetworkParameters {
 
-    val paramsErrors: RecurrentAttentiveNetworkParameters = this.buildModel().params.copy()
+    val paramsErrors: AttentiveRecurrentNetworkParameters = this.buildModel().params.copy()
 
     this.setTransformLayerParamsErrors(paramsErrors)
     this.setAttentionNetworkParamsErrors(paramsErrors)
@@ -134,7 +134,7 @@ object RecurrentAttentiveNetworkUtils {
   /**
    *
    */
-  private fun setTransformLayerParams(model: RecurrentAttentiveNetworkModel) {
+  private fun setTransformLayerParams(model: AttentiveRecurrentNetworkModel) {
 
     val params = model.transformParams
 
@@ -151,7 +151,7 @@ object RecurrentAttentiveNetworkUtils {
   /**
    *
    */
-  private fun setAttentionNetworkParams(model: RecurrentAttentiveNetworkModel) {
+  private fun setAttentionNetworkParams(model: AttentiveRecurrentNetworkModel) {
 
     val params = model.attentionParams.attentionParams
 
@@ -161,7 +161,7 @@ object RecurrentAttentiveNetworkUtils {
   /**
    *
    */
-  private fun setRecurrentContextNetworkParams(model: RecurrentAttentiveNetworkModel) {
+  private fun setRecurrentContextNetworkParams(model: AttentiveRecurrentNetworkModel) {
 
     val params = model.recurrentContextNetwork.model.paramsPerLayer[0] as SimpleRecurrentLayerParameters
 
@@ -181,7 +181,7 @@ object RecurrentAttentiveNetworkUtils {
   /**
    *
    */
-  private fun setOutputNetworkParams(model: RecurrentAttentiveNetworkModel) {
+  private fun setOutputNetworkParams(model: AttentiveRecurrentNetworkModel) {
 
     val params = model.outputNetwork.model.paramsPerLayer[0] as FeedforwardLayerParameters
 
@@ -198,7 +198,7 @@ object RecurrentAttentiveNetworkUtils {
   /**
    *
    */
-  private fun setTransformLayerParamsErrors(paramsErrors: RecurrentAttentiveNetworkParameters) {
+  private fun setTransformLayerParamsErrors(paramsErrors: AttentiveRecurrentNetworkParameters) {
 
     val errors = paramsErrors.transformParams
 
@@ -215,7 +215,7 @@ object RecurrentAttentiveNetworkUtils {
   /**
    *
    */
-  private fun setAttentionNetworkParamsErrors(paramsErrors: RecurrentAttentiveNetworkParameters) {
+  private fun setAttentionNetworkParamsErrors(paramsErrors: AttentiveRecurrentNetworkParameters) {
 
     val errors = paramsErrors.attentionParams.attentionParams
 
@@ -225,7 +225,7 @@ object RecurrentAttentiveNetworkUtils {
   /**
    *
    */
-  private fun setRecurrentContextNetworkParamsErrors(paramsErrors: RecurrentAttentiveNetworkParameters) {
+  private fun setRecurrentContextNetworkParamsErrors(paramsErrors: AttentiveRecurrentNetworkParameters) {
 
     val errors = paramsErrors.recurrentContextParams.paramsPerLayer[0] as SimpleRecurrentLayerParameters
 
@@ -245,7 +245,7 @@ object RecurrentAttentiveNetworkUtils {
   /**
    *
    */
-  private fun setOutputNetworkParamsErrors(paramsErrors: RecurrentAttentiveNetworkParameters) {
+  private fun setOutputNetworkParamsErrors(paramsErrors: AttentiveRecurrentNetworkParameters) {
 
     val errors = paramsErrors.outputParams.paramsPerLayer[0] as FeedforwardLayerParameters
 

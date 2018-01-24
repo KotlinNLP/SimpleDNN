@@ -5,14 +5,14 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package deeplearning.recurrentattentivenetwork
+package deeplearning.attentiverecurrentnetwork
 
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
-import com.kotlinnlp.simplednn.deeplearning.recurrentattentivedecoder.RecurrentAttentiveNetwork
-import com.kotlinnlp.simplednn.deeplearning.recurrentattentivedecoder.RecurrentAttentiveNetworkParameters
+import com.kotlinnlp.simplednn.deeplearning.attentiverecurrentnetwork.AttentiveRecurrentNetwork
+import com.kotlinnlp.simplednn.deeplearning.attentiverecurrentnetwork.AttentiveRecurrentNetworkParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import deeplearning.recurrentattentivenetwork.utils.RecurrentAttentiveNetworkUtils
+import deeplearning.attentiverecurrentnetwork.utils.AttentiveRecurrentNetworkUtils
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
@@ -22,15 +22,15 @@ import kotlin.test.assertTrue
 /**
  *
  */
-class RecurrentAttentiveNetworkSpec : Spek({
+class AttentiveRecurrentNetworkSpec : Spek({
 
-  describe("a RecurrentAttentiveNetwork") {
+  describe("an AttentiveRecurrentNetwork") {
 
-    val utils = RecurrentAttentiveNetworkUtils
+    val utils = AttentiveRecurrentNetworkUtils
 
     on("forward") {
 
-      val network = RecurrentAttentiveNetwork(model = utils.buildModel())
+      val network = AttentiveRecurrentNetwork(model = utils.buildModel())
       val predictionLabels: List<DenseNDArray?> = utils.buildPredictionLabels()
 
       network.setInputSequence(utils.buildInputSequence1())
@@ -56,7 +56,7 @@ class RecurrentAttentiveNetworkSpec : Spek({
 
     on("forward with a second sequence") {
 
-      val network = RecurrentAttentiveNetwork(model = utils.buildModel())
+      val network = AttentiveRecurrentNetwork(model = utils.buildModel())
       val predictionLabels: List<DenseNDArray?> = utils.buildPredictionLabels()
 
       network.setInputSequence(utils.buildInputSequence1())
@@ -88,7 +88,7 @@ class RecurrentAttentiveNetworkSpec : Spek({
 
     on("backward") {
 
-      val network = RecurrentAttentiveNetwork(model = utils.buildModel())
+      val network = AttentiveRecurrentNetwork(model = utils.buildModel())
       val predictionLabels: List<DenseNDArray?> = utils.buildPredictionLabels()
 
       network.setInputSequence(utils.buildInputSequence1())
@@ -99,11 +99,11 @@ class RecurrentAttentiveNetworkSpec : Spek({
 
       network.backward(outputErrors = utils.getOutputErrors1())
 
-      val paramsErrors: RecurrentAttentiveNetworkParameters = network.getParamsErrors()
+      val paramsErrors: AttentiveRecurrentNetworkParameters = network.getParamsErrors()
       val inputSequenceErrors: List<DenseNDArray> = network.getInputSequenceErrors()
       val contextLabelsErrors: List<DenseNDArray> = network.getContextLabelsErrors()
 
-      val expectedParamsErrors: RecurrentAttentiveNetworkParameters = utils.getExpectedParamsErrors1()
+      val expectedParamsErrors: AttentiveRecurrentNetworkParameters = utils.getExpectedParamsErrors1()
       val expectedInputErrors: List<DenseNDArray> = utils.getExpectedInputErrors1()
       val expectedLabelsErrors: List<DenseNDArray> = utils.getExpectedLabelsErrors1()
 

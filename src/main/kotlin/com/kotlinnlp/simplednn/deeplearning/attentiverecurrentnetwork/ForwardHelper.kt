@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.recurrentattentivedecoder
+package com.kotlinnlp.simplednn.deeplearning.attentiverecurrentnetwork
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
@@ -17,9 +17,11 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
- * The forward helper of the [RecurrentAttentiveNetwork].
+ * The forward helper of the [AttentiveRecurrentNetwork].
+ *
+ * @property network the attentive recurrent network of this helper
  */
-class ForwardHelper(private val network: RecurrentAttentiveNetwork) {
+class ForwardHelper(private val network: AttentiveRecurrentNetwork) {
 
   /**
    * The context label vector used in first state.

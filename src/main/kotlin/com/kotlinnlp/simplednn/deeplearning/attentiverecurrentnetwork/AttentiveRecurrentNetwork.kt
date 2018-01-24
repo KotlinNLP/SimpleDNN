@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.recurrentattentivedecoder
+package com.kotlinnlp.simplednn.deeplearning.attentiverecurrentnetwork
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
@@ -19,7 +19,7 @@ import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.FeedforwardLayersPo
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The [RecurrentAttentiveNetwork].
+ * The [AttentiveRecurrentNetwork].
  *
  * It encodes an input sequence of N arrays into a parallel output sequence of N arrays, giving the focus to the i-th
  * array at the i-th encoding step thanks to a recurrent context network.
@@ -33,7 +33,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property model the model of the network
  */
-class RecurrentAttentiveNetwork(val model: RecurrentAttentiveNetworkModel) {
+class AttentiveRecurrentNetwork(val model: AttentiveRecurrentNetworkModel) {
 
   /**
    * The size of the currently processing sequence (set with the [setInputSequence] method).
@@ -161,7 +161,7 @@ class RecurrentAttentiveNetwork(val model: RecurrentAttentiveNetworkModel) {
    *
    * @return the params errors of this network
    */
-  fun getParamsErrors(copy: Boolean = true): RecurrentAttentiveNetworkParameters =
+  fun getParamsErrors(copy: Boolean = true): AttentiveRecurrentNetworkParameters =
     this.backwardHelper.getParamsErrors(copy = copy)
 
   /**
