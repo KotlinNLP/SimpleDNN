@@ -70,9 +70,9 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) {
   private lateinit var attentionNetworkParamsErrors: AttentionNetworkParameters
 
   /**
-   * The recurrent errors of the recurrent context used as focus to build the attention arrays.
+   * The errors of the recurrent context, set at each backward step.
    */
-  private lateinit var focusContextErrors: DenseNDArray
+  private lateinit var recurrentContextErrors: DenseNDArray
 
   /**
    * The recurrent errors of the state encoding.
@@ -154,7 +154,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) {
 
     this.propagateStateEncodingErrors(stateEncoderInputErrors)
 
-    this.focusContextErrors.assignSum(recurrentContextPart)
+    this.recurrentContextErrors.assignSum(recurrentContextPart)
 
     val (prevStateEncodingErrors, contextLabelErrors) = this.recurrentContextBackwardStep()
 
@@ -229,10 +229,10 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) {
 
       val (inputArrayTransformPart, focusContextPart) = this.splitTransformErrors(errors = transformErrors)
 
-      this.focusContextErrors = if (itemIndex == 0)
+      this.recurrentContextErrors = if (itemIndex == 0)
         focusContextPart
       else
-        this.focusContextErrors.assignSum(focusContextPart)
+        this.recurrentContextErrors.assignSum(focusContextPart)
 
       this.inputSequenceErrors[itemIndex].assignSum(inputArrayTransformPart.sum(inputArrayErrors))
     }
@@ -266,7 +266,7 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) {
    */
   private fun recurrentContextBackwardStep(): Pair<DenseNDArray, DenseNDArray> {
 
-    this.network.recurrentContextProcessor.backwardStep(outputErrors = this.focusContextErrors, propagateToInput = true)
+    this.network.recurrentContextProcessor.backwardStep(outputErrors = this.recurrentContextErrors, propagateToInput = true)
 
     return this.splitRNNInputErrors(errors = this.network.recurrentContextProcessor.getInputErrors(
       elementIndex = this.stateIndex,
