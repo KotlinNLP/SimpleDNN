@@ -75,36 +75,36 @@ object AttentiveRecurrentNetworkUtils {
    *
    */
   fun buildExpectedOutputs1(): List<DenseNDArray> = listOf(
-    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.431531, -0.360826)),
-    DenseNDArrayFactory.arrayOf(doubleArrayOf(0.334841, -0.853749)),
-    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.907658, -0.252679))
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.295800, -0.745375)),
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(0.346037, -0.796551)),
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.917978, -0.261493))
   )
 
   /**
    *
    */
   fun buildExpectedOutputs2(): List<DenseNDArray> = listOf(
-    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.058941, -0.538804)),
-    DenseNDArrayFactory.arrayOf(doubleArrayOf(0.469632, -0.853854)),
-    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.786288, -0.468557))
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(0.089257, -0.828523)),
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(0.468544, -0.791196)),
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.809604, -0.477566))
   )
 
   /**
    *
    */
   fun getExpectedInputErrors1(): List<DenseNDArray> = listOf(
-    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.310567, -0.164335)),
-    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.319349, -0.165902)),
-    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.293844, -0.153219))
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.204547, -0.082545)),
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.209962, -0.082869)),
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.195195, -0.076396))
   )
 
   /**
    *
    */
-  fun getExpectedLabelsErrors1(): List<DenseNDArray> = listOf(
-    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.464371, -0.636690)),
-    DenseNDArrayFactory.arrayOf(doubleArrayOf(0.120753, 0.927892)),
-    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.020162, 0.012493))
+  fun getExpectedLabelsErrors1(): List<DenseNDArray?> = listOf(
+    null,
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.018696, 0.869881)),
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.018390, 0.014988))
   )
 
   /**
@@ -203,12 +203,12 @@ object AttentiveRecurrentNetworkUtils {
     val errors = paramsErrors.transformParams
 
     errors.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
-      doubleArrayOf(0.001854, -0.002859, -0.000462, -0.001199),
-      doubleArrayOf(0.002297, -0.003461, -0.000493, -0.002329)
+      doubleArrayOf(0.001396, -0.002158, 0.000219, -0.000696),
+      doubleArrayOf(0.001896, -0.002861, 0.000625, -0.001793)
     )))
 
     errors.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(
-      doubleArrayOf(-0.002562, -0.004909)
+      doubleArrayOf(-0.002094, -0.004802)
     ))
   }
 
@@ -219,7 +219,7 @@ object AttentiveRecurrentNetworkUtils {
 
     val errors = paramsErrors.attentionParams.attentionParams
 
-    errors.contextVector.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.005547, -0.004150)))
+    errors.contextVector.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.004135, -0.003261)))
   }
 
   /**
@@ -230,15 +230,15 @@ object AttentiveRecurrentNetworkUtils {
     val errors = paramsErrors.recurrentContextParams.paramsPerLayer[0] as SimpleRecurrentLayerParameters
 
     errors.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
-      doubleArrayOf(-0.037181, 0.055854, 0.105429, -0.095281),
-      doubleArrayOf(0.031228, -0.046914, -0.090906, 0.096628)
+      doubleArrayOf(-0.063889, 0.095940, 0.182200, -0.166892),
+      doubleArrayOf(0.031021, -0.046585, -0.090847, 0.097863)
     )))
 
-    errors.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.169808, 0.076196)))
+    errors.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.307918, -0.149463)))
 
     errors.unit.recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
-      doubleArrayOf(0.109232, 0.095000),
-      doubleArrayOf(-0.104809, -0.081011)
+      doubleArrayOf(-0.003095, 0.008566),
+      doubleArrayOf(-0.001419, 0.003926)
     )))
   }
 
@@ -250,12 +250,12 @@ object AttentiveRecurrentNetworkUtils {
     val errors = paramsErrors.outputParams.paramsPerLayer[0] as FeedforwardLayerParameters
 
     errors.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
-      doubleArrayOf(0.045206, -0.067858, 0.147133, -0.082301),
-      doubleArrayOf(-0.079239, 0.118969, 0.292940, 0.058410)
+      doubleArrayOf(0.043012, -0.064547, 0.059055, -0.173428),
+      doubleArrayOf(-0.052429, 0.078677, 0.119006, -0.092441)
     )))
 
     errors.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(
-      doubleArrayOf(-0.217984, 0.385762)
+      doubleArrayOf(-0.208488, 0.257541)
     ))
   }
 }

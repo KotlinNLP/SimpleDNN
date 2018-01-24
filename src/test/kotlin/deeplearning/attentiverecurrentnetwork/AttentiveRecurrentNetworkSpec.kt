@@ -17,6 +17,7 @@ import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
@@ -101,11 +102,11 @@ class AttentiveRecurrentNetworkSpec : Spek({
 
       val paramsErrors: AttentiveRecurrentNetworkParameters = network.getParamsErrors()
       val inputSequenceErrors: List<DenseNDArray> = network.getInputSequenceErrors()
-      val contextLabelsErrors: List<DenseNDArray> = network.getContextLabelsErrors()
+      val contextLabelsErrors: List<DenseNDArray?> = network.getContextLabelsErrors()
 
       val expectedParamsErrors: AttentiveRecurrentNetworkParameters = utils.getExpectedParamsErrors1()
       val expectedInputErrors: List<DenseNDArray> = utils.getExpectedInputErrors1()
-      val expectedLabelsErrors: List<DenseNDArray> = utils.getExpectedLabelsErrors1()
+      val expectedLabelsErrors: List<DenseNDArray?> = utils.getExpectedLabelsErrors1()
 
       it("should match the expected errors of the transform layer weights") {
         assertTrue {
@@ -178,15 +179,15 @@ class AttentiveRecurrentNetworkSpec : Spek({
       }
 
       it("should match the expected errors of the first context label") {
-        assertTrue { contextLabelsErrors[0].equals(expectedLabelsErrors[0], tolerance = 1.0e-06) }
+        assertNull(contextLabelsErrors[0])
       }
 
       it("should match the expected errors of the second context label") {
-        assertTrue { contextLabelsErrors[1].equals(expectedLabelsErrors[1], tolerance = 1.0e-06) }
+        assertTrue { contextLabelsErrors[1]!!.equals(expectedLabelsErrors[1]!!, tolerance = 1.0e-06) }
       }
 
       it("should match the expected errors of the third context label") {
-        assertTrue { contextLabelsErrors[2].equals(expectedLabelsErrors[2], tolerance = 1.0e-06) }
+        assertTrue { contextLabelsErrors[2]!!.equals(expectedLabelsErrors[2]!!, tolerance = 1.0e-06) }
       }
 
       it("should match the expected errors of the first array of the sequence") {
