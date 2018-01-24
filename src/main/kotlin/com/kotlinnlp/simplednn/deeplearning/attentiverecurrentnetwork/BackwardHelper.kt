@@ -24,9 +24,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 class BackwardHelper(private val network: AttentiveRecurrentNetwork) {
 
   /**
-   * The error of the context label vectors.
+   * The error of the context label vectors (the first is always null).
    */
-  val contextLabelsErrors = mutableListOf<DenseNDArray>()
+  val contextLabelsErrors = mutableListOf<DenseNDArray?>()
 
   /**
    * The list of errors of the current input sequence.
@@ -92,7 +92,10 @@ class BackwardHelper(private val network: AttentiveRecurrentNetwork) {
 
       this.stateIndex = stateIndex
 
-      this.backwardStep(outputErrors = outputErrors[stateIndex], isLastState = stateIndex == outputErrors.lastIndex)
+      this.backwardStep(
+        outputErrors = outputErrors[stateIndex],
+        isFirstState = stateIndex == 0,
+        isLastState = stateIndex == outputErrors.lastIndex)
     }
 
     // The errors in the 'contextErrorsAccumulator' are already averaged thanks to the recurrent processor
@@ -143,9 +146,10 @@ class BackwardHelper(private val network: AttentiveRecurrentNetwork) {
    * A single step of backward.
    *
    * @param outputErrors the errors of a single output array
+   * @param isFirstState a boolean indicating if this is the first state of the sequence (the last of the backward)
    * @param isLastState a boolean indicating if this is the last state of the sequence (the first of the backward)
    */
-  private fun backwardStep(outputErrors: DenseNDArray, isLastState: Boolean) {
+  private fun backwardStep(outputErrors: DenseNDArray, isFirstState: Boolean, isLastState: Boolean) {
 
     val (stateEncodingPart, recurrentContextPart) = this.splitOutputNetworkErrors(
       outputNetworkErrors = this.getOutputNetworkInputErrors(outputErrors)
@@ -161,10 +165,17 @@ class BackwardHelper(private val network: AttentiveRecurrentNetwork) {
 
     this.recurrentContextErrors.assignSum(recurrentContextPart)
 
-    val (prevStateEncodingErrors, contextLabelErrors) = this.recurrentContextBackwardStep()
+    if (isFirstState) {
 
-    this.contextLabelsErrors.add(0, contextLabelErrors)
-    this.recurrentStateEncodingErrors = prevStateEncodingErrors
+      this.contextLabelsErrors.add(0, null)
+
+    } else {
+
+      val (prevStateEncodingErrors, contextLabelErrors) = this.recurrentContextBackwardStep()
+
+      this.contextLabelsErrors.add(0, contextLabelErrors)
+      this.recurrentStateEncodingErrors = prevStateEncodingErrors
+    }
   }
 
   /**
@@ -271,10 +282,12 @@ class BackwardHelper(private val network: AttentiveRecurrentNetwork) {
    */
   private fun recurrentContextBackwardStep(): Pair<DenseNDArray, DenseNDArray> {
 
-    this.network.recurrentContextProcessor.backwardStep(outputErrors = this.recurrentContextErrors, propagateToInput = true)
+    this.network.recurrentContextProcessor.backwardStep(
+      outputErrors = this.recurrentContextErrors,
+      propagateToInput = true)
 
     return this.splitRNNInputErrors(errors = this.network.recurrentContextProcessor.getInputErrors(
-      elementIndex = this.stateIndex,
+      elementIndex = this.stateIndex - 1, // in the i-th state the encoding of the previous state (i-1) is used as input
       copy = false))
   }
 

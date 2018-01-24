@@ -170,7 +170,7 @@ class AttentiveRecurrentNetwork(val model: AttentiveRecurrentNetworkModel) {
   fun getInputSequenceErrors(): List<DenseNDArray> = this.backwardHelper.inputSequenceErrors
 
   /**
-   * @return the errors of the context label vectors
+   * @return the errors of the context label vectors (the first is always null)
    */
-  fun getContextLabelsErrors(): List<DenseNDArray> = this.backwardHelper.contextLabelsErrors
+  fun getContextLabelsErrors(): List<DenseNDArray?> = this.backwardHelper.contextLabelsErrors
 }
