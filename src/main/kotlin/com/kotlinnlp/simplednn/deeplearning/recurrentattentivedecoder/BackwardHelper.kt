@@ -95,7 +95,12 @@ class BackwardHelper(private val network: RecurrentAttentiveNetwork) {
       this.backwardStep(outputErrors = outputErrors[stateIndex], isLastState = stateIndex == outputErrors.lastIndex)
     }
 
+    // The errors in the 'contextErrorsAccumulator' are already averaged thanks to the recurrent processor
     this.contextErrorsAccumulator.accumulate(this.network.recurrentContextProcessor.getParamsErrors(copy = false))
+
+    this.transformLayerAccumulator.averageErrors()
+    this.attentionNetworkAccumulator.averageErrors()
+    this.outputErrorsAccumulator.averageErrors()
   }
 
   /**
