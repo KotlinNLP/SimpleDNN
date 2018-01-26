@@ -55,6 +55,32 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
   /**
    *
+   * @param nextStateLayer the layer structure in the next state
+   */
+  fun getLayerRecurrentContribution(nextStateLayer: LSTMLayerStructure<*>): DenseNDArray {
+
+    this.layer.params as LSTMLayerParameters
+
+    val gInGNext: DenseNDArray = nextStateLayer.inputGate.errors
+    val gOutGNext: DenseNDArray = nextStateLayer.outputGate.errors
+    val gForGNext: DenseNDArray = nextStateLayer.forgetGate.errors
+    val gCandNext: DenseNDArray = nextStateLayer.candidate.errors
+
+    val wInGRec: DenseNDArray = this.layer.params.inputGate.recurrentWeights.values as DenseNDArray
+    val wOutGRec: DenseNDArray = this.layer.params.outputGate.recurrentWeights.values as DenseNDArray
+    val wForGRec: DenseNDArray = this.layer.params.forgetGate.recurrentWeights.values as DenseNDArray
+    val wCandRec: DenseNDArray = this.layer.params.candidate.recurrentWeights.values as DenseNDArray
+
+    val gRec1: DenseNDArray = gInGNext.t.dot(wInGRec)
+    val gRec2: DenseNDArray = gOutGNext.t.dot(wOutGRec)
+    val gRec3: DenseNDArray = gForGNext.t.dot(wForGRec)
+    val gRec4: DenseNDArray = gCandNext.t.dot(wCandRec)
+
+    return gRec1.assignSum(gRec2).assignSum(gRec3).assignSum(gRec4)
+  }
+
+  /**
+   *
    * @param prevStateLayer the layer in the previous state
    * @param nextStateLayer the layer in the next state
    */
@@ -140,32 +166,6 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gyRec: DenseNDArray = this.getLayerRecurrentContribution(nextStateLayer)
 
     gy.assignSum(gyRec)
-  }
-
-  /**
-   *
-   * @param nextStateLayer the layer structure in the next state
-   */
-  private fun getLayerRecurrentContribution(nextStateLayer: LSTMLayerStructure<*>): DenseNDArray {
-
-    this.layer.params as LSTMLayerParameters
-
-    val gInGNext: DenseNDArray = nextStateLayer.inputGate.errors
-    val gOutGNext: DenseNDArray = nextStateLayer.outputGate.errors
-    val gForGNext: DenseNDArray = nextStateLayer.forgetGate.errors
-    val gCandNext: DenseNDArray = nextStateLayer.candidate.errors
-
-    val wInGRec: DenseNDArray = this.layer.params.inputGate.recurrentWeights.values as DenseNDArray
-    val wOutGRec: DenseNDArray = this.layer.params.outputGate.recurrentWeights.values as DenseNDArray
-    val wForGRec: DenseNDArray = this.layer.params.forgetGate.recurrentWeights.values as DenseNDArray
-    val wCandRec: DenseNDArray = this.layer.params.candidate.recurrentWeights.values as DenseNDArray
-
-    val gRec1: DenseNDArray = gInGNext.t.dot(wInGRec)
-    val gRec2: DenseNDArray = gOutGNext.t.dot(wOutGRec)
-    val gRec3: DenseNDArray = gForGNext.t.dot(wForGRec)
-    val gRec4: DenseNDArray = gCandNext.t.dot(wCandRec)
-
-    return gRec1.assignSum(gRec2).assignSum(gRec3).assignSum(gRec4)
   }
 
   /**
