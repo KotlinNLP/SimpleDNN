@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.layers.recurrent.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The SimpleRecurrent Layer Structure.
@@ -61,5 +62,25 @@ class SimpleRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>
     if (activationFunction != null) {
       outputArray.setActivation(activationFunction)
     }
+  }
+
+  /**
+   * Set the initial hidden array.
+   * This method should be used when this layer is used as initial hidden state in a recurrent neural network.
+   *
+   * @param array the initial hidden array
+   */
+  override fun setInitHidden(array: DenseNDArray) {
+    TODO("not implemented")
+  }
+
+  /**
+   * Get the errors of the initial hidden array.
+   * This method should be used only if this layer is used as initial hidden state in a recurrent neural network.
+   *
+   * @return the errors of the initial hidden array
+   */
+  override fun getInitHiddenErrors(): DenseNDArray {
+    TODO("not implemented")
   }
 }

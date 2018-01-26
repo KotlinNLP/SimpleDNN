@@ -97,4 +97,24 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
       this.cell.setActivation(activationFunction)
     }
   }
+
+  /**
+   * Set the initial hidden array.
+   * This method should be used when this layer is used as initial hidden state in a recurrent neural network.
+   *
+   * @param array the initial hidden array
+   */
+  override fun setInitHidden(array: DenseNDArray) {
+    TODO("not implemented")
+  }
+
+  /**
+   * Get the errors of the initial hidden array.
+   * This method should be used only if this layer is used as initial hidden state in a recurrent neural network.
+   *
+   * @return the errors of the initial hidden array
+   */
+  override fun getInitHiddenErrors(): DenseNDArray {
+    TODO("not implemented")
+  }
 }
