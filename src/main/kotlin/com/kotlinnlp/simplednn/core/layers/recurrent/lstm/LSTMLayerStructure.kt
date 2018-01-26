@@ -105,7 +105,7 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param array the initial hidden array
    */
   override fun setInitHidden(array: DenseNDArray) {
-    TODO("not implemented")
+    this.outputArray.assignValues(array)
   }
 
   /**
@@ -114,7 +114,7 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the errors of the initial hidden array
    */
-  override fun getInitHiddenErrors(): DenseNDArray {
-    TODO("not implemented")
-  }
+  override fun getInitHiddenErrors(): DenseNDArray =
+    this.backwardHelper.getLayerRecurrentContribution(
+      nextStateLayer = this.layerContextWindow.getNextStateLayer() as LSTMLayerStructure<*>)
 }
