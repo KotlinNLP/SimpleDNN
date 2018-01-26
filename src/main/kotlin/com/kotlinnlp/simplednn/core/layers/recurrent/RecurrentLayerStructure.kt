@@ -52,4 +52,20 @@ abstract class RecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayTy
   fun setRecurrentRelevance(layerContributions: LayerParameters<*>) {
     this.relevanceHelper.setRecurrentRelevance(layerContributions = layerContributions)
   }
+
+  /**
+   * Set the initial hidden array.
+   * This method should be used when this layer is used as initial hidden state in a recurrent neural network.
+   *
+   * @param array the initial hidden array
+   */
+  abstract fun setInitHidden(array: DenseNDArray)
+
+  /**
+   * Get the errors of the initial hidden array.
+   * This method should be used only if this layer is used as initial hidden state in a recurrent neural network.
+   *
+   * @return the errors of the initial hidden array
+   */
+  abstract fun getInitHiddenErrors(): DenseNDArray
 }
