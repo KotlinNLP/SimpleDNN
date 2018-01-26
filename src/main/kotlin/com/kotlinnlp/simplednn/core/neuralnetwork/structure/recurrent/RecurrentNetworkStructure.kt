@@ -73,7 +73,7 @@ class RecurrentNetworkStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
     }
 
   /**
-   *
+   * @return the current layer in previous state
    */
   override fun getPrevStateLayer(): LayerStructure<*>? = if (this.useInitHidden[this.curLayerIndex]) {
     this.initHiddenLayers[this.curLayerIndex]
@@ -83,7 +83,7 @@ class RecurrentNetworkStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   *
+   * @return the current layer in next state
    */
   override fun getNextStateLayer(): LayerStructure<*>? {
     val nextStateStructure = this.structureContextWindow.getNextStateStructure()
