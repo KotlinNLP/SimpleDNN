@@ -18,6 +18,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 /**
  * The NetworkStructure.
  *
+ * Layers are defined as a list [x, y, z] in the [layersConfiguration].
+ * The structure contains layers as input-output pairs [x-y, y-z].
+ * The output of a layer is the reference of the input of the next one.
+ *
  * @property layersConfiguration layers layersConfiguration
  * @property params the network parameters per layer
  */
@@ -29,7 +33,7 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Contains the layers of the neural network
    */
-  val layers: Array<LayerStructure<*>>
+  val layers: List<LayerStructure<*>> = this.buildLayers()
 
   /**
    * Used to track the loop over the layers during the forward and the backward
@@ -49,33 +53,12 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   val outputLayer: LayerStructure<DenseNDArray> get() = layers.last() as LayerStructure<DenseNDArray>
 
   /**
-   * In the layersConfiguration layers are defined as a list [x, y, z].
-   * The structure contains layers as input-output pairs [x-y, y-z].
-   * The output of a layer is a reference of the input of the next layer.
+   * Check the input type of the layers following the first (they all must be Dense).
    */
   init {
     require(this.layersConfiguration.subList(1, this.layersConfiguration.lastIndex).all {
       it.inputType == LayerType.Input.Dense
     })
-
-    val initLayers = arrayOfNulls<LayerStructure<*>>(this.layersConfiguration.size - 1)
-
-    initLayers[0] = this.layerFactory(
-      inputConfiguration = this.layersConfiguration[0],
-      outputConfiguration = this.layersConfiguration[1],
-      params = this.params.paramsPerLayer[0]
-    )
-
-    for (i in 1 until this.layersConfiguration.size - 1) {
-      initLayers[i] = this.layerFactory(
-        inputArray = initLayers[i - 1]!!.outputArray,
-        outputConfiguration = this.layersConfiguration[i + 1],
-        params = this.params.paramsPerLayer[i],
-        dropout = this.layersConfiguration[i].dropout
-      )
-    }
-
-    this.layers = initLayers.requireNoNulls()
   }
 
   /**
@@ -206,4 +189,38 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     outputConfiguration: LayerConfiguration,
     params: LayerParameters<*>,
     dropout: Double): LayerStructure<InputNDArrayType>
+
+  /**
+   * Build a new list of layer structures using the [layersConfiguration].
+   *
+   * @return a list of layer structures
+   */
+  protected fun buildLayers(): List<LayerStructure<*>> {
+
+    var prevLayer: LayerStructure<*>? = null
+
+    return List(
+      size = this.layersConfiguration.size - 1,
+      init = { i ->
+
+        val layer: LayerStructure<*> = if (i == 0)
+          this.layerFactory(
+            inputConfiguration = this.layersConfiguration[0],
+            outputConfiguration = this.layersConfiguration[1],
+            params = this.params.paramsPerLayer[0]
+          )
+        else
+          this.layerFactory(
+            inputArray = prevLayer!!.outputArray,
+            outputConfiguration = this.layersConfiguration[i + 1],
+            params = this.params.paramsPerLayer[i],
+            dropout = this.layersConfiguration[i].dropout
+          )
+
+        prevLayer = layer
+
+        layer
+      }
+    )
+  }
 }
