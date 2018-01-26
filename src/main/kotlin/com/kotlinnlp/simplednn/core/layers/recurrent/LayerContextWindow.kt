@@ -10,17 +10,17 @@ package com.kotlinnlp.simplednn.core.layers.recurrent
 import com.kotlinnlp.simplednn.core.layers.LayerStructure
 
 /**
- *
+ * The context window for a recurrent layer. It permits to get the layer in the previous and next states.
  */
 interface LayerContextWindow {
   
   /**
-   *
+   * @return the current layer in previous state
    */
   fun getPrevStateLayer(): LayerStructure<*>?
 
   /**
-   *
+   * @return the current layer in next state
    */
   fun getNextStateLayer(): LayerStructure<*>?
 }
