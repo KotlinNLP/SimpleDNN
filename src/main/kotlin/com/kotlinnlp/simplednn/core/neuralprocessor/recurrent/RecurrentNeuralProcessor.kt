@@ -152,6 +152,14 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * Get the errors of the initial hidden arrays.
+   * This method should be used only if initial hidden arrays has been passed in the last [forward] call.
+   *
+   * @return the errors of the initial hidden arrays (null if no init hidden is used for a certain layer)
+   */
+  fun getInitHiddenErrors(): List<DenseNDArray?> = this.sequence.getStateStructure(0).getInitHiddenErrors()
+
+  /**
    * @param copy a Boolean indicating whether the returned arrays must be a copy or a reference
    *
    * @return the output sequence
@@ -170,7 +178,11 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward a sequence.
    *
+   * Set the [initHiddenArrays] to use them as previous hidden in the first forward. Set some of them to null to don't
+   * use them for certain layers.
+   *
    * @param sequenceFeaturesArray the features to forward for each item of the sequence
+   * @param initHiddenArrays the list of initial hidden arrays (one per layer, null by default)
    * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
    *                          the relevance)
    * @param useDropout whether to apply the dropout
@@ -178,6 +190,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return the last output of the network after the whole sequence is been forwarded
    */
   fun forward(sequenceFeaturesArray: ArrayList<InputNDArrayType>,
+              initHiddenArrays: List<DenseNDArray?>? = null,
               saveContributions: Boolean = false,
               useDropout: Boolean = false): DenseNDArray {
 
@@ -185,6 +198,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
       this.forward(
         featuresArray = features,
         firstState = (i == 0),
+        initHiddenArrays = initHiddenArrays,
         saveContributions = saveContributions,
         useDropout = useDropout)
     }
@@ -195,14 +209,20 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward features.
    *
+   * Set the [initHiddenArrays] to use them as previous hidden in the first forward. Set some of them to null to don't
+   * use them for certain layers.
+   * [initHiddenArrays] will be ignored if [firstState] is false.
+   *
    * @param featuresArray the features to forward from the input to the output
+   * @param firstState whether the current one is the first state
+   * @param initHiddenArrays the list of initial hidden arrays (one per layer, null by default)
    * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
    *                          the relevance)
-   * @param firstState whether the current one is the first state
    * @param useDropout whether to apply the dropout
    */
   fun forward(featuresArray: InputNDArrayType,
               firstState: Boolean,
+              initHiddenArrays: List<DenseNDArray?>? = null,
               saveContributions: Boolean = false,
               useDropout: Boolean = false): DenseNDArray {
 
@@ -216,6 +236,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.forwardCurrentState(
       featuresArray = featuresArray,
+      initHiddenArrays = initHiddenArrays,
       saveContributions = saveContributions,
       useDropout = useDropout)
 
@@ -352,23 +373,29 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward the current state.
    *
    * @param featuresArray the features to forward from the input to the output
+   * @param initHiddenArrays the list of initial hidden arrays (one per layer, can be null)
    * @param saveContributions whether to save the contributions of each input to its output (needed to calculate the
    *                          relevance)
    * @param useDropout whether to apply the dropout
    */
   private fun forwardCurrentState(
     featuresArray: InputNDArrayType,
+    initHiddenArrays: List<DenseNDArray?>?,
     saveContributions: Boolean,
     useDropout: Boolean = false) {
 
+    val structure: RecurrentNetworkStructure<InputNDArrayType> = this.sequence.getStateStructure(this.lastStateIndex)
+
+    structure.setInitHidden(arrays = if (this.curStateIndex == 0) initHiddenArrays else null)
+
     if (saveContributions) {
-      this.sequence.getStateStructure(this.lastStateIndex).forward(
+      structure.forward(
         features = featuresArray,
         networkContributions = this.sequence.getStateContributions(this.lastStateIndex),
         useDropout = useDropout)
 
     } else {
-      this.sequence.getStateStructure(this.lastStateIndex).forward(
+      structure.forward(
         features = featuresArray,
         useDropout = useDropout)
     }

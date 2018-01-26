@@ -10,9 +10,11 @@ package com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.recurrent.RecurrentLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The RecurrentNetworkStructure.
@@ -26,14 +28,58 @@ class RecurrentNetworkStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
   params: NetworkParameters,
   val structureContextWindow: StructureContextWindow<InputNDArrayType>
 ) : LayerContextWindow,
-    NetworkStructure<InputNDArrayType>(layersConfiguration = layersConfiguration, params = params) {
+  NetworkStructure<InputNDArrayType>(layersConfiguration = layersConfiguration, params = params) {
+
+  /**
+   * A list of booleans indicating if the init hidden layers must be used in the next forward.
+   */
+  private var useInitHidden: List<Boolean> = this.layers.map { false }
+
+  /**
+   * The initial hidden layers from which to take the previous hidden if the method [setInitHidden] is called before a
+   * forward.
+   */
+  private val initHiddenLayers: List<LayerStructure<*>> = this.buildLayers()
+
+  /**
+   * Set the initial hidden arrays of each layer. They will be used as previous hidden in the next forward.
+   * Set [arrays] to null to don't use the initial hidden layers.
+   *
+   * @param arrays the list of initial hidden arrays (one per layer, can be null)
+   */
+  fun setInitHidden(arrays: List<DenseNDArray?>?) {
+    require(arrays == null || arrays.size == this.layers.size) {
+      "Incompatible init hidden arrays size (%d != %d).".format(arrays!!.size, this.layers.size)
+    }
+
+    if (arrays != null) {
+      this.initHiddenLayers.zip(arrays).forEach { (layer, array) ->
+        if (layer is RecurrentLayerStructure && array != null) layer.setInitHidden(array)
+      }
+    }
+
+    this.useInitHidden = arrays?.map { it != null } ?: this.layers.map { false }
+  }
+
+  /**
+   * Get the errors of the initial hidden arrays.
+   * This method should be used only if initial hidden arrays has been set with the [setInitHidden] method.
+   *
+   * @return the errors of the initial hidden arrays (null if no init hidden is used for a certain layer)
+   */
+  fun getInitHiddenErrors(): List<DenseNDArray?> =
+    this.useInitHidden.zip(this.initHiddenLayers).map { (useInitHidden, layer) ->
+      if (useInitHidden && layer is RecurrentLayerStructure) layer.getInitHiddenErrors() else null
+    }
 
   /**
    *
    */
-  override fun getPrevStateLayer(): LayerStructure<*>? {
+  override fun getPrevStateLayer(): LayerStructure<*>? = if (this.useInitHidden[this.curLayerIndex]) {
+    this.initHiddenLayers[this.curLayerIndex]
+  } else {
     val prevStateStructure = this.structureContextWindow.getPrevStateStructure()
-    return prevStateStructure?.layers?.get(this.curLayerIndex)
+    prevStateStructure?.layers?.get(this.curLayerIndex)
   }
 
   /**
