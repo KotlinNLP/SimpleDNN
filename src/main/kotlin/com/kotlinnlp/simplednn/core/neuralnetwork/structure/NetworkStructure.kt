@@ -23,7 +23,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
  */
 abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   val layersConfiguration: List<LayerConfiguration>,
-  val params: NetworkParameters) {
+  val params: NetworkParameters
+) {
 
   /**
    * Contains the layers of the neural network
@@ -53,24 +54,24 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The output of a layer is a reference of the input of the next layer.
    */
   init {
-    require(layersConfiguration.subList(1, layersConfiguration.lastIndex).all {
+    require(this.layersConfiguration.subList(1, this.layersConfiguration.lastIndex).all {
       it.inputType == LayerType.Input.Dense
     })
 
-    val initLayers = arrayOfNulls<LayerStructure<*>>(layersConfiguration.size - 1)
+    val initLayers = arrayOfNulls<LayerStructure<*>>(this.layersConfiguration.size - 1)
 
     initLayers[0] = this.layerFactory(
-      inputConfiguration = layersConfiguration[0],
-      outputConfiguration = layersConfiguration[1],
+      inputConfiguration = this.layersConfiguration[0],
+      outputConfiguration = this.layersConfiguration[1],
       params = this.params.paramsPerLayer[0]
     )
 
-    for (i in 1 until layersConfiguration.size - 1) {
+    for (i in 1 until this.layersConfiguration.size - 1) {
       initLayers[i] = this.layerFactory(
         inputArray = initLayers[i - 1]!!.outputArray,
-        outputConfiguration = layersConfiguration[i + 1],
+        outputConfiguration = this.layersConfiguration[i + 1],
         params = this.params.paramsPerLayer[i],
-        dropout = layersConfiguration[i].dropout
+        dropout = this.layersConfiguration[i].dropout
       )
     }
 
