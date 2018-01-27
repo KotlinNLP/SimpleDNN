@@ -116,5 +116,5 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun getInitHiddenErrors(): DenseNDArray =
     this.backwardHelper.getLayerRecurrentContribution(
-      nextStateLayer = this.layerContextWindow.getNextStateLayer() as LSTMLayerStructure<*>)
+      nextStateLayer = this.layerContextWindow.getNextStateLayer() as LSTMLayerStructure<*>).t
 }
