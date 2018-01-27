@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.birnn
 
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
+import com.kotlinnlp.simplednn.simplemath.concatVectorsV
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.utils.ItemsPool
@@ -54,6 +55,14 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     return BiRNNUtils.concatenate(leftToRightOut, rightToLeftOut)
   }
+
+  /**
+   * @return the concatenation of the final output arrays of the two RNNs (left-to-right + right-to-left)
+   */
+  fun getMixedFinalOutput(): DenseNDArray = concatVectorsV(
+    this.leftToRightProcessor.getOutput(copy = false),
+    this.rightToLeftProcessor.getOutput(copy = false)
+  )
 
   /**
    * Propagate the errors of the entire sequence.
