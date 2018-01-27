@@ -88,7 +88,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    */
   override fun getNextStateStructure(): RecurrentNetworkStructure<InputNDArrayType>? {
-    return if (this.curStateIndex in 0 until this.lastStateIndex)
+    return if (this.curStateIndex < this.lastStateIndex) // it works also for the init hidden structure
       this.sequence.getStateStructure(this.curStateIndex + 1)
     else
       null
