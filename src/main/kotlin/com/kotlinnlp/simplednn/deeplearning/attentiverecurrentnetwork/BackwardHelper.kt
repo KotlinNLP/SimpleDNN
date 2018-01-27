@@ -35,6 +35,11 @@ class BackwardHelper(private val network: AttentiveRecurrentNetwork) {
     private set
 
   /**
+   * The errors of the init hidden array. They can be get only if the forward has been called with an init hidden array.
+   */
+  val initHiddenErrors: DenseNDArray get() = this.network.recurrentContextProcessor.getInitHiddenErrors().first()!!
+
+  /**
    * The index of the current state (the backward processes the states in inverted order).
    */
   private var stateIndex: Int = 0
