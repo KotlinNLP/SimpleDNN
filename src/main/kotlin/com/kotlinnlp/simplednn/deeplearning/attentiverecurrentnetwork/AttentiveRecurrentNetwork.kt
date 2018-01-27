@@ -102,6 +102,11 @@ class AttentiveRecurrentNetwork(val model: AttentiveRecurrentNetworkModel) {
   private lateinit var inputSequence: List<DenseNDArray>
 
   /**
+   * The init hidden array.
+   */
+  private lateinit var initHidden: DenseNDArray
+
+  /**
    * The forward helper.
    */
   private val forwardHelper = ForwardHelper(network = this)
@@ -123,6 +128,15 @@ class AttentiveRecurrentNetwork(val model: AttentiveRecurrentNetworkModel) {
   }
 
   /**
+   * Set the init hidden array.
+   *
+   * @param array the init hidden array
+   */
+  fun setInitHidden(array: DenseNDArray) {
+    this.initHidden = array
+  }
+
+  /**
    * Forward.
    *
    * @param lastPredictionLabel the context label vector used to encode the memory of the last prediction
@@ -135,9 +149,10 @@ class AttentiveRecurrentNetwork(val model: AttentiveRecurrentNetworkModel) {
     this.trainingMode = trainingMode
 
     val output: DenseNDArray = this.forwardHelper.forward(
-      firstState = this.firstState,
       inputSequence = this.inputSequence,
-      lastPredictionLabel = lastPredictionLabel)
+      lastPredictionLabel = lastPredictionLabel,
+      firstState = this.firstState,
+      initHidden = this.initHidden)
 
     this.firstState = false
 
@@ -168,6 +183,14 @@ class AttentiveRecurrentNetwork(val model: AttentiveRecurrentNetworkModel) {
    * @return the errors of the sequence
    */
   fun getInputSequenceErrors(): List<DenseNDArray> = this.backwardHelper.inputSequenceErrors
+
+  /**
+   * Get the errors of the init hidden array.
+   * They can be get only if the forward has been called with an init hidden array.
+   *
+   * @return the errors of the init hidden array
+   */
+  fun getInitHiddenErrors(): DenseNDArray = this.backwardHelper.initHiddenErrors
 
   /**
    * @return the errors of the context label vectors (the first is always null)
