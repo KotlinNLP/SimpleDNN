@@ -39,10 +39,12 @@ class ForwardHelper(private val network: AttentiveRecurrentNetwork) {
    * @param lastPredictionLabel the context label vector used to encode the memory of the last prediction (can be null
    *                            if it is the first state)
    * @param firstState a boolean indicating if this is the first state
+   * @param initHidden the initial hidden array (null by default)
    */
   fun forward(inputSequence: List<DenseNDArray>,
               lastPredictionLabel: DenseNDArray?,
-              firstState: Boolean): DenseNDArray {
+              firstState: Boolean,
+              initHidden: DenseNDArray? = null): DenseNDArray {
 
     require(firstState || lastPredictionLabel != null) {
       "The last prediction label cannot be null for states after the first."
@@ -51,9 +53,9 @@ class ForwardHelper(private val network: AttentiveRecurrentNetwork) {
     if (firstState) this.resetHistory()
 
     val recurrentContext: DenseNDArray = if (firstState)
-      this.initRecurrentContext
+      initHidden ?: this.initRecurrentContext
     else
-      this.forwardRecurrentContext(lastPredictionLabel = lastPredictionLabel!!)
+      this.forwardRecurrentContext(lastPredictionLabel = lastPredictionLabel!!, initHidden = initHidden)
 
     val stateEncoding: DenseNDArray = this.encodeState(sequence = inputSequence, recurrentContext = recurrentContext)
 
@@ -79,13 +81,15 @@ class ForwardHelper(private val network: AttentiveRecurrentNetwork) {
 
   /***
    * @param lastPredictionLabel the context label vector used to encode the memory of the last prediction
+   * @param initHidden the initial hidden array (can be null)
    *
    * @return the recurrent context for the current state
    */
-  private fun forwardRecurrentContext(lastPredictionLabel: DenseNDArray): DenseNDArray {
+  private fun forwardRecurrentContext(lastPredictionLabel: DenseNDArray, initHidden: DenseNDArray?): DenseNDArray {
 
     val output: DenseNDArray = this.network.recurrentContextProcessor.forward(
       featuresArray = concatVectorsV(this.getLastStateEncoding(), lastPredictionLabel),
+      initHiddenArrays = if (this.firstRecurrentState) listOf(initHidden) else null,
       firstState = this.firstRecurrentState)
 
     this.firstRecurrentState = false
