@@ -112,6 +112,52 @@ class LSTMLayerStructureSpec : Spek({
             tolerance = 0.005))
         }
       }
+
+      on("with init hidden layer") {
+
+        val contextWindow = LSTMLayerContextWindow.BackHidden()
+        val layer = LSTMLayerStructureUtils.buildLayer(contextWindow)
+
+        contextWindow.setRefLayer(layer)
+        
+        layer.forward()
+
+        it("should match the expected input gate") {
+          assertEquals(true, layer.inputGate.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.72, 0.25, 0.55, 0.82, 0.53)),
+            tolerance = 0.005))
+        }
+
+        it("should match the expected output gate") {
+          assertEquals(true, layer.outputGate.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.91, 0.18, 0.05, 0.67, 0.39)),
+            tolerance = 0.005))
+        }
+
+        it("should match the expected forget gate") {
+          assertEquals(true, layer.forgetGate.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.91, 0.62, 0.84, 0.91, 0.62)),
+            tolerance = 0.005))
+        }
+
+        it("should match the expected candidate") {
+          assertEquals(true, layer.candidate.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.23, 0.33, -0.95, 0.99, -0.93)),
+            tolerance = 0.005))
+        }
+
+        it("should match the expected cell") {
+          assertEquals(true, layer.cell.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.16, 0.08, -0.48, 0.67, -0.46)),
+            tolerance = 0.005))
+        }
+
+        it("should match the expected outputArray") {
+          assertEquals(true, layer.outputArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.15, 0.01, -0.02, 0.45, -0.18)),
+            tolerance = 0.005))
+        }
+      }
     }
 
     context("backward") {
@@ -466,6 +512,42 @@ class LSTMLayerStructureSpec : Spek({
         it("should match the expected errors of the inputArray") {
           assertEquals(true, layer.inputArray.errors.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(0.106, -0.055, 0.002, 0.058)),
+            tolerance = 0.0005))
+        }
+      }
+
+      on("with init hidden") {
+
+        val contextWindow = LSTMLayerContextWindow.BackHidden()
+        val layer = LSTMLayerStructureUtils.buildLayer(contextWindow)
+        val paramsErrors = LSTMLayerParameters(inputSize = 4, outputSize = 5)
+
+        contextWindow.setRefLayer(layer)
+
+        layer.forward()
+
+        val errors = MSECalculator().calculateErrors(
+          output = layer.outputArray.values,
+          outputGold = LSTMLayerStructureUtils.getOutputGold())
+
+        layer.outputArray.assignErrors(errors)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+
+        it("should match the expected errors of the outputArray") {
+          assertEquals(true, layer.outputArray.errors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.718, -0.735, 0.127, -1.187, -0.629)),
+            tolerance = 0.0005))
+        }
+
+        it("should match the expected errors of the inputArray") {
+          assertEquals(true, layer.inputArray.errors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.002, -0.253, -0.036, 0.006)),
+            tolerance = 0.0005))
+        }
+
+        it("should match the expected errors of the init hidden array") {
+          assertEquals(true, contextWindow.getPrevStateLayer().getInitHiddenErrors().equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.020, -0.051, 0.017, -0.264, 0.449)),
             tolerance = 0.0005))
         }
       }
