@@ -102,9 +102,9 @@ class AttentiveRecurrentNetwork(val model: AttentiveRecurrentNetworkModel) {
   private lateinit var inputSequence: List<DenseNDArray>
 
   /**
-   * The init hidden array.
+   * The init hidden array (null by default).
    */
-  private lateinit var initHidden: DenseNDArray
+  private var initHidden: DenseNDArray? = null
 
   /**
    * The forward helper.
@@ -125,6 +125,7 @@ class AttentiveRecurrentNetwork(val model: AttentiveRecurrentNetworkModel) {
 
     this.firstState = true
     this.inputSequence = inputSequence
+    this.initHidden = null
   }
 
   /**
