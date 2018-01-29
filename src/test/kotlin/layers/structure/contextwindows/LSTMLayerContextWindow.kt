@@ -44,6 +44,16 @@ sealed class LSTMLayerContextWindow: LayerContextWindow {
   /**
    *
    */
+  class BackHidden: LSTMLayerContextWindow() {
+
+    override fun getPrevStateLayer(): LSTMLayerStructure<DenseNDArray> = buildInitHiddenLayer()
+
+    override fun getNextStateLayer() = null
+  }
+
+  /**
+   *
+   */
   class Front: LSTMLayerContextWindow() {
 
     override fun getPrevStateLayer() = null
@@ -81,6 +91,21 @@ private fun buildPrevStateLayer(): LSTMLayerStructure<DenseNDArray> {
   layer.cell.activate()
 
   return layer
+}
+
+/**
+ *
+ */
+private fun buildInitHiddenLayer(): LSTMLayerStructure<DenseNDArray> {
+
+  val outputArray = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
+
+  return LSTMLayerStructure(
+    inputArray = AugmentedArray(size = 4),
+    outputArray = outputArray,
+    params = LSTMLayerParameters(inputSize = 4, outputSize = 5),
+    activationFunction = Tanh(),
+    layerContextWindow = LSTMLayerContextWindow.Empty())
 }
 
 /**
