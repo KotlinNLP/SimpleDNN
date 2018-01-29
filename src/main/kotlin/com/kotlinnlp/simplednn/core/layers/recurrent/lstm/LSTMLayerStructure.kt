@@ -105,6 +105,7 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param array the initial hidden array
    */
   override fun setInitHidden(array: DenseNDArray) {
+    this.cell.values.zeros()
     this.outputArray.assignValues(array)
   }
 
