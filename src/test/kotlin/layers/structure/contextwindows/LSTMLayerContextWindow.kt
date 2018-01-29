@@ -46,7 +46,13 @@ sealed class LSTMLayerContextWindow: LayerContextWindow {
    */
   class BackHidden: LSTMLayerContextWindow() {
 
-    override fun getPrevStateLayer(): LSTMLayerStructure<DenseNDArray> = buildInitHiddenLayer()
+    private lateinit var initHidden: LSTMLayerStructure<DenseNDArray>
+
+    fun setRefLayer(refLayer: LSTMLayerStructure<DenseNDArray>) {
+      this.initHidden = buildInitHiddenLayer(refLayer)
+    }
+
+    override fun getPrevStateLayer(): LSTMLayerStructure<DenseNDArray> = this.initHidden
 
     override fun getNextStateLayer() = null
   }
@@ -54,11 +60,11 @@ sealed class LSTMLayerContextWindow: LayerContextWindow {
   /**
    *
    */
-  class Front: LSTMLayerContextWindow() {
+  class Front(private val refLayer: LSTMLayerStructure<DenseNDArray>? = null): LSTMLayerContextWindow() {
 
     override fun getPrevStateLayer() = null
 
-    override fun getNextStateLayer(): LSTMLayerStructure<DenseNDArray> = buildNextStateLayer()
+    override fun getNextStateLayer(): LSTMLayerStructure<DenseNDArray> = this.refLayer ?: buildNextStateLayer()
   }
 
   /**
@@ -96,16 +102,16 @@ private fun buildPrevStateLayer(): LSTMLayerStructure<DenseNDArray> {
 /**
  *
  */
-private fun buildInitHiddenLayer(): LSTMLayerStructure<DenseNDArray> {
+private fun buildInitHiddenLayer(refLayer: LSTMLayerStructure<DenseNDArray>): LSTMLayerStructure<DenseNDArray> {
 
   val outputArray = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
 
   return LSTMLayerStructure(
     inputArray = AugmentedArray(size = 4),
     outputArray = outputArray,
-    params = LSTMLayerParameters(inputSize = 4, outputSize = 5),
+    params = refLayer.params,
     activationFunction = Tanh(),
-    layerContextWindow = LSTMLayerContextWindow.Empty())
+    layerContextWindow = LSTMLayerContextWindow.Front(refLayer))
 }
 
 /**
