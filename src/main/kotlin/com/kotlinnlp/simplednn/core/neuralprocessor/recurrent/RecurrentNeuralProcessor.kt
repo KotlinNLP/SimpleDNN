@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.recurrent.GatedRecurrentLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.RecurrentLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
@@ -56,6 +57,12 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private val statesSize: Int
     get() = this.lastStateIndex + 1
+
+  /**
+   * The helper which calculates the importance scores of all the previous states of a given one, in a RAN neural
+   * network.
+   */
+  private val ranImportanceHelper = RANImportanceHelper()
 
   /**
    * The errors of the network model parameters calculated during a single backward
@@ -272,6 +279,28 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     }
 
     return this.getInputRelevance(stateIndex = stateFrom, copy = copy)
+  }
+
+  /**
+   * Get the importance scores of the previous states respect of a given state.
+   *
+   * This method should be called only after a forward call.
+   *
+   * It is required that the network structures contain only a RAN layer.
+   *
+   * @param stateIndex the index of a state
+   *
+   * @return the array containing the importance scores of the previous states
+   */
+  fun getRANImportanceScores(stateIndex: Int): DenseNDArray {
+
+    require(stateIndex > 0) { "Cannot get the importance score of the first state." }
+    require(this.neuralNetwork.layersConfiguration.count { it.connectionType == LayerType.Connection.RAN } == 1) {
+      "It is required that only one layer must be a RAN layer to get the RAN importance score."
+    }
+
+    return this.ranImportanceHelper.getImportanceScores(
+      states = (0 .. stateIndex).map { this.sequence.getStateStructure(it) })
   }
 
   /**
