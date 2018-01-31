@@ -283,9 +283,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
   /**
    * Get the importance scores of the previous states respect of a given state.
-   *
-   * This method should be called only after a forward call.
-   *
+   * This method should be called only after a [forward] call.
    * It is required that the network structures contain only a RAN layer.
    *
    * @param stateIndex the index of a state
