@@ -737,6 +737,11 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   * @return the maximum value of this NDArray
+   **/
+  fun max(): Double = this.storage.max()
+
+  /**
    * @return the index of the maximum value (-1 if empty)
    **/
   override fun argMaxIndex(): Int {

@@ -851,6 +851,11 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
+   * @return the maximum value of this NDArray
+   **/
+  fun max(): Double = this.values.max()!!
+
+  /**
    * @return the index of the maximum value (-1 if empty)
    */
   override fun argMaxIndex(): Int {
