@@ -277,5 +277,32 @@ class SparseNDArraySpec : Spek({
         }
       }
     }
+
+    context("other math methods") {
+
+      val array = SparseNDArrayFactory.arrayOf(
+        activeIndicesValues = arrayOf(
+          Pair(Pair(0, 1), 0.1),
+          Pair(Pair(1, 0), 0.5),
+          Pair(Pair(1, 2), 0.1),
+          Pair(Pair(2, 2), 0.2),
+          Pair(Pair(3, 1), 0.3)
+        ),
+        shape = Shape(4, 3))
+
+      on("sum() method") {
+
+        it("should give the expected sum of its elements") {
+          assertEquals(1.2, array.sum())
+        }
+      }
+
+      on("max() method") {
+
+        it("should have the expected max value") {
+          assertEquals(0.5, array.max())
+        }
+      }
+    }
   }
 })
