@@ -310,13 +310,6 @@ class DenseNDArraySpec : Spek({
       val a = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.3, 0.5, 0.7))
       val n = 0.9
 
-      on("sum() method") {
-
-        it("should give the expected sum of its elements") {
-          assertEquals(true, equals(0.6, array.sum(), tolerance = 0.005))
-        }
-      }
-
       on("sum(number) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 1.1, 1.2, 0.9))
@@ -550,27 +543,6 @@ class DenseNDArraySpec : Spek({
 
         it("should return the expected values") {
           assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
-        }
-      }
-
-      on("norm2() method") {
-
-        it("should return the expected euclidean norm") {
-          assertEquals(true, equals(0.37417, array.norm2(), tolerance = 1.0e-05))
-        }
-      }
-
-      on("argMaxIndex() method") {
-
-        it("should have the expected argmax index") {
-          assertEquals(2, array.argMaxIndex())
-        }
-      }
-
-      on("max() method") {
-
-        it("should have the expected max value") {
-          assertEquals(0.3, array.max())
         }
       }
     }
@@ -942,6 +914,39 @@ class DenseNDArraySpec : Spek({
 
         it("should return the expected values") {
           assertEquals(true, res.equals(a))
+        }
+      }
+    }
+
+    context("other math methods") {
+
+      val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
+
+      on("sum() method") {
+
+        it("should give the expected sum of its elements") {
+          assertEquals(0.6, array.sum())
+        }
+      }
+
+      on("norm2() method") {
+
+        it("should return the expected euclidean norm") {
+          assertEquals(true, equals(0.37417, array.norm2(), tolerance = 1.0e-05))
+        }
+      }
+
+      on("argMaxIndex() method") {
+
+        it("should have the expected argmax index") {
+          assertEquals(2, array.argMaxIndex())
+        }
+      }
+
+      on("max() method") {
+
+        it("should have the expected max value") {
+          assertEquals(0.3, array.max())
         }
       }
     }
