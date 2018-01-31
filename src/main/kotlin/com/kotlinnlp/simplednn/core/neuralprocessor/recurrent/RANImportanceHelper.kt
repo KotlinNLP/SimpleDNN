@@ -25,11 +25,6 @@ class RANImportanceHelper {
   private lateinit var prevStates: List<NetworkStructure<*>>
 
   /**
-   * The input gate of the last state.
-   */
-  private lateinit var lastStateInputGate: DenseNDArray
-
-  /**
    * The incremental product of the forget gates of the states, in reversed order.
    */
   private lateinit var incrementalForgetProd: DenseNDArray
@@ -55,9 +50,11 @@ class RANImportanceHelper {
 
     (0 until this.prevStates.size).reversed().forEach { i ->
 
-      scores[i] = this.lastStateInputGate.prod(this.incrementalForgetProd).max()
+      val layer: RANLayerStructure<*> = this.getRANLayer(i)
 
-      if (i > 0) this.incrementalForgetProd.assignProd(this.getRANLayer(i).forgetGate.values)
+      scores[i] = layer.inputGate.values.prod(this.incrementalForgetProd).max()
+
+      if (i > 0) this.incrementalForgetProd.assignProd(layer.forgetGate.values)
     }
 
     return scores
@@ -74,7 +71,6 @@ class RANImportanceHelper {
     this.ranLayerIndex = lastStateLayers.indexOfFirst { it is RANLayerStructure }
 
     val lastStateLayer: RANLayerStructure<*> = lastStateLayers[this.ranLayerIndex] as RANLayerStructure
-    this.lastStateInputGate = lastStateLayer.inputGate.values
     this.incrementalForgetProd = lastStateLayer.forgetGate.values.copy()
   }
 
