@@ -42,6 +42,11 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   private val rightToLeftProcessor = RecurrentNeuralProcessor<InputNDArrayType>(this.network.rightToLeftNetwork)
 
   /**
+   * The input sequence.
+   */
+  private lateinit var sequence: Array<InputNDArrayType>
+
+  /**
    * Encode the [sequence].
    *
    * @param sequence the sequence to encode
@@ -51,9 +56,34 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   fun encode(sequence: Array<InputNDArrayType>, useDropout: Boolean = false): Array<DenseNDArray> {
 
-    val (leftToRightOut, rightToLeftOut) = this.biEncoding(sequence = sequence, useDropout = useDropout)
+    this.sequence = sequence
+
+    val (leftToRightOut, rightToLeftOut) = this.biEncoding(useDropout = useDropout)
 
     return BiRNNUtils.concatenate(leftToRightOut, rightToLeftOut)
+  }
+
+  /**
+   * Get the importance scores of the previous states (split by left and right) for each element of the last encoded
+   * sequence.
+   * This method should be called only after an [encode] call.
+   * It is required that the networks structures contain only a RAN layer.
+   *
+   * @return the list of importance scores pairs (left, right) of the input elements
+   */
+  fun getImportanceScores(): List<Pair<DenseNDArray?, DenseNDArray?>> {
+
+    val statesSize: Int = this.sequence.size
+
+    return (0 until statesSize).map { stateIndex ->
+      val leftStateIndex: Int = stateIndex
+      val rightStateIndex: Int = statesSize - stateIndex - 1
+
+      Pair(
+        if (leftStateIndex > 0) this.leftToRightProcessor.getRANImportanceScores(leftStateIndex) else null,
+        if (rightStateIndex > 0) this.rightToLeftProcessor.getRANImportanceScores(rightStateIndex) else null
+      )
+    }
   }
 
   /**
@@ -111,26 +141,25 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * Given a [sequence] return the encoded left-to-right and right-to-left representation.
    *
-   * @param sequence the sequence to encode
    * @param useDropout whether to apply the dropout
    *
    * @return a Pair with two arrays containing the outputs of the two RNNs
    */
-  private fun biEncoding(sequence: Array<InputNDArrayType>, useDropout: Boolean):
+  private fun biEncoding(useDropout: Boolean):
     Pair<Array<DenseNDArray>, Array<DenseNDArray>> {
 
-    val leftToRightOut = arrayOfNulls<DenseNDArray>(sequence.size)
-    val rightToLeftOut = arrayOfNulls<DenseNDArray>(sequence.size)
+    val leftToRightOut = arrayOfNulls<DenseNDArray>(this.sequence.size)
+    val rightToLeftOut = arrayOfNulls<DenseNDArray>(this.sequence.size)
 
     var isFirstElement = true
 
-    sequence.indices.zip(sequence.indices.reversed()).forEach { (i, r) ->
+    this.sequence.indices.zip(this.sequence.indices.reversed()).forEach { (i, r) ->
       leftToRightOut[i] = this.leftToRightProcessor.forward(
-        featuresArray = sequence[i],
+        featuresArray = this.sequence[i],
         firstState = isFirstElement,
         useDropout = useDropout)
       rightToLeftOut[r] = this.rightToLeftProcessor.forward(
-        featuresArray = sequence[r],
+        featuresArray = this.sequence[r],
         firstState = isFirstElement,
         useDropout = useDropout)
 
