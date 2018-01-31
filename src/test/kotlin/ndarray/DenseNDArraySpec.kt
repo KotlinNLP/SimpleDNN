@@ -566,6 +566,13 @@ class DenseNDArraySpec : Spek({
           assertEquals(2, array.argMaxIndex())
         }
       }
+
+      on("max() method") {
+
+        it("should have the expected max value") {
+          assertEquals(0.3, array.max())
+        }
+      }
     }
 
     context("math methods in-place") {
