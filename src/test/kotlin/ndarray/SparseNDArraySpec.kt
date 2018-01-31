@@ -7,6 +7,7 @@
 
 package ndarray
 
+import com.kotlinnlp.simplednn.simplemath.equals
 import com.kotlinnlp.simplednn.simplemath.ndarray.Indices
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
@@ -293,7 +294,7 @@ class SparseNDArraySpec : Spek({
       on("sum() method") {
 
         it("should give the expected sum of its elements") {
-          assertEquals(1.2, array.sum())
+          assertEquals(true, equals(1.2, array.sum(), tolerance = 1.0e-10))
         }
       }
 

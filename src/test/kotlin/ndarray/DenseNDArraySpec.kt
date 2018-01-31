@@ -925,7 +925,7 @@ class DenseNDArraySpec : Spek({
       on("sum() method") {
 
         it("should give the expected sum of its elements") {
-          assertEquals(0.6, array.sum())
+          assertEquals(true, equals(0.6, array.sum(), tolerance = 1.0e-10))
         }
       }
 
