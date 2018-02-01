@@ -36,6 +36,8 @@ class RANImportanceHelper {
 
   /**
    * Get the importance scores of the previous states respect of the last of a given sequence.
+   * The scores values are in the range [0.0, 1.0].
+   *
    * It is required that the network structures contain only a RAN layer.
    *
    * @param states the list of states seen by a recurrent neural processor
