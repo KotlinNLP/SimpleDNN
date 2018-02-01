@@ -68,7 +68,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * encoded sequence.
    * The scores values are in the range [0.0, 1.0].
    *
-   * Each the left and the right scores are given following the linear order of the input sequence.
+   * Both the left and the right scores are given following the linear order of the input sequence.
    * E.g.: for an input sequence of 8 elements, the importance scores of the 4th element are related to the following
    * elements:
    * left -> [elm-1, elm-2, elm-3]
