@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.utils.ItemsPool
 
 /**
  * A pool of [AttentionNetwork]s which allows to allocate and release one when needed, without creating a new one.
- * It is useful to optimize the creation of new structures every time a new encoder is created.
+ * It is useful to optimize the creation of new structures every time a new network is created.
  *
  * @property model the model of the [AttentionNetwork]s of the pool
  * @property inputType the type of the input arrays
@@ -36,6 +36,7 @@ class AttentionNetworksPool<InputNDArrayType : NDArray<InputNDArrayType>>(
   override fun itemFactory(id: Int) = AttentionNetwork<InputNDArrayType>(
     model = this.model,
     inputType = this.inputType,
-    dropout = this.dropout, id = id
+    dropout = this.dropout,
+    id = id
   )
 }
