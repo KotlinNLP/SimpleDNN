@@ -11,16 +11,19 @@ import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.utils.ItemsPool
 
 /**
  * A multi-task network is composed by single input feed-forward layer shared by more networks, each with a own output
  * feed-forward layer.
  *
  * @property model the model of this network
+ * @property id an identification number useful to track a specific [MultiTaskNetwork]
  */
 class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
-  val model: MultiTaskNetworkModel
-) {
+  val model: MultiTaskNetworkModel,
+  override val id: Int = 0
+) : ItemsPool.IDItem {
 
   /**
    * The neural processor of the input network.
