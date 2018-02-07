@@ -60,18 +60,18 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     val gy: DenseNDArray = this.layer.outputArray.errors
 
-    val resetGate = this.layer.resetGate
-    val partitionGate = this.layer.partitionGate
-    val candidate = this.layer.candidate
+    val p: DenseNDArray = this.layer.partitionGate.values
+    val c: DenseNDArray = this.layer.candidate.values
 
-    val p: DenseNDArray = partitionGate.values
-    val c: DenseNDArray = candidate.values
+    val rDeriv: DenseNDArray = this.layer.resetGate.calculateActivationDeriv()
+    val pDeriv: DenseNDArray = this.layer.partitionGate.calculateActivationDeriv()
 
-    val rDeriv: DenseNDArray = resetGate.calculateActivationDeriv()
-    val pDeriv: DenseNDArray = partitionGate.calculateActivationDeriv()
-    val cDeriv: DenseNDArray = candidate.calculateActivationDeriv()
+    this.layer.candidate.assignErrorsByProd(p, gy) // gc must be calculated before gr and gp
 
-    this.layer.candidate.assignErrorsByProd(p, cDeriv).assignProd(gy)  // gc must be calculated before gr and gp
+    if (this.layer.candidate.hasActivation) {
+      val cDeriv: DenseNDArray = this.layer.candidate.calculateActivationDeriv()
+      this.layer.candidate.errors.assignProd(cDeriv)
+    }
 
     if (prevStateOutput == null) {
       this.layer.resetGate.assignZeroErrors()

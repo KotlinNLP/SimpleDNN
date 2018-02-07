@@ -95,11 +95,15 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     val inGDeriv: DenseNDArray = this.layer.inputGate.calculateActivationDeriv()
     val outGDeriv: DenseNDArray = this.layer.outputGate.calculateActivationDeriv()
-    val candDeriv: DenseNDArray = this.layer.candidate.calculateActivationDeriv()
-    val cellDeriv: DenseNDArray = this.layer.cell.calculateActivationDeriv()
 
     // WARNING: gCell must be calculated before others
-    val gCell: DenseNDArray = this.layer.cell.assignErrorsByProd(outG, cellDeriv).assignProd(gy)
+    val gCell: DenseNDArray = this.layer.cell.assignErrorsByProd(outG, gy)
+
+    if (this.layer.cell.hasActivation) {
+      val cellDeriv: DenseNDArray = this.layer.cell.calculateActivationDeriv()
+      this.layer.cell.errors.assignProd(cellDeriv)
+    }
+
     if (nextStateLayer != null) { // add recurrent contribution
       gCell.assignSum(this.getCellRecurrentContribution(nextStateLayer))
     }
@@ -116,7 +120,12 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       this.layer.forgetGate.assignZeroErrors()
     }
 
-    this.layer.candidate.assignErrorsByProd(gCell, inG).assignProd(candDeriv)
+    this.layer.candidate.assignErrorsByProd(gCell, inG)
+
+    if (this.layer.candidate.hasActivation) {
+      val candDeriv: DenseNDArray = this.layer.candidate.calculateActivationDeriv()
+      this.layer.candidate.errors.assignProd(candDeriv)
+    }
   }
 
   /**

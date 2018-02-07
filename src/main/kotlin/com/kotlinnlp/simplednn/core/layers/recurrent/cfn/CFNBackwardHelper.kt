@@ -70,10 +70,14 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val c: DenseNDArray = candidate.values
 
     val inGDeriv: DenseNDArray = inputGate.calculateActivationDeriv()
-    val cDeriv: DenseNDArray = candidate.calculateActivationDeriv()
 
-     this.layer.inputGate.assignErrorsByProd(c, inGDeriv).assignProd(gy)
-    this.layer.candidate.assignErrorsByProd(ingG, cDeriv).assignProd(gy)
+    this.layer.inputGate.assignErrorsByProd(c, inGDeriv).assignProd(gy)
+    this.layer.candidate.assignErrorsByProd(ingG, gy)
+
+    if (this.layer.candidate.hasActivation) {
+      val cDeriv: DenseNDArray = candidate.calculateActivationDeriv()
+      this.layer.candidate.errors.assignProd(cDeriv)
+    }
 
     if (prevStateLayer != null) {
       val aPrev: DenseNDArray = this.layer.activatedPrevOutput!!
