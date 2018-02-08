@@ -21,28 +21,28 @@ import java.io.Serializable
 /**
  * The model of the [MultiTaskNetwork].
  *
- * @param inputSize the size of the input layer
- * @param inputType the type of the input array (default Dense)
- * @param inputDropout the probability of dropout of the input layer (default 0.0).
+ * @property inputSize the size of the input layer
+ * @property inputType the type of the input array (default Dense)
+ * @property inputDropout the probability of dropout of the input layer (default 0.0).
  *                        If applying it, the usual value is 0.25.
- * @param hiddenSize the size of the hidden layer
- * @param hiddenActivation the activation function of the hidden layer
- * @param hiddenDropout the probability of dropout of the hidden layer (default 0.0).
+ * @property hiddenSize the size of the hidden layer
+ * @property hiddenActivation the activation function of the hidden layer
+ * @property hiddenDropout the probability of dropout of the hidden layer (default 0.0).
  *                         If applying it, the usual value is 0.5.
- * @param hiddenMeProp whether to use the 'meProp' errors propagation algorithm for the hidden layer (default false)
- * @param outputConfigurations a list of configurations of the output networks
+ * @property hiddenMeProp whether to use the 'meProp' errors propagation algorithm for the hidden layer (default false)
+ * @property outputConfigurations a list of configurations of the output networks
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
 class MultiTaskNetworkModel(
-  inputSize: Int,
-  inputType: LayerType.Input = LayerType.Input.Dense,
-  inputDropout: Double = 0.0,
-  hiddenSize: Int,
-  hiddenActivation: ActivationFunction?,
-  hiddenDropout: Double = 0.0,
-  hiddenMeProp: Boolean = false,
-  outputConfigurations: List<MultiTaskNetworkConfig>,
+  val inputSize: Int,
+  val inputType: LayerType.Input = LayerType.Input.Dense,
+  val inputDropout: Double = 0.0,
+  val hiddenSize: Int,
+  val hiddenActivation: ActivationFunction?,
+  val hiddenDropout: Double = 0.0,
+  val hiddenMeProp: Boolean = false,
+  val outputConfigurations: List<MultiTaskNetworkConfig>,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
 ) : Serializable {
@@ -70,14 +70,14 @@ class MultiTaskNetworkModel(
    */
   val inputNetwork = NeuralNetwork(
     LayerConfiguration(
-      size = inputSize,
-      inputType = inputType,
-      dropout = inputDropout),
+      size = this.inputSize,
+      inputType = this.inputType,
+      dropout = this.inputDropout),
     LayerConfiguration(
-      size = hiddenSize,
+      size = this.hiddenSize,
       connectionType = LayerType.Connection.Feedforward,
-      activationFunction = hiddenActivation,
-      meProp = hiddenMeProp),
+      activationFunction = this.hiddenActivation,
+      meProp = this.hiddenMeProp),
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer
   )
@@ -85,12 +85,12 @@ class MultiTaskNetworkModel(
   /**
    * The list of output networks (each composed by a single layer).
    */
-  val outputNetworks: List<NeuralNetwork> = outputConfigurations.map {
+  val outputNetworks: List<NeuralNetwork> = this.outputConfigurations.map {
     NeuralNetwork(
       LayerConfiguration(
-        size = hiddenSize,
+        size = this.hiddenSize,
         inputType = LayerType.Input.Dense,
-        dropout = hiddenDropout),
+        dropout = this.hiddenDropout),
       LayerConfiguration(
         size = it.outputSize,
         connectionType = LayerType.Connection.Feedforward,
