@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.multitasknetwork
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
+import java.io.Serializable
 
 /**
  * The configuration of an output network of a [MultiTaskNetwork].
@@ -20,4 +21,14 @@ class MultiTaskNetworkConfig(
   val outputSize: Int,
   val outputActivation: ActivationFunction?,
   val outputMeProp: Boolean = false
-)
+) : Serializable {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed by Serializable).
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
+}
