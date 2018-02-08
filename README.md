@@ -83,7 +83,7 @@ training process.
 <dependency>
     <groupId>com.kotlinnlp</groupId>
     <artifactId>simplednn</artifactId>
-    <version>0.5.2</version>
+    <version>0.5.3</version>
 </dependency>
 ```
 
