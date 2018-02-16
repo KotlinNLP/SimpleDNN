@@ -46,9 +46,10 @@ class AttentionLayerBackwardHelper(private val layer: AttentionLayerStructure<*>
 
     paramsErrors.contextVector.values.assignValues(acErrors.t.dot(this.layer.attentionMatrix.values).t)
 
+    this.setAttentionErrors(attentionContextErrors = acErrors)
+
     if (propagateToInput) {
       this.setInputErrors()
-      this.setAttentionErrors(attentionContextErrors = acErrors)
     }
   }
 
