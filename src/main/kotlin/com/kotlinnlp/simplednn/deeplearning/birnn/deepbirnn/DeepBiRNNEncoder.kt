@@ -84,7 +84,7 @@ class DeepBiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val network:
    *
    * @return the errors of the DeepBiRNN parameters
    */
-  fun getParamsErrors(copy: Boolean = true) = DeepBiRNNParameters(Array(size = this.encoders.size, init = {
-      this.encoders[it].getParamsErrors(copy = copy)
-  }))
+  fun getParamsErrors(copy: Boolean = true) = DeepBiRNNParameters(
+    paramsPerBiRNN = this.encoders.map { it.getParamsErrors(copy = copy) }
+  )
 }
