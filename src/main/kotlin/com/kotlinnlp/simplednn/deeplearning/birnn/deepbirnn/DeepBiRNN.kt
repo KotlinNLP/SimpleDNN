@@ -71,6 +71,11 @@ class DeepBiRNN(
   val layers: List<BiRNN> = this.buildBiRNNLayers()
 
   /**
+   * The model parameters.
+   */
+  val model = DeepBiRNNParameters(paramsPerBiRNN = this.layers.map { it.model })
+
+  /**
    * The size of the output layer (of the last BiRNN)
    */
   val outputSize: Int = this.layers.last().outputSize
