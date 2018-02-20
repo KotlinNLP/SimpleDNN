@@ -7,11 +7,37 @@
 
 package com.kotlinnlp.simplednn.deeplearning.birnn.deepbirnn
 
+
+import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
 
 /**
  * The DeepBiRNNParameters contains the parameters of all its stacked BiRNN.
  *
- * @property paramsPerBiRNN array of [BiRNNParameters]
+ * @property paramsPerBiRNN an array of [BiRNNParameters]
  */
-class DeepBiRNNParameters(val paramsPerBiRNN: Array<BiRNNParameters>)
+class DeepBiRNNParameters(val paramsPerBiRNN: List<BiRNNParameters>) : IterableParams<DeepBiRNNParameters>() {
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed by Serializable).
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
+
+  /**
+   * The list of all parameters.
+   */
+  override val paramsList: Array<UpdatableArray<*>> =
+    this.paramsPerBiRNN
+      .fold(mutableListOf<UpdatableArray<*>>()) { list, biRNNParams -> list.addAll(biRNNParams.paramsList); list }
+      .toTypedArray()
+
+  /**
+   * @return a new [BiRNNParameters] containing a copy of all values of this
+   */
+  override fun copy() = DeepBiRNNParameters(paramsPerBiRNN = this.paramsPerBiRNN.map { it.copy() })
+}
