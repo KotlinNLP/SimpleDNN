@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.deeplearning.multiview
 
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.deeplearning.multitasknetwork.MultiTaskNetwork
+import com.kotlinnlp.simplednn.deeplearning.multitasknetwork.MultiTaskNetworkModel
 import com.kotlinnlp.simplednn.deeplearning.multitasknetwork.MultiTaskNetworkParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -21,9 +22,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * The intuition behind the model is that a shared representation can be extracted from a single view, and can be used
  * to reconstruct all the other views.
  *
- * @param network the multi-task network used as multi-view auto-encoder
+ * @param model the model of this network
  */
-class MultimodalAutoencoder(val network: MultiTaskNetwork<DenseNDArray>) {
+class MultimodalAutoencoder(model: MultiTaskNetworkModel) {
 
   /**
    * The Prediction.
@@ -34,6 +35,11 @@ class MultimodalAutoencoder(val network: MultiTaskNetwork<DenseNDArray>) {
   data class Prediction(
     val reconstructedViews: List<DenseNDArray>,
     val sharedRepresentation: DenseNDArray)
+
+  /**
+   * The multi-task network used as multi-view auto-encoder
+   */
+  private val network = MultiTaskNetwork<DenseNDArray>(model)
 
   /**
    * The loss calculator used to calculate the distance between the original and the reconstructed views.
