@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.embeddings
 
 import com.kotlinnlp.simplednn.utils.DictionarySet
+import java.io.File
 
 /**
  * An [EmbeddingsMap] that get embeddings eventually with a probability of dropout related to their elements frequency
@@ -72,4 +73,29 @@ class EmbeddingsMapByDictionary(
       dropoutCoefficient / (this.dictionary.getCount(id) + dropoutCoefficient)
     else
       0.0
+
+  /**
+   * Export the embeddings map writing its entries to a file with the given [filename].
+   *
+   * The file will contain one header line and N following data lines:
+   *   - The header line contains the number N of data lines and the size S of the vectors (the same for all),
+   *     separated by a space.
+   *   - Each data line contains the key, followed by S double numbers, each separated by a space.
+   *
+   * @param filename the output filename
+   * @param digits precision specifier
+   */
+  fun dump(filename: String, digits: Int) {
+
+    File(filename).printWriter().use { out ->
+
+      out.println("%d %d".format(this.count, this.size))
+
+      this.dictionary.getElements().forEach {
+        out.print(it)
+        out.println(this.get(it).toString(digits = digits))
+        out.flush()
+      }
+    }
+  }
 }
