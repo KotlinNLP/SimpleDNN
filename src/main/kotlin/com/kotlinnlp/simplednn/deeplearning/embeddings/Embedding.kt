@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.embeddings
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.simplemath.format
 import java.io.Serializable
 
 /**
@@ -25,5 +26,21 @@ data class Embedding(val id: Int, val array: UpdatableDenseArray) : Serializable
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
+  }
+
+  /**
+   * @param digits precision specifier
+   *
+   * @return a string representation of the [array], concatenating the elements with the space character.
+   */
+  fun toString(digits: Int): String {
+
+    val sb = StringBuilder()
+
+    (0 until this.array.values.length).forEach {
+      sb.append(" ").append(this.array.values[it].format(digits))
+    }
+
+    return sb.toString()
   }
 }
