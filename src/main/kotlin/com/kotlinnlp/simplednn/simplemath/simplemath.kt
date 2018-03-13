@@ -59,3 +59,10 @@ fun concatVectorsV(vararg vectors: DenseNDArray): DenseNDArray {
 
   return array
 }
+
+/**
+ * Return the number in a formatted string with the specified number of digits.
+ *
+ * @param digits precision specifier
+ */
+fun Double.format(digits: Int) = java.lang.String.format("%.${digits}f", this)!!
