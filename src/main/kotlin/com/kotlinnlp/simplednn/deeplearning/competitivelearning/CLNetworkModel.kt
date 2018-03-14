@@ -20,6 +20,13 @@ import java.io.Serializable
 
 /**
  * The model of a [CLNetwork].
+ *
+ * @property classes the set of possible classes
+ * @property inputSize the size of the input layer
+ * @property hiddenSize the size of the hidden layer
+ * @property hiddenActivation the activation function of the hidden layer
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
 class CLNetworkModel(
   val classes: Set<String>,
