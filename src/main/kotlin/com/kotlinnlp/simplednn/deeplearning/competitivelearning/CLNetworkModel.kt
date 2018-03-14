@@ -23,7 +23,6 @@ import java.io.Serializable
  */
 class CLNetworkModel(
   val classes: Set<String>,
-  val inputType: LayerType.Input,
   val inputSize: Int,
   val hiddenSize: Int,
   val hiddenActivation: ActivationFunction?,
@@ -38,7 +37,7 @@ class CLNetworkModel(
 
     LayerConfiguration(
       size = this.inputSize,
-      inputType = this.inputType),
+      inputType = LayerType.Input.Dense),
 
     LayerConfiguration(
       size = this.hiddenSize,
