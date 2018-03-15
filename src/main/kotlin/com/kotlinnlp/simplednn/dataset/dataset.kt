@@ -57,7 +57,7 @@ data class SequenceExample<FeaturesNDArrayType: NDArray<FeaturesNDArrayType>>(
  * @param features features
  * @param goldOutcomeIndex goldOutcomeIndex
  */
-data class ExampleBinaryOutputSequenceExample<FeaturesNDArrayType: NDArray<FeaturesNDArrayType>>(
+data class BinaryOutputExample<FeaturesNDArrayType: NDArray<FeaturesNDArrayType>>(
   val features: FeaturesNDArrayType,
   val goldOutcomeIndex: Int
 ): Example
