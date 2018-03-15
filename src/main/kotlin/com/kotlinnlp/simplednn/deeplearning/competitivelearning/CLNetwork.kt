@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.competitivelearning
 
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
+import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.similarity
@@ -96,18 +97,24 @@ class CLNetwork(val model: CLNetworkModel) {
   }
 
   /**
+   * Return the errors of the input calculated during the last backward
+   *
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
-   * @return the errors of the input
+   * @return a pair of classId and input errors
    */
-  fun getInputErrors(copy: Boolean = true): DenseNDArray = this.lastBackwardProcessor.getInputErrors(copy = copy)
+  fun getInputErrors(copy: Boolean = true): Pair<Int, DenseNDArray> = Pair(
+    this.lastBackwardProcessor.id,
+    this.lastBackwardProcessor.getInputErrors(copy = copy))
 
   /**
+   * Return the errors of the neural parameters calculated during the last backward
+   *
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
-   * @return the errors of the neural parameters
+   * @return a pair of classId and parameters errors
    */
-  fun getParamsErrors(copy: Boolean) = CLNetworkParameters(
-    networksParams = this.processors.map { it.value.getParamsErrors(copy = copy) }
-  )
+  fun getParamsErrors(copy: Boolean): Pair<Int, NetworkParameters> = Pair(
+    this.lastBackwardProcessor.id,
+    this.lastBackwardProcessor.getParamsErrors(copy = copy))
 }
