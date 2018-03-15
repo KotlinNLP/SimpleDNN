@@ -41,9 +41,9 @@ class CLNetwork(val model: CLNetworkModel) {
   private val lossCalculator = MSECalculator()
 
   /**
-   * The processor used during the last learning.
+   * The processor for which a backward was called the last time.
    */
-  private lateinit var lastUsedProcessor: FeedforwardNeuralProcessor<DenseNDArray>
+  private lateinit var lastBackwardProcessor: FeedforwardNeuralProcessor<DenseNDArray>
 
   /**
    * Predict.
@@ -75,17 +75,17 @@ class CLNetwork(val model: CLNetworkModel) {
    */
   fun learn(inputArray: DenseNDArray, className: String): Double {
 
-    this.lastUsedProcessor = checkNotNull(this.processors[className]) {
+    this.lastBackwardProcessor = checkNotNull(this.processors[className]) {
       "Unknown class: $className"
     }
 
-    val reconstructedArray: DenseNDArray = this.lastUsedProcessor.forward(inputArray)
+    val reconstructedArray: DenseNDArray = this.lastBackwardProcessor.forward(inputArray)
 
     val errors: DenseNDArray = this.lossCalculator.calculateErrors(
       output = reconstructedArray,
       outputGold = inputArray)
 
-    this.lastUsedProcessor.backward(errors)
+    this.lastBackwardProcessor.backward(errors)
 
     return this.lossCalculator.calculateLoss(
       output = reconstructedArray,
@@ -97,7 +97,7 @@ class CLNetwork(val model: CLNetworkModel) {
    *
    * @return the errors of the input
    */
-  fun getInputErrors(copy: Boolean = true): DenseNDArray = this.lastUsedProcessor.getInputErrors(copy = copy)
+  fun getInputErrors(copy: Boolean = true): DenseNDArray = this.lastBackwardProcessor.getInputErrors(copy = copy)
 
   /**
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
