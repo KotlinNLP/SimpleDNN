@@ -29,7 +29,7 @@ import java.io.Serializable
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
 class CLNetworkModel(
-  val classes: Set<String>,
+  val classes: Set<Int>,
   val inputSize: Int,
   val hiddenSize: Int,
   val hiddenActivation: ActivationFunction?,
@@ -40,7 +40,7 @@ class CLNetworkModel(
   /**
    * The map that associates each class to a feed-forward network.
    */
-  val networks: Map<String, NeuralNetwork> = this.classes.associate { it to NeuralNetwork(
+  val networks: Map<Int, NeuralNetwork> = this.classes.associate { it to NeuralNetwork(
 
     LayerConfiguration(
       size = this.inputSize,

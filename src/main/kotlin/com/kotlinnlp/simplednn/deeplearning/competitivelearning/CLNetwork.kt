@@ -22,17 +22,17 @@ class CLNetwork(val model: CLNetworkModel) {
   /**
    * The scores of the last prediction.
    */
-  val outputScores: Map<String, Double> get() = this.mutableScores
+  val outputScores: Map<Int, Double> get() = this.mutableScores
 
   /**
    * The mutable map which contains the scores of the last prediction.
    */
-  private val mutableScores = mutableMapOf<String, Double>()
+  private val mutableScores = mutableMapOf<Int, Double>()
 
   /**
    * The map that associates each class to a feed-forward processor.
    */
-  private val processors: Map<String, FeedforwardNeuralProcessor<DenseNDArray>> =
+  private val processors: Map<Int, FeedforwardNeuralProcessor<DenseNDArray>> =
     this.model.classes.associate { it to FeedforwardNeuralProcessor<DenseNDArray>(this.model.networks.getValue(it)) }
 
   /**
@@ -52,7 +52,7 @@ class CLNetwork(val model: CLNetworkModel) {
    *
    * @return the highest scoring predicted class
    */
-  fun predict(inputArray: DenseNDArray): String {
+  fun predict(inputArray: DenseNDArray): Int {
 
     return this.processors.maxBy { (key, processor) ->
 
@@ -69,14 +69,14 @@ class CLNetwork(val model: CLNetworkModel) {
    * Learn.
    *
    * @param inputArray the input array
-   * @param className the class to which the [inputArray] belongs
+   * @param classId the class to which the [inputArray] belongs
    *
    * @return
    */
-  fun learn(inputArray: DenseNDArray, className: String): Double {
+  fun learn(inputArray: DenseNDArray, classId: Int): Double {
 
-    this.lastBackwardProcessor = checkNotNull(this.processors[className]) {
-      "Unknown class: $className"
+    this.lastBackwardProcessor = checkNotNull(this.processors[classId]) {
+      "Unknown class: $classId"
     }
 
     val reconstructedArray: DenseNDArray = this.lastBackwardProcessor.forward(inputArray)
