@@ -79,11 +79,6 @@ class CLNetworkModel(
   }
 
   /**
-   * The parameters of all networks.
-   */
-  val params = CLNetworkParameters(this.networks.map { it.value.model })
-
-  /**
    * Serialize this [CLNetworkModel] and write it to an output stream.
    *
    * @param outputStream the [OutputStream] in which to write this serialized [CLNetworkModel]
