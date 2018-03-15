@@ -31,9 +31,12 @@ class CLNetwork(val model: CLNetworkModel) {
 
   /**
    * The map that associates each class to a feed-forward processor.
+   * Each processor keeps the class to which it refers in the 'id' property.
    */
   private val processors: Map<Int, FeedforwardNeuralProcessor<DenseNDArray>> =
-    this.model.classes.associate { it to FeedforwardNeuralProcessor<DenseNDArray>(this.model.networks.getValue(it)) }
+    this.model.classes.associate { it to FeedforwardNeuralProcessor<DenseNDArray>(
+      neuralNetwork = this.model.networks.getValue(it),
+      id = it) }
 
   /**
    * The loss calculator used to calculate the distance between the input and its reconstruction
