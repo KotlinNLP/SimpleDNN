@@ -7,24 +7,22 @@
 
 package com.kotlinnlp.simplednn.helpers.training
 
-import com.kotlinnlp.simplednn.core.functionalities.losses.LossCalculator
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.helpers.training.utils.TrainingStatistics
 import com.kotlinnlp.simplednn.helpers.validation.ValidationHelper
 import com.kotlinnlp.simplednn.dataset.Example
 import com.kotlinnlp.simplednn.dataset.Shuffler
 import com.kotlinnlp.simplednn.helpers.training.utils.ExamplesIndices
 import com.kotlinnlp.progressindicator.ProgressIndicatorBar
+import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 
 /**
+ * The TrainingHelper.
  *
+ * @property optimizer the optimizer
+ * @property verbose whether to print training details
  */
 abstract class TrainingHelper<ExampleType: Example>(
-  open val neuralProcessor: NeuralProcessor,
-  val optimizer: ParamsOptimizer<NetworkParameters>,
-  val lossCalculator: LossCalculator,
+  open val optimizer: Optimizer,
   val verbose: Boolean = false) {
 
   /**
@@ -38,7 +36,7 @@ abstract class TrainingHelper<ExampleType: Example>(
   private var startTime: Long = 0
 
   /**
-   * Train the NeuralNetwork of the [neuralProcessor] over the specified number of [epochs], grouping examples in
+   * Train over the specified number of [epochs], grouping examples in
    * batches of the given [batchSize] and shuffling them with the given [shuffler] before each epoch.
    * If [validationHelper] is not null, the NeuralNetwork is tested over the given [validationExamples] after each
    * epoch.
@@ -82,7 +80,7 @@ abstract class TrainingHelper<ExampleType: Example>(
   }
 
   /**
-   * Train the NeuralNetwork of the [neuralProcessor], grouping examples in batches of the given [batchSize] and
+   * Train grouping examples in batches of the given [batchSize] and
    * shuffling them with the given [shuffler] before training.
    *
    * @param trainingExamples training examples
@@ -120,7 +118,7 @@ abstract class TrainingHelper<ExampleType: Example>(
 
     val loss = this.learnFromExample(example)
 
-    this.optimizer.accumulate(this.neuralProcessor.getParamsErrors(copy = batchSize > 1), copy = batchSize > 1)
+    this.accumulateParamsErrors(batchSize)
 
     if (this.statistics.exampleCount == batchSize) { // a batch is just ended
       this.optimizer.update()
@@ -137,6 +135,13 @@ abstract class TrainingHelper<ExampleType: Example>(
    * @return the loss of the output respect to the gold
    */
   abstract protected fun learnFromExample(example: ExampleType): Double
+
+  /**
+   * Accumulate the params errors resulting from [learnFromExample].
+   *
+   * @param batchSize the size of each batch
+   */
+  abstract protected fun accumulateParamsErrors(batchSize: Int)
 
   /**
    * Method to call every new epoch.

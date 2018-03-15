@@ -18,19 +18,19 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
- *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
+ * @property optimizer the optimizer
+ * @property verbose whether to print training details
+ * @property mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
+ *                   percentage) output nodes with the top errors of each layer (the list and each element can be null)
  */
 class SequenceTrainingHelper<NDArrayType: NDArray<NDArrayType>>(
-  override val neuralProcessor: RecurrentNeuralProcessor<NDArrayType>,
-  optimizer: ParamsOptimizer<NetworkParameters>,
-  lossCalculator: LossCalculator,
+  val neuralProcessor: RecurrentNeuralProcessor<NDArrayType>,
+  override val optimizer: ParamsOptimizer<NetworkParameters>,
+  val lossCalculator: LossCalculator,
   private val mePropK: List<Double?>? = null,
   verbose: Boolean = false
 ) : TrainingHelper<SequenceExample<NDArrayType>>(
-  neuralProcessor = neuralProcessor,
   optimizer = optimizer,
-  lossCalculator = lossCalculator,
   verbose = verbose) {
 
   /**
@@ -69,4 +69,12 @@ class SequenceTrainingHelper<NDArrayType: NDArray<NDArrayType>>(
     return this.lossCalculator.calculateMeanLoss(outputSequence, example.sequenceOutputGold.toTypedArray())
   }
 
+  /**
+   * Accumulate the params errors resulting from [learnFromExample].
+   *
+   * @param batchSize the size of each batch
+   */
+  override fun accumulateParamsErrors(batchSize: Int) {
+    this.optimizer.accumulate(this.neuralProcessor.getParamsErrors(copy = batchSize > 1), copy = batchSize > 1)
+  }
 }
