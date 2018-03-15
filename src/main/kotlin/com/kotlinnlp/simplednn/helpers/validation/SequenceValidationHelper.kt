@@ -19,11 +19,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * @property outputEvaluationFunction the output evaluation function
  */
 class SequenceValidationHelper<NDArrayType: NDArray<NDArrayType>>(
-  override val neuralProcessor: RecurrentNeuralProcessor<NDArrayType>,
-  outputEvaluationFunction: OutputEvaluationFunction
-) : ValidationHelper<SequenceExample<NDArrayType>>(
-  neuralProcessor = neuralProcessor,
-  outputEvaluationFunction = outputEvaluationFunction) {
+  val neuralProcessor: RecurrentNeuralProcessor<NDArrayType>,
+  val outputEvaluationFunction: OutputEvaluationFunction
+) : ValidationHelper<SequenceExample<NDArrayType>>() {
 
   /**
    * Validate a single example.

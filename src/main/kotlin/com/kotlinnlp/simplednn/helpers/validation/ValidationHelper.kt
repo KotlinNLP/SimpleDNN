@@ -7,19 +7,12 @@
 
 package com.kotlinnlp.simplednn.helpers.validation
 
-import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.dataset.*
-import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvaluationFunction
 
 /**
  * A helper which executes the validation of a dataset.
- *
- * @property neuralProcessor a neural processor
- * @property outputEvaluationFunction the output evaluation function
  */
-abstract class ValidationHelper<ExampleType: Example>(
-  open val neuralProcessor: NeuralProcessor,
-  val outputEvaluationFunction: OutputEvaluationFunction) {
+abstract class ValidationHelper<ExampleType: Example> {
 
   /**
    * Validate examples.
