@@ -15,17 +15,18 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 /**
  * The optimizer of the [CLNetworkModel].
  *
- * @property model the network model
+ * @param model the network model
+ * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
 class CLNetworkOptimizer(
-  private val model: CLNetworkModel,
+  model: CLNetworkModel,
   updateMethod: UpdateMethod<*>
 ) : Optimizer(updateMethod) {
 
   /**
    * A list of [ParamsOptimizer]s, one for each sub-network.
    */
-  private val networksOptimizers: Map<Int, ParamsOptimizer<NetworkParameters>> = this.model.classes.associate {
+  private val networksOptimizers: Map<Int, ParamsOptimizer<NetworkParameters>> = model.classes.associate {
     it to ParamsOptimizer(params = model.networks.getValue(it).model, updateMethod = updateMethod)
   }
 
