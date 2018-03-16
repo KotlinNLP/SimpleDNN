@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.normalize
 import com.kotlinnlp.simplednn.simplemath.similarity
 
 /**
@@ -58,9 +59,11 @@ class CLNetwork(val model: CLNetworkModel) {
    */
   fun predict(inputArray: DenseNDArray): Int {
 
+    val normalizedArray = inputArray.normalize()
+
     return this.processors.maxBy { (key, processor) ->
 
-      val score: Double = similarity(inputArray, processor.forward(inputArray))
+      val score: Double = similarity(normalizedArray, processor.forward(inputArray).normalize())
 
       this.mutableScores[key] = score
 
