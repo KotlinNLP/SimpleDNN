@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.feedforward.highway.HighwayLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.deltarnn.DeltaRNNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerParameters
@@ -28,9 +29,17 @@ object LayerParametersFactory {
                       weightsInitializer: Initializer?,
                       biasesInitializer: Initializer?,
                       sparseInput: Boolean = false,
-                      meProp: Boolean = false): LayerParameters<*> = when(connectionType) {
+                      meProp: Boolean = false): LayerParameters<*> = when (connectionType) {
 
     LayerType.Connection.Feedforward -> FeedforwardLayerParameters(
+      inputSize = inputSize,
+      outputSize = outputSize,
+      sparseInput = sparseInput,
+      weightsInitializer = weightsInitializer,
+      biasesInitializer = biasesInitializer,
+      meProp = meProp)
+
+    LayerType.Connection.Highway -> HighwayLayerParameters(
       inputSize = inputSize,
       outputSize = outputSize,
       sparseInput = sparseInput,
