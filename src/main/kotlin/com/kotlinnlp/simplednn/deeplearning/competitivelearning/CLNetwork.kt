@@ -51,7 +51,7 @@ class CLNetwork(val model: CLNetworkModel) {
   private lateinit var lastBackwardProcessor: FeedforwardNeuralProcessor<DenseNDArray>
 
   /**
-   * Predict.
+   * Predict using the cosine as similarity measure.
    *
    * @param inputArray the input array
    *
@@ -68,6 +68,28 @@ class CLNetwork(val model: CLNetworkModel) {
       this.mutableScores[key] = score
 
       score
+    }!!
+      .key
+  }
+
+  /**
+   * Predict using the MSE as distance measure.
+   *
+   * @param inputArray the input array
+   *
+   * @return the highest scoring predicted class
+   */
+  fun predictByLoss(inputArray: DenseNDArray): Int {
+
+    return this.processors.minBy { (key, processor) ->
+
+      val loss = this.lossCalculator.calculateLoss(
+        output = processor.forward(inputArray),
+        outputGold = inputArray).avg()
+
+      this.mutableScores[key] = loss
+
+      loss
     }!!
       .key
   }
