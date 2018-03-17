@@ -42,9 +42,12 @@ class FeedforwardNetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     params: LayerParameters<*>,
     dropout: Double): LayerStructure<InputNDArrayType> {
 
-    require(outputConfiguration.connectionType == LayerType.Connection.Feedforward) {
-      "Layer connection of type %s not allowed [only %s]".format(
-        outputConfiguration.connectionType, LayerType.Connection.Feedforward)
+    require(outputConfiguration.connectionType!!.property == LayerType.Property.Feedforward) {
+      "Layer connection of type %s not allowed [only %s and %s]".format(
+        outputConfiguration.connectionType,
+        LayerType.Connection.Feedforward,
+        LayerType.Connection.Highway
+      )
     }
 
     return LayerStructureFactory(
@@ -52,7 +55,7 @@ class FeedforwardNetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
       outputSize = outputConfiguration.size,
       params = params,
       activationFunction = outputConfiguration.activationFunction,
-      connectionType = outputConfiguration.connectionType!!,
+      connectionType = outputConfiguration.connectionType,
       dropout = dropout)
   }
 
