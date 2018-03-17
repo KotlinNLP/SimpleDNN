@@ -25,6 +25,7 @@ sealed class LayerType {
    */
   enum class Connection(val property: Property) {
     Feedforward(property = Property.Feedforward),
+    Highway(property = Property.Feedforward),
     SimpleRecurrent(property = Property.Recurrent),
     GRU(property = Property.Recurrent),
     LSTM(property = Property.Recurrent),
