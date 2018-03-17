@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import utils.CorpusReader
 import Configuration
-import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
+import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.deeplearning.competitivelearning.CLNetwork
 import com.kotlinnlp.simplednn.deeplearning.competitivelearning.CLNetworkModel
@@ -45,8 +45,8 @@ class MNISTCompetitiveLearningTest(val dataset: Corpus<BinaryOutputExample<Dense
   private val model = CLNetworkModel(
     classes = setOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
     inputSize = 784,
-    hiddenSize = 100,
-    hiddenActivation = ReLU())
+    hiddenSize = 50,
+    hiddenActivation = Sigmoid())
 
   /**
    *
