@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.layers
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.layers.feedforward.highway.HighwayLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.deltarnn.DeltaRNNLayerStructure
@@ -33,11 +34,19 @@ object LayerStructureFactory {
     activationFunction: ActivationFunction?,
     connectionType: LayerType.Connection,
     dropout: Double = 0.0,
-    contextWindow: LayerContextWindow? = null): LayerStructure<InputNDArrayType> = when(connectionType) {
+    contextWindow: LayerContextWindow? = null): LayerStructure<InputNDArrayType> = when (connectionType) {
 
     LayerType.Connection.Feedforward -> FeedforwardLayerStructure(
       inputArray = inputArray,
       outputArray = LayerUnit(outputSize),
+      params = params,
+      activationFunction = activationFunction,
+      dropout = dropout
+    )
+
+    LayerType.Connection.Highway -> HighwayLayerStructure(
+      inputArray = inputArray,
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
       params = params,
       activationFunction = activationFunction,
       dropout = dropout
