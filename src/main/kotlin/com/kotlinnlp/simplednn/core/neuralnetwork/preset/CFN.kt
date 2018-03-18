@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.core.neuralnetwork.preset
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 
@@ -21,11 +20,12 @@ object CFN {
 
   /**
    * @param inputSize the size of the input layer
-   * @param inputType the type of the input layer (Dense, Sparse, SparseBinary)
-   * @param inputDropout the dropout probability of the input (default 0.0).If applying it, the usual value is 0.25.
-   * @param hiddenSize the size of the hidden layer
-   * @param hiddenActivation the activation function of the hidden layer
-   * @param hiddenDropout the dropout probability of the hidden (default 0.0).
+   * @param inputType the type of the input layer (Dense -default-, Sparse, SparseBinary)
+   * @param inputDropout the dropout probability of the input (default 0.0). If applying it, the usual value is 0.25.
+   * @param hiddenSize the size of the hidden layers
+   * @param hiddenActivation the activation function of the hidden layers
+   * @param hiddenDropout the dropout probability of the hidden layers (default 0.0)
+   * @param numOfHidden the number of hidden layers (must be >= 0, default 1)
    * @param outputSize the size of the output layer
    * @param outputActivation the activation function of the output layer
    * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
@@ -37,27 +37,25 @@ object CFN {
                       hiddenSize: Int,
                       hiddenActivation: ActivationFunction?,
                       hiddenDropout: Double = 0.0,
+                      numOfHidden: Int = 1,
                       outputSize: Int,
                       outputActivation: ActivationFunction?,
                       weightsInitializer: Initializer? = GlorotInitializer(),
-                      biasesInitializer: Initializer? = GlorotInitializer()) = NeuralNetwork(
-    LayerConfiguration(
-      size = inputSize,
+                      biasesInitializer: Initializer? = GlorotInitializer()): NeuralNetwork =
+    GenericNeuralNetwork(
+      inputSize = inputSize,
       inputType = inputType,
-      dropout = inputDropout
-    ),
-    LayerConfiguration(
-      size = hiddenSize,
-      activationFunction = hiddenActivation,
-      connectionType = LayerType.Connection.CFN,
-      dropout = hiddenDropout
-    ),
-    LayerConfiguration(
-      size = outputSize,
-      activationFunction = outputActivation,
-      connectionType = LayerType.Connection.Feedforward
-    ),
-    weightsInitializer = weightsInitializer,
-    biasesInitializer = biasesInitializer
-  )
+      inputDropout = inputDropout,
+      hiddenSize = hiddenSize,
+      hiddenActivation = hiddenActivation,
+      hiddenDropout = hiddenDropout,
+      hiddenMeProp = false,
+      hiddenConnection = LayerType.Connection.CFN,
+      numOfHidden = numOfHidden,
+      outputSize = outputSize,
+      outputActivation = outputActivation,
+      outputMeProp = false,
+      weightsInitializer = weightsInitializer,
+      biasesInitializer = biasesInitializer
+    )
 }
