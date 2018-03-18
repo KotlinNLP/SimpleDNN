@@ -72,6 +72,10 @@ class HighwayLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   init {
 
+    require(inputArray.size == outputArray.size) {
+      "The Highway layer requires the input size to be equal to the output size."
+    }
+
     this.transformGate.setActivation(Sigmoid())
 
     if (activationFunction != null) {
