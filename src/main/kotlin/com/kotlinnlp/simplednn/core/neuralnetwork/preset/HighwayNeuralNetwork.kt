@@ -43,7 +43,7 @@ object HighwayNeuralNetwork {
 
     require(numOfHighway >= 1) { "The number of highway layers must be >= 1." }
 
-    val layersConfiguration = ArrayList<LayerConfiguration>()
+    val layersConfiguration = mutableListOf<LayerConfiguration>()
 
     layersConfiguration.add(LayerConfiguration(
       size = inputSize,
