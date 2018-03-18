@@ -73,7 +73,6 @@ object HighwayNeuralNetwork {
       size = outputSize,
       activationFunction = outputActivation,
       connectionType = LayerType.Connection.Feedforward,
-      dropout = hiddenDropout,
       meProp = outputMeProp
     ))
 
