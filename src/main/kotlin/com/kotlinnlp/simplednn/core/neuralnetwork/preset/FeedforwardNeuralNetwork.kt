@@ -20,18 +20,18 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 object FeedforwardNeuralNetwork {
 
   /**
-   * @property inputSize the size of the input layer
-   * @property inputType the type of the input layer (Dense, Sparse, SparseBinary)
-   * @property inputDropout the dropout probability of the input (default 0.0).If applying it, the usual value is 0.25.
-   * @property hiddenSize the size of the hidden layer
-   * @property hiddenActivation the activation function of the hidden layer
-   * @property hiddenDropout the dropout probability of the hidden (default 0.0).
-   * @property hiddenMeProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
-   * @property outputSize the size of the output layer
-   * @property outputActivation the activation function of the output layer
-   * @property outputMeProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
-   * @property weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
-   * @property biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
+   * @param inputSize the size of the input layer
+   * @param inputType the type of the input layer (Dense, Sparse, SparseBinary)
+   * @param inputDropout the dropout probability of the input (default 0.0).If applying it, the usual value is 0.25.
+   * @param hiddenSize the size of the hidden layer
+   * @param hiddenActivation the activation function of the hidden layer
+   * @param hiddenDropout the dropout probability of the hidden (default 0.0).
+   * @param hiddenMeProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
+   * @param outputSize the size of the output layer
+   * @param outputActivation the activation function of the output layer
+   * @param outputMeProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
+   * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+   * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
    */
   operator fun invoke(inputSize: Int,
                       inputType: LayerType.Input = LayerType.Input.Dense,
