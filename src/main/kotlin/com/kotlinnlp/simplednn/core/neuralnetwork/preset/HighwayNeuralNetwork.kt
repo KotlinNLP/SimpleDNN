@@ -15,7 +15,6 @@ object HighwayNeuralNetwork {
   operator fun invoke(inputSize: Int,
                       inputType: LayerType.Input = LayerType.Input.Dense,
                       inputDropout: Double = 0.0,
-                      hiddenSize: Int,
                       hiddenActivation: ActivationFunction?,
                       hiddenDropout: Double = 0.0,
                       hiddenMeProp: Boolean = false,
@@ -30,9 +29,9 @@ object HighwayNeuralNetwork {
                   dropout = inputDropout
           ),
           LayerConfiguration(
-                  size = hiddenSize,
+                  size = outputSize,
                   activationFunction = hiddenActivation,
-                  connectionType = LayerType.Connection.Highway,
+                  connectionType = LayerType.Connection.Feedforward,
                   dropout = hiddenDropout,
                   meProp = hiddenMeProp
           ),
