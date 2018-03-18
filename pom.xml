@@ -82,6 +82,12 @@
         <sourceDirectory>src/main/kotlin</sourceDirectory>
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
 
+        <resources>
+            <resource>
+                <directory>examples/config</directory>
+            </resource>
+        </resources>
+
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
