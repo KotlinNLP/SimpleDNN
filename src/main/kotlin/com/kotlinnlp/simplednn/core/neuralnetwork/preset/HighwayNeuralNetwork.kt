@@ -14,11 +14,11 @@ object HighwayNeuralNetwork {
 
   /**
    * @param inputSize the size of the input layer
-   * @param inputType the type of the input layer (Dense, Sparse, SparseBinary)
+   * @param inputType the type of the input layer (Dense -default-, Sparse, SparseBinary)
    * @param inputDropout the dropout probability of the input (default 0.0). If applying it, the usual value is 0.25.
-   * @param hiddenSize the size of the hidden layer
-   * @param hiddenActivation the activation function of the hidden layer
-   * @param hiddenDropout the dropout probability of the hidden (default 0.0).
+   * @param hiddenSize the size of the hidden layers
+   * @param hiddenActivation the activation function of the hidden layers
+   * @param hiddenDropout the dropout probability of the hidden layers (default 0.0).
    * @param hiddenMeProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
    * @param numOfHighway the number of hidden highway layers (at least 1, the default)
    * @param outputSize the size of the output layer
