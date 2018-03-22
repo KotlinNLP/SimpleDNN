@@ -37,19 +37,20 @@ class DeepBiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val network:
    * Encode the [sequence].
    *
    * @param sequence the sequence to encode
+   * @param useDropout whether to apply the dropout
    *
    * @return the encoded sequence
    */
-  fun encode(sequence: Array<InputNDArrayType>): Array<DenseNDArray> {
+  fun encode(sequence: Array<InputNDArrayType>, useDropout: Boolean = false): Array<DenseNDArray> {
 
     var output: Array<DenseNDArray>
 
     @Suppress("UNCHECKED_CAST")
-    output = (this.encoders[0] as BiRNNEncoder<InputNDArrayType>).encode(sequence)
+    output = (this.encoders[0] as BiRNNEncoder<InputNDArrayType>).encode(sequence, useDropout = useDropout)
 
     for (i in 1 .. this.encoders.lastIndex) {
       @Suppress("UNCHECKED_CAST")
-      output = (this.encoders[i] as BiRNNEncoder<DenseNDArray>).encode(output)
+      output = (this.encoders[i] as BiRNNEncoder<DenseNDArray>).encode(output, useDropout = useDropout)
     }
 
     return output
