@@ -61,6 +61,19 @@ fun concatVectorsV(vararg vectors: DenseNDArray): DenseNDArray {
 }
 
 /**
+ * Sum in place the i-th element of [a] to the i-the element of this array
+ */
+fun Array<DenseNDArray>.assignSum(a: Array<DenseNDArray>) {
+
+  require(this.size == a.size)
+
+  a.forEachIndexed { i, array ->
+    require(this[i].shape == array.shape || (this[i].isVector && array.isVector && this[i].length == array.length))
+    this[i].assignSum(array)
+  }
+}
+
+/**
  * Compute the similarity of two arrays (already normalized to unit vectors with the [normalize] function).
  * The cosine similarity value is limited in the range [0.0, 1.0] applying a ReLU function.
  *
