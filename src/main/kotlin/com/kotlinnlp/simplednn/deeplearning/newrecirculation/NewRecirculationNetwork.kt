@@ -123,7 +123,7 @@ class NewRecirculationNetwork(
 
     var iterations = 0
 
-    while (this.meanAbsError >= this.recallThreshold || iterations++ >= MAX_RECALL_ITERATIONS) {
+    while (this.meanAbsError >= this.recallThreshold || iterations++ < MAX_RECALL_ITERATIONS) {
 
       if (trainingMode) this.backward()
 
