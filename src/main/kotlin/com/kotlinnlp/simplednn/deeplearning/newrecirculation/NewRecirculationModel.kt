@@ -20,7 +20,7 @@ import java.io.Serializable
  * The model of the [NewRecirculationNetwork].
  *
  * @property inputSize the size of the input layer
- * @property outputSize the size of the output layer
+ * @property hiddenSize the size of the hidden layer
  * @property activationFunction the activation function of the output (can be null)
  * @property lambda the partition factor (default = 0.75)
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
@@ -28,7 +28,7 @@ import java.io.Serializable
  */
 class NewRecirculationModel(
   val inputSize: Int,
-  val outputSize: Int,
+  val hiddenSize: Int,
   val activationFunction: ActivationFunction?,
   val lambda: Double = 0.75,
   weightsInitializer: Initializer? = GlorotInitializer(),
@@ -58,7 +58,7 @@ class NewRecirculationModel(
    */
   val params = FeedforwardLayerParameters(
     inputSize = this.inputSize,
-    outputSize = this.outputSize,
+    outputSize = this.hiddenSize,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer
   )

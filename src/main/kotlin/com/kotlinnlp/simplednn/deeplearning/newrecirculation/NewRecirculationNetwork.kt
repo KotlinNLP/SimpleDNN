@@ -43,7 +43,7 @@ class NewRecirculationNetwork(
   /**
    *
    */
-  private val realOutput = AugmentedArray(values = DenseNDArrayFactory.zeros(Shape(this.model.outputSize)))
+  private val realOutput = AugmentedArray(values = DenseNDArrayFactory.zeros(Shape(this.model.hiddenSize)))
 
   /**
    *
@@ -53,7 +53,7 @@ class NewRecirculationNetwork(
   /**
    *
    */
-  private val imaginaryOutput = AugmentedArray(values = DenseNDArrayFactory.zeros(Shape(this.model.outputSize)))
+  private val imaginaryOutput = AugmentedArray(values = DenseNDArrayFactory.zeros(Shape(this.model.hiddenSize)))
 
   /**
    *
