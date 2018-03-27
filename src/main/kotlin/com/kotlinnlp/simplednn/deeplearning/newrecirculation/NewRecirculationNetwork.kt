@@ -99,6 +99,9 @@ class NewRecirculationNetwork(
   /**
    * Calculate the imaginary input.
    * The [realInput] must be already set.
+   *
+   *  yR = f(w (dot) xR + b)
+   *  xI = r * xR + (1 - r) * w' (dot) yR
    */
   private fun calcImaginaryInput() {
 
@@ -135,6 +138,8 @@ class NewRecirculationNetwork(
 
   /**
    * Perform the backward calculating errors end updating the parameters.
+   *
+   *  yI = r * yR + (1 - r) * f(w (dot) xI)
    */
   private fun backward() {
 
