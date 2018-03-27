@@ -793,6 +793,13 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
+   *
+   */
+  override fun abs(): SparseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
    * Sign function
    *
    * @return a new [SparseNDArray] containing the results of the function sign() applied element-wise

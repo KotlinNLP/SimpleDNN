@@ -18,6 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
+import org.jblas.MatrixFunctions.abs
 
 /**
  * [NDArray] with dense values (implemented using JBlas)
@@ -669,6 +670,11 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    *
    */
   override fun avg(): Double = this.storage.mean()
+
+  /**
+   *
+   */
+  override fun abs() = DenseNDArray(storage = abs(this.storage))
 
   /**
    * Sign function.

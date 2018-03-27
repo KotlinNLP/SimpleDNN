@@ -566,6 +566,13 @@ class SparseBinaryNDArray(
   }
 
   /**
+   *
+   */
+  override fun abs(): SparseBinaryNDArray {
+    TODO("not implemented")
+  }
+
+  /**
    * Sign function
    *
    * @return a new [SparseBinaryNDArray] containing the results of the function sign() applied element-wise

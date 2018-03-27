@@ -285,6 +285,11 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
+  fun abs(): SelfType
+
+  /**
+   *
+   */
   fun avg(): Double
 
   /**
