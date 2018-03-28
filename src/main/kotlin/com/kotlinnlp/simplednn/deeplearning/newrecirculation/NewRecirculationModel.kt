@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.newrecirculation
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
+import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
@@ -21,7 +22,7 @@ import java.io.Serializable
  *
  * @property inputSize the size of the input layer
  * @property hiddenSize the size of the hidden layer
- * @property activationFunction the activation function of the output (can be null)
+ * @property activationFunction the activation function of the output (can be null, default: Sigmoid)
  * @property lambda the partition factor (default = 0.75)
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: null)
@@ -29,7 +30,7 @@ import java.io.Serializable
 class NewRecirculationModel(
   val inputSize: Int,
   val hiddenSize: Int,
-  val activationFunction: ActivationFunction?,
+  val activationFunction: ActivationFunction? = Sigmoid(),
   val lambda: Double = 0.75,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null
