@@ -60,12 +60,12 @@ class NewRecirculationNetwork(
   /**
    *
    */
-  private val meanAbsError: Double get() = this.realInput.values.sub(this.imaginaryInput.values).abs().sum()
+  private val paramsErrors: FeedforwardLayerParameters = this.model.params.copy()
 
   /**
    *
    */
-  private val paramsErrors: FeedforwardLayerParameters = this.model.params.copy()
+  val meanAbsError: Double get() = this.realInput.values.sub(this.imaginaryInput.values).abs().sum()
 
   /**
    * Set activation functions.
