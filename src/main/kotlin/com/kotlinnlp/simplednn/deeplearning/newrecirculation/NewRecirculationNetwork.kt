@@ -82,17 +82,20 @@ class NewRecirculationNetwork(
    * Reconstruct a given array.
    *
    * @param inputArray the input array
+   * @param useReEntry whether to use the Re-entry
    *
    * @return the [inputArray] reconstruction
    */
-  fun reconstruct(inputArray: DenseNDArray): DenseNDArray {
+  fun reconstruct(inputArray: DenseNDArray, useReEntry: Boolean = true): DenseNDArray {
     require(inputArray.length == this.model.inputSize)
 
     this.realInput.assignValues(inputArray)
 
     this.calcImaginaryInput()
 
-    this.reEntry(trainingMode = false)
+    if (useReEntry) {
+      this.reEntry(trainingMode = false)
+    }
 
     return this.imaginaryInput.values
   }
