@@ -82,20 +82,40 @@ class NewRecirculationNetwork(
    * Reconstruct a given array.
    *
    * @param inputArray the input array
-   * @param trainingMode whether the parameters must be trained during the re-entry
    *
    * @return the [inputArray] reconstruction
    */
-  fun reconstruct(inputArray: DenseNDArray, trainingMode: Boolean = false): DenseNDArray {
+  fun reconstruct(inputArray: DenseNDArray): DenseNDArray {
     require(inputArray.length == this.model.inputSize)
 
     this.realInput.assignValues(inputArray)
 
     this.calcImaginaryInput()
 
-    this.reEntry(trainingMode = trainingMode)
+    this.reEntry(trainingMode = false)
 
     return this.imaginaryInput.values
+  }
+
+  /**
+   * Learn to reconstruct the given array.
+   *
+   * @param inputArray the input array
+   *
+   * @return the loss of the reconstruction (before the reEntry)
+   */
+  fun learn(inputArray: DenseNDArray): Double {
+    require(inputArray.length == this.model.inputSize)
+
+    this.realInput.assignValues(inputArray)
+
+    this.calcImaginaryInput()
+
+    val loss: Double = this.meanAbsError
+
+    this.reEntry(trainingMode = true)
+
+    return loss
   }
 
   /**

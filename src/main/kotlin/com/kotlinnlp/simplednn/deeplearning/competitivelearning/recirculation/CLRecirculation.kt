@@ -48,7 +48,7 @@ class CLRecirculation(val model: CLRecirculationModel) {
 
     return this.autoencoders.minBy { (key, encoder) ->
 
-      encoder.reconstruct(inputArray, trainingMode = false)
+      encoder.reconstruct(inputArray)
       this.mutableScores[key] = encoder.meanAbsError
 
       encoder.meanAbsError
@@ -70,7 +70,6 @@ class CLRecirculation(val model: CLRecirculationModel) {
       "Unknown class: $classId"
     }
 
-    autoencoder.reconstruct(inputArray, trainingMode = true)
-    return autoencoder.meanAbsError
+    return autoencoder.learn(inputArray)
   }
 }
