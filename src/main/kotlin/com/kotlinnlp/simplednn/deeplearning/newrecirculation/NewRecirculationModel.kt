@@ -24,7 +24,7 @@ import java.io.Serializable
  * @property activationFunction the activation function of the output (can be null)
  * @property lambda the partition factor (default = 0.75)
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
- * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: null)
  */
 class NewRecirculationModel(
   val inputSize: Int,
@@ -32,7 +32,7 @@ class NewRecirculationModel(
   val activationFunction: ActivationFunction?,
   val lambda: Double = 0.75,
   weightsInitializer: Initializer? = GlorotInitializer(),
-  biasesInitializer: Initializer? = GlorotInitializer()
+  biasesInitializer: Initializer? = null
 ) : Serializable {
 
   companion object {
