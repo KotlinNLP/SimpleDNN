@@ -18,11 +18,11 @@ import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 /**
  * The TrainingHelper.
  *
- * @property optimizer the optimizer
+ * @property optimizer the optimizer (can be null)
  * @property verbose whether to print training details
  */
 abstract class TrainingHelper<ExampleType: Example>(
-  open val optimizer: Optimizer,
+  open val optimizer: Optimizer?,
   val verbose: Boolean = false) {
 
   /**
@@ -121,7 +121,7 @@ abstract class TrainingHelper<ExampleType: Example>(
     this.accumulateParamsErrors(batchSize)
 
     if (this.statistics.exampleCount == batchSize) { // a batch is just ended
-      this.optimizer.update()
+      this.optimizer?.update()
     }
 
     return loss
@@ -151,7 +151,7 @@ abstract class TrainingHelper<ExampleType: Example>(
    */
   private fun newEpoch() {
     this.statistics.newEpoch()
-    this.optimizer.newEpoch()
+    this.optimizer?.newEpoch()
   }
 
   /**
@@ -162,7 +162,7 @@ abstract class TrainingHelper<ExampleType: Example>(
    */
   private fun newBatch() {
     this.statistics.newBatch()
-    this.optimizer.newBatch()
+    this.optimizer?.newBatch()
   }
 
   /**
@@ -173,7 +173,7 @@ abstract class TrainingHelper<ExampleType: Example>(
    */
   private fun newExample() {
     this.statistics.newExample()
-    this.optimizer.newExample()
+    this.optimizer?.newExample()
   }
 
   /**
