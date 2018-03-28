@@ -8,8 +8,8 @@
 package com.kotlinnlp.simplednn.helpers.training
 
 import com.kotlinnlp.simplednn.dataset.BinaryOutputExample
-import com.kotlinnlp.simplednn.deeplearning.competitivelearning.CLNetwork
-import com.kotlinnlp.simplednn.deeplearning.competitivelearning.CLNetworkOptimizer
+import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLNetwork
+import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLNetworkOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**

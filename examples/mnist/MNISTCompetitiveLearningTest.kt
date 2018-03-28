@@ -13,9 +13,9 @@ import utils.CorpusReader
 import Configuration
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
-import com.kotlinnlp.simplednn.deeplearning.competitivelearning.CLNetwork
-import com.kotlinnlp.simplednn.deeplearning.competitivelearning.CLNetworkModel
-import com.kotlinnlp.simplednn.deeplearning.competitivelearning.CLNetworkOptimizer
+import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLNetwork
+import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLNetworkModel
+import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLNetworkOptimizer
 import com.kotlinnlp.simplednn.helpers.training.CompetitiveLearningTrainingHelper
 import com.kotlinnlp.simplednn.helpers.validation.CompetitiveLearningValidationHelper
 import utils.exampleextractor.ClassificationBinaryOutputExampleExtractor
