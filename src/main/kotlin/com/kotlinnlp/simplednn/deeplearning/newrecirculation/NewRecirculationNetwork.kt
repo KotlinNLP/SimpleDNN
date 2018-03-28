@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameter
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.utils.ItemsPool
 
 /**
  * New Recirculation network.
@@ -24,8 +25,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 class NewRecirculationNetwork(
   val model: NewRecirculationModel,
   private val recallThreshold: Double = 0.001,
-  private val trainingLearningRate: Double = 0.01
-) {
+  private val trainingLearningRate: Double = 0.01,
+  override val id: Int = 0
+) : ItemsPool.IDItem {
 
   companion object {
 
