@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.helpers.training
 
 import com.kotlinnlp.simplednn.dataset.BinaryOutputExample
-import com.kotlinnlp.simplednn.deeplearning.competitivelearning.recirculation.CLRecirculation
+import com.kotlinnlp.simplednn.deeplearning.competitivelearning.recirculation.CLRecirculationNetwork
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property verbose whether to print training details
  */
 class CompetitiveRecirculationTrainingHelper(
-  val network: CLRecirculation,
+  val network: CLRecirculationNetwork,
   verbose: Boolean = false
 ) : TrainingHelper<BinaryOutputExample<DenseNDArray>>(
   optimizer = null,

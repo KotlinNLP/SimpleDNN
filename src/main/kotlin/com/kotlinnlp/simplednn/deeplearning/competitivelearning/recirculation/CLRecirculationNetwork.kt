@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property model the model of this network
  */
-class CLRecirculation(val model: CLRecirculationModel) {
+class CLRecirculationNetwork(val model: CLRecirculationModel) {
 
   /**
    * The scores of the last prediction.

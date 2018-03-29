@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import utils.CorpusReader
 import Configuration
-import com.kotlinnlp.simplednn.deeplearning.competitivelearning.recirculation.CLRecirculation
+import com.kotlinnlp.simplednn.deeplearning.competitivelearning.recirculation.CLRecirculationNetwork
 import com.kotlinnlp.simplednn.deeplearning.competitivelearning.recirculation.CLRecirculationModel
 import com.kotlinnlp.simplednn.helpers.training.CompetitiveRecirculationTrainingHelper
 import com.kotlinnlp.simplednn.helpers.validation.CompetitiveRecirculationValidationHelper
@@ -59,10 +59,10 @@ class MNISTRecirculationTest(val dataset: Corpus<BinaryOutputExample<DenseNDArra
     println("\n-- TRAINING")
 
     val trainingHelper = CompetitiveRecirculationTrainingHelper(
-      network = CLRecirculation(this.model),
+      network = CLRecirculationNetwork(this.model),
       verbose = true)
 
-    val validationHelper = CompetitiveRecirculationValidationHelper(network = CLRecirculation(this.model))
+    val validationHelper = CompetitiveRecirculationValidationHelper(network = CLRecirculationNetwork(this.model))
 
     trainingHelper.train(
       trainingExamples = this.dataset.training,

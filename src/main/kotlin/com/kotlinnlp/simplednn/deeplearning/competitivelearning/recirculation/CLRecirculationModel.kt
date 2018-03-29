@@ -18,7 +18,7 @@ import java.io.OutputStream
 import java.io.Serializable
 
 /**
- * The model of [CLRecirculation].
+ * The model of [CLRecirculationNetwork].
  *
  * @property classes the set of possible classes
  * @property inputSize the size of the input layer
