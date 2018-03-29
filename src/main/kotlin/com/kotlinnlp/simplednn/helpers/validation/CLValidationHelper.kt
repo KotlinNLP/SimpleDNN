@@ -8,17 +8,15 @@
 package com.kotlinnlp.simplednn.helpers.validation
 
 import com.kotlinnlp.simplednn.dataset.BinaryOutputExample
-import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLNetwork
+import com.kotlinnlp.simplednn.deeplearning.competitivelearning.CLNetwork
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * A helper which executes the validation of a [CLNetwork] with a dataset of [BinaryOutputExample]s.
  *
- * @property network the competitive learning network
+ * @param network the competitive learning network
  */
-class CLValidationHelper(
-  val network: CLNetwork
-) : ValidationHelper<BinaryOutputExample<DenseNDArray>>() {
+class CLValidationHelper(private val network: CLNetwork) : ValidationHelper<BinaryOutputExample<DenseNDArray>>() {
 
   /**
    * Validate a single example.
@@ -31,7 +29,7 @@ class CLValidationHelper(
    */
   override fun validate(example: BinaryOutputExample<DenseNDArray>, saveContributions: Boolean): Boolean {
 
-    val output = this.network.predict(inputArray = example.features)
+    val output = this.network.classify(inputArray = example.features)
 
     return output == example.goldOutcomeIndex
   }
