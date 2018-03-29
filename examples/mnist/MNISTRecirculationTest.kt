@@ -13,8 +13,8 @@ import utils.CorpusReader
 import Configuration
 import com.kotlinnlp.simplednn.deeplearning.competitivelearning.recirculation.CLRecirculationNetwork
 import com.kotlinnlp.simplednn.deeplearning.competitivelearning.recirculation.CLRecirculationModel
-import com.kotlinnlp.simplednn.helpers.training.CompetitiveRecirculationTrainingHelper
-import com.kotlinnlp.simplednn.helpers.validation.CompetitiveRecirculationValidationHelper
+import com.kotlinnlp.simplednn.helpers.training.CLRecirculationTrainingHelper
+import com.kotlinnlp.simplednn.helpers.validation.CLRecirculationValidationHelper
 import utils.exampleextractor.ClassificationBinaryOutputExampleExtractor
 
 fun main(args: Array<String>) {
@@ -58,11 +58,8 @@ class MNISTRecirculationTest(val dataset: Corpus<BinaryOutputExample<DenseNDArra
 
     println("\n-- TRAINING")
 
-    val trainingHelper = CompetitiveRecirculationTrainingHelper(
-      network = CLRecirculationNetwork(this.model),
-      verbose = true)
-
-    val validationHelper = CompetitiveRecirculationValidationHelper(network = CLRecirculationNetwork(this.model))
+    val trainingHelper = CLRecirculationTrainingHelper(network = CLRecirculationNetwork(this.model), verbose = true)
+    val validationHelper = CLRecirculationValidationHelper(network = CLRecirculationNetwork(this.model))
 
     trainingHelper.train(
       trainingExamples = this.dataset.training,

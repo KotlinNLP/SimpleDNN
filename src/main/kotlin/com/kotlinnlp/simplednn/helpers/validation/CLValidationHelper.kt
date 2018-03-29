@@ -8,16 +8,16 @@
 package com.kotlinnlp.simplednn.helpers.validation
 
 import com.kotlinnlp.simplednn.dataset.BinaryOutputExample
-import com.kotlinnlp.simplednn.deeplearning.competitivelearning.recirculation.CLRecirculationNetwork
+import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLNetwork
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * A helper which executes the validation of a dataset of [BinaryOutputExample]s.
+ * A helper which executes the validation of a [CLNetwork] with a dataset of [BinaryOutputExample]s.
  *
  * @property network the competitive learning network
  */
-class CompetitiveRecirculationValidationHelper(
-  val network: CLRecirculationNetwork
+class CLValidationHelper(
+  val network: CLNetwork
 ) : ValidationHelper<BinaryOutputExample<DenseNDArray>>() {
 
   /**

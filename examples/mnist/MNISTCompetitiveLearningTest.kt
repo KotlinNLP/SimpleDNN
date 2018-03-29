@@ -16,8 +16,8 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMetho
 import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLNetwork
 import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLNetworkModel
 import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLNetworkOptimizer
-import com.kotlinnlp.simplednn.helpers.training.CompetitiveLearningTrainingHelper
-import com.kotlinnlp.simplednn.helpers.validation.CompetitiveLearningValidationHelper
+import com.kotlinnlp.simplednn.helpers.training.CLTrainingHelper
+import com.kotlinnlp.simplednn.helpers.validation.CLValidationHelper
 import utils.exampleextractor.ClassificationBinaryOutputExampleExtractor
 
 fun main(args: Array<String>) {
@@ -66,12 +66,12 @@ class MNISTCompetitiveLearningTest(val dataset: Corpus<BinaryOutputExample<Dense
       model = this.model,
       updateMethod = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999))
 
-    val trainingHelper = CompetitiveLearningTrainingHelper(
+    val trainingHelper = CLTrainingHelper(
       network = CLNetwork(this.model),
       optimizer = optimizer,
       verbose = true)
 
-    val validationHelper = CompetitiveLearningValidationHelper(network = CLNetwork(this.model))
+    val validationHelper = CLValidationHelper(network = CLNetwork(this.model))
 
     trainingHelper.train(
       trainingExamples = this.dataset.training,
