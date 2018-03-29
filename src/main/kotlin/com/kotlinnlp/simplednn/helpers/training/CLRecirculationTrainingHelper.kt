@@ -32,7 +32,7 @@ class CLRecirculationTrainingHelper(
    * @return the loss of the output respect to the gold
    */
   override fun learnFromExample(example: BinaryOutputExample<DenseNDArray>): Double =
-    this.network.learn(inputArray = example.features, classId = example.goldOutcomeIndex)
+    this.network.learn(inputArray = example.features, classIndex = example.goldOutcomeIndex)
 
   /**
    * Accumulate the params errors resulting from [learnFromExample].

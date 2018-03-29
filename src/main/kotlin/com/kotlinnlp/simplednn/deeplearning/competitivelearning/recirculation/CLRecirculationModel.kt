@@ -39,13 +39,15 @@ class CLRecirculationModel(
   /**
    * The map that associates each class to a new-recirculation network.
    */
-  val autoencodersModels: Map<Int, NewRecirculationModel> = this.classes.associate { it to NewRecirculationModel(
-    inputSize = this.inputSize,
-    hiddenSize = this.hiddenSize,
-    activationFunction = this.hiddenActivation,
-    weightsInitializer = weightsInitializer,
-    biasesInitializer = biasesInitializer
-  ) }
+  val autoencodersModels: Map<Int, NewRecirculationModel> = this.classes.associate {
+    it to NewRecirculationModel(
+      inputSize = this.inputSize,
+      hiddenSize = this.hiddenSize,
+      activationFunction = this.hiddenActivation,
+      weightsInitializer = weightsInitializer,
+      biasesInitializer = biasesInitializer
+    )
+  }
 
   companion object {
 
