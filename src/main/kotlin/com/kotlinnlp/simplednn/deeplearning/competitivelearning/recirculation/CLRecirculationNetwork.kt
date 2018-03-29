@@ -7,47 +7,27 @@
 
 package com.kotlinnlp.simplednn.deeplearning.competitivelearning.recirculation
 
+import com.kotlinnlp.simplednn.deeplearning.competitivelearning.CLNetwork
 import com.kotlinnlp.simplednn.deeplearning.newrecirculation.NewRecirculationNetwork
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The Competitive Learning Network based on the New Recirculation.
+ * The Competitive Learning network based on the New Recirculation.
  *
- * @property model the model of this network
+ * @property model the model of this CL network
  * @param trainingLearningRate the learning rate of the training (default = 0.01)
  */
-class CLRecirculationNetwork(val model: CLRecirculationModel, private val trainingLearningRate: Double = 0.01) {
+class CLRecirculationNetwork(
+  val model: CLRecirculationModel,
+  private val trainingLearningRate: Double = 0.01
+): CLNetwork(model) {
 
   /**
-   * The scores of the last prediction, one per encoder.
+   * The list of New Recirculation networks, one per class.
    */
-  val losses: List<Double> get() = this._losses
-
-  /**
-   * The scores of the last prediction, one per encoder, updated dynamically.
-   */
-  private val _losses = mutableListOf<Double>()
-
-  /**
-   * The map that associates each class to a feed-forward processor.
-   * Each processor keeps the class to which it refers in the 'id' property.
-   */
-  private val autoencoders: Map<Int, NewRecirculationNetwork> = this.model.classes.associate {
-    it to NewRecirculationNetwork(
-      model = this.model.autoencodersModels.getValue(it),
-      trainingLearningRate = this.trainingLearningRate,
-      id = it)
+  private val autoencoders: List<NewRecirculationNetwork> = this.model.classes.map {
+    NewRecirculationNetwork(model = this.model.autoencoders[it], trainingLearningRate = this.trainingLearningRate)
   }
-
-  /**
-   * Predict using the MSE as distance measure.
-   *
-   * @param inputArray the input array
-   *
-   * @return the highest scoring predicted class
-   */
-  fun predict(inputArray: DenseNDArray): Int =
-    this.autoencoders.keys.minBy { this.reconstructAndGetLoss(inputArray = inputArray, encoderIndex = it) }!!
 
   /**
    * Perform the learning of an example.
@@ -55,31 +35,29 @@ class CLRecirculationNetwork(val model: CLRecirculationModel, private val traini
    * @param inputArray the input array
    * @param classIndex the index of the class assigned to the given [inputArray]
    *
-   * @return the loss of the reconstruction
+   * @return the loss of the classification
    */
-  fun learn(inputArray: DenseNDArray, classIndex: Int): Double {
+  override fun learn(inputArray: DenseNDArray, classIndex: Int): Double {
 
-    val autoencoder: NewRecirculationNetwork =
-      checkNotNull(this.autoencoders[classIndex]) { "Unknown class: $classIndex" }
+    require(classIndex in this.model.classes) { "Unknown class: $classIndex." }
 
-    return autoencoder.learn(inputArray)
+    return this.autoencoders[classIndex].learn(inputArray)
   }
 
   /**
-   * Reconstruct a given array with a given encoder and get the mean abs error of the reconstruction.
+   * Reconstruct a given input respect to a given class with the related processor and get the loss of the
+   * reconstruction.
    *
    * @param inputArray the input array
-   * @param encoderIndex the encoder index
+   * @param classIndex the class index
    *
    * @return the loss of the reconstruction
    */
-  private fun reconstructAndGetLoss(inputArray: DenseNDArray, encoderIndex: Int): Double {
+  override fun reconstructAndGetLoss(inputArray: DenseNDArray, classIndex: Int): Double {
 
-    val encoder: NewRecirculationNetwork = this.autoencoders.getValue(encoderIndex)
+    val encoder: NewRecirculationNetwork = this.autoencoders[classIndex]
 
     encoder.reconstruct(inputArray, useReEntry = false)
-
-    this._losses[encoderIndex] = encoder.meanAbsError
 
     return encoder.meanAbsError
   }

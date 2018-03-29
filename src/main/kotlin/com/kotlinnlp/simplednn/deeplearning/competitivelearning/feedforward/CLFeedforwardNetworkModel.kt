@@ -5,32 +5,33 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.competitivelearning.recirculation
+package com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
-import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
+import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.deeplearning.competitivelearning.CLNetworkModel
-import com.kotlinnlp.simplednn.deeplearning.newrecirculation.NewRecirculationModel
 
 /**
- * The model of a [CLRecirculationNetwork].
+ * The model of a [CLFeedforwardNetwork].
  *
  * @property numOfClasses the number of classes
  * @property inputSize the size of the input layer
  * @property hiddenSize the size of the hidden layer
  * @property hiddenActivation the activation function of the hidden layer
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
- * @param biasesInitializer the initializer of the biases (zeros if null, default: null)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
-class CLRecirculationModel(
+class CLFeedforwardNetworkModel(
   numOfClasses: Int,
   val inputSize: Int,
   val hiddenSize: Int,
-  val hiddenActivation: ActivationFunction = Sigmoid(),
+  val hiddenActivation: ActivationFunction?,
   weightsInitializer: Initializer? = GlorotInitializer(),
-  biasesInitializer: Initializer? = null
+  biasesInitializer: Initializer? = GlorotInitializer()
 ) : CLNetworkModel(numOfClasses) {
 
   companion object {
@@ -43,18 +44,22 @@ class CLRecirculationModel(
   }
 
   /**
-   * The list of New Recirculation networks models.
+   * The list of feed-forward sub-networks.
    */
-  val autoencoders: List<NewRecirculationModel> = List(
-    size = this.numOfClasses,
-    init = {
-      NewRecirculationModel(
-        inputSize = this.inputSize,
-        hiddenSize = this.hiddenSize,
+  val networks: List<NeuralNetwork> = this.classes.map {
+    NeuralNetwork(
+      LayerConfiguration(
+        size = this.inputSize,
+        inputType = LayerType.Input.Dense),
+      LayerConfiguration(
+        size = this.hiddenSize,
         activationFunction = this.hiddenActivation,
-        weightsInitializer = weightsInitializer,
-        biasesInitializer = biasesInitializer
-      )
-    }
-  )
+        connectionType = LayerType.Connection.Feedforward),
+      LayerConfiguration(
+        size = this.inputSize,
+        activationFunction = null,
+        connectionType = LayerType.Connection.Feedforward),
+      weightsInitializer = weightsInitializer,
+      biasesInitializer = biasesInitializer)
+  }
 }
