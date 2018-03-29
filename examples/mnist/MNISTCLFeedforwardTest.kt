@@ -13,23 +13,23 @@ import utils.CorpusReader
 import Configuration
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
-import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLNetwork
-import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLNetworkModel
-import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLNetworkOptimizer
-import com.kotlinnlp.simplednn.helpers.training.CLTrainingHelper
+import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLFeedforwardNetwork
+import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLFeedforwardNetworkModel
+import com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward.CLFeedforwardNetworkOptimizer
+import com.kotlinnlp.simplednn.helpers.training.CLFeedforwardTrainingHelper
 import com.kotlinnlp.simplednn.helpers.validation.CLValidationHelper
 import utils.exampleextractor.ClassificationBinaryOutputExampleExtractor
 
 fun main(args: Array<String>) {
 
-  println("Start 'MNIST Test'")
+  println("Start 'MNIST CL Feedforward Test'")
 
   val dataset = CorpusReader<BinaryOutputExample<DenseNDArray>>().read(
     corpusPath = Configuration.loadFromFile().mnist.datasets_paths,
     exampleExtractor = ClassificationBinaryOutputExampleExtractor(),
     perLine = false)
 
-  MNISTCompetitiveLearningTest(dataset).start()
+  MNISTCLFeedforwardTest(dataset).start()
 
   println("End.")
 }
@@ -37,13 +37,13 @@ fun main(args: Array<String>) {
 /**
  *
  */
-class MNISTCompetitiveLearningTest(val dataset: Corpus<BinaryOutputExample<DenseNDArray>>) {
+class MNISTCLFeedforwardTest(val dataset: Corpus<BinaryOutputExample<DenseNDArray>>) {
 
   /**
    *
    */
-  private val model = CLNetworkModel(
-    classes = setOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+  private val model = CLFeedforwardNetworkModel(
+    numOfClasses = 10,
     inputSize = 784,
     hiddenSize = 50,
     hiddenActivation = Sigmoid())
@@ -62,16 +62,16 @@ class MNISTCompetitiveLearningTest(val dataset: Corpus<BinaryOutputExample<Dense
 
     println("\n-- TRAINING")
 
-    val optimizer = CLNetworkOptimizer(
+    val optimizer = CLFeedforwardNetworkOptimizer(
       model = this.model,
       updateMethod = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999))
 
-    val trainingHelper = CLTrainingHelper(
-      network = CLNetwork(this.model),
+    val trainingHelper = CLFeedforwardTrainingHelper(
+      network = CLFeedforwardNetwork(this.model),
       optimizer = optimizer,
       verbose = true)
 
-    val validationHelper = CLValidationHelper(network = CLNetwork(this.model))
+    val validationHelper = CLValidationHelper(network = CLFeedforwardNetwork(this.model))
 
     trainingHelper.train(
       trainingExamples = this.dataset.training,

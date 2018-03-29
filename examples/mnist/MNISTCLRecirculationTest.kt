@@ -19,14 +19,14 @@ import utils.exampleextractor.ClassificationBinaryOutputExampleExtractor
 
 fun main(args: Array<String>) {
 
-  println("Start 'MNIST Test'")
+  println("Start 'MNIST CL Recirculation Test'")
 
   val dataset = CorpusReader<BinaryOutputExample<DenseNDArray>>().read(
     corpusPath = Configuration.loadFromFile().mnist.datasets_paths,
     exampleExtractor = ClassificationBinaryOutputExampleExtractor(),
     perLine = false)
 
-  MNISTRecirculationTest(dataset).start()
+  MNISTCLRecirculationTest(dataset).start()
 
   println("End.")
 }
@@ -34,7 +34,7 @@ fun main(args: Array<String>) {
 /**
  *
  */
-class MNISTRecirculationTest(val dataset: Corpus<BinaryOutputExample<DenseNDArray>>) {
+class MNISTCLRecirculationTest(val dataset: Corpus<BinaryOutputExample<DenseNDArray>>) {
 
   /**
    *
