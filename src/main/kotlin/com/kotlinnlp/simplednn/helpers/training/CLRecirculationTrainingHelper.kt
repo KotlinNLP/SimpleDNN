@@ -20,9 +20,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 class CLRecirculationTrainingHelper(
   val network: CLRecirculationNetwork,
   verbose: Boolean = false
-) : TrainingHelper<BinaryOutputExample<DenseNDArray>>(
-  optimizer = null,
-  verbose = verbose) {
+) : TrainingHelper<BinaryOutputExample<DenseNDArray>>(optimizer = null, verbose = verbose) {
 
   /**
    * Learn from an example (forward + backward)
