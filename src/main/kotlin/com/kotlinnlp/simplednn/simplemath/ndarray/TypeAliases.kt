@@ -7,8 +7,8 @@
 
 package com.kotlinnlp.simplednn.simplemath.ndarray
 
-typealias Indices = Pair<Int, Int>
-typealias SparseEntry = Pair<Indices, Double>
-typealias VectorIndices = ArrayList<Int>
-typealias VectorsMap = MutableMap<Int, VectorIndices?>
-typealias VectorsMapEntry = MutableMap.MutableEntry<Int, VectorIndices?>
+internal typealias Indices = Pair<Int, Int>
+internal typealias SparseEntry = Pair<Indices, Double>
+internal typealias VectorIndices = ArrayList<Int>
+internal typealias VectorsMap = MutableMap<Int, VectorIndices?>
+internal typealias VectorsMapEntry = MutableMap.MutableEntry<Int, VectorIndices?>
