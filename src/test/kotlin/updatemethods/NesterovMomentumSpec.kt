@@ -29,12 +29,12 @@ class NesterovMomentumSpec: Spek({
       on("update") {
 
         val updateHelper = NesterovMomentumMethod(learningRate = 0.001, momentum = 0.9)
-        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
-        supportStructure.v.assignValues(Utils.supportArray1())
+        supportStructure.v.assignValues(UpdateMethodsUtils.supportArray1())
 
-        updateHelper.update(array = updatableArray, errors = Utils.buildDenseErrors())
+        updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildDenseErrors())
 
         it("should match the expected updated array") {
           assertEquals(true, updatableArray.values.equals(
@@ -49,12 +49,12 @@ class NesterovMomentumSpec: Spek({
       on("update") {
 
         val updateHelper = NesterovMomentumMethod(learningRate = 0.001, momentum = 0.9)
-        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
-        supportStructure.v.assignValues(Utils.supportArray1())
+        supportStructure.v.assignValues(UpdateMethodsUtils.supportArray1())
 
-        updateHelper.update(array = updatableArray, errors = Utils.buildSparseErrors())
+        updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildSparseErrors())
 
         it("should match the expected updated array") {
           assertEquals(true, updatableArray.values.equals(

@@ -29,12 +29,12 @@ class AdaGradSpec: Spek({
       on("update") {
 
         val updateHelper = AdaGradMethod(learningRate = 0.001, epsilon = 1.0e-8)
-        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
-        supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
+        supportStructure.secondOrderMoments.assignValues(UpdateMethodsUtils.supportArray2())
 
-        updateHelper.update(array = updatableArray, errors = Utils.buildDenseErrors())
+        updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildDenseErrors())
 
         it("should match the expected updated array") {
           assertEquals(true, updatableArray.values.equals(
@@ -49,12 +49,12 @@ class AdaGradSpec: Spek({
       on("update") {
 
         val updateHelper = AdaGradMethod(learningRate = 0.001, epsilon = 1.0e-8)
-        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
-        supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
+        supportStructure.secondOrderMoments.assignValues(UpdateMethodsUtils.supportArray2())
 
-        updateHelper.update(array = updatableArray, errors = Utils.buildSparseErrors())
+        updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildSparseErrors())
 
         it("should match the expected updated array") {
           assertEquals(true, updatableArray.values.equals(

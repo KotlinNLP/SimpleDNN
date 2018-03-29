@@ -34,9 +34,9 @@ class LearningRateSpec: Spek({
       on("update") {
 
         val updateHelper = LearningRateMethod(learningRate = 0.001)
-        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
 
-        updateHelper.update(array = updatableArray, errors = Utils.buildDenseErrors())
+        updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildDenseErrors())
 
         it("should match the expected updated array") {
           assertEquals(true, updatableArray.values.equals(
@@ -51,9 +51,9 @@ class LearningRateSpec: Spek({
       on("update") {
 
         val updateHelper = LearningRateMethod(learningRate = 0.001)
-        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
 
-        updateHelper.update(array = updatableArray, errors = Utils.buildSparseErrors())
+        updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildSparseErrors())
 
         it("should match the expected updated array") {
           assertEquals(true, updatableArray.values.equals(

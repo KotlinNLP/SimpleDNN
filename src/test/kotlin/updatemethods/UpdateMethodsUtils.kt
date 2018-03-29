@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArrayFactory
 /**
  *
  */
-object Utils {
+object UpdateMethodsUtils {
 
   /**
    *
@@ -26,7 +26,7 @@ object Utils {
   fun buildUpdateableArray(): UpdatableDenseArray {
 
     val values: DenseNDArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.4, 0.5, 1.0, 0.8))
-    val array: UpdatableDenseArray = UpdatableDenseArray(DenseNDArrayFactory.zeros(values.shape))
+    val array = UpdatableDenseArray(DenseNDArrayFactory.zeros(values.shape))
 
     array.values.assignValues(values)
 

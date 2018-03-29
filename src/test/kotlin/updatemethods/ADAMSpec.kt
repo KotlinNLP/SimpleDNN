@@ -30,13 +30,13 @@ class ADAMSpec : Spek({
       on("update") {
 
         val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
-        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
-        supportStructure.firstOrderMoments.assignValues(Utils.supportArray1())
-        supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
+        supportStructure.firstOrderMoments.assignValues(UpdateMethodsUtils.supportArray1())
+        supportStructure.secondOrderMoments.assignValues(UpdateMethodsUtils.supportArray2())
 
-        updateHelper.update(array = updatableArray, errors = Utils.buildDenseErrors())
+        updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildDenseErrors())
 
         it("should match the expected updated array") {
           assertEquals(true, updatableArray.values.equals(
@@ -51,13 +51,13 @@ class ADAMSpec : Spek({
       on("update") {
 
         val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
-        val updatableArray: UpdatableDenseArray = Utils.buildUpdateableArray()
+        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
-        supportStructure.firstOrderMoments.assignValues(Utils.supportArray1())
-        supportStructure.secondOrderMoments.assignValues(Utils.supportArray2())
+        supportStructure.firstOrderMoments.assignValues(UpdateMethodsUtils.supportArray1())
+        supportStructure.secondOrderMoments.assignValues(UpdateMethodsUtils.supportArray2())
 
-        updateHelper.update(array = updatableArray, errors = Utils.buildSparseErrors())
+        updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildSparseErrors())
 
         it("should match the expected updated array") {
           assertEquals(true, updatableArray.values.equals(
