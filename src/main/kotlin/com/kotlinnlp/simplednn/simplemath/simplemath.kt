@@ -38,9 +38,8 @@ fun equals(a: Double, b: Double, tolerance: Double = 10e-4): Boolean {
  * @return a [Boolean] which indicates if all the elements of [a] are equal to the
  * corresponding elements of [b] within the [tolerance]
  */
-fun equals(a: Array<Double>, b: Array<Double>, tolerance: Double = 10e-4): Boolean {
-  return a.zip(b).all { equals(it.first, it.second, tolerance = tolerance) }
-}
+fun equals(a: Array<Double>, b: Array<Double>, tolerance: Double = 10e-4): Boolean =
+  a.zip(b).all { equals(it.first, it.second, tolerance = tolerance) }
 
 /**
  * Concatenate vertical 1-dim [DenseNDArray]s vertically.
