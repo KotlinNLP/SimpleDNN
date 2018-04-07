@@ -103,6 +103,20 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   )
 
   /**
+   * Propagate the errors of the final output of the two RNNs (left-to-right + right-to-left)
+   *
+   * @param errors the errors to propagate
+   * @param propagateToInput whether to propagate the output errors to the input or not
+   */
+  fun backwardMixedFinalOutput(errors: DenseNDArray, propagateToInput: Boolean) {
+
+    val splitErrors: Array<DenseNDArray> = errors.splitV(this.network.hiddenSize)
+
+    this.leftToRightProcessor.backward(outputErrors = splitErrors[0], propagateToInput = propagateToInput)
+    this.rightToLeftProcessor.backward(outputErrors = splitErrors[1], propagateToInput = propagateToInput)
+  }
+
+  /**
    * Propagate the errors of the entire sequence.
    *
    * @param outputErrorsSequence the errors to propagate
