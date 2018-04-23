@@ -22,7 +22,7 @@ abstract class Optimizer(protected val updateMethod: UpdateMethod<*>) : Schedule
   /**
    * Update the parameters of the neural element associated to this optimizer.
    */
-  override abstract fun update()
+  abstract override fun update()
 
   /**
    * Method to call every new epoch.

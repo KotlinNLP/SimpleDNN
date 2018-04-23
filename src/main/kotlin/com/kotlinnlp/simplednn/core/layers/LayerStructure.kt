@@ -38,17 +38,17 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The helper which execute the forward
    */
-  abstract protected val forwardHelper: ForwardHelper<InputNDArrayType>
+  protected abstract val forwardHelper: ForwardHelper<InputNDArrayType>
 
   /**
    * The helper which execute the backward
    */
-  abstract protected val backwardHelper: BackwardHelper<InputNDArrayType>
+  protected abstract val backwardHelper: BackwardHelper<InputNDArrayType>
 
   /**
    * The helper which calculates the relevance
    */
-  abstract protected val relevanceHelper: RelevanceHelper<InputNDArrayType>
+  protected abstract val relevanceHelper: RelevanceHelper<InputNDArrayType>
 
   /**
    * Set the values of the inputArray

@@ -42,7 +42,7 @@ abstract class GatedRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDAr
   /**
    * The helper which calculates the relevance
    */
-  override abstract val relevanceHelper: GatedRecurrentRelevanceHelper<InputNDArrayType>
+  abstract override val relevanceHelper: GatedRecurrentRelevanceHelper<InputNDArrayType>
 
   /**
    * @param layerContributions the contributions saved during the last forward

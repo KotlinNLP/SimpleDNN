@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * @property layer the [LayerStructure] in which to calculate the input relevance
  */
 abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  open protected val layer: LayerStructure<InputNDArrayType>
+  protected open val layer: LayerStructure<InputNDArrayType>
 ) {
 
   /**

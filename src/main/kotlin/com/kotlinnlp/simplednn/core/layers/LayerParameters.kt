@@ -42,12 +42,12 @@ abstract class LayerParameters<SelfType: LayerParameters<SelfType>>(
   /**
    * The list of weights parameters.
    */
-  abstract protected val weightsList: List<UpdatableArray<*>>
+  protected abstract val weightsList: List<UpdatableArray<*>>
 
   /**
    * The list of biases parameters.
    */
-  abstract protected val biasesList: List<UpdatableArray<*>>
+  protected abstract val biasesList: List<UpdatableArray<*>>
 
   /**
    * Initialize the values of the parameters with the given [weightsInitializer] and [biasesInitializer].

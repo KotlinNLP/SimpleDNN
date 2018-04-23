@@ -46,7 +46,7 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
   /**
    * An [NDArray] containing the values of this [ActivableArray]
    */
-  lateinit protected var _values: NDArrayType
+  protected lateinit var _values: NDArrayType
 
   /**
    * An [NDArray] containing the values not activated of this [ActivableArray] (respect on the last call of activate())

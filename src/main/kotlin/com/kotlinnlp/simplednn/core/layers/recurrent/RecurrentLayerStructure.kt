@@ -41,7 +41,7 @@ abstract class RecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayTy
   /**
    * The helper which calculates the relevance
    */
-  override abstract val relevanceHelper: RecurrentRelevanceHelper<InputNDArrayType>
+  abstract override val relevanceHelper: RecurrentRelevanceHelper<InputNDArrayType>
 
   /**
    * Calculate the relevance of the output in the previous state respect of the current one and assign it to the output

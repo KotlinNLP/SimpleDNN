@@ -31,7 +31,7 @@ class ParamsErrorsAccumulator<ParamsErrorsType: IterableParams<ParamsErrorsType>
   /**
    * The structure in which to accumulate the parameters errors.
    */
-  lateinit private var paramsErrors: ParamsErrorsType
+  private lateinit var paramsErrors: ParamsErrorsType
 
   /**
    * A boolean which indicates if [paramsErrors] is a reference of one given by the user or is created privately.

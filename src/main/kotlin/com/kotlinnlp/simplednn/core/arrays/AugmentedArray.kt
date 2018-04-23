@@ -49,7 +49,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Contains the errors of the current values
    */
-  lateinit private var _errors: DenseNDArray
+  private lateinit var _errors: DenseNDArray
 
   /**
    * Contains the relevance of the current values
