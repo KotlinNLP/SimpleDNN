@@ -38,6 +38,11 @@ class SequenceFeedforwardEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   private var usedProcessors: Int = 0
 
   /**
+   * The index of the current processor.
+   */
+  private var curProcessorIndex: Int = -1
+
+  /**
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
    * @return the errors of the input sequence
@@ -70,6 +75,47 @@ class SequenceFeedforwardEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   }
 
   /**
+   * Forward the input with a dedicated feed-forward processor.
+   *
+   * @param input the input
+   * @param firstState true if the [input] is the first of a sequence
+   *
+   * @return an array containing the forwarded sequence
+   */
+  fun encode(input: InputNDArrayType, firstState: Boolean): DenseNDArray {
+
+    if (firstState) this.reset()
+
+    val processor = this.getProcessor(++this.curProcessorIndex)
+
+    this.usedProcessors++
+
+    return processor.forward(input)
+  }
+
+  /**
+   * Execute the backward on the processor at the [curProcessorIndex].
+   *
+   * @param outputErrors the output errors of the last used processor
+   * @param propagateToInput whether to propagate the output errors to the input or not
+   */
+  fun backwardStep(outputErrors: DenseNDArray, propagateToInput: Boolean) {
+
+    require(this.curProcessorIndex >= 0)
+
+    this.processorBackward(
+      processor = this.processorsList[this.curProcessorIndex],
+      errors = outputErrors,
+      propagateToInput = propagateToInput)
+
+    if (this.curProcessorIndex == 0) {
+      this.errorsAccumulator.averageErrors()
+    }
+
+    this.curProcessorIndex--
+  }
+
+  /**
    * Execute the backward for each element of the input sequence, given its output errors, and return its input errors.
    *
    * @param outputErrorsSequence the output errors of the sequence to propagate
@@ -87,6 +133,8 @@ class SequenceFeedforwardEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
         processor = this.processorsList[i],
         errors = outputErrorsSequence[i],
         propagateToInput = propagateToInput)
+
+      this.curProcessorIndex--
     }
 
     this.errorsAccumulator.averageErrors()
@@ -97,6 +145,7 @@ class SequenceFeedforwardEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   private fun reset() {
     this.usedProcessors = 0
+    this.curProcessorIndex = -1
     this.errorsAccumulator.reset()
   }
 
@@ -114,6 +163,7 @@ class SequenceFeedforwardEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
         val processor = this.getProcessor(i)
 
         this.usedProcessors++
+        this.curProcessorIndex++
 
         processor.forward(sequence[i])
       }
