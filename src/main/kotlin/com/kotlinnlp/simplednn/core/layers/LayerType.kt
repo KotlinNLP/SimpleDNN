@@ -31,7 +31,8 @@ sealed class LayerType {
     LSTM(property = Property.Recurrent),
     CFN(property = Property.Recurrent),
     RAN(property = Property.Recurrent),
-    DeltaRNN(property = Property.Recurrent)
+    DeltaRNN(property = Property.Recurrent),
+    IndRNN(property = Property.Recurrent)
   }
 
   /**
