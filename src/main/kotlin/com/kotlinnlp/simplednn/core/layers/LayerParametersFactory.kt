@@ -13,6 +13,7 @@ import com.kotlinnlp.simplednn.core.layers.feedforward.highway.HighwayLayerParam
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.deltarnn.DeltaRNNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerParameters
+import com.kotlinnlp.simplednn.core.layers.recurrent.indrnn.IndRNNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
@@ -84,6 +85,13 @@ object LayerParametersFactory {
       meProp = meProp)
 
     LayerType.Connection.DeltaRNN -> DeltaRNNLayerParameters(
+      inputSize = inputSize,
+      outputSize = outputSize,
+      sparseInput = sparseInput,
+      weightsInitializer = weightsInitializer,
+      biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
+
+    LayerType.Connection.IndRNN -> IndRNNLayerParameters(
       inputSize = inputSize,
       outputSize = outputSize,
       sparseInput = sparseInput,
