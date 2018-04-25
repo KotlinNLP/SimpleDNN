@@ -28,14 +28,13 @@ class IndRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override fun forward() { this.layer.params as IndRNNLayerParameters
 
     // y = w (dot) x + b
-    this.layer.outputArray.forward(parameters = this.layer.params.unit, x = this.layer.inputArray.values)
+    this.layer.outputArray.forward(parameters = this.layer.params.feedforwardUnit, x = this.layer.inputArray.values)
 
     // y += wRec * yPrev
     this.layer.layerContextWindow.getPrevStateLayer()?.let { prevStateLayer ->
 
-      this.layer.outputArray.addRecurrentContribution(
-        parameters = this.layer.params.unit,
-        prevContribution = prevStateLayer.outputArray.values)
+      val wRec = this.layer.params.recurrentWeights.values
+      this.layer.outputArray.values.assignSum(wRec.prod(prevStateLayer.outputArray.values))
     }
 
     this.layer.outputArray.activate()
