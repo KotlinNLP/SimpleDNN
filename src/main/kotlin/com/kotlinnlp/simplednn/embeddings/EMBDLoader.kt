@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.embeddings
+package com.kotlinnlp.simplednn.embeddings
 
 import com.kotlinnlp.progressindicator.ProgressIndicatorBar
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
@@ -106,7 +106,7 @@ class EMBDLoader(private val verbose: Boolean = true) {
    *
    * @return a new embedding
    */
-  private fun buildEmbedding(id: Int, vector: DoubleArray) = Embedding (
+  private fun buildEmbedding(id: Int, vector: DoubleArray) = Embedding(
     id = id,
     array = UpdatableDenseArray(values = DenseNDArrayFactory.arrayOf(vector)))
 

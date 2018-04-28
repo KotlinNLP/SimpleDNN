@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.embeddings
+package com.kotlinnlp.simplednn.embeddings
 
 import com.kotlinnlp.simplednn.utils.DictionarySet
 import java.io.File

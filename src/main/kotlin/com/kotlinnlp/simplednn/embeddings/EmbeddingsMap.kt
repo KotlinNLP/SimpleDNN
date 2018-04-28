@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.embeddings
+package com.kotlinnlp.simplednn.embeddings
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
@@ -57,7 +57,7 @@ open class EmbeddingsMap<in T>(
              pseudoRandomDropout: Boolean = true,
              initializer: Initializer? = GlorotInitializer()): EmbeddingsMap<String> {
 
-      val firstLine: String = this.readFirstLine(filename)
+      val firstLine: String = readFirstLine(filename)
       val firstLineSplit: List<String> = firstLine.split(delimiters = " ")
 
       val count: Int = firstLineSplit[0].toInt()
@@ -68,7 +68,7 @@ open class EmbeddingsMap<in T>(
         pseudoRandomDropout = pseudoRandomDropout,
         initializer = initializer)
 
-      this.forEachDataLine(filename = filename, vectorSize = size) { key, vector ->
+      forEachDataLine(filename = filename, vectorSize = size) { key, vector ->
         embeddingsMap.set(
           key = key,
           embedding = Embedding(
