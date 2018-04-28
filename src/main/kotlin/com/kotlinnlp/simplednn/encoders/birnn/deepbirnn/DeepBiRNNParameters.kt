@@ -5,12 +5,12 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.birnn.deepbirnn
+package com.kotlinnlp.simplednn.encoders.birnn.deepbirnn
 
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
+import com.kotlinnlp.simplednn.encoders.birnn.BiRNNParameters
 
 /**
  * The DeepBiRNNParameters contains the parameters of all its stacked BiRNN.

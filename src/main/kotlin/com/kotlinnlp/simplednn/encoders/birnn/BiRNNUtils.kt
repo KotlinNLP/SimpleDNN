@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.birnn
+package com.kotlinnlp.simplednn.encoders.birnn
 
 import com.kotlinnlp.simplednn.simplemath.concatVectorsV
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -29,7 +29,7 @@ object BiRNNUtils {
     val leftToRightOutputErrors = arrayOfNulls<DenseNDArray>(array.size)
     val rightToLeftOutputErrors = arrayOfNulls<DenseNDArray>(array.size)
 
-    array.indices.forEach { i -> val (a, b) = this.splitErrors(array[i])
+    array.indices.forEach { i -> val (a, b) = splitErrors(array[i])
       leftToRightOutputErrors[i] = a
       rightToLeftOutputErrors[i] = b
     }

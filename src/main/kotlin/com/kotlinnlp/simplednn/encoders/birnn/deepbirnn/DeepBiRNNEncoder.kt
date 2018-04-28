@@ -5,10 +5,10 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.birnn.deepbirnn
+package com.kotlinnlp.simplednn.encoders.birnn.deepbirnn
 
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncoder
+import com.kotlinnlp.simplednn.encoders.birnn.BiRNN
+import com.kotlinnlp.simplednn.encoders.birnn.BiRNNEncoder
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 

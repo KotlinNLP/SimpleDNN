@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN
+import com.kotlinnlp.simplednn.encoders.birnn.BiRNN
 import com.kotlinnlp.simplednn.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream

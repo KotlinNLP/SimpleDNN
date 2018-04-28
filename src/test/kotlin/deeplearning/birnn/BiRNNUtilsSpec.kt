@@ -7,7 +7,7 @@
 
 package deeplearning.birnn
 
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNUtils
+import com.kotlinnlp.simplednn.encoders.birnn.BiRNNUtils
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape

@@ -14,9 +14,9 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetwork
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworksPool
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncoder
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncodersPool
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
+import com.kotlinnlp.simplednn.encoders.birnn.BiRNNEncoder
+import com.kotlinnlp.simplednn.encoders.birnn.BiRNNEncodersPool
+import com.kotlinnlp.simplednn.encoders.birnn.BiRNNParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.utils.ItemsPool
