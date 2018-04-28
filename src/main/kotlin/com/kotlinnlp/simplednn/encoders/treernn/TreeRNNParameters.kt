@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.treernn
+package com.kotlinnlp.simplednn.encoders.treernn
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
@@ -45,7 +45,7 @@ class TreeRNNParameters(
   override fun copy() = TreeRNNParameters(
     leftRNN = this.leftRNN.copy(),
     rightRNN = this.rightRNN.copy(),
-    concatNetwork= this.concatNetwork.copy()
+    concatNetwork = this.concatNetwork.copy()
   )
 
   /**

@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.treernn
+package com.kotlinnlp.simplednn.encoders.treernn
 
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
@@ -466,9 +466,9 @@ class TreeEncoder(val network: TreeRNN) {
         optimizer.newExample()
 
         optimizer.accumulate(TreeRNNParameters(
-            leftRNN = it.leftProcessor.getParamsErrors(copy = false),
-            rightRNN = it.rightProcessor.getParamsErrors(copy = false),
-            concatNetwork = it.concatProcessor.getParamsErrors(copy = false)))
+          leftRNN = it.leftProcessor.getParamsErrors(copy = false),
+          rightRNN = it.rightProcessor.getParamsErrors(copy = false),
+          concatNetwork = it.concatProcessor.getParamsErrors(copy = false)))
       }
     }
   }
