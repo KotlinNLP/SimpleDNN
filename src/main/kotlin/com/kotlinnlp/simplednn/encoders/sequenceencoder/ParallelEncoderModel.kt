@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.sequenceencoder
+package com.kotlinnlp.simplednn.encoders.sequenceencoder
 
 import com.kotlinnlp.simplednn.utils.Serializer
 import java.io.InputStream

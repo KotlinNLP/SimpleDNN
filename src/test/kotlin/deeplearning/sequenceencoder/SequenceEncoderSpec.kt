@@ -8,7 +8,7 @@
 package deeplearning.sequenceencoder
 
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.deeplearning.sequenceencoder.SequenceFeedforwardEncoder
+import com.kotlinnlp.simplednn.encoders.sequenceencoder.SequenceFeedforwardEncoder
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
