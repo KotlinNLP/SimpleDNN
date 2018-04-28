@@ -58,7 +58,8 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     this.sequence = sequence
 
-    val (leftToRightOut, rightToLeftOut) = this.biEncoding(useDropout = useDropout)
+    val (leftToRightOut: Array<DenseNDArray>, rightToLeftOut: Array<DenseNDArray>)
+      = this.biEncoding(useDropout = useDropout)
 
     return BiRNNUtils.concatenate(leftToRightOut, rightToLeftOut)
   }
