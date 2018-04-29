@@ -8,11 +8,9 @@
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
-import kotlin.reflect.KClass
 
 /**
  * The AdaGrad method assigns a different learning rate to each parameter
@@ -35,14 +33,13 @@ class AdaGradMethod(
    * Optimize sparse errors.
    *
    * @param errors the [SparseNDArray] errors to optimize
-   * @param array an [UpdatableDenseArray]
+   * @param supportStructure the support structure of the [UpdateMethod]
    *
    * @return optimized sparse errors
    */
-  override fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
+  override fun optimizeSparseErrors(errors: SparseNDArray, supportStructure: AdaGradStructure): SparseNDArray {
 
-    val helperStructure: AdaGradStructure = this.getSupportStructure(array)
-    val m = helperStructure.secondOrderMoments
+    val m = supportStructure.secondOrderMoments
 
     m.assignSum(errors.prod(errors))
 
@@ -53,14 +50,13 @@ class AdaGradMethod(
    * Optimize dense errors.
    *
    * @param errors the [DenseNDArray] errors to optimize
-   * @param array an [UpdatableDenseArray]
+   * @param supportStructure the support structure of the [UpdateMethod]
    *
    * @return optimized dense errors
    */
-  override fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
+  override fun optimizeDenseErrors(errors: DenseNDArray, supportStructure: AdaGradStructure): DenseNDArray {
 
-    val helperStructure: AdaGradStructure = this.getSupportStructure(array)
-    val m = helperStructure.secondOrderMoments
+    val m = supportStructure.secondOrderMoments
 
     m.assignSum(errors.prod(errors))
 

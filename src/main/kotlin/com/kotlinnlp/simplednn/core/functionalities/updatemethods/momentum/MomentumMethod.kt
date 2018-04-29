@@ -8,14 +8,12 @@
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
-import kotlin.reflect.KClass
 
 /**
  * The Momentum method.
@@ -60,16 +58,15 @@ open class MomentumMethod(
    * Update velocity with adapted learning rate.
    *
    * @param errors the [SparseNDArray] errors to optimize
-   * @param array an [UpdatableDenseArray]
+   * @param supportStructure the support structure of the [UpdateMethod]
    *
    * @return optimized sparse errors
    */
-  override fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
+  override fun optimizeSparseErrors(errors: SparseNDArray, supportStructure: MomentumStructure): SparseNDArray {
 
-    val helperStructure: MomentumStructure = this.getSupportStructure(array)
-    val v = helperStructure.v
-
+    val v = supportStructure.v
     val mask = errors.mask
+
     v.assignValues(errors.prod(this.alpha).assignSum(v.prod(this.momentum, mask = mask)), mask = mask)
 
     return v.maskBy(mask)
@@ -80,14 +77,13 @@ open class MomentumMethod(
    * Update velocity with adapted learning rate.
    *
    * @param errors the [DenseNDArray] errors to optimize
-   * @param array an [UpdatableDenseArray]
+   * @param supportStructure the support structure of the [UpdateMethod]
    *
    * @return optimized dense errors
    */
-  override fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
+  override fun optimizeDenseErrors(errors: DenseNDArray, supportStructure: MomentumStructure): DenseNDArray {
 
-    val helperStructure: MomentumStructure = this.getSupportStructure(array)
-    val v = helperStructure.v
+    val v = supportStructure.v
 
     v.assignSum(errors.prod(this.alpha), v.prod(this.momentum))
 

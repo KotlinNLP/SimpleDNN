@@ -8,12 +8,10 @@
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
-import kotlin.reflect.KClass
 
 /**
  * The ADAM method.
@@ -55,15 +53,14 @@ class ADAMMethod(
    * Optimize sparse errors.
    *
    * @param errors the [SparseNDArray] errors to optimize
-   * @param array an [UpdatableDenseArray]
+   * @param supportStructure the support structure of the [UpdateMethod]
    *
    * @return optimized sparse errors
    */
-  override fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
+  override fun optimizeSparseErrors(errors: SparseNDArray, supportStructure: ADAMStructure): SparseNDArray {
 
-    val helperStructure: ADAMStructure = this.getSupportStructure(array)
-    val v = helperStructure.firstOrderMoments
-    val m = helperStructure.secondOrderMoments
+    val v = supportStructure.firstOrderMoments
+    val m = supportStructure.secondOrderMoments
     val mask = errors.mask
 
     v.assignProd(this.beta1, mask = mask).assignSum(errors.prod(1.0 - this.beta1))
@@ -76,15 +73,14 @@ class ADAMMethod(
    * Optimize dense errors.
    *
    * @param errors the [DenseNDArray] errors to optimize
-   * @param array an [UpdatableDenseArray]
+   * @param supportStructure the support structure of the [UpdateMethod]
    *
    * @return optimized dense errors
    */
-  override fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
+  override fun optimizeDenseErrors(errors: DenseNDArray, supportStructure: ADAMStructure): DenseNDArray {
 
-    val helperStructure: ADAMStructure = this.getSupportStructure(array)
-    val v = helperStructure.firstOrderMoments
-    val m = helperStructure.secondOrderMoments
+    val v = supportStructure.firstOrderMoments
+    val m = supportStructure.secondOrderMoments
 
     v.assignProd(this.beta1).assignSum(errors.prod(1.0 - this.beta1))
     m.assignProd(this.beta2).assignSum(errors.prod(errors).assignProd(1.0 - this.beta2))

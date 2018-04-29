@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.nesterovmomentum
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
@@ -15,7 +14,6 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
-import kotlin.reflect.KClass
 
 /**
  * The NesterovMomentum method.
@@ -59,15 +57,14 @@ class NesterovMomentumMethod(
    * Optimize sparse errors.
    *
    * @param errors the [SparseNDArray] errors to optimize
-   * @param array an [UpdatableDenseArray]
+   * @param supportStructure the support structure of the [UpdateMethod]
    *
    * @return optimized sparse errors
    */
-  override fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
+  override fun optimizeSparseErrors(errors: SparseNDArray, supportStructure: NesterovMomentumStructure): SparseNDArray {
 
-    val helperStructure: NesterovMomentumStructure = this.getSupportStructure(array)
-    val v = helperStructure.v
-    val vPrev = helperStructure.vPrev
+    val v = supportStructure.v
+    val vPrev = supportStructure.vPrev
 
     val mask = errors.mask
 
@@ -82,15 +79,14 @@ class NesterovMomentumMethod(
    * Optimize dense errors.
    *
    * @param errors the [DenseNDArray] errors to optimize
-   * @param array an [UpdatableDenseArray]
+   * @param supportStructure the support structure of the [UpdateMethod]
    *
    * @return optimized dense errors
    */
-  override fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
+  override fun optimizeDenseErrors(errors: DenseNDArray, supportStructure: NesterovMomentumStructure): DenseNDArray {
 
-    val helperStructure: NesterovMomentumStructure = this.getSupportStructure(array)
-    val v = helperStructure.v
-    val vPrev = helperStructure.vPrev
+    val v = supportStructure.v
+    val vPrev = supportStructure.vPrev
 
     vPrev.assignValues(v) // backup previous velocity
 

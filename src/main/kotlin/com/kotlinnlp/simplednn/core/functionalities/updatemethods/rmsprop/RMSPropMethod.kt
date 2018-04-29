@@ -8,12 +8,10 @@
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
-import kotlin.reflect.KClass
 
 /**
  * The RMSProp method is a variant of the AdaGradMethod where the squared sum of previous gradients is replaced with a
@@ -39,14 +37,13 @@ class RMSPropMethod(
    * Optimize sparse errors.
    *
    * @param errors the [SparseNDArray] errors to optimize
-   * @param array an [UpdatableDenseArray]
+   * @param supportStructure the support structure of the [UpdateMethod]
    *
    * @return optimized sparse errors
    */
-  override fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray {
+  override fun optimizeSparseErrors(errors: SparseNDArray, supportStructure: RMSPropStructure): SparseNDArray {
 
-    val helperStructure: RMSPropStructure = this.getSupportStructure(array)
-    val m = helperStructure.secondOrderMoments
+    val m = supportStructure.secondOrderMoments
 
     val mask: NDArrayMask = errors.mask
     val mUpdate: SparseNDArray =
@@ -61,14 +58,13 @@ class RMSPropMethod(
    * Optimize dense errors.
    *
    * @param errors the [DenseNDArray] errors to optimize
-   * @param array an [UpdatableDenseArray]
+   * @param supportStructure the support structure of the [UpdateMethod]
    *
    * @return optimized dense errors
    */
-  override fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray {
+  override fun optimizeDenseErrors(errors: DenseNDArray, supportStructure: RMSPropStructure): DenseNDArray {
 
-    val helperStructure: RMSPropStructure = this.getSupportStructure(array)
-    val m = helperStructure.secondOrderMoments
+    val m = supportStructure.secondOrderMoments
 
     m.assignSum(m.prod(this.decay), errors.prod(errors).assignProd(1.0 - this.decay))
 

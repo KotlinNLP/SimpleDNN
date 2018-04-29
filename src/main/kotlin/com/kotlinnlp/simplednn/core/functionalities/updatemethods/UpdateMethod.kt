@@ -20,7 +20,7 @@ import kotlin.reflect.KClass
  * @property regularization
  * @param structureClass the Kotlin Class of the support structure of this updater
  */
-abstract class UpdateMethod<out SupportStructureType: UpdaterSupportStructure>(
+abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(
   val regularization: WeightsRegularization?,
   private val structureClass: KClass<SupportStructureType>
 ) {
@@ -82,12 +82,12 @@ abstract class UpdateMethod<out SupportStructureType: UpdaterSupportStructure>(
 
     is SparseNDArray -> { // errors are Sparse when the input is SparseBinary
       @Suppress("UNCHECKED_CAST")
-      this.optimizeSparseErrors(errors = errors, array = array) as NDArrayType
+      this.optimizeSparseErrors(errors, this.getSupportStructure(array)) as NDArrayType
     }
 
     is DenseNDArray -> { // errors are Dense when the input is Dense
       @Suppress("UNCHECKED_CAST")
-      this.optimizeDenseErrors(errors = errors, array = array) as NDArrayType
+      this.optimizeDenseErrors(errors, this.getSupportStructure(array)) as NDArrayType
     }
 
     else -> throw RuntimeException("Invalid errors type")
@@ -97,19 +97,19 @@ abstract class UpdateMethod<out SupportStructureType: UpdaterSupportStructure>(
    * Optimize sparse errors.
    *
    * @param errors the [SparseNDArray] errors to optimize
-   * @param array an [UpdatableDenseArray]
+   * @param supportStructure the support structure of the [UpdateMethod]
    *
    * @return optimized sparse errors
    */
-  protected abstract fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray
+  protected abstract fun optimizeSparseErrors(errors: SparseNDArray, supportStructure: SupportStructureType): SparseNDArray
 
   /**
    * Optimize dense errors.
    *
    * @param errors the [DenseNDArray] errors to optimize
-   * @param array an [UpdatableDenseArray]
+   * @param supportStructure the support structure of the [UpdateMethod]
    *
    * @return optimized dense errors
    */
-  protected abstract fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray
+  protected abstract fun optimizeDenseErrors(errors: DenseNDArray, supportStructure: SupportStructureType): DenseNDArray
 }
