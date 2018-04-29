@@ -18,6 +18,8 @@ import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 import kotlin.reflect.KClass
 
 /**
+ * The NesterovMomentum method.
+ *
  * @param learningRate Double >= 0. Learning rate
  * @param momentum  Double >= 0. Parameter updates momentum
  */
@@ -27,12 +29,7 @@ class NesterovMomentumMethod(
   val decayMethod: DecayMethod? = null,
   regularization: WeightsRegularization? = null
 ) : EpochScheduling,
-  UpdateMethod<NesterovMomentumStructure>(regularization) {
-
-  /**
-   * The Kotlin Class of the support structure of this updater.
-   */
-  override val structureClass: KClass<NesterovMomentumStructure> = NesterovMomentumStructure::class
+  UpdateMethod<NesterovMomentumStructure>(regularization, NesterovMomentumStructure::class) {
 
   /**
    *

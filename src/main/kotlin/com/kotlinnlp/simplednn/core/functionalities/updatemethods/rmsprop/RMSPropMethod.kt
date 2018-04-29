@@ -16,15 +16,16 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import kotlin.reflect.KClass
 
 /**
- * The RMSProp method is a variant of [com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGradMethod]
- * where the squared sum of previous gradients is replaced with a moving average.
+ * The RMSProp method is a variant of the AdaGradMethod where the squared sum of previous gradients is replaced with a
+ * moving average.
  *
  * @property learningRate Double >= 0. Initial learning rate
  * @property epsilon Double >= 0. Bias parameter
  * @property decay Learning rate decay parameter
  *
  * References
- * [rmsprop: Divide the gradient by a running average of its recent magnitude](http://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf)
+ * [rmsprop: Divide the gradient by a running average of its recent magnitude]
+ * (http://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf)
  *
  */
 class RMSPropMethod(
@@ -32,12 +33,7 @@ class RMSPropMethod(
   val epsilon: Double = 1e-08,
   val decay: Double = 0.95,
   regularization: WeightsRegularization? = null
-) : UpdateMethod<RMSPropStructure>(regularization) {
-
-  /**
-   * The Kotlin Class of the support structure of this updater.
-   */
-  override val structureClass: KClass<RMSPropStructure> = RMSPropStructure::class
+) : UpdateMethod<RMSPropStructure>(regularization, RMSPropStructure::class) {
 
   /**
    * Optimize sparse errors.

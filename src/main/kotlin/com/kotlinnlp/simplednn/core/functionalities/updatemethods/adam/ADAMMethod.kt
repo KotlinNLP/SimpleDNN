@@ -16,6 +16,7 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 import kotlin.reflect.KClass
 
 /**
+ * The ADAM method.
  *
  * @param stepSize stepSize
  * @param beta1 beta1
@@ -29,12 +30,7 @@ class ADAMMethod(
   val epsilon: Double = 1.0E-8,
   regularization: WeightsRegularization? = null
 ) : ExampleScheduling,
-    UpdateMethod<ADAMStructure>(regularization) {
-
-  /**
-   * The Kotlin Class of the support structure of this updater.
-   */
-  override val structureClass: KClass<ADAMStructure> = ADAMStructure::class
+    UpdateMethod<ADAMStructure>(regularization, ADAMStructure::class) {
 
   /**
    *

@@ -18,40 +18,12 @@ import kotlin.reflect.KClass
  * UpdateMethod implements different gradient-based optimization algorithm (e.g. LearningRate, Adagrad, ADAM).
  *
  * @property regularization
+ * @param structureClass the Kotlin Class of the support structure of this updater
  */
-abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(val regularization: WeightsRegularization?) {
-
-  /**
-   * The Kotlin Class of the support structure of this updater.
-   */
-  abstract protected val structureClass: KClass<SupportStructureType>
-
-  /**
-   * @param array the array to update
-   *
-   * @return a new [UpdaterSupportStructure] to associate to the [array]
-   */
-  private fun structureFactory(array: UpdatableDenseArray): SupportStructureType
-    = this.structureClass.constructors.first().call(array.values.shape)
-
-  /**
-   * @param array the array from which to extract the support structure
-   *
-   * @return the [UpdaterSupportStructure] extracted from the given [array]
-   */
-  fun getSupportStructure(array: UpdatableDenseArray): SupportStructureType {
-
-    try {
-      array.updaterSupportStructure
-    } catch (e: UninitializedPropertyAccessException) {
-      array.updaterSupportStructure = this.structureFactory(array)
-    }
-
-    require(this.structureClass.isInstance(array.updaterSupportStructure)) { "Incompatible updaterSupportStructure" }
-
-    @Suppress("UNCHECKED_CAST")
-    return array.updaterSupportStructure as SupportStructureType
-  }
+abstract class UpdateMethod<out SupportStructureType: UpdaterSupportStructure>(
+  val regularization: WeightsRegularization?,
+  private val structureClass: KClass<SupportStructureType>
+) {
 
   /**
    * Update the given [array] with the given [errors].
@@ -67,6 +39,33 @@ abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(val r
 
     array.values.assignSub(optimizedErrors)
   }
+
+  /**
+   * @param array the array from which to extract the support structure
+   *
+   * @return the [UpdaterSupportStructure] extracted from the given [array]
+   */
+  internal fun getSupportStructure(array: UpdatableDenseArray): SupportStructureType {
+
+    try {
+      array.updaterSupportStructure
+    } catch (e: UninitializedPropertyAccessException) {
+      array.updaterSupportStructure = this.structureFactory(array)
+    }
+
+    require(this.structureClass.isInstance(array.updaterSupportStructure)) { "Incompatible updaterSupportStructure" }
+
+    @Suppress("UNCHECKED_CAST")
+    return array.updaterSupportStructure as SupportStructureType
+  }
+
+  /**
+   * @param array the array to update
+   *
+   * @return a new [UpdaterSupportStructure] to associate to the [array]
+   */
+  private fun structureFactory(array: UpdatableDenseArray): SupportStructureType
+    = this.structureClass.constructors.first().call(array.values.shape)
 
   /**
    * Optimize the errors.
@@ -102,7 +101,7 @@ abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(val r
    *
    * @return optimized sparse errors
    */
-  abstract protected fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray
+  protected abstract fun optimizeSparseErrors(errors: SparseNDArray, array: UpdatableDenseArray): SparseNDArray
 
   /**
    * Optimize dense errors.
@@ -112,5 +111,5 @@ abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(val r
    *
    * @return optimized dense errors
    */
-  abstract protected fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray
+  protected abstract fun optimizeDenseErrors(errors: DenseNDArray, array: UpdatableDenseArray): DenseNDArray
 }

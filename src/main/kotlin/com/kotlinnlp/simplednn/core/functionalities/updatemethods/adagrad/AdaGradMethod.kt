@@ -29,12 +29,7 @@ class AdaGradMethod(
   val learningRate:Double = 0.01,
   val epsilon: Double = 1.0E-8,
   regularization: WeightsRegularization? = null
-) : UpdateMethod<AdaGradStructure>(regularization) {
-
-  /**
-   * The Kotlin Class of the support structure of this updater.
-   */
-  override val structureClass: KClass<AdaGradStructure> = AdaGradStructure::class
+) : UpdateMethod<AdaGradStructure>(regularization, AdaGradStructure::class) {
 
   /**
    * Optimize sparse errors.

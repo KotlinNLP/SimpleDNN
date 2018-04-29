@@ -18,6 +18,7 @@ import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 import kotlin.reflect.KClass
 
 /**
+ * The LearningRate method.
  *
  * @param learningRate learningRate
  * @param decayMethod decayMethod
@@ -27,12 +28,7 @@ class LearningRateMethod(
   val decayMethod: DecayMethod? = null,
   regularization: WeightsRegularization? = null
 ) : EpochScheduling,
-    UpdateMethod<LearningRateStructure>(regularization) {
-
-  /**
-   * The Kotlin Class of the support structure of this updater.
-   */
-  override val structureClass: KClass<LearningRateStructure> = LearningRateStructure::class
+    UpdateMethod<LearningRateStructure>(regularization, LearningRateStructure::class) {
 
   /**
    *
