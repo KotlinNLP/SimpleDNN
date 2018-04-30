@@ -30,4 +30,28 @@ open class UpdatableArray<NDArrayType: NDArray<NDArrayType>>(open val values: ND
    * The updater support structure used by [com.kotlinnlp.simplednn.core.functionalities.updatemethods].
    */
   lateinit var updaterSupportStructure: UpdaterSupportStructure
+
+  /**
+   * Return the [updaterSupportStructure].
+   *
+   * If the [updaterSupportStructure] is not initialized, set it with a new [StructureType].
+   * If the [updaterSupportStructure] has already been initialized, it must be compatible with the required
+   * [StructureType].
+   *
+   * @return the [updaterSupportStructure]
+   */
+  inline fun <reified StructureType: UpdaterSupportStructure>getOrSetSupportStructure():
+    StructureType {
+
+    try {
+      this.updaterSupportStructure
+    } catch (e: UninitializedPropertyAccessException) {
+      this.updaterSupportStructure = StructureType::class.constructors.first().call(this.values.shape)
+    }
+
+    require(this.updaterSupportStructure is StructureType) { "Incompatible support structure" }
+
+    @Suppress("UNCHECKED_CAST")
+    return this.updaterSupportStructure as StructureType
+  }
 }
