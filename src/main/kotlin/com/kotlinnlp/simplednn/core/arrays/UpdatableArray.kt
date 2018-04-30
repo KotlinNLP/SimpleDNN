@@ -40,8 +40,7 @@ open class UpdatableArray<NDArrayType: NDArray<NDArrayType>>(open val values: ND
    *
    * @return the [updaterSupportStructure]
    */
-  inline fun <reified StructureType: UpdaterSupportStructure>getOrSetSupportStructure():
-    StructureType {
+  inline fun <reified StructureType: UpdaterSupportStructure>getOrSetSupportStructure(): StructureType {
 
     try {
       this.updaterSupportStructure
