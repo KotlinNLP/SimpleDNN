@@ -7,10 +7,12 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
@@ -27,7 +29,14 @@ open class MomentumMethod(
   val decayMethod: DecayMethod? = null,
   regularization: WeightsRegularization? = null
 ) : EpochScheduling,
-  UpdateMethod<MomentumStructure>(regularization, MomentumStructure::class) {
+  UpdateMethod<MomentumStructure>(regularization) {
+
+  /**
+   * @param array the array from which to extract the support structure
+   *
+   * @return the [UpdaterSupportStructure] extracted from the given [array]
+   */
+  override fun getSupportStructure(array: UpdatableDenseArray): MomentumStructure = array.getOrSetSupportStructure()
 
   /**
    *

@@ -7,8 +7,10 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 
@@ -27,7 +29,14 @@ class AdaGradMethod(
   val learningRate:Double = 0.01,
   val epsilon: Double = 1.0E-8,
   regularization: WeightsRegularization? = null
-) : UpdateMethod<AdaGradStructure>(regularization, AdaGradStructure::class) {
+) : UpdateMethod<AdaGradStructure>(regularization) {
+
+  /**
+   * @param array the array from which to extract the support structure
+   *
+   * @return the [UpdaterSupportStructure] extracted from the given [array]
+   */
+  override fun getSupportStructure(array: UpdatableDenseArray): AdaGradStructure = array.getOrSetSupportStructure()
 
   /**
    * Optimize sparse errors.

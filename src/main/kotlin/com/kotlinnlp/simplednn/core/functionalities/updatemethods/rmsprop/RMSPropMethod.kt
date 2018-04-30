@@ -7,8 +7,10 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -31,7 +33,14 @@ class RMSPropMethod(
   val epsilon: Double = 1e-08,
   val decay: Double = 0.95,
   regularization: WeightsRegularization? = null
-) : UpdateMethod<RMSPropStructure>(regularization, RMSPropStructure::class) {
+) : UpdateMethod<RMSPropStructure>(regularization) {
+
+  /**
+   * @param array the array from which to extract the support structure
+   *
+   * @return the [UpdaterSupportStructure] extracted from the given [array]
+   */
+  override fun getSupportStructure(array: UpdatableDenseArray): RMSPropStructure = array.getOrSetSupportStructure()
 
   /**
    * Optimize sparse errors.

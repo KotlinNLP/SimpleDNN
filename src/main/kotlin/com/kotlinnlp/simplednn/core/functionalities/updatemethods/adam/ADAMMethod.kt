@@ -7,8 +7,10 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
@@ -28,7 +30,14 @@ class ADAMMethod(
   val epsilon: Double = 1.0E-8,
   regularization: WeightsRegularization? = null
 ) : ExampleScheduling,
-    UpdateMethod<ADAMStructure>(regularization, ADAMStructure::class) {
+    UpdateMethod<ADAMStructure>(regularization) {
+
+  /**
+   * @param array the array from which to extract the support structure
+   *
+   * @return the [UpdaterSupportStructure] extracted from the given [array]
+   */
+  override fun getSupportStructure(array: UpdatableDenseArray): ADAMStructure = array.getOrSetSupportStructure()
 
   /**
    *

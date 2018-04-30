@@ -12,17 +12,14 @@ import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegula
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
-import kotlin.reflect.KClass
 
 /**
  * UpdateMethod implements different gradient-based optimization algorithm (e.g. LearningRate, Adagrad, ADAM).
  *
  * @property regularization
- * @param structureClass the Kotlin Class of the support structure of this updater
  */
 abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(
-  val regularization: WeightsRegularization?,
-  private val structureClass: KClass<SupportStructureType>
+  val regularization: WeightsRegularization?
 ) {
 
   /**
@@ -45,27 +42,7 @@ abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(
    *
    * @return the [UpdaterSupportStructure] extracted from the given [array]
    */
-  internal fun getSupportStructure(array: UpdatableDenseArray): SupportStructureType {
-
-    try {
-      array.updaterSupportStructure
-    } catch (e: UninitializedPropertyAccessException) {
-      array.updaterSupportStructure = this.structureFactory(array)
-    }
-
-    require(this.structureClass.isInstance(array.updaterSupportStructure)) { "Incompatible updaterSupportStructure" }
-
-    @Suppress("UNCHECKED_CAST")
-    return array.updaterSupportStructure as SupportStructureType
-  }
-
-  /**
-   * @param array the array to update
-   *
-   * @return a new [UpdaterSupportStructure] to associate to the [array]
-   */
-  private fun structureFactory(array: UpdatableDenseArray): SupportStructureType
-    = this.structureClass.constructors.first().call(array.values.shape)
+  abstract fun getSupportStructure(array: UpdatableDenseArray): SupportStructureType
 
   /**
    * Optimize the errors.
