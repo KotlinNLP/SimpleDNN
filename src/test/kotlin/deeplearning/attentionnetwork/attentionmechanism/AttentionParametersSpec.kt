@@ -5,11 +5,11 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package deeplearning.attentionnetwork
+package deeplearning.attentionnetwork.attentionmechanism
 
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionParameters
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever

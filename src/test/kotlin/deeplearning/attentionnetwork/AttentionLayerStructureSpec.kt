@@ -8,7 +8,7 @@
 package deeplearning.attentionnetwork
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionParameters
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory

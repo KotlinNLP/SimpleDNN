@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionParameters
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray

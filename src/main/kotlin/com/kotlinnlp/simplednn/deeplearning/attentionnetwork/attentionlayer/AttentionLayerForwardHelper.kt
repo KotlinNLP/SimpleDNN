@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer
 
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionMechanism
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**

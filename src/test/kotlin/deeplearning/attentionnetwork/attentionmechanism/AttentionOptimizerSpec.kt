@@ -5,11 +5,11 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package deeplearning.attentionnetwork
+package deeplearning.attentionnetwork.attentionmechanism
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionOptimizer
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionParameters
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionOptimizer
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import deeplearning.attentionnetwork.utils.AttentionLayerUtils
 import org.jetbrains.spek.api.Spek

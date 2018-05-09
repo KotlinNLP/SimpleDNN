@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer
+package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
