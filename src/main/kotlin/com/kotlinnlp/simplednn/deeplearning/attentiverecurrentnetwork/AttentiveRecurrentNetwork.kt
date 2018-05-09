@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeura
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetwork
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworksPool
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.FeedforwardLayersPool
+import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayersPool
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
