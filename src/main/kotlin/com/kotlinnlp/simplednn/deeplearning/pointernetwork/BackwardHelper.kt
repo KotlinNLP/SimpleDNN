@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameter
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
+import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -39,7 +40,7 @@ class BackwardHelper(private val network: PointerNetwork) {
   /**
    * The params errors accumulator of the transform vectors.
    */
-  private var transformErrorsAccumulator = ParamsErrorsAccumulator<FeedforwardLayerParameters>()
+  private var transformErrorsAccumulator = ParamsErrorsAccumulator<AffineLayerParameters>()
 
   /**
    * The params errors accumulator of the recurrent context network.
@@ -50,6 +51,16 @@ class BackwardHelper(private val network: PointerNetwork) {
    * The params errors accumulator of the attention structure
    */
   private var attentionErrorsAccumulator = ParamsErrorsAccumulator<AttentionParameters>()
+
+  /**
+   * The structure used to store the params errors of the transform layers during the backward.
+   */
+  private lateinit var transformLayerParamsErrors: FeedforwardLayerParameters
+
+  /**
+   * The structure used to store the params errors of the attention during the backward.
+   */
+  private lateinit var attentionParamsErrors: AttentionParameters
 
   /**
    * The errors of the recurrent context, set at each backward step.
@@ -107,5 +118,27 @@ class BackwardHelper(private val network: PointerNetwork) {
   private fun backwardStep(outputErrors: DenseNDArray, isFirstState: Boolean, isLastState: Boolean) {
 
     // TODO()
+  }
+
+  /**
+   * @return the transform layers params errors
+   */
+  private fun getTransformParamsErrors(): FeedforwardLayerParameters = try {
+    this.transformLayerParamsErrors
+  } catch (e: UninitializedPropertyAccessException) {
+    this.transformLayerParamsErrors =
+      this.network.usedTransformLayers.last().last().params.copy() as FeedforwardLayerParameters
+    this.transformLayerParamsErrors
+  }
+
+  /**
+   * @return the attention params errors
+   */
+  private fun getAttentionParamsErrors(): AttentionParameters = try {
+    this.attentionParamsErrors
+  } catch (e: UninitializedPropertyAccessException) {
+    this.attentionParamsErrors =
+      this.network.usedAttentionStructures.last().params.copy()
+    this.attentionParamsErrors
   }
 }
