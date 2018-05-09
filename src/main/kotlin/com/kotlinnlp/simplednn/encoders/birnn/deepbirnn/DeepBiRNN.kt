@@ -29,6 +29,7 @@ import java.io.Serializable
  * @property hiddenActivation the activation function of the hidden layer
  * @property recurrentConnectionType type of recurrent neural network (e.g. LSTM, GRU, CFN, SimpleRNN)
  * @property numberOfLayers number of stacked BiRNNs
+ * @property dropout the probability of dropout (default 0.0)
  * @param gainFactors an array with [numberOfLayers] elements, which defines the gain factor of the output size of
  *                    each layer in respect of its input. By default the first factor is 2.0, the others 1.0.
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
@@ -42,6 +43,7 @@ class DeepBiRNN(
   val hiddenActivation: ActivationFunction?,
   val recurrentConnectionType: LayerType.Connection,
   val numberOfLayers: Int = 1,
+  val dropout: Double = 0.0,
   private val gainFactors: Array<Double> = Array(size = numberOfLayers, init = { i -> if (i == 0) 2.0 else 1.0 }),
   private val weightsInitializer: Initializer? = GlorotInitializer(),
   private val biasesInitializer: Initializer? = GlorotInitializer()
@@ -138,6 +140,7 @@ class DeepBiRNN(
     inputType = inputType,
     hiddenSize = hiddenSize,
     hiddenActivation = this.hiddenActivation,
+    dropout = this.dropout,
     recurrentConnectionType = this.recurrentConnectionType,
     weightsInitializer = this.weightsInitializer,
     biasesInitializer = this.biasesInitializer)
