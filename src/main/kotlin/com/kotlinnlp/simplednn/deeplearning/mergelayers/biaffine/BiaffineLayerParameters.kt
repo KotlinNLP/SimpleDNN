@@ -30,7 +30,7 @@ class BiaffineLayerParameters(
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   sparseInput: Boolean = false
-) : MergeLayerParameters(
+) : MergeLayerParameters<BiaffineLayerParameters>(
   inputSize1 = inputSize1,
   inputSize2 = inputSize2,
   outputSize = outputSize,

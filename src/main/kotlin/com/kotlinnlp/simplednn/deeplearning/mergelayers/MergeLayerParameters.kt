@@ -21,14 +21,14 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
  * @param biasesInitializer the initializer of the biases (zeros if null)
  * @property sparseInput whether the weights connected to the input are sparse or not
  */
-abstract class MergeLayerParameters(
+abstract class MergeLayerParameters<SelfType: MergeLayerParameters<SelfType>>(
   val inputSize1: Int,
   val inputSize2: Int,
   outputSize: Int,
   weightsInitializer: Initializer?,
   biasesInitializer: Initializer?,
   val sparseInput: Boolean
-) : LayerParameters<MergeLayerParameters>(
+) : LayerParameters<SelfType>(
   inputSize = inputSize1,
   outputSize = outputSize,
   weightsInitializer = weightsInitializer,

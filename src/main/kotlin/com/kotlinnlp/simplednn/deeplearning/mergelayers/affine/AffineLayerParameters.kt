@@ -30,7 +30,7 @@ open class AffineLayerParameters(
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   sparseInput: Boolean = false
-) : MergeLayerParameters(
+) : MergeLayerParameters<AffineLayerParameters>(
   inputSize1 = inputSize1,
   inputSize2 = inputSize2,
   outputSize = outputSize,
