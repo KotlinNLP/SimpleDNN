@@ -12,13 +12,13 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The optimizer of the Attention Layer.
+ * The optimizer of the [AttentionParameters].
  *
- * @property params the attention layer parameters to optimize
+ * @property params the attention parameters to optimize
  * @property updateMethod the [UpdateMethod] for the optimization (e.g. ADAM, AdaGrad, ...)
  */
-class AttentionLayerOptimizer(
-  val params: AttentionLayerParameters,
+class AttentionOptimizer(
+  val params: AttentionParameters,
   updateMethod: UpdateMethod<*>
 ) : Optimizer(updateMethod) {
 
@@ -35,9 +35,9 @@ class AttentionLayerOptimizer(
   /**
    * Accumulate the parameters errors contained into the [errors].
    *
-   * @param errors the errors of the Attention Layer parameters
+   * @param errors the errors of the Attention parameters
    */
-  fun accumulateErrors(errors: AttentionLayerParameters) {
+  fun accumulateErrors(errors: AttentionParameters) {
 
     this.contextVectorErrors.assignSum(errors.contextVector.values)
     this.count += 1

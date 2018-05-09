@@ -8,8 +8,8 @@
 package deeplearning.attentionnetwork
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerOptimizer
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerParameters
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionOptimizer
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import deeplearning.attentionnetwork.utils.AttentionLayerUtils
 import org.jetbrains.spek.api.Spek
@@ -21,17 +21,15 @@ import kotlin.test.assertTrue
 /**
  *
  */
-class AttentionLayerOptimizerSpec : Spek({
+class AttentionOptimizerSpec : Spek({
 
-  describe("an AttentionLayerOptimizer") {
+  describe("an AttentionOptimizer") {
 
     on("accumulation") {
 
       val params = AttentionLayerUtils.buildAttentionParams()
-      val optimizer = AttentionLayerOptimizer(
-        params = params,
-        updateMethod = LearningRateMethod(learningRate = 0.1))
-      val errors = AttentionLayerParameters(attentionSize = 2)
+      val optimizer = AttentionOptimizer(params = params, updateMethod = LearningRateMethod(learningRate = 0.1))
+      val errors = AttentionParameters(attentionSize = 2)
 
       errors.contextVector.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, -0.5)))
       optimizer.accumulateErrors(errors)

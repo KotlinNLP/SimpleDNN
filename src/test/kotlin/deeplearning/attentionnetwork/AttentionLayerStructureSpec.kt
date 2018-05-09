@@ -8,7 +8,7 @@
 package deeplearning.attentionnetwork
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerParameters
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionParameters
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -170,7 +170,7 @@ class AttentionLayerStructureSpec : Spek({
 
       structure.outputArray.assignErrors(AttentionLayerUtils.buildOutputErrors())
 
-      val errors = AttentionLayerParameters(attentionSize = 2)
+      val errors = AttentionParameters(attentionSize = 2)
       structure.backward(paramsErrors = errors, propagateToInput = true)
 
       it("should match the expected errors of the context vector") {

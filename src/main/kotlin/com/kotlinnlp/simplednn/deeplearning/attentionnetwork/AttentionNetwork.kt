@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerParameters
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionParameters
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer.AttentionLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -230,7 +230,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @param propagateToInput whether to propagate the errors to the input
    */
   private fun backwardAttentionLayer(outputErrors: DenseNDArray,
-                                     paramsErrors: AttentionLayerParameters,
+                                     paramsErrors: AttentionParameters,
                                      propagateToInput: Boolean = false) {
 
     this.attentionLayer.setErrors(outputErrors)

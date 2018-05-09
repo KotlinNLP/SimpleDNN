@@ -15,15 +15,15 @@ import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
- * Attention Layer parameters.
+ * Attention parameters.
  *
  * @property attentionSize the size of each array of attention
  * @param initializer the initializer of the context vector (zeros if null, default: Glorot)
  */
-class AttentionLayerParameters(
+class AttentionParameters(
   val attentionSize: Int,
   initializer: Initializer? = GlorotInitializer()
-) : IterableParams<AttentionLayerParameters>() {
+) : IterableParams<AttentionParameters>() {
 
   companion object {
 
@@ -52,11 +52,11 @@ class AttentionLayerParameters(
   }
 
   /**
-   * @return a new [AttentionLayerParameters] containing a copy of all values of this
+   * @return a new [AttentionParameters] containing a copy of all values of this
    */
-  override fun copy(): AttentionLayerParameters {
+  override fun copy(): AttentionParameters {
 
-    val clonedParams = AttentionLayerParameters(attentionSize = this.attentionSize, initializer = null)
+    val clonedParams = AttentionParameters(attentionSize = this.attentionSize, initializer = null)
 
     clonedParams.contextVector.values.assignValues(this.contextVector.values)
 

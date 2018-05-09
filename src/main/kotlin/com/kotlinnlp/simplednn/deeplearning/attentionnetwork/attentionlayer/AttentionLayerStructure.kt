@@ -23,7 +23,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   val inputSequence: ArrayList<AugmentedArray<InputNDArrayType>>,
   val attentionSequence: ArrayList<DenseNDArray>,
-  val params: AttentionLayerParameters
+  val params: AttentionParameters
 ) {
 
   /**
@@ -101,7 +101,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input sequence
    */
-  fun backward(paramsErrors: AttentionLayerParameters, propagateToInput: Boolean) {
+  fun backward(paramsErrors: AttentionParameters, propagateToInput: Boolean) {
 
     val helper = AttentionLayerBackwardHelper(layer = this)
 

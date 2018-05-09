@@ -37,7 +37,7 @@ class AttentionLayerBackwardHelper(private val layer: AttentionLayerStructure<*>
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input sequence
    */
-  fun backward(paramsErrors: AttentionLayerParameters, propagateToInput: Boolean) {
+  fun backward(paramsErrors: AttentionParameters, propagateToInput: Boolean) {
 
     AttentionMechanism.backward(
       importanceScore = this.layer.importanceScore,
