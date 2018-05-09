@@ -5,7 +5,6 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-
 package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
@@ -13,9 +12,9 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializ
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
+import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
 import java.io.Serializable
 
 
@@ -24,7 +23,7 @@ import java.io.Serializable
  *
  * @property inputSize the size of the input vectors
  * @property attentionSize the size of the attention vectors
- * @property recurrentHiddenSize the size of the hidden layer of the network used to encode to encode the input vectors
+ * @param recurrentHiddenSize the size of the hidden layer of the network used to encode to encode the input vectors
  * @param recurrentConnectionType the recurrent connection type of the network used to encode the input vectors
  * @param recurrentHiddenActivation the hidden activation function of the network used to encode the input vectors
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
@@ -33,7 +32,7 @@ import java.io.Serializable
 class PointerNetworkModel(
   val inputSize: Int,
   val attentionSize: Int,
-  val recurrentHiddenSize: Int,
+  private val recurrentHiddenSize: Int,
   private val recurrentHiddenActivation: ActivationFunction?,
   private val recurrentConnectionType: LayerType.Connection,
   weightsInitializer: Initializer? = GlorotInitializer(),
@@ -68,8 +67,9 @@ class PointerNetworkModel(
   /**
    * The parameters used to create the attention arrays of the [attentionParams].
    */
-  val transformParams = FeedforwardLayerParameters(
-    inputSize = this.inputSize + this.recurrentHiddenSize,
+  val transformParams = AffineLayerParameters(
+    inputSize1 = this.inputSize,
+    inputSize2 = this.recurrentHiddenSize,
     outputSize = this.attentionSize)
 
   /**
