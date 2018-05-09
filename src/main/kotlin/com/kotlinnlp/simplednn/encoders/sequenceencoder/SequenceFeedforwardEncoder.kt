@@ -12,15 +12,20 @@ import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeura
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.utils.ItemsPool
 
 /**
  * Sequence Feedforward Encoder.
  *
  * It encodes a sequence of arrays into another sequence of arrays using a [SequenceFeedforwardNetwork].
+ *
+ * @property network the network
+ * @property id an identification number useful to track a specific [SequenceFeedforwardEncoder]
  */
 class SequenceFeedforwardEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
-  val network: SequenceFeedforwardNetwork
-) {
+  val network: SequenceFeedforwardNetwork,
+  override val id: Int = 0
+) : ItemsPool.IDItem {
 
   /**
    * A list of [FeedforwardNeuralProcessor]s which merge each input array into a single vector.
