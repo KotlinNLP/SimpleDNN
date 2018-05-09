@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
@@ -55,7 +54,7 @@ class BackwardHelper(private val network: PointerNetwork) {
   /**
    * The structure used to store the params errors of the transform layers during the backward.
    */
-  private lateinit var transformLayerParamsErrors: FeedforwardLayerParameters
+  private lateinit var transformLayerParamsErrors: AffineLayerParameters
 
   /**
    * The structure used to store the params errors of the attention during the backward.
@@ -126,11 +125,11 @@ class BackwardHelper(private val network: PointerNetwork) {
   /**
    * @return the transform layers params errors
    */
-  private fun getTransformParamsErrors(): FeedforwardLayerParameters = try {
+  private fun getTransformParamsErrors(): AffineLayerParameters = try {
     this.transformLayerParamsErrors
   } catch (e: UninitializedPropertyAccessException) {
     this.transformLayerParamsErrors =
-      this.network.usedTransformLayers.last().last().params.copy() as FeedforwardLayerParameters
+      this.network.usedTransformLayers.last().last().params.copy()
     this.transformLayerParamsErrors
   }
 
