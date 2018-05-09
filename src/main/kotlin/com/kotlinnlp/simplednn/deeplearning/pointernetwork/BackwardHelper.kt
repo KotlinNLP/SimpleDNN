@@ -7,11 +7,15 @@
 
 package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
 import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerStructure
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionMechanism
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionStructure
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * The backward helper of the [PointerNetwork].
@@ -21,15 +25,16 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 class BackwardHelper(private val network: PointerNetwork) {
 
   /**
-   * The list of errors of the current input sequence.
+   * The list of errors of the input sequence.
    */
-  lateinit var inputSequenceErrors: List<DenseNDArray>
+  internal lateinit var inputSequenceErrors: List<DenseNDArray>
     private set
 
   /**
-   * The errors of the init hidden array. They can be get only if the forward has been called with an init hidden array.
+   * The list of errors of the decoding input sequence.
    */
-  val initHiddenErrors: DenseNDArray get() = this.network.recurrentProcessor.getInitHiddenErrors().first()!!
+  internal lateinit var decodingSequenceErrors: List<DenseNDArray>
+    private set
 
   /**
    * The index of the current state (the backward processes the states in inverted order).
@@ -40,11 +45,6 @@ class BackwardHelper(private val network: PointerNetwork) {
    * The params errors accumulator of the transform vectors.
    */
   private var transformErrorsAccumulator = ParamsErrorsAccumulator<AffineLayerParameters>()
-
-  /**
-   * The params errors accumulator of the recurrent context network.
-   */
-  private var recurrentErrorsAccumulator = ParamsErrorsAccumulator<NetworkParameters>()
 
   /**
    * The params errors accumulator of the attention structure
@@ -62,11 +62,6 @@ class BackwardHelper(private val network: PointerNetwork) {
   private lateinit var attentionParamsErrors: AttentionParameters
 
   /**
-   * The errors of the recurrent context, set at each backward step.
-   */
-  private lateinit var recurrentErrors: DenseNDArray
-
-  /**
    * Perform the back-propagation from the output errors.
    *
    * @param outputErrors the errors to propagate
@@ -79,14 +74,9 @@ class BackwardHelper(private val network: PointerNetwork) {
 
       this.stateIndex = stateIndex
 
-      this.backwardStep(
-        outputErrors = outputErrors[stateIndex],
-        isFirstState = stateIndex == 0,
-        isLastState = stateIndex == outputErrors.lastIndex)
+      this.backwardStep(outputErrors[stateIndex])
     }
 
-    // The errors in the 'contextErrorsAccumulator' are already averaged thanks to the recurrent processor
-    this.recurrentErrorsAccumulator.accumulate(this.network.recurrentProcessor.getParamsErrors(copy = false))
     this.transformErrorsAccumulator.averageErrors()
     this.attentionErrorsAccumulator.averageErrors()
   }
@@ -97,29 +87,117 @@ class BackwardHelper(private val network: PointerNetwork) {
    * @return the params errors of the [network]
    */
   fun getParamsErrors(copy: Boolean = true) = PointerNetworkParameters(
-    recurrentParams = this.recurrentErrorsAccumulator.getParamsErrors(copy = copy),
+    recurrentParams = this.network.recurrentProcessor.getParamsErrors(copy = copy),
     transformParams = this.transformErrorsAccumulator.getParamsErrors(copy = copy),
     attentionParams = this.attentionErrorsAccumulator.getParamsErrors(copy = copy))
+
+  /**
+   * A single step of backward.
+   *
+   * @param outputErrors the errors of a single output array
+   */
+  private fun backwardStep(outputErrors: DenseNDArray) {
+
+    val attentionArraysErrors: Array<DenseNDArray> = this.backwardAttentionScores(outputErrors)
+    val decodingHiddenErrors: DenseNDArray = this.backwardAttentionArrays(outputErrors = attentionArraysErrors)
+
+    this.network.recurrentProcessor.backwardStep(decodingHiddenErrors, propagateToInput = true)
+
+    this.decodingSequenceErrors[this.stateIndex].assignValues(
+      this.network.recurrentProcessor.getInputErrors(elementIndex = this.stateIndex, copy = true))
+  }
+
+  /**
+   * @param outputErrors the errors of a single output array
+   *
+   * @return the errors of the attention arrays
+   */
+  private fun backwardAttentionScores(outputErrors: DenseNDArray): Array<DenseNDArray> {
+
+    val attentionStructure: AttentionStructure = this.network.forwardHelper.usedAttentionStructures[this.stateIndex]
+
+    AttentionMechanism(attentionStructure).backward(
+      paramsErrors = this.getAttentionParamsErrors(),
+      importanceScoreErrors = outputErrors)
+
+    return attentionStructure.getAttentionErrors()
+  }
+
+  /**
+   *
+   */
+  private fun backwardAttentionArrays(outputErrors: Array<DenseNDArray>): DenseNDArray {
+
+    val decodingHiddenErrorsSum: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.network.model.inputSize))
+
+    val transformLayers: List<AffineLayerStructure<DenseNDArray>>
+      = this.network.forwardHelper.usedTransformLayers[this.stateIndex]
+
+    transformLayers.zip(outputErrors).forEachIndexed { index, (transformLayer, attentionErrors) ->
+
+      val (inputSequenceElementError: DenseNDArray, decodingHiddenErrors: DenseNDArray) =
+        this.backwardTransformLayer(layer = transformLayer, outputErrors = attentionErrors)
+
+      decodingHiddenErrorsSum.assignSum(decodingHiddenErrors)
+
+      this.inputSequenceErrors[index].assignSum(inputSequenceElementError)
+    }
+
+    return decodingHiddenErrorsSum
+  }
+
+
+  /**
+   * A single transform layer backward.
+   *
+   * @param layer a transform layer
+   * @param outputErrors the errors of the output
+   *
+   * @return the errors of the input
+   */
+  private fun backwardTransformLayer(layer: AffineLayerStructure<DenseNDArray>,
+                                     outputErrors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
+
+    val paramsErrors = this.getTransformParamsErrors()
+
+    layer.setErrors(outputErrors)
+    layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+
+    this.transformErrorsAccumulator.accumulate(paramsErrors)
+
+    return layer.getInputErrors(copy = true)
+  }
 
   /**
    * Initialize the structures used during a backward.
    */
   private fun initBackward() {
 
-    this.recurrentErrorsAccumulator.reset()
+    this.initInputSequenceErrors()
+    this.initDecodingSequenceErrors()
+
     this.transformErrorsAccumulator.reset()
     this.attentionErrorsAccumulator.reset()
   }
 
   /**
-   * A single step of backward.
-   *
-   * @param outputErrors the errors of a single output array
-   * @param isFirstState a boolean indicating if this is the first state of the sequence (the last of the backward)
-   * @param isLastState a boolean indicating if this is the last state of the sequence (the first of the backward)
+   * Initialize the [inputSequenceErrors] with arrays of zeros (an amount equal to the size of the current input
+   * sequence).
    */
-  private fun backwardStep(outputErrors: DenseNDArray, isFirstState: Boolean, isLastState: Boolean) {
-    // TODO()
+  private fun initInputSequenceErrors() {
+    this.inputSequenceErrors = List(
+      size = this.network.inputSequence.size,
+      init = { DenseNDArrayFactory.zeros(Shape(this.network.model.inputSize)) })
+  }
+
+  /**
+   * Initialize the [decodingSequenceErrors] with arrays of zeros (an amount equal to the size of the number of
+   * performed forward).
+   */
+  private fun initDecodingSequenceErrors() {
+    this.decodingSequenceErrors = List(
+      size = this.network.forwardCount,
+      init = { DenseNDArrayFactory.zeros(Shape(this.network.model.decodingInputSize)) })
   }
 
   /**
@@ -129,7 +207,7 @@ class BackwardHelper(private val network: PointerNetwork) {
     this.transformLayerParamsErrors
   } catch (e: UninitializedPropertyAccessException) {
     this.transformLayerParamsErrors =
-      this.network.usedTransformLayers.last().last().params.copy()
+      this.network.forwardHelper.usedTransformLayers.last().last().params.copy()
     this.transformLayerParamsErrors
   }
 
@@ -140,7 +218,7 @@ class BackwardHelper(private val network: PointerNetwork) {
     this.attentionParamsErrors
   } catch (e: UninitializedPropertyAccessException) {
     this.attentionParamsErrors =
-      this.network.usedAttentionStructures.last().params.copy()
+      this.network.forwardHelper.usedAttentionStructures.last().params.copy()
     this.attentionParamsErrors
   }
 }
