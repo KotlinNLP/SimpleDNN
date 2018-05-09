@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer
 
-import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -40,13 +39,12 @@ class AttentionLayerBackwardHelper(private val layer: AttentionLayerStructure<*>
    */
   fun backward(paramsErrors: AttentionLayerParameters, propagateToInput: Boolean) {
 
-    val scoreErrors: DenseNDArray = this.getScoreErrors()
-    val softmaxGradients: DenseNDArray = Softmax().df(this.layer.importanceScore)
-    val acErrors: DenseNDArray = softmaxGradients.dot(scoreErrors)
-
-    paramsErrors.contextVector.values.assignValues(acErrors.t.dot(this.layer.attentionMatrix.values).t)
-
-    this.setAttentionErrors(attentionContextErrors = acErrors)
+    AttentionMechanism.backward(
+      importanceScore = this.layer.importanceScore,
+      importanceScoreErrors = this.getScoreErrors(),
+      attentionMatrix = this.layer.attentionMatrix,
+      contextVector = this.layer.params.contextVector.values,
+      contextVectorErrors = paramsErrors.contextVector.values)
 
     if (propagateToInput) {
       this.setInputErrors()
@@ -84,17 +82,5 @@ class AttentionLayerBackwardHelper(private val layer: AttentionLayerStructure<*>
     }
 
     return scoreErrors
-  }
-
-  /**
-   * Set the errors of each array of the attention input sequence (which is into the structure).
-   *
-   *   gAM = gAC (dot) cv
-   *
-   * @param attentionContextErrors the errors of the attention context.
-   */
-  private fun setAttentionErrors(attentionContextErrors: DenseNDArray) {
-    val contextVect: DenseNDArray = this.layer.params.contextVector.values.t
-    this.layer.attentionMatrix.assignErrorsByDot(attentionContextErrors, contextVect)
   }
 }

@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionlayer
 
-import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -34,10 +33,10 @@ class AttentionLayerForwardHelper(private val layer: AttentionLayerStructure<*>)
    */
   fun forward() {
 
-    val contextVect: DenseNDArray = this.layer.params.contextVector.values
-    val attentionContext: DenseNDArray = this.layer.attentionMatrix.values.dot(contextVect)
-
-    this.layer.importanceScore = Softmax().f(attentionContext)
+    this.layer.importanceScore = AttentionMechanism.forward(
+      attentionMatrix = this.layer.attentionMatrix.values,
+      contextVector = this.layer.params.contextVector.values
+    )
 
     this.calculateOutput()
   }
