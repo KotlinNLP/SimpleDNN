@@ -30,13 +30,11 @@ class ForwardHelper(private val network: PointerNetwork) {
   private var firstRecurrentState: Boolean = true
 
   /**
-   * @param inputSequence the input sequence
-   * @param firstState a boolean indicating if this is the first state
-   * @param initHidden the initial hidden array (null by default)
+   * @param input the input
+   *
+   * @return an array that contains the importance score for each element of the input sequence
    */
-  fun forward(inputSequence: List<DenseNDArray>,
-              firstState: Boolean,
-              initHidden: DenseNDArray? = null): DenseNDArray {
+  fun forward(input: DenseNDArray): DenseNDArray {
 
     TODO()
   }
