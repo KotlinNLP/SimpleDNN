@@ -120,6 +120,8 @@ class BackwardHelper(private val network: PointerNetwork) {
       paramsErrors = this.getAttentionParamsErrors(),
       importanceScoreErrors = outputErrors)
 
+    this.attentionErrorsAccumulator.accumulate(this.attentionParamsErrors)
+
     return attentionStructure.getAttentionErrors()
   }
 
