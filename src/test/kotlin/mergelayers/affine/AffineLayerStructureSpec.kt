@@ -5,9 +5,9 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package deeplearning.mergelayers.affine
+package mergelayers.affine
 
-import com.kotlinnlp.simplednn.deeplearning.mergelayers.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 

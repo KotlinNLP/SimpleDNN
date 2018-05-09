@@ -5,13 +5,13 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.mergelayers.affine
+package com.kotlinnlp.simplednn.core.mergelayers.affine
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.deeplearning.mergelayers.MergeLayerParameters
+import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
 
 /**
  * The parameters of the affine layer.
