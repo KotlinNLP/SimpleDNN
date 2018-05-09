@@ -7,9 +7,12 @@
 
 package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
+import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionMechanism
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionStructure
 import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerStructure
+import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayersPool
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -20,17 +23,38 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 class ForwardHelper(private val network: PointerNetwork) {
 
   /**
-   * @param input the input
+   * The list of transform layers groups used during the last forward.
+   */
+  internal val usedTransformLayers = mutableListOf<List<AffineLayerStructure<DenseNDArray>>>()
+
+  /**
+   * The list of attention structures used during the last forward.
+   */
+  internal val usedAttentionStructures = mutableListOf<AttentionStructure>()
+
+  /**
+   * A pool of Affine Layers used to build the attention arrays.
+   */
+  private val transformLayersPool: AffineLayersPool<DenseNDArray> =
+    AffineLayersPool(
+      inputType = LayerType.Input.Dense,
+      activationFunction = Tanh(),
+      params = this.network.model.transformParams)
+
+  /**
+   * @param decodingInput the input
    * @param firstState a boolean indicating if this is the first state
    *
    * @return an array that contains the importance score for each element of the input sequence
    */
-  fun forward(input: DenseNDArray,
+  fun forward(decodingInput: DenseNDArray,
               firstState: Boolean,
               encodedSequence: List<DenseNDArray>): DenseNDArray {
 
+    if (firstState) this.initForward()
+
     val decodingHidden: DenseNDArray = this.network.recurrentProcessor.forward(
-      featuresArray = input,
+      featuresArray = decodingInput,
       firstState = firstState)
 
     val attentionArrays: List<DenseNDArray> = this.buildAttentionSequence(
@@ -47,10 +71,10 @@ class ForwardHelper(private val network: PointerNetwork) {
    */
   private fun buildAttentionStructure(attentionArrays: List<DenseNDArray>): AttentionStructure {
 
-    this.network.usedAttentionStructures.add(
+    this.usedAttentionStructures.add(
       AttentionStructure(attentionArrays, params = this.network.model.attentionParams))
 
-    return this.network.usedAttentionStructures.last()
+    return this.usedAttentionStructures.last()
   }
 
   /**
@@ -64,9 +88,9 @@ class ForwardHelper(private val network: PointerNetwork) {
 
     val transformLayers = this.getTransformLayers(size = encodedSequence.size)
 
-    return ArrayList(transformLayers.zip(encodedSequence).map { (layer, inputArray) ->
+    return ArrayList(transformLayers.zip(encodedSequence).map { (layer, encodedElement) ->
 
-      layer.setInput1(inputArray)
+      layer.setInput1(encodedElement)
       layer.setInput2(decodingHiddenState)
       layer.forward()
 
@@ -83,10 +107,20 @@ class ForwardHelper(private val network: PointerNetwork) {
    */
   private fun getTransformLayers(size: Int): List<AffineLayerStructure<DenseNDArray>> {
 
-    this.network.usedTransformLayers.add(
-      List(size = size, init = { this.network.transformLayersPool.getItem() })
+    this.usedTransformLayers.add(
+      List(size = size, init = { this.transformLayersPool.getItem() })
     )
 
-    return this.network.usedTransformLayers.last()
+    return this.usedTransformLayers.last()
+  }
+
+  /**
+   * Initialize the structures used during the forward.
+   */
+  private fun initForward() {
+
+    this.transformLayersPool.releaseAll()
+    this.usedTransformLayers.clear()
+    this.usedAttentionStructures.clear()
   }
 }
