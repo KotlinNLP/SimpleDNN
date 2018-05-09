@@ -25,7 +25,7 @@ class PointerNetwork(val model: PointerNetworkModel) {
   /**
    * The processor of the recurrent network.
    */
-  val recurrentProcessor: RecurrentNeuralProcessor<DenseNDArray> =
+  internal val recurrentProcessor: RecurrentNeuralProcessor<DenseNDArray> =
     RecurrentNeuralProcessor(this.model.recurrentNetwork)
 
   /**
@@ -41,7 +41,7 @@ class PointerNetwork(val model: PointerNetworkModel) {
   /**
    * A pool of Feedforward Layers used to build the attention arrays.
    */
-  val transformLayersPool: AffineLayersPool<DenseNDArray> =
+  internal val transformLayersPool: AffineLayersPool<DenseNDArray> =
     AffineLayersPool(
       inputType = LayerType.Input.Dense,
       activationFunction = Tanh(),
@@ -50,12 +50,13 @@ class PointerNetwork(val model: PointerNetworkModel) {
   /**
    * The list of transform layers groups used during the last forward.
    */
-  val usedTransformLayers = mutableListOf<List<AffineLayerStructure<DenseNDArray>>>()
+  internal val usedTransformLayers = mutableListOf<List<AffineLayerStructure<DenseNDArray>>>()
 
   /**
    * The list of attention structures used during the last forward.
    */
-  val usedAttentionStructures = mutableListOf<AttentionStructure>()
+  internal val usedAttentionStructures = mutableListOf<AttentionStructure>()
+
 
   /**
    * The forward helper.
