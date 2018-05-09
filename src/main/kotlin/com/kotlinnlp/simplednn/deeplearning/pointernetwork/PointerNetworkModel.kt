@@ -21,7 +21,8 @@ import java.io.Serializable
 /**
  * The model of the [PointerNetwork].
  *
- * @property inputSize the size of the input vectors
+ * @property inputSize the size of the vectors of the input sequence
+ * @property decodingInputSize the size of the vectors in input to the recurrent decoder
  * @property attentionSize the size of the attention vectors
  * @param recurrentHiddenSize the size of the hidden layer of the network used to encode to encode the input vectors
  * @param recurrentConnectionType the recurrent connection type of the network used to encode the input vectors
@@ -31,8 +32,9 @@ import java.io.Serializable
  */
 class PointerNetworkModel(
   val inputSize: Int,
+  val decodingInputSize: Int,
   val attentionSize: Int,
-  private val recurrentHiddenSize: Int,
+  val recurrentHiddenSize: Int,
   private val recurrentHiddenActivation: ActivationFunction?,
   private val recurrentConnectionType: LayerType.Connection,
   weightsInitializer: Initializer? = GlorotInitializer(),
@@ -52,13 +54,13 @@ class PointerNetworkModel(
    */
   val recurrentNetwork = NeuralNetwork(
     LayerConfiguration(
-      size = this.inputSize,
+      size = this.decodingInputSize,
       inputType = LayerType.Input.Dense
     ),
     LayerConfiguration(
-      size = recurrentHiddenSize,
-      activationFunction = recurrentHiddenActivation,
-      connectionType = recurrentConnectionType
+      size = this.recurrentHiddenSize,
+      activationFunction = this.recurrentHiddenActivation,
+      connectionType = this.recurrentConnectionType
     ),
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer
