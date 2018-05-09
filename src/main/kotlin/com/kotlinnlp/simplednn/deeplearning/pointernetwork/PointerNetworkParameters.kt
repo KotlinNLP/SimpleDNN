@@ -8,19 +8,21 @@
 package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
+import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
 
 /**
  * The parameters of the [PointerNetwork].
  *
  * @property recurrentParams the parameters of the recurrent network
+ * @property transformParams the parameters of the affine layer
+ * @property attentionParams the parameters of the attention structure
  */
 class PointerNetworkParameters(
   val recurrentParams: NetworkParameters,
-  val transformParams: FeedforwardLayerParameters,
+  val transformParams: AffineLayerParameters,
   val attentionParams: AttentionParameters
 ) : IterableParams<PointerNetworkParameters>() {
 
