@@ -27,7 +27,7 @@ import com.kotlinnlp.simplednn.utils.ItemsPool
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
- * @property id a unique id for this item (default = 0)
+ * @property id an identification number useful to track a specific [BiaffineLayerStructure]
  *
  */
 class BiaffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
@@ -37,7 +37,7 @@ class BiaffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val params: BiaffineLayerParameters,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0,
-  override val id: Int = 0
+  id: Int = 0
 ) :
   ItemsPool.IDItem,
   MergeLayer<InputNDArrayType>(
@@ -46,7 +46,8 @@ class BiaffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     outputArray = outputArray,
     params = params,
     activationFunction = activationFunction,
-    dropout = dropout) {
+    dropout = dropout,
+    id = id) {
 
   /**
    * Constructor by params.

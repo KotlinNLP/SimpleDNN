@@ -23,6 +23,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
+ * @property id an identification number useful to track a specific [AffineLayerStructure]
  */
 class AffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray1: AugmentedArray<InputNDArrayType>,
@@ -30,14 +31,16 @@ class AffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: AffineLayerParameters,
   activationFunction: ActivationFunction? = null,
-  dropout: Double = 0.0
+  dropout: Double = 0.0,
+  id: Int = 0
 ) : MergeLayer<InputNDArrayType>(
   inputArray1 = inputArray1,
   inputArray2 = inputArray2,
   outputArray = outputArray,
   params = params,
   activationFunction = activationFunction,
-  dropout = dropout) {
+  dropout = dropout,
+  id = id) {
 
   /**
    * The helper which execute the forward.
