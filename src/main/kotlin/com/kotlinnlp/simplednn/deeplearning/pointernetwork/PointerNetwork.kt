@@ -57,6 +57,10 @@ class PointerNetwork(val model: PointerNetworkModel) {
    */
   internal val usedAttentionStructures = mutableListOf<AttentionStructure>()
 
+  /**
+   * The number of forwards performed during the last decoding.
+   */
+  private var forwardCount: Int = 0
 
   /**
    * The forward helper.
@@ -75,7 +79,7 @@ class PointerNetwork(val model: PointerNetworkModel) {
    */
   fun setEncodedSequence(encodedSequence: List<DenseNDArray>) {
 
-    this.firstState = true
+    this.reset()
     this.encodedSequence = encodedSequence
   }
 
@@ -87,8 +91,6 @@ class PointerNetwork(val model: PointerNetworkModel) {
    * @return an array that contains the importance score for each element of the input sequence
    */
   fun forward(input: DenseNDArray): DenseNDArray {
-
-    if (this.firstState) this.resetHistory()
 
     val output: DenseNDArray = this.forwardHelper.forward(
       input = input,
@@ -106,6 +108,8 @@ class PointerNetwork(val model: PointerNetworkModel) {
    * @param outputErrors the output errors
    */
   fun backward(outputErrors: List<DenseNDArray>) {
+
+    require(outputErrors.size == this.forwardCount)
 
     this.backwardHelper.backward(outputErrors = outputErrors)
   }
@@ -126,7 +130,10 @@ class PointerNetwork(val model: PointerNetworkModel) {
   /**
    * Reset the decoding structure of the network.
    */
-  private fun resetHistory(){
+  private fun reset(){
+
+    this.firstState = true
+    this.forwardCount = 0
 
     this.transformLayersPool.releaseAll()
     this.usedTransformLayers.clear()
