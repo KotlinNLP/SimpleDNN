@@ -39,11 +39,6 @@ class PointerNetwork(val model: PointerNetworkModel) {
   private lateinit var inputSequence: List<DenseNDArray>
 
   /**
-   * The init hidden array (null by default).
-   */
-  private var initHidden: DenseNDArray? = null
-
-  /**
    * The forward helper.
    */
   private val forwardHelper = ForwardHelper(network = this)
@@ -62,29 +57,18 @@ class PointerNetwork(val model: PointerNetworkModel) {
 
     this.firstState = true
     this.inputSequence = inputSequence
-    this.initHidden = null
-  }
-
-  /**
-   * Set the init hidden array.
-   *
-   * @param array the init hidden array
-   */
-  fun setInitHidden(array: DenseNDArray) {
-    this.initHidden = array
   }
 
   /**
    * Forward.
    *
-   * @return the output array of the network
+   * @param input the input
+   *
+   * @return an array that contains the importance score for each element of the input sequence
    */
-  fun forward(): DenseNDArray {
+  fun forward(input: DenseNDArray): DenseNDArray {
 
-    val output: DenseNDArray = this.forwardHelper.forward(
-      inputSequence = this.inputSequence,
-      firstState = this.firstState,
-      initHidden = this.initHidden)
+    val output: DenseNDArray = this.forwardHelper.forward(input)
 
     this.firstState = false
 
@@ -113,12 +97,4 @@ class PointerNetwork(val model: PointerNetworkModel) {
    * @return the errors of the sequence
    */
   fun getInputSequenceErrors(): List<DenseNDArray> = this.backwardHelper.inputSequenceErrors
-
-  /**
-   * Get the errors of the init hidden array.
-   * They can be get only if the forward has been called with an init hidden array.
-   *
-   * @return the errors of the init hidden array
-   */
-  fun getInitHiddenErrors(): DenseNDArray = this.backwardHelper.initHiddenErrors
 }
