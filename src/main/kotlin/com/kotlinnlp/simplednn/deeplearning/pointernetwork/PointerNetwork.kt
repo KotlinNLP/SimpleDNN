@@ -7,12 +7,7 @@
 
 package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
-import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionStructure
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerStructure
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayersPool
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -23,49 +18,33 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 class PointerNetwork(val model: PointerNetworkModel) {
 
   /**
+   * @param inputSequenceErrors the list of errors of the input sequence
+   * @param decodingSequenceErrors The list of errors of the decoding input sequence
+   */
+  class InputErrors(
+    val inputSequenceErrors: List<DenseNDArray>,
+    val decodingSequenceErrors: List<DenseNDArray>)
+
+  /**
    * The processor of the recurrent network.
    */
   internal val recurrentProcessor: RecurrentNeuralProcessor<DenseNDArray> =
     RecurrentNeuralProcessor(this.model.recurrentNetwork)
 
   /**
-   * A boolean indicating if the current is the first state.
+   * The input sequence that must be set using the [setInputSequence] method.
    */
-  private var firstState: Boolean = true
-
-  /**
-   * The input sequence that must be set using the [setEncodedSequence] method.
-   */
-  private lateinit var encodedSequence: List<DenseNDArray>
-
-  /**
-   * A pool of Feedforward Layers used to build the attention arrays.
-   */
-  internal val transformLayersPool: AffineLayersPool<DenseNDArray> =
-    AffineLayersPool(
-      inputType = LayerType.Input.Dense,
-      activationFunction = Tanh(),
-      params = this.model.transformParams)
-
-  /**
-   * The list of transform layers groups used during the last forward.
-   */
-  internal val usedTransformLayers = mutableListOf<List<AffineLayerStructure<DenseNDArray>>>()
-
-  /**
-   * The list of attention structures used during the last forward.
-   */
-  internal val usedAttentionStructures = mutableListOf<AttentionStructure>()
+  internal lateinit var inputSequence: List<DenseNDArray>
 
   /**
    * The number of forwards performed during the last decoding.
    */
-  private var forwardCount: Int = 0
+  internal var forwardCount: Int = 0
 
   /**
    * The forward helper.
    */
-  private val forwardHelper = ForwardHelper(network = this)
+  internal val forwardHelper = ForwardHelper(network = this)
 
   /**
    * The backward helper.
@@ -75,29 +54,29 @@ class PointerNetwork(val model: PointerNetworkModel) {
   /**
    * Set the encoded sequence.
    *
-   * @param encodedSequence the encoded sequence
+   * @param inputSequence the input sequence
    */
-  fun setEncodedSequence(encodedSequence: List<DenseNDArray>) {
+  fun setInputSequence(inputSequence: List<DenseNDArray>) {
 
-    this.reset()
-    this.encodedSequence = encodedSequence
+    this.forwardCount = 0
+    this.inputSequence = inputSequence
   }
 
   /**
    * Forward.
    *
-   * @param input the input
+   * @param decodingInput the input
    *
    * @return an array that contains the importance score for each element of the input sequence
    */
-  fun forward(input: DenseNDArray): DenseNDArray {
+  fun forward(decodingInput: DenseNDArray): DenseNDArray {
 
     val output: DenseNDArray = this.forwardHelper.forward(
-      input = input,
-      firstState = this.firstState,
-      encodedSequence = this.encodedSequence)
+      decodingInput = decodingInput,
+      firstState = this.forwardCount == 0,
+      encodedSequence = this.inputSequence)
 
-    this.firstState = false
+    this.forwardCount++
 
     return output
   }
@@ -125,18 +104,7 @@ class PointerNetwork(val model: PointerNetworkModel) {
   /**
    * @return the errors of the sequence
    */
-  fun getInputSequenceErrors(): List<DenseNDArray> = this.backwardHelper.inputSequenceErrors
-
-  /**
-   * Reset the decoding structure of the network.
-   */
-  private fun reset(){
-
-    this.firstState = true
-    this.forwardCount = 0
-
-    this.transformLayersPool.releaseAll()
-    this.usedTransformLayers.clear()
-    this.usedAttentionStructures.clear()
-  }
+  fun getInputErrors() = InputErrors(
+    inputSequenceErrors = this.backwardHelper.inputSequenceErrors,
+    decodingSequenceErrors = this.backwardHelper.decodingSequenceErrors)
 }
