@@ -7,11 +7,11 @@
 
 package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
+import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * The backward helper of the [PointerNetwork].
@@ -37,14 +37,24 @@ class BackwardHelper(private val network: PointerNetwork) {
   private var stateIndex: Int = 0
 
   /**
+   * The params errors accumulator of the transform vectors.
+   */
+  private var transformErrorsAccumulator = ParamsErrorsAccumulator<FeedforwardLayerParameters>()
+
+  /**
    * The params errors accumulator of the recurrent context network.
    */
   private var recurrentErrorsAccumulator = ParamsErrorsAccumulator<NetworkParameters>()
 
   /**
+   * The params errors accumulator of the attention structure
+   */
+  private var attentionErrorsAccumulator = ParamsErrorsAccumulator<AttentionParameters>()
+
+  /**
    * The errors of the recurrent context, set at each backward step.
    */
-  private lateinit var recurrentContextErrors: DenseNDArray
+  private lateinit var recurrentErrors: DenseNDArray
 
   /**
    * Perform the back-propagation from the output errors.
@@ -75,25 +85,16 @@ class BackwardHelper(private val network: PointerNetwork) {
    * @return the params errors of the [network]
    */
   fun getParamsErrors(copy: Boolean = true) = PointerNetworkParameters(
-    recurrentParams = this.recurrentErrorsAccumulator.getParamsErrors(copy = copy))
+    recurrentParams = this.recurrentErrorsAccumulator.getParamsErrors(copy = copy),
+    transformParams = this.transformErrorsAccumulator.getParamsErrors(copy = copy),
+    attentionParams = this.attentionErrorsAccumulator.getParamsErrors(copy = copy))
 
   /**
    * Initialize the structures used during a backward.
    */
   private fun initBackward() {
 
-    this.initSequenceErrors()
     this.recurrentErrorsAccumulator.reset()
-  }
-
-  /**
-   * Initialize the [inputSequenceErrors] with arrays of zeros (an amount equal to the size of the current input
-   * sequence).
-   */
-  private fun initSequenceErrors() {
-    this.inputSequenceErrors = List(
-      size = this.network.sequenceSize,
-      init = { DenseNDArrayFactory.zeros(Shape(this.network.model.inputSize)) })
   }
 
   /**

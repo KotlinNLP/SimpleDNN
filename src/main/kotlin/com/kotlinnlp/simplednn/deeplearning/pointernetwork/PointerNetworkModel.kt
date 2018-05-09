@@ -13,7 +13,9 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializ
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
 import java.io.Serializable
 
 
@@ -21,7 +23,8 @@ import java.io.Serializable
  * The model of the [PointerNetwork].
  *
  * @property inputSize the size of the input vectors
- * @param recurrentHiddenSize the size of the hidden layer of the network used to encode to encode the input vectors
+ * @property attentionSize the size of the attention vectors
+ * @property recurrentHiddenSize the size of the hidden layer of the network used to encode to encode the input vectors
  * @param recurrentConnectionType the recurrent connection type of the network used to encode the input vectors
  * @param recurrentHiddenActivation the hidden activation function of the network used to encode the input vectors
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
@@ -29,6 +32,7 @@ import java.io.Serializable
  */
 class PointerNetworkModel(
   val inputSize: Int,
+  val attentionSize: Int,
   val recurrentHiddenSize: Int,
   private val recurrentHiddenActivation: ActivationFunction?,
   private val recurrentConnectionType: LayerType.Connection,
@@ -62,8 +66,24 @@ class PointerNetworkModel(
   )
 
   /**
+   * The parameters used to create the attention arrays of the [attentionParams].
+   */
+  val transformParams = FeedforwardLayerParameters(
+    inputSize = this.inputSize + this.recurrentHiddenSize,
+    outputSize = this.attentionSize)
+
+  /**
+   * The parameters of the attention mechanism.
+   */
+  val attentionParams = AttentionParameters(
+    attentionSize = this.attentionSize,
+    initializer = weightsInitializer)
+
+  /**
    * The structure containing all the parameters of this model.
    */
   val params = PointerNetworkParameters(
-    recurrentParams = this.recurrentNetwork.model)
+    recurrentParams = this.recurrentNetwork.model,
+    transformParams = this.transformParams,
+    attentionParams = this.attentionParams)
 }
