@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.core.arrays.Norm1Array
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.utils.ItemsPool
 
 /**
  * The Layer Structure.
@@ -22,13 +23,16 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
+ * @property id an identification number useful to track a specific [LayerStructure]
  */
 abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArray: AugmentedArray<InputNDArrayType>,
   open val outputArray: AugmentedArray<DenseNDArray>,
   open val params: LayerParameters<*>,
   val activationFunction: ActivationFunction? = null,
-  val dropout: Double = 0.0) {
+  val dropout: Double = 0.0,
+  override val id: Int = 0
+) : ItemsPool.IDItem {
 
   /**
    * The probability to keep an output value (no dropout on it)
