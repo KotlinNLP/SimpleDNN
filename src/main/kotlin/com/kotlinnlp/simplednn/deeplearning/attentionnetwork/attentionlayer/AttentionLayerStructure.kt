@@ -21,12 +21,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @property inputSequence the sequence of input arrays
  * @property attentionSequence the sequence of attention arrays
  * @property params the parameters of the Attention Layer
+ * @property id an identification number useful to track a specific [AttentionLayerStructure]
  */
 class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   val inputSequence: ArrayList<AugmentedArray<InputNDArrayType>>,
   attentionSequence: ArrayList<DenseNDArray>,
-  params: AttentionParameters
-) : AttentionStructure(attentionSequence = attentionSequence, params = params) {
+  params: AttentionParameters,
+  id: Int = 0
+) : AttentionStructure(attentionSequence = attentionSequence, params = params, id = id) {
 
   /**
    * The output dense array.

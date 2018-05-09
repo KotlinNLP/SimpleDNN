@@ -10,17 +10,20 @@ package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.utils.ItemsPool
 
 /**
  * The structure of Attention.
  *
  * @property attentionSequence the sequence of attention arrays
  * @property params the parameters of the Attention
+ * @property id an identification number useful to track a specific [AttentionStructure]
  */
 open class AttentionStructure(
   val attentionSequence: List<DenseNDArray>,
-  val params: AttentionParameters
-) {
+  val params: AttentionParameters,
+  override val id: Int = 0
+) : ItemsPool.IDItem {
 
   /**
    * A matrix containing the attention arrays as rows.
