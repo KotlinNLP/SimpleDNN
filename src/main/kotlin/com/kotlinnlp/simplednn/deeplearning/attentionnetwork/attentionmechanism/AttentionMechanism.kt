@@ -7,15 +7,16 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism
 
-import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper that implements the Attention Mechanism used by the Attention Layer.
  * It provides the forward and the backward methods.
+ *
+ * @param structure an Attention structure
  */
-object AttentionMechanism {
+class AttentionMechanism(private val structure: AttentionStructure) {
 
   /**
    * Perform the forward of the Attention Mechanism.
@@ -28,11 +29,14 @@ object AttentionMechanism {
    *
    * @return the importance score
    */
-  fun forward(attentionMatrix: DenseNDArray, contextVector: DenseNDArray): DenseNDArray {
+  fun forward(): DenseNDArray {
 
-    val attentionContext: DenseNDArray = attentionMatrix.dot(contextVector)
+    val contextVector: DenseNDArray = this.structure.params.contextVector.values
+    val attentionContext: DenseNDArray = this.structure.attentionMatrix.values.dot(contextVector)
 
-    return Softmax().f(attentionContext)
+    this.structure.importanceScore = Softmax().f(attentionContext)
+
+    return this.structure.importanceScore
   }
 
   /**
@@ -50,25 +54,17 @@ object AttentionMechanism {
    *   gAM = gAC (dot) cv  // attention matrix errors
    *   gx_i = gy * alpha_i  // errors of the i-th input array
    *
-   * @param importanceScore the importance score
+   * @param paramsErrors the errors of the Attention parameters
    * @param importanceScoreErrors the errors of the importance score
-   * @param attentionMatrix the attention matrix
-   * @param contextVector the context vector
-   * @param contextVectorErrors the errors of the context vector
    */
-  fun backward(
-    importanceScore: DenseNDArray,
-    importanceScoreErrors: DenseNDArray,
-    attentionMatrix: AugmentedArray<DenseNDArray>,
-    contextVector: DenseNDArray,
-    contextVectorErrors: DenseNDArray
-  ) {
+  fun backward(paramsErrors: AttentionParameters, importanceScoreErrors: DenseNDArray) {
 
-    val softmaxGradients: DenseNDArray = Softmax().df(importanceScore)
+    val contextVector: DenseNDArray = this.structure.params.contextVector.values
+    val softmaxGradients: DenseNDArray = Softmax().df(this.structure.importanceScore)
     val acErrors: DenseNDArray = softmaxGradients.dot(importanceScoreErrors)
 
-    contextVectorErrors.assignValues(acErrors.t.dot(attentionMatrix.values).t)
+    paramsErrors.contextVector.values.assignValues(acErrors.t.dot(this.structure.attentionMatrix.values).t)
 
-    attentionMatrix.assignErrorsByDot(acErrors, contextVector.t)
+    this.structure.attentionMatrix.assignErrorsByDot(acErrors, contextVector.t)
   }
 }

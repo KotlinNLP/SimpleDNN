@@ -18,6 +18,11 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 class AttentionLayerForwardHelper(private val layer: AttentionLayerStructure<*>) {
 
   /**
+   * The Attention Mechanism helper.
+   */
+  private val attentionMechanism = AttentionMechanism(this.layer)
+
+  /**
    * Perform the forward of the input sequence contained into the [layer].
    *
    *   x_i = i-th input array
@@ -34,10 +39,7 @@ class AttentionLayerForwardHelper(private val layer: AttentionLayerStructure<*>)
    */
   fun forward() {
 
-    this.layer.importanceScore = AttentionMechanism.forward(
-      attentionMatrix = this.layer.attentionMatrix.values,
-      contextVector = this.layer.params.contextVector.values
-    )
+    this.attentionMechanism.forward()
 
     this.calculateOutput()
   }

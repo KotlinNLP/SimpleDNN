@@ -21,6 +21,11 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 class AttentionLayerBackwardHelper(private val layer: AttentionLayerStructure<*>) {
 
   /**
+   * The Attention Mechanism helper.
+   */
+  private val attentionMechanism = AttentionMechanism(this.layer)
+
+  /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the errors of the output array.
    *
@@ -41,12 +46,7 @@ class AttentionLayerBackwardHelper(private val layer: AttentionLayerStructure<*>
    */
   fun backward(paramsErrors: AttentionParameters, propagateToInput: Boolean) {
 
-    AttentionMechanism.backward(
-      importanceScore = this.layer.importanceScore,
-      importanceScoreErrors = this.getScoreErrors(),
-      attentionMatrix = this.layer.attentionMatrix,
-      contextVector = this.layer.params.contextVector.values,
-      contextVectorErrors = paramsErrors.contextVector.values)
+    this.attentionMechanism.backward(paramsErrors = paramsErrors, importanceScoreErrors = this.getScoreErrors())
 
     if (propagateToInput) {
       this.setInputErrors()
