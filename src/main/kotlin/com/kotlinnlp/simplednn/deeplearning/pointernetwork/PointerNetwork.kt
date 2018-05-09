@@ -7,7 +7,12 @@
 
 package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
+import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionStructure
+import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerStructure
+import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayersPool
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -16,11 +21,6 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property model the model of the network
  */
 class PointerNetwork(val model: PointerNetworkModel) {
-
-  /**
-   * The size of the currently processing sequence (set with the [setInputSequence] method).
-   */
-  val sequenceSize: Int get() = this.inputSequence.size
 
   /**
    * The processor of the recurrent network.
@@ -34,9 +34,28 @@ class PointerNetwork(val model: PointerNetworkModel) {
   private var firstState: Boolean = true
 
   /**
-   * The input sequence that must be set using the [setInputSequence] method.
+   * The input sequence that must be set using the [setEncodedSequence] method.
    */
-  private lateinit var inputSequence: List<DenseNDArray>
+  private lateinit var encodedSequence: List<DenseNDArray>
+
+  /**
+   * A pool of Feedforward Layers used to build the attention arrays.
+   */
+  val transformLayersPool: AffineLayersPool<DenseNDArray> =
+    AffineLayersPool(
+      inputType = LayerType.Input.Dense,
+      activationFunction = Tanh(),
+      params = this.model.transformParams)
+
+  /**
+   * The list of transform layers groups used during the last forward.
+   */
+  val usedTransformLayers = mutableListOf<List<AffineLayerStructure<DenseNDArray>>>()
+
+  /**
+   * The list of attention structures used during the last forward.
+   */
+  val usedAttentionStructures = mutableListOf<AttentionStructure>()
 
   /**
    * The forward helper.
@@ -49,14 +68,14 @@ class PointerNetwork(val model: PointerNetworkModel) {
   private val backwardHelper = BackwardHelper(network = this)
 
   /**
-   * Set the input sequence.
+   * Set the encoded sequence.
    *
-   * @param inputSequence the input sequence
+   * @param encodedSequence the encoded sequence
    */
-  fun setInputSequence(inputSequence: List<DenseNDArray>) {
+  fun setEncodedSequence(encodedSequence: List<DenseNDArray>) {
 
     this.firstState = true
-    this.inputSequence = inputSequence
+    this.encodedSequence = encodedSequence
   }
 
   /**
@@ -68,7 +87,12 @@ class PointerNetwork(val model: PointerNetworkModel) {
    */
   fun forward(input: DenseNDArray): DenseNDArray {
 
-    val output: DenseNDArray = this.forwardHelper.forward(input)
+    if (this.firstState) this.resetHistory()
+
+    val output: DenseNDArray = this.forwardHelper.forward(
+      input = input,
+      firstState = this.firstState,
+      encodedSequence = this.encodedSequence)
 
     this.firstState = false
 
@@ -97,4 +121,14 @@ class PointerNetwork(val model: PointerNetworkModel) {
    * @return the errors of the sequence
    */
   fun getInputSequenceErrors(): List<DenseNDArray> = this.backwardHelper.inputSequenceErrors
+
+  /**
+   * Reset the decoding structure of the network.
+   */
+  private fun resetHistory(){
+
+    this.transformLayersPool.releaseAll()
+    this.usedTransformLayers.clear()
+    this.usedAttentionStructures.clear()
+  }
 }
