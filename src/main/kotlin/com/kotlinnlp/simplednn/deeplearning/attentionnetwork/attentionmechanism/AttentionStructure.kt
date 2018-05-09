@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @property params the parameters of the Attention
  */
 open class AttentionStructure(
-  val attentionSequence: ArrayList<DenseNDArray>,
+  val attentionSequence: List<DenseNDArray>,
   val params: AttentionParameters
 ) {
 
@@ -39,7 +39,7 @@ open class AttentionStructure(
    */
   init {
 
-    require(this.attentionSequence.size > 0) { "The attention sequence cannot be empty." }
+    require(this.attentionSequence.isNotEmpty()) { "The attention sequence cannot be empty." }
     require(this.attentionSequence.all { it.length == this.params.attentionSize }) {
       "The attention arrays must have the expected size (%d).".format(this.params.attentionSize)
     }
