@@ -88,6 +88,8 @@ class BackwardHelper(private val network: PointerNetwork) {
 
     // The errors in the 'contextErrorsAccumulator' are already averaged thanks to the recurrent processor
     this.recurrentErrorsAccumulator.accumulate(this.network.recurrentProcessor.getParamsErrors(copy = false))
+    this.transformErrorsAccumulator.averageErrors()
+    this.attentionErrorsAccumulator.averageErrors()
   }
 
   /**
@@ -106,6 +108,8 @@ class BackwardHelper(private val network: PointerNetwork) {
   private fun initBackward() {
 
     this.recurrentErrorsAccumulator.reset()
+    this.transformErrorsAccumulator.reset()
+    this.attentionErrorsAccumulator.reset()
   }
 
   /**
@@ -116,7 +120,6 @@ class BackwardHelper(private val network: PointerNetwork) {
    * @param isLastState a boolean indicating if this is the last state of the sequence (the first of the backward)
    */
   private fun backwardStep(outputErrors: DenseNDArray, isFirstState: Boolean, isLastState: Boolean) {
-
     // TODO()
   }
 
