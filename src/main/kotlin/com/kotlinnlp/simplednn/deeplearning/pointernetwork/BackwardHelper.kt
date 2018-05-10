@@ -87,7 +87,6 @@ class BackwardHelper(private val network: PointerNetwork) {
    * @return the params errors of the [network]
    */
   fun getParamsErrors(copy: Boolean = true) = PointerNetworkParameters(
-    recurrentParams = this.network.recurrentProcessor.getParamsErrors(copy = copy),
     transformParams = this.transformErrorsAccumulator.getParamsErrors(copy = copy),
     attentionParams = this.attentionErrorsAccumulator.getParamsErrors(copy = copy))
 
@@ -99,12 +98,9 @@ class BackwardHelper(private val network: PointerNetwork) {
   private fun backwardStep(outputErrors: DenseNDArray) {
 
     val attentionArraysErrors: Array<DenseNDArray> = this.backwardAttentionScores(outputErrors)
-    val decodingHiddenErrors: DenseNDArray = this.backwardAttentionArrays(outputErrors = attentionArraysErrors)
+    val decodingHiddenErrors: DenseNDArray = this.backwardAttentionArrays(attentionArraysErrors)
 
-    this.network.recurrentProcessor.backwardStep(decodingHiddenErrors, propagateToInput = true)
-
-    this.decodingSequenceErrors[this.stateIndex].assignValues(
-      this.network.recurrentProcessor.getInputErrors(elementIndex = this.stateIndex, copy = true))
+    this.decodingSequenceErrors[this.stateIndex].assignValues(decodingHiddenErrors)
   }
 
   /**

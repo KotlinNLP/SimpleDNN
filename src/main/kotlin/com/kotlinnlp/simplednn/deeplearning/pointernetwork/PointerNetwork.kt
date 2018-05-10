@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
-import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -26,12 +25,6 @@ class PointerNetwork(val model: PointerNetworkModel) {
     val decodingSequenceErrors: List<DenseNDArray>)
 
   /**
-   * The processor of the recurrent network.
-   */
-  internal val recurrentProcessor: RecurrentNeuralProcessor<DenseNDArray> =
-    RecurrentNeuralProcessor(this.model.recurrentNetwork)
-
-  /**
    * The input sequence that must be set using the [setInputSequence] method.
    */
   internal lateinit var inputSequence: List<DenseNDArray>
@@ -40,6 +33,11 @@ class PointerNetwork(val model: PointerNetworkModel) {
    * The number of forwards performed during the last decoding.
    */
   internal var forwardCount: Int = 0
+
+  /**
+   * A boolean indicating if this is the first state.
+   */
+  internal val firstState: Boolean get() = this.forwardCount == 0
 
   /**
    * The forward helper.
@@ -71,10 +69,7 @@ class PointerNetwork(val model: PointerNetworkModel) {
    */
   fun forward(decodingInput: DenseNDArray): DenseNDArray {
 
-    val output: DenseNDArray = this.forwardHelper.forward(
-      decodingInput = decodingInput,
-      firstState = this.forwardCount == 0,
-      encodedSequence = this.inputSequence)
+    val output: DenseNDArray = this.forwardHelper.forward(decodingInput)
 
     this.forwardCount++
 

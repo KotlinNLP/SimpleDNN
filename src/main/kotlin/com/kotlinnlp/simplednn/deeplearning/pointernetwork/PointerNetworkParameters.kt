@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
 import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
@@ -16,12 +15,10 @@ import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
 /**
  * The parameters of the [PointerNetwork].
  *
- * @property recurrentParams the parameters of the recurrent network
  * @property transformParams the parameters of the affine layer
  * @property attentionParams the parameters of the attention structure
  */
 class PointerNetworkParameters(
-  val recurrentParams: NetworkParameters,
   val transformParams: AffineLayerParameters,
   val attentionParams: AttentionParameters
 ) : IterableParams<PointerNetworkParameters>() {
@@ -38,15 +35,13 @@ class PointerNetworkParameters(
    * The list of all parameters.
    */
   override val paramsList: Array<UpdatableArray<*>> =
-      this.recurrentParams.paramsList +
-        this.transformParams.paramsList +
-        this.attentionParams.paramsList
+    this.transformParams.paramsList +
+      this.attentionParams.paramsList
 
   /**
    * @return a new [PointerNetworkParameters] containing a copy of all values of this
    */
   override fun copy() = PointerNetworkParameters(
-    recurrentParams = this.recurrentParams.copy(),
     transformParams = this.transformParams.copy(),
     attentionParams = this.attentionParams.copy())
 }

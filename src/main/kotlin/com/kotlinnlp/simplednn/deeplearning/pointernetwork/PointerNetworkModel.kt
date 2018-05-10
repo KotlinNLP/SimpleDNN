@@ -7,12 +7,8 @@
 
 package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
-import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
-import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
 import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
 import java.io.Serializable
@@ -24,9 +20,6 @@ import java.io.Serializable
  * @property inputSize the size of the vectors of the input sequence
  * @property decodingInputSize the size of the vectors in input to the recurrent decoder
  * @property attentionSize the size of the attention vectors
- * @param recurrentHiddenSize the size of the hidden layer of the network used to encode to encode the input vectors
- * @param recurrentConnectionType the recurrent connection type of the network used to encode the input vectors
- * @param recurrentHiddenActivation the hidden activation function of the network used to encode the input vectors
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: null)
  */
@@ -34,9 +27,6 @@ class PointerNetworkModel(
   val inputSize: Int,
   val decodingInputSize: Int,
   val attentionSize: Int,
-  val recurrentHiddenSize: Int,
-  private val recurrentHiddenActivation: ActivationFunction?,
-  private val recurrentConnectionType: LayerType.Connection,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null) : Serializable {
 
@@ -50,29 +40,14 @@ class PointerNetworkModel(
   }
 
   /**
-   * The recurrent network.
-   */
-  val recurrentNetwork = NeuralNetwork(
-    LayerConfiguration(
-      size = this.decodingInputSize,
-      inputType = LayerType.Input.Dense
-    ),
-    LayerConfiguration(
-      size = this.recurrentHiddenSize,
-      activationFunction = this.recurrentHiddenActivation,
-      connectionType = this.recurrentConnectionType
-    ),
-    weightsInitializer = weightsInitializer,
-    biasesInitializer = biasesInitializer
-  )
-
-  /**
    * The parameters used to create the attention arrays of the [attentionParams].
    */
   val transformParams = AffineLayerParameters(
     inputSize1 = this.inputSize,
-    inputSize2 = this.recurrentHiddenSize,
-    outputSize = this.attentionSize)
+    inputSize2 = this.decodingInputSize,
+    outputSize = this.attentionSize,
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer)
 
   /**
    * The parameters of the attention mechanism.
@@ -85,7 +60,6 @@ class PointerNetworkModel(
    * The structure containing all the parameters of this model.
    */
   val params = PointerNetworkParameters(
-    recurrentParams = this.recurrentNetwork.model,
     transformParams = this.transformParams,
     attentionParams = this.attentionParams)
 }

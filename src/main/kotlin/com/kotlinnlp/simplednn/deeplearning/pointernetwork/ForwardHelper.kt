@@ -43,23 +43,14 @@ class ForwardHelper(private val network: PointerNetwork) {
 
   /**
    * @param decodingInput the input
-   * @param firstState a boolean indicating if this is the first state
    *
    * @return an array that contains the importance score for each element of the input sequence
    */
-  fun forward(decodingInput: DenseNDArray,
-              firstState: Boolean,
-              encodedSequence: List<DenseNDArray>): DenseNDArray {
+  fun forward(decodingInput: DenseNDArray): DenseNDArray {
 
-    if (firstState) this.initForward()
+    if (this.network.firstState) this.initForward()
 
-    val decodingHidden: DenseNDArray = this.network.recurrentProcessor.forward(
-      featuresArray = decodingInput,
-      firstState = firstState)
-
-    val attentionArrays: List<DenseNDArray> = this.buildAttentionSequence(
-      encodedSequence = encodedSequence,
-      decodingHiddenState = decodingHidden)
+    val attentionArrays: List<DenseNDArray> = this.buildAttentionSequence(decodingInput)
 
     return AttentionMechanism(this.buildAttentionStructure(attentionArrays)).forward()
   }
@@ -78,20 +69,18 @@ class ForwardHelper(private val network: PointerNetwork) {
   }
 
   /**
-   * @param encodedSequence the input encoded sequence
-   * @param decodingHiddenState the current decoding hidden
+   * @param decodingInput the current decoding input
    *
    * @return the sequence of attention arrays
    */
-  private fun buildAttentionSequence(encodedSequence: List<DenseNDArray>,
-                                     decodingHiddenState: DenseNDArray): List<DenseNDArray> {
+  private fun buildAttentionSequence(decodingInput: DenseNDArray): List<DenseNDArray> {
 
-    val transformLayers = this.getTransformLayers(size = encodedSequence.size)
+    val transformLayers = this.getTransformLayers(size = this.network.inputSequence.size)
 
-    return ArrayList(transformLayers.zip(encodedSequence).map { (layer, encodedElement) ->
+    return ArrayList(transformLayers.zip(this.network.inputSequence).map { (layer, encodedElement) ->
 
       layer.setInput1(encodedElement)
-      layer.setInput2(decodingHiddenState)
+      layer.setInput2(decodingInput)
       layer.forward()
 
       layer.outputArray.values
