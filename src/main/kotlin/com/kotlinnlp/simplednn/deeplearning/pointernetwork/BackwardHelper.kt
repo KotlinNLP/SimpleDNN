@@ -31,9 +31,9 @@ class BackwardHelper(private val network: PointerNetwork) {
     private set
 
   /**
-   * The list of errors of the decoding input sequence.
+   * The list of errors of the input vectors.
    */
-  internal lateinit var decodingSequenceErrors: List<DenseNDArray>
+  internal lateinit var vectorsErrors: List<DenseNDArray>
     private set
 
   /**
@@ -98,9 +98,9 @@ class BackwardHelper(private val network: PointerNetwork) {
   private fun backwardStep(outputErrors: DenseNDArray) {
 
     val attentionArraysErrors: Array<DenseNDArray> = this.backwardAttentionScores(outputErrors)
-    val decodingHiddenErrors: DenseNDArray = this.backwardAttentionArrays(attentionArraysErrors)
+    val vectorErrors: DenseNDArray = this.backwardAttentionArrays(attentionArraysErrors)
 
-    this.decodingSequenceErrors[this.stateIndex].assignValues(decodingHiddenErrors)
+    this.vectorsErrors[this.stateIndex].assignValues(vectorErrors)
   }
 
   /**
@@ -126,22 +126,22 @@ class BackwardHelper(private val network: PointerNetwork) {
    */
   private fun backwardAttentionArrays(outputErrors: Array<DenseNDArray>): DenseNDArray {
 
-    val decodingHiddenErrorsSum: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.network.model.inputSize))
+    val vectorErrorsSum: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.network.model.inputSize))
 
     val transformLayers: List<AffineLayerStructure<DenseNDArray>>
       = this.network.forwardHelper.usedTransformLayers[this.stateIndex]
 
     transformLayers.zip(outputErrors).forEachIndexed { index, (transformLayer, attentionErrors) ->
 
-      val (inputSequenceElementError: DenseNDArray, decodingHiddenErrors: DenseNDArray) =
+      val (inputSequenceElementError: DenseNDArray, vectorErrors: DenseNDArray) =
         this.backwardTransformLayer(layer = transformLayer, outputErrors = attentionErrors)
 
-      decodingHiddenErrorsSum.assignSum(decodingHiddenErrors)
+      vectorErrorsSum.assignSum(vectorErrors)
 
       this.inputSequenceErrors[index].assignSum(inputSequenceElementError)
     }
 
-    return decodingHiddenErrorsSum
+    return vectorErrorsSum
   }
 
 
@@ -172,7 +172,7 @@ class BackwardHelper(private val network: PointerNetwork) {
   private fun initBackward() {
 
     this.initInputSequenceErrors()
-    this.initDecodingSequenceErrors()
+    this.initVectorsErrors()
 
     this.transformErrorsAccumulator.reset()
     this.attentionErrorsAccumulator.reset()
@@ -189,13 +189,13 @@ class BackwardHelper(private val network: PointerNetwork) {
   }
 
   /**
-   * Initialize the [decodingSequenceErrors] with arrays of zeros (an amount equal to the size of the number of
+   * Initialize the [vectorsErrors] with arrays of zeros (an amount equal to the size of the number of
    * performed forward).
    */
-  private fun initDecodingSequenceErrors() {
-    this.decodingSequenceErrors = List(
+  private fun initVectorsErrors() {
+    this.vectorsErrors = List(
       size = this.network.forwardCount,
-      init = { DenseNDArrayFactory.zeros(Shape(this.network.model.decodingInputSize)) })
+      init = { DenseNDArrayFactory.zeros(Shape(this.network.model.vectorSize)) })
   }
 
   /**

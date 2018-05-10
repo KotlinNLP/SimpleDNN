@@ -42,15 +42,15 @@ class ForwardHelper(private val network: PointerNetwork) {
       params = this.network.model.transformParams)
 
   /**
-   * @param decodingInput the input
+   * @param vector the vector that modulates a content-based attention mechanism over the input sequence
    *
    * @return an array that contains the importance score for each element of the input sequence
    */
-  fun forward(decodingInput: DenseNDArray): DenseNDArray {
+  fun forward(vector: DenseNDArray): DenseNDArray {
 
     if (this.network.firstState) this.initForward()
 
-    val attentionArrays: List<DenseNDArray> = this.buildAttentionSequence(decodingInput)
+    val attentionArrays: List<DenseNDArray> = this.buildAttentionSequence(vector)
 
     return AttentionMechanism(this.buildAttentionStructure(attentionArrays)).forward()
   }
@@ -69,18 +69,18 @@ class ForwardHelper(private val network: PointerNetwork) {
   }
 
   /**
-   * @param decodingInput the current decoding input
+   * @param vector the vector that modulates a content-based attention mechanism over the input sequence
    *
    * @return the sequence of attention arrays
    */
-  private fun buildAttentionSequence(decodingInput: DenseNDArray): List<DenseNDArray> {
+  private fun buildAttentionSequence(vector: DenseNDArray): List<DenseNDArray> {
 
     val transformLayers = this.getTransformLayers(size = this.network.inputSequence.size)
 
-    return ArrayList(transformLayers.zip(this.network.inputSequence).map { (layer, encodedElement) ->
+    return ArrayList(transformLayers.zip(this.network.inputSequence).map { (layer, element) ->
 
-      layer.setInput1(encodedElement)
-      layer.setInput2(decodingInput)
+      layer.setInput1(element)
+      layer.setInput2(vector)
       layer.forward()
 
       layer.outputArray.values

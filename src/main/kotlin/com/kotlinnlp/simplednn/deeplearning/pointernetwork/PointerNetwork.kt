@@ -18,11 +18,11 @@ class PointerNetwork(val model: PointerNetworkModel) {
 
   /**
    * @param inputSequenceErrors the list of errors of the input sequence
-   * @param decodingSequenceErrors The list of errors of the decoding input sequence
+   * @param inputVectorsErrors The list of errors of the input vectors
    */
   class InputErrors(
     val inputSequenceErrors: List<DenseNDArray>,
-    val decodingSequenceErrors: List<DenseNDArray>)
+    val inputVectorsErrors: List<DenseNDArray>)
 
   /**
    * The input sequence that must be set using the [setInputSequence] method.
@@ -63,13 +63,13 @@ class PointerNetwork(val model: PointerNetworkModel) {
   /**
    * Forward.
    *
-   * @param decodingInput the input
+   * @param vector the vector that modulates a content-based attention mechanism over the input sequence
    *
    * @return an array that contains the importance score for each element of the input sequence
    */
-  fun forward(decodingInput: DenseNDArray): DenseNDArray {
+  fun forward(vector: DenseNDArray): DenseNDArray {
 
-    val output: DenseNDArray = this.forwardHelper.forward(decodingInput)
+    val output: DenseNDArray = this.forwardHelper.forward(vector)
 
     this.forwardCount++
 
@@ -101,5 +101,5 @@ class PointerNetwork(val model: PointerNetworkModel) {
    */
   fun getInputErrors() = InputErrors(
     inputSequenceErrors = this.backwardHelper.inputSequenceErrors,
-    decodingSequenceErrors = this.backwardHelper.decodingSequenceErrors)
+    inputVectorsErrors = this.backwardHelper.vectorsErrors)
 }
