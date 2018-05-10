@@ -201,22 +201,24 @@ class BackwardHelper(private val network: PointerNetwork) {
   /**
    * @return the transform layers params errors
    */
-  private fun getTransformParamsErrors(): AffineLayerParameters = try {
-    this.transformLayerParamsErrors
-  } catch (e: UninitializedPropertyAccessException) {
-    this.transformLayerParamsErrors =
-      this.network.forwardHelper.usedTransformLayers.last().last().params.copy()
-    this.transformLayerParamsErrors
+  private fun getTransformParamsErrors(): AffineLayerParameters {
+
+    if (!this::transformLayerParamsErrors.isInitialized) {
+      this.transformLayerParamsErrors = this.network.forwardHelper.usedTransformLayers.last().last().params.copy()
+    }
+
+    return this.transformLayerParamsErrors
   }
 
   /**
    * @return the attention params errors
    */
-  private fun getAttentionParamsErrors(): AttentionParameters = try {
-    this.attentionParamsErrors
-  } catch (e: UninitializedPropertyAccessException) {
-    this.attentionParamsErrors =
-      this.network.forwardHelper.usedAttentionStructures.last().params.copy()
-    this.attentionParamsErrors
+  private fun getAttentionParamsErrors(): AttentionParameters {
+
+    if (!this::attentionParamsErrors.isInitialized) {
+      this.attentionParamsErrors = this.network.forwardHelper.usedAttentionStructures.last().params.copy()
+    }
+
+    return this.attentionParamsErrors
   }
 }
