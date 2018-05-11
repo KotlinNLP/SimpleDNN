@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
+import com.kotlinnlp.simplednn.attention.attentionnetwork.AttentionNetworkParameters
 import java.io.Serializable
 
 /**

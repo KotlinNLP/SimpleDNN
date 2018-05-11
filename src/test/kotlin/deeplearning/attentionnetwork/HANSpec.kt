@@ -10,7 +10,7 @@ package deeplearning.attentionnetwork
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HAN
+import com.kotlinnlp.simplednn.attention.han.HAN
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it

@@ -10,8 +10,8 @@ package optimizer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetwork
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
+import com.kotlinnlp.simplednn.attention.attentionnetwork.AttentionNetwork
+import com.kotlinnlp.simplednn.attention.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import deeplearning.attentionnetwork.utils.AttentionLayerUtils

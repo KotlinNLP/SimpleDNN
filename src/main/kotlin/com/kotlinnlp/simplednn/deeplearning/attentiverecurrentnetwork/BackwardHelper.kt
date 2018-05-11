@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameter
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
+import com.kotlinnlp.simplednn.attention.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory

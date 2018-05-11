@@ -5,11 +5,11 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.pointernetwork
+package com.kotlinnlp.simplednn.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionMechanism
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionStructure
+import com.kotlinnlp.simplednn.attention.attentionmechanism.AttentionMechanism
+import com.kotlinnlp.simplednn.attention.attentionmechanism.AttentionStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**

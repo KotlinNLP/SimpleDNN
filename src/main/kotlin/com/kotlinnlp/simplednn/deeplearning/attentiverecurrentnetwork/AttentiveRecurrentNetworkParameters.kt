@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.AttentionNetworkParameters
+import com.kotlinnlp.simplednn.attention.attentionnetwork.AttentionNetworkParameters
 
 /**
  * The parameters of the [AttentiveRecurrentNetwork].

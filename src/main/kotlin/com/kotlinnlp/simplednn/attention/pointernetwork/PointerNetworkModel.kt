@@ -5,12 +5,12 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.pointernetwork
+package com.kotlinnlp.simplednn.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
+import com.kotlinnlp.simplednn.attention.attentionmechanism.AttentionParameters
 import java.io.Serializable
 
 

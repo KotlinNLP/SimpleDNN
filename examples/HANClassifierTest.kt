@@ -11,10 +11,10 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HAN
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HANEncoder
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.HANParameters
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.han.toHierarchySequence
+import com.kotlinnlp.simplednn.attention.han.HAN
+import com.kotlinnlp.simplednn.attention.han.HANEncoder
+import com.kotlinnlp.simplednn.attention.han.HANParameters
+import com.kotlinnlp.simplednn.attention.han.toHierarchySequence
 import com.kotlinnlp.simplednn.helpers.training.utils.ExamplesIndices
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.progressindicator.ProgressIndicatorBar
