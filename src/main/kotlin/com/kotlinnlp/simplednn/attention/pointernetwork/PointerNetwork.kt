@@ -36,6 +36,11 @@ class PointerNetwork(val model: PointerNetworkModel) {
   internal lateinit var inputSequence: List<DenseNDArray>
 
   /**
+   * Return the size of the input sequence.
+   */
+  val inputSequenceSize: Int get() = this.inputSequence.size
+
+  /**
    * The number of forwards performed during the last decoding.
    */
   internal var forwardCount: Int = 0
