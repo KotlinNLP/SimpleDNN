@@ -7,10 +7,10 @@
 
 package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
+import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
+import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerStructure
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionMechanism
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
@@ -22,7 +22,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *
  * @property network the attentive recurrent network of this helper
  */
-class BackwardHelper(private val network: PointerNetwork) {
+class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerParametersType>>(
+  private val network: PointerNetwork
+) {
 
   /**
    * The list of errors of the input sequence.
@@ -44,7 +46,7 @@ class BackwardHelper(private val network: PointerNetwork) {
   /**
    * The params errors accumulator of the transform vectors.
    */
-  private var transformErrorsAccumulator = ParamsErrorsAccumulator<AffineLayerParameters>()
+  private var transformErrorsAccumulator = ParamsErrorsAccumulator<MergeLayerParametersType>()
 
   /**
    * The params errors accumulator of the attention structure
@@ -54,7 +56,7 @@ class BackwardHelper(private val network: PointerNetwork) {
   /**
    * The structure used to store the params errors of the transform layers during the backward.
    */
-  private lateinit var transformLayerParamsErrors: AffineLayerParameters
+  private lateinit var transformLayerParamsErrors: MergeLayerParameters<*>
 
   /**
    * The structure used to store the params errors of the attention during the backward.
@@ -110,7 +112,7 @@ class BackwardHelper(private val network: PointerNetwork) {
    */
   private fun backwardAttentionScores(outputErrors: DenseNDArray): Array<DenseNDArray> {
 
-    val attentionStructure: AttentionStructure = this.network.forwardHelper.usedAttentionStructures[this.stateIndex]
+    val attentionStructure: AttentionStructure = this.network.usedAttentionStructures[this.stateIndex]
 
     AttentionMechanism(attentionStructure).backward(
       paramsErrors = this.getAttentionParamsErrors(),
@@ -122,14 +124,16 @@ class BackwardHelper(private val network: PointerNetwork) {
   }
 
   /**
+   * @param outputErrors the errors of the attention arrays
    *
+   * @return the errors of the input vector
    */
   private fun backwardAttentionArrays(outputErrors: Array<DenseNDArray>): DenseNDArray {
 
     val vectorErrorsSum: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.network.model.inputSize))
 
-    val transformLayers: List<AffineLayerStructure<DenseNDArray>>
-      = this.network.forwardHelper.usedTransformLayers[this.stateIndex]
+    val transformLayers: List<MergeLayer<DenseNDArray>>
+      = this.network.usedTransformLayers[this.stateIndex]
 
     transformLayers.zip(outputErrors).forEachIndexed { index, (transformLayer, attentionErrors) ->
 
@@ -144,7 +148,6 @@ class BackwardHelper(private val network: PointerNetwork) {
     return vectorErrorsSum
   }
 
-
   /**
    * A single transform layer backward.
    *
@@ -153,7 +156,7 @@ class BackwardHelper(private val network: PointerNetwork) {
    *
    * @return the errors of the input
    */
-  private fun backwardTransformLayer(layer: AffineLayerStructure<DenseNDArray>,
+  private fun backwardTransformLayer(layer: MergeLayer<DenseNDArray>,
                                      outputErrors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
 
     val paramsErrors = this.getTransformParamsErrors()
@@ -161,7 +164,8 @@ class BackwardHelper(private val network: PointerNetwork) {
     layer.setErrors(outputErrors)
     layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
 
-    this.transformErrorsAccumulator.accumulate(paramsErrors)
+    @Suppress("UNCHECKED_CAST")
+    this.transformErrorsAccumulator.accumulate(paramsErrors as MergeLayerParametersType)
 
     return layer.getInputErrors(copy = true)
   }
@@ -201,10 +205,10 @@ class BackwardHelper(private val network: PointerNetwork) {
   /**
    * @return the transform layers params errors
    */
-  private fun getTransformParamsErrors(): AffineLayerParameters {
+  private fun getTransformParamsErrors(): MergeLayerParameters<*> {
 
     if (!this::transformLayerParamsErrors.isInitialized) {
-      this.transformLayerParamsErrors = this.network.forwardHelper.usedTransformLayers.last().last().params.copy()
+      this.transformLayerParamsErrors = this.network.usedTransformLayers.last().last().params.copy()
     }
 
     return this.transformLayerParamsErrors
@@ -216,7 +220,7 @@ class BackwardHelper(private val network: PointerNetwork) {
   private fun getAttentionParamsErrors(): AttentionParameters {
 
     if (!this::attentionParamsErrors.isInitialized) {
-      this.attentionParamsErrors = this.network.forwardHelper.usedAttentionStructures.last().params.copy()
+      this.attentionParamsErrors = this.network.usedAttentionStructures.last().params.copy()
     }
 
     return this.attentionParamsErrors
