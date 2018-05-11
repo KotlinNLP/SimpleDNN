@@ -8,9 +8,9 @@
 package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
 
 /**
  * The parameters of the [PointerNetwork].
@@ -19,7 +19,7 @@ import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
  * @property attentionParams the parameters of the attention structure
  */
 class PointerNetworkParameters(
-  val transformParams: AffineLayerParameters,
+  val transformParams: MergeLayerParameters<*>,
   val attentionParams: AttentionParameters
 ) : IterableParams<PointerNetworkParameters>() {
 
