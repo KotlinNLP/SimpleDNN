@@ -8,6 +8,12 @@
 package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionStructure
+import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayersPool
 
 /**
  * The [PointerNetwork].
@@ -40,6 +46,27 @@ class PointerNetwork(val model: PointerNetworkModel) {
   internal val firstState: Boolean get() = this.forwardCount == 0
 
   /**
+   * The list of transform layers groups used during the last forward.
+   */
+  internal val usedTransformLayers = mutableListOf<List<MergeLayer<DenseNDArray>>>()
+
+  /**
+   * The list of attention structures used during the last forward.
+   */
+  internal val usedAttentionStructures = mutableListOf<AttentionStructure>()
+
+  /**
+   * A pool of Affine Layers used to build the attention arrays.
+   *
+   * TODO: replace with a generic transform layers pool
+   */
+  internal val transformLayersPool: AffineLayersPool<DenseNDArray> =
+    AffineLayersPool(
+      inputType = LayerType.Input.Dense,
+      activationFunction = Tanh(),
+      params = this.model.transformParams)
+
+  /**
    * The forward helper.
    */
   internal val forwardHelper = ForwardHelper(network = this)
@@ -47,7 +74,7 @@ class PointerNetwork(val model: PointerNetworkModel) {
   /**
    * The backward helper.
    */
-  private val backwardHelper = BackwardHelper(network = this)
+  private val backwardHelper = BackwardHelper<AffineLayerParameters>(network = this)
 
   /**
    * Set the encoded sequence.
