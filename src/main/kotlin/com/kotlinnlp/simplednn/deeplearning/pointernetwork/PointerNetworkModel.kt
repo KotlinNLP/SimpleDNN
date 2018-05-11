@@ -9,8 +9,8 @@ package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
 import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionParameters
 import java.io.Serializable
 
 
@@ -53,7 +53,7 @@ class PointerNetworkModel(
    * The parameters of the attention mechanism.
    */
   val attentionParams = AttentionParameters(
-    attentionSize = this.attentionSize,
+    attentionSize = this.transformParams.outputSize,
     initializer = weightsInitializer)
 
   /**
