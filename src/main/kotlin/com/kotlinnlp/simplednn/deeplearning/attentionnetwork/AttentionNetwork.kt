@@ -45,7 +45,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * The transform layer which creates an attention array from each array of an input sequence.
    */
-  lateinit private var transformLayers: Array<FeedforwardLayerStructure<InputNDArrayType>>
+  private lateinit var transformLayers: Array<FeedforwardLayerStructure<InputNDArrayType>>
 
   /**
    * The transform layers pool.
@@ -60,7 +60,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * The Attention Layer of input.
    */
-  lateinit private var attentionLayer: AttentionLayerStructure<InputNDArrayType>
+  private lateinit var attentionLayer: AttentionLayerStructure<InputNDArrayType>
 
   /**
    * A boolean indicating if attention arrays automatically generated have been used during the last forward.
