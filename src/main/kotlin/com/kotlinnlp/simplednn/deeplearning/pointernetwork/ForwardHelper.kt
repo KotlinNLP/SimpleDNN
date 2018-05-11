@@ -7,12 +7,9 @@
 
 package com.kotlinnlp.simplednn.deeplearning.pointernetwork
 
-import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionMechanism
 import com.kotlinnlp.simplednn.deeplearning.attentionnetwork.attentionmechanism.AttentionStructure
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerStructure
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayersPool
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -20,26 +17,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property network the attentive recurrent network of this helper
  */
-class ForwardHelper(private val network: PointerNetwork) {
-
-  /**
-   * The list of transform layers groups used during the last forward.
-   */
-  internal val usedTransformLayers = mutableListOf<List<AffineLayerStructure<DenseNDArray>>>()
-
-  /**
-   * The list of attention structures used during the last forward.
-   */
-  internal val usedAttentionStructures = mutableListOf<AttentionStructure>()
-
-  /**
-   * A pool of Affine Layers used to build the attention arrays.
-   */
-  private val transformLayersPool: AffineLayersPool<DenseNDArray> =
-    AffineLayersPool(
-      inputType = LayerType.Input.Dense,
-      activationFunction = Tanh(),
-      params = this.network.model.transformParams)
+class ForwardHelper(
+  private val network: PointerNetwork
+) {
 
   /**
    * @param vector the vector that modulates a content-based attention mechanism over the input sequence
@@ -62,10 +42,10 @@ class ForwardHelper(private val network: PointerNetwork) {
    */
   private fun buildAttentionStructure(attentionArrays: List<DenseNDArray>): AttentionStructure {
 
-    this.usedAttentionStructures.add(
+    this.network.usedAttentionStructures.add(
       AttentionStructure(attentionArrays, params = this.network.model.attentionParams))
 
-    return this.usedAttentionStructures.last()
+    return this.network.usedAttentionStructures.last()
   }
 
   /**
@@ -94,13 +74,13 @@ class ForwardHelper(private val network: PointerNetwork) {
    *
    * @return an available transform layer
    */
-  private fun getTransformLayers(size: Int): List<AffineLayerStructure<DenseNDArray>> {
+  private fun getTransformLayers(size: Int): List<MergeLayer<DenseNDArray>> {
 
-    this.usedTransformLayers.add(
-      List(size = size, init = { this.transformLayersPool.getItem() })
+    this.network.usedTransformLayers.add(
+      List(size = size, init = { this.network.transformLayersPool.getItem() })
     )
 
-    return this.usedTransformLayers.last()
+    return this.network.usedTransformLayers.last()
   }
 
   /**
@@ -108,8 +88,8 @@ class ForwardHelper(private val network: PointerNetwork) {
    */
   private fun initForward() {
 
-    this.transformLayersPool.releaseAll()
-    this.usedTransformLayers.clear()
-    this.usedAttentionStructures.clear()
+    this.network.transformLayersPool.releaseAll()
+    this.network.usedTransformLayers.clear()
+    this.network.usedAttentionStructures.clear()
   }
 }
