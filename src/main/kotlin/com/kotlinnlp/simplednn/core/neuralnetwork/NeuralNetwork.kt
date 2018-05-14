@@ -80,6 +80,16 @@ class NeuralNetwork(
   val sparseInput: Boolean = this.inputType == LayerType.Input.SparseBinary
 
   /**
+   * The input size.
+   */
+  val inputSize: Int = this.layersConfiguration.first().size
+
+  /**
+   * The output size.
+   */
+  val outputSize: Int = this.layersConfiguration.last().size
+
+  /**
    * The model containing all the trainable parameters of the network.
    */
   val model: NetworkParameters = this.parametersFactory(
