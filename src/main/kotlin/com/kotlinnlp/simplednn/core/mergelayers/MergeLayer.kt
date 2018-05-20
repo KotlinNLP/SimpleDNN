@@ -17,8 +17,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * The Merge Layer abstract class.
  * It is a [LayerStructure] with two inputs instead of one.
  *
- * @property inputArray1 the first input array of the layer
- * @property inputArray2 the second input array of the layer
+ * @property inputArrays the input arrays of the layer
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
  * @property activationFunction the activation function of the layer
@@ -27,15 +26,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property id an identification number useful to track a specific [MergeLayer]
  */
 abstract class MergeLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
-  val inputArray1: AugmentedArray<InputNDArrayType>,
-  val inputArray2: AugmentedArray<InputNDArrayType>,
+  val inputArrays: List<AugmentedArray<InputNDArrayType>>,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: MergeLayerParameters<*>,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0,
   id: Int = 0
 ) : LayerStructure<InputNDArrayType>(
-  inputArray = inputArray1,
+  inputArray = inputArrays[0],
   outputArray = outputArray,
   params = params,
   activationFunction = activationFunction,
@@ -43,31 +41,34 @@ abstract class MergeLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   id = id) {
 
   /**
-   * Set the values of the inputArray1
+   * Set the values of the inputArray at the given [index].
    *
+   * @param index the index of the inputArray to set
    * @param values the values to set into the inputArray1
    */
-  fun setInput1(values: InputNDArrayType) = this.inputArray1.assignValues(values)
-
-  /**
-   * Set the values of the inputArray2
-   *
-   * @param values the values to set into the inputArray2
-   */
-  fun setInput2(values: InputNDArrayType) = this.inputArray2.assignValues(values)
+  fun setInput(index: Int, values: InputNDArrayType) = this.inputArrays[index].assignValues(values)
 
   /**
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
-   * @return a Pair containing the errors of the input arrays
+   * @return a list containing the errors of each input array
    */
-  fun getInputErrors(copy: Boolean = true): Pair<DenseNDArray, DenseNDArray> = if (copy)
-    Pair(this.inputArray1.errors.copy(), this.inputArray2.errors.copy())
-  else
-    Pair(this.inputArray1.errors, this.inputArray2.errors)
+  fun getInputErrors(copy: Boolean = true): List<DenseNDArray> = this.inputArrays.map {
+    if (copy) it.errors.copy() else it.errors
+  }
 
   /**
    * @return the [MergeLayerParameters] used to store errors, compatible with this type of [MergeLayer]
    */
   abstract fun parametersErrorsFactory(): MergeLayerParameters<*>
+
+  /**
+   * Ensure that the input arrays are compatible with the parameters.
+   */
+  protected fun checkInputSize() {
+
+    require(this.inputArrays.size > 1)
+    require(this.inputArrays.size == this.params.inputsSize.size)
+    require(this.inputArrays.zip(this.params.inputsSize).all { it.first.size == it.second })
+  }
 }

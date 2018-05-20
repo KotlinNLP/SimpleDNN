@@ -14,25 +14,24 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * The Concat Layer Structure.
  *
- * @property inputArray the first input array of the layer
- * @property inputArray2 the second input array of the layer
+ * @property inputArrays the input arrays of the layer
  * @property params the parameters which connect the input to the output
  * @property id an identification number useful to track a specific [SumLayerStructure]
  */
 class SumLayerStructure(
-  inputArray1: AugmentedArray<DenseNDArray>,
-  inputArray2: AugmentedArray<DenseNDArray>,
+  inputArrays: List<AugmentedArray<DenseNDArray>>,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: SumLayerParameters,
   id: Int = 0
 ) : MergeLayer<DenseNDArray>(
-  inputArray1 = inputArray1,
-  inputArray2 = inputArray2,
+  inputArrays = inputArrays,
   outputArray = outputArray,
   params = params,
   activationFunction = null,
   dropout = 0.0,
   id = id) {
+
+  init { this.checkInputSize() }
 
   /**
    * The helper which execute the forward.
@@ -52,7 +51,5 @@ class SumLayerStructure(
   /**
    * @return the [SumLayerParameters] used to store errors
    */
-  override fun parametersErrorsFactory() = SumLayerParameters(
-    inputSize1 = this.params.inputSize1,
-    inputSize2 = this.params.inputSize2)
+  override fun parametersErrorsFactory() = SumLayerParameters(inputsSize = this.params.inputsSize)
 }

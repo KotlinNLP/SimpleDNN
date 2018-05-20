@@ -14,22 +14,20 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
  * The parameters of a merge layer.
  * It has two inputs instead of one.
  *
- * @property inputSize1 the size of the first input
- * @property inputSize2 the size of the second input
+ * @property inputsSize the size of each input
  * @property outputSize the size of the output
  * @param weightsInitializer the initializer of the weights (zeros if null)
  * @param biasesInitializer the initializer of the biases (zeros if null)
  * @property sparseInput whether the weights connected to the input are sparse or not
  */
 abstract class MergeLayerParameters<SelfType: MergeLayerParameters<SelfType>>(
-  val inputSize1: Int,
-  val inputSize2: Int,
+  val inputsSize: List<Int>,
   outputSize: Int,
   weightsInitializer: Initializer?,
   biasesInitializer: Initializer?,
   val sparseInput: Boolean
 ) : LayerParameters<SelfType>(
-  inputSize = inputSize1,
+  inputSize = inputsSize[0],
   outputSize = outputSize,
   weightsInitializer = weightsInitializer,
   biasesInitializer = biasesInitializer

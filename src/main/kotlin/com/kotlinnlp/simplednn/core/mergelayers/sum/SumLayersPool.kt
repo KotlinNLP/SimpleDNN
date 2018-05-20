@@ -29,9 +29,13 @@ class SumLayersPool(val params: SumLayerParameters) : ItemsPool<SumLayerStructur
    */
   override fun itemFactory(id: Int): SumLayerStructure {
 
+    val inputArrays: List<AugmentedArray<DenseNDArray>> =
+      List(size = this.params.inputsSize.size, init = {
+        AugmentedArray<DenseNDArray>(size = this.params.inputsSize[it])
+      })
+
     return SumLayerStructure(
-      inputArray1 = AugmentedArray(size = this.params.inputSize),
-      inputArray2 = AugmentedArray(size = this.params.inputSize),
+      inputArrays = inputArrays,
       outputArray = LayerUnit<DenseNDArray>(this.params.outputSize),
       params = this.params,
       id = id

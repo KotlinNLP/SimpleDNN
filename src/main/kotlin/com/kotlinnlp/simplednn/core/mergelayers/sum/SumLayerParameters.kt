@@ -13,16 +13,13 @@ import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
 /**
  * The parameters of the concat layer.
  *
- * @property inputSize1 the size of the first input
- * @property inputSize2 the size of the second input
+ * @property inputsSize the size of each input
  */
 class SumLayerParameters(
-  inputSize1: Int,
-  inputSize2: Int
+  inputsSize: List<Int>
 ) : MergeLayerParameters<SumLayerParameters>(
-  inputSize1 = inputSize1,
-  inputSize2 = inputSize2,
-  outputSize = inputSize1,
+  inputsSize = inputsSize,
+  outputSize = inputsSize[0],
   weightsInitializer = null,
   biasesInitializer = null,
   sparseInput = false
@@ -37,7 +34,7 @@ class SumLayerParameters(
     private const val serialVersionUID: Long = 1L
   }
 
-  init { require(inputSize1 == inputSize2) }
+  init { require(this.inputsSize.all { it == this.inputsSize[0] })  }
 
   /**
    * The list of all parameters.
@@ -57,7 +54,5 @@ class SumLayerParameters(
   /**
    * @return a new [SumLayerParameters] containing a copy of all parameters of this
    */
-  override fun copy() = SumLayerParameters(
-    inputSize1 = this.inputSize1,
-    inputSize2 = this.inputSize2)
+  override fun copy() = SumLayerParameters(inputsSize = this.inputsSize)
 }

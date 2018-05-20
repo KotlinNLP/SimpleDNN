@@ -24,15 +24,14 @@ import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
  * @property sparseInput whether the weights connected to the input are sparse or not
  */
 class BiaffineLayerParameters(
-  inputSize1: Int,
-  inputSize2: Int,
+  internal val inputSize1: Int,
+  internal val inputSize2: Int,
   outputSize: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   sparseInput: Boolean = false
 ) : MergeLayerParameters<BiaffineLayerParameters>(
-  inputSize1 = inputSize1,
-  inputSize2 = inputSize2,
+  inputsSize = listOf(inputSize1, inputSize2),
   outputSize = outputSize,
   weightsInitializer = weightsInitializer,
   biasesInitializer = biasesInitializer,

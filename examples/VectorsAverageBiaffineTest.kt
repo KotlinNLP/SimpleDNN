@@ -158,8 +158,8 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
    */
   private fun predict(example: Example): DenseNDArray {
 
-    this.biaffineLayer.setInput1(example.first)
-    this.biaffineLayer.setInput2(example.second)
+    this.biaffineLayer.setInput(index = 0, values = example.first)
+    this.biaffineLayer.setInput(index = 1, values = example.second)
 
     this.biaffineLayer.forward()
 

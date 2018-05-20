@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.mergelayers.concat
 import com.kotlinnlp.simplednn.core.layers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.utils.SplitVHelper
 
 /**
  * The helper which executes the backward on an concat [layer].
@@ -17,6 +18,11 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property layer the [ConcatLayerStructure] in which the backward is executed
  */
 class ConcatBackwardHelper(override val layer: ConcatLayerStructure) : BackwardHelper<DenseNDArray> {
+
+  /**
+   * The backward helper to split the output errors.
+   */
+  private val errorsSplitter = SplitVHelper(*this.layer.params.inputsSize.toIntArray())
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
@@ -30,12 +36,19 @@ class ConcatBackwardHelper(override val layer: ConcatLayerStructure) : BackwardH
   override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean, mePropK: Double?) {
 
     if (propagateToInput) {
+      this.assignLayerGradients()
+    }
+  }
 
-      val gy: DenseNDArray = this.layer.outputArray.errors
-      val part: Array<DenseNDArray> = gy.splitV(this.layer.inputArray1.size, this.layer.inputArray2.size)
+  /**
+   * Assign the the layer gradients.
+   */
+  private fun assignLayerGradients() {
 
-      this.layer.inputArray1.assignErrors(part[0])
-      this.layer.inputArray2.assignErrors(part[1])
+    val gy: DenseNDArray = this.layer.outputArray.errors
+
+    this.layer.inputArrays.zip(this.errorsSplitter.split(gy)).forEach { (x, gradients) ->
+      x.assignErrors(gradients)
     }
   }
 }

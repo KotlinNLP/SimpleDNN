@@ -44,33 +44,30 @@ class AffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * @param paramsErrors the errors of the parameters which will be filled
    */
   private fun assignParamsGradients(paramsErrors: AffineLayerParameters) {
 
-    val x1: InputNDArrayType = this.layer.inputArray.values
-    val x2: InputNDArrayType = this.layer.inputArray2.values
-
     val gy: DenseNDArray = this.layer.outputArray.errors
-    val gw1: NDArray<*> = paramsErrors.w1.values
-    val gw2: NDArray<*> = paramsErrors.w2.values
     val gb: NDArray<*> = paramsErrors.b.values
 
-    gw1.assignDot(gy, x1.t)
-    gw2.assignDot(gy, x2.t)
     gb.assignValues(gy)
+
+    this.layer.inputArrays.zip(paramsErrors.w).forEach { (x, gw) ->
+      gw.values.assignDot(gy, x.values.t)
+    }
   }
 
   /**
+   * Assign the the layer gradients.
    */
   private fun assignLayerGradients() {
-
-    val w1: DenseNDArray = this.layer.params.w1.values as DenseNDArray
-    val w2: DenseNDArray = this.layer.params.w2.values as DenseNDArray
 
     val gy: DenseNDArray = this.layer.outputArray.errors
     val gyT: DenseNDArray = gy.t
 
-    this.layer.inputArray1.assignErrorsByDotT(gyT, w1)
-    this.layer.inputArray2.assignErrorsByDotT(gyT, w2)
+    this.layer.inputArrays.zip(this.layer.params.w).forEach { (x, w) ->
+      x.assignErrorsByDotT(gyT, w.values)
+    }
   }
 }

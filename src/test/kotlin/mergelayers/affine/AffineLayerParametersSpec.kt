@@ -39,14 +39,13 @@ class AffineLayerParametersSpec : Spek({
         whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
         val params = AffineLayerParameters(
-          inputSize1 = 2,
-          inputSize2 = 3,
+          inputsSize = listOf(2, 3),
           outputSize = 2,
           weightsInitializer = RandomInitializer(randomGenerator),
           biasesInitializer = ConstantInitializer(0.9))
 
-        val w1 = params.w1.values
-        val w2 = params.w2.values
+        val w1 = params.w[0].values
+        val w2 = params.w[1].values
         val b = params.b.values
 
         it("should contain a dense w1") {
@@ -73,15 +72,14 @@ class AffineLayerParametersSpec : Spek({
       on("sparse input") {
 
         val params = AffineLayerParameters(
-          inputSize1 = 2,
-          inputSize2 = 3,
+          inputsSize = listOf(2, 3),
           outputSize = 2,
           sparseInput = true,
           weightsInitializer = null,
           biasesInitializer = null)
 
-        val w1 = params.w1.values
-        val w2 = params.w2.values
+        val w1 = params.w[0].values
+        val w2 = params.w[1].values
 
         it("should contain a sparse w1") {
           assertTrue { w1 is SparseNDArray }
@@ -94,8 +92,7 @@ class AffineLayerParametersSpec : Spek({
         it("should throw an Exception when trying to initialize them") {
           assertFails {
             AffineLayerParameters(
-              inputSize1 = 2,
-              inputSize2 = 3,
+              inputsSize = listOf(2, 3),
               outputSize = 2,
               sparseInput = true,
               weightsInitializer = ConstantInitializer(0.1),
@@ -107,12 +104,12 @@ class AffineLayerParametersSpec : Spek({
 
     context("iteration") {
 
-      val params = AffineLayerParameters(inputSize1 = 2, inputSize2 = 3, outputSize = 2)
+      val params = AffineLayerParameters(inputsSize = listOf(2, 3), outputSize = 2)
 
       val iterator = params.iterator()
 
-      val w1 = params.w1
-      val w2 = params.w2
+      val w1 = params.w[0]
+      val w2 = params.w[1]
       val b = params.b
 
       on("iteration 1") {

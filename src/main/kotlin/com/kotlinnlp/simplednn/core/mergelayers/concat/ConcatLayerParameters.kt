@@ -13,16 +13,13 @@ import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
 /**
  * The parameters of the concat layer.
  *
- * @property inputSize1 the size of the first input
- * @property inputSize2 the size of the second input
+ * @property inputsSize the size of each input
  */
 class ConcatLayerParameters(
-  inputSize1: Int,
-  inputSize2: Int
+  inputsSize: List<Int>
 ) : MergeLayerParameters<ConcatLayerParameters>(
-  inputSize1 = inputSize1,
-  inputSize2 = inputSize2,
-  outputSize = inputSize1 + inputSize2,
+  inputsSize = inputsSize,
+  outputSize = inputsSize.sum(),
   weightsInitializer = null,
   biasesInitializer = null,
   sparseInput = false
@@ -55,7 +52,5 @@ class ConcatLayerParameters(
   /**
    * @return a new [ConcatLayerParameters] containing a copy of all parameters of this
    */
-  override fun copy() = ConcatLayerParameters(
-    inputSize1 = this.inputSize1,
-    inputSize2 = this.inputSize2)
+  override fun copy() = ConcatLayerParameters(inputsSize = this.inputsSize)
 }

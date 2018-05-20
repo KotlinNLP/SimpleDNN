@@ -16,8 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * The Affine Layer Structure.
  *
- * @property inputArray the first input array of the layer
- * @property inputArray2 the second input array of the layer
+ * @property inputArrays the input arrays of the layer
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
  * @property activationFunction the activation function of the layer
@@ -26,21 +25,21 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property id an identification number useful to track a specific [AffineLayerStructure]
  */
 class AffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
-  inputArray1: AugmentedArray<InputNDArrayType>,
-  inputArray2: AugmentedArray<InputNDArrayType>,
+  inputArrays: List<AugmentedArray<InputNDArrayType>>,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: AffineLayerParameters,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0,
   id: Int = 0
 ) : MergeLayer<InputNDArrayType>(
-  inputArray1 = inputArray1,
-  inputArray2 = inputArray2,
+  inputArrays = inputArrays,
   outputArray = outputArray,
   params = params,
   activationFunction = activationFunction,
   dropout = dropout,
   id = id) {
+
+  init { this.checkInputSize() }
 
   /**
    * The helper which execute the forward.
@@ -70,8 +69,7 @@ class AffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return the [AffineLayerParameters] used to store errors
    */
   override fun parametersErrorsFactory() = AffineLayerParameters(
-    inputSize1 = this.params.inputSize1,
-    inputSize2 = this.params.inputSize2,
+    inputsSize = this.params.inputsSize,
     outputSize = this.params.outputSize,
     sparseInput = this.params.sparseInput,
     weightsInitializer = null,

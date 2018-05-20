@@ -53,7 +53,7 @@ class BiaffineLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
         AugmentedArray<SparseNDArray>(size = this.params.inputSize))
 
       LayerType.Input.SparseBinary -> Pair(
-        AugmentedArray<SparseNDArray>(size = this.params.inputSize),
+        AugmentedArray<SparseBinaryNDArray>(size = this.params.inputSize),
         AugmentedArray<SparseBinaryNDArray>(size = this.params.inputSize))
     }
 

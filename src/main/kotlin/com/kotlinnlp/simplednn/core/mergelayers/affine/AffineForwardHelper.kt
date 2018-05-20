@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.mergelayers.affine
 
+import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -24,18 +25,17 @@ class AffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward the input to the output combining it with the parameters.
    *
-   * y = f(w1 (dot) x1 + w2 (dot) x2 + b)
+   * y = f(w1 (dot) x1 + w2 (dot) x2 (+ ... + wn (dot) xn) + b)
    */
   override fun forward() {
 
-    val x1: InputNDArrayType = this.layer.inputArray.values
-    val x2: InputNDArrayType = this.layer.inputArray2.values
+    val y: AugmentedArray<DenseNDArray> = this.layer.outputArray
 
-    val w1: DenseNDArray = this.layer.params.w1.values as DenseNDArray
-    val w2: DenseNDArray = this.layer.params.w2.values as DenseNDArray
-    val b: DenseNDArray = this.layer.params.b.values
+    y.assignValues(this.layer.params.b.values)
 
-    this.layer.outputArray.assignValues(w1.dot(x1).assignSum(w2.dot(x2)).assignSum(b))
+    this.layer.inputArrays.zip(this.layer.params.w).forEach { (x, w) ->
+      y.values.assignSum(w.values.dot(x.values))
+    }
 
     this.layer.outputArray.activate()
   }
@@ -43,7 +43,7 @@ class AffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward the input to the output combining it with the parameters, saving the contributions.
    *
-   * y = f(w1 (dot) x1 + w2 (dot) x2 + b)
+   * y = f(w1 (dot) x1 + w2 (dot) x2 (+ ... + wn (dot) xn) + b)
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */

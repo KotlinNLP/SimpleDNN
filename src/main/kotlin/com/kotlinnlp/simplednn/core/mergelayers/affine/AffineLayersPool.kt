@@ -9,12 +9,9 @@ package com.kotlinnlp.simplednn.core.mergelayers.affine
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
-import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.LayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import com.kotlinnlp.simplednn.utils.ItemsPool
 
 /**
@@ -22,13 +19,11 @@ import com.kotlinnlp.simplednn.utils.ItemsPool
  * a new one every time.
  *
  * @property params the parameters which connect the input to the output
- * @property inputType the type of the input array
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default: 0.0 - if applying it, the usual value is 0.25)
  */
 class AffineLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
   val params: AffineLayerParameters,
-  val inputType: LayerType.Input,
   val activationFunction: ActivationFunction?,
   val dropout: Double = 0.0
 ) : ItemsPool<AffineLayerStructure<InputNDArrayType>>() {
@@ -42,25 +37,13 @@ class AffineLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun itemFactory(id: Int): AffineLayerStructure<InputNDArrayType> {
 
-    val (inputArray1, inputArray2) = when (this.inputType) {
+    val inputArrays: List<AugmentedArray<InputNDArrayType>> =
+      List(size = this.params.inputsSize.size, init = {
+        AugmentedArray<InputNDArrayType>(size = this.params.inputsSize[it])
+      })
 
-      LayerType.Input.Dense -> Pair(
-        AugmentedArray<DenseNDArray>(size = this.params.inputSize),
-        AugmentedArray<DenseNDArray>(size = this.params.inputSize))
-
-      LayerType.Input.Sparse -> Pair(
-        AugmentedArray<SparseNDArray>(size = this.params.inputSize),
-        AugmentedArray<SparseNDArray>(size = this.params.inputSize))
-
-      LayerType.Input.SparseBinary -> Pair(
-        AugmentedArray<SparseNDArray>(size = this.params.inputSize),
-        AugmentedArray<SparseBinaryNDArray>(size = this.params.inputSize))
-    }
-
-    @Suppress("UNCHECKED_CAST")
     return AffineLayerStructure(
-      inputArray1 = inputArray1 as AugmentedArray<InputNDArrayType>,
-      inputArray2 = inputArray2 as AugmentedArray<InputNDArrayType>,
+      inputArrays = inputArrays,
       outputArray = LayerUnit<DenseNDArray>(this.params.outputSize),
       params = this.params,
       activationFunction = this.activationFunction,

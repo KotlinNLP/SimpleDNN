@@ -21,12 +21,11 @@ class SumForwardHelper(override val layer: SumLayerStructure) : ForwardHelper<De
   /**
    * Forward the input to the output concatenating the input arrays.
    */
-  override fun forward() {
-
-    val x1: DenseNDArray = this.layer.inputArray.values
-    val x2: DenseNDArray = this.layer.inputArray2.values
-
-    this.layer.outputArray.assignValues(x1.sum(x2))
+  override fun forward() = this.layer.inputArrays.forEachIndexed { i, x ->
+    if (i == 0)
+      this.layer.outputArray.assignValues(x.values)
+    else
+      this.layer.outputArray.values.assignSum(x.values)
   }
 
   /**

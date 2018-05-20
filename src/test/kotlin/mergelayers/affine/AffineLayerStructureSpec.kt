@@ -39,7 +39,7 @@ class AffineLayerStructureSpec : Spek({
     on("backward") {
 
       val layer = AffineLayerUtils.buildLayer()
-      val paramsErrors = AffineLayerParameters(inputSize1 = 2, inputSize2 = 3, outputSize = 2)
+      val paramsErrors = AffineLayerParameters(inputsSize = listOf(2, 3), outputSize = 2)
 
       layer.forward()
 
@@ -59,7 +59,7 @@ class AffineLayerStructureSpec : Spek({
       }
 
       it("should match the expected errors of w1") {
-        assertEquals(true, (paramsErrors.w1.values as DenseNDArray).equals(
+        assertEquals(true, (paramsErrors.w[0].values as DenseNDArray).equals(
           DenseNDArrayFactory.arrayOf(arrayOf(
             doubleArrayOf(0.341711, 0.384425),
 				    doubleArrayOf(-0.223913, -0.251902)
@@ -68,7 +68,7 @@ class AffineLayerStructureSpec : Spek({
       }
 
       it("should match the expected errors of w2") {
-        assertEquals(true, (paramsErrors.w2.values as DenseNDArray).equals(
+        assertEquals(true, (paramsErrors.w[1].values as DenseNDArray).equals(
           DenseNDArrayFactory.arrayOf(arrayOf(
             doubleArrayOf(-0.213569, 0.085428, -0.256283),
             doubleArrayOf(0.139945, -0.055978, 0.167934)
@@ -77,13 +77,13 @@ class AffineLayerStructureSpec : Spek({
       }
 
       it("should match the expected errors of the inputArray1") {
-        assertEquals(true, layer.inputArray1.errors.equals(
+        assertEquals(true, layer.inputArrays[0].errors.equals(
           DenseNDArrayFactory.arrayOf(doubleArrayOf(0.095771, -0.537634)),
           tolerance = 1.0e-06))
       }
 
       it("should match the expected errors of the inputArray2") {
-        assertEquals(true, layer.inputArray2.errors.equals(
+        assertEquals(true, layer.inputArrays[1].errors.equals(
           DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.172316, -0.297537, 0.468392)),
           tolerance = 1.0e-06))
       }

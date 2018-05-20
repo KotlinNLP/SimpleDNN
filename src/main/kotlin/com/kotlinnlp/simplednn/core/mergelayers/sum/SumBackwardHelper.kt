@@ -30,11 +30,19 @@ class SumBackwardHelper(override val layer: SumLayerStructure) : BackwardHelper<
   override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean, mePropK: Double?) {
 
     if (propagateToInput) {
+      this.assignLayerGradients()
+    }
+  }
 
-      val gy: DenseNDArray = this.layer.outputArray.errors
+  /**
+   * Assign the the layer gradients.
+   */
+  private fun assignLayerGradients() {
 
-      this.layer.inputArray1.assignErrors(gy)
-      this.layer.inputArray2.assignErrors(gy)
+    val gy: DenseNDArray = this.layer.outputArray.errors
+
+    this.layer.inputArrays.forEach { x ->
+      x.assignErrors(gy)
     }
   }
 }

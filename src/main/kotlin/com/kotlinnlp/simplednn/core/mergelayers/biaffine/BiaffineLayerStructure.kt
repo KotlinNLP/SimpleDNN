@@ -31,8 +31,8 @@ import com.kotlinnlp.simplednn.utils.ItemsPool
  *
  */
 class BiaffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
-  inputArray1: AugmentedArray<InputNDArrayType>,
-  inputArray2: AugmentedArray<InputNDArrayType>,
+  internal val inputArray1: AugmentedArray<InputNDArrayType>,
+  internal val inputArray2: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: BiaffineLayerParameters,
   activationFunction: ActivationFunction? = null,
@@ -41,8 +41,7 @@ class BiaffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) :
   ItemsPool.IDItem,
   MergeLayer<InputNDArrayType>(
-    inputArray1 = inputArray1,
-    inputArray2 = inputArray2,
+    inputArrays = listOf(inputArray1, inputArray2),
     outputArray = outputArray,
     params = params,
     activationFunction = activationFunction,

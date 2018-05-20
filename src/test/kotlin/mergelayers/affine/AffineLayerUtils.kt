@@ -23,8 +23,9 @@ object AffineLayerUtils {
    *
    */
   fun buildLayer(): AffineLayerStructure<DenseNDArray> = AffineLayerStructure(
-    inputArray1 = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9))),
-    inputArray2 = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.2, 0.6))),
+    inputArrays = listOf(
+      AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9))),
+      AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.2, 0.6)))),
     outputArray = AugmentedArray(size = 2),
     params = buildParams(),
     activationFunction = Tanh()
@@ -35,15 +36,15 @@ object AffineLayerUtils {
    */
   fun buildParams(): AffineLayerParameters {
 
-    val params = AffineLayerParameters(inputSize1 = 2, inputSize2 = 3, outputSize = 2)
+    val params = AffineLayerParameters(inputsSize = listOf(2, 3), outputSize = 2)
 
-    params.w1.values.assignValues(
+    params.w[0].values.assignValues(
       DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.3, 0.8),
         doubleArrayOf(0.8, -0.7)
       )))
 
-    params.w2.values.assignValues(
+    params.w[1].values.assignValues(
       DenseNDArrayFactory.arrayOf(arrayOf(
         doubleArrayOf(0.6, 0.5, -0.9),
         doubleArrayOf(0.3, -0.3, 0.3)

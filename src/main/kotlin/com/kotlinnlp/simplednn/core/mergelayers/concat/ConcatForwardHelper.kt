@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.mergelayers.concat
 
 import com.kotlinnlp.simplednn.core.layers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.simplemath.concatVectorsV
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -23,10 +24,7 @@ class ConcatForwardHelper(override val layer: ConcatLayerStructure) : ForwardHel
    */
   override fun forward() {
 
-    val x1: DenseNDArray = this.layer.inputArray.values
-    val x2: DenseNDArray = this.layer.inputArray2.values
-
-    this.layer.outputArray.assignValues(x1.concatV(x2))
+    this.layer.outputArray.assignValues(concatVectorsV(*this.layer.inputArrays.map { it.values }.toTypedArray()))
   }
 
   /**
