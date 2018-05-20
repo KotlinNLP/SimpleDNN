@@ -59,8 +59,8 @@ class ForwardHelper(
 
     return ArrayList(transformLayers.zip(this.network.inputSequence).map { (layer, element) ->
 
-      layer.setInput1(element)
-      layer.setInput2(vector)
+      layer.setInput(0, element)
+      layer.setInput(1, vector)
       layer.forward()
 
       layer.outputArray.values

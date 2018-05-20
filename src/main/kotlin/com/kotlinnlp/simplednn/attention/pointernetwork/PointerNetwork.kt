@@ -67,7 +67,6 @@ class PointerNetwork(val model: PointerNetworkModel) {
    */
   internal val transformLayersPool: AffineLayersPool<DenseNDArray> =
     AffineLayersPool(
-      inputType = LayerType.Input.Dense,
       activationFunction = Tanh(),
       params = this.model.transformParams)
 

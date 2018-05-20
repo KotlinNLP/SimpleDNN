@@ -167,7 +167,9 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
     @Suppress("UNCHECKED_CAST")
     this.transformErrorsAccumulator.accumulate(paramsErrors as MergeLayerParametersType)
 
-    return layer.getInputErrors(copy = true)
+    val inputErrors: List<DenseNDArray> = layer.getInputErrors(copy = true)
+
+    return Pair(inputErrors[0], inputErrors[1])
   }
 
   /**

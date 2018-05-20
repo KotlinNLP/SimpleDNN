@@ -43,8 +43,7 @@ class PointerNetworkModel(
    * The parameters used to create the attention arrays of the [attentionParams].
    */
   val transformParams = AffineLayerParameters(
-    inputSize1 = this.inputSize,
-    inputSize2 = this.vectorSize,
+    inputsSize = listOf(this.inputSize, this.vectorSize),
     outputSize = this.attentionSize,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
