@@ -87,7 +87,7 @@ class EMBDLoader(private val verbose: Boolean = true) {
   private fun initialize(filename: String) {
 
     val firstLine: String = this.readFirstLine(filename)
-    val firstLineSplit: List<String> = firstLine.split(delimiters = " ")
+    val firstLineSplit: List<String> = firstLine.split(" ")
 
     this.filename = filename
     this.count = firstLineSplit[0].toInt()
@@ -157,7 +157,7 @@ class EMBDLoader(private val verbose: Boolean = true) {
 
       } else {
 
-        val elements: List<String> = line.split(delimiters = " ")
+        val elements: List<String> = line.split(" ")
         val vector = DoubleArray(size = this.embeddingsSize, init = { i -> elements[i + 1].toDouble() })
 
         if (this.verbose) {

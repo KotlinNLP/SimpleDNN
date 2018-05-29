@@ -58,7 +58,7 @@ open class EmbeddingsMap<in T>(
              initializer: Initializer? = GlorotInitializer()): EmbeddingsMap<String> {
 
       val firstLine: String = readFirstLine(filename)
-      val firstLineSplit: List<String> = firstLine.split(delimiters = " ")
+      val firstLineSplit: List<String> = firstLine.split(" ")
 
       val count: Int = firstLineSplit[0].toInt()
       val size: Int = firstLineSplit[1].toInt()
@@ -122,7 +122,7 @@ open class EmbeddingsMap<in T>(
           isFirstLine = false
 
         } else {
-          val elements: List<String> = line.split(delimiters = " ")
+          val elements: List<String> = line.split(" ")
           val vector = DoubleArray(size = vectorSize, init = { i -> elements[i + 1].toDouble() })
 
           callback(elements.first(), vector)

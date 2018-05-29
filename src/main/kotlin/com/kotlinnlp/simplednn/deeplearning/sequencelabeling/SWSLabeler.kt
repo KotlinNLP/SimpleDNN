@@ -277,7 +277,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
 
     if (this.labels.isNotEmpty()) {
 
-      val splitErrors = errors.splitV(splittingLength = this.network.labelEmbeddingSize).reversed()
+      val splitErrors = errors.splitV(this.network.labelEmbeddingSize).reversed()
 
       val firstIndex = maxOf(0, this.labels.size - splitErrors.size)
 
