@@ -104,7 +104,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  override fun getOutput(copy: Boolean): DenseNDArray {
+  fun getOutput(copy: Boolean = true): DenseNDArray {
     return if (copy) {
       this.sequence.getStateStructure(this.lastStateIndex).outputLayer.outputArray.values.copy()
     } else {

@@ -9,7 +9,6 @@ package com.kotlinnlp.simplednn.core.neuralprocessor
 
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.utils.ItemsPool
 
 /**
@@ -21,12 +20,9 @@ import com.kotlinnlp.simplednn.utils.ItemsPool
 abstract class NeuralProcessor(val neuralNetwork: NeuralNetwork, override val id: Int = 0) : ItemsPool.IDItem {
 
   /**
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
+   * @return the errors of the parameters
    */
   abstract fun getParamsErrors(copy: Boolean = true): NetworkParameters
-
-  /**
-   *
-   */
-  abstract fun getOutput(copy: Boolean = true): DenseNDArray
 }
