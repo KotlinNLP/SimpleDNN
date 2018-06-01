@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.attention.han
+package com.kotlinnlp.simplednn.deeplearning.attention.han
 
 /**
  * The HierarchyItem defines a generic item of the hierarchy which represent the input of an [HANEncoder].

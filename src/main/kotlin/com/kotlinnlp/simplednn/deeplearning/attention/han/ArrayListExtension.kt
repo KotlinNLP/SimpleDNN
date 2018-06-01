@@ -1,4 +1,4 @@
-package com.kotlinnlp.simplednn.attention.han
+package com.kotlinnlp.simplednn.deeplearning.attention.han
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray

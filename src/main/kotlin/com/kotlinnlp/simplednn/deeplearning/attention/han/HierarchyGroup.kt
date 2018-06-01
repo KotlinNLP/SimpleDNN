@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.attention.han
+package com.kotlinnlp.simplednn.deeplearning.attention.han
 
 /**
  * The HierarchyGroup represents a higher level of the input hierarchy of a [HANEncoder].

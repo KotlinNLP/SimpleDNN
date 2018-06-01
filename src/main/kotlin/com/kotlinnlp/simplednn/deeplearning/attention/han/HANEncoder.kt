@@ -5,15 +5,15 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.attention.han
+package com.kotlinnlp.simplednn.deeplearning.attention.han
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
-import com.kotlinnlp.simplednn.attention.attentionnetwork.AttentionNetwork
-import com.kotlinnlp.simplednn.attention.attentionnetwork.AttentionNetworkParameters
-import com.kotlinnlp.simplednn.attention.attentionnetwork.AttentionNetworksPool
+import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetwork
+import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworkParameters
+import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworksPool
 import com.kotlinnlp.simplednn.encoders.birnn.BiRNNEncoder
 import com.kotlinnlp.simplednn.encoders.birnn.BiRNNEncodersPool
 import com.kotlinnlp.simplednn.encoders.birnn.BiRNNParameters
