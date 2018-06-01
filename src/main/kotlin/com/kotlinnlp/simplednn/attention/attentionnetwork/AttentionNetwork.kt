@@ -14,8 +14,8 @@ import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameter
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayersPool
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
-import com.kotlinnlp.simplednn.attention.attentionmechanism.AttentionParameters
-import com.kotlinnlp.simplednn.attention.attentionlayer.AttentionLayerStructure
+import com.kotlinnlp.simplednn.core.attentionlayer.AttentionParameters
+import com.kotlinnlp.simplednn.core.attentionlayer.AttentionLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.utils.ItemsPool
@@ -234,7 +234,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
                                      paramsErrors: AttentionParameters,
                                      propagateToInput: Boolean = false) {
 
-    this.attentionLayer.setErrors(outputErrors)
+    this.attentionLayer.setOutputErrors(outputErrors)
     this.attentionLayer.backward(paramsErrors = paramsErrors, propagateToInput = propagateToInput)
   }
 

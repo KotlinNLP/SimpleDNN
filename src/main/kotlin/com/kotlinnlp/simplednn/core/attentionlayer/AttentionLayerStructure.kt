@@ -5,11 +5,9 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.attention.attentionlayer
+package com.kotlinnlp.simplednn.core.attentionlayer
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.attention.attentionmechanism.AttentionParameters
-import com.kotlinnlp.simplednn.attention.attentionmechanism.AttentionStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -28,7 +26,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   attentionSequence: ArrayList<DenseNDArray>,
   params: AttentionParameters,
   id: Int = 0
-) : AttentionStructure(attentionSequence = attentionSequence, params = params, id = id) {
+) : AttentionMechanismStructure(attentionSequence = attentionSequence, params = params, id = id) {
 
   /**
    * The output dense array.
@@ -45,7 +43,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   init {
     require(this.inputSequence.size > 0) { "The input sequence cannot be empty." }
-    require(this.inputSequence.size == this.attentionSequence.size) {
+    require(this.inputSequence.size == attentionSequence.size) {
       "The input sequence must have the same length of the attention sequence."
     }
 
@@ -59,7 +57,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @param errors the errors to set into the outputArray
    */
-  fun setErrors(errors: DenseNDArray) = this.outputArray.assignErrors(errors)
+  fun setOutputErrors(errors: DenseNDArray) = this.outputArray.assignErrors(errors)
 
   /**
    * Perform the forward of the input sequence.
@@ -68,9 +66,9 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   fun forward(): DenseNDArray {
 
-    val helper = AttentionLayerForwardHelper(layer = this)
+    super.forwardImportanceScore()
 
-    helper.forward()
+    this.calculateOutput()
 
     return this.outputArray.values
   }
@@ -79,14 +77,77 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the errors of the output array.
    *
+   *   x_i = i-th input array
+   *   alpha_i = i-th value of alpha
+   *   am = attention matrix
+   *   gy = output errors
+   *
+   *   gScore_i = x_i' (dot) gy
+   *   gAC = softmax_jacobian(alpha) (dot) gScore  // attention context errors
+   *   gCV = am (dot) gAC  // context vector errors
+   *
+   *   gAM = gAC (dot) cv  // attention matrix errors
+   *   gx_i = gy * alpha_i  // errors of the i-th input array
+   *
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input sequence
    */
   fun backward(paramsErrors: AttentionParameters, propagateToInput: Boolean) {
 
-    val helper = AttentionLayerBackwardHelper(layer = this)
+    super.backwardImportanceScore(paramsErrors = paramsErrors, importanceScoreErrors = this.getScoreErrors())
 
-    helper.backward(paramsErrors = paramsErrors, propagateToInput = propagateToInput)
+    if (propagateToInput) {
+      this.setInputErrors()
+    }
+  }
+
+  /**
+   * Calculate the values of the output array.
+   *
+   *   y = sum by { x_i * alpha_i }
+   */
+  private fun calculateOutput() {
+
+    val y: DenseNDArray = this.outputArray.values
+
+    y.zeros()
+
+    this.inputSequence.forEachIndexed { i, inputArray ->
+      y.assignSum(inputArray.values.prod(this.importanceScore[i]))
+    }
+  }
+
+  /**
+   * gScore_i = x_i' (dot) gy
+   *
+   * @return the errors of the importance score array.
+   */
+  private fun getScoreErrors(): DenseNDArray {
+
+    val outputErrors: DenseNDArray = this.outputArray.errors
+    val scoreErrors: DenseNDArray = DenseNDArrayFactory.zeros(shape = Shape(this.inputSequence.size))
+
+    for (i in 0 until this.inputSequence.size) {
+      val inputArray = this.inputSequence[i].values
+      scoreErrors[i] = inputArray.prod(outputErrors).sum()
+    }
+
+    return scoreErrors
+  }
+
+  /**
+   * Set the errors of each array of the input sequence (which is into the structure).
+   *
+   *   gx_i = gy * alpha_i  // errors of the i-th input array
+   */
+  private fun setInputErrors() {
+
+    val outputErrors: DenseNDArray = this.outputArray.errors
+    val score: DenseNDArray = this.importanceScore
+
+    for (i in 0 until this.inputSequence.size) {
+      this.inputSequence[i].assignErrorsByProd(outputErrors, score[i])
+    }
   }
 
   /**

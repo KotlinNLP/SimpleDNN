@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.attention.pointernetwork
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
-import com.kotlinnlp.simplednn.attention.attentionmechanism.AttentionParameters
+import com.kotlinnlp.simplednn.core.attentionlayer.AttentionParameters
 
 /**
  * The parameters of the [PointerNetwork].

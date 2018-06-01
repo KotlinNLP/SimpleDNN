@@ -10,9 +10,8 @@ package com.kotlinnlp.simplednn.attention.pointernetwork
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
-import com.kotlinnlp.simplednn.attention.attentionmechanism.AttentionParameters
-import com.kotlinnlp.simplednn.attention.attentionmechanism.AttentionMechanism
-import com.kotlinnlp.simplednn.attention.attentionmechanism.AttentionStructure
+import com.kotlinnlp.simplednn.core.attentionlayer.AttentionParameters
+import com.kotlinnlp.simplednn.core.attentionlayer.AttentionMechanismStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -112,9 +111,9 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
    */
   private fun backwardAttentionScores(outputErrors: DenseNDArray): Array<DenseNDArray> {
 
-    val attentionStructure: AttentionStructure = this.network.usedAttentionStructures[this.stateIndex]
+    val attentionStructure: AttentionMechanismStructure = this.network.usedAttentionStructures[this.stateIndex]
 
-    AttentionMechanism(attentionStructure).backward(
+    attentionStructure.backwardImportanceScore(
       paramsErrors = this.getAttentionParamsErrors(),
       importanceScoreErrors = outputErrors)
 

@@ -9,9 +9,8 @@ package com.kotlinnlp.simplednn.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
-import com.kotlinnlp.simplednn.attention.attentionmechanism.AttentionStructure
+import com.kotlinnlp.simplednn.core.attentionlayer.AttentionMechanismStructure
 import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
 import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayersPool
 
@@ -58,7 +57,7 @@ class PointerNetwork(val model: PointerNetworkModel) {
   /**
    * The list of attention structures used during the last forward.
    */
-  internal val usedAttentionStructures = mutableListOf<AttentionStructure>()
+  internal val usedAttentionStructures = mutableListOf<AttentionMechanismStructure>()
 
   /**
    * A pool of Affine Layers used to build the attention arrays.

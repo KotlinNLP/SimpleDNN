@@ -8,8 +8,7 @@
 package com.kotlinnlp.simplednn.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
-import com.kotlinnlp.simplednn.attention.attentionmechanism.AttentionMechanism
-import com.kotlinnlp.simplednn.attention.attentionmechanism.AttentionStructure
+import com.kotlinnlp.simplednn.core.attentionlayer.AttentionMechanismStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -32,7 +31,7 @@ class ForwardHelper(
 
     val attentionArrays: List<DenseNDArray> = this.buildAttentionSequence(vector)
 
-    return AttentionMechanism(this.buildAttentionStructure(attentionArrays)).forward()
+    return this.buildAttentionStructure(attentionArrays).forwardImportanceScore()
   }
 
   /**
@@ -40,10 +39,10 @@ class ForwardHelper(
    *
    * @return the attention structure
    */
-  private fun buildAttentionStructure(attentionArrays: List<DenseNDArray>): AttentionStructure {
+  private fun buildAttentionStructure(attentionArrays: List<DenseNDArray>): AttentionMechanismStructure {
 
     this.network.usedAttentionStructures.add(
-      AttentionStructure(attentionArrays, params = this.network.model.attentionParams))
+      AttentionMechanismStructure(attentionArrays, params = this.network.model.attentionParams))
 
     return this.network.usedAttentionStructures.last()
   }
