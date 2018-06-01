@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
-import com.kotlinnlp.simplednn.core.attention.AttentionMechanismStructure
+import com.kotlinnlp.simplednn.core.attention.AttentionMechanism
 import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
 import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayersPool
 
@@ -55,9 +55,9 @@ class PointerNetworkProcessor(val model: PointerNetworkModel) {
   internal val usedTransformLayers = mutableListOf<List<MergeLayer<DenseNDArray>>>()
 
   /**
-   * The list of attention structures used during the last forward.
+   * The list of attention mechanisms used during the last forward.
    */
-  internal val usedAttentionStructures = mutableListOf<AttentionMechanismStructure>()
+  internal val usedAttentionMechanisms = mutableListOf<AttentionMechanism>()
 
   /**
    * A pool of Affine Layers used to build the attention arrays.

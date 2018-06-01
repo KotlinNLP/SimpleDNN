@@ -26,7 +26,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   attentionSequence: ArrayList<DenseNDArray>,
   params: AttentionParameters,
   id: Int = 0
-) : AttentionMechanismStructure(attentionSequence = attentionSequence, params = params, id = id) {
+) : AttentionMechanism(attentionSequence = attentionSequence, params = params, id = id) {
 
   /**
    * The output dense array.

@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
-import com.kotlinnlp.simplednn.core.attention.AttentionMechanismStructure
+import com.kotlinnlp.simplednn.core.attention.AttentionMechanism
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -16,9 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property networkProcessor the attentive recurrent network of this helper
  */
-class ForwardHelper(
-  private val networkProcessor: PointerNetworkProcessor
-) {
+class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
 
   /**
    * @param vector the vector that modulates a content-based attention mechanism over the input sequence
@@ -31,20 +29,20 @@ class ForwardHelper(
 
     val attentionArrays: List<DenseNDArray> = this.buildAttentionSequence(vector)
 
-    return this.buildAttentionStructure(attentionArrays).forwardImportanceScore()
+    return this.buildAttentionMechanism(attentionArrays).forwardImportanceScore()
   }
 
   /**
    * @param attentionArrays the attention arrays
    *
-   * @return the attention structure
+   * @return an attention mechanisms
    */
-  private fun buildAttentionStructure(attentionArrays: List<DenseNDArray>): AttentionMechanismStructure {
+  private fun buildAttentionMechanism(attentionArrays: List<DenseNDArray>): AttentionMechanism {
 
-    this.networkProcessor.usedAttentionStructures.add(
-      AttentionMechanismStructure(attentionArrays, params = this.networkProcessor.model.attentionParams))
+    this.networkProcessor.usedAttentionMechanisms.add(
+      AttentionMechanism(attentionArrays, params = this.networkProcessor.model.attentionParams))
 
-    return this.networkProcessor.usedAttentionStructures.last()
+    return this.networkProcessor.usedAttentionMechanisms.last()
   }
 
   /**
@@ -89,6 +87,6 @@ class ForwardHelper(
 
     this.networkProcessor.transformLayersPool.releaseAll()
     this.networkProcessor.usedTransformLayers.clear()
-    this.networkProcessor.usedAttentionStructures.clear()
+    this.networkProcessor.usedAttentionMechanisms.clear()
   }
 }

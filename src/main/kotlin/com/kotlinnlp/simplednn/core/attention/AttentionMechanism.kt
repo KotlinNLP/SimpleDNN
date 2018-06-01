@@ -14,13 +14,13 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.utils.ItemsPool
 
 /**
- * The structure of the Attention Mechanism.
+ * The Attention Mechanism.
  *
  * @property attentionSequence the sequence of attention arrays
  * @property params the parameters of the Attention
- * @property id an identification number useful to track a specific [AttentionMechanismStructure]
+ * @property id an identification number useful to track a specific [AttentionMechanism]
  */
-open class AttentionMechanismStructure(
+open class AttentionMechanism(
   val attentionSequence: List<DenseNDArray>,
   val params: AttentionParameters,
   override val id: Int = 0

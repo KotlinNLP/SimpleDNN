@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.attention.AttentionParameters
-import com.kotlinnlp.simplednn.core.attention.AttentionMechanismStructure
+import com.kotlinnlp.simplednn.core.attention.AttentionMechanism
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -111,15 +111,15 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
    */
   private fun backwardAttentionScores(outputErrors: DenseNDArray): Array<DenseNDArray> {
 
-    val attentionStructure: AttentionMechanismStructure = this.networkProcessor.usedAttentionStructures[this.stateIndex]
+    val attentionMechanism: AttentionMechanism = this.networkProcessor.usedAttentionMechanisms[this.stateIndex]
 
-    attentionStructure.backwardImportanceScore(
+    attentionMechanism.backwardImportanceScore(
       paramsErrors = this.getAttentionParamsErrors(),
       importanceScoreErrors = outputErrors)
 
     this.attentionErrorsAccumulator.accumulate(this.attentionParamsErrors)
 
-    return attentionStructure.getAttentionErrors()
+    return attentionMechanism.getAttentionErrors()
   }
 
   /**
@@ -221,7 +221,7 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
   private fun getAttentionParamsErrors(): AttentionParameters {
 
     if (!this::attentionParamsErrors.isInitialized) {
-      this.attentionParamsErrors = this.networkProcessor.usedAttentionStructures.last().params.copy()
+      this.attentionParamsErrors = this.networkProcessor.usedAttentionMechanisms.last().params.copy()
     }
 
     return this.attentionParamsErrors
