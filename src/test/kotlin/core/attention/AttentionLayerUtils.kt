@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package deeplearning.attentionnetwork.utils
+package core.attention
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
@@ -148,7 +148,7 @@ object AttentionLayerUtils {
     return LayerStructureFactory(
       inputArray = AugmentedArray<DenseNDArray>(size = 4),
       outputSize = 2,
-      params = this.buildTransformLayerParams1(),
+      params = buildTransformLayerParams1(),
       activationFunction = Tanh(),
       connectionType = LayerType.Connection.Feedforward
     ) as FeedforwardLayerStructure

@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.Attention
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import deeplearning.attentionnetwork.utils.AttentionLayerUtils
+import core.attention.AttentionLayerUtils
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
