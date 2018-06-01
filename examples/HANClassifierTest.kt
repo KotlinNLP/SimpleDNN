@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.deeplearning.attention.han.toHierarchySequence
 import com.kotlinnlp.simplednn.helpers.training.utils.ExamplesIndices
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.progressindicator.ProgressIndicatorBar
-import com.kotlinnlp.simplednn.embeddings.EmbeddingsMap
+import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import utils.CorpusReader
 import utils.exampleextractor.ClassificationExampleExtractor
 
