@@ -12,12 +12,12 @@ import com.kotlinnlp.simplednn.core.attentionlayer.AttentionMechanismStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The forward helper of the [PointerNetwork].
+ * The forward helper of the [PointerNetworkProcessor].
  *
- * @property network the attentive recurrent network of this helper
+ * @property networkProcessor the attentive recurrent network of this helper
  */
 class ForwardHelper(
-  private val network: PointerNetwork
+  private val networkProcessor: PointerNetworkProcessor
 ) {
 
   /**
@@ -27,7 +27,7 @@ class ForwardHelper(
    */
   fun forward(vector: DenseNDArray): DenseNDArray {
 
-    if (this.network.firstState) this.initForward()
+    if (this.networkProcessor.firstState) this.initForward()
 
     val attentionArrays: List<DenseNDArray> = this.buildAttentionSequence(vector)
 
@@ -41,10 +41,10 @@ class ForwardHelper(
    */
   private fun buildAttentionStructure(attentionArrays: List<DenseNDArray>): AttentionMechanismStructure {
 
-    this.network.usedAttentionStructures.add(
-      AttentionMechanismStructure(attentionArrays, params = this.network.model.attentionParams))
+    this.networkProcessor.usedAttentionStructures.add(
+      AttentionMechanismStructure(attentionArrays, params = this.networkProcessor.model.attentionParams))
 
-    return this.network.usedAttentionStructures.last()
+    return this.networkProcessor.usedAttentionStructures.last()
   }
 
   /**
@@ -54,9 +54,9 @@ class ForwardHelper(
    */
   private fun buildAttentionSequence(vector: DenseNDArray): List<DenseNDArray> {
 
-    val transformLayers = this.getTransformLayers(size = this.network.inputSequence.size)
+    val transformLayers = this.getTransformLayers(size = this.networkProcessor.inputSequence.size)
 
-    return ArrayList(transformLayers.zip(this.network.inputSequence).map { (layer, element) ->
+    return ArrayList(transformLayers.zip(this.networkProcessor.inputSequence).map { (layer, element) ->
 
       layer.setInput(0, element)
       layer.setInput(1, vector)
@@ -75,11 +75,11 @@ class ForwardHelper(
    */
   private fun getTransformLayers(size: Int): List<MergeLayer<DenseNDArray>> {
 
-    this.network.usedTransformLayers.add(
-      List(size = size, init = { this.network.transformLayersPool.getItem() })
+    this.networkProcessor.usedTransformLayers.add(
+      List(size = size, init = { this.networkProcessor.transformLayersPool.getItem() })
     )
 
-    return this.network.usedTransformLayers.last()
+    return this.networkProcessor.usedTransformLayers.last()
   }
 
   /**
@@ -87,8 +87,8 @@ class ForwardHelper(
    */
   private fun initForward() {
 
-    this.network.transformLayersPool.releaseAll()
-    this.network.usedTransformLayers.clear()
-    this.network.usedAttentionStructures.clear()
+    this.networkProcessor.transformLayersPool.releaseAll()
+    this.networkProcessor.usedTransformLayers.clear()
+    this.networkProcessor.usedAttentionStructures.clear()
   }
 }

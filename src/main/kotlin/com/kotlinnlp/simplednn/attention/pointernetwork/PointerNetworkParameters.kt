@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.core.attentionlayer.AttentionParameters
 
 /**
- * The parameters of the [PointerNetwork].
+ * The parameters of the [PointerNetworkProcessor].
  *
  * @property transformParams the parameters of the affine layer
  * @property attentionParams the parameters of the attention structure

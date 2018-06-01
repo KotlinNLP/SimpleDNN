@@ -17,12 +17,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
- * The backward helper of the [PointerNetwork].
+ * The backward helper of the [PointerNetworkProcessor].
  *
- * @property network the attentive recurrent network of this helper
+ * @property networkProcessor the attentive recurrent network of this helper
  */
 class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerParametersType>>(
-  private val network: PointerNetwork
+  private val networkProcessor: PointerNetworkProcessor
 ) {
 
   /**
@@ -85,7 +85,7 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
   /**
    * @param copy a Boolean indicating if the returned errors must be a copy or a reference
    *
-   * @return the params errors of the [network]
+   * @return the params errors of the [networkProcessor]
    */
   fun getParamsErrors(copy: Boolean = true) = PointerNetworkParameters(
     transformParams = this.transformErrorsAccumulator.getParamsErrors(copy = copy),
@@ -111,7 +111,7 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
    */
   private fun backwardAttentionScores(outputErrors: DenseNDArray): Array<DenseNDArray> {
 
-    val attentionStructure: AttentionMechanismStructure = this.network.usedAttentionStructures[this.stateIndex]
+    val attentionStructure: AttentionMechanismStructure = this.networkProcessor.usedAttentionStructures[this.stateIndex]
 
     attentionStructure.backwardImportanceScore(
       paramsErrors = this.getAttentionParamsErrors(),
@@ -129,10 +129,10 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
    */
   private fun backwardAttentionArrays(outputErrors: Array<DenseNDArray>): DenseNDArray {
 
-    val vectorErrorsSum: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.network.model.inputSize))
+    val vectorErrorsSum: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.networkProcessor.model.inputSize))
 
     val transformLayers: List<MergeLayer<DenseNDArray>>
-      = this.network.usedTransformLayers[this.stateIndex]
+      = this.networkProcessor.usedTransformLayers[this.stateIndex]
 
     transformLayers.zip(outputErrors).forEachIndexed { index, (transformLayer, attentionErrors) ->
 
@@ -189,8 +189,8 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
    */
   private fun initInputSequenceErrors() {
     this.inputSequenceErrors = List(
-      size = this.network.inputSequence.size,
-      init = { DenseNDArrayFactory.zeros(Shape(this.network.model.inputSize)) })
+      size = this.networkProcessor.inputSequence.size,
+      init = { DenseNDArrayFactory.zeros(Shape(this.networkProcessor.model.inputSize)) })
   }
 
   /**
@@ -199,8 +199,8 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
    */
   private fun initVectorsErrors() {
     this.vectorsErrors = List(
-      size = this.network.forwardCount,
-      init = { DenseNDArrayFactory.zeros(Shape(this.network.model.vectorSize)) })
+      size = this.networkProcessor.forwardCount,
+      init = { DenseNDArrayFactory.zeros(Shape(this.networkProcessor.model.vectorSize)) })
   }
 
   /**
@@ -209,7 +209,7 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
   private fun getTransformParamsErrors(): MergeLayerParameters<*> {
 
     if (!this::transformLayerParamsErrors.isInitialized) {
-      this.transformLayerParamsErrors = this.network.usedTransformLayers.last().last().params.copy()
+      this.transformLayerParamsErrors = this.networkProcessor.usedTransformLayers.last().last().params.copy()
     }
 
     return this.transformLayerParamsErrors
@@ -221,7 +221,7 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
   private fun getAttentionParamsErrors(): AttentionParameters {
 
     if (!this::attentionParamsErrors.isInitialized) {
-      this.attentionParamsErrors = this.network.usedAttentionStructures.last().params.copy()
+      this.attentionParamsErrors = this.networkProcessor.usedAttentionStructures.last().params.copy()
     }
 
     return this.attentionParamsErrors

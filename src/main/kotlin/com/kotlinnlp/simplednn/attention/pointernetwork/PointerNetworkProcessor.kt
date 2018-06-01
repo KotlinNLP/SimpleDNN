@@ -15,11 +15,11 @@ import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
 import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayersPool
 
 /**
- * The [PointerNetwork].
+ * The [PointerNetworkProcessor].
  *
  * @property model the model of the network
  */
-class PointerNetwork(val model: PointerNetworkModel) {
+class PointerNetworkProcessor(val model: PointerNetworkModel) {
 
   /**
    * @param inputSequenceErrors the list of errors of the input sequence
@@ -72,12 +72,12 @@ class PointerNetwork(val model: PointerNetworkModel) {
   /**
    * The forward helper.
    */
-  internal val forwardHelper = ForwardHelper(network = this)
+  internal val forwardHelper = ForwardHelper(networkProcessor = this)
 
   /**
    * The backward helper.
    */
-  private val backwardHelper = BackwardHelper<AffineLayerParameters>(network = this)
+  private val backwardHelper = BackwardHelper<AffineLayerParameters>(networkProcessor = this)
 
   /**
    * Set the encoded sequence.

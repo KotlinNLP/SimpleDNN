@@ -15,7 +15,7 @@ import java.io.Serializable
 
 
 /**
- * The model of the [PointerNetwork].
+ * The model of the [PointerNetworkProcessor].
  *
  * @property inputSize the size of the elements of the input sequence
  * @property vectorSize the size of the vector that modulates a content-based attention mechanism over the input sequence
