@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworkParameters
-import com.kotlinnlp.simplednn.encoders.birnn.BiRNNParameters
+import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
 
 /**
  * The parameters of the Hierarchical Attention Networks.

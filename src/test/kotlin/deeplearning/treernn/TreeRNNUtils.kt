@@ -10,8 +10,8 @@ package deeplearning.treernn
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
-import com.kotlinnlp.simplednn.encoders.treernn.TreeEncoder
-import com.kotlinnlp.simplednn.encoders.treernn.TreeRNN
+import com.kotlinnlp.simplednn.deeplearning.treernn.TreeEncoder
+import com.kotlinnlp.simplednn.deeplearning.treernn.TreeRNN
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 

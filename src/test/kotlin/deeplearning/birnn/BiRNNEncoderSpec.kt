@@ -8,8 +8,8 @@
 package deeplearning.birnn
 
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
-import com.kotlinnlp.simplednn.encoders.birnn.BiRNNEncoder
-import com.kotlinnlp.simplednn.encoders.birnn.BiRNNParameters
+import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncoder
+import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import deeplearning.birnn.utils.BiRNNEncoderUtils
