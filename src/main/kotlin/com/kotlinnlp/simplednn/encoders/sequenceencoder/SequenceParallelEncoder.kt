@@ -7,22 +7,23 @@
 
 package com.kotlinnlp.simplednn.encoders.sequenceencoder
 
+import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * A Sequence Feedforward Encoder with multiple parallel outputs for each input.
- * It encodes a sequence of arrays into another sequence of n parallel arrays using more [SequenceFeedforwardNetwork]s.
+ * A Feedforward Encoder with multiple parallel outputs for each input.
+ * It encodes a sequence of arrays into another sequence of n parallel arrays using more networks.
  *
  * @param model the model of the sequence parallel encoder
  */
 class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val model: ParallelEncoderModel) {
 
   /**
-   * A list of [SequenceFeedforwardEncoder]s which encode each input array into multiple vectors.
+   * A list of processors which encode each input array into multiple vectors.
    */
-  private val encoders: List<SequenceFeedforwardEncoder<InputNDArrayType>> = this.model.networks.map { network ->
-    SequenceFeedforwardEncoder<InputNDArrayType>(network)
+  private val encoders: List<BatchFeedforwardProcessor<InputNDArrayType>> = this.model.networks.map { network ->
+    BatchFeedforwardProcessor<InputNDArrayType>(network)
   }
 
   /**
@@ -30,10 +31,10 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val m
    */
   fun getInputSequenceErrors(): Array<DenseNDArray> {
 
-    val inputErrors: Array<DenseNDArray> = this.encoders[0].getInputSequenceErrors(copy = true)
+    val inputErrors: Array<DenseNDArray> = this.encoders[0].getBatchInputErrors(copy = true)
 
     for (encoderIndex in 1 until (this.model.networks.size - 1)) {
-      inputErrors.zip(this.encoders[encoderIndex].getInputSequenceErrors(copy = false)).forEach {
+      inputErrors.zip(this.encoders[encoderIndex].getBatchInputErrors(copy = false)).forEach {
         (baseErrors, errors) -> baseErrors.assignSum(errors)
       }
     }
@@ -69,7 +70,7 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val m
 
     this.encoders.forEachIndexed { encoderIndex, encoder ->
       encoder.backward(
-        outputErrorsSequence = Array(
+        Array(
           size = outputErrorsSequence.size,
           init = { elementIndex -> outputErrorsSequence[elementIndex][encoderIndex] }
         ),
@@ -86,7 +87,7 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val m
    */
   private fun forward(sequence: Array<InputNDArrayType>): List<List<DenseNDArray>> {
 
-    val encodersOutputs: List<Array<DenseNDArray>> = this.encoders.map { it.encode(sequence) }
+    val encodersOutputs: List<Array<DenseNDArray>> = this.encoders.map { it.forward(sequence) }
 
     return List(
       size = sequence.size,

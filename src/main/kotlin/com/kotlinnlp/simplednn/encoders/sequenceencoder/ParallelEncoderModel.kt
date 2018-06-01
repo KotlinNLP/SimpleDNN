@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.simplednn.encoders.sequenceencoder
 
+import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream
@@ -17,7 +18,7 @@ import java.io.Serializable
  *
  * @property networks a list of sequence feedforward networks
  */
-class ParallelEncoderModel(val networks: List<SequenceFeedforwardNetwork>) : Serializable {
+class ParallelEncoderModel(val networks: List<NeuralNetwork>) : Serializable {
 
   companion object {
 
@@ -40,7 +41,7 @@ class ParallelEncoderModel(val networks: List<SequenceFeedforwardNetwork>) : Ser
   /**
    * The parameters of all networks.
    */
-  val params = ParallelEncoderParameters(this.networks.map { it.network.model })
+  val params = ParallelEncoderParameters(this.networks.map { it.model })
 
   /**
    * Serialize this [ParallelEncoderModel] and write it to an output stream.
