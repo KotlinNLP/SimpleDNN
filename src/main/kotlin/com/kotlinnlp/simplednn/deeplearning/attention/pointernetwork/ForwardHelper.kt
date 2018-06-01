@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
-import com.kotlinnlp.simplednn.core.attentionlayer.AttentionMechanismStructure
+import com.kotlinnlp.simplednn.core.attention.AttentionMechanismStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**

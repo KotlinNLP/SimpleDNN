@@ -10,8 +10,8 @@ package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
-import com.kotlinnlp.simplednn.core.attentionlayer.AttentionParameters
-import com.kotlinnlp.simplednn.core.attentionlayer.AttentionMechanismStructure
+import com.kotlinnlp.simplednn.core.attention.AttentionParameters
+import com.kotlinnlp.simplednn.core.attention.AttentionMechanismStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory

@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerParametersFactory
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
-import com.kotlinnlp.simplednn.core.attentionlayer.AttentionParameters
+import com.kotlinnlp.simplednn.core.attention.AttentionParameters
 
 /**
  * The parameters of the Attention Network.

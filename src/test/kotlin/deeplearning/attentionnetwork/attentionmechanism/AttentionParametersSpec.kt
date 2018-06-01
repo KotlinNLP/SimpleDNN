@@ -9,7 +9,7 @@ package deeplearning.attentionnetwork.attentionmechanism
 
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
-import com.kotlinnlp.simplednn.core.attentionlayer.AttentionParameters
+import com.kotlinnlp.simplednn.core.attention.AttentionParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever

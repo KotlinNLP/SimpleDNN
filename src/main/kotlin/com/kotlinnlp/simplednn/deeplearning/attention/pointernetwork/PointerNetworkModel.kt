@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
-import com.kotlinnlp.simplednn.core.attentionlayer.AttentionParameters
+import com.kotlinnlp.simplednn.core.attention.AttentionParameters
 import java.io.Serializable
 
 
