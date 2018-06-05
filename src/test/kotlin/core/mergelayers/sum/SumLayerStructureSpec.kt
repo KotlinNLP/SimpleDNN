@@ -46,25 +46,25 @@ class SumLayerStructureSpec : Spek({
 
       it("should match the expected errors of the inputArray at index 0") {
         assertEquals(true, layer.inputArrays[0].errors.equals(
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.1, 0.3, 0.1)),
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, -0.2, 0.4)),
           tolerance = 1.0e-05))
       }
 
       it("should match the expected errors of the inputArray at index 1") {
         assertEquals(true, layer.inputArrays[1].errors.equals(
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.1, 0.3, 0.1)),
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, -0.2, 0.4)),
           tolerance = 1.0e-05))
       }
 
       it("should match the expected errors of the inputArray at index 2") {
         assertEquals(true, layer.inputArrays[2].errors.equals(
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.1, 0.3, 0.1)),
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, -0.2, 0.4)),
           tolerance = 1.0e-05))
       }
 
       it("should match the expected errors of the inputArray at index 3") {
         assertEquals(true, layer.inputArrays[3].errors.equals(
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.1, 0.3, 0.1)),
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, -0.2, 0.4)),
           tolerance = 1.0e-05))
       }
     }
