@@ -66,7 +66,6 @@
         <surfire.version>2.19.1</surfire.version>
         <spek.version>1.1.5</spek.version>
         <dokka.version>0.9.16</dokka.version>
-        <google-guava.version>23.2-jre</google-guava.version>
         <utils.version>2.1.0</utils.version>
     </properties>
 
@@ -294,12 +293,6 @@
             <artifactId>spek-junit-platform-engine</artifactId>
             <version>${spek.version}</version>
             <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${google-guava.version}</version>
         </dependency>
 
         <dependency>
