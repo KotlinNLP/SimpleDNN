@@ -17,6 +17,8 @@ import com.kotlinnlp.simplednn.utils.ItemsPool
 /**
  * New Recirculation network.
  *
+ * TODO: move calcImaginaryInput and backward into a new core layer
+ *
  * @property model the network model
  * @param recallThreshold the threshold of mean absolute error (between the real and the imaginary inputs) beyond
  *                        which the recirculation process is triggered (default = 0.001)
