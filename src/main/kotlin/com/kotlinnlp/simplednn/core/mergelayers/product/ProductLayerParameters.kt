@@ -13,13 +13,13 @@ import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
 /**
  * The parameters of the Product layer.
  *
- * @property inputsSize the size of each input
+ * @property inputSize the size of each input
  */
 class ProductLayerParameters(
-  inputsSize: List<Int>
+  inputSize: Int
 ) : MergeLayerParameters<ProductLayerParameters>(
-  inputsSize = inputsSize,
-  outputSize = inputsSize[0],
+  inputsSize = listOf(inputSize),
+  outputSize = inputSize,
   weightsInitializer = null,
   biasesInitializer = null,
   sparseInput = false
@@ -34,7 +34,12 @@ class ProductLayerParameters(
     private const val serialVersionUID: Long = 1L
   }
 
-  init { require(this.inputsSize.all { it == this.inputsSize[0] })  }
+  /**
+   * Check input arrays size.
+   */
+  init {
+    require(this.inputsSize.all { it == this.inputSize })
+  }
 
   /**
    * The list of all parameters.
@@ -54,5 +59,5 @@ class ProductLayerParameters(
   /**
    * @return a new [ProductLayerParameters] containing a copy of all parameters of this
    */
-  override fun copy() = ProductLayerParameters(inputsSize = this.inputsSize)
+  override fun copy() = ProductLayerParameters(inputSize = this.inputSize)
 }
