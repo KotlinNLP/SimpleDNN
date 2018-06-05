@@ -30,10 +30,7 @@ class ProductBackwardHelper(override val layer: ProductLayerStructure) : Backwar
   override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean, mePropK: Double?) {
 
     if (propagateToInput) {
-      if (this.layer.inputArrays.size <= 4)
-        this.assignLayerGradients()
-      else
-        this.assignLayerGradientsOptimized()
+      this.assignLayerGradients()
     }
   }
 
@@ -56,25 +53,6 @@ class ProductBackwardHelper(override val layer: ProductLayerStructure) : Backwar
       }
 
       xi.assignErrorsByProd(prod, gy)
-    }
-  }
-
-  /**
-   * Assign the the layer gradients optimizing the complexity.
-   * Each time remove the 'x' factor itself from 'inputProd' instead of multiplying all the inputs except for 'x'.
-   */
-  private fun assignLayerGradientsOptimized() {
-
-    val gy: DenseNDArray = this.layer.outputArray.errors
-    val gxProd: DenseNDArray = gy.prod(this.layer.inputArrays.first().values) // gxProd = gy * x0 * x1 * ... * x(N-1)
-
-    (1 until this.layer.inputArrays.size).forEach { i ->
-      val xi: DenseNDArray = this.layer.inputArrays[i].values
-      gxProd.assignProd(xi)
-    }
-
-    this.layer.inputArrays.forEach { xi ->
-      xi.assignErrors(gxProd.div(xi.values)) // gxi = gxProd / xi
     }
   }
 }
