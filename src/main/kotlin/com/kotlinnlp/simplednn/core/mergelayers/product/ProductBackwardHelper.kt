@@ -46,13 +46,13 @@ class ProductBackwardHelper(override val layer: ProductLayerStructure) : Backwar
     this.layer.inputArrays.forEachIndexed { i, xi ->
 
       val j0: Int = if (i == 0) 1 else 0
-      val prod: DenseNDArray = this.layer.inputArrays[j0].values
+      val prod: DenseNDArray = gy.prod(this.layer.inputArrays[j0].values)
 
       this.layer.inputArrays.forEachIndexed { j, xj ->
         if (j != j0 && j != i) prod.assignProd(xj.values)
       }
 
-      xi.assignErrorsByProd(prod, gy)
+      xi.assignErrors(prod)
     }
   }
 }
