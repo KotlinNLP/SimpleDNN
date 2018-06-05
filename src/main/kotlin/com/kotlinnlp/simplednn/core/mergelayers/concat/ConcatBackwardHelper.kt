@@ -13,9 +13,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.utils.SplitVHelper
 
 /**
- * The helper which executes the backward on an concat [layer].
+ * The helper which executes the backward on a [ConcatLayerStructure].
  *
- * @property layer the [ConcatLayerStructure] in which the backward is executed
+ * @property layer the layer in which the backward is executed
  */
 class ConcatBackwardHelper(override val layer: ConcatLayerStructure) : BackwardHelper<DenseNDArray> {
 

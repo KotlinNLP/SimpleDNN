@@ -29,7 +29,8 @@ class ConcatLayerStructure(
   params = params,
   activationFunction = null,
   dropout = 0.0,
-  id = id) {
+  id = id
+) {
 
   init { this.checkInputSize() }
 

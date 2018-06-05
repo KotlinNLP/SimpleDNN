@@ -13,9 +13,9 @@ import com.kotlinnlp.simplednn.simplemath.concatVectorsV
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The helper which executes the forward on an concat [layer].
+ * The helper which executes the forward on a [ConcatLayerStructure].
  *
- * @property layer the [ConcatLayerStructure] in which the forward is executed
+ * @property layer the layer in which the forward is executed
  */
 class ConcatForwardHelper(override val layer: ConcatLayerStructure) : ForwardHelper<DenseNDArray>(layer) {
 
