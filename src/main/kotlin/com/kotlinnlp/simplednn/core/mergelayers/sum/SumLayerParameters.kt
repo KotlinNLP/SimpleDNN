@@ -14,11 +14,13 @@ import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
  * The parameters of the Sum layer.
  *
  * @property inputSize the size of each input
+ * @property nInputs the number of input arrays
  */
 class SumLayerParameters(
-  inputSize: Int
+  inputSize: Int,
+  val nInputs: Int
 ) : MergeLayerParameters<SumLayerParameters>(
-  inputsSize = listOf(inputSize),
+  inputsSize = List(size = nInputs, init = { inputSize }),
   outputSize = inputSize,
   weightsInitializer = null,
   biasesInitializer = null,
@@ -59,5 +61,5 @@ class SumLayerParameters(
   /**
    * @return a new [SumLayerParameters] containing a copy of all parameters of this
    */
-  override fun copy() = SumLayerParameters(inputSize = this.inputSize)
+  override fun copy() = SumLayerParameters(inputSize = this.inputSize, nInputs = this.nInputs)
 }

@@ -28,7 +28,7 @@ object ProductLayerUtils {
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.4, -0.8)))
     ),
     outputArray = AugmentedArray(size = 3),
-    params = ProductLayerParameters(inputSize = 3)
+    params = ProductLayerParameters(inputSize = 3, nInputs = 4)
   )
 
   /**
@@ -43,7 +43,7 @@ object ProductLayerUtils {
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.9, -0.5)))
     ),
     outputArray = AugmentedArray(size = 3),
-    params = ProductLayerParameters(inputSize = 3)
+    params = ProductLayerParameters(inputSize = 3, nInputs = 5)
   )
 
   /**

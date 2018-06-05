@@ -51,5 +51,7 @@ class SumLayerStructure(
   /**
    * @return the [SumLayerParameters] used to store errors
    */
-  override fun parametersErrorsFactory() = SumLayerParameters(inputSize = this.params.inputSize)
+  override fun parametersErrorsFactory() = SumLayerParameters(
+    inputSize = this.params.inputSize,
+    nInputs = this.params.nInputs)
 }

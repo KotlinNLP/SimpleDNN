@@ -51,5 +51,7 @@ class ProductLayerStructure(
   /**
    * @return the [ProductLayerParameters] used to store errors
    */
-  override fun parametersErrorsFactory() = ProductLayerParameters(inputSize = this.params.inputSize)
+  override fun parametersErrorsFactory() = ProductLayerParameters(
+    inputSize = this.params.inputSize,
+    nInputs = this.params.nInputs)
 }

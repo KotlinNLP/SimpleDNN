@@ -14,11 +14,13 @@ import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
  * The parameters of the Product layer.
  *
  * @property inputSize the size of each input
+ * @property nInputs the number of input arrays
  */
 class ProductLayerParameters(
-  inputSize: Int
+  inputSize: Int,
+  val nInputs: Int
 ) : MergeLayerParameters<ProductLayerParameters>(
-  inputsSize = listOf(inputSize),
+  inputsSize = List(size = nInputs, init = { inputSize }),
   outputSize = inputSize,
   weightsInitializer = null,
   biasesInitializer = null,
@@ -59,5 +61,5 @@ class ProductLayerParameters(
   /**
    * @return a new [ProductLayerParameters] containing a copy of all parameters of this
    */
-  override fun copy() = ProductLayerParameters(inputSize = this.inputSize)
+  override fun copy() = ProductLayerParameters(inputSize = this.inputSize, nInputs = this.nInputs)
 }

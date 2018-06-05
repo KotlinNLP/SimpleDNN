@@ -40,7 +40,7 @@ class ProductLayerStructureSpec : Spek({
       on("backward") {
 
         val layer = ProductLayerUtils.buildLayer4()
-        val paramsErrors = ProductLayerParameters(inputSize = 3)
+        val paramsErrors = ProductLayerParameters(inputSize = 3, nInputs = 4)
 
         layer.forward()
 
@@ -90,7 +90,7 @@ class ProductLayerStructureSpec : Spek({
       on("backward") {
 
         val layer = ProductLayerUtils.buildLayer5()
-        val paramsErrors = ProductLayerParameters(inputSize = 3)
+        val paramsErrors = ProductLayerParameters(inputSize = 3, nInputs = 5)
 
         layer.forward()
 

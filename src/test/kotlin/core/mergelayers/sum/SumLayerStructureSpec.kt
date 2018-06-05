@@ -37,7 +37,7 @@ class SumLayerStructureSpec : Spek({
     on("backward") {
 
       val layer = SumLayerUtils.buildLayer()
-      val paramsErrors = SumLayerParameters(inputSize = 3)
+      val paramsErrors = SumLayerParameters(inputSize = 3, nInputs = 4)
 
       layer.forward()
 

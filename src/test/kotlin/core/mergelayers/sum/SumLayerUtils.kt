@@ -28,7 +28,7 @@ object SumLayerUtils {
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.4, -0.8)))
     ),
     outputArray = AugmentedArray(size = 3),
-    params = SumLayerParameters(inputSize = 3)
+    params = SumLayerParameters(inputSize = 3, nInputs = 4)
   )
 
   /**
