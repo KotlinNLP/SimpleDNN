@@ -20,21 +20,7 @@ object ProductLayerUtils {
   /**
    *
    */
-  fun buildLayer4(): ProductLayerStructure = ProductLayerStructure(
-    inputArrays = listOf(
-      AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9, 0.9, 0.6))),
-      AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.5, -0.5))),
-      AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.7, -0.7, 0.8))),
-      AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.4, -0.8)))
-    ),
-    outputArray = AugmentedArray(size = 3),
-    params = ProductLayerParameters(inputSize = 3, nInputs = 4)
-  )
-
-  /**
-   *
-   */
-  fun buildLayer5(): ProductLayerStructure = ProductLayerStructure(
+  fun buildLayer(): ProductLayerStructure = ProductLayerStructure(
     inputArrays = listOf(
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9, 0.9, 0.6))),
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.5, -0.5))),
@@ -49,10 +35,5 @@ object ProductLayerUtils {
   /**
    *
    */
-  fun getOutputErrors4() = DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, -0.2, 0.4))
-
-  /**
-   *
-   */
-  fun getOutputErrors5() = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.5, -0.8))
+  fun getOutputErrors() = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.5, -0.8))
 }
