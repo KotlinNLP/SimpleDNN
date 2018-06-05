@@ -21,12 +21,13 @@ class ConcatRelevanceHelper(override val layer: ConcatLayerStructure)
   : RelevanceHelper<DenseNDArray>(layer) {
 
   /**
+   * Not available for the Concat layer.
+   *
    * @param layerContributions the contributions saved during the last forward
    *
    * @return the relevance of the input respect of the output
    */
   override fun getInputRelevance(layerContributions: LayerParameters<*>): NDArray<*> {
-    layerContributions as ConcatLayerParameters
-    TODO("not implemented")
+    throw NotImplementedError("Relevance not available for the Concat layer.")
   }
 }
