@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.utils.ItemsPool
+import com.kotlinnlp.utils.ItemsPool
 
 /**
  * A multi-task network is composed by single input feed-forward layer shared by more networks, each with a own output

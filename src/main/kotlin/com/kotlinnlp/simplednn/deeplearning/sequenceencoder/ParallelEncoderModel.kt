@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.sequenceencoder
 
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.utils.Serializer
+import com.kotlinnlp.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.Serializable

@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.utils.ItemsPool
+import com.kotlinnlp.utils.ItemsPool
 
 /**
  * The Highway Layer Structure.

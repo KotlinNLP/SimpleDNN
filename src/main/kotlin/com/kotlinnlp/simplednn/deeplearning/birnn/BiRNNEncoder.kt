@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralPro
 import com.kotlinnlp.simplednn.simplemath.concatVectorsV
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.utils.ItemsPool
+import com.kotlinnlp.utils.ItemsPool
 
 /**
  * Bidirectional Recursive Neural Network Encoder

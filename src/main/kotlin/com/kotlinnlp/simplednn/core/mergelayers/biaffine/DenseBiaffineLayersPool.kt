@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.core.mergelayers.biaffine
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.utils.ItemsPool
+import com.kotlinnlp.utils.ItemsPool
 
 /**
  * A pool of [BiaffineLayerStructure]s with dense input, which allows to allocate and release one when needed, without

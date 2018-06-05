@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.core.neuralprocessor
 
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.utils.ItemsPool
+import com.kotlinnlp.utils.ItemsPool
 
 /**
  * The [NeuralProcessor] acts on the [neuralNetwork] performing predictions and training.

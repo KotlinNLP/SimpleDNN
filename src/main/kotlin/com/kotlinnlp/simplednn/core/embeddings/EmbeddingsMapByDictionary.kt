@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.embeddings
 
-import com.kotlinnlp.simplednn.utils.DictionarySet
+import com.kotlinnlp.utils.DictionarySet
 import java.io.File
 
 /**

@@ -19,7 +19,7 @@ import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncodersPool
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.utils.ItemsPool
+import com.kotlinnlp.utils.ItemsPool
 
 /**
  * Encoder based on Hierarchical Attention Networks.

@@ -7,10 +7,10 @@
 
 package com.kotlinnlp.simplednn.core.embeddings
 
-import com.kotlinnlp.progressindicator.ProgressIndicatorBar
+import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.simplednn.utils.DictionarySet
+import com.kotlinnlp.utils.DictionarySet
 import java.io.File
 import java.io.InputStreamReader
 

@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.deeplearning.competitivelearning
 
-import com.kotlinnlp.simplednn.utils.Serializer
+import com.kotlinnlp.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.Serializable

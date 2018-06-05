@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.core.mergelayers.concat
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.utils.ItemsPool
+import com.kotlinnlp.utils.ItemsPool
 
 /**
  * A pool of [ConcatLayerStructure]s which allows to allocate and release layers when needed, without creating

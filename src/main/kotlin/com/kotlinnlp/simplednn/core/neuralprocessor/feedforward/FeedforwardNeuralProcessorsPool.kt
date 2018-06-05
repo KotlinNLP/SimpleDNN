@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.core.neuralprocessor.feedforward
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.utils.ItemsPool
+import com.kotlinnlp.utils.ItemsPool
 
 /**
  * A pool of [NeuralProcessor]s which allows to allocate and release processors when needed, without creating a new one.

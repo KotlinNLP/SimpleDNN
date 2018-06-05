@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.core.mergelayers.sum
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.utils.ItemsPool
+import com.kotlinnlp.utils.ItemsPool
 
 /**
  * A pool of [SumLayerStructure]s which allows to allocate and release layers when needed, without creating

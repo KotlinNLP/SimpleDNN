@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.helpers.validation.ValidationHelper
 import com.kotlinnlp.simplednn.dataset.Example
 import com.kotlinnlp.simplednn.dataset.Shuffler
 import com.kotlinnlp.simplednn.helpers.training.utils.ExamplesIndices
-import com.kotlinnlp.progressindicator.ProgressIndicatorBar
+import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 
 /**
