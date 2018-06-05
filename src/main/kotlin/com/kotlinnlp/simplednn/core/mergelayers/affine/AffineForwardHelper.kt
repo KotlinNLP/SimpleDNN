@@ -14,9 +14,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The helper which executes the forward on an affine [layer].
+ * The helper which executes the forward on an [AffineLayerStructure].
  *
- * @property layer the [AffineLayerStructure] in which the forward is executed
+ * @property layer the layer in which the forward is executed
  */
 class AffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: AffineLayerStructure<InputNDArrayType>

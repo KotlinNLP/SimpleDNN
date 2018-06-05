@@ -16,9 +16,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 
 /**
- * The helper which executes the backward on a biaffine [layer].
+ * The helper which executes the backward on a [BiaffineLayerStructure].
  *
- * @property layer the [BiaffineLayerStructure] in which the backward is executed
+ * @property layer the layer in which the backward is executed
  */
 class BiaffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: BiaffineLayerStructure<InputNDArrayType>

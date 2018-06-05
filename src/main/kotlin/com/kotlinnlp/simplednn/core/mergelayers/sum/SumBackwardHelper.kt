@@ -12,9 +12,9 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The helper which executes the backward on an concat [layer].
+ * The helper which executes the backward on a [SumLayerStructure].
  *
- * @property layer the [SumLayerStructure] in which the backward is executed
+ * @property layer the layer in which the backward is executed
  */
 class SumBackwardHelper(override val layer: SumLayerStructure) : BackwardHelper<DenseNDArray> {
 

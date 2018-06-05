@@ -13,9 +13,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The helper which calculates the relevance of the input of a [layer] respect of its output.
+ * The helper which calculates the relevance of the input of a [SumLayerStructure] respect of its output.
  *
- * @property layer the [SumLayerStructure] in which to calculate the input relevance
+ * @property layer the layer in which to calculate the input relevance
  */
 class SumRelevanceHelper(override val layer: SumLayerStructure)
   : RelevanceHelper<DenseNDArray>(layer) {

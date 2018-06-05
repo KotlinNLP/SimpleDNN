@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The Concat Layer Structure.
+ * The Sum Layer Structure.
  *
  * @property inputArrays the input arrays of the layer
  * @property params the parameters which connect the input to the output

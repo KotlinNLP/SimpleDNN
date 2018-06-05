@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
 
 /**
- * The parameters of the biaffine layer.
+ * The parameters of the Biaffine layer.
  *
  * @property inputSize1 the size of the first input
  * @property inputSize2 the size of the second input

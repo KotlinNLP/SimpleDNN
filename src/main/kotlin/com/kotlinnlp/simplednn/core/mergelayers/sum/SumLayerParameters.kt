@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
 
 /**
- * The parameters of the concat layer.
+ * The parameters of the Sum layer.
  *
  * @property inputsSize the size of each input
  */

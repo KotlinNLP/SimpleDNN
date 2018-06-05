@@ -12,9 +12,9 @@ import com.kotlinnlp.simplednn.core.layers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
- * The helper which calculates the relevance of the input of a [layer] respect of its output.
+ * The helper which calculates the relevance of the input of a [BiaffineLayerStructure] respect of its output.
  *
- * @property layer the [BiaffineLayerStructure] in which to calculate the input relevance
+ * @property layer the layer in which to calculate the input relevance
  */
 class BiaffineRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: BiaffineLayerStructure<InputNDArrayType>

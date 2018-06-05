@@ -12,9 +12,9 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The helper which executes the forward on an concat [layer].
+ * The helper which executes the forward on a [SumLayerStructure].
  *
- * @property layer the [SumLayerStructure] in which the forward is executed
+ * @property layer the layer in which the forward is executed
  */
 class SumForwardHelper(override val layer: SumLayerStructure) : ForwardHelper<DenseNDArray>(layer) {
 

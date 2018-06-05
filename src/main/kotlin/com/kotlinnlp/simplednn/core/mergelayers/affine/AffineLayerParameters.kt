@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
 
 /**
- * The parameters of the affine layer.
+ * The parameters of the Affine layer.
  *
  * @property inputsSize the size of each input
  * @property outputSize the size of the output
