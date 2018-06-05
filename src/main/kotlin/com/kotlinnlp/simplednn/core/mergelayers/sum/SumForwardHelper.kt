@@ -30,12 +30,11 @@ class SumForwardHelper(override val layer: SumLayerStructure) : ForwardHelper<De
 
   /**
    * Forward the input to the output saving the contributions.
+   * Not available for the Sum layer.
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
   override fun forward(layerContributions: LayerParameters<*>) {
-    layerContributions as SumLayerParameters
-
-    TODO("not implemented")
+    throw NotImplementedError("Forward with contributions not available for the Sum layer.")
   }
 }

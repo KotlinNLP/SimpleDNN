@@ -29,12 +29,11 @@ class ConcatForwardHelper(override val layer: ConcatLayerStructure) : ForwardHel
 
   /**
    * Forward the input to the output saving the contributions.
+   * Not available for the Concat layer.
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
   override fun forward(layerContributions: LayerParameters<*>) {
-    layerContributions as ConcatLayerParameters
-
-    TODO("not implemented")
+    throw NotImplementedError("Forward with contributions not available for the Concat layer.")
   }
 }
