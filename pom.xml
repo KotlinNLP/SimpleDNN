@@ -67,7 +67,7 @@
         <spek.version>1.1.5</spek.version>
         <dokka.version>0.9.16</dokka.version>
         <google-guava.version>23.2-jre</google-guava.version>
-        <progressindicator.version>1.0.0</progressindicator.version>
+        <utils.version>2.1.0</utils.version>
     </properties>
 
     <pluginRepositories>
@@ -304,8 +304,8 @@
 
         <dependency>
             <groupId>com.kotlinnlp</groupId>
-            <artifactId>progressindicator</artifactId>
-            <version>${progressindicator.version}</version>
+            <artifactId>utils</artifactId>
+            <version>${utils.version}</version>
         </dependency>
     </dependencies>
 </project>
