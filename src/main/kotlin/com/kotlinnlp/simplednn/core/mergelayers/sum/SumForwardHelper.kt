@@ -19,7 +19,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 class SumForwardHelper(override val layer: SumLayerStructure) : ForwardHelper<DenseNDArray>(layer) {
 
   /**
-   * Forward the input to the output concatenating the input arrays.
+   * Forward the input to the output adding the input arrays.
    */
   override fun forward() = this.layer.inputArrays.forEachIndexed { i, x ->
     if (i == 0)
