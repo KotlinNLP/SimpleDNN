@@ -59,7 +59,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Contains the relevance of the current values
    */
-  lateinit private var _relevance: NDArray<*>
+  private lateinit var _relevance: NDArray<*>
 
   /**
    * Contains the relevance of the current values when involved in recurrent calculations
@@ -69,7 +69,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Contains the relevance of the current values when involved in recurrent calculations
    */
-  lateinit private var _recurrentRelevance: NDArray<*>
+  private lateinit var _recurrentRelevance: NDArray<*>
 
   /**
    * Assign errors to the array.
