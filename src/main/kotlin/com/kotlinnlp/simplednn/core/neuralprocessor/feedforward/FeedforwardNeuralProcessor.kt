@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.neuralprocessor.feedforward
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
+import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardNetworkStructure
@@ -79,17 +80,39 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * Get the errors of the input.
+   * This method must be used when the input layer is not a Merge layer.
+   *
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
    * @return the errors of the input
    */
   fun getInputErrors(copy: Boolean = true): DenseNDArray {
     require(!this.neuralNetwork.sparseInput) { "Input errors available only if input is dense" }
+    require(this.structure.inputLayer !is MergeLayer<InputNDArrayType>)
 
-    return if (copy) {
+    return if (copy)
       this.structure.inputLayer.inputArray.errors.copy()
-    } else {
+    else
       this.structure.inputLayer.inputArray.errors
+  }
+
+  /**
+   * Get the errors of the inputs.
+   * This method must be used when the input layer is a Merge layer.
+   *
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   *
+   * @return the list of errors of the inputs
+   */
+  fun getInputsErrors(copy: Boolean = true): List<DenseNDArray> {
+    require(!this.neuralNetwork.sparseInput) { "Input errors available only if input is dense" }
+    require(this.structure.inputLayer is MergeLayer<InputNDArrayType>)
+
+    return (this.structure.inputLayer as MergeLayer<InputNDArrayType>).let { if (copy)
+      it.inputArrays.map { it.errors.copy() }
+    else
+      it.inputArrays.map { it.errors }
     }
   }
 
@@ -122,15 +145,53 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
               saveContributions: Boolean,
               useDropout: Boolean = false): DenseNDArray {
 
-    if (saveContributions) {
+    if (saveContributions)
       this.structure.forward(
         features = featuresArray,
         networkContributions = this.forwardContributions,
         useDropout = useDropout)
-
-    } else {
+    else
       this.structure.forward(features = featuresArray, useDropout = useDropout)
-    }
+
+    return this.structure.outputLayer.outputArray.values
+  }
+
+  /**
+   * Forward features when the input layer is a Merge layer.
+   *
+   * @param featuresArrayList the list of features to forward from the input to the output
+   * @param useDropout whether to apply the dropout
+   *
+   * @return the output array
+   */
+  fun forward(featuresArrayList: List<InputNDArrayType>, useDropout: Boolean = false): DenseNDArray {
+
+    this.structure.forward(featuresList = featuresArrayList, useDropout = useDropout)
+
+    return this.structure.outputLayer.outputArray.values
+  }
+
+  /**
+   * Forward features when the input layer is a Merge layer, saving the contributions of the input to the output.
+   *
+   * @param featuresArrayList the list of features to forward from the input to the output
+   * @param saveContributions whether to save the contributions of each input to the output (needed to calculate the
+   *                          relevance)
+   * @param useDropout whether to apply the dropout
+   *
+   * @return the output array
+   */
+  fun forward(featuresArrayList: List<InputNDArrayType>,
+              saveContributions: Boolean,
+              useDropout: Boolean = false): DenseNDArray {
+
+    if (saveContributions)
+      this.structure.forward(
+        featuresList = featuresArrayList,
+        networkContributions = this.forwardContributions,
+        useDropout = useDropout)
+    else
+      this.structure.forward(featuresList = featuresArrayList, useDropout = useDropout)
 
     return this.structure.outputLayer.outputArray.values
   }
@@ -152,11 +213,10 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
       networkContributions = this.forwardContributions,
       relevantOutcomesDistribution = relevantOutcomesDistribution)
 
-    return if (copy) {
+    return if (copy)
       this.structure.inputLayer.inputArray.relevance.copy()
-    } else {
+    else
       this.structure.inputLayer.inputArray.relevance
-    }
   }
 
   /**

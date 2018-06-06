@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.neuralnetwork.structure
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.*
+import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -53,13 +54,17 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   val outputLayer: LayerStructure<DenseNDArray> get() = layers.last() as LayerStructure<DenseNDArray>
 
   /**
-   * Check the input type of the layers following the first (they all must be Dense).
+   * Check the input and the connection type of the layers following the first.
    */
   init {
-    require(this.layersConfiguration.subList(1, this.layersConfiguration.lastIndex).all {
-      it.inputType == LayerType.Input.Dense &&
-        it.connectionType!!.property != LayerType.Property.Merge
-    }) { "Invalid configuration for the upper layers." }
+
+    require(this.layersConfiguration.subList(1, this.layersConfiguration.size).all {
+      it.inputType == LayerType.Input.Dense
+    }) { "The layers of a NeuralNetwork must have a dense output." }
+
+    require(this.layersConfiguration.subList(2, this.layersConfiguration.size).all {
+      it.connectionType!!.property != LayerType.Property.Merge
+    }) { "Only the first layer of a NeuralNetwork can be a Merge layer." }
   }
 
   /**
@@ -97,6 +102,63 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
               useDropout: Boolean = false): DenseNDArray {
 
     this.inputLayer.setInput(features)
+
+    for ((i, layer) in this.layers.withIndex()) {
+      this.curLayerIndex = i
+      layer.forward(layerContributions = networkContributions.paramsPerLayer[i], useDropout = useDropout)
+    }
+
+    return this.outputLayer.outputArray.values
+  }
+
+  /**
+   * Forward a list of features if the first layer is a Merge layer.
+   *
+   * @param featuresList the list of features to forward from the input to the output
+   * @param useDropout whether to apply the dropout
+   *
+   * @return the output [NDArray]
+   */
+  fun forward(featuresList: List<InputNDArrayType>, useDropout: Boolean = false): DenseNDArray {
+
+    require(this.inputLayer is MergeLayer<InputNDArrayType>) {
+      "Cannot call the forward with multiple features if the first layer is not a Merge layer."
+    }
+
+    (this.inputLayer as MergeLayer<InputNDArrayType>).let {
+      featuresList.forEachIndexed { i, features -> it.setInput(index = i, values = features) }
+    }
+
+    for ((i, layer) in this.layers.withIndex()) {
+      this.curLayerIndex = i
+      layer.forward(useDropout = useDropout)
+    }
+
+    return this.outputLayer.outputArray.values
+
+  }
+
+  /**
+   * Forward a list of features if the first layer is a Merge layer, saving the contributions.
+   *
+   * @param featuresList the list of features to forward from the input to the output
+   * @param networkContributions the [NetworkParameters] in which to save the contributions of the input of each layer
+   *                             in respect of the related output
+   * @param useDropout whether to apply the dropout
+   *
+   * @return the output [NDArray]
+   */
+  fun forward(featuresList: List<InputNDArrayType>,
+              networkContributions: NetworkParameters,
+              useDropout: Boolean = false): DenseNDArray {
+
+    require(this.inputLayer is MergeLayer<InputNDArrayType>) {
+      "Cannot call the forward with multiple features if the first layer is not a Merge layer."
+    }
+
+    (this.inputLayer as MergeLayer<InputNDArrayType>).let {
+      featuresList.forEachIndexed { i, features -> it.setInput(index = i, values = features) }
+    }
 
     for ((i, layer) in this.layers.withIndex()) {
       this.curLayerIndex = i

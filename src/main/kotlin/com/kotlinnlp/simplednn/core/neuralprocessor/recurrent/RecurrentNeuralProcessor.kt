@@ -13,6 +13,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerStructure
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.recurrent.GatedRecurrentLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.RecurrentLayerStructure
+import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.RecurrentNetworkStructure
@@ -134,12 +135,12 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
   /**
    * Get the input errors of an element of the last forwarded sequence.
-   * This method should be called after a backward.
+   * This method must be used when the input layer is not a Merge layer and it should be called after a backward.
    *
    * @param elementIndex the index of an element of the input sequence
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
-   * @return the input errors of the element at the given index
+   * @return the input errors of the network structure at the given index of the sequence
    */
   fun getInputErrors(elementIndex: Int, copy: Boolean = true): DenseNDArray {
 
@@ -148,12 +149,35 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
         .format(elementIndex, this.lastStateIndex)
     }
 
-    val inputErrors = this.sequence.getStateStructure(elementIndex).inputLayer.inputArray.errors
+    val structure: RecurrentNetworkStructure<InputNDArrayType> = this.sequence.getStateStructure(elementIndex)
 
-    return if (copy) {
-      inputErrors.copy()
-    } else {
-      inputErrors
+    require(structure.inputLayer !is MergeLayer<InputNDArrayType>)
+
+    return structure.inputLayer.inputArray.let { if (copy) it.errors.copy() else it.errors }
+  }
+
+  /**
+   * Get the inputs errors of an element of the last forwarded sequence, in case.
+   * This method must be used when the input layer is a Merge layer and it should be called after a backward.
+   *
+   * @param elementIndex the index of an element of the input sequence
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   *
+   * @return the list of inputs errors of the network structure at the given index of the sequence
+   */
+  fun getInputsErrors(elementIndex: Int, copy: Boolean = true): List<DenseNDArray> {
+
+    require(elementIndex in 0 .. this.lastStateIndex) {
+      "element index (%d) must be within the length of the sequence in the range [0, %d]"
+        .format(elementIndex, this.lastStateIndex)
+    }
+
+    val structure: RecurrentNetworkStructure<InputNDArrayType> = this.sequence.getStateStructure(elementIndex)
+
+    require(structure.inputLayer is MergeLayer<InputNDArrayType>)
+
+    return (structure.inputLayer as MergeLayer<InputNDArrayType>).inputArrays.map {
+      if (copy) it.errors.copy() else it.errors
     }
   }
 
@@ -273,6 +297,74 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.forwardCurrentState(
       featuresArray = featuresArray,
+      initHiddenArrays = initHiddenArrays,
+      saveContributions = saveContributions,
+      useDropout = useDropout)
+
+    return this.getOutput()
+  }
+
+  /**
+   * Forward a sequence when the input layer is a Merge layer.
+   *
+   * Set the [initHiddenArrays] to use them as previous hidden in the first forward. Set some of them to null to don't
+   * use them for certain layers.
+   *
+   * @param sequenceFeaturesArrayLists the list of features to forward for each item of the sequence
+   * @param initHiddenArrays the list of initial hidden arrays (one per layer, null by default)
+   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
+   *                          the relevance)
+   * @param useDropout whether to apply the dropout
+   *
+   * @return the last output of the network after the whole sequence is been forwarded
+   */
+  fun forward(sequenceFeaturesArrayLists: Array<List<InputNDArrayType>>,
+              initHiddenArrays: List<DenseNDArray?>? = null,
+              saveContributions: Boolean = false,
+              useDropout: Boolean = false): DenseNDArray {
+
+    sequenceFeaturesArrayLists.forEachIndexed { i, featuresList ->
+      this.forward(
+        featuresArrayList = featuresList,
+        firstState = (i == 0),
+        initHiddenArrays = initHiddenArrays,
+        saveContributions = saveContributions,
+        useDropout = useDropout)
+    }
+
+    return this.getOutput()
+  }
+
+  /**
+   * Forward features when the input layer is a Merge layer.
+   *
+   * Set the [initHiddenArrays] to use them as previous hidden in the first forward. Set some of them to null to don't
+   * use them for certain layers.
+   * [initHiddenArrays] will be ignored if [firstState] is false.
+   *
+   * @param featuresArrayList the list of features to forward from the input to the output
+   * @param firstState whether the current one is the first state
+   * @param initHiddenArrays the list of initial hidden arrays (one per layer, null by default)
+   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
+   *                          the relevance)
+   * @param useDropout whether to apply the dropout
+   */
+  fun forward(featuresArrayList: List<InputNDArrayType>,
+              firstState: Boolean,
+              initHiddenArrays: List<DenseNDArray?>? = null,
+              saveContributions: Boolean = false,
+              useDropout: Boolean = false): DenseNDArray {
+
+    if (firstState) {
+      this.reset()
+    }
+
+    this.addNewState(saveContributions = saveContributions)
+
+    this.curStateIndex = this.lastStateIndex // crucial to provide the right context
+
+    this.forwardCurrentState(
+      featuresArrayList = featuresArrayList,
       initHiddenArrays = initHiddenArrays,
       saveContributions = saveContributions,
       useDropout = useDropout)
@@ -456,6 +548,38 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     } else {
       structure.forward(
         features = featuresArray,
+        useDropout = useDropout)
+    }
+  }
+
+  /**
+   * Forward the current state when the input layer is a Merge layer.
+   *
+   * @param featuresArrayList the list of features to forward from the input to the output
+   * @param initHiddenArrays the list of initial hidden arrays (one per layer, can be null)
+   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate the
+   *                          relevance)
+   * @param useDropout whether to apply the dropout
+   */
+  private fun forwardCurrentState(
+    featuresArrayList: List<InputNDArrayType>,
+    initHiddenArrays: List<DenseNDArray?>?,
+    saveContributions: Boolean,
+    useDropout: Boolean = false) {
+
+    val structure: RecurrentNetworkStructure<InputNDArrayType> = this.sequence.getStateStructure(this.lastStateIndex)
+
+    structure.setInitHidden(arrays = if (this.curStateIndex == 0) initHiddenArrays else null)
+
+    if (saveContributions) {
+      structure.forward(
+        featuresList = featuresArrayList,
+        networkContributions = this.sequence.getStateContributions(this.lastStateIndex),
+        useDropout = useDropout)
+
+    } else {
+      structure.forward(
+        featuresList = featuresArrayList,
         useDropout = useDropout)
     }
   }
