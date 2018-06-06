@@ -360,7 +360,7 @@ class TreeEncoderSpec : Spek({
       it("should match the expected updated values of the concat network weights") {
         assertTrue {
           (concatParams.unit.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.19561, -0.201012, -0.400524, 1.003945, -0.501027, -0.398002),
               doubleArrayOf(0.501749, 0.494214, 0.202465, -0.800209, 0.492504, 0.091253)
             )),
@@ -379,7 +379,7 @@ class TreeEncoderSpec : Spek({
       it("should match the expected updated values of the leftRNN weights") {
         assertTrue {
           (leftRNNParams.unit.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.602513, 0.802564),
               doubleArrayOf(-0.295092, 0.005574),
               doubleArrayOf(0.902109, -0.796982)
@@ -391,7 +391,7 @@ class TreeEncoderSpec : Spek({
       it("should match the expected updated values of the leftRNN recurrent weights") {
         assertTrue {
           leftRNNParams.unit.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.100383, 0.699583, 0.000294),
               doubleArrayOf(0.200129, 0.899859, -0.199901),
               doubleArrayOf(-0.500351, -0.199617, -0.400269)
@@ -411,7 +411,7 @@ class TreeEncoderSpec : Spek({
       it("should match the expected updated values of the rightRNN weights") {
         assertTrue {
           (rightRNNParams.unit.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.097327, 0.894518),
               doubleArrayOf(-1.000919, -0.398736),
               doubleArrayOf(0.396431, -0.801835)
@@ -423,7 +423,7 @@ class TreeEncoderSpec : Spek({
       it("should match the expected updated values of the rightRNN recurrent weights") {
         assertTrue {
           rightRNNParams.unit.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(1.000556, -0.09775, 0.700684),
               doubleArrayOf(-0.700047, 0.798187, -1.000972),
               doubleArrayOf(-0.000055, 0.800068, 0.000076)

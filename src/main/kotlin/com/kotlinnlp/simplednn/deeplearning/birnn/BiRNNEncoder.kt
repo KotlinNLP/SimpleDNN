@@ -44,7 +44,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * The input sequence.
    */
-  private lateinit var sequence: Array<InputNDArrayType>
+  private lateinit var sequence: List<InputNDArrayType>
 
   /**
    * Encode the [sequence].
@@ -54,11 +54,11 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return the encoded sequence
    */
-  fun encode(sequence: Array<InputNDArrayType>, useDropout: Boolean = false): Array<DenseNDArray> {
+  fun encode(sequence: List<InputNDArrayType>, useDropout: Boolean = false): List<DenseNDArray> {
 
     this.sequence = sequence
 
-    val (leftToRightOut: Array<DenseNDArray>, rightToLeftOut: Array<DenseNDArray>)
+    val (leftToRightOut: List<DenseNDArray>, rightToLeftOut: List<DenseNDArray>)
       = this.biEncoding(useDropout = useDropout)
 
     return BiRNNUtils.concatenate(leftToRightOut, rightToLeftOut)
@@ -111,7 +111,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   fun backwardMixedFinalOutput(errors: DenseNDArray, propagateToInput: Boolean) {
 
-    val splitErrors: Array<DenseNDArray> = errors.splitV(this.network.hiddenSize)
+    val splitErrors: List<DenseNDArray> = errors.splitV(this.network.hiddenSize)
 
     this.leftToRightProcessor.backward(outputErrors = splitErrors[0], propagateToInput = propagateToInput)
     this.rightToLeftProcessor.backward(outputErrors = splitErrors[1], propagateToInput = propagateToInput)
@@ -123,17 +123,16 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @param outputErrorsSequence the errors to propagate
    * @param propagateToInput whether to propagate the output errors to the input or not
    */
-  fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean) {
+  fun backward(outputErrorsSequence: List<DenseNDArray>, propagateToInput: Boolean) {
 
-    val (leftToRightOutputErrors, rightToLeftOutputErrors) =
-      BiRNNUtils.splitErrorsSequence(outputErrorsSequence)
+    val (leftToRightOutputErrors, rightToLeftOutputErrors) = BiRNNUtils.splitErrorsSequence(outputErrorsSequence)
 
     this.leftToRightProcessor.backward(
       outputErrorsSequence = leftToRightOutputErrors,
       propagateToInput = propagateToInput)
 
     this.rightToLeftProcessor.backward(
-      outputErrorsSequence = rightToLeftOutputErrors.reversed().toTypedArray(),
+      outputErrorsSequence = rightToLeftOutputErrors.reversed(),
       propagateToInput = propagateToInput)
   }
 
@@ -142,10 +141,10 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return the errors of the input sequence (the errors of the two RNNs are combined by summation)
    */
-  fun getInputSequenceErrors(copy: Boolean = true): Array<DenseNDArray> {
+  fun getInputSequenceErrors(copy: Boolean = true): List<DenseNDArray> {
     return BiRNNUtils.sumBidirectionalErrors(
-      leftToRightInputErrors = this.leftToRightProcessor.getInputSequenceErrors(copy = copy),
-      rightToLeftInputErrors = this.rightToLeftProcessor.getInputSequenceErrors(copy = copy)
+      leftToRightSequenceErrors = this.leftToRightProcessor.getInputSequenceErrors(copy = copy),
+      rightToLeftSequenceErrors = this.rightToLeftProcessor.getInputSequenceErrors(copy = copy)
     )
   }
 
@@ -169,31 +168,27 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @return a Pair with two arrays containing the outputs of the two RNNs
    */
   private fun biEncoding(useDropout: Boolean):
-    Pair<Array<DenseNDArray>, Array<DenseNDArray>> {
-
-    val leftToRightOut = arrayOfNulls<DenseNDArray>(this.sequence.size)
-    val rightToLeftOut = arrayOfNulls<DenseNDArray>(this.sequence.size)
+    Pair<List<DenseNDArray>, List<DenseNDArray>> {
 
     var isFirstElement = true
 
-    this.sequence.indices.zip(this.sequence.indices.reversed()).forEach { (i, r) ->
+    return this.sequence.indices.zip(this.sequence.indices.reversed())
+      .map { (i, r) ->
 
-      leftToRightOut[i] = this.leftToRightProcessor.forward(
-        features = this.sequence[i],
-        firstState = isFirstElement,
-        useDropout = useDropout)
+        val l2rOutput = this.leftToRightProcessor.forward(
+          features = this.sequence[i],
+          firstState = isFirstElement,
+          useDropout = useDropout)
 
-      rightToLeftOut[r] = this.rightToLeftProcessor.forward(
-        features = this.sequence[r],
-        firstState = isFirstElement,
-        useDropout = useDropout)
+        val r2lOutput = this.rightToLeftProcessor.forward(
+          features = this.sequence[r],
+          firstState = isFirstElement,
+          useDropout = useDropout)
 
-      isFirstElement = false
-    }
+        isFirstElement = false
 
-    return Pair(
-      leftToRightOut.requireNoNulls(),
-      rightToLeftOut.requireNoNulls()
-    )
+        Pair(l2rOutput, r2lOutput)
+      }
+      .unzip()
   }
 }

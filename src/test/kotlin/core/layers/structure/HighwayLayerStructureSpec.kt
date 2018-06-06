@@ -107,7 +107,7 @@ class HighwayLayerStructureSpec : Spek({
       it("should match the expected errors of the input unit weights") {
         assertTrue {
           (paramsErrors.input.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.327765, -0.368736, -0.368736, 0.409706),
               doubleArrayOf(-0.094803, -0.106653, -0.106653, 0.118504),
               doubleArrayOf(0.013931, 0.015672, 0.015672, -0.017413),
@@ -120,7 +120,7 @@ class HighwayLayerStructureSpec : Spek({
       it("should match the expected errors of the transform gate weights") {
         assertTrue {
           (paramsErrors.transformGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.023020, -0.025897, -0.025897, 0.028775),
               doubleArrayOf(-0.015190, -0.017088, -0.017088, 0.018987),
               doubleArrayOf(0.011082, 0.012467, 0.012467, -0.013853),

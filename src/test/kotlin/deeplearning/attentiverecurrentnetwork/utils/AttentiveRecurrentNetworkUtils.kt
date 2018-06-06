@@ -138,7 +138,7 @@ object AttentiveRecurrentNetworkUtils {
 
     val params = model.transformParams
 
-    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.3, 0.4, 0.8, -0.6),
       doubleArrayOf(0.2, -0.1, -0.9, 1.0)
     )))
@@ -165,14 +165,14 @@ object AttentiveRecurrentNetworkUtils {
 
     val params = model.recurrentContextNetwork.model.paramsPerLayer[0] as SimpleRecurrentLayerParameters
 
-    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.7, -0.2, -0.4, 1.0),
       doubleArrayOf(0.0, 0.3, -0.7, -0.9)
     )))
 
     params.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 0.6)))
 
-    params.unit.recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params.unit.recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(-0.9, 0.7),
       doubleArrayOf(0.2, -0.9)
     )))
@@ -185,7 +185,7 @@ object AttentiveRecurrentNetworkUtils {
 
     val params = model.outputNetwork.model.paramsPerLayer[0] as FeedforwardLayerParameters
 
-    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.9, -0.7, -0.8, 0.7),
       doubleArrayOf(-0.6, -0.6, 0.8, 0.1)
     )))
@@ -202,7 +202,7 @@ object AttentiveRecurrentNetworkUtils {
 
     val errors = paramsErrors.transformParams
 
-    errors.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    errors.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.001396, -0.002158, 0.000219, -0.000696),
       doubleArrayOf(0.001896, -0.002861, 0.000625, -0.001793)
     )))
@@ -229,14 +229,14 @@ object AttentiveRecurrentNetworkUtils {
 
     val errors = paramsErrors.recurrentContextParams.paramsPerLayer[0] as SimpleRecurrentLayerParameters
 
-    errors.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    errors.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(-0.063889, 0.095940, 0.182200, -0.166892),
       doubleArrayOf(0.031021, -0.046585, -0.090847, 0.097863)
     )))
 
     errors.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.307918, -0.149463)))
 
-    errors.unit.recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    errors.unit.recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(-0.003095, 0.008566),
       doubleArrayOf(-0.001419, 0.003926)
     )))
@@ -249,7 +249,7 @@ object AttentiveRecurrentNetworkUtils {
 
     val errors = paramsErrors.outputParams.paramsPerLayer[0] as FeedforwardLayerParameters
 
-    errors.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    errors.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.043012, -0.064547, 0.059055, -0.173428),
       doubleArrayOf(-0.052429, 0.078677, 0.119006, -0.092441)
     )))

@@ -97,7 +97,7 @@ class FeedforwardLayerStructureSpec : Spek({
           val wContr: DenseNDArray = contributions.unit.weights.values as DenseNDArray
           assertTrue {
             wContr.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.42, 0.54, -0.1, -0.8, -0.08),
                 doubleArrayOf(-0.34, -0.46, 0.02, 0.44, -0.1),
                 doubleArrayOf(0.08, 0.04, 0.04, 0.04, -0.02)
@@ -194,7 +194,7 @@ class FeedforwardLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertEquals(true, (paramsErrors.unit.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.26751, 0.30095, 0.30095, -0.33439),
               doubleArrayOf(0.37867, 0.42601, 0.42601, -0.47334),
               doubleArrayOf(-0.32, -0.36, -0.36, 0.4),
@@ -239,7 +239,7 @@ class FeedforwardLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertEquals(true, (paramsErrors.unit.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.30964, 0.54116, 0.0, -0.49254, 0.16085),
               doubleArrayOf(-0.1115, -0.19487, 0.0, 0.17736, -0.05792),
               doubleArrayOf(-0.19814, -0.34629, 0.0, 0.31518, -0.10293)
@@ -280,7 +280,7 @@ class FeedforwardLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertEquals(true, (paramsErrors.unit.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.32525, 0.6505, 0.0, -0.56919, 0.16263),
               doubleArrayOf(-0.11377, -0.22753, 0.0, 0.19909, -0.05688),
               doubleArrayOf(-0.21148, -0.42297, 0.0, 0.37010, -0.10574)

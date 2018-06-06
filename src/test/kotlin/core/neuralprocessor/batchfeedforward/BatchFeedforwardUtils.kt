@@ -23,7 +23,7 @@ object BatchFeedforwardUtils {
   /**
    *
    */
-  fun buildInputBatch(): Array<DenseNDArray> = arrayOf(
+  fun buildInputBatch(): List<DenseNDArray> = listOf(
     DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.3, -0.8)),
     DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, -0.9, 0.6)),
     DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 0.3, -0.6))
@@ -32,7 +32,7 @@ object BatchFeedforwardUtils {
   /**
    *
    */
-  fun buildOutputErrors(): Array<DenseNDArray> = arrayOf(
+  fun buildOutputErrors(): List<DenseNDArray> = listOf(
     DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.2)),
     DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.7, 0.0)),
     DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.9))
@@ -64,7 +64,7 @@ object BatchFeedforwardUtils {
    */
   private fun initParameters(params: FeedforwardLayerParameters) {
 
-    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(-0.7, 0.3, -1.0),
       doubleArrayOf(0.8, -0.6, 0.4)
     )))

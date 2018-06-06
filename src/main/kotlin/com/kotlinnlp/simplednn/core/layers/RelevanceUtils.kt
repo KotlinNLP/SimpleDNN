@@ -21,7 +21,7 @@ object RelevanceUtils {
   /**
    * The stabilizing term used to calculate the relevance
    */
-  private val relevanceEps: Double = 0.01
+  private const val relevanceEps: Double = 0.01
 
   /**
    * Calculate the relevance of the array [x] respect of the calculation which produced the array [y].
@@ -104,11 +104,11 @@ object RelevanceUtils {
 
     val xActiveIndices: List<Int> = x.activeIndicesByColumn.values.first()!!
     val xActiveIndicesSize: Int =  xActiveIndices.size
-    val relevanceValues: Array<Double> = Array(size = xActiveIndicesSize, init = { 0.0 })
-    val relevanceColumns: Array<Int> = Array(size = xActiveIndicesSize, init = { 0 })
-    val relevanceRows: Array<Int> = xActiveIndices.toTypedArray()
+    val relevanceValues = DoubleArray(size = xActiveIndicesSize, init = { 0.0 })
+    val relevanceColumns = IntArray(size = xActiveIndicesSize, init = { 0 })
+    val relevanceRows = xActiveIndices.toIntArray()
     val yLength: Int = y.length
-    var k: Int = 0
+    var k = 0
 
     for (l in 0 until xActiveIndicesSize) {
       // the indices of the non-zero elements of x are the same of the non-zero columns of contributions

@@ -46,7 +46,7 @@ class SumLayerParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList = emptyArray<UpdatableArray<*>>()
+  override val paramsList = emptyList<UpdatableArray<*>>()
 
   /**
    * The list of weights parameters.

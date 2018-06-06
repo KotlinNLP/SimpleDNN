@@ -125,7 +125,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   override fun getRow(i: Int): DenseNDArray {
     val values = this.storage.getRow(i)
-    return DenseNDArrayFactory.arrayOf(arrayOf(values.toArray()))
+    return DenseNDArrayFactory.arrayOf(listOf(values.toArray()))
   }
 
   /**
@@ -570,7 +570,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   override fun prod(n: Double, mask: NDArrayMask): SparseNDArray {
 
-    val values = Array(size = mask.size, init = { this.storage[mask.dim1[it], mask.dim2[it]] * n })
+    val values = DoubleArray(size = mask.size, init = { this.storage[mask.dim1[it], mask.dim2[it]] * n })
 
     return SparseNDArray(shape = this.shape, values = values, rows = mask.dim1, columns = mask.dim2)
   }
@@ -682,7 +682,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
 
     return SparseNDArray(
       shape = this.shape.copy(),
-      values = Array(size = a.values.size, init = { i -> this[a.rowIndices[i], a.colIndices[i]] / a.values[i]}),
+      values = DoubleArray(size = a.values.size, init = { i -> this[a.rowIndices[i], a.colIndices[i]] / a.values[i]}),
       rows = a.rowIndices.copyOf(),
       columns = a.colIndices.copyOf()
     )
@@ -743,7 +743,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   override fun sqrt(mask: NDArrayMask): SparseNDArray {
 
-    val values = Array(size = mask.size, init = { Math.sqrt(this.storage[mask.dim1[it], mask.dim2[it]]) })
+    val values = DoubleArray(size = mask.size, init = { Math.sqrt(this.storage[mask.dim1[it], mask.dim2[it]]) })
 
     return SparseNDArray(shape = this.shape, values = values, rows = mask.dim1, columns = mask.dim2)
   }
@@ -861,39 +861,41 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   override fun concatV(a: DenseNDArray): DenseNDArray = DenseNDArray(concatVertically(this.storage, a.storage))
 
   /**
-   * Split this NDArray into multiple NDArray.
+   * Split this NDArray into more NDArrays.
    *
    * If the number of arguments is one, split this NDArray into multiple NDArray each with length [splittingLength].
    * If there are multiple arguments, split this NDArray according to the length of each [splittingLength] element.
    *
    * @param splittingLength the length(s) for sub-array division
    *
-   * @return an Array containing the split values
+   * @return a list containing the split values
    */
-  override fun splitV(vararg splittingLength: Int): Array<DenseNDArray> =
-    if (splittingLength.size == 1){
+  override fun splitV(vararg splittingLength: Int): List<DenseNDArray> =
+    if (splittingLength.size == 1)
       this.splitVSingleSegment(splittingLength.first())
-    } else {
+    else
       this.splitVMultipleSegments(splittingLength)
-    }
 
   /**
    * Split this NDArray into multiple NDArray each with length [splittingLength]
    *
    * @param splittingLength the length for sub-array division
    *
-   * @return an Array containing the split values
+   * @return a list containing the split values
    */
-  private fun splitVSingleSegment(splittingLength: Int): Array<DenseNDArray> {
+  private fun splitVSingleSegment(splittingLength: Int): List<DenseNDArray> {
 
     require(this.length % splittingLength == 0) {
       "The length of the array must be a multiple of the splitting length"
     }
 
-    return Array(size = this.length / splittingLength, init = {
-      val startIndex = it * splittingLength
-      this.getRange(startIndex, startIndex + splittingLength)
-    })
+    return List(
+      size = this.length / splittingLength,
+      init = {
+        val startIndex = it * splittingLength
+        this.getRange(startIndex, startIndex + splittingLength)
+      }
+    )
   }
 
   /**
@@ -901,9 +903,9 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    *
    * @param splittingLength the lengths for sub-array division
    *
-   * @return an Array containing the split values
+   * @return a list containing the split values
    */
-  private fun splitVMultipleSegments(splittingLength: IntArray): Array<DenseNDArray> {
+  private fun splitVMultipleSegments(splittingLength: IntArray): List<DenseNDArray> {
 
     require(splittingLength.sum() == this.length) {
       "The length of the array must be equal to the sum of each splitting length"
@@ -911,11 +913,14 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
 
     var offset = 0
 
-    return Array(size = splittingLength.size, init = {
-      val startIndex = offset
-      offset = startIndex + splittingLength[it]
-      this.getRange(startIndex, offset)
-    })
+    return List(
+      size = splittingLength.size,
+      init = {
+        val startIndex = offset
+        offset = startIndex + splittingLength[it]
+        this.getRange(startIndex, offset)
+      }
+    )
   }
 
   /**
@@ -950,7 +955,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   fun maskBy(mask: NDArrayMask): SparseNDArray = SparseNDArray(
     shape = this.shape,
-    values = Array(size = mask.size, init = { i -> this.storage[mask.dim1[i], mask.dim2[i]] }),
+    values = DoubleArray(size = mask.size, init = { i -> this.storage[mask.dim1[i], mask.dim2[i]] }),
     rows = mask.dim1,
     columns = mask.dim2
   )

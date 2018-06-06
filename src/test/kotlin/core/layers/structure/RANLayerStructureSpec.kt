@@ -133,7 +133,7 @@ class RANLayerStructureSpec : Spek({
           val inputGateContrib: DenseNDArray = contributions.inputGate.weights.values as DenseNDArray
           assertTrue {
             inputGateContrib.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.3, -0.44, 0.82, -0.5),
                 doubleArrayOf(-0.56, 0.36, -0.09, -0.8),
                 doubleArrayOf(-0.635, 0.555, -0.345, 0.425),
@@ -148,7 +148,7 @@ class RANLayerStructureSpec : Spek({
           val candidateContrib: DenseNDArray = contributions.candidate.weights.values as DenseNDArray
           assertTrue {
             candidateContrib.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.85, -0.13, 0.05, 0.25),
                 doubleArrayOf(0.56, -0.63, 0.27, -0.3),
                 doubleArrayOf(-0.465, 0.315, -0.225, 0.475),
@@ -222,7 +222,7 @@ class RANLayerStructureSpec : Spek({
           val inputGateContrib: DenseNDArray = contributions.inputGate.weights.values as DenseNDArray
           assertTrue {
             inputGateContrib.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.35, -0.49, 0.77, -0.55),
                 doubleArrayOf(-0.56, 0.36, -0.09, -0.8),
                 doubleArrayOf(-0.5975, 0.5925, -0.3075, 0.4625),
@@ -237,7 +237,7 @@ class RANLayerStructureSpec : Spek({
           val forgetGateContrib: DenseNDArray = contributions.forgetGate.weights.values as DenseNDArray
           assertTrue {
             forgetGateContrib.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0325, -0.2475, 1.0125, 0.5125),
                 doubleArrayOf(-0.5350, 0.2050, -0.0650, 0.025),
                 doubleArrayOf(-0.6725, -0.8325, 0.3375, -0.4125),
@@ -252,7 +252,7 @@ class RANLayerStructureSpec : Spek({
           val candidateContrib: DenseNDArray = contributions.candidate.weights.values as DenseNDArray
           assertTrue {
             candidateContrib.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.85, -0.13, 0.05, 0.25),
                 doubleArrayOf(0.56, -0.63, 0.27, -0.3),
                 doubleArrayOf(-0.465, 0.315, -0.225, 0.475),
@@ -267,7 +267,7 @@ class RANLayerStructureSpec : Spek({
           val inputGateContrib: DenseNDArray = contributions.inputGate.recurrentWeights.values as DenseNDArray
           assertTrue {
             inputGateContrib.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.04, 0.2, -0.2, 0.94, 0.60),
                 doubleArrayOf(0.14, -0.16, -0.06, 0.63, -0.56),
                 doubleArrayOf(0.15, 0.15, -0.24, 0.42, -0.43),
@@ -282,7 +282,7 @@ class RANLayerStructureSpec : Spek({
           val forgetGateContrib: DenseNDArray = contributions.forgetGate.recurrentWeights.values as DenseNDArray
           assertTrue {
             forgetGateContrib.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.07, -0.03, 0.39, 0.18, 0.41),
                 doubleArrayOf(-0.08, -0.16, 0.02, -0.7, -0.22),
                 doubleArrayOf(-0.03, -0.27, -0.18, -0.99, 0.07),
@@ -409,7 +409,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate weights") {
           assertEquals(true, (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.03101, 0.03489, 0.03489, -0.03877),
               doubleArrayOf(-0.01167, -0.01313, -0.01313, 0.01459),
               doubleArrayOf(-0.00399, -0.00449, -0.00449, 0.00499),
@@ -421,7 +421,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate weights") {
           assertEquals(true, (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
@@ -433,7 +433,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertEquals(true, (paramsErrors.candidate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.05038, 0.05668, 0.05668, -0.06298),
               doubleArrayOf(0.15594, 0.17543, 0.17543, -0.19492),
               doubleArrayOf(-0.07978, -0.08976, -0.08976, 0.09973),
@@ -445,7 +445,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate recurrent weights") {
           assertEquals(true, paramsErrors.inputGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -457,7 +457,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate recurrent weights") {
           assertEquals(true, paramsErrors.forgetGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -532,7 +532,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate weights") {
           assertEquals(true, (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.00798, 0.00898, 0.00898, -0.00997),
               doubleArrayOf(-0.01107, -0.01246, -0.01246, 0.01384),
               doubleArrayOf(-0.00377, -0.00424, -0.00424, 0.00471),
@@ -544,7 +544,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate weights") {
           assertEquals(true, (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.00062, -0.0007, -0.0007, 0.00078),
               doubleArrayOf(0.01729, 0.01945, 0.01945, -0.02161),
               doubleArrayOf(0.00204, 0.00229, 0.00229, -0.00255),
@@ -556,7 +556,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertEquals(true, (paramsErrors.candidate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.02825, 0.03178, 0.03178, -0.03531),
               doubleArrayOf(0.14759, 0.16603, 0.16603, -0.18448),
               doubleArrayOf(-0.08364, -0.09409, -0.09409, 0.10455),
@@ -568,7 +568,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate recurrent weights") {
           assertEquals(true, paramsErrors.inputGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.00199, -0.00199, 0.00299, 0.00898, 0.00798),
               doubleArrayOf(-0.00277, 0.00277, -0.00415, -0.01246, -0.01107),
               doubleArrayOf(-0.00094, 0.00094, -0.00141, -0.00424, -0.00377),
@@ -580,7 +580,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate recurrent weights") {
           assertEquals(true, paramsErrors.forgetGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.00016, 0.00016, -0.00023, -0.0007, -0.00062),
               doubleArrayOf(0.00432, -0.00432, 0.00648, 0.01945, 0.01729),
               doubleArrayOf(0.00051, -0.00051, 0.00076, 0.00229, 0.00204),
@@ -655,7 +655,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate weights") {
           assertEquals(true, (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0603, 0.06784, 0.06784, -0.07538),
               doubleArrayOf(-0.0064, -0.0072, -0.0072, 0.00800),
               doubleArrayOf(-0.01199, -0.01349, -0.01349, 0.01499),
@@ -667,7 +667,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate weights") {
           assertEquals(true, (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
@@ -679,7 +679,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertEquals(true, (paramsErrors.candidate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.09796, 0.11021, 0.11021, -0.12245),
               doubleArrayOf(0.08548, 0.09617, 0.09617, -0.10685),
               doubleArrayOf(-0.23978, -0.26976, -0.26976, 0.29973),
@@ -691,7 +691,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate recurrent weights") {
           assertEquals(true, paramsErrors.inputGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -703,7 +703,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate recurrent weights") {
           assertEquals(true, paramsErrors.forgetGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -778,7 +778,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate weights") {
           assertEquals(true, (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.03248, 0.03655, 0.03655, -0.04061),
               doubleArrayOf(-0.00583, -0.00655, -0.00655, 0.00728),
               doubleArrayOf(-0.01169, -0.01315, -0.01315, 0.01461),
@@ -790,7 +790,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate weights") {
           assertEquals(true, (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.00254, -0.00285, -0.00285, 0.00317),
               doubleArrayOf(0.00910, 0.01023, 0.01023, -0.01137),
               doubleArrayOf(0.00633, 0.00712, 0.00712, -0.00791),
@@ -802,7 +802,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertEquals(true, (paramsErrors.candidate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.11502, 0.12940, 0.12940, -0.14378),
               doubleArrayOf(0.07766, 0.08737, 0.08737, -0.09707),
               doubleArrayOf(-0.25959, -0.29204, -0.29204, 0.32448),
@@ -814,7 +814,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate recurrent weights") {
           assertEquals(true, paramsErrors.inputGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.00812, -0.00812, 0.01218, 0.03655, 0.03248),
               doubleArrayOf(-0.00146, 0.00146, -0.00218, -0.00655, -0.00583),
               doubleArrayOf(-0.00292, 0.00292, -0.00438, -0.01315, -0.01169),
@@ -826,7 +826,7 @@ class RANLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate recurrent weights") {
           assertEquals(true, paramsErrors.forgetGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.00063, 0.00063, -0.00095, -0.00285, -0.00254),
               doubleArrayOf(0.00227, -0.00227, 0.00341, 0.01023, 0.00910),
               doubleArrayOf(0.00158, -0.00158, 0.00237, 0.00712, 0.00633),

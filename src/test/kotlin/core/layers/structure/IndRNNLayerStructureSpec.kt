@@ -80,7 +80,7 @@ class IndRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertTrue((paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.384155, -0.432175, -0.432175, 0.480194),
               doubleArrayOf(-0.218991, -0.246365, -0.246365, 0.273739),
               doubleArrayOf(0.120000, 0.135000, 0.135000, -0.150000),
@@ -127,7 +127,7 @@ class IndRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertTrue((paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.384155, -0.432175, -0.432175, 0.480194),
               doubleArrayOf(-0.174576, -0.196397, -0.196397, 0.218219),
               doubleArrayOf(0.112115, 0.126129, 0.126129, -0.140144),
@@ -174,7 +174,7 @@ class IndRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertTrue((paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.384155, -0.432175, -0.432175, 0.480194),
               doubleArrayOf(-0.198552, -0.223371, -0.223371, 0.248190),
               doubleArrayOf(-0.240000, -0.270000, -0.270000, 0.300000),
@@ -221,7 +221,7 @@ class IndRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertTrue((paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.384155, -0.432175, -0.432175, 0.480194),
               doubleArrayOf(-0.158282, -0.178067, -0.178067, 0.197852),
               doubleArrayOf(-0.224230, -0.252259, -0.252259, 0.280288),

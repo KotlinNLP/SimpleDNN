@@ -37,7 +37,7 @@ class TreeRNNParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: Array<UpdatableArray<*>> = this.buildParamsList()
+  override val paramsList: List<UpdatableArray<*>> = this.buildParamsList()
 
   /**
    * @return a new [TreeRNNParameters] containing a copy of all parameters of this
@@ -51,6 +51,6 @@ class TreeRNNParameters(
   /**
    * @return the list with parameters of all layers
    */
-  private fun buildParamsList(): Array<UpdatableArray<*>>
+  private fun buildParamsList(): List<UpdatableArray<*>>
     = this.leftRNN.paramsList + this.rightRNN.paramsList + this.concatNetwork.paramsList
 }

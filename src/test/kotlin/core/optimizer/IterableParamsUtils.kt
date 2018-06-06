@@ -26,7 +26,7 @@ object IterableParamsUtils {
 
     val params = FeedforwardLayerParameters(inputSize = 3, outputSize = 2)
 
-    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.4, 0.8, 0.2),
       doubleArrayOf(0.1, 0.3, 0.9)
     )))
@@ -43,7 +43,7 @@ object IterableParamsUtils {
 
     val params = FeedforwardLayerParameters(inputSize = 3, outputSize = 2)
 
-    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.1, -0.5, 0.3),
       doubleArrayOf(-0.9, 0.0, 0.6)
     )))

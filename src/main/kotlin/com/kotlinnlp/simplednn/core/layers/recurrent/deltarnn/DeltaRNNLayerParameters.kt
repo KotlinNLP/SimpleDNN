@@ -76,7 +76,7 @@ class DeltaRNNLayerParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList = arrayOf(
+  override val paramsList = listOf(
     this.feedforwardUnit.weights,
     this.feedforwardUnit.biases,
     this.recurrentUnit.weights,

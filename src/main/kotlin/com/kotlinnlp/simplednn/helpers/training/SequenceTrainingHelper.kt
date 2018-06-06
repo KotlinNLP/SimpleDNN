@@ -59,14 +59,13 @@ class SequenceTrainingHelper<NDArrayType: NDArray<NDArrayType>>(
 
     this.neuralProcessor.forward(example.sequenceFeatures)
 
-    val outputSequence: Array<DenseNDArray> = this.neuralProcessor.getOutputSequence()
-    val outputGoldSequence: Array<DenseNDArray> = example.sequenceOutputGold.toTypedArray()
+    val outputSequence: List<DenseNDArray> = this.neuralProcessor.getOutputSequence()
 
     this.neuralProcessor.backward(
-      outputErrorsSequence = this.lossCalculator.calculateErrors(outputSequence, outputGoldSequence),
+      outputErrorsSequence = this.lossCalculator.calculateErrors(outputSequence, example.sequenceOutputGold),
       mePropK = this.mePropK)
 
-    return this.lossCalculator.calculateMeanLoss(outputSequence, example.sequenceOutputGold.toTypedArray())
+    return this.lossCalculator.calculateMeanLoss(outputSequence, example.sequenceOutputGold)
   }
 
   /**

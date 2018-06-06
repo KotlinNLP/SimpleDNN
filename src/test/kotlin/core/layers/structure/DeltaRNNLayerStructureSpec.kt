@@ -135,7 +135,7 @@ class DeltaRNNLayerStructureSpec : Spek({
           val inputContrib: DenseNDArray = contributions.feedforwardUnit.weights.values as DenseNDArray
           assertTrue {
             inputContrib.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.4, -0.54, 0.72, -0.6),
                 doubleArrayOf(-0.56, 0.36, -0.09, -0.8),
                 doubleArrayOf(-0.56, 0.63, -0.27, 0.5),
@@ -150,7 +150,7 @@ class DeltaRNNLayerStructureSpec : Spek({
           val recContrib: DenseNDArray = contributions.recurrentUnit.weights.values as DenseNDArray
           assertTrue {
             recContrib.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -251,7 +251,7 @@ class DeltaRNNLayerStructureSpec : Spek({
           val inputContrib: DenseNDArray = contributions.feedforwardUnit.weights.values as DenseNDArray
           assertTrue {
             inputContrib.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.4, -0.54, 0.72, -0.6),
                 doubleArrayOf(-0.56, 0.36, -0.09, -0.8),
                 doubleArrayOf(-0.56, 0.63, -0.27, 0.5),
@@ -266,7 +266,7 @@ class DeltaRNNLayerStructureSpec : Spek({
           val recContrib: DenseNDArray = contributions.recurrentUnit.weights.values as DenseNDArray
           assertTrue {
             recContrib.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.1579, -0.23305, 0.716298, 0.464826),
                 doubleArrayOf(0.138163, -0.1579, -0.058263, 0.501409, -0.464826),
                 doubleArrayOf(0.177638, 0.177638, -0.203919, 0.358149, -0.332018),
@@ -434,7 +434,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the weights") {
           assertTrue {
             (paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.007571, 0.008517, 0.008517, -0.009463),
                 doubleArrayOf(0.00075, 0.000843, 0.000843, -0.000937),
                 doubleArrayOf(-0.025515, -0.028704, -0.028704, 0.031894),
@@ -449,7 +449,7 @@ class DeltaRNNLayerStructureSpec : Spek({
           val wRec: DenseNDArray = paramsErrors.recurrentUnit.weights.values as DenseNDArray
           assertTrue {
             wRec.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -546,7 +546,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the weights") {
           assertTrue {
             (paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.029084, -0.03272, -0.03272, 0.036355),
                 doubleArrayOf(-0.010076, -0.011335, -0.011335, 0.012595),
                 doubleArrayOf(-0.01401, -0.015761, -0.015761, 0.017512),
@@ -561,7 +561,7 @@ class DeltaRNNLayerStructureSpec : Spek({
           val wRec: DenseNDArray = paramsErrors.recurrentUnit.weights.values as DenseNDArray
           assertTrue {
             wRec.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.000242, -0.000242, 0.000357, 0.000878, 0.000813),
                 doubleArrayOf(0.001752, -0.001752, 0.002586, 0.00636, 0.005896),
                 doubleArrayOf(0.011671, -0.011671, 0.017226, 0.042355, 0.039265),
@@ -662,7 +662,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the weights") {
           assertTrue {
             (paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0022, 0.002475, 0.002475, -0.00275),
                 doubleArrayOf(0.000447, 0.000503, 0.000503, -0.000558),
                 doubleArrayOf(-0.048091, -0.054102, -0.054102, 0.060114),
@@ -677,7 +677,7 @@ class DeltaRNNLayerStructureSpec : Spek({
           val wRec: DenseNDArray = paramsErrors.recurrentUnit.weights.values as DenseNDArray
           assertTrue {
             wRec.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -774,7 +774,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         it("should match the expected errors of the weights") {
           assertTrue {
             (paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.013239, -0.014894, -0.014894, 0.016549),
                 doubleArrayOf(-0.004762, -0.005357, -0.005357, 0.005952),
                 doubleArrayOf(-0.028934, -0.032551, -0.032551, 0.036168),
@@ -789,7 +789,7 @@ class DeltaRNNLayerStructureSpec : Spek({
           val wRec: DenseNDArray = paramsErrors.recurrentUnit.weights.values as DenseNDArray
           assertTrue {
             wRec.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.00011, -0.00011, 0.000162, 0.000399, 0.000370),
                 doubleArrayOf(0.000828, -0.000828, 0.001222, 0.003005, 0.002786),
                 doubleArrayOf(0.024104, -0.024104, 0.035576, 0.087477, 0.081094),

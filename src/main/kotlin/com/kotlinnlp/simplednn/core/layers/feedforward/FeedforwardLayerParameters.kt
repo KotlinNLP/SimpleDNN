@@ -57,7 +57,7 @@ class FeedforwardLayerParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList = arrayOf(
+  override val paramsList = listOf(
     this.unit.weights,
     this.unit.biases
   )

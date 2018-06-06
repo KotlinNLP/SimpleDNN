@@ -40,7 +40,7 @@ object GRULayerStructureUtils {
     val params = GRULayerParameters(inputSize = 4, outputSize = 5)
 
     params.resetGate.weights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
         doubleArrayOf(0.7, -0.7, 0.3, 0.5),
@@ -49,7 +49,7 @@ object GRULayerStructureUtils {
       )))
 
     params.partitionGate.weights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.1, 0.4, -1.0, 0.4),
         doubleArrayOf(0.7, -0.2, 0.1, 0.0),
         doubleArrayOf(0.7, 0.8, -0.5, -0.3),
@@ -58,7 +58,7 @@ object GRULayerStructureUtils {
       )))
 
     params.candidate.weights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(-1.0, 0.2, 0.0, 0.2),
         doubleArrayOf(-0.7, 0.7, -0.3, -0.3),
         doubleArrayOf(0.3, -0.6, 0.0, 0.7),
@@ -78,7 +78,7 @@ object GRULayerStructureUtils {
       DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.5, 1.0, 0.4, 0.9)))
 
     params.resetGate.recurrentWeights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7),
         doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7),
         doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5),
@@ -87,7 +87,7 @@ object GRULayerStructureUtils {
       )))
 
     params.partitionGate.recurrentWeights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.1, -0.6, -1.0, -0.1, -0.4),
         doubleArrayOf(0.5, -0.9, 0.0, 0.8, 0.3),
         doubleArrayOf(-0.3, -0.9, 0.3, 1.0, -0.2),
@@ -96,7 +96,7 @@ object GRULayerStructureUtils {
       )))
 
     params.candidate.recurrentWeights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.2, -0.3, -0.3, -0.5, -0.7),
         doubleArrayOf(0.4, -0.1, -0.6, -0.4, -0.8),
         doubleArrayOf(0.6, 0.6, 0.1, 0.7, -0.4),

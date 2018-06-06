@@ -24,7 +24,7 @@ interface Example
 data class SimpleExample<FeaturesNDArrayType: NDArray<FeaturesNDArrayType>>(
   val features: FeaturesNDArrayType,
   val outputGold: DenseNDArray
-): Example {
+) : Example {
   /**
    *
    */
@@ -40,17 +40,17 @@ data class SimpleExample<FeaturesNDArrayType: NDArray<FeaturesNDArrayType>>(
  *
  */
 data class SequenceExampleWithFinalOutput<FeaturesNDArrayType: NDArray<FeaturesNDArrayType>>(
-  val sequenceFeatures: ArrayList<FeaturesNDArrayType>,
+  val sequenceFeatures: List<FeaturesNDArrayType>,
   val outputGold: DenseNDArray
-): Example
+) : Example
 
 /**
  *
  */
 data class SequenceExample<FeaturesNDArrayType: NDArray<FeaturesNDArrayType>>(
-  val sequenceFeatures: ArrayList<FeaturesNDArrayType>,
-  val sequenceOutputGold: ArrayList<DenseNDArray>
-): Example
+  val sequenceFeatures: List<FeaturesNDArrayType>,
+  val sequenceOutputGold: List<DenseNDArray>
+) : Example
 
 /**
  *
@@ -60,13 +60,14 @@ data class SequenceExample<FeaturesNDArrayType: NDArray<FeaturesNDArrayType>>(
 data class BinaryOutputExample<FeaturesNDArrayType: NDArray<FeaturesNDArrayType>>(
   val features: FeaturesNDArrayType,
   val goldOutcomeIndex: Int
-): Example
+) : Example
 
 
 /**
  *
  */
 data class Corpus<Example>(
-  val training: ArrayList<Example>,
-  val validation: ArrayList<Example>,
-  val test: ArrayList<Example>)
+  val training: List<Example>,
+  val validation: List<Example>,
+  val test: List<Example>
+)

@@ -112,7 +112,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected output weights errors associated to the indices (0, 0)") {
           assertTrue {
             errors00Out.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.446442, -0.552856),
                 doubleArrayOf(-0.167416, 0.207321)
               )),
@@ -133,7 +133,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected input weights errors associated to the indices (0, 0)") {
           assertTrue {
             errors00In.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.199688, 0.079875),
                 doubleArrayOf(-0.060079, 0.024031)
               )),
@@ -163,7 +163,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected output weights errors associated to the indices (0, 1)") {
           assertTrue {
             errors01Out.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.079087, -0.014988),
                 doubleArrayOf(0.237262, -0.044963)
               )),
@@ -184,7 +184,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected input weights errors associated to the indices (0, 1)") {
           assertTrue {
             errors01In.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.362896, -0.108869),
                 doubleArrayOf(-0.418952, -0.125686)
               )),
@@ -214,7 +214,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected output weights errors associated to the indices (0, 2)") {
           assertTrue {
             errors02Out.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.478386, -0.552856),
                 doubleArrayOf(-0.059798, -0.069107)
               )),
@@ -235,7 +235,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected input weights errors associated to the indices (0, 2)") {
           assertTrue {
             errors02In.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.131053, -0.196580),
                 doubleArrayOf(0.009404, -0.014105)
               )),
@@ -265,7 +265,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected output weights errors associated to the indices (1, 0)") {
           assertTrue {
             errors10Out.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.343651, -0.123803),
                 doubleArrayOf(-0.085913, 0.030951)
               )),
@@ -286,7 +286,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected input weights errors associated to the indices (1, 0)") {
           assertTrue {
             errors10In.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.001571, -0.004190),
                 doubleArrayOf(0.065103, 0.173607)
               )),
@@ -316,7 +316,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected output weights errors associated to the indices (1, 1)") {
           assertTrue {
             errors11Out.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0),
                 doubleArrayOf(-0.029777, 0.147044)
               )),
@@ -337,7 +337,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected input weights errors associated to the indices (1, 1)") {
           assertTrue {
             errors11In.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.035202, -0.117340),
                 doubleArrayOf(-0.011027, 0.036756)
               )),
@@ -389,7 +389,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected output weights errors associated to the indices (0, 2)") {
           assertTrue {
             errors02Out.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.478386, -0.552856),
                 doubleArrayOf(-0.059798, -0.069107)
               )),
@@ -410,7 +410,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected input weights errors associated to the indices (0, 2)") {
           assertTrue {
             errors02In.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.131053, -0.196580),
                 doubleArrayOf(0.009404, -0.014105)
               )),
@@ -440,7 +440,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected output weights errors associated to the indices (1, 0)") {
           assertTrue {
             errors10Out.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.343651, -0.123803),
                 doubleArrayOf(-0.085913, 0.030951)
               )),
@@ -461,7 +461,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected input weights errors associated to the indices (1, 0)") {
           assertTrue {
             errors10In.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.001571, -0.004190),
                 doubleArrayOf(0.065103, 0.173607)
               )),
@@ -537,7 +537,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected output weights errors associated to the indices (1, 0)") {
           assertTrue {
             errors10Out.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.343651, -0.123803),
                 doubleArrayOf(-0.085913, 0.030951)
               )),
@@ -558,7 +558,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected input weights errors associated to the indices (1, 0)") {
           assertTrue {
             errors10In.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.001571, -0.004190),
                 doubleArrayOf(0.065103, 0.173607)
               )),
@@ -588,7 +588,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected output weights errors associated to the indices (1, 1)") {
           assertTrue {
             errors11Out.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0),
                 doubleArrayOf(-0.029777, 0.147044)
               )),
@@ -609,7 +609,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected input weights errors associated to the indices (1, 1)") {
           assertTrue {
             errors11In.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.035202, -0.117340),
                 doubleArrayOf(-0.011027, 0.036756)
               )),
@@ -660,7 +660,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected output weights errors associated to the indices (1, 0)") {
           assertTrue {
             errors10Out.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.343651, -0.123803),
                 doubleArrayOf(-0.085913, 0.030951)
               )),
@@ -681,7 +681,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected input weights errors associated to the indices (1, 0)") {
           assertTrue {
             errors10In.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.001571, -0.004190),
                 doubleArrayOf(0.065103, 0.173607)
               )),
@@ -711,7 +711,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected output weights errors associated to the indices (1, 1)") {
           assertTrue {
             errors11Out.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0),
                 doubleArrayOf(-0.029777, 0.147044)
               )),
@@ -732,7 +732,7 @@ class MultiPredictionScorerSpec : Spek({
         it("should return the expected input weights errors associated to the indices (1, 1)") {
           assertTrue {
             errors11In.unit.weights.values.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.035202, -0.117340),
                 doubleArrayOf(-0.011027, 0.036756)
               )),

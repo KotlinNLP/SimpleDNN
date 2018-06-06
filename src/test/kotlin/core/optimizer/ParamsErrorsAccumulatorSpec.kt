@@ -53,7 +53,7 @@ class ParamsErrorsAccumulatorSpec : Spek({
       it("should match the expected accumulated weights errors") {
         assertTrue {
           w.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(1.0, -0.4, 0.3, -0.8),
               doubleArrayOf(1.0, 0.5, -0.8, 0.4)
             )),
@@ -95,7 +95,7 @@ class ParamsErrorsAccumulatorSpec : Spek({
       it("should match the expected average of the weights errors") {
         assertTrue {
           w.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.5, -0.2, 0.15, -0.4),
               doubleArrayOf(0.5, 0.25, -0.4, 0.2)
             )),

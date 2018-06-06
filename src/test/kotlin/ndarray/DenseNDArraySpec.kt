@@ -24,7 +24,6 @@ import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import java.util.*
 import kotlin.test.*
 
 /**
@@ -282,7 +281,7 @@ class DenseNDArraySpec : Spek({
       val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
       val oneHotEncoder = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 1.0, 0.0))
       val oneHotEncoderFake = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.0, 0.0))
-      val array2 = DenseNDArrayFactory.arrayOf(arrayOf(
+      val array2 = DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.1, 0.2, 0.3, 0.0),
         doubleArrayOf(0.1, 0.2, 0.3, 0.0)
       ))
@@ -368,7 +367,7 @@ class DenseNDArraySpec : Spek({
 
       on("dot(array) method") {
 
-        val expectedArray = DenseNDArrayFactory.arrayOf(arrayOf(
+        val expectedArray = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.04, 0.03, 0.05, 0.07),
           doubleArrayOf(0.08, 0.06, 0.1, 0.14),
           doubleArrayOf(0.12, 0.09, 0.15, 0.21),
@@ -419,12 +418,12 @@ class DenseNDArraySpec : Spek({
 
       on("matrix.prod(colVector) method") {
 
-        val matrix = DenseNDArrayFactory.arrayOf(arrayOf(
+        val matrix = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.1, 0.2, 0.3, 0.0),
           doubleArrayOf(0.4, 0.5, 0.7, 0.9)
         ))
         val colVector = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, 0.3))
-        val expectedMatrix = DenseNDArrayFactory.arrayOf(arrayOf(
+        val expectedMatrix = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.02, 0.04, 0.06, 0.0),
           doubleArrayOf(0.12, 0.15, 0.21, 0.27)
         ))
@@ -647,7 +646,7 @@ class DenseNDArraySpec : Spek({
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val a1 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.28))
-        val expectedArray = DenseNDArrayFactory.arrayOf(arrayOf(
+        val expectedArray = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.112),
           doubleArrayOf(0.084),
           doubleArrayOf(0.14),
@@ -672,13 +671,13 @@ class DenseNDArraySpec : Spek({
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val v = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.8))
-        val m = DenseNDArrayFactory.arrayOf(arrayOf(
+        val m = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.7, 0.5),
           doubleArrayOf(0.3, 0.2),
           doubleArrayOf(0.3, 0.5),
           doubleArrayOf(0.7, 0.5)
         ))
-        val expectedArray = DenseNDArrayFactory.arrayOf(arrayOf(
+        val expectedArray = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.61),
           doubleArrayOf(0.25),
           doubleArrayOf(0.49),
@@ -691,7 +690,7 @@ class DenseNDArraySpec : Spek({
         }
 
         it("should throw an error with not compatible shapes") {
-          val m2 = DenseNDArrayFactory.arrayOf(arrayOf(
+          val m2 = DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(0.7, 0.5),
             doubleArrayOf(0.3, 0.2),
             doubleArrayOf(0.3, 0.5),
@@ -708,25 +707,25 @@ class DenseNDArraySpec : Spek({
       on("assignDot(array[1-d], array[2-d], mask) method") {
 
         val array = DenseNDArrayFactory.emptyArray(Shape(1, 2))
-        val a1 = DenseNDArrayFactory.arrayOf(arrayOf(
+        val a1 = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.7, 0.3, 0.6)
         ))
-        val m = DenseNDArrayFactory.arrayOf(arrayOf(
+        val m = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.5, 0.3),
           doubleArrayOf(1.0, 0.5),
           doubleArrayOf(0.7, 0.6)
         ))
-        val expectedArray = DenseNDArrayFactory.arrayOf(arrayOf(
+        val expectedArray = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.3, 0.15)
         ))
-        val res = array.assignDot(a1, m, aMask = NDArrayMask(dim1 = arrayOf(0), dim2 = arrayOf(1)))
+        val res = array.assignDot(a1, m, aMask = NDArrayMask(dim1 = intArrayOf(0), dim2 = intArrayOf(1)))
 
         it("should return the same DenseNDArray") {
           assertTrue { array === res }
         }
 
         it("should throw an error with not compatible shapes") {
-          val m2 = DenseNDArrayFactory.arrayOf(arrayOf(
+          val m2 = DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(0.7, 0.5),
             doubleArrayOf(0.3, 0.2),
             doubleArrayOf(0.3, 0.5),
@@ -743,28 +742,28 @@ class DenseNDArraySpec : Spek({
       on("assignDot(array[2-d], array[2-d], mask) method") {
 
         val array = DenseNDArrayFactory.emptyArray(Shape(3, 2))
-        val m1 = DenseNDArrayFactory.arrayOf(arrayOf(
+        val m1 = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.5, 0.3),
           doubleArrayOf(1.0, 0.5),
           doubleArrayOf(0.7, 0.6)
         ))
-        val m2 = DenseNDArrayFactory.arrayOf(arrayOf(
+        val m2 = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.2, 0.9),
           doubleArrayOf(0.5, 0.6)
         ))
-        val expectedArray = DenseNDArrayFactory.arrayOf(arrayOf(
+        val expectedArray = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.1, 0.45),
           doubleArrayOf(0.25, 0.3),
           doubleArrayOf(0.0, 0.0)
         ))
-        val res = array.assignDot(m1, m2, aMask = NDArrayMask(dim1 = arrayOf(0, 1), dim2 = arrayOf(0, 1)))
+        val res = array.assignDot(m1, m2, aMask = NDArrayMask(dim1 = intArrayOf(0, 1), dim2 = intArrayOf(0, 1)))
 
         it("should return the same DenseNDArray") {
           assertTrue { array === res }
         }
 
         it("should throw an error with not compatible shapes") {
-          val m3 = DenseNDArrayFactory.arrayOf(arrayOf(
+          val m3 = DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(0.7, 0.5),
             doubleArrayOf(0.3, 0.2),
             doubleArrayOf(0.3, 0.5),
@@ -953,7 +952,7 @@ class DenseNDArraySpec : Spek({
 
     context("initialization through an array of 2 double arrays of 4 elements") {
 
-      val array = DenseNDArrayFactory.arrayOf(arrayOf(
+      val array = DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.1, 0.2, 0.3, 0.4),
         doubleArrayOf(0.5, 0.6, 0.7, 0.8)
       ))
@@ -1015,7 +1014,7 @@ class DenseNDArraySpec : Spek({
 
         it("should return the expected row values") {
           assertEquals(true, row.equals(DenseNDArrayFactory.arrayOf(
-                  arrayOf(doubleArrayOf(0.5, 0.6, 0.7, 0.8)))))
+            listOf(doubleArrayOf(0.5, 0.6, 0.7, 0.8)))))
         }
       }
 
@@ -1076,7 +1075,7 @@ class DenseNDArraySpec : Spek({
 
     context("converting a DenseNDArray to zeros") {
 
-      val array = DenseNDArrayFactory.arrayOf(arrayOf(
+      val array = DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.1, 0.2, 0.3, 0.4),
         doubleArrayOf(0.5, 0.6, 0.7, 0.8)
       ))
@@ -1093,7 +1092,7 @@ class DenseNDArraySpec : Spek({
 
     context("converting a DenseNDArray to ones") {
 
-      val array = DenseNDArrayFactory.arrayOf(arrayOf(
+      val array = DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.1, 0.2, 0.3, 0.4),
         doubleArrayOf(0.5, 0.6, 0.7, 0.8)
       ))
@@ -1113,10 +1112,10 @@ class DenseNDArraySpec : Spek({
       on("assignment through another DenseNDArray") {
 
         val array = DenseNDArrayFactory.emptyArray(Shape(3, 2))
-        val arrayToAssign = DenseNDArrayFactory.arrayOf(arrayOf(
-                doubleArrayOf(0.1, 0.2),
-                doubleArrayOf(0.3, 0.4),
-                doubleArrayOf(0.5, 0.6)
+        val arrayToAssign = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.1, 0.2),
+          doubleArrayOf(0.3, 0.4),
+          doubleArrayOf(0.5, 0.6)
         ))
 
         array.assignValues(arrayToAssign)
@@ -1149,7 +1148,7 @@ class DenseNDArraySpec : Spek({
       }
 
       on("a horizontal vector") {
-        val array = DenseNDArrayFactory.arrayOf(arrayOf(
+        val array = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.1),
           doubleArrayOf(0.2),
           doubleArrayOf(0.3),
@@ -1162,7 +1161,7 @@ class DenseNDArraySpec : Spek({
       }
 
       on("a matrix") {
-        val array = DenseNDArrayFactory.arrayOf(arrayOf(
+        val array = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.1, 0.2, 0.3),
           doubleArrayOf(0.4, 0.5, 0.6)
         ))
@@ -1186,7 +1185,7 @@ class DenseNDArraySpec : Spek({
       }
 
       on("a horizontal vector") {
-        val array = DenseNDArrayFactory.arrayOf(arrayOf(
+        val array = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.1),
           doubleArrayOf(0.2),
           doubleArrayOf(0.3),
@@ -1201,7 +1200,7 @@ class DenseNDArraySpec : Spek({
       }
 
       on("a matrix") {
-        val array = DenseNDArrayFactory.arrayOf(arrayOf(
+        val array = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.1, 0.2, 0.3),
           doubleArrayOf(0.4, 0.5, 0.6)
         ))
@@ -1226,7 +1225,7 @@ class DenseNDArraySpec : Spek({
 
       it("should have the expected values") {
         assertEquals(true,
-          DenseNDArrayFactory.arrayOf(arrayOf(
+          DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(0.1, 0.4),
             doubleArrayOf(0.2, 0.5),
             doubleArrayOf(0.3, 0.6))).equals(concatenatedArray))
@@ -1271,15 +1270,20 @@ class DenseNDArraySpec : Spek({
 
       val array1 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.4))
 
-      val splitArray: Array<DenseNDArray> = array1.splitV(2)
+      val splitArray: List<DenseNDArray> = array1.splitV(2)
 
       it("should have the expected length") {
         assertEquals(2, splitArray.size)
       }
 
       it("should have the expected values") {
-        assertEquals(true, Arrays.equals(arrayOf(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2)),
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.4))), splitArray))
+        assertEquals(
+          listOf(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.4))
+          ),
+          splitArray
+        )
       }
     }
 
@@ -1287,17 +1291,21 @@ class DenseNDArraySpec : Spek({
 
       val array1 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.4))
 
-      val splitArray: Array<DenseNDArray> = array1.splitV(2, 1, 1)
+      val splitArray: List<DenseNDArray> = array1.splitV(2, 1, 1)
 
       it("should have the expected length") {
         assertEquals(3, splitArray.size)
       }
 
       it("should have the expected values") {
-        assertEquals(true, Arrays.equals(arrayOf(
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2)),
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3)),
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4))), splitArray))
+        assertEquals(
+          listOf(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4))
+          ),
+          splitArray
+        )
       }
     }
   }

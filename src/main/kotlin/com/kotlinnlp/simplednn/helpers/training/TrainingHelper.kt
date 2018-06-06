@@ -48,10 +48,10 @@ abstract class TrainingHelper<ExampleType: Example>(
    * @param validationHelper the helper for the validation (default null)
    * @param shuffler the [Shuffler] to shuffle [trainingExamples] before each epoch (default null)
    */
-  fun train(trainingExamples: ArrayList<ExampleType>,
+  fun train(trainingExamples: List<ExampleType>,
             epochs: Int,
             batchSize: Int,
-            validationExamples: ArrayList<ExampleType>? = null,
+            validationExamples: List<ExampleType>? = null,
             validationHelper: ValidationHelper<ExampleType>? = null,
             shuffler: Shuffler? = null) {
 
@@ -87,7 +87,7 @@ abstract class TrainingHelper<ExampleType: Example>(
    * @param batchSize the size of each batch (default 1)
    * @param shuffler the [Shuffler] to shuffle [trainingExamples] before training (default null)
    */
-  private fun trainEpoch(trainingExamples: ArrayList<ExampleType>, batchSize: Int, shuffler: Shuffler? = null) {
+  private fun trainEpoch(trainingExamples: List<ExampleType>, batchSize: Int, shuffler: Shuffler? = null) {
 
     this.newEpoch()
 

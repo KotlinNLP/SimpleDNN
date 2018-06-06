@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class SWSLFeaturesExtractor(
   private val sequence: SlidingWindowSequence,
-  private val labels: ArrayList<SWSLabeler.Label>,
+  private val labels: List<SWSLabeler.Label>,
   private val network: SWSLNetwork) {
 
   /**

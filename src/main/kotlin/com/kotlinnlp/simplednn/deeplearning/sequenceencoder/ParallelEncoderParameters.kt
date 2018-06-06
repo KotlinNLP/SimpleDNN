@@ -32,7 +32,7 @@ class ParallelEncoderParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: Array<UpdatableArray<*>> = this.buildParamsList()
+  override val paramsList: List<UpdatableArray<*>> = this.buildParamsList()
 
   /**
    * @return a new [ParallelEncoderParameters] containing a copy of all parameters of this
@@ -42,12 +42,5 @@ class ParallelEncoderParameters(
   /**
    * @return the array containing all parameters
    */
-  private fun buildParamsList(): Array<UpdatableArray<*>> {
-
-    val params = arrayListOf<UpdatableArray<*>>()
-
-    this.networksParams.forEach { params.addAll(it.paramsList) }
-
-    return params.toTypedArray()
-  }
+  private fun buildParamsList(): List<UpdatableArray<*>> = this.networksParams.flatMap { it.paramsList }
 }

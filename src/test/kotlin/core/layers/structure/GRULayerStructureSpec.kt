@@ -151,7 +151,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the reset gate weights") {
           assertEquals(true, (paramsErrors.resetGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
@@ -163,7 +163,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the partition gate weights") {
           assertEquals(true, (paramsErrors.partitionGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.01, -0.02, -0.02, 0.02),
               doubleArrayOf(-0.10, -0.12, -0.12, 0.13),
               doubleArrayOf(-0.02, -0.02, -0.02, 0.03),
@@ -175,7 +175,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertEquals(true, (paramsErrors.candidate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.03, -0.03, -0.03, 0.04),
               doubleArrayOf(0.24, 0.27, 0.27, -0.30),
               doubleArrayOf(0.00, 0.00, 0.00, 0.00),
@@ -187,7 +187,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the reset gate recurrent weights") {
           assertEquals(true, paramsErrors.resetGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -199,7 +199,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the partition gate recurrent weights") {
           assertEquals(true, paramsErrors.partitionGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -211,7 +211,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate recurrent weights") {
           assertEquals(true, paramsErrors.candidate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -286,7 +286,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the reset gate weights") {
           assertEquals(true, (paramsErrors.resetGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.00, 0.01, 0.01, -0.01),
               doubleArrayOf(0.00, 0.00, 0.00, 0.00),
               doubleArrayOf(0.01, 0.01, 0.01, -0.02),
@@ -298,7 +298,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the partition gate weights") {
           assertEquals(true, (paramsErrors.partitionGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.02, -0.02, -0.02, 0.03),
               doubleArrayOf(-0.01, -0.01, -0.01, 0.01),
               doubleArrayOf(0.0, 0.0, 0.0, -0.01),
@@ -310,7 +310,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertEquals(true, (paramsErrors.candidate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.02, -0.02, -0.02, 0.02),
               doubleArrayOf(0.08, 0.09, 0.09, -0.10),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
@@ -322,7 +322,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the reset gate recurrent weights") {
           assertEquals(true, paramsErrors.resetGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.01, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.01, 0.01),
@@ -334,7 +334,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the partition gate recurrent weights") {
           assertEquals(true, paramsErrors.partitionGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.01, 0.01, -0.01, -0.02, -0.02),
               doubleArrayOf(0.0, 0.0, 0.0, -0.01, -0.01),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -346,7 +346,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate recurrent weights") {
           assertEquals(true, paramsErrors.candidate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, -0.01, -0.01),
               doubleArrayOf(0.01, -0.01, 0.02, 0.08, 0.04),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -421,7 +421,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the reset gate weights") {
           assertEquals(true, (paramsErrors.resetGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
@@ -433,7 +433,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the partition gate weights") {
           assertEquals(true, (paramsErrors.partitionGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.00, 0.00, 0.00, 0.01),
               doubleArrayOf(-0.03, -0.03, -0.03, 0.03),
               doubleArrayOf(-0.07, -0.08, -0.08, 0.09),
@@ -445,7 +445,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertEquals(true, (paramsErrors.candidate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.01, -0.01, -0.01, 0.01),
               doubleArrayOf(0.06, 0.07, 0.07, -0.07),
               doubleArrayOf(-0.01, -0.01, -0.01, 0.01),
@@ -457,7 +457,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the reset gate recurrent weights") {
           assertEquals(true, paramsErrors.resetGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -469,7 +469,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the partition gate recurrent weights") {
           assertEquals(true, paramsErrors.partitionGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -481,7 +481,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate recurrent weights") {
           assertEquals(true, paramsErrors.candidate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -556,7 +556,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the reset gate weights") {
           assertEquals(true, (paramsErrors.resetGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.01, 0.01, 0.01, -0.01),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.01, 0.01, 0.01, -0.01),
@@ -568,7 +568,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the partition gate weights") {
           assertEquals(true, (paramsErrors.partitionGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.01, -0.01, -0.01, 0.02),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(-0.03, -0.03, -0.03, 0.03),
@@ -580,7 +580,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertEquals(true, (paramsErrors.candidate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.01, -0.01, -0.01, 0.01),
               doubleArrayOf(-0.02, -0.03, -0.03, 0.03),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0),
@@ -592,7 +592,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the reset gate recurrent weights") {
           assertEquals(true, paramsErrors.resetGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.01, 0.01),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.01, 0.01),
@@ -604,7 +604,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the partition gate recurrent weights") {
           assertEquals(true, paramsErrors.partitionGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, -0.01, -0.01),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(-0.01, 0.01, -0.01, -0.03, -0.03),
@@ -616,7 +616,7 @@ class GRULayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate recurrent weights") {
           assertEquals(true, paramsErrors.candidate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, -0.01, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, -0.02, -0.01),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),

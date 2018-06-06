@@ -77,7 +77,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
           val wContr: DenseNDArray = contributions.unit.weights.values as DenseNDArray
           assertTrue {
             wContr.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.3, -0.44, 0.82, -0.5),
                 doubleArrayOf(-0.56, 0.36, -0.09, -0.8),
                 doubleArrayOf(-0.635, 0.555, -0.345, 0.425),
@@ -132,7 +132,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
           val wContr: DenseNDArray = contributions.unit.weights.values as DenseNDArray
           assertTrue {
             wContr.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.35, -0.49, 0.77, -0.55),
                 doubleArrayOf(-0.56, 0.36, -0.09, -0.8),
                 doubleArrayOf(-0.5975, 0.5925, -0.3075, 0.4625),
@@ -147,7 +147,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
           val wRecContr: DenseNDArray = contributions.unit.recurrentWeights.values as DenseNDArray
           assertTrue {
             wRecContr.equals(
-              DenseNDArrayFactory.arrayOf(arrayOf(
+              DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.04, 0.1979, -0.19305, 0.7563, 0.50483),
                 doubleArrayOf(0.13816, -0.15790, -0.05826, 0.50141, -0.46483),
                 doubleArrayOf(0.14764, 0.14764, -0.23392, 0.32815, -0.36202),
@@ -214,7 +214,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertTrue((paramsErrors.unit.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.65167, 0.73313, 0.73313, -0.81459),
               doubleArrayOf(0.45167, 0.50813, 0.50813, -0.56459),
               doubleArrayOf(-0.12, -0.135, -0.135, 0.15),
@@ -226,7 +226,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         it("should match the expected errors of the recurrent weights") {
           assertTrue(paramsErrors.unit.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -269,7 +269,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertTrue((paramsErrors.unit.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.01311, -0.01475, -0.01475, 0.01639),
               doubleArrayOf(0.42655, 0.47987, 0.47987, -0.53319),
               doubleArrayOf(-0.25248, -0.28404, -0.28404, 0.3156),
@@ -281,7 +281,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         it("should match the expected errors of the recurrent weights") {
           assertTrue(paramsErrors.unit.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.00323, 0.00323, -0.00477, -0.01174, -0.01088),
               doubleArrayOf(0.10524, -0.10524, 0.15533, 0.38193, 0.35406),
               doubleArrayOf(-0.06229, 0.06229, -0.09194, -0.22606, -0.20957),
@@ -324,7 +324,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertTrue((paramsErrors.unit.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.47644, 0.536, 0.536, -0.59555),
               doubleArrayOf(0.56847, 0.63952, 0.63952, -0.71058),
               doubleArrayOf(-0.328, -0.369, -0.369, 0.41),
@@ -336,7 +336,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         it("should match the expected errors of the recurrent weights") {
           assertTrue(paramsErrors.unit.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
               doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -379,7 +379,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertTrue((paramsErrors.unit.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.14738, -0.1658, -0.1658, 0.18422),
               doubleArrayOf(0.53582, 0.60280, 0.60280, -0.66978),
               doubleArrayOf(-0.45406, -0.51082, -0.51082, 0.56758),
@@ -391,7 +391,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         it("should match the expected errors of the recurrent weights") {
           assertTrue(paramsErrors.unit.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.03636, 0.03636, -0.05367, -0.13196, -0.12233),
               doubleArrayOf(0.1322, -0.1322, 0.19511, 0.47976, 0.44476),
               doubleArrayOf(-0.11203, 0.11203, -0.16534, -0.40656, -0.37689),

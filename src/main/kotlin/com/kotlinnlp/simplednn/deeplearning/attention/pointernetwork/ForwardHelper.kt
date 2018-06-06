@@ -54,14 +54,14 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
 
     val transformLayers = this.getTransformLayers(size = this.networkProcessor.inputSequence.size)
 
-    return ArrayList(transformLayers.zip(this.networkProcessor.inputSequence).map { (layer, element) ->
+    return transformLayers.zip(this.networkProcessor.inputSequence).map { (layer, element) ->
 
       layer.setInput(0, element)
       layer.setInput(1, vector)
       layer.forward()
 
       layer.outputArray.values
-    })
+    }
   }
 
   /**

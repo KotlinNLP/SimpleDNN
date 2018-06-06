@@ -44,13 +44,13 @@ class NetworkParameters(
   private val numOfLayers: Int = this.layersConfiguration.size - 1
 
   /**
-   * An [Array] containing a [LayerParameters] for each layer.
+   * A list containing a [LayerParameters] for each layer.
    *
    * In [layersConfiguration] layers are defined as a list [x, y, z], but the structure
    * contains layers as input-output pairs [x-y, y-z].
    * The output of a layer is a reference of the input of the next layer.
    */
-  val paramsPerLayer: Array<LayerParameters<*>> = Array(
+  val paramsPerLayer: List<LayerParameters<*>> = List(
     size = this.numOfLayers,
     init = { i ->
       LayerParametersFactory(
@@ -67,7 +67,7 @@ class NetworkParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: Array<UpdatableArray<*>> = this.buildParamsList()
+  override val paramsList: List<UpdatableArray<*>> = this.buildParamsList()
 
   /**
    * @return a new [NetworkParameters] containing a copy of all parameters of this
@@ -90,12 +90,12 @@ class NetworkParameters(
   /**
    * @return the list with parameters of all layers
    */
-  private fun buildParamsList(): Array<UpdatableArray<*>> {
+  private fun buildParamsList(): List<UpdatableArray<*>> {
 
     var layerIndex = 0
     var paramIndex = 0
 
-    return Array(
+    return List(
       size = this.paramsPerLayer.sumBy { it.size },
       init = {
 

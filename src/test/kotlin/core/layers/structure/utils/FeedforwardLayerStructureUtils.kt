@@ -44,7 +44,7 @@ object FeedforwardLayerStructureUtils {
     val params = FeedforwardLayerParameters(inputSize = 4, outputSize = 5)
 
     params.unit.weights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
         doubleArrayOf(0.7, -0.7, 0.3, 0.5),
@@ -84,7 +84,7 @@ object FeedforwardLayerStructureUtils {
   fun buildLayer53SparseBinary(): FeedforwardLayerStructure<SparseBinaryNDArray> {
 
     val inputArray = AugmentedArray(SparseBinaryNDArrayFactory.arrayOf(
-      activeIndices = intArrayOf(2, 4),
+      activeIndices = listOf(2, 4),
       shape = Shape(5)))
     inputArray.setActivation(Tanh())
 
@@ -103,7 +103,7 @@ object FeedforwardLayerStructureUtils {
     val params = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
 
     params.unit.weights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.8, -0.8, 0.9, -1.0, -0.1),
         doubleArrayOf(0.9, 0.6, 0.7, 0.6, 0.6),
         doubleArrayOf(-0.1, 0.0, 0.3, 0.0, 0.3)

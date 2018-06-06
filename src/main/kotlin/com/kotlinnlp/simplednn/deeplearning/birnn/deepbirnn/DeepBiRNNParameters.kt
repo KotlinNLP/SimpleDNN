@@ -31,10 +31,7 @@ class DeepBiRNNParameters(val paramsPerBiRNN: List<BiRNNParameters>) : IterableP
   /**
    * The list of all parameters.
    */
-  override val paramsList: Array<UpdatableArray<*>> =
-    this.paramsPerBiRNN
-      .fold(mutableListOf<UpdatableArray<*>>()) { list, biRNNParams -> list.addAll(biRNNParams.paramsList); list }
-      .toTypedArray()
+  override val paramsList: List<UpdatableArray<*>> = this.paramsPerBiRNN.flatMap { it.paramsList }
 
   /**
    * @return a new [BiRNNParameters] containing a copy of all values of this

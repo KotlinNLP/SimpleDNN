@@ -60,7 +60,7 @@ class IterableParamsSpec : Spek({
 
         it("should assign the expected values to the first parameters") {
           assertTrue {
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.5, 0.3, 0.5),
               doubleArrayOf(-0.8, 0.3, 1.5)
             )).equals(params1.unit.weights.values as DenseNDArray, tolerance = 1.0e-06)
@@ -83,7 +83,7 @@ class IterableParamsSpec : Spek({
 
         it("should assign the expected values to the first parameters") {
           assertTrue {
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.1, 0.2, 0.05),
               doubleArrayOf(0.025, 0.075, 0.225)
             )).equals(params1.unit.weights.values as DenseNDArray, tolerance = 1.0e-06)

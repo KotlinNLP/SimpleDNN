@@ -83,7 +83,7 @@ class ParamsOptimizerSpec : Spek({
       it("should match the expected updated weights") {
         assertTrue {
           w.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.25, 0.42, 0.185, -0.16),
               doubleArrayOf(0.15, -0.125, 0.14, 0.58)
             )),

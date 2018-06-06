@@ -17,67 +17,60 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 object BiRNNUtils {
 
   /**
-   * Split the [array] in left-to-right and right-to-left errors
+   * Split the [errorsSequence] in left-to-right and right-to-left errors
    *
-   * @param array errors to split
+   * @param errorsSequence the errors to split
    *
    * @return a (array<left-to-right>, array<right-to-left>) errors Pair
    */
-  fun splitErrorsSequence(array: Array<DenseNDArray>):
-    Pair<Array<DenseNDArray>, Array<DenseNDArray>> {
-
-    val leftToRightOutputErrors = arrayOfNulls<DenseNDArray>(array.size)
-    val rightToLeftOutputErrors = arrayOfNulls<DenseNDArray>(array.size)
-
-    array.indices.forEach { i -> val (a, b) = splitErrors(array[i])
-      leftToRightOutputErrors[i] = a
-      rightToLeftOutputErrors[i] = b
-    }
-
-    return Pair(leftToRightOutputErrors.requireNoNulls(), rightToLeftOutputErrors.requireNoNulls())
-  }
+  fun splitErrorsSequence(errorsSequence: List<DenseNDArray>): Pair<List<DenseNDArray>, List<DenseNDArray>> =
+    errorsSequence.indices
+      .map { i -> splitErrors(errorsSequence[i]) }
+      .unzip()
 
   /**
-   * Split the [array] in left-to-right and right-to-left errors
+   * Split the [errors] in left-to-right and right-to-left errors
    *
-   * @param array errors to split
+   * @param errors the errors to split
    *
    * @return a (left-to-right, right-to-left) errors Pair
    */
-  fun splitErrors(array: DenseNDArray) = Pair(
-    array.getRange(0, array.length / 2),
-    array.getRange(array.length / 2, array.length))
+  fun splitErrors(errors: DenseNDArray) = Pair(
+    errors.getRange(0, errors.length / 2),
+    errors.getRange(errors.length / 2, errors.length))
 
   /**
    * Sum the left-to-right and right-to-left errors
    *
-   * @params leftToRightInputErrors
-   * @params rightToLeftInputErrors
+   * @params leftToRightSequenceErrors
+   * @params rightToLeftSequenceErrors
    *
    * @return the sum of the left-to-right and right-to-left errors
    */
-  fun sumBidirectionalErrors(leftToRightInputErrors: Array<DenseNDArray>, rightToLeftInputErrors: Array<DenseNDArray>):
-    Array<DenseNDArray> {
+  fun sumBidirectionalErrors(leftToRightSequenceErrors: List<DenseNDArray>,
+                             rightToLeftSequenceErrors: List<DenseNDArray>): List<DenseNDArray> {
 
-    require(leftToRightInputErrors.size == rightToLeftInputErrors.size)
+    require(leftToRightSequenceErrors.size == rightToLeftSequenceErrors.size)
 
-    return Array(size = leftToRightInputErrors.size, init = {
-      leftToRightInputErrors[it].sum(rightToLeftInputErrors[leftToRightInputErrors.size - it - 1])
-    })
+    return List(
+      size = leftToRightSequenceErrors.size,
+      init = { i ->
+        leftToRightSequenceErrors[i].sum(rightToLeftSequenceErrors[leftToRightSequenceErrors.size - i - 1])
+      }
+    )
   }
 
   /**
-   * Create an an array of the size of [a] where each element
-   * is the concatenation of the i-th [a] and i-th [b] NDArray
+   * Create an list of the size of [a] where each element is the concatenation of the i-th [a] and i-th [b] NDArray.
+   * [b] must have the same size of [a].
    *
-   * @param a array of NDArray
-   * @param b array of NDArray
-   *          WARNING: [b] must have the same size of [a]
+   * @param a a list of NDArrays
+   * @param b a list of NDArrays
    *
-   * @return the array resulting from the concatenation
+   * @return the list of concatenated NDArrays
    */
-  fun concatenate(a: Array<DenseNDArray>, b: Array<DenseNDArray>): Array<DenseNDArray> {
+  fun concatenate(a: List<DenseNDArray>, b: List<DenseNDArray>): List<DenseNDArray> {
     require(a.size == b.size)
-    return Array(size = a.size, init = { concatVectorsV(a[it], b[it]) })
+    return List(size = a.size, init = { concatVectorsV(a[it], b[it]) })
   }
 }

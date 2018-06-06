@@ -26,9 +26,9 @@ sealed class CFNLayerContextWindow: LayerContextWindow {
    */
   class Empty: CFNLayerContextWindow() {
 
-    override fun getPrevStateLayer() = null
+    override fun getPrevStateLayer(): CFNLayerStructure<DenseNDArray>? = null
 
-    override fun getNextStateLayer() = null
+    override fun getNextStateLayer(): CFNLayerStructure<DenseNDArray>? = null
   }
 
   /**
@@ -38,7 +38,7 @@ sealed class CFNLayerContextWindow: LayerContextWindow {
 
     override fun getPrevStateLayer(): CFNLayerStructure<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextStateLayer() = null
+    override fun getNextStateLayer(): CFNLayerStructure<DenseNDArray>? = null
   }
 
   /**
@@ -46,7 +46,7 @@ sealed class CFNLayerContextWindow: LayerContextWindow {
    */
   class Front(val currentLayerOutput: DenseNDArray): CFNLayerContextWindow() {
 
-    override fun getPrevStateLayer() = null
+    override fun getPrevStateLayer(): CFNLayerStructure<DenseNDArray>? = null
 
     override fun getNextStateLayer(): CFNLayerStructure<DenseNDArray> = buildNextStateLayer(currentLayerOutput)
   }

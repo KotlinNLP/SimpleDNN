@@ -66,7 +66,7 @@ class HighwayLayerParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList = arrayOf(
+  override val paramsList = listOf(
     this.input.weights,
     this.input.biases,
     this.transformGate.weights,

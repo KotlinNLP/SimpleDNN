@@ -75,7 +75,7 @@ class BatchFeedforwardProcessorSpec : Spek({
     it("should match the expected errors of the weights") {
       assertTrue {
         (paramsErrors.unit.weights.values as DenseNDArray).equals(
-          DenseNDArrayFactory.arrayOf(arrayOf(
+          DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(-0.086611, 0.097745, -0.094472),
             doubleArrayOf(-0.165914, -0.065926, 0.136797)
           )),
@@ -84,7 +84,7 @@ class BatchFeedforwardProcessorSpec : Spek({
       }
     }
 
-    val inputErrors: Array<DenseNDArray> = processor.getBatchInputErrors()
+    val inputErrors: List<DenseNDArray> = processor.getBatchInputErrors()
 
     it("should match the expected errors of first input array") {
       assertTrue {

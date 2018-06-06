@@ -34,7 +34,7 @@ class BiRNNParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: Array<UpdatableArray<*>> = this.leftToRight.paramsList + this.rightToLeft.paramsList
+  override val paramsList: List<UpdatableArray<*>> = this.leftToRight.paramsList + this.rightToLeft.paramsList
 
   /**
    * @return a new [BiRNNParameters] containing a copy of all values of this

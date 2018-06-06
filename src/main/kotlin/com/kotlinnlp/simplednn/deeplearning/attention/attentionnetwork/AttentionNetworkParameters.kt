@@ -66,7 +66,7 @@ class AttentionNetworkParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: Array<UpdatableArray<*>> = this.transformParams.paramsList + this.attentionParams.paramsList
+  override val paramsList: List<UpdatableArray<*>> = this.transformParams.paramsList + this.attentionParams.paramsList
 
   /**
    * @return a new [AttentionNetworkParameters] containing a copy of all values of this

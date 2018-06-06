@@ -40,7 +40,7 @@ object RANLayerStructureUtils {
     val params = RANLayerParameters(inputSize = 4, outputSize = 5)
 
     params.inputGate.weights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
         doubleArrayOf(0.7, -0.7, 0.3, 0.5),
@@ -49,7 +49,7 @@ object RANLayerStructureUtils {
       )))
 
     params.forgetGate.weights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.1, 0.4, -1.0, 0.4),
         doubleArrayOf(0.7, -0.2, 0.1, 0.0),
         doubleArrayOf(0.7, 0.8, -0.5, -0.3),
@@ -58,7 +58,7 @@ object RANLayerStructureUtils {
       )))
 
     params.candidate.weights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(-1.0, 0.2, 0.0, 0.2),
         doubleArrayOf(-0.7, 0.7, -0.3, -0.3),
         doubleArrayOf(0.3, -0.6, 0.0, 0.7),
@@ -79,7 +79,7 @@ object RANLayerStructureUtils {
     )
 
     params.inputGate.recurrentWeights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7),
         doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7),
         doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5),
@@ -88,7 +88,7 @@ object RANLayerStructureUtils {
       )))
 
     params.forgetGate.recurrentWeights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.1, -0.6, -1.0, -0.1, -0.4),
         doubleArrayOf(0.5, -0.9, 0.0, 0.8, 0.3),
         doubleArrayOf(-0.3, -0.9, 0.3, 1.0, -0.2),

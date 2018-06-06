@@ -110,7 +110,7 @@ class ForwardHelper(private val network: AttentiveRecurrentNetwork) {
     val attentionNetwork = this.getAttentionNetwork()
 
     return attentionNetwork.forward(
-      inputSequence = ArrayList(sequence.map { AugmentedArray(values = it) }),
+      inputSequence = sequence.map { AugmentedArray(values = it) },
       attentionSequence = this.buildAttentionSequence(sequence = sequence, recurrentContext = recurrentContext))
   }
 
@@ -121,17 +121,17 @@ class ForwardHelper(private val network: AttentiveRecurrentNetwork) {
    * @return the sequence of attention arrays
    */
   private fun buildAttentionSequence(sequence: List<DenseNDArray>,
-                                     recurrentContext: DenseNDArray): ArrayList<DenseNDArray> {
+                                     recurrentContext: DenseNDArray): List<DenseNDArray> {
 
     val transformLayers = this.getTransformLayers(size = sequence.size)
 
-    return ArrayList(transformLayers.zip(sequence).map { (layer, inputArray) ->
+    return transformLayers.zip(sequence).map { (layer, inputArray) ->
 
       layer.setInput(concatVectorsV(inputArray, recurrentContext))
       layer.forward()
 
       layer.outputArray.values
-    })
+    }
   }
 
   /**

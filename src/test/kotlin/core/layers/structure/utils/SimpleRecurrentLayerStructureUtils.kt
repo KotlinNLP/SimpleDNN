@@ -38,7 +38,7 @@ object SimpleRecurrentLayerStructureUtils {
     val params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5)
 
     params.unit.weights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
         doubleArrayOf(0.7, -0.7, 0.3, 0.5),
@@ -51,7 +51,7 @@ object SimpleRecurrentLayerStructureUtils {
     )
 
     params.unit.recurrentWeights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7),
         doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7),
         doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5),

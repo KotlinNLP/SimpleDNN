@@ -67,7 +67,7 @@ class UpdatableArraySpec : Spek({
 
         it("should contain zeros values") {
           assertTrue {
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 0.0),
               doubleArrayOf(0.0, 0.0),
               doubleArrayOf(0.0, 0.0)

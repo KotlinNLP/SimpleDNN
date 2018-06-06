@@ -27,10 +27,10 @@ import java.io.Serializable
  * @property inputType the type of the input layer (Dense, Sparse, SparseBinary)
  * @property inputSize the size of the input layer
  * @property hiddenActivation the activation function of the hidden layer
- * @property recurrentConnectionType type of recurrent neural network (e.g. LSTM, GRU, CFN, SimpleRNN)
- * @property numberOfLayers number of stacked BiRNNs
  * @property dropout the probability of dropout (default 0.0)
- * @param gainFactors an array with [numberOfLayers] elements, which defines the gain factor of the output size of
+ * @param numberOfLayers number of stacked BiRNNs
+ * @param recurrentConnectionType type of recurrent neural network (e.g. LSTM, GRU, CFN, SimpleRNN)
+ * @param gainFactors an array with numberOfLayers elements, which defines the gain factor of the output size of
  *                    each layer in respect of its input. By default the first factor is 2.0, the others 1.0.
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
@@ -41,10 +41,10 @@ class DeepBiRNN(
   val inputType: LayerType.Input,
   val inputSize: Int,
   val hiddenActivation: ActivationFunction?,
-  val recurrentConnectionType: LayerType.Connection,
-  val numberOfLayers: Int = 1,
   val dropout: Double = 0.0,
-  private val gainFactors: Array<Double> = Array(size = numberOfLayers, init = { i -> if (i == 0) 2.0 else 1.0 }),
+  numberOfLayers: Int = 1,
+  recurrentConnectionType: LayerType.Connection,
+  private val gainFactors: List<Double> = List(size = numberOfLayers, init = { i -> if (i == 0) 2.0 else 1.0 }),
   private val weightsInitializer: Initializer? = GlorotInitializer(),
   private val biasesInitializer: Initializer? = GlorotInitializer()
 ) : Serializable {
@@ -70,7 +70,9 @@ class DeepBiRNN(
   /**
    * Stacked BiRNNs
    */
-  val layers: List<BiRNN> = this.buildBiRNNLayers()
+  val layers: List<BiRNN> = this.buildBiRNNLayers(
+    numberOfLayers = numberOfLayers,
+    recurrentConnectionType = recurrentConnectionType)
 
   /**
    * The model parameters.
@@ -86,10 +88,10 @@ class DeepBiRNN(
    * Check the compatibility of the arguments.
    */
   init {
-    require(this.numberOfLayers > 0) { "The number of layers must be >= 1" }
-    require(this.gainFactors.size == this.numberOfLayers) {
+    require(numberOfLayers > 0) { "The number of layers must be >= 1" }
+    require(this.gainFactors.size == numberOfLayers) {
       "The number of gain factors (%d) doesn't match the number of layers (%d)"
-        .format(this.gainFactors.size, this.numberOfLayers)
+        .format(this.gainFactors.size, numberOfLayers)
     }
   }
 
@@ -101,25 +103,31 @@ class DeepBiRNN(
   fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
 
   /**
+   * Build the BiRNN layers.
    *
+   * @param numberOfLayers the number of layers
+   * @param recurrentConnectionType the type of recurrent layers connection
+   *
+   * @return a list of BiRNNs
    */
-  private fun buildBiRNNLayers(): List<BiRNN> {
-    require(this.numberOfLayers > 0) { "required at least one BiRNN layer" }
-    require(this.recurrentConnectionType.property == LayerType.Property.Recurrent) {
+  private fun buildBiRNNLayers(numberOfLayers: Int, recurrentConnectionType: LayerType.Connection): List<BiRNN> {
+    require(numberOfLayers > 0) { "required at least one BiRNN layer" }
+    require(recurrentConnectionType.property == LayerType.Property.Recurrent) {
       "required recurrentConnectionType with Recurrent property"
     }
 
     var inputSize: Int = this.inputSize
 
     return List(
-      size = this.numberOfLayers,
+      size = numberOfLayers,
       init = { i ->
 
         val outputSize: Int = this.getBiRNNOutputSize(inputSize = inputSize, layerIndex = i)
         val biRNN = this.buildBiRNN(
           inputSize = inputSize,
           inputType = if (i == 0) this.inputType else LayerType.Input.Dense,
-          hiddenSize = outputSize / 2)
+          hiddenSize = outputSize / 2,
+          recurrentConnectionType = recurrentConnectionType)
 
         inputSize = outputSize
 
@@ -132,16 +140,20 @@ class DeepBiRNN(
    * @param inputSize the size of the input arrays
    * @param inputSize the type of the input arrays
    * @param hiddenSize the output size of each RNN
+   * @param recurrentConnectionType the type of recurrent layers connection
    *
    * @return a new BiRNN
    */
-  private fun buildBiRNN(inputSize: Int, inputType: LayerType.Input, hiddenSize: Int) = BiRNN(
+  private fun buildBiRNN(inputSize: Int,
+                         inputType: LayerType.Input,
+                         hiddenSize: Int,
+                         recurrentConnectionType: LayerType.Connection) = BiRNN(
     inputSize = inputSize,
     inputType = inputType,
     hiddenSize = hiddenSize,
     hiddenActivation = this.hiddenActivation,
     dropout = this.dropout,
-    recurrentConnectionType = this.recurrentConnectionType,
+    recurrentConnectionType = recurrentConnectionType,
     weightsInitializer = this.weightsInitializer,
     biasesInitializer = this.biasesInitializer)
 

@@ -34,14 +34,13 @@ class PointerNetworkParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: Array<UpdatableArray<*>> =
-    this.transformParams.paramsList +
-      this.attentionParams.paramsList
+  override val paramsList: List<UpdatableArray<*>> = this.transformParams.paramsList + this.attentionParams.paramsList
 
   /**
    * @return a new [PointerNetworkParameters] containing a copy of all values of this
    */
   override fun copy() = PointerNetworkParameters(
     transformParams = this.transformParams.copy(),
-    attentionParams = this.attentionParams.copy())
+    attentionParams = this.attentionParams.copy()
+  )
 }

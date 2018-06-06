@@ -85,16 +85,14 @@ class MultimodalAutoencoder(model: MultiTaskNetworkModel) {
       "The number of views must be equal to the number of output networks."
     }
 
-    val reconstructedViews: Array<DenseNDArray> = this.network.forward(views.first()).toTypedArray()
+    val reconstructedViews: List<DenseNDArray> = this.network.forward(views.first())
 
-    val errors: Array<DenseNDArray> = this.lossCalculator.calculateErrors(
-      outputGoldSequence = views.toTypedArray(),
+    val errors: List<DenseNDArray> = this.lossCalculator.calculateErrors(
+      outputGoldSequence = views,
       outputSequence = reconstructedViews)
 
     this.network.backward(errors.toList())
 
-    return this.lossCalculator.calculateMeanLoss(
-      outputGoldSequence = views.toTypedArray(),
-      outputSequence = reconstructedViews)
+    return this.lossCalculator.calculateMeanLoss(outputGoldSequence = views, outputSequence = reconstructedViews)
   }
 }

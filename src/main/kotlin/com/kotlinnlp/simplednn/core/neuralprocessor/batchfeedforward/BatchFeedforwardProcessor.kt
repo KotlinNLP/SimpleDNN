@@ -21,7 +21,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property neuralNetwork a [NeuralNetwork]
  * @property id an identification number useful to track a specific processor
-*/
+ */
 class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
   neuralNetwork: NeuralNetwork,
   id: Int = 0
@@ -30,7 +30,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * A list of processors, one for each element of the batch.
    */
-  private val processorsList = ArrayList<FeedforwardNeuralProcessor<InputNDArrayType>>()
+  private val processorsList = mutableListOf<FeedforwardNeuralProcessor<InputNDArrayType>>()
 
   /**
    * Contains the errors accumulated from the [processorsList] during the forward process.
@@ -55,7 +55,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return the errors of the input
    */
-  fun getBatchInputErrors(copy: Boolean = true): Array<DenseNDArray> = Array(
+  fun getBatchInputErrors(copy: Boolean = true): List<DenseNDArray> = List(
     size = this.usedProcessors,
     init = { i -> this.processorsList[i].getInputErrors(copy = copy) }
   )
@@ -88,12 +88,9 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return an array containing the forwarded input batch
    */
-  fun forward(input: Array<InputNDArrayType>): Array<DenseNDArray> = Array(
-      size = input.size,
-      init = { i ->
-        this.forward(input[i], firstState = i == 0)
-      }
-    )
+  fun forward(input: List<InputNDArrayType>): List<DenseNDArray> = input.mapIndexed { i, inputI ->
+    this.forward(inputI, firstState = i == 0)
+  }
 
   /**
    * Forward the input with a dedicated feed-forward processor.
@@ -161,7 +158,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @param outputErrors the output errors of the batch to propagate
    * @param propagateToInput whether to propagate the output errors to the input or not
    */
-  fun backward(outputErrors: Array<DenseNDArray>, propagateToInput: Boolean) {
+  fun backward(outputErrors: List<DenseNDArray>, propagateToInput: Boolean) {
 
     require(outputErrors.size == this.usedProcessors) {
       "Number of errors (%d) does not reflect the number of used processors (%d)".format(

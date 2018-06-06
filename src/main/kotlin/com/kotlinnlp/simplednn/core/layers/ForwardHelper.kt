@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
  * @property layer the [LayerStructure] in which the forward is executed.
  */
 abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  open protected val layer: LayerStructure<InputNDArrayType>
+  protected open val layer: LayerStructure<InputNDArrayType>
 ) {
 
   /**
@@ -117,14 +117,14 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
                                        w: DenseNDArray,
                                        b: DenseNDArray? = null) {
 
-    val xActiveIndices: ArrayList<Int> = x.activeIndicesByColumn.values.first()!!
+    val xActiveIndices: List<Int> = x.activeIndicesByColumn.values.first()!!
     val xActiveIndicesSize: Int = xActiveIndices.size
     val yLength: Int = y.length
     val contrActiveIndicesSize: Int = xActiveIndicesSize * yLength
 
     y.zeros()
 
-    val values = Array(
+    val values = DoubleArray(
       size = contrActiveIndicesSize,
       init = { k ->
         val j: Int = k % yLength // linear indexing
@@ -143,8 +143,8 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     contributions.assignValues(
       values = values,
-      rowIndices = Array(size = contrActiveIndicesSize, init = { k -> k % yLength}),
-      colIndices = Array(size = contrActiveIndicesSize, init = { k -> xActiveIndices[k / yLength]}))
+      rowIndices = IntArray(size = contrActiveIndicesSize, init = { k -> k % yLength}),
+      colIndices = IntArray(size = contrActiveIndicesSize, init = { k -> xActiveIndices[k / yLength]}))
   }
 
 

@@ -60,22 +60,17 @@ open class AffineLayerParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList = arrayOf(
-    *this.w.toTypedArray(),
-    this.b
-  )
+  override val paramsList = this.w + this.b
 
   /**
    * The list of weights parameters.
    */
-  override val weightsList: List<UpdatableArray<*>> = listOf(*this.w.toTypedArray())
+  override val weightsList: List<UpdatableArray<*>> = this.w
 
   /**
    * The list of biases parameters.
    */
-  override val biasesList: List<UpdatableArray<*>> = listOf(
-    this.b
-  )
+  override val biasesList: List<UpdatableArray<*>> = listOf(this.b)
 
   /**
    * Initialize all parameters values.

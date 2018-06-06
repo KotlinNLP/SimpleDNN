@@ -16,13 +16,13 @@ import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
 /**
  * The parameters of the Hierarchical Attention Networks.
  *
- * @property biRNNs an array containing the parameters of the BiRNNs of the HAN.
- * @property attentionNetworks an array containing the parameters of the AttentionNetworks of the HAN
+ * @property biRNNs a list containing the parameters of the BiRNNs of the HAN.
+ * @property attentionNetworks a list containing the parameters of the AttentionNetworks of the HAN
  * @property outputNetwork the parameters of the output Feedforward network
  */
 class HANParameters(
-  val biRNNs: Array<BiRNNParameters>,
-  val attentionNetworks: Array<AttentionNetworkParameters>,
+  val biRNNs: List<BiRNNParameters>,
+  val attentionNetworks: List<AttentionNetworkParameters>,
   val outputNetwork: NetworkParameters
 ) : IterableParams<HANParameters>() {
 
@@ -38,28 +38,17 @@ class HANParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: Array<UpdatableArray<*>> = this.buildParamsList()
+  override val paramsList: List<UpdatableArray<*>> =
+    this.biRNNs.flatMap { it.paramsList } +
+      this.attentionNetworks.flatMap { it.paramsList } +
+      this.outputNetwork.paramsList
 
   /**
    * @return a new [HANParameters] containing a copy of all values of this
    */
   override fun copy() = HANParameters(
-    biRNNs = Array(size = this.biRNNs.size, init = { i -> this.biRNNs[i].copy() }),
-    attentionNetworks = Array(size = this.attentionNetworks.size, init = { i -> this.attentionNetworks[i].copy() }),
+    biRNNs = this.biRNNs.map { it.copy() },
+    attentionNetworks = this.attentionNetworks.map { it.copy() },
     outputNetwork = this.outputNetwork.copy()
   )
-
-  /**
-   * @return a new [HANParameters] containing a copy of all values of this
-   */
-  private fun buildParamsList(): Array<UpdatableArray<*>> {
-
-    val params = arrayListOf<UpdatableArray<*>>()
-
-    this.biRNNs.forEach { birnnParams -> birnnParams.forEach { params.add(it) } }
-    this.attentionNetworks.forEach { attentionNetworkParams -> attentionNetworkParams.forEach { params.add(it) } }
-    outputNetwork.forEach { params.add(it) }
-
-    return params.toTypedArray()
-  }
 }

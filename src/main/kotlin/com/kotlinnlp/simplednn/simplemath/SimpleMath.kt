@@ -38,7 +38,7 @@ fun equals(a: Double, b: Double, tolerance: Double = 10e-4): Boolean {
  * @return a [Boolean] which indicates if all the elements of [a] are equal to the
  * corresponding elements of [b] within the [tolerance]
  */
-fun equals(a: Array<Double>, b: Array<Double>, tolerance: Double = 10e-4): Boolean =
+fun equals(a: DoubleArray, b: DoubleArray, tolerance: Double = 10e-4): Boolean =
   a.zip(b).all { equals(it.first, it.second, tolerance = tolerance) }
 
 /**
@@ -60,9 +60,9 @@ fun concatVectorsV(vararg vectors: DenseNDArray): DenseNDArray {
 }
 
 /**
- * Sum in place the i-th element of [a] to the i-the element of this array
+ * Sum in place the i-th element of [a] to the i-the element of this list
  */
-fun Array<DenseNDArray>.assignSum(a: Array<DenseNDArray>) {
+fun List<DenseNDArray>.assignSum(a: List<DenseNDArray>) {
 
   require(this.size == a.size)
 

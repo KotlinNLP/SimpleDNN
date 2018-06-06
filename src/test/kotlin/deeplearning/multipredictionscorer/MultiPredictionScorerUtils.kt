@@ -50,7 +50,7 @@ object MultiPredictionScorerUtils {
     val params1In = model.networks[1].model.paramsPerLayer[0] as FeedforwardLayerParameters
     val params1Out = model.networks[1].model.paramsPerLayer[1] as FeedforwardLayerParameters
 
-    params0In.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params0In.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.3, -0.9),
       doubleArrayOf(-0.5, -0.5)
     )))
@@ -59,7 +59,7 @@ object MultiPredictionScorerUtils {
       doubleArrayOf(-0.3, 0.7)
     ))
 
-    params0Out.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params0Out.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(-0.5, -0.1),
       doubleArrayOf(0.6, 0.5)
     )))
@@ -68,7 +68,7 @@ object MultiPredictionScorerUtils {
       doubleArrayOf(0.1, 0.5)
     ))
 
-    params1In.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params1In.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(-0.5, -0.8),
       doubleArrayOf(-0.8, 0.7)
     )))
@@ -77,7 +77,7 @@ object MultiPredictionScorerUtils {
       doubleArrayOf(-0.5, 0.0)
     ))
 
-    params1Out.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params1Out.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(-0.1, -0.5),
       doubleArrayOf(-0.6, 0.4)
     )))

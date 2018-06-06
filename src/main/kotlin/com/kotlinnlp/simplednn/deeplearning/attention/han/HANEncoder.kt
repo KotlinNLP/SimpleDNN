@@ -39,7 +39,7 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * An array containing pools of encoders ([BiRNNEncoder]s), one for each level of the HAN.
    */
-  private val encodersPools: Array<BiRNNEncodersPool<*>> = Array(
+  private val encodersPools: List<BiRNNEncodersPool<*>> = List(
     size = this.model.hierarchySize,
     init = { i ->
       if (this.model.isInputLevel((i)))
@@ -52,7 +52,7 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * An array containing pools of [AttentionNetwork]s, one for each level of the HAN.
    */
-  private val attentionNetworksPools: Array<AttentionNetworksPool<DenseNDArray>> = Array(
+  private val attentionNetworksPools: List<AttentionNetworksPool<DenseNDArray>> = List(
     size = this.model.hierarchySize,
     init = { i ->
       AttentionNetworksPool<DenseNDArray>(
@@ -64,23 +64,23 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * Lists of encoders associated to each forwarded group, one per hierarchical level.
    */
-  private val usedEncodersPerLevel: List<ArrayList<BiRNNEncoder<*>>> = List(
+  private val usedEncodersPerLevel: List<MutableList<BiRNNEncoder<*>>> = List(
     size = this.model.hierarchySize,
-    init = { arrayListOf<BiRNNEncoder<*>>() }
+    init = { mutableListOf<BiRNNEncoder<*>>() }
   )
 
   /**
    * Lists of attention networks associated to each forwarded group, one per hierarchical level.
    */
-  private val usedAttentionNetworksPerLevel: List<ArrayList<AttentionNetwork<DenseNDArray>>> = List(
+  private val usedAttentionNetworksPerLevel: List<MutableList<AttentionNetwork<DenseNDArray>>> = List(
     size = this.model.hierarchySize,
-    init = { arrayListOf<AttentionNetwork<DenseNDArray>>() }
+    init = { mutableListOf<AttentionNetwork<DenseNDArray>>() }
   )
 
   /**
    * An array containing params errors accumulator for each BiRNN encoder.
    */
-  private val encodersParamsErrorsAccumulators: Array<ParamsErrorsAccumulator<BiRNNParameters>> = Array(
+  private val encodersParamsErrorsAccumulators: List<ParamsErrorsAccumulator<BiRNNParameters>> = List(
     size = this.model.hierarchySize,
     init = { ParamsErrorsAccumulator<BiRNNParameters>() }
   )
@@ -88,15 +88,16 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * An array containing params errors accumulator for each [AttentionNetwork].
    */
-  private val attentionNetworksParamsErrorsAccumulators = Array(
-    size = this.model.hierarchySize,
-    init = { ParamsErrorsAccumulator<AttentionNetworkParameters>() }
-  )
+  private val attentionNetworksParamsErrorsAccumulators: List<ParamsErrorsAccumulator<AttentionNetworkParameters>> =
+    List(
+      size = this.model.hierarchySize,
+      init = { ParamsErrorsAccumulator<AttentionNetworkParameters>() }
+    )
 
   /**
    * An array containing structures to save the params errors of each [AttentionNetwork] during the backward.
    */
-  private val attentionNetworksParamsErrors: Array<AttentionNetworkParameters> = Array(
+  private val attentionNetworksParamsErrors: List<AttentionNetworkParameters> = List(
     size = this.model.hierarchySize,
     init = { i->
       AttentionNetworkParameters(
@@ -185,14 +186,14 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @return the errors of the HAN parameters
    */
   fun getParamsErrors(copy: Boolean = true) = HANParameters(
-    biRNNs = Array(
+    biRNNs = List(
       size = this.model.hierarchySize,
       init = { i ->
         val paramsErrors = this.encodersParamsErrorsAccumulators[i].getParamsErrors()
         if (copy) paramsErrors.copy() else paramsErrors
       }
     ),
-    attentionNetworks = Array(
+    attentionNetworks = List(
       size = this.model.hierarchySize,
       init = { i ->
         val paramsErrors = this.attentionNetworksParamsErrorsAccumulators[i].getParamsErrors()
@@ -214,9 +215,9 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   @Suppress("UNCHECKED_CAST")
   private fun forwardItem(item: HierarchyItem, levelIndex: Int, useDropout: Boolean): DenseNDArray {
 
-    val inputSequence: Array<*> = when (item) {
+    val inputSequence: List<*> = when (item) {
       is HierarchyGroup -> this.buildInputSequence(group = item, levelIndex = levelIndex, useDropout = useDropout)
-      is HierarchySequence<*> -> item.toTypedArray() as Array<InputNDArrayType>
+      is HierarchySequence<*> -> item
       else -> throw RuntimeException("Invalid hierarchy item type")
     }
 
@@ -227,19 +228,15 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
     this.usedAttentionNetworksPerLevel[levelIndex].add(attentionNetwork)
 
     val isInputLevel: Boolean = this.model.isInputLevel(levelIndex)
-    val encodedSequence: Array<DenseNDArray> = if (isInputLevel) {
+    val encodedSequence: List<DenseNDArray> = if (isInputLevel) {
       (encoder as BiRNNEncoder<InputNDArrayType>)
-        .encode(inputSequence as Array<InputNDArrayType>, useDropout = useDropout && isInputLevel)
+        .encode(inputSequence as List<InputNDArrayType>, useDropout = useDropout && isInputLevel)
     } else {
       (encoder as BiRNNEncoder<DenseNDArray>)
-        .encode(inputSequence as Array<DenseNDArray>, useDropout = useDropout && isInputLevel)
+        .encode(inputSequence as List<DenseNDArray>, useDropout = useDropout && isInputLevel)
     }
 
-    return attentionNetwork.forward(
-      inputSequence = arrayListOf(*Array(
-        size = encodedSequence.size,
-        init = { i -> AugmentedArray(encodedSequence[i])}
-      )))
+    return attentionNetwork.forward(inputSequence = encodedSequence.map { AugmentedArray(it) })
   }
 
   /**
@@ -251,17 +248,8 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return the input sequence for the given [group]
    */
-  private fun buildInputSequence(group: HierarchyGroup,
-                                 levelIndex: Int,
-                                 useDropout: Boolean): Array<DenseNDArray> {
-
-    return Array(
-      size = group.size,
-      init = { i ->
-        this.forwardItem(item = group[i], levelIndex = levelIndex + 1, useDropout = useDropout)
-      }
-    )
-  }
+  private fun buildInputSequence(group: HierarchyGroup, levelIndex: Int, useDropout: Boolean): List<DenseNDArray> =
+    group.map { this.forwardItem(item = it, levelIndex = levelIndex + 1, useDropout = useDropout) }
 
   /**
    * Backward the hierarchy group at the given [levelIndex] of the hierarchy, with the given [groupIndex].
@@ -401,7 +389,9 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   private fun buildInputErrorsHierarchyItem(levelIndex: Int, groupIndex: Int, copy: Boolean): HierarchyItem {
 
     return if (levelIndex == (this.model.hierarchySize - 1))
-      HierarchySequence(*this.usedEncodersPerLevel[levelIndex][groupIndex].getInputSequenceErrors(copy = copy))
+      HierarchySequence(
+        *this.usedEncodersPerLevel[levelIndex][groupIndex].getInputSequenceErrors(copy = copy).toTypedArray()
+      )
     else
       HierarchyGroup(*Array(
         size = this.usedEncodersPerLevel[levelIndex][groupIndex].getInputSequenceErrors(copy = false).size,

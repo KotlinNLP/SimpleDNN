@@ -167,8 +167,8 @@ class SparseBinaryNDArray(
    * @return the mask representing the active indices of this [SparseBinaryNDArray]
    */
   private fun buildMask(): NDArrayMask {
-    val rowIndices = arrayListOf<Int>()
-    val colIndices = arrayListOf<Int>()
+    val rowIndices = mutableListOf<Int>()
+    val colIndices = mutableListOf<Int>()
 
     this.activeIndicesByColumn.forEach { j, column ->
       if (column != null)
@@ -178,7 +178,7 @@ class SparseBinaryNDArray(
       }
     }
 
-    return NDArrayMask(dim1 = rowIndices.toTypedArray(), dim2 = colIndices.toTypedArray())
+    return NDArrayMask(dim1 = rowIndices.toIntArray(), dim2 = colIndices.toIntArray())
   }
 
   /**
@@ -313,7 +313,7 @@ class SparseBinaryNDArray(
     val newMap = mutableMapOf<Int, VectorIndices?>()
 
     for ((key, indicesList) in indicesMap.iterator()) {
-      newMap[key] = indicesList?.let { ArrayList(it) }
+      newMap[key] = indicesList?.toMutableList()
     }
 
     return newMap
@@ -681,16 +681,16 @@ class SparseBinaryNDArray(
   }
 
   /**
-   * Splits this NDArray into multiple NDArray.
+   * Splits this NDArray into more NDArrays.
    *
    * If the number of arguments is one, split this NDArray into multiple NDArray each with length [splittingLength].
    * If there are multiple arguments, split this NDArray according to the length of each [splittingLength] element.
    *
    * @param splittingLength the length(s) for sub-array division
    *
-   * @return an Array containing the split values
+   * @return a list containing the split values
    */
-  override fun splitV(vararg splittingLength: Int): Array<SparseBinaryNDArray> {
+  override fun splitV(vararg splittingLength: Int): List<SparseBinaryNDArray> {
     TODO("not implemented")
   }
 

@@ -34,7 +34,7 @@ object TreeRNNUtils {
     val rightParams = network.rightRNN.model.paramsPerLayer[0] as SimpleRecurrentLayerParameters
     val concatParams = network.concatNetwork.model.paramsPerLayer[0] as FeedforwardLayerParameters
 
-    leftParams.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    leftParams.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.6, 0.8),
       doubleArrayOf(-0.3, 0.0),
       doubleArrayOf(0.9, -0.8)
@@ -42,13 +42,13 @@ object TreeRNNUtils {
 
     leftParams.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 0.2, -0.3)))
 
-    leftParams.unit.recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    leftParams.unit.recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.1, 0.7, 0.0),
       doubleArrayOf(0.2, 0.9, -0.2),
       doubleArrayOf(-0.5, -0.2, -0.4)
     )))
 
-    rightParams.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    rightParams.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.1, 0.9),
       doubleArrayOf(-1.0, -0.4),
       doubleArrayOf(0.4, -0.8)
@@ -56,13 +56,13 @@ object TreeRNNUtils {
 
     rightParams.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, 0.9, 0.4)))
 
-    rightParams.unit.recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    rightParams.unit.recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(1.0, -0.1, 0.7),
       doubleArrayOf(-0.7, 0.8, -1.0),
       doubleArrayOf(0.0, 0.8, 0.0)
     )))
 
-    concatParams.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    concatParams.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.2, -0.2, -0.4, 1.0, -0.5, -0.4),
       doubleArrayOf(0.5, 0.5, 0.2, -0.8, 0.5, 0.1)
     )))

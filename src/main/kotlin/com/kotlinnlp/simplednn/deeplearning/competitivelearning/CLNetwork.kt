@@ -24,7 +24,7 @@ abstract class CLNetwork(private val model: CLNetworkModel) {
   /**
    * The losses of the last prediction, one per encoder, updated dynamically
    */
-  private val _losses: Array<Double> = Array(size = this.model.numOfClasses, init = { 0.0 })
+  private val _losses: DoubleArray = DoubleArray(size = this.model.numOfClasses, init = { 0.0 })
 
   /**
    * Classify an input.

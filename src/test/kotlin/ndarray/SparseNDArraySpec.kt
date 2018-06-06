@@ -151,18 +151,18 @@ class SparseNDArraySpec : Spek({
           ),
           shape = Shape(3, 2))
 
-        val a2 = DenseNDArrayFactory.arrayOf(arrayOf(
+        val a2 = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.2, 0.9),
           doubleArrayOf(0.5, 0.6)
         ))
 
-        val a3 = DenseNDArrayFactory.arrayOf(arrayOf(
+        val a3 = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.2, 0.9),
           doubleArrayOf(0.5, 0.6),
           doubleArrayOf(0.1, 0.4)
         ))
 
-        val expectedArray = DenseNDArrayFactory.arrayOf(arrayOf(
+        val expectedArray = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.1, 0.45),
           doubleArrayOf(0.25, 0.3),
           doubleArrayOf(0.0, 0.0)
@@ -185,17 +185,17 @@ class SparseNDArraySpec : Spek({
       on ("assignValues(denseArray, mask) method") {
 
         val aS = SparseNDArrayFactory.arrayOf(activeIndicesValues = arrayOf(), shape = Shape(4, 3))
-        val aD = DenseNDArrayFactory.arrayOf(arrayOf(
+        val aD = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.2, 0.9, 0.4),
           doubleArrayOf(0.5, 0.6, 0.1),
           doubleArrayOf(0.3, 0.4, 0.6),
           doubleArrayOf(0.1, 0.0, 0.1)
         ))
-        val bD = DenseNDArrayFactory.arrayOf(arrayOf(
+        val bD = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.2, 0.9, 0.4),
           doubleArrayOf(0.5, 0.6, 0.1)
         ))
-        val mask = NDArrayMask(dim1 = arrayOf(0, 1, 1, 3), dim2 = arrayOf(1, 0, 2, 2))
+        val mask = NDArrayMask(dim1 = intArrayOf(0, 1, 1, 3), dim2 = intArrayOf(1, 0, 2, 2))
 
         val expectedArray = SparseNDArrayFactory.arrayOf(
           activeIndicesValues = arrayOf(
@@ -239,11 +239,11 @@ class SparseNDArraySpec : Spek({
           ),
           shape = Shape(4, 2))
 
-        val aD = DenseNDArrayFactory.arrayOf(arrayOf(
+        val aD = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.2, 0.9, 0.5)
         ))
 
-        val b = DenseNDArrayFactory.arrayOf(arrayOf(
+        val b = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.2, 0.9, 0.4),
           doubleArrayOf(0.5, 0.6, 0.1)
         ))

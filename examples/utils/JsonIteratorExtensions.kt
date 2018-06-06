@@ -37,5 +37,5 @@ fun JsonIterator.readSparseBinaryNDArray(size: Int): SparseBinaryNDArray {
     array.add(this.readInt())
   }
 
-  return SparseBinaryNDArrayFactory.arrayOf(activeIndices = array.sorted().toIntArray(), shape = Shape(size))
+  return SparseBinaryNDArrayFactory.arrayOf(activeIndices = array.sorted(), shape = Shape(size))
 }

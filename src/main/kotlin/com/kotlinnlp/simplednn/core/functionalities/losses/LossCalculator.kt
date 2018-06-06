@@ -38,33 +38,34 @@ interface LossCalculator {
   /**
    * Calculate the errors of a sequence.
    *
-   * @param outputSequence an Array containing the output of the network for each example of a sequence
-   * @param outputGoldSequence an ArrayList containing the output gold sequence
+   * @param outputSequence a list containing the output of the network for each example of a sequence
+   * @param outputGoldSequence a list containing the output gold sequence
    *
    * @return an array containing the errors for each example of the sequence
    */
-  fun calculateErrors(outputSequence: Array<DenseNDArray>,
-                      outputGoldSequence: Array<DenseNDArray>): Array<DenseNDArray> {
+  fun calculateErrors(outputSequence: List<DenseNDArray>,
+                      outputGoldSequence: List<DenseNDArray>): List<DenseNDArray> {
 
     require(outputSequence.size == outputGoldSequence.size)
 
-    return Array(
+    return List(
       size = outputSequence.size,
-      init = { this.calculateErrors(outputSequence[it], outputGoldSequence[it]) })
+      init = { i -> this.calculateErrors(outputSequence[i], outputGoldSequence[i]) }
+    )
   }
 
   /**
    * Calculate the mean loss within a sequence.
    *
-   * @param outputSequence an Array containing the output of the network for each example of a sequence
-   * @param outputGoldSequence an ArrayList containing the output gold sequence
+   * @param outputSequence a list containing the output of the network for each example of a sequence
+   * @param outputGoldSequence a list containing the output gold sequence
    *
    * @return the mean loss of the sequence
    */
-  fun calculateMeanLoss(outputSequence: Array<DenseNDArray>,
-                        outputGoldSequence: Array<DenseNDArray>): Double {
+  fun calculateMeanLoss(outputSequence: List<DenseNDArray>,
+                        outputGoldSequence: List<DenseNDArray>): Double {
 
-    var lossesSum: Double = 0.0
+    var lossesSum = 0.0
 
     outputSequence.zip(outputGoldSequence).forEach { (output, goldOutput) ->
       lossesSum += this.calculateLoss(output, goldOutput).avg()

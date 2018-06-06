@@ -31,7 +31,7 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
   /**
    * Sequence of RNNStates
    */
-  private val states = ArrayList<NNState>()
+  private val states = mutableListOf<NNState>()
 
   /**
    *

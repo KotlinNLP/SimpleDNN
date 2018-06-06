@@ -13,8 +13,9 @@ import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import java.util.*
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  *
@@ -39,7 +40,7 @@ class SlidingWindowSequenceSpec: Spek({
         sequence.setFocus(0)
 
         it("should return true") {
-          assertEquals(true, sequence.hasNext())
+          assertTrue(sequence.hasNext())
         }
       }
 
@@ -47,7 +48,7 @@ class SlidingWindowSequenceSpec: Spek({
         sequence.setFocus(4)
 
         it("should return false") {
-          assertEquals(false, sequence.hasNext())
+          assertFalse(sequence.hasNext())
         }
       }
 
@@ -65,7 +66,7 @@ class SlidingWindowSequenceSpec: Spek({
         sequence.setFocus(2)
 
         it("should have the expected values") {
-          assertEquals(true, Arrays.equals(arrayOf(null, 0, 1), sequence.getLeftContext()))
+          assertEquals(listOf(null, 0, 1), sequence.getLeftContext())
         }
       }
 
@@ -73,7 +74,7 @@ class SlidingWindowSequenceSpec: Spek({
         sequence.setFocus(2)
 
         it("should have the expected values") {
-          assertEquals(true, Arrays.equals(arrayOf(3, 4, null), sequence.getRightContext()))
+          assertEquals(listOf(3, 4, null), sequence.getRightContext())
         }
       }
 

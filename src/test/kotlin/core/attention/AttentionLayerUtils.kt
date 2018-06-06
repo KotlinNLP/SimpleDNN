@@ -38,7 +38,7 @@ object AttentionLayerUtils {
   /**
    *
    */
-  fun buildInputSequence(): ArrayList<AugmentedArray<DenseNDArray>> = arrayListOf(
+  fun buildInputSequence(): List<AugmentedArray<DenseNDArray>> = listOf(
     AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.7, 0.9, 0.6))),
     AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.5, 0.7, -0.7, 0.8))),
     AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, -0.5, 0.0, 0.2)))
@@ -47,7 +47,7 @@ object AttentionLayerUtils {
   /**
    *
    */
-  fun buildAttentionSequence(inputSequence: ArrayList<AugmentedArray<DenseNDArray>>): ArrayList<DenseNDArray> {
+  fun buildAttentionSequence(inputSequence: List<AugmentedArray<DenseNDArray>>): List<DenseNDArray> {
 
     val transformLayer: FeedforwardLayerStructure<DenseNDArray> = buildTransformLayer()
 
@@ -75,7 +75,7 @@ object AttentionLayerUtils {
 
     val params = FeedforwardLayerParameters(inputSize = 4, outputSize = 2)
 
-    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.3, 0.4, 0.2, -0.2),
       doubleArrayOf(0.2, -0.1, 0.1, 0.6)
     )))
@@ -94,7 +94,7 @@ object AttentionLayerUtils {
 
     val params = FeedforwardLayerParameters(inputSize = 4, outputSize = 2)
 
-    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.7, -0.8, 0.1, -0.6),
       doubleArrayOf(0.8, 0.6, -0.9, -0.2)
     )))

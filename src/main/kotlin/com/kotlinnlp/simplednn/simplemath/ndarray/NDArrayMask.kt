@@ -13,7 +13,7 @@ package com.kotlinnlp.simplednn.simplemath.ndarray
  * @property dim1 an array of Int which contains the indices of the active values in the first dimension
  * @property dim2 an array of Int which contains the indices of the active values in the second dimension
  */
-class NDArrayMask(val dim1: Array<Int>, val dim2: Array<Int>) : Iterable<Indices> {
+class NDArrayMask(val dim1: IntArray, val dim2: IntArray) : Iterable<Indices> {
 
   init {
     require(dim1.size == dim2.size)
@@ -50,7 +50,6 @@ class NDArrayMask(val dim1: Array<Int>, val dim2: Array<Int>) : Iterable<Indices
 
       return next
     }
-
   }
 
   /**

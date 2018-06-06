@@ -18,7 +18,7 @@ object SlidingWindowSequenceUtils {
   /**
    *
    */
-  fun buildSlidingWindowSequence() = SlidingWindowSequence(elements = arrayOf(
+  fun buildSlidingWindowSequence() = SlidingWindowSequence(elements = listOf(
     DenseNDArrayFactory.arrayOf(doubleArrayOf(10.0, 11.0)),
     DenseNDArrayFactory.arrayOf(doubleArrayOf(20.0, 21.0)),
     DenseNDArrayFactory.arrayOf(doubleArrayOf(30.0, 31.0)),

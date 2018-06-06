@@ -59,7 +59,7 @@ class AffineLayerStructureSpec : Spek({
 
       it("should match the expected errors of w1") {
         assertEquals(true, (paramsErrors.w[0].values as DenseNDArray).equals(
-          DenseNDArrayFactory.arrayOf(arrayOf(
+          DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(0.341711, 0.384425),
 				    doubleArrayOf(-0.223913, -0.251902)
           )),
@@ -68,7 +68,7 @@ class AffineLayerStructureSpec : Spek({
 
       it("should match the expected errors of w2") {
         assertEquals(true, (paramsErrors.w[1].values as DenseNDArray).equals(
-          DenseNDArrayFactory.arrayOf(arrayOf(
+          DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(-0.213569, 0.085428, -0.256283),
             doubleArrayOf(0.139945, -0.055978, 0.167934)
           )),

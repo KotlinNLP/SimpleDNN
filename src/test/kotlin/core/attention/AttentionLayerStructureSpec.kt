@@ -36,7 +36,7 @@ class AttentionLayerStructureSpec : Spek({
       it("should raise an Exception with an empty input sequence") {
         assertFails {
           AttentionLayerStructure(
-            inputSequence = ArrayList<AugmentedArray<DenseNDArray>>(),
+            inputSequence = mutableListOf<AugmentedArray<DenseNDArray>>(),
             attentionSequence = attentionSequence,
             params = params)
         }
@@ -46,34 +46,29 @@ class AttentionLayerStructureSpec : Spek({
         assertFails {
           AttentionLayerStructure(
             inputSequence = inputSequence,
-            attentionSequence = ArrayList(),
+            attentionSequence = mutableListOf(),
             params = params)
         }
       }
 
       it("should raise an Exception with input and attention sequences not compatible") {
-
-        val wrongAttentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence)
-        wrongAttentionSequence.removeAt(1)
-
         assertFails {
           AttentionLayerStructure(
             inputSequence = inputSequence,
-            attentionSequence = wrongAttentionSequence,
+            attentionSequence = attentionSequence.mapIndexed { i, elm ->
+              if (i == 1) DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.1, 0.3)) else elm
+            },
             params = params)
         }
       }
 
       it("should raise an Exception with a attention arrays with a not expected size") {
-
-        val wrongAttentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence)
-        wrongAttentionSequence.removeAt(1)
-        wrongAttentionSequence.add(DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.1, 0.3)))
-
         assertFails {
           AttentionLayerStructure(
             inputSequence = inputSequence,
-            attentionSequence = wrongAttentionSequence,
+            attentionSequence = attentionSequence.mapIndexed { i, elm ->
+              if (i == 1) DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.1, 0.3)) else elm
+            },
             params = params)
         }
       }
@@ -91,7 +86,7 @@ class AttentionLayerStructureSpec : Spek({
       it("should initialize the attention matrix correctly") {
         assertTrue {
           structure.attentionMatrix.values.equals(
-            DenseNDArrayFactory.arrayOf(arrayOf(
+            DenseNDArrayFactory.arrayOf(listOf(
               attentionSequence[0].toDoubleArray(),
               attentionSequence[1].toDoubleArray(),
               attentionSequence[2].toDoubleArray()
@@ -101,7 +96,7 @@ class AttentionLayerStructureSpec : Spek({
         }
       }
 
-      structure.attentionMatrix.assignErrors(DenseNDArrayFactory.arrayOf(arrayOf(
+      structure.attentionMatrix.assignErrors(DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.1, 0.2),
         doubleArrayOf(0.3, 0.4),
         doubleArrayOf(0.5, 0.6)
@@ -180,7 +175,7 @@ class AttentionLayerStructureSpec : Spek({
         }
       }
 
-      val attentionErrors: Array<DenseNDArray> = structure.getAttentionErrors()
+      val attentionErrors: List<DenseNDArray> = structure.getAttentionErrors()
 
       it("should match the expected errors of the first attention array") {
         assertTrue {

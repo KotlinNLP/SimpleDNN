@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * A simple implementation of a Sliding Window Sequence (SWS).
  *
- * SlidingWindowSequence implements convenient method to process a sequence, viewed as an array of [DenseNDArray]s.
+ * SlidingWindowSequence implements convenient method to process a sequence, viewed as a list of [DenseNDArray]s.
  * This class is useful when you need to see an element 'e' along with its left and right context 'c'.
  *
  * The base case has the form of c-3 c-2 c-1 e c+1 c+2 c+3.
@@ -21,12 +21,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * When the focus is the 1st element in the sequence, there are no context elements on the left, when it's the 2nd
  * element, there's only one context element on the left, and so on.
  *
- * @property elements an Array containing the elements of the sequence
+ * @property elements a list containing the elements of the sequence
  * @property leftContextSize the number of elements used to create the left context
  * @property rightContextSize the number of elements used to create the right context
  */
 class SlidingWindowSequence(
-  val elements: Array<DenseNDArray>,
+  val elements: List<DenseNDArray>,
   val leftContextSize: Int = 3,
   val rightContextSize: Int = 3) {
 
@@ -84,10 +84,10 @@ class SlidingWindowSequence(
   }
 
   /**
-   * @return an array containing the indexes of the elements within the [leftContextSize] or 'null' values if an index
+   * @return a list containing the indexes of the elements within the [leftContextSize] or 'null' values if an index
    *         is out of the range of the sequence.
    */
-  fun getLeftContext(): Array<Int?> = Array(
+  fun getLeftContext(): List<Int?> = List(
     size = this.leftContextSize,
     init = { i ->
       val k = this.focusIndex - (this.leftContextSize - i)
@@ -96,10 +96,10 @@ class SlidingWindowSequence(
   )
 
   /**
-   * @return an array containing the indexes of the elements within the [rightContextSize] or 'null' values if an index
+   * @return a list containing the indexes of the elements within the [rightContextSize] or 'null' values if an index
    *         is out of the range of the sequence.
    */
-  fun getRightContext(): Array<Int?> = Array(
+  fun getRightContext(): List<Int?> = List(
     size = this.rightContextSize,
     init = { i ->
       val k = this.focusIndex + i + 1
@@ -110,7 +110,7 @@ class SlidingWindowSequence(
   /**
    * @return the entire focused context composed by the indexes of the left context, the focus and the right context
    */
-  fun getContext(): Array<Int?> = this.getLeftContext() + this.focusIndex + this.getRightContext()
+  fun getContext(): List<Int?> = this.getLeftContext() + this.focusIndex + this.getRightContext()
 
   /**
    * @return a string representation of the focused context

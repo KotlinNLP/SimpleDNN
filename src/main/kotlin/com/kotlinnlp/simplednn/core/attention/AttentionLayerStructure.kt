@@ -22,8 +22,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @property id an identification number useful to track a specific [AttentionLayerStructure]
  */
 class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
-  val inputSequence: ArrayList<AugmentedArray<InputNDArrayType>>,
-  attentionSequence: ArrayList<DenseNDArray>,
+  val inputSequence: List<AugmentedArray<InputNDArrayType>>,
+  attentionSequence: List<DenseNDArray>,
   params: AttentionParameters,
   id: Int = 0
 ) : AttentionMechanism(attentionSequence = attentionSequence, params = params, id = id) {
@@ -42,7 +42,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
    * Initialize values.
    */
   init {
-    require(this.inputSequence.size > 0) { "The input sequence cannot be empty." }
+    require(this.inputSequence.isNotEmpty()) { "The input sequence cannot be empty." }
     require(this.inputSequence.size == attentionSequence.size) {
       "The input sequence must have the same length of the attention sequence."
     }

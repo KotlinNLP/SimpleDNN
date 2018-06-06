@@ -39,13 +39,13 @@ object AffineLayerUtils {
     val params = AffineLayerParameters(inputsSize = listOf(2, 3), outputSize = 2)
 
     params.w[0].values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.3, 0.8),
         doubleArrayOf(0.8, -0.7)
       )))
 
     params.w[1].values.assignValues(
-      DenseNDArrayFactory.arrayOf(arrayOf(
+      DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.6, 0.5, -0.9),
         doubleArrayOf(0.3, -0.3, 0.3)
       )))

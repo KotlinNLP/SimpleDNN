@@ -78,7 +78,7 @@ class LSTMLayerParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList = arrayOf(
+  override val paramsList = listOf(
     this.inputGate.weights,
     this.outputGate.weights,
     this.forgetGate.weights,

@@ -30,7 +30,7 @@ open class AttentionMechanism(
    * A matrix containing the attention arrays as rows.
    */
   val attentionMatrix: AugmentedArray<DenseNDArray> = AugmentedArray(
-    values = DenseNDArrayFactory.arrayOf(this.attentionSequence.map { it.toDoubleArray() }.toTypedArray())
+    values = DenseNDArrayFactory.arrayOf(this.attentionSequence.map { it.toDoubleArray() })
   )
 
   /**
@@ -102,7 +102,7 @@ open class AttentionMechanism(
   /**
    * @return the errors of the attention arrays.
    */
-  fun getAttentionErrors(): Array<DenseNDArray> = Array(
+  fun getAttentionErrors(): List<DenseNDArray> = List(
     size = this.attentionMatrix.values.shape.dim1,
     init = { i -> this.attentionMatrix.errors.getRow(i).t }
   )

@@ -163,7 +163,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
    *
    * @param validationSet the validation set
    */
-  private fun validate(validationSet: ArrayList<SimpleExample<DenseNDArray>>) {
+  private fun validate(validationSet: List<SimpleExample<DenseNDArray>>) {
 
     var correctPredictions = 0
 

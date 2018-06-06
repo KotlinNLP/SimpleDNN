@@ -73,7 +73,7 @@ class BiaffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * A support structure used for calculations. Each array wx1i is obtained by: wi (dot) x1.
    */
-  val wx1Arrays: Array<DenseNDArray> = Array(
+  val wx1Arrays: List<DenseNDArray> = List(
     size = this.params.outputSize,
     init = { DenseNDArrayFactory.emptyArray(Shape(this.params.inputSize2)) }
   )

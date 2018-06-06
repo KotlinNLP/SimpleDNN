@@ -52,18 +52,18 @@ class MSECalculatorSpec : Spek({
 
     context("output sequence") {
 
-      val outputValuesSequence: Array<DenseNDArray> = arrayOf(
+      val outputValuesSequence: List<DenseNDArray> = listOf(
         DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.2, 0.3)),
         DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, 0.1, 0.4, 0.7))
       )
-      val goldValuesSequence: Array<DenseNDArray> = arrayOf(
+      val goldValuesSequence: List<DenseNDArray> = listOf(
         DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.2, 0.1, 0.0)),
         DenseNDArrayFactory.arrayOf(doubleArrayOf(0.6, 0.9, 0.1, 0.0))
       )
 
       on("calculateErrors of a sequence of length 2") {
 
-        val sequenceErrors: Array<DenseNDArray> = lossCalculator.calculateErrors(outputValuesSequence, goldValuesSequence)
+        val sequenceErrors: List<DenseNDArray> = lossCalculator.calculateErrors(outputValuesSequence, goldValuesSequence)
 
         it("should return an array of length 2") {
           assertEquals(2, sequenceErrors.size)

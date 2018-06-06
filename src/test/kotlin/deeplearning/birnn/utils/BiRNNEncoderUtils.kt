@@ -22,7 +22,7 @@ object BiRNNEncoderUtils {
   /**
    *
    */
-  fun buildInputSequence(): Array<DenseNDArray> = arrayOf(
+  fun buildInputSequence(): List<DenseNDArray> = listOf(
     DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, 0.6)),
     DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.4)),
     DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, -0.7))
@@ -31,7 +31,7 @@ object BiRNNEncoderUtils {
   /**
    *
    */
-  fun buildOutputErrorsSequence(): Array<DenseNDArray> = arrayOf(
+  fun buildOutputErrorsSequence(): List<DenseNDArray> = listOf(
     DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.8, 0.1, 0.4, 0.6, -0.4)),
     DenseNDArrayFactory.arrayOf(doubleArrayOf(0.6, 0.6, 0.7, 0.7, -0.6, 0.3)),
     DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.1, -0.1, 0.1, -0.8, 0.4, -0.5))
@@ -61,7 +61,7 @@ object BiRNNEncoderUtils {
    */
   private fun initL2RParameters(params: SimpleRecurrentLayerParameters) {
 
-    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(-0.9, 0.4),
       doubleArrayOf(0.7, -1.0),
       doubleArrayOf(-0.9, -0.4)
@@ -69,7 +69,7 @@ object BiRNNEncoderUtils {
 
     params.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, -0.3, 0.8)))
 
-    params.unit.recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params.unit.recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.1, 0.9, -0.5),
       doubleArrayOf(-0.6, 0.7, 0.7),
       doubleArrayOf(0.3, 0.9, 0.0)
@@ -81,7 +81,7 @@ object BiRNNEncoderUtils {
    */
   private fun initR2LParameters(params: SimpleRecurrentLayerParameters) {
 
-    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(0.3, 0.1),
       doubleArrayOf(0.6, 0.0),
       doubleArrayOf(-0.7, 0.1)
@@ -89,7 +89,7 @@ object BiRNNEncoderUtils {
 
     params.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, -0.9, -0.2)))
 
-    params.unit.recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(arrayOf(
+    params.unit.recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
       doubleArrayOf(-0.2, 0.7, 0.7),
       doubleArrayOf(-0.2, 0.0, -1.0),
       doubleArrayOf(0.5, -0.4, 0.4)

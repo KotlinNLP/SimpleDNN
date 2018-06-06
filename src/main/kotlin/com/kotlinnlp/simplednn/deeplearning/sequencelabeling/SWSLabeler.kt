@@ -45,13 +45,13 @@ class SWSLabeler(private val network: SWSLNetwork) {
   /**
    * The Sliding Window Sequence which is being processed.
    */
-  lateinit private var sequence: SlidingWindowSequence
+  private lateinit var sequence: SlidingWindowSequence
 
   /**
    * The list of labels, parallel to the current sequence.
    * The max size is the length of the current sequence.
    */
-  private val labels = ArrayList<Label>()
+  private val labels = mutableListOf<Label>()
 
   /**
    * The feed-forward neural processor.
@@ -66,7 +66,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
   /**
    * The input errors calculated during the back-propagation.
    */
-  private lateinit var inputSequenceErrors: Array<DenseNDArray>
+  private lateinit var inputSequenceErrors: List<DenseNDArray>
 
   /**
    * Annotate each element of the given [inputSequence] with a label.
@@ -75,7 +75,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
    *
    * @return an array of [Label]s, one for each element of the [inputSequence]
    */
-  fun annotate(inputSequence: Array<DenseNDArray>): ArrayList<Label> {
+  fun annotate(inputSequence: List<DenseNDArray>): List<Label> {
 
     require(inputSequence.isNotEmpty())
 
@@ -94,7 +94,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
    * @param optimizer the optimize of parameters and embeddings
    * @param useDropout whether to apply the dropout (default = false)
    */
-  fun learn(inputSequence: Array<DenseNDArray>,
+  fun learn(inputSequence: List<DenseNDArray>,
             goldLabels: IntArray,
             optimizer: SWSLOptimizer,
             useDropout: Boolean = false) {
@@ -122,11 +122,8 @@ class SWSLabeler(private val network: SWSLNetwork) {
    *
    * @return the input errors
    */
-  fun getInputSequenceErrors(copy: Boolean = true): Array<DenseNDArray> =
-    if (copy)
-      Array(size = this.inputSequenceErrors.size, init = { i -> this.inputSequenceErrors[i].copy() })
-    else
-      this.inputSequenceErrors
+  fun getInputSequenceErrors(copy: Boolean = true): List<DenseNDArray> =
+    this.inputSequenceErrors.let { if (copy) it.map { it.copy() } else it }
 
   /**
    * Set a new Sliding Window Sequence initialized with the elements of [inputSequence].
@@ -134,7 +131,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
    *
    * @param inputSequence the inputSequence to annotate
    */
-  private fun setNewSequence(inputSequence: Array<DenseNDArray>) {
+  private fun setNewSequence(inputSequence: List<DenseNDArray>) {
 
     this.sequence = SlidingWindowSequence(
       elements = inputSequence,
@@ -148,7 +145,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
    * Initialize input sequence errors.
    */
   private fun initInputErrors(size: Int) {
-    this.inputSequenceErrors = Array(size = size, init = { DenseNDArrayFactory.zeros(Shape(this.network.elementSize)) })
+    this.inputSequenceErrors = List(size = size, init = { DenseNDArrayFactory.zeros(Shape(this.network.elementSize)) })
   }
 
   /**
@@ -271,9 +268,9 @@ class SWSLabeler(private val network: SWSLNetwork) {
    *
    * @return a list of pair <labelIndex, embeddingErrors>
    */
-  private fun alignLabelsEmbeddingsErrors(errors: DenseNDArray): ArrayList<Pair<Int, DenseNDArray>> {
+  private fun alignLabelsEmbeddingsErrors(errors: DenseNDArray): List<Pair<Int, DenseNDArray>> {
 
-    val result = ArrayList<Pair<Int, DenseNDArray>>()
+    val result = mutableListOf<Pair<Int, DenseNDArray>>()
 
     if (this.labels.isNotEmpty()) {
 

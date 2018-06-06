@@ -7,6 +7,7 @@
 
 package ndarray
 
+import com.kotlinnlp.simplednn.simplemath.ndarray.Indices
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -28,7 +29,7 @@ class SparseBinaryNDArraySpec : Spek({
 
       on("row vector") {
 
-        val array = SparseBinaryNDArrayFactory.arrayOf(activeIndices = intArrayOf(1, 3, 19), shape = Shape(1, 20))
+        val array = SparseBinaryNDArrayFactory.arrayOf(activeIndices = listOf(1, 3, 19), shape = Shape(1, 20))
         val iterator = array.iterator()
 
         it("should return the expected first indices Pair") {
@@ -50,7 +51,7 @@ class SparseBinaryNDArraySpec : Spek({
 
       on("column vector") {
 
-        val array = SparseBinaryNDArrayFactory.arrayOf(activeIndices = intArrayOf(1, 3, 19), shape = Shape(20))
+        val array = SparseBinaryNDArrayFactory.arrayOf(activeIndices = listOf(1, 3, 19), shape = Shape(20))
         val iterator = array.iterator()
 
         it("should return the expected first indices Pair") {
@@ -73,7 +74,7 @@ class SparseBinaryNDArraySpec : Spek({
       on("a 2-dim array") {
 
         val array = SparseBinaryNDArrayFactory.arrayOf(
-          activeIndicesPairs = arrayOf(Pair(1, 0), Pair(5, 19), Pair(12, 6)),
+          activeIndices = arrayOf(Indices(1, 0), Indices(5, 19), Indices(12, 6)),
           shape = Shape(15, 20))
         val iterator = array.iterator()
 

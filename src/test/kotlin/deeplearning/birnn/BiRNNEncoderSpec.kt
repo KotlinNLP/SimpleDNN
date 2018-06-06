@@ -78,7 +78,7 @@ class BiRNNEncoderSpec : Spek({
     it("should match the expected errors of the Left-to-right weights") {
       assertTrue {
         (l2rErrors.unit.weights.values as DenseNDArray).equals(
-          DenseNDArrayFactory.arrayOf(arrayOf(
+          DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(0.001234, -0.107987),
             doubleArrayOf(0.175039, 0.015738),
             doubleArrayOf(0.213397, -0.046717)
@@ -91,7 +91,7 @@ class BiRNNEncoderSpec : Spek({
     it("should match the expected errors of the Left-to-right recurrent weights") {
       assertTrue {
         l2rErrors.unit.recurrentWeights.values.equals(
-          DenseNDArrayFactory.arrayOf(arrayOf(
+          DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(0.041817, -0.059241, 0.013592),
             doubleArrayOf(0.042229, -0.086071, 0.019157),
             doubleArrayOf(0.035331, -0.11595, 0.02512)
@@ -113,7 +113,7 @@ class BiRNNEncoderSpec : Spek({
     it("should match the expected errors of the Right-to-left weights") {
       assertTrue {
         (r2lErrors.unit.weights.values as DenseNDArray).equals(
-          DenseNDArrayFactory.arrayOf(arrayOf(
+          DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(0.145713, 0.234548),
             doubleArrayOf(0.050135, 0.070768),
             doubleArrayOf(-0.06125, -0.017281)
@@ -126,7 +126,7 @@ class BiRNNEncoderSpec : Spek({
     it("should match the expected errors of the Right-to-left recurrent weights") {
       assertTrue {
         r2lErrors.unit.recurrentWeights.values.equals(
-          DenseNDArrayFactory.arrayOf(arrayOf(
+          DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(-0.029278, -0.112568, -0.089725),
             doubleArrayOf(-0.074426, 0.003116, -0.070784),
             doubleArrayOf(0.022664, 0.040583, 0.044139)
@@ -136,7 +136,7 @@ class BiRNNEncoderSpec : Spek({
       }
     }
 
-    val inputErrors: Array<DenseNDArray> = encoder.getInputSequenceErrors()
+    val inputErrors: List<DenseNDArray> = encoder.getInputSequenceErrors()
 
     it("should match the expected errors of first input array") {
       assertTrue {

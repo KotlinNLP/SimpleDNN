@@ -190,7 +190,7 @@ class BackwardHelper(private val network: AttentiveRecurrentNetwork) {
    */
   private fun splitOutputNetworkErrors(outputNetworkErrors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
 
-    val splitErrors: Array<DenseNDArray> = outputNetworkErrors.splitV(
+    val splitErrors: List<DenseNDArray> = outputNetworkErrors.splitV(
       this.network.model.attentionParams.outputSize,
       this.network.model.recurrentContextSize
     )
@@ -303,7 +303,7 @@ class BackwardHelper(private val network: AttentiveRecurrentNetwork) {
    */
   private fun splitTransformErrors(errors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
 
-    val splitErrors: Array<DenseNDArray> = errors.splitV(
+    val splitErrors: List<DenseNDArray> = errors.splitV(
       this.network.model.inputSize,
       this.network.model.recurrentContextSize)
 
@@ -317,7 +317,7 @@ class BackwardHelper(private val network: AttentiveRecurrentNetwork) {
    */
   private fun splitRNNInputErrors(errors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
 
-    val splitErrors: Array<DenseNDArray> = errors.splitV(
+    val splitErrors: List<DenseNDArray> = errors.splitV(
       this.network.model.attentionParams.outputSize,
       this.network.model.contextLabelSize)
 

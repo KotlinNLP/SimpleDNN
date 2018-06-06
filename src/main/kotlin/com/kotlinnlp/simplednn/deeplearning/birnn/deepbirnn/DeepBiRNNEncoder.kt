@@ -23,15 +23,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 class DeepBiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val network: DeepBiRNN) {
 
   /**
-   * Array of encoders for all the stacked [BiRNN] layers.
+   * List of encoders for all the stacked [BiRNN] layers.
    */
-  private val encoders = Array(size = this.network.numberOfLayers, init = {
-    if (it == 0) {
-      BiRNNEncoder<InputNDArrayType>(network = this.network.layers[it])
-    } else {
-      BiRNNEncoder<DenseNDArray>(network = this.network.layers[it])
-    }
-  })
+  private val encoders = this.network.layers.mapIndexed { i, biRNN ->
+    if (i == 0)
+      BiRNNEncoder<InputNDArrayType>(biRNN)
+    else
+      BiRNNEncoder<DenseNDArray>(biRNN)
+  }
 
   /**
    * Encode the [sequence].
@@ -41,15 +40,14 @@ class DeepBiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val network:
    *
    * @return the encoded sequence
    */
-  fun encode(sequence: Array<InputNDArrayType>, useDropout: Boolean = false): Array<DenseNDArray> {
+  @Suppress("UNCHECKED_CAST")
+  fun encode(sequence: List<InputNDArrayType>, useDropout: Boolean = false): List<DenseNDArray> {
 
-    var output: Array<DenseNDArray>
+    var output: List<DenseNDArray>
 
-    @Suppress("UNCHECKED_CAST")
     output = (this.encoders[0] as BiRNNEncoder<InputNDArrayType>).encode(sequence, useDropout = useDropout)
 
-    for (i in 1 .. this.encoders.lastIndex) {
-      @Suppress("UNCHECKED_CAST")
+    for (i in 1 until this.encoders.size) {
       output = (this.encoders[i] as BiRNNEncoder<DenseNDArray>).encode(output, useDropout = useDropout)
     }
 
@@ -62,9 +60,9 @@ class DeepBiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val network:
    * @param outputErrorsSequence the errors to propagate
    * @param propagateToInput whether to propagate the output errors to the input or not
    */
-  fun backward(outputErrorsSequence: Array<DenseNDArray>, propagateToInput: Boolean) {
+  fun backward(outputErrorsSequence: List<DenseNDArray>, propagateToInput: Boolean) {
 
-    var errors: Array<DenseNDArray> = outputErrorsSequence
+    var errors: List<DenseNDArray> = outputErrorsSequence
 
     for ((i, encoder) in this.encoders.withIndex().reversed()) {
       encoder.backward(errors, propagateToInput = if (i == 0) propagateToInput else true)
@@ -77,7 +75,7 @@ class DeepBiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val network:
    *
    * @return the errors of the input sequence
    */
-  fun getInputSequenceErrors(copy: Boolean = true): Array<DenseNDArray> =
+  fun getInputSequenceErrors(copy: Boolean = true): List<DenseNDArray> =
     this.encoders.first().getInputSequenceErrors(copy = copy)
 
   /**

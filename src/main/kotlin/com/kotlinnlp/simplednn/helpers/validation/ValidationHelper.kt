@@ -24,7 +24,7 @@ abstract class ValidationHelper<ExampleType: Example> {
    *
    * @return the percentage of correct predictions
    */
-  fun validate(examples: ArrayList<ExampleType>,
+  fun validate(examples: List<ExampleType>,
                onPrediction: (example: ExampleType, isCorrect: Boolean) -> Unit = {_, _ -> },
                saveContributions: Boolean = false): Double {
 

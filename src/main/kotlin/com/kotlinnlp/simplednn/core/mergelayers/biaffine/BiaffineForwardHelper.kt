@@ -35,7 +35,7 @@ class BiaffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val x1: InputNDArrayType = this.layer.inputArray1.values
     val x2: InputNDArrayType = this.layer.inputArray2.values
 
-    val wArrays: Array<UpdatableArray<*>> = this.layer.params.w
+    val wArrays: List<UpdatableArray<*>> = this.layer.params.w
     val wx: DenseNDArray = DenseNDArrayFactory.emptyArray(Shape(this.layer.params.outputSize))
     val w1: DenseNDArray = this.layer.params.w1.values as DenseNDArray
     val w2: DenseNDArray = this.layer.params.w2.values as DenseNDArray

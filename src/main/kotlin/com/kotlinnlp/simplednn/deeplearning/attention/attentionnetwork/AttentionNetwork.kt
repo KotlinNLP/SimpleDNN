@@ -45,7 +45,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * The transform layer which creates an attention array from each array of an input sequence.
    */
-  private lateinit var transformLayers: Array<FeedforwardLayerStructure<InputNDArrayType>>
+  private lateinit var transformLayers: List<FeedforwardLayerStructure<InputNDArrayType>>
 
   /**
    * The transform layers pool.
@@ -76,7 +76,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return the output [DenseNDArray]
    */
-  fun forward(inputSequence: ArrayList<AugmentedArray<InputNDArrayType>>,
+  fun forward(inputSequence: List<AugmentedArray<InputNDArrayType>>,
               useDropout: Boolean = false): DenseNDArray {
 
     this.internalAttentionArraysUsed = true
@@ -95,8 +95,8 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return the output [DenseNDArray]
    */
-  fun forward(inputSequence: ArrayList<AugmentedArray<InputNDArrayType>>,
-              attentionSequence: ArrayList<DenseNDArray>): DenseNDArray {
+  fun forward(inputSequence: List<AugmentedArray<InputNDArrayType>>,
+              attentionSequence: List<DenseNDArray>): DenseNDArray {
 
     this.internalAttentionArraysUsed = false
 
@@ -157,18 +157,12 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * @return the errors of the arrays of input
    */
-  fun getInputErrors(): Array<DenseNDArray> {
-
-    return Array(
-      size = this.attentionLayer.inputSequence.size,
-      init = { i -> this.attentionLayer.inputSequence[i].errors }
-    )
-  }
+  fun getInputErrors(): List<DenseNDArray> = this.attentionLayer.inputSequence.map { it.errors }
 
   /**
    * @return the errors of the attention arrays
    */
-  fun getAttentionErrors(): Array<DenseNDArray> = this.attentionLayer.getAttentionErrors()
+  fun getAttentionErrors(): List<DenseNDArray> = this.attentionLayer.getAttentionErrors()
 
   /**
    * @param copy a Boolean indicating whether the returned importance score must be a copy or a reference
@@ -187,7 +181,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @param inputSequence the list of arrays of input
    * @param useDropout whether to apply the dropout to generate the attention arrays
    */
-  private fun setInputSequence(inputSequence: ArrayList<AugmentedArray<InputNDArrayType>>,
+  private fun setInputSequence(inputSequence: List<AugmentedArray<InputNDArrayType>>,
                                useDropout: Boolean = false) {
 
     this.attentionLayer = AttentionLayerStructure(
@@ -204,15 +198,15 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @return the list of attention arrays associated to each array of the [inputSequence]
    */
   private fun buildAttentionSequence(
-    inputSequence: ArrayList<AugmentedArray<InputNDArrayType>>,
+    inputSequence: List<AugmentedArray<InputNDArrayType>>,
     useDropout: Boolean
-  ): ArrayList<DenseNDArray> {
+  ): List<DenseNDArray> {
 
     this.transformLayersPool.releaseAll()
 
-    this.transformLayers = Array(size = inputSequence.size, init = { this.transformLayersPool.getItem() })
+    this.transformLayers = List(size = inputSequence.size, init = { this.transformLayersPool.getItem() })
 
-    return ArrayList(inputSequence.mapIndexed { i, inputArray ->
+    return inputSequence.mapIndexed { i, inputArray ->
 
       val layer = this.transformLayers[i]
 
@@ -220,7 +214,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
       layer.forward(useDropout = useDropout)
 
       layer.outputArray.values
-    })
+    }
   }
 
   /**
@@ -250,7 +244,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
                                       propagateToInput: Boolean = false,
                                       mePropK: Double?) {
 
-    val attentionErrors: Array<DenseNDArray> = this.getAttentionErrors()
+    val attentionErrors: List<DenseNDArray> = this.getAttentionErrors()
 
     // Accumulate errors into the accumulator
     this.transformLayers.forEachIndexed { i, layer ->

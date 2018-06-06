@@ -98,7 +98,7 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
    */
   private fun backwardStep(outputErrors: DenseNDArray) {
 
-    val attentionArraysErrors: Array<DenseNDArray> = this.backwardAttentionScores(outputErrors)
+    val attentionArraysErrors: List<DenseNDArray> = this.backwardAttentionScores(outputErrors)
     val vectorErrors: DenseNDArray = this.backwardAttentionArrays(attentionArraysErrors)
 
     this.vectorsErrors[this.stateIndex].assignValues(vectorErrors)
@@ -109,7 +109,7 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
    *
    * @return the errors of the attention arrays
    */
-  private fun backwardAttentionScores(outputErrors: DenseNDArray): Array<DenseNDArray> {
+  private fun backwardAttentionScores(outputErrors: DenseNDArray): List<DenseNDArray> {
 
     val attentionMechanism: AttentionMechanism = this.networkProcessor.usedAttentionMechanisms[this.stateIndex]
 
@@ -127,7 +127,7 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
    *
    * @return the errors of the input vector
    */
-  private fun backwardAttentionArrays(outputErrors: Array<DenseNDArray>): DenseNDArray {
+  private fun backwardAttentionArrays(outputErrors: List<DenseNDArray>): DenseNDArray {
 
     val vectorErrorsSum: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.networkProcessor.model.inputSize))
 

@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary
 
+import com.kotlinnlp.simplednn.simplemath.ndarray.Indices
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.VectorIndices
@@ -66,12 +67,12 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
   /**
    *
    */
-  fun arrayOf(activeIndices: IntArray, shape: Shape): SparseBinaryNDArray {
+  fun arrayOf(activeIndices: List<Int>, shape: Shape): SparseBinaryNDArray {
     require(shape.dim1 == 1 || shape.dim2 == 1) {
       "Invalid shape (only a 1-dim SparseBinaryNDArray can be created given a list of active indices)"
     }
 
-    val vectorMap = mutableMapOf<Int, VectorIndices?>(Pair(0, ArrayList(activeIndices.toList())))
+    val vectorMap = mutableMapOf<Int, VectorIndices?>(Pair(0, activeIndices.toMutableList()))
     val indicesMap = mutableMapOf<Int, VectorIndices?>()
 
     for (index in activeIndices) {
@@ -87,11 +88,11 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
   /**
    *
    */
-  fun arrayOf(activeIndicesPairs: Array<Pair<Int, Int>>, shape: Shape): SparseBinaryNDArray {
+  fun arrayOf(activeIndices: Array<Indices>, shape: Shape): SparseBinaryNDArray {
 
     val res = SparseBinaryNDArray(shape = shape)
 
-    for ((i, j) in activeIndicesPairs) {
+    for ((i, j) in activeIndices) {
       res.set(i, j)
     }
 

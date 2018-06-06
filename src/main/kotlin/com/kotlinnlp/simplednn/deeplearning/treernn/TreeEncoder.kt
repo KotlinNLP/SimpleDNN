@@ -75,17 +75,16 @@ class TreeEncoder(val network: TreeRNN) {
      * Whether the node is a root.
      */
     internal var isRoot: Boolean = true
-      internal set
 
     /**
      * The left-children nodes.
      */
-    internal val leftChildren = ArrayList<Node>()
+    internal val leftChildren = mutableListOf<Node>()
 
     /**
      * The right-children nodes.
      */
-    internal val rightChildren = ArrayList<Node>()
+    internal val rightChildren = mutableListOf<Node>()
 
     /**
      * The [RecurrentNeuralProcessor] to encode the left-children.
@@ -258,7 +257,7 @@ class TreeEncoder(val network: TreeRNN) {
      */
     private fun encodeChildren(processor: RecurrentNeuralProcessor<DenseNDArray>,
                                head: DenseNDArray,
-                               children: ArrayList<Node>): DenseNDArray {
+                               children: List<Node>): DenseNDArray {
 
       processor.forward(head, firstState = true)
 
@@ -273,7 +272,7 @@ class TreeEncoder(val network: TreeRNN) {
      * This method is the "backward" of the [encodeChildren] function.
      */
     private fun backwardChildren(processor: RecurrentNeuralProcessor<DenseNDArray>,
-                                 children: ArrayList<Node>,
+                                 children: List<Node>,
                                  errors: DenseNDArray) {
 
       processor.backward(errors, propagateToInput = true)

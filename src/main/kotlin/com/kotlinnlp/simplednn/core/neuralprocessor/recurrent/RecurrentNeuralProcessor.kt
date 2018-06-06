@@ -128,7 +128,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return an array containing the errors of the input sequence
    */
-  fun getInputSequenceErrors(copy: Boolean = true): Array<DenseNDArray> = Array(
+  fun getInputSequenceErrors(copy: Boolean = true): List<DenseNDArray> = List(
     size = this.statesSize,
     init = { i -> this.getInputErrors(elementIndex = i, copy = copy) }
   )
@@ -194,7 +194,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the output sequence
    */
-  fun getOutputSequence(copy: Boolean = true): Array<DenseNDArray> = Array(
+  fun getOutputSequence(copy: Boolean = true): List<DenseNDArray> = List(
     size = this.statesSize,
     init = { i ->
       this.sequence.getStateStructure(i).outputLayer.outputArray.values.let { if (copy) it.copy() else it }
@@ -281,7 +281,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the last output of the network after the whole sequence is been forwarded
    */
-  fun forward(sequenceFeaturesLists: Array<List<InputNDArrayType>>,
+  fun forward(sequenceFeaturesLists: ArrayList<List<InputNDArrayType>>,
               initHiddenArrays: List<DenseNDArray?>? = null,
               saveContributions: Boolean = false,
               useDropout: Boolean = false): DenseNDArray {
@@ -398,9 +398,10 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false, mePropK: List<Double?>? = null) {
 
-    val outputErrorsSequence = Array(
+    val outputErrorsSequence = List(
       size = this.statesSize,
-      init = { i -> if (i == this.lastStateIndex) outputErrors else this.zeroErrors })
+      init = { i -> if (i == this.lastStateIndex) outputErrors else this.zeroErrors }
+    )
 
     this.backward(outputErrorsSequence = outputErrorsSequence, propagateToInput = propagateToInput, mePropK = mePropK)
   }
@@ -413,7 +414,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
    *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
    */
-  fun backward(outputErrorsSequence: Array<DenseNDArray>,
+  fun backward(outputErrorsSequence: List<DenseNDArray>,
                propagateToInput: Boolean = false,
                mePropK: List<Double?>? = null) {
 

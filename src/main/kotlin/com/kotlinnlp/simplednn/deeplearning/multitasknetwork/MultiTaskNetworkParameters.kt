@@ -32,18 +32,7 @@ class MultiTaskNetworkParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: Array<UpdatableArray<*>>
-
-  /**
-   * Initialize the params list.
-   */
-  init {
-
-    val params = this.inputParams.toMutableList()
-    this.outputParamsList.forEach { params.addAll(it.paramsList) }
-
-    this.paramsList = params.toTypedArray()
-  }
+  override val paramsList: List<UpdatableArray<*>> = this.outputParamsList.flatMap { it.paramsList }
 
   /**
    * @return a new [MultiTaskNetworkParameters] containing a copy of all parameters of this

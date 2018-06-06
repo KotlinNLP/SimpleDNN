@@ -70,7 +70,7 @@ class GRULayerParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList = arrayOf(
+  override val paramsList = listOf(
 
     this.candidate.weights,
     this.resetGate.weights,

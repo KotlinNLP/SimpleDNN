@@ -47,7 +47,7 @@ class HAN(
   val attentionSize: Int,
   val outputSize: Int,
   val outputActivation: ActivationFunction?,
-  val gainFactors: Array<Double> = Array(size = hierarchySize, init = { i -> if (i == 0) 2.0 else 1.0 }),
+  val gainFactors: List<Double> = List(size = hierarchySize, init = { i -> if (i == 0) 2.0 else 1.0 }),
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   dropout: Double = 0.0
@@ -85,11 +85,10 @@ class HAN(
   /**
    * An array of [BiRNN]s, one for each level of the HAN.
    */
-  val biRNNs = Array(
+  val biRNNs: List<BiRNN> = List(
     size = this.hierarchySize,
     init = { i ->
       val inputSize: Int = this.getLevelInputSize(i)
-
       BiRNN(
         inputType = if (i == 0) this.inputType else LayerType.Input.Dense, // the level 0 is the input of the HAN
         inputSize = inputSize,
@@ -105,10 +104,9 @@ class HAN(
   /**
    * An array of parameters, one for each AttentionNetwork which composes the HAN.
    */
-  val attentionNetworksParams = Array(
+  val attentionNetworksParams = List(
     size = this.hierarchySize,
     init = { i ->
-
       AttentionNetworkParameters(
         inputSize = this.biRNNs[i].outputSize,
         attentionSize = this.attentionSize,
@@ -141,8 +139,8 @@ class HAN(
    * All the parameters of this [HAN] model.
    */
   val params = HANParameters(
-    biRNNs = Array(size = this.biRNNs.size, init = { i -> this.biRNNs[i].model }),
-    attentionNetworks = Array(size = this.attentionNetworksParams.size, init = { i -> this.attentionNetworksParams[i] }),
+    biRNNs = this.biRNNs.map { it.model },
+    attentionNetworks = this.attentionNetworksParams,
     outputNetwork = this.outputNetwork.model
   )
 

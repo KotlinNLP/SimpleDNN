@@ -106,7 +106,7 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
   /**
    *
    */
-  fun arrayOf(matrix: Array<DoubleArray>): DenseNDArray {
+  fun arrayOf(matrix: List<DoubleArray>): DenseNDArray {
     val rows = matrix.size
     val columns = if (matrix.isNotEmpty()) matrix[0].size else 0
     val m = DoubleMatrix(rows, columns)
@@ -129,7 +129,7 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
    * @return a new Dense NDArray
    */
   fun fromNDArray(array: NDArray<*>): DenseNDArray = when (array) {
-    
+
     is DenseNDArray -> array.copy()
 
     is SparseNDArray -> {

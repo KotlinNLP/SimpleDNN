@@ -42,7 +42,7 @@ class AttentionParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: Array<UpdatableArray<*>> = arrayOf(this.contextVector)
+  override val paramsList: List<UpdatableArray<*>> = listOf(this.contextVector)
 
   /**
    * Initialize the values of the context vector.

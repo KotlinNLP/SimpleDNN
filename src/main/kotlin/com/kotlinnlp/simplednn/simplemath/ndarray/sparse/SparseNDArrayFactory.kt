@@ -29,9 +29,10 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
    */
   override fun emptyArray(shape: Shape) = SparseNDArray(
     shape = shape,
-    rows = arrayOf(),
-    columns = arrayOf(),
-    values = arrayOf())
+    rows = intArrayOf(),
+    columns = intArrayOf(),
+    values = doubleArrayOf()
+  )
 
   /**
    *
@@ -67,9 +68,9 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
    */
   fun arrayOf(activeIndicesValues: Array<SparseEntry>, shape: Shape): SparseNDArray {
 
-    val values = arrayListOf<Double>()
-    val rows = arrayListOf<Int>()
-    val columns = arrayListOf<Int>()
+    val values = mutableListOf<Double>()
+    val rows = mutableListOf<Int>()
+    val columns = mutableListOf<Int>()
 
     for ((indices, value) in activeIndicesValues.sortedWith(Comparator { (aIndices), (bIndices) ->
       if (aIndices.second != bIndices.second) {
@@ -91,9 +92,9 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
 
     return SparseNDArray(
       shape = shape,
-      rows = rows.toTypedArray(),
-      columns = columns.toTypedArray(),
-      values = values.toTypedArray())
+      rows = rows.toIntArray(),
+      columns = columns.toIntArray(),
+      values = values.toDoubleArray())
   }
 
 }

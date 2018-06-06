@@ -39,7 +39,7 @@ class AttentiveRecurrentNetworkParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: Array<UpdatableArray<*>> =
+  override val paramsList: List<UpdatableArray<*>> =
     this.attentionParams.paramsList +
       this.transformParams.paramsList +
       this.recurrentContextParams.paramsList +

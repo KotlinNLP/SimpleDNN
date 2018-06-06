@@ -64,6 +64,6 @@ class MNISTSparseExampleExtractor(val outputSize: Int) : ExampleExtractor<Simple
       index++
     }
 
-    return SparseBinaryNDArrayFactory.arrayOf(activeIndices = array.sorted().toIntArray(), shape = Shape(size))
+    return SparseBinaryNDArrayFactory.arrayOf(activeIndices = array.sorted(), shape = Shape(size))
   }
 }
