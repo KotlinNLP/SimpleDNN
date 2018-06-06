@@ -56,39 +56,39 @@ class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward features.
    *
-   * @param featuresArray the features to forward from the input to the output
+   * @param features the features to forward from the input to the output
    * @param useDropout whether to apply the dropout
    *
    * @return the list of output arrays, one for each output network
    */
-  fun forward(featuresArray: InputNDArrayType, useDropout: Boolean = false): List<DenseNDArray> {
+  fun forward(features: InputNDArrayType, useDropout: Boolean = false): List<DenseNDArray> {
 
-    val hiddenOutput: DenseNDArray = this.inputProcessor.forward(featuresArray = featuresArray, useDropout = useDropout)
+    val hiddenOutput: DenseNDArray = this.inputProcessor.forward(features = features, useDropout = useDropout)
 
-    return this.outputProcessors.map { it.forward(featuresArray = hiddenOutput, useDropout = useDropout) }
+    return this.outputProcessors.map { it.forward(features = hiddenOutput, useDropout = useDropout) }
   }
 
   /**
    * Forward features, saving the contributes of the input in respect of the output.
    *
-   * @param featuresArray the features to forward from the input to the output
+   * @param features the features to forward from the input to the output
    * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
    *                          the relevance)
    * @param useDropout whether to apply the dropout
    *
    * @return the list of output arrays, one for each output network
    */
-  fun forward(featuresArray: InputNDArrayType,
+  fun forward(features: InputNDArrayType,
               saveContributions: Boolean,
               useDropout: Boolean = false): List<DenseNDArray> {
 
     val hiddenOutput: DenseNDArray = this.inputProcessor.forward(
-      featuresArray = featuresArray,
+      features = features,
       saveContributions = saveContributions,
       useDropout = useDropout)
 
     return this.outputProcessors.map {
-      it.forward(featuresArray = hiddenOutput, saveContributions = saveContributions, useDropout = useDropout)
+      it.forward(features = hiddenOutput, saveContributions = saveContributions, useDropout = useDropout)
     }
   }
 

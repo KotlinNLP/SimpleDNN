@@ -70,7 +70,7 @@ class MultimodalAutoencoder(model: MultiTaskNetworkModel) {
    * @param copy a Boolean indicating whether the returned array must be a copy or a reference
    */
   fun getSharedRepresentations(inputArray: DenseNDArray, copy: Boolean = true): DenseNDArray {
-    this.network.inputProcessor.forward(featuresArray = inputArray)
+    this.network.inputProcessor.forward(features = inputArray)
     return this.network.inputProcessor.getOutput(copy = copy)
   }
 

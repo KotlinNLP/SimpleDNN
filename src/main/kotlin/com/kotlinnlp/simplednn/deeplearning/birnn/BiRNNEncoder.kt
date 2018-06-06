@@ -179,12 +179,12 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
     this.sequence.indices.zip(this.sequence.indices.reversed()).forEach { (i, r) ->
 
       leftToRightOut[i] = this.leftToRightProcessor.forward(
-        featuresArray = this.sequence[i],
+        features = this.sequence[i],
         firstState = isFirstElement,
         useDropout = useDropout)
 
       rightToLeftOut[r] = this.rightToLeftProcessor.forward(
-        featuresArray = this.sequence[r],
+        features = this.sequence[r],
         firstState = isFirstElement,
         useDropout = useDropout)
 

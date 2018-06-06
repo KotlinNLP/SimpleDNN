@@ -128,7 +128,7 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     val topOutput: DenseNDArray = this.forwardItem(item = sequencesHierarchy, levelIndex = 0, useDropout = useDropout)
 
-    this.outputProcessor.forward(featuresArray = topOutput)
+    this.outputProcessor.forward(features = topOutput)
 
     return this.outputProcessor.getOutput()
   }

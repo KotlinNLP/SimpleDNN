@@ -117,14 +117,14 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward features.
    *
-   * @param featuresArray the features to forward from the input to the output
+   * @param features the features to forward from the input to the output
    * @param useDropout whether to apply the dropout
    *
    * @return the output array
    */
-  fun forward(featuresArray: InputNDArrayType, useDropout: Boolean = false): DenseNDArray {
+  fun forward(features: InputNDArrayType, useDropout: Boolean = false): DenseNDArray {
 
-    this.structure.forward(features = featuresArray, useDropout = useDropout)
+    this.structure.forward(features = features, useDropout = useDropout)
 
     return this.structure.outputLayer.outputArray.values
   }
@@ -132,25 +132,25 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward features, saving the contributes of the input in respect of the output.
    *
-   * @param featuresArray the features to forward from the input to the output
+   * @param features the features to forward from the input to the output
    * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
    *                          the relevance)
    * @param useDropout whether to apply the dropout
    *
    * @return the output array
    */
-  fun forward(featuresArray: InputNDArrayType,
+  fun forward(features: InputNDArrayType,
               saveContributions: Boolean,
               useDropout: Boolean = false): DenseNDArray {
 
     if (saveContributions)
       this.structure.forward(
-        features = featuresArray,
+        features = features,
         networkContributions = this.forwardContributions,
         useDropout = useDropout)
     else
       this.structure.forward(
-        features = featuresArray,
+        features = features,
         useDropout = useDropout)
 
     return this.structure.outputLayer.outputArray.values
@@ -159,14 +159,14 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward features when the input layer is a Merge layer.
    *
-   * @param featuresArrayList the list of features to forward from the input to the output
+   * @param featuresList the list of features to forward from the input to the output
    * @param useDropout whether to apply the dropout
    *
    * @return the output array
    */
-  fun forward(featuresArrayList: List<InputNDArrayType>, useDropout: Boolean = false): DenseNDArray {
+  fun forward(featuresList: List<InputNDArrayType>, useDropout: Boolean = false): DenseNDArray {
 
-    this.structure.forward(featuresList = featuresArrayList, useDropout = useDropout)
+    this.structure.forward(featuresList = featuresList, useDropout = useDropout)
 
     return this.structure.outputLayer.outputArray.values
   }
@@ -174,25 +174,25 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward features when the input layer is a Merge layer, saving the contributions of the input to the output.
    *
-   * @param featuresArrayList the list of features to forward from the input to the output
+   * @param featuresList the list of features to forward from the input to the output
    * @param saveContributions whether to save the contributions of each input to the output (needed to calculate the
    *                          relevance)
    * @param useDropout whether to apply the dropout
    *
    * @return the output array
    */
-  fun forward(featuresArrayList: List<InputNDArrayType>,
+  fun forward(featuresList: List<InputNDArrayType>,
               saveContributions: Boolean,
               useDropout: Boolean = false): DenseNDArray {
 
     if (saveContributions)
       this.structure.forward(
-        featuresList = featuresArrayList,
+        featuresList = featuresList,
         networkContributions = this.forwardContributions,
         useDropout = useDropout)
     else
       this.structure.forward(
-        featuresList = featuresArrayList,
+        featuresList = featuresList,
         useDropout = useDropout)
 
     return this.structure.outputLayer.outputArray.values
