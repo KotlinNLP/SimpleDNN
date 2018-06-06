@@ -57,8 +57,9 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   init {
     require(this.layersConfiguration.subList(1, this.layersConfiguration.lastIndex).all {
-      it.inputType == LayerType.Input.Dense
-    })
+      it.inputType == LayerType.Input.Dense &&
+        it.connectionType!!.property != LayerType.Property.Merge
+    }) { "Invalid configuration for the upper layers." }
   }
 
   /**
