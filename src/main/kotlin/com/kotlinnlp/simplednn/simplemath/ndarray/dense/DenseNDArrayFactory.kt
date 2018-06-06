@@ -7,8 +7,11 @@
 
 package com.kotlinnlp.simplednn.simplemath.ndarray.dense
 
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import org.jblas.DoubleMatrix
 
 /**
@@ -116,5 +119,31 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
     }
 
     return DenseNDArray(m)
+  }
+
+  /**
+   * Build a [DenseNDArray] that contains the same values of a given generic NDArray.
+   *
+   * @param array a generic NDArray
+   *
+   * @return a new Dense NDArray
+   */
+  fun fromNDArray(array: NDArray<*>): DenseNDArray = when (array) {
+    
+    is DenseNDArray -> array.copy()
+
+    is SparseNDArray -> {
+      val ret: DenseNDArray = DenseNDArrayFactory.zeros(array.shape)
+      array.forEach { (indices, value) -> ret[indices.first, indices.second] = value }
+      ret
+    }
+
+    is SparseBinaryNDArray -> {
+      val ret: DenseNDArray = DenseNDArrayFactory.zeros(array.shape)
+      array.forEach { (i, j) -> ret[i, j] = 1.0 }
+      ret
+    }
+
+    else -> throw RuntimeException("Invalid NDArray type.")
   }
 }
