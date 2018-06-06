@@ -22,7 +22,7 @@ abstract class ScalarActivationFunction : ActivationFunction {
    *
    * @return f([x])
    */
-  abstract protected fun f(x: Double): Double
+  protected abstract fun f(x: Double): Double
 
   /**
    * Optimized derivative of the activation function, calculated in [fx]
@@ -31,7 +31,7 @@ abstract class ScalarActivationFunction : ActivationFunction {
    *
    * @return the derivative of f calculated in x
    */
-  abstract protected fun dfOptimized(fx: Double): Double
+  protected abstract fun dfOptimized(fx: Double): Double
 
   /**
    * Assign to [out] the result of the activation function applied to [array].

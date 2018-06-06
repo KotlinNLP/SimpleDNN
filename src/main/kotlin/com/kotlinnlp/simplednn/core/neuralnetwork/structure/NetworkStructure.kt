@@ -184,7 +184,7 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return a new LayerStructure
    */
-  abstract protected fun <InputNDArrayType : NDArray<InputNDArrayType>> layerFactory(
+  protected abstract fun <InputNDArrayType : NDArray<InputNDArrayType>> layerFactory(
     inputArray: AugmentedArray<InputNDArrayType>,
     outputConfiguration: LayerConfiguration,
     params: LayerParameters<*>,

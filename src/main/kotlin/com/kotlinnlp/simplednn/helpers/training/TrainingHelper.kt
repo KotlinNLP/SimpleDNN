@@ -134,14 +134,14 @@ abstract class TrainingHelper<ExampleType: Example>(
    *
    * @return the loss of the output respect to the gold
    */
-  abstract protected fun learnFromExample(example: ExampleType): Double
+  protected abstract fun learnFromExample(example: ExampleType): Double
 
   /**
    * Accumulate the params errors resulting from [learnFromExample].
    *
    * @param batchSize the size of each batch
    */
-  abstract protected fun accumulateParamsErrors(batchSize: Int)
+  protected abstract fun accumulateParamsErrors(batchSize: Int)
 
   /**
    * Method to call every new epoch.

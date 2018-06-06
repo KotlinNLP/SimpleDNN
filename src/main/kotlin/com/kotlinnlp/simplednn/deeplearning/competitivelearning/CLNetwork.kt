@@ -57,5 +57,5 @@ abstract class CLNetwork(private val model: CLNetworkModel) {
    *
    * @return the loss of the reconstruction
    */
-  abstract protected fun reconstructAndGetLoss(inputArray: DenseNDArray, classIndex: Int): Double
+  protected abstract fun reconstructAndGetLoss(inputArray: DenseNDArray, classIndex: Int): Double
 }
