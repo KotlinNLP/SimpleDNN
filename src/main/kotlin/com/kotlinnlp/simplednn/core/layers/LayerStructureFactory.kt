@@ -44,7 +44,7 @@ object LayerStructureFactory {
    * @param inputArrays the list of input arrays (more then one only for Merge layers)
    * @param outputSize the size of the output array
    * @param params the layer parameters
-   * @param connectionType the type
+   * @param connectionType the type of connection from the input to the output
    * @param activationFunction the activation function of the layer
    * @param dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.5 (better 0.25 if
    *                it's the first layer).
