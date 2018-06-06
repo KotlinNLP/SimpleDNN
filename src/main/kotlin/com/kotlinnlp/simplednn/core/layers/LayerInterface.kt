@@ -13,19 +13,16 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 /**
  * The configuration of the (input or output) interface of a layer.
  *
- * @param size size of the unique array of this layer (meaningless if this is the input of a Merge layer)
  * @property sizes the list of sizes of the arrays in this interface
  * @property type the type of the arrays in this interface
- * @property connectionType the type of connection with the interface before (meaningless in case of input interface of
- *                          an input layer)
- * @property activationFunction the activation function (meaningless in case of input interface)
+ * @property connectionType the type of connection with the interface before (meaningless in case of input interface)
+ * @property activationFunction the activation function (meaningless if this is an input interface)
  * @property dropout the probability of dropout (meaningless in case of input interface). If applying it, the usual
  *                   value is 0.5 (better 0.25 if it's the first layer).
  * @property meProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
  */
 data class LayerInterface(
-  val size: Int = -1,
-  val sizes: List<Int> = listOf(size),
+  val sizes: List<Int>,
   val type: LayerType.Input = LayerType.Input.Dense,
   val connectionType: LayerType.Connection? = null,
   val activationFunction: ActivationFunction? = null,
@@ -41,4 +38,36 @@ data class LayerInterface(
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
   }
+
+  /**
+   * Build a [LayerInterface] with a unique array (not the input of a Merge layer).
+   *
+   * @param size the size of the unique array of this interface
+   * @param type the type of the arrays in this interface
+   * @param connectionType the type of connection with the interface before (meaningless in case of input interface)
+   * @param activationFunction the activation function (meaningless if this is an input interface)
+   * @param dropout the probability of dropout (meaningless in case of input interface). If applying it, the usual
+   *                value is 0.5 (better 0.25 if it's the first layer).
+   * @param meProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
+   */
+  constructor(
+    size: Int,
+    type: LayerType.Input = LayerType.Input.Dense,
+    connectionType: LayerType.Connection? = null,
+    activationFunction: ActivationFunction? = null,
+    meProp: Boolean = false,
+    dropout: Double = 0.0
+  ): this(
+    sizes = listOf(size),
+    type = type,
+    connectionType = connectionType,
+    activationFunction = activationFunction,
+    meProp = meProp,
+    dropout = dropout
+  )
+
+  /**
+   * The size of the unique array of this interface (meaningless in case of input interface of a Merge layer).
+   */
+  val size: Int = if (sizes.size == 1) sizes.first() else -1
 }
