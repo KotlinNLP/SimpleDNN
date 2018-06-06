@@ -107,7 +107,7 @@ class RecurrentNetworkStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
     params: LayerParameters<*>,
     dropout: Double
   ): LayerStructure<InputNDArrayType> = LayerStructureFactory(
-    inputArray = inputArray,
+    inputArrays = listOf(inputArray),
     outputSize = outputConfiguration.size,
     params = params,
     activationFunction = outputConfiguration.activationFunction,

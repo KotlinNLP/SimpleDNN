@@ -19,101 +19,147 @@ import com.kotlinnlp.simplednn.core.layers.recurrent.indrnn.IndRNNLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerStructure
+import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerStructure
+import com.kotlinnlp.simplednn.core.mergelayers.biaffine.BiaffineLayerParameters
+import com.kotlinnlp.simplednn.core.mergelayers.biaffine.BiaffineLayerStructure
+import com.kotlinnlp.simplednn.core.mergelayers.concat.ConcatLayerParameters
+import com.kotlinnlp.simplednn.core.mergelayers.concat.ConcatLayerStructure
+import com.kotlinnlp.simplednn.core.mergelayers.product.ProductLayerParameters
+import com.kotlinnlp.simplednn.core.mergelayers.product.ProductLayerStructure
+import com.kotlinnlp.simplednn.core.mergelayers.sum.SumLayerParameters
+import com.kotlinnlp.simplednn.core.mergelayers.sum.SumLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
- *
+ * Helper that builds a generic [LayerStructure].
  */
 object LayerStructureFactory {
 
+  /**
+   * Build a new generic [LayerStructure].
+   *
+   * @param inputArrays the list of input arrays (more then one only for Merge layers)
+   * @param outputSize the size of the output array
+   * @param params the layer parameters
+   * @param connectionType the type
+   * @param activationFunction the activation function of the layer
+   * @param dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.5 (better 0.25 if
+   *                it's the first layer).
+   * @param contextWindow the context window in case of recurrent layer, otherwise null
+   *
+   * @return a new layer structure
+   */
   operator fun <InputNDArrayType : NDArray<InputNDArrayType>> invoke(
-    inputArray: AugmentedArray<InputNDArrayType>,
+    inputArrays: List<AugmentedArray<InputNDArrayType>>,
     outputSize: Int,
     params: LayerParameters<*>,
-    activationFunction: ActivationFunction?,
     connectionType: LayerType.Connection,
+    activationFunction: ActivationFunction? = null,
     dropout: Double = 0.0,
-    contextWindow: LayerContextWindow? = null): LayerStructure<InputNDArrayType> = when (connectionType) {
+    contextWindow: LayerContextWindow? = null
+  ): LayerStructure<InputNDArrayType> = when (connectionType) {
 
     LayerType.Connection.Feedforward -> FeedforwardLayerStructure(
-      inputArray = inputArray,
+      inputArray = inputArrays.first(),
       outputArray = LayerUnit(outputSize),
       params = params,
       activationFunction = activationFunction,
-      dropout = dropout
-    )
+      dropout = dropout)
 
     LayerType.Connection.Highway -> HighwayLayerStructure(
-      inputArray = inputArray,
+      inputArray = inputArrays.first(),
       outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
       params = params,
       activationFunction = activationFunction,
-      dropout = dropout
-    )
+      dropout = dropout)
+
+    LayerType.Connection.Affine -> AffineLayerStructure(
+      inputArrays = inputArrays,
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
+      params = params as AffineLayerParameters,
+      activationFunction = activationFunction,
+      dropout = dropout)
+
+    LayerType.Connection.Biaffine -> BiaffineLayerStructure(
+      inputArray1 = inputArrays[0],
+      inputArray2 = inputArrays[1],
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
+      params = params as BiaffineLayerParameters,
+      activationFunction = activationFunction,
+      dropout = dropout)
+
+    LayerType.Connection.Concat -> ConcatLayerStructure(
+      inputArrays = inputArrays,
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
+      params = params as ConcatLayerParameters)
+
+    LayerType.Connection.Sum -> SumLayerStructure(
+      inputArrays = inputArrays,
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
+      params = params as SumLayerParameters)
+
+    LayerType.Connection.Product -> ProductLayerStructure(
+      inputArrays = inputArrays,
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
+      params = params as ProductLayerParameters)
 
     LayerType.Connection.SimpleRecurrent -> SimpleRecurrentLayerStructure(
-      inputArray = inputArray,
+      inputArray = inputArrays.first(),
       outputArray = RecurrentLayerUnit(outputSize),
       params = params,
       activationFunction = activationFunction,
       dropout = dropout,
-      layerContextWindow = contextWindow!!
-    )
+      layerContextWindow = contextWindow!!)
 
     LayerType.Connection.GRU -> GRULayerStructure(
-      inputArray = inputArray,
+      inputArray = inputArrays.first(),
       outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
       params = params,
       activationFunction = activationFunction,
       dropout = dropout,
-      layerContextWindow = contextWindow!!
-    )
+      layerContextWindow = contextWindow!!)
 
     LayerType.Connection.LSTM -> LSTMLayerStructure(
-      inputArray = inputArray,
+      inputArray = inputArrays.first(),
       outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
       params = params,
       activationFunction = activationFunction,
       dropout = dropout,
-      layerContextWindow = contextWindow!!
-    )
+      layerContextWindow = contextWindow!!)
 
     LayerType.Connection.CFN -> CFNLayerStructure(
-      inputArray = inputArray,
+      inputArray = inputArrays.first(),
       outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
       params = params,
       activationFunction = activationFunction,
       dropout = dropout,
-      layerContextWindow = contextWindow!!
-    )
+      layerContextWindow = contextWindow!!)
 
     LayerType.Connection.RAN -> RANLayerStructure(
-      inputArray = inputArray,
+      inputArray = inputArrays.first(),
       outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
       params = params,
       activationFunction = activationFunction,
       dropout = dropout,
-      layerContextWindow = contextWindow!!
-    )
+      layerContextWindow = contextWindow!!)
 
     LayerType.Connection.DeltaRNN -> DeltaRNNLayerStructure(
-      inputArray = inputArray,
+      inputArray = inputArrays.first(),
       outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
       params = params,
       activationFunction = activationFunction,
       dropout = dropout,
-      layerContextWindow = contextWindow!!
-    )
+      layerContextWindow = contextWindow!!)
 
     LayerType.Connection.IndRNN -> IndRNNLayerStructure(
-      inputArray = inputArray,
+      inputArray = inputArrays.first(),
       outputArray = LayerUnit(outputSize),
       params = params,
       activationFunction = activationFunction,
       dropout = dropout,
-      layerContextWindow = contextWindow!!
-    )
+      layerContextWindow = contextWindow!!)
   }
 }

@@ -48,7 +48,7 @@ class FeedforwardNetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     }
 
     return LayerStructureFactory(
-      inputArray = inputArray,
+      inputArrays = listOf(inputArray),
       outputSize = outputConfiguration.size,
       params = params,
       activationFunction = outputConfiguration.activationFunction,
