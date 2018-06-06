@@ -72,7 +72,7 @@ class NeuralNetwork(
   /**
    * The type of the input array.
    */
-  val inputType: LayerType.Input = this.layersConfiguration.first().inputType
+  val inputType: LayerType.Input = this.layersConfiguration.first().type
 
   /**
    * Whether the input array is sparse binary.

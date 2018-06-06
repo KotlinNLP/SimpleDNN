@@ -55,7 +55,7 @@ internal object GenericNeuralNetwork {
 
     layersConfiguration.add(LayerConfiguration(
       size = inputSize,
-      inputType = inputType,
+      type = inputType,
       dropout = inputDropout
     ))
 

@@ -59,7 +59,7 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   init {
 
     require(this.layersConfiguration.subList(1, this.layersConfiguration.size).all {
-      it.inputType == LayerType.Input.Dense
+      it.type == LayerType.Input.Dense
     }) { "The layers of a NeuralNetwork must have a dense output." }
 
     require(this.layersConfiguration.subList(2, this.layersConfiguration.size).all {
@@ -215,7 +215,7 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
       "Output layer configurations must have a not null connectionType"
     }
 
-    return when (inputConfiguration.inputType) {
+    return when (inputConfiguration.type) {
 
       LayerType.Input.Dense -> this.layerFactory(
         inputArray = AugmentedArray<DenseNDArray>(size = inputConfiguration.size),

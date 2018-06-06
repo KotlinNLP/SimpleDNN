@@ -50,7 +50,7 @@ class CLFeedforwardNetworkModel(
     NeuralNetwork(
       LayerConfiguration(
         size = this.inputSize,
-        inputType = LayerType.Input.Dense),
+        type = LayerType.Input.Dense),
       LayerConfiguration(
         size = this.hiddenSize,
         activationFunction = this.hiddenActivation,

@@ -46,7 +46,7 @@ object BatchFeedforwardUtils {
     val network = NeuralNetwork(
       LayerConfiguration(
         size = 3,
-        inputType = LayerType.Input.Dense),
+        type = LayerType.Input.Dense),
       LayerConfiguration(
         size = 2,
         activationFunction = Tanh(),

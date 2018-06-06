@@ -71,7 +71,7 @@ class MultiTaskNetworkModel(
   val inputNetwork = NeuralNetwork(
     LayerConfiguration(
       size = this.inputSize,
-      inputType = this.inputType,
+      type = this.inputType,
       dropout = this.inputDropout),
     LayerConfiguration(
       size = this.hiddenSize,
@@ -89,7 +89,7 @@ class MultiTaskNetworkModel(
     NeuralNetwork(
       LayerConfiguration(
         size = this.hiddenSize,
-        inputType = LayerType.Input.Dense,
+        type = LayerType.Input.Dense,
         dropout = this.hiddenDropout),
       LayerConfiguration(
         size = it.outputSize,

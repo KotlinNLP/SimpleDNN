@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
  *
  * @param size size of the unique array of this layer (meaningless if this is the input of a Merge layer)
  * @param sizes the list of sizes of the arrays in this layer
- * @param inputType the type of the arrays in this layer
+ * @param type the type of the arrays in this layer
  * @param connectionType the type of connection with the layer before (meaningless in case of first layer)
  * @param activationFunction the activation function
  * @param dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.5 (better 0.25 if
@@ -25,7 +25,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 data class LayerConfiguration(
   val size: Int = -1,
   val sizes: List<Int> = listOf(size),
-  val inputType: LayerType.Input = LayerType.Input.Dense,
+  val type: LayerType.Input = LayerType.Input.Dense,
   val connectionType: LayerType.Connection? = null,
   val activationFunction: ActivationFunction? = null,
   val meProp: Boolean = false,

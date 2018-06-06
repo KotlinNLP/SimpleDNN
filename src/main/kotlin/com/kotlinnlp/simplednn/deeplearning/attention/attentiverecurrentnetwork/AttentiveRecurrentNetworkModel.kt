@@ -66,7 +66,7 @@ class AttentiveRecurrentNetworkModel(
   val recurrentContextNetwork = NeuralNetwork(
     LayerConfiguration(
       size = this.attentionParams.outputSize + this.contextLabelSize,
-      inputType = LayerType.Input.Dense
+      type = LayerType.Input.Dense
     ),
     LayerConfiguration(
       size = this.recurrentContextSize,
@@ -81,7 +81,7 @@ class AttentiveRecurrentNetworkModel(
   val outputNetwork = NeuralNetwork(
     LayerConfiguration(
       size = this.attentionParams.outputSize + this.recurrentContextSize,
-      inputType = LayerType.Input.Dense,
+      type = LayerType.Input.Dense,
       dropout = 0.0),
     LayerConfiguration(
       size = this.outputSize,

@@ -47,7 +47,7 @@ object HighwayNeuralNetwork {
 
     layersConfiguration.add(LayerConfiguration(
       size = inputSize,
-      inputType = inputType,
+      type = inputType,
       dropout = inputDropout
     ))
 
