@@ -313,7 +313,7 @@ class SparseBinaryNDArray(
     val newMap = mutableMapOf<Int, VectorIndices?>()
 
     for ((key, indicesList) in indicesMap.iterator()) {
-      newMap[key] = if (indicesList != null) ArrayList(indicesList) else null
+      newMap[key] = indicesList?.let { ArrayList(it) }
     }
 
     return newMap
