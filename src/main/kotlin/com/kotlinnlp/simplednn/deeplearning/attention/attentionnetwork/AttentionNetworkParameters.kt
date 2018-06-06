@@ -51,7 +51,7 @@ class AttentionNetworkParameters(
    * The parameters of the transform layer.
    */
   val transformParams: FeedforwardLayerParameters = LayerParametersFactory(
-    inputSize = this.inputSize,
+    inputsSize = listOf(this.inputSize),
     outputSize = this.attentionSize,
     connectionType = LayerType.Connection.Feedforward,
     sparseInput = this.sparseInput,

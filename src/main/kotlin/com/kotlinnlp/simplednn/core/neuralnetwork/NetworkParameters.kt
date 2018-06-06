@@ -54,7 +54,7 @@ class NetworkParameters(
     size = this.numOfLayers,
     init = { i ->
       LayerParametersFactory(
-        inputSize = this.layersConfiguration[i].size,
+        inputsSize = this.layersConfiguration[i].sizes,
         outputSize = this.layersConfiguration[i + 1].size,
         connectionType = this.layersConfiguration[i + 1].connectionType!!,
         weightsInitializer = weightsInitializer,
