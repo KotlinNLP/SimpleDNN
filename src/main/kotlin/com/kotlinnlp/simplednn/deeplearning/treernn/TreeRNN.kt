@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.treernn
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import java.io.Serializable
@@ -60,8 +60,8 @@ class TreeRNN(
    * The Recurrent Neural Network to encode the left-children sequence
    */
   val leftRNN = NeuralNetwork(
-    LayerConfiguration(size = this.inputLayerSize),
-    LayerConfiguration(size = this.hiddenLayerSize,
+    LayerInterface(size = this.inputLayerSize),
+    LayerInterface(size = this.hiddenLayerSize,
       activationFunction = Tanh(), // fixed
       connectionType = this.hiddenLayerConnectionType),
     weightsInitializer = weightsInitializer,
@@ -72,8 +72,8 @@ class TreeRNN(
    * The Recurrent Neural Network to encode the right-children sequence
    */
   val rightRNN = NeuralNetwork(
-    LayerConfiguration(size = this.inputLayerSize),
-    LayerConfiguration(size = this.hiddenLayerSize,
+    LayerInterface(size = this.inputLayerSize),
+    LayerInterface(size = this.hiddenLayerSize,
       activationFunction = Tanh(), // fixed
       connectionType = this.hiddenLayerConnectionType),
     weightsInitializer = weightsInitializer,
@@ -86,8 +86,8 @@ class TreeRNN(
    *  followed by the non-linear activation function.
    */
   val concatNetwork = NeuralNetwork(
-    LayerConfiguration(size = this.hiddenLayerSize * 2),
-    LayerConfiguration(size = this.outputLayerSize,
+    LayerInterface(size = this.hiddenLayerSize * 2),
+    LayerInterface(size = this.outputLayerSize,
       activationFunction = Tanh(), // fixed
       connectionType = LayerType.Connection.Feedforward),
     weightsInitializer = weightsInitializer,

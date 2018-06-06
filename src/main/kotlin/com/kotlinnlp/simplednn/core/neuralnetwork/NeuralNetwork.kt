@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.core.neuralnetwork
 
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.utils.Serializer
 import java.io.InputStream
@@ -27,7 +27,7 @@ import java.io.Serializable
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
 class NeuralNetwork(
-  val layersConfiguration: List<LayerConfiguration>,
+  val layersConfiguration: List<LayerInterface>,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
 ) : Serializable {
@@ -42,7 +42,7 @@ class NeuralNetwork(
    * @return a new NeuralNetwork
    */
   constructor(
-    vararg layerConfiguration: LayerConfiguration,
+    vararg layerConfiguration: LayerInterface,
     weightsInitializer: Initializer? = GlorotInitializer(),
     biasesInitializer: Initializer? = GlorotInitializer()
   ): this(
@@ -80,7 +80,7 @@ class NeuralNetwork(
   val sparseInput: Boolean = this.inputType == LayerType.Input.SparseBinary
 
   /**
-   * The size of the inputs, meaningful when the first layer is not a Merge layer.
+   * The size of the input, meaningful when the first layer is not a Merge layer.
    */
   val inputSize: Int = this.layersConfiguration.first().size
 

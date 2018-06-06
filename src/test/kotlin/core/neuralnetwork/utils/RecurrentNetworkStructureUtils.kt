@@ -9,7 +9,7 @@ package core.neuralnetwork.utils
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
@@ -28,7 +28,7 @@ object RecurrentNetworkStructureUtils {
   /**
    *
    */
-  fun buildParams(layersConfiguration: List<LayerConfiguration>): NetworkParameters {
+  fun buildParams(layersConfiguration: List<LayerInterface>): NetworkParameters {
 
     val params = NetworkParameters(layersConfiguration)
     val inputParams = (params.paramsPerLayer[0] as SimpleRecurrentLayerParameters)
@@ -52,9 +52,9 @@ object RecurrentNetworkStructureUtils {
     RecurrentNetworkStructure<DenseNDArray> {
 
     val layersConfiguration = arrayOf(
-      LayerConfiguration(size = 4),
-      LayerConfiguration(size = 5, activationFunction = Tanh(), connectionType = LayerType.Connection.SimpleRecurrent),
-      LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
+      LayerInterface(size = 4),
+      LayerInterface(size = 5, activationFunction = Tanh(), connectionType = LayerType.Connection.SimpleRecurrent),
+      LayerInterface(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
     ).toList()
 
     return RecurrentNetworkStructure(

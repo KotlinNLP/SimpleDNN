@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.attention.han
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworkParameters
@@ -124,11 +124,11 @@ class HAN(
    * of the [HANEncoder].
    */
   val outputNetwork = NeuralNetwork(
-    LayerConfiguration(
+    LayerInterface(
       size = this.biRNNs.first().outputSize, // level 0 = top level
       type = LayerType.Input.Dense
     ),
-    LayerConfiguration(
+    LayerInterface(
       size = this.outputSize,
       activationFunction = this.outputActivation,
       connectionType = LayerType.Connection.Feedforward

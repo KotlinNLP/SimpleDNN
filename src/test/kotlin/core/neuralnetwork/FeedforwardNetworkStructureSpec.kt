@@ -8,7 +8,7 @@
 package core.neuralnetwork
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.*
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType.Connection
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
@@ -37,15 +37,15 @@ class FeedforwardNetworkStructureSpec : Spek({
       on("initialization with null output connection types") {
 
         val correctLayersConfiguration = arrayOf(
-          LayerConfiguration(size = 4),
-          LayerConfiguration(size = 5, activationFunction = Tanh(), connectionType = Connection.Feedforward),
-          LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
+          LayerInterface(size = 4),
+          LayerInterface(size = 5, activationFunction = Tanh(), connectionType = Connection.Feedforward),
+          LayerInterface(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
         ).toList()
 
         val wrongLayersConfiguration = arrayOf(
-          LayerConfiguration(size = 4),
-          LayerConfiguration(size = 5, activationFunction = Tanh()),
-          LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
+          LayerInterface(size = 4),
+          LayerInterface(size = 5, activationFunction = Tanh()),
+          LayerInterface(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
         ).toList()
 
         it("should throw an exception") {
@@ -60,9 +60,9 @@ class FeedforwardNetworkStructureSpec : Spek({
       on("initialization with connection types not allowed") {
 
         val layersConfiguration = arrayOf(
-          LayerConfiguration(size = 4),
-          LayerConfiguration(size = 5, activationFunction = Tanh(), connectionType = Connection.GRU),
-          LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
+          LayerInterface(size = 4),
+          LayerInterface(size = 5, activationFunction = Tanh(), connectionType = Connection.GRU),
+          LayerInterface(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
         ).toList()
 
         it("should throw an exception") {
@@ -78,9 +78,9 @@ class FeedforwardNetworkStructureSpec : Spek({
     context("correct configuration") {
 
       val layersConfiguration = arrayOf(
-        LayerConfiguration(size = 4),
-        LayerConfiguration(size = 5, activationFunction = Tanh(), connectionType = Connection.Feedforward),
-        LayerConfiguration(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
+        LayerInterface(size = 4),
+        LayerInterface(size = 5, activationFunction = Tanh(), connectionType = Connection.Feedforward),
+        LayerInterface(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
       ).toList()
 
       val structure = FeedforwardNetworkStructure<DenseNDArray>(

@@ -27,7 +27,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
  * @property params the network parameters per layer
  */
 abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
-  val layersConfiguration: List<LayerConfiguration>,
+  val layersConfiguration: List<LayerInterface>,
   val params: NetworkParameters
 ) {
 
@@ -207,8 +207,8 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return a new LayerStructure
    */
   private fun layerFactory(
-    inputConfiguration: LayerConfiguration,
-    outputConfiguration: LayerConfiguration,
+    inputConfiguration: LayerInterface,
+    outputConfiguration: LayerInterface,
     params: LayerParameters<*>): LayerStructure<*> {
 
     require(outputConfiguration.connectionType != null) {
@@ -249,7 +249,7 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   protected abstract fun <InputNDArrayType : NDArray<InputNDArrayType>> layerFactory(
     inputArray: AugmentedArray<InputNDArrayType>,
-    outputConfiguration: LayerConfiguration,
+    outputConfiguration: LayerInterface,
     params: LayerParameters<*>,
     dropout: Double): LayerStructure<InputNDArrayType>
 

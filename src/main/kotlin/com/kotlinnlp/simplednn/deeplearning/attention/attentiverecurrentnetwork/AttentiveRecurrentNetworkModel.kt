@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.attention.attentiverecurrentnetwork
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
@@ -64,11 +64,11 @@ class AttentiveRecurrentNetworkModel(
    * The RNN used to merge the Attention Network output together with the context vector.
    */
   val recurrentContextNetwork = NeuralNetwork(
-    LayerConfiguration(
+    LayerInterface(
       size = this.attentionParams.outputSize + this.contextLabelSize,
       type = LayerType.Input.Dense
     ),
-    LayerConfiguration(
+    LayerInterface(
       size = this.recurrentContextSize,
       activationFunction = contextActivation,
       connectionType = contextRecurrenceType
@@ -79,11 +79,11 @@ class AttentiveRecurrentNetworkModel(
    * The output network.
    */
   val outputNetwork = NeuralNetwork(
-    LayerConfiguration(
+    LayerInterface(
       size = this.attentionParams.outputSize + this.recurrentContextSize,
       type = LayerType.Input.Dense,
       dropout = 0.0),
-    LayerConfiguration(
+    LayerInterface(
       size = this.outputSize,
       connectionType = LayerType.Connection.Feedforward,
       activationFunction = outputActivationFunction,

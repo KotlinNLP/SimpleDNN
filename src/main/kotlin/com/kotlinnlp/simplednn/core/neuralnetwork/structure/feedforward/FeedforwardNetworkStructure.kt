@@ -22,23 +22,23 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * @property params the network parameters per layer
  */
 class FeedforwardNetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
-  layersConfiguration: List<LayerConfiguration>,
+  layersConfiguration: List<LayerInterface>,
   params: NetworkParameters
 ) : NetworkStructure<InputNDArrayType>(layersConfiguration = layersConfiguration, params = params) {
 
   /**
    * LayerStructure factory used to concatV two layers, given the input array (referenced from
-   * the previous layer) and the output layersConfiguration.
+   * the previous layer) and the output configuration.
    *
    * @param inputArray an AugmentedArray used as referenced input (to concatV two layers)
-   * @param outputConfiguration the layersConfiguration of the output array
+   * @param outputConfiguration the configuration of the output interface of the layer
    * @param params the network parameters of the current layer
    *
    * @return a new LayerStructure
    */
   override fun <InputNDArrayType : NDArray<InputNDArrayType>> layerFactory(
     inputArray: AugmentedArray<InputNDArrayType>,
-    outputConfiguration: LayerConfiguration,
+    outputConfiguration: LayerInterface,
     params: LayerParameters<*>,
     dropout: Double
   ): LayerStructure<InputNDArrayType> {

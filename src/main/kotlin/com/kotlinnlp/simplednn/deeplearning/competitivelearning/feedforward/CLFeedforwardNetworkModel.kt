@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.competitivelearning.feedforward
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.deeplearning.competitivelearning.CLNetworkModel
@@ -48,14 +48,14 @@ class CLFeedforwardNetworkModel(
    */
   val networks: List<NeuralNetwork> = this.classes.map {
     NeuralNetwork(
-      LayerConfiguration(
+      LayerInterface(
         size = this.inputSize,
         type = LayerType.Input.Dense),
-      LayerConfiguration(
+      LayerInterface(
         size = this.hiddenSize,
         activationFunction = this.hiddenActivation,
         connectionType = LayerType.Connection.Feedforward),
-      LayerConfiguration(
+      LayerInterface(
         size = this.inputSize,
         activationFunction = null,
         connectionType = LayerType.Connection.Feedforward),

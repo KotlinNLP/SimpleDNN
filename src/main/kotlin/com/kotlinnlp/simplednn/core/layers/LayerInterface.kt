@@ -11,18 +11,19 @@ import java.io.Serializable
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 
 /**
- * The configuration of a Layer.
+ * The configuration of the (input or output) interface of a layer.
  *
  * @param size size of the unique array of this layer (meaningless if this is the input of a Merge layer)
- * @param sizes the list of sizes of the arrays in this layer
- * @param type the type of the arrays in this layer
- * @param connectionType the type of connection with the layer before (meaningless in case of first layer)
- * @param activationFunction the activation function
- * @param dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.5 (better 0.25 if
- *                it's the first layer).
+ * @property sizes the list of sizes of the arrays in this interface
+ * @property type the type of the arrays in this interface
+ * @property connectionType the type of connection with the interface before (meaningless in case of input interface of
+ *                          an input layer)
+ * @property activationFunction the activation function (meaningless in case of input interface)
+ * @property dropout the probability of dropout (meaningless in case of input interface). If applying it, the usual
+ *                   value is 0.5 (better 0.25 if it's the first layer).
  * @property meProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
  */
-data class LayerConfiguration(
+data class LayerInterface(
   val size: Int = -1,
   val sizes: List<Int> = listOf(size),
   val type: LayerType.Input = LayerType.Input.Dense,

@@ -8,7 +8,7 @@
 package core.neuralprocessor.batchfeedforward
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
@@ -44,10 +44,10 @@ object BatchFeedforwardUtils {
   fun buildNetwork(): NeuralNetwork {
 
     val network = NeuralNetwork(
-      LayerConfiguration(
+      LayerInterface(
         size = 3,
         type = LayerType.Input.Dense),
-      LayerConfiguration(
+      LayerInterface(
         size = 2,
         activationFunction = Tanh(),
         connectionType = LayerType.Connection.Feedforward

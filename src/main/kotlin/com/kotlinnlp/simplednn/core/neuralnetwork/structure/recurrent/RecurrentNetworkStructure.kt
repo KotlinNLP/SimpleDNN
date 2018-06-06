@@ -24,7 +24,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property structureContextWindow the context window to get the previous and the next state of the structure
  */
 class RecurrentNetworkStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
-  layersConfiguration: List<LayerConfiguration>,
+  layersConfiguration: List<LayerInterface>,
   params: NetworkParameters,
   val structureContextWindow: StructureContextWindow<InputNDArrayType>
 ) : LayerContextWindow,
@@ -103,7 +103,7 @@ class RecurrentNetworkStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun <InputNDArrayType : NDArray<InputNDArrayType>> layerFactory(
     inputArray: AugmentedArray<InputNDArrayType>,
-    outputConfiguration: LayerConfiguration,
+    outputConfiguration: LayerInterface,
     params: LayerParameters<*>,
     dropout: Double
   ): LayerStructure<InputNDArrayType> = LayerStructureFactory(

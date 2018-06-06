@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.birnn
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.utils.Serializer
@@ -75,11 +75,11 @@ class BiRNN(
    * The Recurrent Neural Network to process the sequence left-to-right.
    */
   val leftToRightNetwork = NeuralNetwork(
-    LayerConfiguration(
+    LayerInterface(
       size = this.inputSize,
       type = this.inputType,
       dropout = dropout),
-    LayerConfiguration(
+    LayerInterface(
       size = this.hiddenSize,
       activationFunction = this.hiddenActivation,
       connectionType = this.recurrentConnectionType
@@ -92,11 +92,11 @@ class BiRNN(
    * The Recurrent Neural Network to process the sequence right-to-left.
    */
   val rightToLeftNetwork = NeuralNetwork(
-    LayerConfiguration(
+    LayerInterface(
       size = this.inputSize,
       type = this.inputType,
       dropout = dropout),
-    LayerConfiguration(
+    LayerInterface(
       size = this.hiddenSize,
       activationFunction = this.hiddenActivation,
       connectionType = this.recurrentConnectionType

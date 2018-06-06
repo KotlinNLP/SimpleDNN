@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.multitasknetwork
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.utils.Serializer
@@ -69,11 +69,11 @@ class MultiTaskNetworkModel(
    * The input network (composed by a single layer).
    */
   val inputNetwork = NeuralNetwork(
-    LayerConfiguration(
+    LayerInterface(
       size = this.inputSize,
       type = this.inputType,
       dropout = this.inputDropout),
-    LayerConfiguration(
+    LayerInterface(
       size = this.hiddenSize,
       connectionType = LayerType.Connection.Feedforward,
       activationFunction = this.hiddenActivation,
@@ -87,11 +87,11 @@ class MultiTaskNetworkModel(
    */
   val outputNetworks: List<NeuralNetwork> = this.outputConfigurations.map {
     NeuralNetwork(
-      LayerConfiguration(
+      LayerInterface(
         size = this.hiddenSize,
         type = LayerType.Input.Dense,
         dropout = this.hiddenDropout),
-      LayerConfiguration(
+      LayerInterface(
         size = it.outputSize,
         connectionType = LayerType.Connection.Feedforward,
         activationFunction = it.outputActivation,

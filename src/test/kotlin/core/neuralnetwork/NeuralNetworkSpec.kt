@@ -10,7 +10,7 @@ package core.neuralnetwork
 import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
@@ -42,8 +42,8 @@ class NeuralNetworkSpec: Spek({
     on("dumping to a byte array output stream") {
 
       val network = NeuralNetwork(
-        LayerConfiguration(size = 3),
-        LayerConfiguration(size = 5, connectionType = LayerType.Connection.Feedforward)
+        LayerInterface(size = 3),
+        LayerInterface(size = 5, connectionType = LayerType.Connection.Feedforward)
       )
 
       val outputStream = ByteArrayOutputStream()
@@ -69,8 +69,8 @@ class NeuralNetworkSpec: Spek({
       whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
       val network = NeuralNetwork(
-        LayerConfiguration(size = 3),
-        LayerConfiguration(size = 2, connectionType = LayerType.Connection.Feedforward),
+        LayerInterface(size = 3),
+        LayerInterface(size = 2, connectionType = LayerType.Connection.Feedforward),
         weightsInitializer = RandomInitializer(randomGenerator),
         biasesInitializer = ConstantInitializer(0.9)
       )

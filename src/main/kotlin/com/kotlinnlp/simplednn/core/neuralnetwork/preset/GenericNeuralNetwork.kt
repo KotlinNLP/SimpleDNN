@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.core.neuralnetwork.preset
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 
@@ -51,16 +51,16 @@ internal object GenericNeuralNetwork {
 
     require(numOfHidden >= 0) { "The number of hidden layers must be >= 0." }
 
-    val layersConfiguration = mutableListOf<LayerConfiguration>()
+    val layersConfiguration = mutableListOf<LayerInterface>()
 
-    layersConfiguration.add(LayerConfiguration(
+    layersConfiguration.add(LayerInterface(
       size = inputSize,
       type = inputType,
       dropout = inputDropout
     ))
 
     (0 until numOfHidden).forEach {
-      layersConfiguration.add(LayerConfiguration(
+      layersConfiguration.add(LayerInterface(
         size = hiddenSize,
         activationFunction = hiddenActivation,
         connectionType = hiddenConnection,
@@ -69,7 +69,7 @@ internal object GenericNeuralNetwork {
       ))
     }
 
-    layersConfiguration.add(LayerConfiguration(
+    layersConfiguration.add(LayerInterface(
       size = outputSize,
       activationFunction = outputActivation,
       connectionType = LayerType.Connection.Feedforward,

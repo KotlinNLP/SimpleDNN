@@ -23,7 +23,7 @@ import com.kotlinnlp.simplednn.core.optimizer.IterableParams
  * @param forceDense force all parameters to be dense (false by default)
  */
 class NetworkParameters(
-  val layersConfiguration: List<LayerConfiguration>,
+  val layersConfiguration: List<LayerInterface>,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   private val forceDense: Boolean = false

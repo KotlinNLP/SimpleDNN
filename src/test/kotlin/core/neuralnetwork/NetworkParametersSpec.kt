@@ -7,7 +7,7 @@
 
 package core.neuralnetwork
 
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import org.jetbrains.spek.api.Spek
@@ -28,9 +28,9 @@ class NetworkParametersSpec: Spek({
     context("iteration over SimpleRecurrent + Feedforward parameters") {
 
       val params = NetworkParameters(listOf(
-        LayerConfiguration(size = 3),
-        LayerConfiguration(size = 4, connectionType = LayerType.Connection.SimpleRecurrent),
-        LayerConfiguration(size = 2, connectionType = LayerType.Connection.Feedforward)
+        LayerInterface(size = 3),
+        LayerInterface(size = 4, connectionType = LayerType.Connection.SimpleRecurrent),
+        LayerInterface(size = 2, connectionType = LayerType.Connection.Feedforward)
       ))
 
       on("iteration 1") {

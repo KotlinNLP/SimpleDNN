@@ -3,7 +3,7 @@ package com.kotlinnlp.simplednn.core.neuralnetwork.preset
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerConfiguration
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 
@@ -43,15 +43,15 @@ object HighwayNeuralNetwork {
 
     require(numOfHighway >= 1) { "The number of highway layers must be >= 1." }
 
-    val layersConfiguration = mutableListOf<LayerConfiguration>()
+    val layersConfiguration = mutableListOf<LayerInterface>()
 
-    layersConfiguration.add(LayerConfiguration(
+    layersConfiguration.add(LayerInterface(
       size = inputSize,
       type = inputType,
       dropout = inputDropout
     ))
 
-    layersConfiguration.add(LayerConfiguration(
+    layersConfiguration.add(LayerInterface(
       size = hiddenSize,
       activationFunction = hiddenActivation,
       connectionType = LayerType.Connection.Feedforward,
@@ -60,7 +60,7 @@ object HighwayNeuralNetwork {
     ))
 
     layersConfiguration.addAll((0 until numOfHighway).map {
-      LayerConfiguration(
+      LayerInterface(
         size = hiddenSize,
         activationFunction = hiddenActivation,
         connectionType = LayerType.Connection.Highway,
@@ -69,7 +69,7 @@ object HighwayNeuralNetwork {
       )
     })
 
-    layersConfiguration.add(LayerConfiguration(
+    layersConfiguration.add(LayerInterface(
       size = outputSize,
       activationFunction = outputActivation,
       connectionType = LayerType.Connection.Feedforward,
