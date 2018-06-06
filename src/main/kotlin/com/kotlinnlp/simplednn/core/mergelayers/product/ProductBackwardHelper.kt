@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.mergelayers.product
 
 import com.kotlinnlp.simplednn.core.layers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -16,7 +17,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the layer in which the backward is executed
  */
-class ProductBackwardHelper(override val layer: ProductLayerStructure) : BackwardHelper<DenseNDArray> {
+class ProductBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val layer: ProductLayerStructure<InputNDArrayType>
+) : BackwardHelper<InputNDArrayType> {
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD

@@ -10,15 +10,16 @@ package com.kotlinnlp.simplednn.core.mergelayers.product
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which calculates the relevance of the input of a [ProductLayerStructure] respect of its output.
  *
  * @property layer the layer in which to calculate the input relevance
  */
-class ProductRelevanceHelper(override val layer: ProductLayerStructure)
-  : RelevanceHelper<DenseNDArray>(layer) {
+class ProductRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val layer: ProductLayerStructure<InputNDArrayType>
+)
+  : RelevanceHelper<InputNDArrayType>(layer) {
 
   /**
    * Not available for the Product layer.

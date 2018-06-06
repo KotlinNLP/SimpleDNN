@@ -9,21 +9,27 @@ package com.kotlinnlp.simplednn.core.mergelayers.sum
 
 import com.kotlinnlp.simplednn.core.layers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * The helper which executes the forward on a [SumLayerStructure].
  *
  * @property layer the layer in which the forward is executed
  */
-class SumForwardHelper(override val layer: SumLayerStructure) : ForwardHelper<DenseNDArray>(layer) {
+class SumForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val layer: SumLayerStructure<InputNDArrayType>
+) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
    * Forward the input to the output adding the input arrays.
    */
   override fun forward() = this.layer.inputArrays.forEachIndexed { i, x ->
     if (i == 0)
-      this.layer.outputArray.assignValues(x.values)
+      this.layer.outputArray.assignValues(
+        x.values.let { if (it is DenseNDArray) it else DenseNDArrayFactory.fromNDArray(it) }
+      )
     else
       this.layer.outputArray.values.assignSum(x.values)
   }

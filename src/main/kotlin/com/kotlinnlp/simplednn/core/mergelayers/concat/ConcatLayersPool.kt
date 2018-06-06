@@ -8,8 +8,11 @@
 package com.kotlinnlp.simplednn.core.mergelayers.concat
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.LayerUnit
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import com.kotlinnlp.utils.ItemsPool
 
 /**
@@ -17,8 +20,12 @@ import com.kotlinnlp.utils.ItemsPool
  * a new one every time.
  *
  * @property params the parameters which connect the input to the output
+ * @property inputType the type of the input array
  */
-class ConcatLayersPool(val params: ConcatLayerParameters) : ItemsPool<ConcatLayerStructure>() {
+class ConcatLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
+  val params: ConcatLayerParameters,
+  val inputType: LayerType.Input
+) : ItemsPool<ConcatLayerStructure<InputNDArrayType>>() {
 
   /**
    * The factory of a new layer structure.
@@ -27,16 +34,20 @@ class ConcatLayersPool(val params: ConcatLayerParameters) : ItemsPool<ConcatLaye
    *
    * @return a new [ConcatLayerStructure] with the given [id]
    */
-  override fun itemFactory(id: Int): ConcatLayerStructure {
+  override fun itemFactory(id: Int): ConcatLayerStructure<InputNDArrayType> {
 
-    val inputArrays: List<AugmentedArray<DenseNDArray>> =
-      List(size = this.params.inputsSize.size, init = {
-        AugmentedArray<DenseNDArray>(size = this.params.inputsSize[it])
-      })
+    @Suppress("UNCHECKED_CAST")
+    val inputArrays: List<AugmentedArray<InputNDArrayType>> = this.params.inputsSize.map {
+      when (this.inputType) {
+        LayerType.Input.Dense -> AugmentedArray<DenseNDArray>(size = it)
+        LayerType.Input.Sparse -> AugmentedArray<SparseNDArray>(size = it)
+        LayerType.Input.SparseBinary -> AugmentedArray<SparseBinaryNDArray>(size = it)
+      } as AugmentedArray<InputNDArrayType>
+    }
 
     return ConcatLayerStructure(
       inputArrays = inputArrays,
-      outputArray = LayerUnit<DenseNDArray>(this.params.outputSize),
+      outputArray = AugmentedArray(this.params.outputSize),
       params = this.params,
       id = id
     )

@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.mergelayers.concat
 import com.kotlinnlp.simplednn.core.layers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.concatVectorsV
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -17,14 +18,19 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the layer in which the forward is executed
  */
-class ConcatForwardHelper(override val layer: ConcatLayerStructure) : ForwardHelper<DenseNDArray>(layer) {
+class ConcatForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val layer: ConcatLayerStructure<InputNDArrayType>
+) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
    * Forward the input to the output concatenating the input arrays.
+   * TODO: make it working with all types of input arrays.
    */
   override fun forward() {
 
-    this.layer.outputArray.assignValues(concatVectorsV(*this.layer.inputArrays.map { it.values }.toTypedArray()))
+    this.layer.outputArray.assignValues(
+      concatVectorsV(*this.layer.inputArrays.map { it.values as DenseNDArray }.toTypedArray())
+    )
   }
 
   /**

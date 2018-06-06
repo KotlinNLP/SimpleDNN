@@ -10,15 +10,15 @@ package com.kotlinnlp.simplednn.core.mergelayers.concat
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which calculates the relevance of the input of a [ConcatLayerStructure] respect of its output.
  *
  * @property layer the layer in which to calculate the input relevance
  */
-class ConcatRelevanceHelper(override val layer: ConcatLayerStructure)
-  : RelevanceHelper<DenseNDArray>(layer) {
+class ConcatRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val layer: ConcatLayerStructure<InputNDArrayType>
+) : RelevanceHelper<InputNDArrayType>(layer) {
 
   /**
    * Not available for the Concat layer.

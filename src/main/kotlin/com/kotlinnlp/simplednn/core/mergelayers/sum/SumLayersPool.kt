@@ -8,8 +8,11 @@
 package com.kotlinnlp.simplednn.core.mergelayers.sum
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.LayerUnit
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import com.kotlinnlp.utils.ItemsPool
 
 /**
@@ -17,8 +20,12 @@ import com.kotlinnlp.utils.ItemsPool
  * a new one every time.
  *
  * @property params the parameters which connect the input to the output
+ * @property inputType the type of the input array
  */
-class SumLayersPool(val params: SumLayerParameters) : ItemsPool<SumLayerStructure>() {
+class SumLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
+  val params: SumLayerParameters,
+  val inputType: LayerType.Input
+) : ItemsPool<SumLayerStructure<InputNDArrayType>>() {
 
   /**
    * The factory of a new layer structure.
@@ -27,16 +34,23 @@ class SumLayersPool(val params: SumLayerParameters) : ItemsPool<SumLayerStructur
    *
    * @return a new [SumLayerStructure] with the given [id]
    */
-  override fun itemFactory(id: Int): SumLayerStructure {
+  override fun itemFactory(id: Int): SumLayerStructure<InputNDArrayType> {
 
-    val inputArrays: List<AugmentedArray<DenseNDArray>> =
-      List(size = this.params.inputsSize.size, init = {
-        AugmentedArray<DenseNDArray>(size = this.params.inputsSize[it])
-      })
+    @Suppress("UNCHECKED_CAST")
+    val inputArrays: List<AugmentedArray<InputNDArrayType>> = List(
+      size = this.params.nInputs,
+      init = {
+        when (this.inputType) {
+          LayerType.Input.Dense -> AugmentedArray<DenseNDArray>(size = this.params.inputSize)
+          LayerType.Input.Sparse -> AugmentedArray<SparseNDArray>(size = this.params.inputSize)
+          LayerType.Input.SparseBinary -> AugmentedArray<SparseBinaryNDArray>(size = this.params.inputSize)
+        } as AugmentedArray<InputNDArrayType>
+      }
+    )
 
     return SumLayerStructure(
       inputArrays = inputArrays,
-      outputArray = LayerUnit<DenseNDArray>(this.params.outputSize),
+      outputArray = AugmentedArray(this.params.outputSize),
       params = this.params,
       id = id
     )

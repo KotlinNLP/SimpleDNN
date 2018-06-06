@@ -10,6 +10,7 @@ package core.mergelayers.product
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.mergelayers.product.ProductLayerParameters
 import com.kotlinnlp.simplednn.core.mergelayers.product.ProductLayerStructure
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
@@ -20,7 +21,7 @@ object ProductLayerUtils {
   /**
    *
    */
-  fun buildLayer(): ProductLayerStructure = ProductLayerStructure(
+  fun buildLayer(): ProductLayerStructure<DenseNDArray> = ProductLayerStructure(
     inputArrays = listOf(
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9, 0.9, 0.6))),
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.5, -0.5))),

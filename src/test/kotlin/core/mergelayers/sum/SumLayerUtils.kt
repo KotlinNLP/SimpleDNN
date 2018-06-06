@@ -10,6 +10,7 @@ package core.mergelayers.sum
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.mergelayers.sum.SumLayerParameters
 import com.kotlinnlp.simplednn.core.mergelayers.sum.SumLayerStructure
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
@@ -20,7 +21,7 @@ object SumLayerUtils {
   /**
    *
    */
-  fun buildLayer(): SumLayerStructure = SumLayerStructure(
+  fun buildLayer(): SumLayerStructure<DenseNDArray> = SumLayerStructure(
     inputArrays = listOf(
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9, 0.9, 0.6))),
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.5, -0.5))),

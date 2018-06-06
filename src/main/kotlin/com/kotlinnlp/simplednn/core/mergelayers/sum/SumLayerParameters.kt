@@ -24,7 +24,7 @@ class SumLayerParameters(
   outputSize = inputSize,
   weightsInitializer = null,
   biasesInitializer = null,
-  sparseInput = false
+  sparseInput = false // actually not used because there are no parameters
 ) {
 
   companion object {

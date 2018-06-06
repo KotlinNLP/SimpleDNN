@@ -10,15 +10,16 @@ package com.kotlinnlp.simplednn.core.mergelayers.sum
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which calculates the relevance of the input of a [SumLayerStructure] respect of its output.
  *
  * @property layer the layer in which to calculate the input relevance
  */
-class SumRelevanceHelper(override val layer: SumLayerStructure)
-  : RelevanceHelper<DenseNDArray>(layer) {
+class SumRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val layer: SumLayerStructure<InputNDArrayType>
+)
+  : RelevanceHelper<InputNDArrayType>(layer) {
 
   /**
    * Not available for the Sum layer.

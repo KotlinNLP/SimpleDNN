@@ -8,8 +8,11 @@
 package com.kotlinnlp.simplednn.core.mergelayers.product
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.LayerUnit
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import com.kotlinnlp.utils.ItemsPool
 
 /**
@@ -17,8 +20,12 @@ import com.kotlinnlp.utils.ItemsPool
  * a new one every time.
  *
  * @property params the parameters which connect the input to the output
+ * @property inputType the type of the input array
  */
-class ProductLayersPool(val params: ProductLayerParameters) : ItemsPool<ProductLayerStructure>() {
+class ProductLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
+  val params: ProductLayerParameters,
+  val inputType: LayerType.Input
+) : ItemsPool<ProductLayerStructure<InputNDArrayType>>() {
 
   /**
    * The factory of a new layer structure.
@@ -27,16 +34,23 @@ class ProductLayersPool(val params: ProductLayerParameters) : ItemsPool<ProductL
    *
    * @return a new [ProductLayerStructure] with the given [id]
    */
-  override fun itemFactory(id: Int): ProductLayerStructure {
+  override fun itemFactory(id: Int): ProductLayerStructure<InputNDArrayType> {
 
-    val inputArrays: List<AugmentedArray<DenseNDArray>> =
-      List(size = this.params.inputsSize.size, init = {
-        AugmentedArray<DenseNDArray>(size = this.params.inputsSize[it])
-      })
+    @Suppress("UNCHECKED_CAST")
+    val inputArrays: List<AugmentedArray<InputNDArrayType>> = List(
+      size = this.params.nInputs,
+      init = {
+        when (this.inputType) {
+          LayerType.Input.Dense -> AugmentedArray<DenseNDArray>(size = this.params.inputSize)
+          LayerType.Input.Sparse -> AugmentedArray<SparseNDArray>(size = this.params.inputSize)
+          LayerType.Input.SparseBinary -> AugmentedArray<SparseBinaryNDArray>(size = this.params.inputSize)
+        } as AugmentedArray<InputNDArrayType>
+      }
+    )
 
     return ProductLayerStructure(
       inputArrays = inputArrays,
-      outputArray = LayerUnit<DenseNDArray>(this.params.outputSize),
+      outputArray = AugmentedArray(this.params.outputSize),
       params = this.params,
       id = id
     )

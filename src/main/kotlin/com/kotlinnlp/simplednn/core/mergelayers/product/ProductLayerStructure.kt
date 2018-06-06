@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.mergelayers.product
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -18,12 +19,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property params the parameters which connect the input to the output
  * @property id an identification number useful to track a specific [ProductLayerStructure]
  */
-class ProductLayerStructure(
-  inputArrays: List<AugmentedArray<DenseNDArray>>,
+class ProductLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+  inputArrays: List<AugmentedArray<InputNDArrayType>>,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: ProductLayerParameters,
   id: Int = 0
-) : MergeLayer<DenseNDArray>(
+) : MergeLayer<InputNDArrayType>(
   inputArrays = inputArrays,
   outputArray = outputArray,
   params = params,

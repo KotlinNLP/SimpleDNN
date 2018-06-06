@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.mergelayers.concat
 
 import com.kotlinnlp.simplednn.core.layers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.utils.SplitVHelper
 
@@ -17,7 +18,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.utils.SplitVHelper
  *
  * @property layer the layer in which the backward is executed
  */
-class ConcatBackwardHelper(override val layer: ConcatLayerStructure) : BackwardHelper<DenseNDArray> {
+class ConcatBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val layer: ConcatLayerStructure<InputNDArrayType>
+) : BackwardHelper<InputNDArrayType> {
 
   /**
    * The backward helper to split the output errors.

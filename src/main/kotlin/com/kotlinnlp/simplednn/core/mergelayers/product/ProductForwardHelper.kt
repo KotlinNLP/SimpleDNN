@@ -9,21 +9,27 @@ package com.kotlinnlp.simplednn.core.mergelayers.product
 
 import com.kotlinnlp.simplednn.core.layers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * The helper which executes the forward on a [ProductLayerStructure].
  *
  * @property layer the layer in which the forward is executed
  */
-class ProductForwardHelper(override val layer: ProductLayerStructure) : ForwardHelper<DenseNDArray>(layer) {
+class ProductForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val layer: ProductLayerStructure<InputNDArrayType>
+) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
    * Forward the input to the output multiplying element-wise the input arrays.
    */
   override fun forward() = this.layer.inputArrays.forEachIndexed { i, x ->
     if (i == 0)
-      this.layer.outputArray.assignValues(x.values)
+      this.layer.outputArray.assignValues(
+        x.values.let { if (it is DenseNDArray) it else DenseNDArrayFactory.fromNDArray(it) }
+      )
     else
       this.layer.outputArray.values.assignProd(x.values)
   }
