@@ -197,11 +197,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun getOutputSequence(copy: Boolean = true): Array<DenseNDArray> = Array(
     size = this.statesSize,
     init = { i ->
-      if (copy) {
-        this.sequence.getStateStructure(i).outputLayer.outputArray.values.copy()
-      } else {
-        this.sequence.getStateStructure(i).outputLayer.outputArray.values
-      }
+      this.sequence.getStateStructure(i).outputLayer.outputArray.values.let { if (copy) it.copy() else it }
     }
   )
 
@@ -219,7 +215,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the last output of the network after the whole sequence is been forwarded
    */
-  fun forward(sequenceFeaturesArray: ArrayList<InputNDArrayType>,
+  fun forward(sequenceFeaturesArray: List<InputNDArrayType>,
               initHiddenArrays: List<DenseNDArray?>? = null,
               saveContributions: Boolean = false,
               useDropout: Boolean = false): DenseNDArray {
@@ -287,9 +283,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
               saveContributions: Boolean = false,
               useDropout: Boolean = false): DenseNDArray {
 
-    if (firstState) {
-      this.reset()
-    }
+    if (firstState) this.reset()
 
     this.addNewState(saveContributions = saveContributions)
 
@@ -490,9 +484,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.paramsErrorsAccumulator.accumulate(this.backwardParamsErrors)
 
-    if (this.curStateIndex == 0) {
-      this.paramsErrorsAccumulator.averageErrors()
-    }
+    if (this.curStateIndex == 0) this.paramsErrorsAccumulator.averageErrors()
 
     this.curStateIndex--
   }
@@ -539,17 +531,15 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     structure.setInitHidden(arrays = if (this.curStateIndex == 0) initHiddenArrays else null)
 
-    if (saveContributions) {
+    if (saveContributions)
       structure.forward(
         features = featuresArray,
         networkContributions = this.sequence.getStateContributions(this.lastStateIndex),
         useDropout = useDropout)
-
-    } else {
+    else
       structure.forward(
         features = featuresArray,
         useDropout = useDropout)
-    }
   }
 
   /**
@@ -642,16 +632,14 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     if (propagateToInput) {
 
-      if (replaceInputRelevance) {
+      if (replaceInputRelevance)
         layer.setInputRelevance(layerContributions = contributions)
-
-      } else {
+      else
         layer.addInputRelevance(layerContributions = contributions)
-      }
     }
 
-    if (propagateToPrevState) { layer as RecurrentLayerStructure
-      layer.setRecurrentRelevance(layerContributions = contributions)
+    if (propagateToPrevState) {
+      (layer as RecurrentLayerStructure).setRecurrentRelevance(layerContributions = contributions)
     }
   }
 
@@ -664,14 +652,8 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the relevance of the input as [NDArray]
    */
-  private fun getInputRelevance(stateIndex: Int, copy: Boolean = true): NDArray<*> {
-
-    return if (copy) {
-      this.sequence.getStateStructure(stateIndex).inputLayer.inputArray.relevance.copy()
-    } else {
-      this.sequence.getStateStructure(stateIndex).inputLayer.inputArray.relevance
-    }
-  }
+  private fun getInputRelevance(stateIndex: Int, copy: Boolean = true): NDArray<*> =
+    this.sequence.getStateStructure(stateIndex).inputLayer.inputArray.relevance.let { if (copy) it.copy() else it }
 
   /**
    * Reset the sequence.

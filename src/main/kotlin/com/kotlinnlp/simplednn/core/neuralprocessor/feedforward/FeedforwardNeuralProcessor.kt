@@ -91,10 +91,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     require(!this.neuralNetwork.sparseInput) { "Input errors available only if input is dense" }
     require(this.structure.inputLayer !is MergeLayer<InputNDArrayType>)
 
-    return if (copy)
-      this.structure.inputLayer.inputArray.errors.copy()
-    else
-      this.structure.inputLayer.inputArray.errors
+    return this.structure.inputLayer.inputArray.errors.let { if (copy) it.copy() else it }
   }
 
   /**
@@ -109,10 +106,11 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     require(!this.neuralNetwork.sparseInput) { "Input errors available only if input is dense" }
     require(this.structure.inputLayer is MergeLayer<InputNDArrayType>)
 
-    return (this.structure.inputLayer as MergeLayer<InputNDArrayType>).let { if (copy)
-      it.inputArrays.map { it.errors.copy() }
-    else
-      it.inputArrays.map { it.errors }
+    return (this.structure.inputLayer as MergeLayer<InputNDArrayType>).let {
+      if (copy)
+        it.inputArrays.map { it.errors.copy() }
+      else
+        it.inputArrays.map { it.errors }
     }
   }
 
@@ -151,7 +149,9 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
         networkContributions = this.forwardContributions,
         useDropout = useDropout)
     else
-      this.structure.forward(features = featuresArray, useDropout = useDropout)
+      this.structure.forward(
+        features = featuresArray,
+        useDropout = useDropout)
 
     return this.structure.outputLayer.outputArray.values
   }
@@ -191,7 +191,9 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
         networkContributions = this.forwardContributions,
         useDropout = useDropout)
     else
-      this.structure.forward(featuresList = featuresArrayList, useDropout = useDropout)
+      this.structure.forward(
+        featuresList = featuresArrayList,
+        useDropout = useDropout)
 
     return this.structure.outputLayer.outputArray.values
   }
@@ -213,10 +215,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
       networkContributions = this.forwardContributions,
       relevantOutcomesDistribution = relevantOutcomesDistribution)
 
-    return if (copy)
-      this.structure.inputLayer.inputArray.relevance.copy()
-    else
-      this.structure.inputLayer.inputArray.relevance
+    return this.structure.inputLayer.inputArray.relevance.let { if (copy) it.copy() else it }
   }
 
   /**
