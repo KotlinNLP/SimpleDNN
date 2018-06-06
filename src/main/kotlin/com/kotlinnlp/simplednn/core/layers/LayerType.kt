@@ -8,24 +8,30 @@
 package com.kotlinnlp.simplednn.core.layers
 
 /**
- *
+ * The layer type.
  */
 sealed class LayerType {
 
   /**
-   *
+   * The property of a layer connection.
    */
   enum class Property {
+    Merge,
     Feedforward,
     Recurrent
   }
 
   /**
-   *
+   * The layer connection type.
    */
   enum class Connection(val property: Property) {
     Feedforward(property = Property.Feedforward),
     Highway(property = Property.Feedforward),
+    Affine(property = Property.Merge),
+    Biaffine(property = Property.Merge),
+    Concat(property = Property.Merge),
+    Sum(property = Property.Merge),
+    Product(property = Property.Merge),
     SimpleRecurrent(property = Property.Recurrent),
     GRU(property = Property.Recurrent),
     LSTM(property = Property.Recurrent),
@@ -36,7 +42,7 @@ sealed class LayerType {
   }
 
   /**
-   *
+   * The layer input type.
    */
   enum class Input {
     Dense,
