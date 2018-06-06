@@ -105,11 +105,10 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    */
   fun getOutput(copy: Boolean = true): DenseNDArray {
-    return if (copy) {
+    return if (copy)
       this.sequence.getStateStructure(this.lastStateIndex).outputLayer.outputArray.values.copy()
-    } else {
+    else
       this.sequence.getStateStructure(this.lastStateIndex).outputLayer.outputArray.values
-    }
   }
 
   /**
@@ -117,8 +116,8 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the accumulated errors of the network parameters
    */
-  override fun getParamsErrors(copy: Boolean): NetworkParameters
-    = this.paramsErrorsAccumulator.getParamsErrors(copy = copy)
+  override fun getParamsErrors(copy: Boolean): NetworkParameters =
+    this.paramsErrorsAccumulator.getParamsErrors(copy = copy)
 
   /**
    * Get the input errors of all the elements of the last forwarded sequence, in the same order.
