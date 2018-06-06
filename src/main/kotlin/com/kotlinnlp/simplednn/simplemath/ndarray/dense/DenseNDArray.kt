@@ -13,9 +13,7 @@ import org.jblas.DoubleMatrix.concatHorizontally
 import org.jblas.DoubleMatrix.concatVertically
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.simplemath.equals
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import org.jblas.MatrixFunctions.abs
@@ -616,8 +614,48 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
+  fun assignProd(a: NDArray<*>): DenseNDArray = when(a) {
+    is DenseNDArray -> this.assignProd(a)
+    is SparseNDArray -> this.assignProd(a)
+    is SparseBinaryNDArray -> this.assignProd(a)
+    else -> throw RuntimeException("Invalid NDArray type")
+  }
+
+  /**
+   *
+   */
   override fun assignProd(a: DenseNDArray): DenseNDArray {
     this.storage.muli(a.storage)
+    return this
+  }
+
+  /**
+   *
+   */
+  private fun assignProd(a: SparseNDArray): DenseNDArray {
+
+    val newValues: List<Pair<Indices, Double>> = a.map { (indices, value) ->
+      Pair(indices, value * this[indices.first, indices.second])
+    }
+
+    this.zeros()
+
+    newValues.forEach { (indices, newValue) -> this[indices.first, indices.second] = newValue }
+
+    return this
+  }
+
+  /**
+   *
+   */
+  private fun assignProd(a: SparseBinaryNDArray): DenseNDArray {
+
+    val values: List<Pair<Indices, Double>> = a.map { indices -> Pair(indices, this[indices.first, indices.second]) }
+
+    this.zeros()
+
+    values.forEach { (indices, values) -> this[indices.first, indices.second] = values }
+
     return this
   }
 
