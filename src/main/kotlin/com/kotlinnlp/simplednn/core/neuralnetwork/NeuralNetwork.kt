@@ -80,9 +80,14 @@ class NeuralNetwork(
   val sparseInput: Boolean = this.inputType == LayerType.Input.SparseBinary
 
   /**
-   * The input size.
+   * The size of the inputs, meaningful when the first layer is not a Merge layer.
    */
   val inputSize: Int = this.layersConfiguration.first().size
+
+  /**
+   * The size of the inputs, meaningful when the first layer is a Merge layer.
+   */
+  val inputsSize: List<Int> = this.layersConfiguration.first().sizes
 
   /**
    * The output size.
