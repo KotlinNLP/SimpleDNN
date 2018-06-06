@@ -233,37 +233,6 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward a sequence.
-   *
-   * Set the [initHiddenArrays] to use them as previous hidden in the first forward. Set some of them to null to don't
-   * use them for certain layers.
-   *
-   * @param sequenceFeaturesArray the features to forward for each item of the sequence
-   * @param initHiddenArrays the list of initial hidden arrays (one per layer, null by default)
-   * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
-   *                          the relevance)
-   * @param useDropout whether to apply the dropout
-   *
-   * @return the last output of the network after the whole sequence is been forwarded
-   */
-  fun forward(sequenceFeaturesArray: Array<InputNDArrayType>,
-              initHiddenArrays: List<DenseNDArray?>? = null,
-              saveContributions: Boolean = false,
-              useDropout: Boolean = false): DenseNDArray {
-
-    sequenceFeaturesArray.forEachIndexed { i, features ->
-      this.forward(
-        featuresArray = features,
-        firstState = (i == 0),
-        initHiddenArrays = initHiddenArrays,
-        saveContributions = saveContributions,
-        useDropout = useDropout)
-    }
-
-    return this.getOutput()
-  }
-
-  /**
    * Forward features.
    *
    * Set the [initHiddenArrays] to use them as previous hidden in the first forward. Set some of them to null to don't
