@@ -48,6 +48,9 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
   private var curProcessorIndex: Int = -1
 
   /**
+   * Get the input errors of all the batch.
+   * This method must be used when the input layer is not a Merge layer.
+   *
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
    * @return the errors of the input
@@ -55,6 +58,19 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
   fun getBatchInputErrors(copy: Boolean = true): Array<DenseNDArray> = Array(
     size = this.usedProcessors,
     init = { i -> this.processorsList[i].getInputErrors(copy = copy) }
+  )
+
+  /**
+   * Get the inputs errors of all the batch.
+   * This method must be used when the input layer is a Merge layer.
+   *
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   *
+   * @return the list of errors of the inputs
+   */
+  fun getInputsErrors(copy: Boolean = true): List<List<DenseNDArray>> = List(
+    size = this.usedProcessors,
+    init = { i -> this.processorsList[i].getInputsErrors(copy = copy) }
   )
 
   /**
@@ -81,6 +97,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
 
   /**
    * Forward the input with a dedicated feed-forward processor.
+   * This method must be used when the input layer is a Merge layer.
    *
    * @param input the input
    * @param firstState true if the [input] is the first of a sequence
@@ -95,6 +112,25 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
     this.usedProcessors++
 
     return this.getProcessor(this.curProcessorIndex).forward(input)
+  }
+
+  /**
+   * Forward the inputs with a dedicated feed-forward processor.
+   * This method must be used when the input layer is not a Merge layer.
+   *
+   * @param inputList the list of inputs
+   * @param firstState true if the [inputList] is the first of a sequence
+   *
+   * @return an array containing the forwarded sequence
+   */
+  fun forward(inputList: List<InputNDArrayType>, firstState: Boolean): DenseNDArray {
+
+    if (firstState) this.reset()
+
+    this.curProcessorIndex++
+    this.usedProcessors++
+
+    return this.getProcessor(this.curProcessorIndex).forward(inputList)
   }
 
   /**
