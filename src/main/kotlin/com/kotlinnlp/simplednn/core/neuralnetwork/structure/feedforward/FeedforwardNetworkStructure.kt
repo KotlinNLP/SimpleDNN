@@ -40,14 +40,11 @@ class FeedforwardNetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     inputArray: AugmentedArray<InputNDArrayType>,
     outputConfiguration: LayerConfiguration,
     params: LayerParameters<*>,
-    dropout: Double): LayerStructure<InputNDArrayType> {
+    dropout: Double
+  ): LayerStructure<InputNDArrayType> {
 
     require(outputConfiguration.connectionType!!.property == LayerType.Property.Feedforward) {
-      "Layer connection of type %s not allowed [only %s and %s]".format(
-        outputConfiguration.connectionType,
-        LayerType.Connection.Feedforward,
-        LayerType.Connection.Highway
-      )
+      "Layer connection of type ${outputConfiguration.connectionType} not allowed [only FeedForward connections]"
     }
 
     return LayerStructureFactory(
