@@ -10,12 +10,11 @@ package core.attention
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerStructureFactory
-import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.core.attention.AttentionParameters
+import com.kotlinnlp.simplednn.core.layers.LayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
@@ -143,14 +142,10 @@ object AttentionLayerUtils {
   /**
    *
    */
-  private fun buildTransformLayer(): FeedforwardLayerStructure<DenseNDArray> {
-
-    return LayerStructureFactory(
-      inputArray = AugmentedArray<DenseNDArray>(size = 4),
-      outputSize = 2,
-      params = buildTransformLayerParams1(),
-      activationFunction = Tanh(),
-      connectionType = LayerType.Connection.Feedforward
-    ) as FeedforwardLayerStructure
-  }
+  private fun buildTransformLayer(): FeedforwardLayerStructure<DenseNDArray> = FeedforwardLayerStructure(
+    inputArray = AugmentedArray(size = 4),
+    outputArray = LayerUnit(2),
+    params = buildTransformLayerParams1(),
+    activationFunction = Tanh()
+  )
 }
