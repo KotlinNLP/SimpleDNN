@@ -58,10 +58,9 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     this.sequence = sequence
 
-    val (leftToRightOut: List<DenseNDArray>, rightToLeftOut: List<DenseNDArray>)
-      = this.biEncoding(useDropout = useDropout)
+    val (encodedL2R: List<DenseNDArray>, encodedR2L: List<DenseNDArray>) = this.biEncoding(useDropout = useDropout)
 
-    return BiRNNUtils.concatenate(leftToRightOut, rightToLeftOut)
+    return BiRNNUtils.concatenate(encodedL2R, encodedR2L)
   }
 
   /**
@@ -161,34 +160,40 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Given a [sequence] return the encoded left-to-right and right-to-left representation.
+   * Get the left-to-right and right-to-left lists containing the encoded vectors of the input [sequence].
+   * The i-th vector of each list is the encoding of the i-th element of the input [sequence].
    *
    * @param useDropout whether to apply the dropout
    *
-   * @return a Pair with two arrays containing the outputs of the two RNNs
+   * @return a pair of lists containing the outputs of the two RNNs
    */
-  private fun biEncoding(useDropout: Boolean):
-    Pair<List<DenseNDArray>, List<DenseNDArray>> {
+  private fun biEncoding(useDropout: Boolean): Pair<List<DenseNDArray>, List<DenseNDArray>> {
 
     var isFirstElement = true
 
-    return this.sequence.indices.zip(this.sequence.indices.reversed())
-      .map { (i, r) ->
+    val l2rEncodings: MutableList<DenseNDArray> = mutableListOf()
+    val r2lEncodings: MutableList<DenseNDArray> = mutableListOf()
 
-        val l2rOutput = this.leftToRightProcessor.forward(
-          features = this.sequence[i],
-          firstState = isFirstElement,
-          useDropout = useDropout)
+    this.sequence.indices.zip(this.sequence.indices.reversed()).forEach { (i, r) ->
 
-        val r2lOutput = this.rightToLeftProcessor.forward(
-          features = this.sequence[r],
-          firstState = isFirstElement,
-          useDropout = useDropout)
+        l2rEncodings.add(
+          this.leftToRightProcessor.forward(
+            features = this.sequence[i],
+            firstState = isFirstElement,
+            useDropout = useDropout)
+        )
+
+        r2lEncodings.add(
+          0, // prepend
+          this.rightToLeftProcessor.forward(
+            features = this.sequence[r],
+            firstState = isFirstElement,
+            useDropout = useDropout)
+        )
 
         isFirstElement = false
-
-        Pair(l2rOutput, r2lOutput)
       }
-      .unzip()
+
+    return Pair(l2rEncodings, r2lEncodings)
   }
 }
