@@ -31,10 +31,10 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val m
    */
   fun getInputSequenceErrors(): List<DenseNDArray> {
 
-    val inputErrors: List<DenseNDArray> = this.encoders[0].getBatchInputErrors(copy = true)
+    val inputErrors: List<DenseNDArray> = this.encoders[0].getInputErrors(copy = true)
 
     for (encoderIndex in 1 until (this.model.networks.size - 1)) {
-      inputErrors.zip(this.encoders[encoderIndex].getBatchInputErrors(copy = false)).forEach {
+      inputErrors.zip(this.encoders[encoderIndex].getInputErrors(copy = false)).forEach {
         (baseErrors, errors) -> baseErrors.assignSum(errors)
       }
     }

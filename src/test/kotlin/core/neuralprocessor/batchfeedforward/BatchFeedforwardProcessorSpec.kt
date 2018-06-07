@@ -84,7 +84,7 @@ class BatchFeedforwardProcessorSpec : Spek({
       }
     }
 
-    val inputErrors: List<DenseNDArray> = processor.getBatchInputErrors()
+    val inputErrors: List<DenseNDArray> = processor.getInputErrors()
 
     it("should match the expected errors of first input array") {
       assertTrue {

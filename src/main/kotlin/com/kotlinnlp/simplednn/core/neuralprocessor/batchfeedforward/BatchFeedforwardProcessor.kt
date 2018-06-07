@@ -55,7 +55,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return the errors of the input
    */
-  fun getBatchInputErrors(copy: Boolean = true): List<DenseNDArray> = List(
+  fun getInputErrors(copy: Boolean = true): List<DenseNDArray> = List(
     size = this.usedProcessors,
     init = { i -> this.processorsList[i].getInputErrors(copy = copy) }
   )
