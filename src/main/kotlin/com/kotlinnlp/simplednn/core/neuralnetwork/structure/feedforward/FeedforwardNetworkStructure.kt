@@ -27,10 +27,10 @@ class FeedforwardNetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) : NetworkStructure<InputNDArrayType>(layersConfiguration = layersConfiguration, params = params) {
 
   /**
-   * LayerStructure factory used to concatV two layers, given the input array (referenced from
+   * LayerStructure factory used to concatenate two layers, given the input array (referenced from
    * the previous layer) and the output configuration.
    *
-   * @param inputArray an AugmentedArray used as referenced input (to concatV two layers)
+   * @param inputArray an AugmentedArray used as referenced input (to concatenate two layers)
    * @param outputConfiguration the configuration of the output interface of the layer
    * @param params the network parameters of the current layer
    *

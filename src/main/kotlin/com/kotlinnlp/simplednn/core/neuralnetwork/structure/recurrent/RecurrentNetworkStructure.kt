@@ -91,10 +91,10 @@ class RecurrentNetworkStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * LayerStructure factory used to concatV two layers, given the input array (referenced from
+   * LayerStructure factory used to concatenate two layers, given the input array (referenced from
    * the previous layer) and the output layersConfiguration.
    *
-   * @param inputArray an AugmentedArray used as referenced input (to concatV two layers)
+   * @param inputArray an AugmentedArray used as referenced input (to concatenate two layers)
    * @param outputConfiguration the layersConfiguration of the output array
    * @param params the network parameters of the current layer
    * @param dropout the probability of dropout
