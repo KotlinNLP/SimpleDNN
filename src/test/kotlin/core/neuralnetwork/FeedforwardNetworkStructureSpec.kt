@@ -24,6 +24,7 @@ import core.neuralnetwork.utils.FeedforwardNetworkStructureUtils
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 /**
  *
@@ -90,28 +91,28 @@ class FeedforwardNetworkStructureSpec : Spek({
       on("architecture") {
 
         it("should have the expected number of layers") {
-          assertEquals(true, structure.layers.size == 2)
+          assertEquals(2, structure.layers.size)
         }
 
         it("should have interconnected layers") {
           for (i in 0 until structure.layers.size - 1) {
-            assertEquals(true, structure.layers[i].outputArray == structure.layers[i + 1].inputArray)
+            assertEquals(structure.layers[i].outputArray, structure.layers[i + 1].inputArray)
           }
         }
 
         it("should contain the expected input layer") {
-          assertEquals(true, structure.inputLayer == structure.layers[0])
+          assertEquals(structure.inputLayer, structure.layers[0])
         }
 
         it("should contain the expected output layer") {
-          assertEquals(true, structure.outputLayer== structure.layers[1])
+          assertEquals(structure.outputLayer, structure.layers[1])
         }
       }
 
       on("layers factory") {
 
         it("should contain layers of the expected type") {
-          structure.layers.forEach { assertEquals(true, it is FeedforwardLayerStructure) }
+          structure.layers.forEach { assertTrue { it is FeedforwardLayerStructure } }
         }
       }
 
@@ -122,7 +123,7 @@ class FeedforwardNetworkStructureSpec : Spek({
         val expectedOutput = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.19, 0.29, 0.53))
 
         it("should return the expected output after a call of the forward method") {
-          assertEquals(true, output.equals(expectedOutput, tolerance = 0.005))
+          assertTrue { output.equals(expectedOutput, tolerance = 0.005) }
         }
 
         val outputGold = FeedforwardLayerStructureUtils.getOutputGold3()
@@ -137,7 +138,7 @@ class FeedforwardNetworkStructureSpec : Spek({
         val expectedInputErrors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.32, -0.14, -0.06, 0.07))
 
         it("should contain the expected input error after a call of the backward method") {
-          assertEquals(true, inputErrors.equals(expectedInputErrors, tolerance = 0.005))
+          assertTrue { inputErrors.equals(expectedInputErrors, tolerance = 0.005) }
         }
       }
     }

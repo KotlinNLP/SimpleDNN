@@ -82,7 +82,7 @@ class SlidingWindowSequenceSpec: Spek({
         sequence.setFocus(0)
 
         it("should have the expected window") {
-          assertEquals(true, "[null, null, null] 0 [1, 2, 3]" == sequence.toString())
+          assertEquals("[null, null, null] 0 [1, 2, 3]", sequence.toString())
         }
       }
 
@@ -90,7 +90,7 @@ class SlidingWindowSequenceSpec: Spek({
         sequence.setFocus(1)
 
         it("should have the expected window") {
-          assertEquals(true, "[null, null, 0] 1 [2, 3, 4]" == sequence.toString())
+          assertEquals("[null, null, 0] 1 [2, 3, 4]", sequence.toString())
         }
       }
 
@@ -98,7 +98,7 @@ class SlidingWindowSequenceSpec: Spek({
         sequence.setFocus(2)
 
         it("should have the expected window") {
-          assertEquals(true, "[null, 0, 1] 2 [3, 4, null]" == sequence.toString())
+          assertEquals("[null, 0, 1] 2 [3, 4, null]", sequence.toString())
         }
       }
 
@@ -106,7 +106,7 @@ class SlidingWindowSequenceSpec: Spek({
         sequence.setFocus(3)
 
         it("should have the expected window") {
-          assertEquals(true, "[0, 1, 2] 3 [4, null, null]" == sequence.toString())
+          assertEquals("[0, 1, 2] 3 [4, null, null]", sequence.toString())
         }
       }
 
@@ -114,7 +114,7 @@ class SlidingWindowSequenceSpec: Spek({
         sequence.setFocus(4)
 
         it("should have the expected window") {
-          assertEquals(true, "[1, 2, 3] 4 [null, null, null]" == sequence.toString())
+          assertEquals("[1, 2, 3] 4 [null, null, null]", sequence.toString())
         }
       }
     }

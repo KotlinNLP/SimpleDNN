@@ -15,7 +15,7 @@ import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  *
@@ -30,9 +30,11 @@ class BiaffineLayerStructureSpec : Spek({
       layer.forward()
 
       it("should match the expected outputArray") {
-        assertEquals(true, layer.outputArray.values.equals(
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.714345, -0.161572)),
-          tolerance = 1.0e-06))
+        assertTrue {
+          layer.outputArray.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.714345, -0.161572)),
+            tolerance = 1.0e-06)
+        }
       }
     }
 
@@ -47,65 +49,81 @@ class BiaffineLayerStructureSpec : Spek({
       layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
 
       it("should match the expected errors of the outputArray") {
-        assertEquals(true, layer.outputArray.errors.equals(
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.398794, 0.134815)),
-          tolerance = 1.0e-06))
+        assertTrue {
+          layer.outputArray.errors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.398794, 0.134815)),
+            tolerance = 1.0e-06)
+        }
       }
 
       it("should match the expected errors of the biases") {
-        assertEquals(true, paramsErrors.b.values.equals(
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.398794, 0.134815)),
-          tolerance = 1.0e-06))
+        assertTrue {
+          paramsErrors.b.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.398794, 0.134815)),
+            tolerance = 1.0e-06)
+        }
       }
 
       it("should match the expected errors of w1") {
-        assertEquals(true, (paramsErrors.w1.values as DenseNDArray).equals(
-          DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.319035, 0.358915),
-			      doubleArrayOf(-0.107852, -0.121333)
-          )),
-          tolerance = 1.0e-06))
+        assertTrue {
+          (paramsErrors.w1.values as DenseNDArray).equals(
+            DenseNDArrayFactory.arrayOf(listOf(
+              doubleArrayOf(0.319035, 0.358915),
+              doubleArrayOf(-0.107852, -0.121333)
+            )),
+            tolerance = 1.0e-06)
+        }
       }
 
       it("should match the expected errors of w2") {
-        assertEquals(true, (paramsErrors.w2.values as DenseNDArray).equals(
-          DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(-0.199397, 0.079759, -0.239276),
-            doubleArrayOf(0.067407, -0.026963, 0.080889)
-          )),
-          tolerance = 1.0e-06))
+        assertTrue {
+          (paramsErrors.w2.values as DenseNDArray).equals(
+            DenseNDArrayFactory.arrayOf(listOf(
+              doubleArrayOf(-0.199397, 0.079759, -0.239276),
+              doubleArrayOf(0.067407, -0.026963, 0.080889)
+            )),
+            tolerance = 1.0e-06)
+        }
       }
 
       it("should match the expected errors of the first w array") {
-        assertEquals(true, (paramsErrors.w[0].values as DenseNDArray).equals(
-          DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.159518, 0.179457),
-            doubleArrayOf(-0.063807, -0.071783),
-            doubleArrayOf(0.191421, 0.215349)
-          )),
-          tolerance = 1.0e-06))
+        assertTrue {
+          (paramsErrors.w[0].values as DenseNDArray).equals(
+            DenseNDArrayFactory.arrayOf(listOf(
+              doubleArrayOf(0.159518, 0.179457),
+              doubleArrayOf(-0.063807, -0.071783),
+              doubleArrayOf(0.191421, 0.215349)
+            )),
+            tolerance = 1.0e-06)
+        }
       }
 
       it("should match the expected errors of the second w array") {
-        assertEquals(true, (paramsErrors.w[1].values as DenseNDArray).equals(
-          DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(-0.053926, -0.060667),
-            doubleArrayOf(0.021570, 0.024267),
-            doubleArrayOf(-0.064711, -0.072800)
-          )),
-          tolerance = 1.0e-06))
+        assertTrue {
+          (paramsErrors.w[1].values as DenseNDArray).equals(
+            DenseNDArrayFactory.arrayOf(listOf(
+              doubleArrayOf(-0.053926, -0.060667),
+              doubleArrayOf(0.021570, 0.024267),
+              doubleArrayOf(-0.064711, -0.072800)
+            )),
+            tolerance = 1.0e-06)
+        }
       }
 
       it("should match the expected errors of the inputArray1") {
-        assertEquals(true, layer.inputArray1.errors.equals(
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.048872, -0.488442)),
-          tolerance = 1.0e-06))
+        assertTrue {
+          layer.inputArray1.errors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.048872, -0.488442)),
+            tolerance = 1.0e-06)
+        }
       }
 
       it("should match the expected errors of the inputArray2") {
-        assertEquals(true, layer.inputArray2.errors.equals(
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.342293, -0.086394, 0.601735)),
-          tolerance = 1.0e-06))
+        assertTrue {
+          layer.inputArray2.errors.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.342293, -0.086394, 0.601735)),
+            tolerance = 1.0e-06)
+        }
       }
     }
   }

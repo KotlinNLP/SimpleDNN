@@ -21,6 +21,8 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 /**
  *
@@ -35,11 +37,11 @@ class RecurrentNetworkStructureSpec : Spek({
       val structure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
 
       it("should contain an input layer of the expected type") {
-        assertEquals(true, structure.inputLayer is SimpleRecurrentLayerStructure<DenseNDArray>)
+        assertTrue { structure.inputLayer is SimpleRecurrentLayerStructure<DenseNDArray> }
       }
 
       it("should contain an output layer of the expected type") {
-        assertEquals(true, structure.outputLayer is FeedforwardLayerStructure<DenseNDArray>)
+        assertTrue { structure.outputLayer is FeedforwardLayerStructure<DenseNDArray> }
       }
     }
 
@@ -56,11 +58,11 @@ class RecurrentNetworkStructureSpec : Spek({
         curStateStructure.curLayerIndex = 0
 
         it("should return null as previous context") {
-          assertEquals(true, curStateStructure.getPrevStateLayer() == null)
+          assertNull(curStateStructure.getPrevStateLayer())
         }
 
         it("should return null as next context") {
-          assertEquals(true, curStateStructure.getNextStateLayer() == null)
+          assertNull(curStateStructure.getNextStateLayer())
         }
       }
 
@@ -69,11 +71,11 @@ class RecurrentNetworkStructureSpec : Spek({
         curStateStructure.curLayerIndex = 1
 
         it("should return null as previous context") {
-          assertEquals(true, curStateStructure.getPrevStateLayer() == null)
+          assertNull(curStateStructure.getPrevStateLayer())
         }
 
         it("should return null as next context") {
-          assertEquals(true, curStateStructure.getNextStateLayer() == null)
+          assertNull(curStateStructure.getNextStateLayer())
         }
       }
     }
@@ -92,11 +94,11 @@ class RecurrentNetworkStructureSpec : Spek({
         curStateStructure.curLayerIndex = 0
 
         it("should return the expected layer as previous context") {
-          assertEquals(true, curStateStructure.getPrevStateLayer() == prevStateStructure.layers[0])
+          assertEquals(curStateStructure.getPrevStateLayer(), prevStateStructure.layers[0])
         }
 
         it("should return null as next context") {
-          assertEquals(true, curStateStructure.getNextStateLayer() == null)
+          assertNull(curStateStructure.getNextStateLayer())
         }
       }
 
@@ -105,11 +107,11 @@ class RecurrentNetworkStructureSpec : Spek({
         curStateStructure.curLayerIndex = 1
 
         it("should return the expected layer as previous context") {
-          assertEquals(true, curStateStructure.getPrevStateLayer() == prevStateStructure.layers[1])
+          assertEquals(curStateStructure.getPrevStateLayer(), prevStateStructure.layers[1])
         }
 
         it("should return null as next context") {
-          assertEquals(true, curStateStructure.getNextStateLayer() == null)
+          assertNull(curStateStructure.getNextStateLayer())
         }
       }
     }
@@ -128,11 +130,11 @@ class RecurrentNetworkStructureSpec : Spek({
         curStateStructure.curLayerIndex = 0
 
         it("should return null as previous context") {
-          assertEquals(true, curStateStructure.getPrevStateLayer() == null)
+          assertNull(curStateStructure.getPrevStateLayer())
         }
 
         it("should return the expected layer as next context") {
-          assertEquals(true, curStateStructure.getNextStateLayer() == nextStateStructure.layers[0])
+          assertEquals(curStateStructure.getNextStateLayer(), nextStateStructure.layers[0])
         }
       }
 
@@ -141,11 +143,11 @@ class RecurrentNetworkStructureSpec : Spek({
         curStateStructure.curLayerIndex = 1
 
         it("should return null as previous context") {
-          assertEquals(true, curStateStructure.getPrevStateLayer() == null)
+          assertNull(curStateStructure.getPrevStateLayer())
         }
 
         it("should return the expected layer as next context") {
-          assertEquals(true, curStateStructure.getNextStateLayer() == nextStateStructure.layers[1])
+          assertEquals(curStateStructure.getNextStateLayer(), nextStateStructure.layers[1])
         }
       }
     }
@@ -165,11 +167,11 @@ class RecurrentNetworkStructureSpec : Spek({
         curStateStructure.curLayerIndex = 0
 
         it("should return the expected layer as previous context") {
-          assertEquals(true, curStateStructure.getPrevStateLayer() == prevStateStructure.layers[0])
+          assertEquals(curStateStructure.getPrevStateLayer(), prevStateStructure.layers[0])
         }
 
         it("should return the expected layer as next context") {
-          assertEquals(true, curStateStructure.getNextStateLayer() == nextStateStructure.layers[0])
+          assertEquals(curStateStructure.getNextStateLayer(), nextStateStructure.layers[0])
         }
       }
 
@@ -178,11 +180,11 @@ class RecurrentNetworkStructureSpec : Spek({
         curStateStructure.curLayerIndex = 1
 
         it("should return the expected layer as previous context") {
-          assertEquals(true, curStateStructure.getPrevStateLayer() == prevStateStructure.layers[1])
+          assertEquals(curStateStructure.getPrevStateLayer(), prevStateStructure.layers[1])
         }
 
         it("should return the expected layer as next context") {
-          assertEquals(true, curStateStructure.getNextStateLayer() == nextStateStructure.layers[1])
+          assertEquals(curStateStructure.getNextStateLayer(), nextStateStructure.layers[1])
         }
       }
     }

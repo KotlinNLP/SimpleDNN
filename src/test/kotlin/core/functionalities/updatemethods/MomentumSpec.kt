@@ -21,6 +21,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  *
@@ -42,9 +43,11 @@ class MomentumSpec: Spek({
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildDenseErrors())
 
         it("should match the expected updated array") {
-          assertEquals(true, updatableArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2309, -0.3207, 0.0496, 0.7292, 0.6199)),
-            tolerance = 1.0e-6))
+          assertTrue {
+            updatableArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2309, -0.3207, 0.0496, 0.7292, 0.6199)),
+              tolerance = 1.0e-6)
+          }
         }
       }
     }
@@ -62,9 +65,11 @@ class MomentumSpec: Spek({
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildSparseErrors())
 
         it("should match the expected updated array") {
-          assertEquals(true, updatableArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, -0.3207, 0.5, 1.0, 0.6197)),
-            tolerance = 1.0e-5))
+          assertTrue {
+            updatableArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, -0.3207, 0.5, 1.0, 0.6197)),
+              tolerance = 1.0e-5)
+          }
         }
       }
     }

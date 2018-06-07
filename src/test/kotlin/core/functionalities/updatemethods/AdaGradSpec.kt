@@ -15,7 +15,7 @@ import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  *
@@ -37,9 +37,11 @@ class AdaGradSpec: Spek({
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildDenseErrors())
 
         it("should match the expected updated array") {
-          assertEquals(true, updatableArray.values.equals(
+          assertTrue {
+            updatableArray.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.399331, 0.399258, 0.499569, 0.999, 0.799782)),
-            tolerance = 1.0e-6))
+              tolerance = 1.0e-6)
+          }
         }
       }
     }
@@ -57,9 +59,11 @@ class AdaGradSpec: Spek({
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildSparseErrors())
 
         it("should match the expected updated array") {
-          assertEquals(true, updatableArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.399258, 0.5, 1.0, 0.799443)),
-            tolerance = 1.0e-6))
+          assertTrue {
+            updatableArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.399258, 0.5, 1.0, 0.799443)),
+              tolerance = 1.0e-6)
+          }
         }
       }
     }

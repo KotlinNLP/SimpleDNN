@@ -20,7 +20,6 @@ import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
@@ -39,27 +38,35 @@ class RANLayerStructureSpec : Spek({
         layer.forward()
 
         it("should match the expected input gate") {
-          assertEquals(true, layer.inputGate.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39652, 0.25162, 0.5, 0.70475, 0.45264)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.inputGate.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39652, 0.25162, 0.5, 0.70475, 0.45264)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected forget gate") {
-          assertEquals(true, layer.forgetGate.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.85321, 0.43291, 0.11609, 0.51999, 0.24232)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.forgetGate.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.85321, 0.43291, 0.11609, 0.51999, 0.24232)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected candidate") {
-          assertEquals(true, layer.candidate.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(1.02, -0.1, 0.1, 2.03, -1.41)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.candidate.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(1.02, -0.1, 0.1, 2.03, -1.41)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected outputArray") {
-          assertEquals(true, layer.outputArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.38375, -0.02516, 0.04996, 0.8918, -0.56369)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.outputArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.38375, -0.02516, 0.04996, 0.8918, -0.56369)),
+              tolerance = 1.0e-05)
+          }
         }
       }
 
@@ -69,27 +76,35 @@ class RANLayerStructureSpec : Spek({
         layer.forward()
 
         it("should match the expected input gate") {
-          assertEquals(true, layer.inputGate.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.72312, 0.24974, 0.54983, 0.82054, 0.53494)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.inputGate.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.72312, 0.24974, 0.54983, 0.82054, 0.53494)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected forget gate") {
-          assertEquals(true, layer.forgetGate.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.91133, 0.18094, 0.04834, 0.67481, 0.38936)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.forgetGate.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.91133, 0.18094, 0.04834, 0.67481, 0.38936)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected candidate") {
-          assertEquals(true, layer.candidate.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(1.02, -0.1, 0.1, 2.03, -1.41)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.candidate.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(1.02, -0.1, 0.1, 2.03, -1.41)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected outputArray") {
-          assertEquals(true, layer.outputArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5045, 0.01121, 0.04046, 0.78504, -0.78786)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.outputArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5045, 0.01121, 0.04046, 0.78504, -0.78786)),
+              tolerance = 1.0e-05)
+          }
         }
       }
     }
@@ -104,27 +119,35 @@ class RANLayerStructureSpec : Spek({
         layer.forward(layerContributions = contributions)
 
         it("should match the expected input gate") {
-          assertEquals(true, layer.inputGate.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39652, 0.25162, 0.5, 0.70475, 0.45264)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.inputGate.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39652, 0.25162, 0.5, 0.70475, 0.45264)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected forget gate") {
-          assertEquals(true, layer.forgetGate.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.85321, 0.43291, 0.11609, 0.51999, 0.24232)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.forgetGate.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.85321, 0.43291, 0.11609, 0.51999, 0.24232)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected candidate") {
-          assertEquals(true, layer.candidate.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(1.02, -0.1, 0.1, 2.03, -1.41)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.candidate.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(1.02, -0.1, 0.1, 2.03, -1.41)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected outputArray") {
-          assertEquals(true, layer.outputArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.38375, -0.02516, 0.04996, 0.8918, -0.56369)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.outputArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.38375, -0.02516, 0.04996, 0.8918, -0.56369)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected contributions of the input gate") {
@@ -193,27 +216,35 @@ class RANLayerStructureSpec : Spek({
         layer.forward(layerContributions = contributions)
 
         it("should match the expected input gate") {
-          assertEquals(true, layer.inputGate.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.72312, 0.24974, 0.54983, 0.82054, 0.53494)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.inputGate.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.72312, 0.24974, 0.54983, 0.82054, 0.53494)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected forget gate") {
-          assertEquals(true, layer.forgetGate.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.91133, 0.18094, 0.04834, 0.67481, 0.38936)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.forgetGate.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.91133, 0.18094, 0.04834, 0.67481, 0.38936)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected candidate") {
-          assertEquals(true, layer.candidate.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(1.02, -0.1, 0.1, 2.03, -1.41)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.candidate.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(1.02, -0.1, 0.1, 2.03, -1.41)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected outputArray") {
-          assertEquals(true, layer.outputArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5045, 0.01121, 0.04046, 0.78504, -0.78786)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.outputArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5045, 0.01121, 0.04046, 0.78504, -0.78786)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected contributions of the input gate") {
@@ -364,111 +395,137 @@ class RANLayerStructureSpec : Spek({
         layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
 
         it("should match the expected errors of the outputArray") {
-          assertEquals(true, layer.outputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.15882, -0.77467, 0.19946, -0.15316, -0.69159)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.outputArray.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.15882, -0.77467, 0.19946, -0.15316, -0.69159)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate") {
-          assertEquals(true, layer.inputGate.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03877, 0.01459, 0.00499, -0.06469, 0.2416)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.inputGate.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03877, 0.01459, 0.00499, -0.06469, 0.2416)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate") {
-          assertEquals(true, layer.forgetGate.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.forgetGate.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the candidate") {
-          assertEquals(true, layer.candidate.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.06298, -0.19492, 0.09973, -0.10794, -0.31304)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.candidate.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.06298, -0.19492, 0.09973, -0.10794, -0.31304)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate biases") {
-          assertEquals(true, paramsErrors.inputGate.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03877, 0.01459, 0.00499, -0.06469, 0.2416)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.inputGate.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03877, 0.01459, 0.00499, -0.06469, 0.2416)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate biases") {
-          assertEquals(true, paramsErrors.forgetGate.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.forgetGate.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the candidate biases") {
-          assertEquals(true, paramsErrors.candidate.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.06298, -0.19492, 0.09973, -0.10794, -0.31304)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.candidate.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.06298, -0.19492, 0.09973, -0.10794, -0.31304)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate weights") {
-          assertEquals(true, (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.03101, 0.03489, 0.03489, -0.03877),
-              doubleArrayOf(-0.01167, -0.01313, -0.01313, 0.01459),
-              doubleArrayOf(-0.00399, -0.00449, -0.00449, 0.00499),
-              doubleArrayOf(0.05175, 0.05822, 0.05822, -0.06469),
-              doubleArrayOf(-0.19328, -0.21744, -0.21744, 0.2416)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.03101, 0.03489, 0.03489, -0.03877),
+                doubleArrayOf(-0.01167, -0.01313, -0.01313, 0.01459),
+                doubleArrayOf(-0.00399, -0.00449, -0.00449, 0.00499),
+                doubleArrayOf(0.05175, 0.05822, 0.05822, -0.06469),
+                doubleArrayOf(-0.19328, -0.21744, -0.21744, 0.2416)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate weights") {
-          assertEquals(true, (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the candidate weights") {
-          assertEquals(true, (paramsErrors.candidate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.05038, 0.05668, 0.05668, -0.06298),
-              doubleArrayOf(0.15594, 0.17543, 0.17543, -0.19492),
-              doubleArrayOf(-0.07978, -0.08976, -0.08976, 0.09973),
-              doubleArrayOf(0.08635, 0.09714, 0.09714, -0.10794),
-              doubleArrayOf(0.25044, 0.28174, 0.28174, -0.31304)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            (paramsErrors.candidate.weights.values as DenseNDArray).equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.05038, 0.05668, 0.05668, -0.06298),
+                doubleArrayOf(0.15594, 0.17543, 0.17543, -0.19492),
+                doubleArrayOf(-0.07978, -0.08976, -0.08976, 0.09973),
+                doubleArrayOf(0.08635, 0.09714, 0.09714, -0.10794),
+                doubleArrayOf(0.25044, 0.28174, 0.28174, -0.31304)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate recurrent weights") {
-          assertEquals(true, paramsErrors.inputGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.inputGate.recurrentWeights.values.equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate recurrent weights") {
-          assertEquals(true, paramsErrors.forgetGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.forgetGate.recurrentWeights.values.equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the inputArray") {
-          assertEquals(true, layer.inputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.21996, -0.12731, 0.10792, 0.49361)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.inputArray.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.21996, -0.12731, 0.10792, 0.49361)),
+              tolerance = 1.0e-05)
+          }
         }
       }
 
@@ -487,111 +544,137 @@ class RANLayerStructureSpec : Spek({
         layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
 
         it("should match the expected errors of the outputArray") {
-          assertEquals(true, layer.outputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.04883, -0.73869, 0.19015, -0.32806, -0.46949)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.outputArray.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.04883, -0.73869, 0.19015, -0.32806, -0.46949)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate") {
-          assertEquals(true, layer.inputGate.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.00997, 0.01384, 0.00471, -0.09807, 0.16469)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.inputGate.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.00997, 0.01384, 0.00471, -0.09807, 0.16469)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate") {
-          assertEquals(true, layer.forgetGate.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.00078, -0.02161, -0.00255, 0.05157, 0.07412)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.forgetGate.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.00078, -0.02161, -0.00255, 0.05157, 0.07412)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the candidate") {
-          assertEquals(true, layer.candidate.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03531, -0.18448, 0.10455, -0.26919, -0.25115)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.candidate.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03531, -0.18448, 0.10455, -0.26919, -0.25115)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate biases") {
-          assertEquals(true, paramsErrors.inputGate.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.00997, 0.01384, 0.00471, -0.09807, 0.16469)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.inputGate.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.00997, 0.01384, 0.00471, -0.09807, 0.16469)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate biases") {
-          assertEquals(true, paramsErrors.forgetGate.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.00078, -0.02161, -0.00255, 0.05157, 0.07412)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.forgetGate.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.00078, -0.02161, -0.00255, 0.05157, 0.07412)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the candidate biases") {
-          assertEquals(true, paramsErrors.candidate.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03531, -0.18448, 0.10455, -0.26919, -0.25115)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.candidate.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03531, -0.18448, 0.10455, -0.26919, -0.25115)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate weights") {
-          assertEquals(true, (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.00798, 0.00898, 0.00898, -0.00997),
-              doubleArrayOf(-0.01107, -0.01246, -0.01246, 0.01384),
-              doubleArrayOf(-0.00377, -0.00424, -0.00424, 0.00471),
-              doubleArrayOf(0.07845, 0.08826, 0.08826, -0.09807),
-              doubleArrayOf(-0.13175, -0.14822, -0.14822, 0.16469)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.00798, 0.00898, 0.00898, -0.00997),
+                doubleArrayOf(-0.01107, -0.01246, -0.01246, 0.01384),
+                doubleArrayOf(-0.00377, -0.00424, -0.00424, 0.00471),
+                doubleArrayOf(0.07845, 0.08826, 0.08826, -0.09807),
+                doubleArrayOf(-0.13175, -0.14822, -0.14822, 0.16469)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate weights") {
-          assertEquals(true, (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(-0.00062, -0.0007, -0.0007, 0.00078),
-              doubleArrayOf(0.01729, 0.01945, 0.01945, -0.02161),
-              doubleArrayOf(0.00204, 0.00229, 0.00229, -0.00255),
-              doubleArrayOf(-0.04125, -0.04641, -0.04641, 0.05157),
-              doubleArrayOf(-0.0593, -0.06671, -0.06671, 0.07412)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(-0.00062, -0.0007, -0.0007, 0.00078),
+                doubleArrayOf(0.01729, 0.01945, 0.01945, -0.02161),
+                doubleArrayOf(0.00204, 0.00229, 0.00229, -0.00255),
+                doubleArrayOf(-0.04125, -0.04641, -0.04641, 0.05157),
+                doubleArrayOf(-0.0593, -0.06671, -0.06671, 0.07412)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the candidate weights") {
-          assertEquals(true, (paramsErrors.candidate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.02825, 0.03178, 0.03178, -0.03531),
-              doubleArrayOf(0.14759, 0.16603, 0.16603, -0.18448),
-              doubleArrayOf(-0.08364, -0.09409, -0.09409, 0.10455),
-              doubleArrayOf(0.21535, 0.24227, 0.24227, -0.26919),
-              doubleArrayOf(0.20092, 0.22604, 0.22604, -0.25115)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            (paramsErrors.candidate.weights.values as DenseNDArray).equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.02825, 0.03178, 0.03178, -0.03531),
+                doubleArrayOf(0.14759, 0.16603, 0.16603, -0.18448),
+                doubleArrayOf(-0.08364, -0.09409, -0.09409, 0.10455),
+                doubleArrayOf(0.21535, 0.24227, 0.24227, -0.26919),
+                doubleArrayOf(0.20092, 0.22604, 0.22604, -0.25115)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate recurrent weights") {
-          assertEquals(true, paramsErrors.inputGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.00199, -0.00199, 0.00299, 0.00898, 0.00798),
-              doubleArrayOf(-0.00277, 0.00277, -0.00415, -0.01246, -0.01107),
-              doubleArrayOf(-0.00094, 0.00094, -0.00141, -0.00424, -0.00377),
-              doubleArrayOf(0.01961, -0.01961, 0.02942, 0.08826, 0.07845),
-              doubleArrayOf(-0.03294, 0.03294, -0.04941, -0.14822, -0.13175)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.inputGate.recurrentWeights.values.equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.00199, -0.00199, 0.00299, 0.00898, 0.00798),
+                doubleArrayOf(-0.00277, 0.00277, -0.00415, -0.01246, -0.01107),
+                doubleArrayOf(-0.00094, 0.00094, -0.00141, -0.00424, -0.00377),
+                doubleArrayOf(0.01961, -0.01961, 0.02942, 0.08826, 0.07845),
+                doubleArrayOf(-0.03294, 0.03294, -0.04941, -0.14822, -0.13175)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate recurrent weights") {
-          assertEquals(true, paramsErrors.forgetGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(-0.00016, 0.00016, -0.00023, -0.0007, -0.00062),
-              doubleArrayOf(0.00432, -0.00432, 0.00648, 0.01945, 0.01729),
-              doubleArrayOf(0.00051, -0.00051, 0.00076, 0.00229, 0.00204),
-              doubleArrayOf(-0.01031, 0.01031, -0.01547, -0.04641, -0.04125),
-              doubleArrayOf(-0.01482, 0.01482, -0.02224, -0.06671, -0.0593)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.forgetGate.recurrentWeights.values.equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(-0.00016, 0.00016, -0.00023, -0.0007, -0.00062),
+                doubleArrayOf(0.00432, -0.00432, 0.00648, 0.01945, 0.01729),
+                doubleArrayOf(0.00051, -0.00051, 0.00076, 0.00229, 0.00204),
+                doubleArrayOf(-0.01031, 0.01031, -0.01547, -0.04641, -0.04125),
+                doubleArrayOf(-0.01482, 0.01482, -0.02224, -0.06671, -0.0593)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the inputArray") {
-          assertEquals(true, layer.inputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.21972, 0.09327, -0.127, 0.17217)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.inputArray.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.21972, 0.09327, -0.127, 0.17217)),
+              tolerance = 1.0e-05)
+          }
         }
       }
 
@@ -610,111 +693,137 @@ class RANLayerStructureSpec : Spek({
         layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
 
         it("should match the expected errors of the outputArray") {
-          assertEquals(true, layer.outputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.30882, -0.42467, 0.59946, -1.00316, -0.88159)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.outputArray.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.30882, -0.42467, 0.59946, -1.00316, -0.88159)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate") {
-          assertEquals(true, layer.inputGate.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.07538, 0.008, 0.01499, -0.42373, 0.30797)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.inputGate.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.07538, 0.008, 0.01499, -0.42373, 0.30797)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate") {
-          assertEquals(true, layer.forgetGate.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.forgetGate.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the candidate") {
-          assertEquals(true, layer.candidate.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.12245, -0.10685, 0.29973, -0.70697, -0.39905)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.candidate.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.12245, -0.10685, 0.29973, -0.70697, -0.39905)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate biases") {
-          assertEquals(true, paramsErrors.inputGate.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.07538, 0.008, 0.01499, -0.42373, 0.30797)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.inputGate.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.07538, 0.008, 0.01499, -0.42373, 0.30797)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate biases") {
-          assertEquals(true, paramsErrors.forgetGate.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.forgetGate.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the candidate biases") {
-          assertEquals(true, paramsErrors.candidate.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.12245, -0.10685, 0.29973, -0.70697, -0.39905)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.candidate.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.12245, -0.10685, 0.29973, -0.70697, -0.39905)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate weights") {
-          assertEquals(true, (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.0603, 0.06784, 0.06784, -0.07538),
-              doubleArrayOf(-0.0064, -0.0072, -0.0072, 0.00800),
-              doubleArrayOf(-0.01199, -0.01349, -0.01349, 0.01499),
-              doubleArrayOf(0.33899, 0.38136, 0.38136, -0.42373),
-              doubleArrayOf(-0.24638, -0.27718, -0.27718, 0.30797)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.0603, 0.06784, 0.06784, -0.07538),
+                doubleArrayOf(-0.0064, -0.0072, -0.0072, 0.00800),
+                doubleArrayOf(-0.01199, -0.01349, -0.01349, 0.01499),
+                doubleArrayOf(0.33899, 0.38136, 0.38136, -0.42373),
+                doubleArrayOf(-0.24638, -0.27718, -0.27718, 0.30797)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate weights") {
-          assertEquals(true, (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the candidate weights") {
-          assertEquals(true, (paramsErrors.candidate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.09796, 0.11021, 0.11021, -0.12245),
-              doubleArrayOf(0.08548, 0.09617, 0.09617, -0.10685),
-              doubleArrayOf(-0.23978, -0.26976, -0.26976, 0.29973),
-              doubleArrayOf(0.56558, 0.63627, 0.63627, -0.70697),
-              doubleArrayOf(0.31924, 0.35914, 0.35914, -0.39905)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            (paramsErrors.candidate.weights.values as DenseNDArray).equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.09796, 0.11021, 0.11021, -0.12245),
+                doubleArrayOf(0.08548, 0.09617, 0.09617, -0.10685),
+                doubleArrayOf(-0.23978, -0.26976, -0.26976, 0.29973),
+                doubleArrayOf(0.56558, 0.63627, 0.63627, -0.70697),
+                doubleArrayOf(0.31924, 0.35914, 0.35914, -0.39905)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate recurrent weights") {
-          assertEquals(true, paramsErrors.inputGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.inputGate.recurrentWeights.values.equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate recurrent weights") {
-          assertEquals(true, paramsErrors.forgetGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-              doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.forgetGate.recurrentWeights.values.equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
+                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the inputArray") {
-          assertEquals(true, layer.inputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.55722, 0.45624, -0.39506, 0.30611)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.inputArray.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.55722, 0.45624, -0.39506, 0.30611)),
+              tolerance = 1.0e-05)
+          }
         }
       }
 
@@ -733,111 +842,137 @@ class RANLayerStructureSpec : Spek({
         layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
 
         it("should match the expected errors of the outputArray") {
-          assertEquals(true, layer.outputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.19883, -0.38869, 0.59015, -1.17806, -0.65949)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.outputArray.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.19883, -0.38869, 0.59015, -1.17806, -0.65949)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate") {
-          assertEquals(true, layer.inputGate.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.04061, 0.00728, 0.01461, -0.35216, 0.23134)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.inputGate.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.04061, 0.00728, 0.01461, -0.35216, 0.23134)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate") {
-          assertEquals(true, layer.forgetGate.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.00317, -0.01137, -0.00791, 0.18518, 0.10412)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.forgetGate.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.00317, -0.01137, -0.00791, 0.18518, 0.10412)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the candidate") {
-          assertEquals(true, layer.candidate.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.14378, -0.09707, 0.32448, -0.96664, -0.35279)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.candidate.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.14378, -0.09707, 0.32448, -0.96664, -0.35279)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate biases") {
-          assertEquals(true, paramsErrors.inputGate.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.04061, 0.00728, 0.01461, -0.35216, 0.23134)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.inputGate.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.04061, 0.00728, 0.01461, -0.35216, 0.23134)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate biases") {
-          assertEquals(true, paramsErrors.forgetGate.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.00317, -0.01137, -0.00791, 0.18518, 0.10412)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.forgetGate.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.00317, -0.01137, -0.00791, 0.18518, 0.10412)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the candidate biases") {
-          assertEquals(true, paramsErrors.candidate.biases.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.14378, -0.09707, 0.32448, -0.96664, -0.35279)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.candidate.biases.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.14378, -0.09707, 0.32448, -0.96664, -0.35279)),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate weights") {
-          assertEquals(true, (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.03248, 0.03655, 0.03655, -0.04061),
-              doubleArrayOf(-0.00583, -0.00655, -0.00655, 0.00728),
-              doubleArrayOf(-0.01169, -0.01315, -0.01315, 0.01461),
-              doubleArrayOf(0.28172, 0.31694, 0.31694, -0.35216),
-              doubleArrayOf(-0.18507, -0.20820, -0.20820, 0.23134)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.03248, 0.03655, 0.03655, -0.04061),
+                doubleArrayOf(-0.00583, -0.00655, -0.00655, 0.00728),
+                doubleArrayOf(-0.01169, -0.01315, -0.01315, 0.01461),
+                doubleArrayOf(0.28172, 0.31694, 0.31694, -0.35216),
+                doubleArrayOf(-0.18507, -0.20820, -0.20820, 0.23134)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate weights") {
-          assertEquals(true, (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(-0.00254, -0.00285, -0.00285, 0.00317),
-              doubleArrayOf(0.00910, 0.01023, 0.01023, -0.01137),
-              doubleArrayOf(0.00633, 0.00712, 0.00712, -0.00791),
-              doubleArrayOf(-0.14814, -0.16666, -0.16666, 0.18518),
-              doubleArrayOf(-0.08330, -0.09371, -0.09371, 0.10412)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(-0.00254, -0.00285, -0.00285, 0.00317),
+                doubleArrayOf(0.00910, 0.01023, 0.01023, -0.01137),
+                doubleArrayOf(0.00633, 0.00712, 0.00712, -0.00791),
+                doubleArrayOf(-0.14814, -0.16666, -0.16666, 0.18518),
+                doubleArrayOf(-0.08330, -0.09371, -0.09371, 0.10412)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the candidate weights") {
-          assertEquals(true, (paramsErrors.candidate.weights.values as DenseNDArray).equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.11502, 0.12940, 0.12940, -0.14378),
-              doubleArrayOf(0.07766, 0.08737, 0.08737, -0.09707),
-              doubleArrayOf(-0.25959, -0.29204, -0.29204, 0.32448),
-              doubleArrayOf(0.77332, 0.86998, 0.86998, -0.96664),
-              doubleArrayOf(0.28223, 0.31751, 0.31751, -0.35279)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            (paramsErrors.candidate.weights.values as DenseNDArray).equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.11502, 0.12940, 0.12940, -0.14378),
+                doubleArrayOf(0.07766, 0.08737, 0.08737, -0.09707),
+                doubleArrayOf(-0.25959, -0.29204, -0.29204, 0.32448),
+                doubleArrayOf(0.77332, 0.86998, 0.86998, -0.96664),
+                doubleArrayOf(0.28223, 0.31751, 0.31751, -0.35279)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the input gate recurrent weights") {
-          assertEquals(true, paramsErrors.inputGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.00812, -0.00812, 0.01218, 0.03655, 0.03248),
-              doubleArrayOf(-0.00146, 0.00146, -0.00218, -0.00655, -0.00583),
-              doubleArrayOf(-0.00292, 0.00292, -0.00438, -0.01315, -0.01169),
-              doubleArrayOf(0.07043, -0.07043, 0.10565, 0.31694, 0.28172),
-              doubleArrayOf(-0.04627, 0.04627, -0.06940, -0.20820, -0.18507)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.inputGate.recurrentWeights.values.equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(0.00812, -0.00812, 0.01218, 0.03655, 0.03248),
+                doubleArrayOf(-0.00146, 0.00146, -0.00218, -0.00655, -0.00583),
+                doubleArrayOf(-0.00292, 0.00292, -0.00438, -0.01315, -0.01169),
+                doubleArrayOf(0.07043, -0.07043, 0.10565, 0.31694, 0.28172),
+                doubleArrayOf(-0.04627, 0.04627, -0.06940, -0.20820, -0.18507)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the forget gate recurrent weights") {
-          assertEquals(true, paramsErrors.forgetGate.recurrentWeights.values.equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(-0.00063, 0.00063, -0.00095, -0.00285, -0.00254),
-              doubleArrayOf(0.00227, -0.00227, 0.00341, 0.01023, 0.00910),
-              doubleArrayOf(0.00158, -0.00158, 0.00237, 0.00712, 0.00633),
-              doubleArrayOf(-0.03704, 0.03704, -0.05555, -0.16666, -0.14814),
-              doubleArrayOf(-0.02082, 0.02082, -0.03124, -0.09371, -0.08330)
-            )),
-            tolerance = 1.0e-05))
+          assertTrue {
+            paramsErrors.forgetGate.recurrentWeights.values.equals(
+              DenseNDArrayFactory.arrayOf(listOf(
+                doubleArrayOf(-0.00063, 0.00063, -0.00095, -0.00285, -0.00254),
+                doubleArrayOf(0.00227, -0.00227, 0.00341, 0.01023, 0.00910),
+                doubleArrayOf(0.00158, -0.00158, 0.00237, 0.00712, 0.00633),
+                doubleArrayOf(-0.03704, 0.03704, -0.05555, -0.16666, -0.14814),
+                doubleArrayOf(-0.02082, 0.02082, -0.03124, -0.09371, -0.08330)
+              )),
+              tolerance = 1.0e-05)
+          }
         }
 
         it("should match the expected errors of the inputArray") {
-          assertEquals(true, layer.inputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.65243, 0.74348, -0.76607, -0.15266)),
-            tolerance = 1.0e-05))
+          assertTrue {
+            layer.inputArray.errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.65243, 0.74348, -0.76607, -0.15266)),
+              tolerance = 1.0e-05)
+          }
         }
       }
     }

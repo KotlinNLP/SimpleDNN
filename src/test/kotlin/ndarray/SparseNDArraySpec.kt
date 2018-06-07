@@ -294,7 +294,7 @@ class SparseNDArraySpec : Spek({
       on("sum() method") {
 
         it("should give the expected sum of its elements") {
-          assertEquals(true, equals(1.2, array.sum(), tolerance = 1.0e-10))
+          assertTrue { equals(1.2, array.sum(), tolerance = 1.0e-10) }
         }
       }
 

@@ -15,7 +15,7 @@ import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  *
@@ -37,9 +37,11 @@ class RMSPropSpec: Spek({
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildDenseErrors())
 
         it("should match the expected updated array") {
-          assertEquals(true, updatableArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.399091, 0.398905, 0.499502, 0.996838, 0.799765)),
-            tolerance = 1.0e-6))
+          assertTrue {
+            updatableArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.399091, 0.398905, 0.499502, 0.996838, 0.799765)),
+              tolerance = 1.0e-6)
+          }
         }
       }
     }
@@ -57,9 +59,11 @@ class RMSPropSpec: Spek({
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildSparseErrors())
 
         it("should match the expected updated array") {
-          assertEquals(true, updatableArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.39890545, 0.5, 1.0, 0.79930994)),
-            tolerance = 1.0e-8))
+          assertTrue {
+            updatableArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.39890545, 0.5, 1.0, 0.79930994)),
+              tolerance = 1.0e-8)
+          }
         }
       }
     }

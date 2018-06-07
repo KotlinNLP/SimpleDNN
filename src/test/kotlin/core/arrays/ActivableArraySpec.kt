@@ -19,6 +19,7 @@ import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 /**
  *
@@ -69,7 +70,7 @@ class ActivableArraySpec : Spek({
         }
 
         it("should contain the values assigned to it") {
-          assertEquals(true, activableArray.values.equals(initArray))
+          assertTrue { activableArray.values.equals(initArray) }
         }
       }
 
@@ -79,7 +80,7 @@ class ActivableArraySpec : Spek({
         activableArray.setActivation(activationFunction)
 
         it("should contain the values assigned to it") {
-          assertEquals(true, activableArray.values.equals(initArray))
+          assertTrue { activableArray.values.equals(initArray) }
         }
       }
     }
@@ -92,15 +93,15 @@ class ActivableArraySpec : Spek({
       val outActivatedValues = activableArray.getActivatedValues()
 
       it("should have the activated values equals to the not activated ones") {
-        assertEquals(true, activableArray.values.equals(activableArray.valuesNotActivated))
+        assertTrue { activableArray.values.equals(activableArray.valuesNotActivated) }
       }
 
       it("should return an new NDArray calling getActivatedValues()") {
-        assertEquals(true, outActivatedValues !== activableArray.values)
+        assertTrue { outActivatedValues !== activableArray.values }
       }
 
       it("should return the expected activated values calling getActivatedValues()") {
-        assertEquals(true, outActivatedValues.equals(expectedActivatedValues, tolerance = 1.0e-08))
+        assertTrue { outActivatedValues.equals(expectedActivatedValues, tolerance = 1.0e-08) }
       }
     }
 
@@ -114,19 +115,19 @@ class ActivableArraySpec : Spek({
       val outActivatedValues = activableArray.getActivatedValues()
 
       it("should have the expected activated values") {
-        assertEquals(true, expectedActivatedValues.equals(activableArray.values, tolerance = 1.0e-08))
+        assertTrue { expectedActivatedValues.equals(activableArray.values, tolerance = 1.0e-08) }
       }
 
       it("should have the expected values of the derivative of its activation") {
-        assertEquals(true, activatedValuesDeriv.equals(activableArray.calculateActivationDeriv(), tolerance = 1.0e-08))
+        assertTrue { activatedValuesDeriv.equals(activableArray.calculateActivationDeriv(), tolerance = 1.0e-08) }
       }
 
       it("should return an new NDArray calling getActivatedValues()") {
-        assertEquals(true, outActivatedValues !== activableArray.values)
+        assertTrue { outActivatedValues !== activableArray.values }
       }
 
       it("should return the same activated values calling getActivatedValues()") {
-        assertEquals(true, outActivatedValues.equals(activableArray.values, tolerance = 1.0e-08))
+        assertTrue { outActivatedValues.equals(activableArray.values, tolerance = 1.0e-08) }
       }
     }
 
@@ -145,15 +146,15 @@ class ActivableArraySpec : Spek({
       val outActivatedValues = activableArray.getActivatedValues()
 
       it("should have the expected activated values") {
-        assertEquals(true, expectedActivatedValues2.equals(activableArray.values, tolerance = 1.0e-08))
+        assertTrue { expectedActivatedValues2.equals(activableArray.values, tolerance = 1.0e-08) }
       }
 
       it("should return the same activated values calling getActivatedValues()") {
-        assertEquals(true, outActivatedValues.equals(activableArray.values, tolerance = 1.0e-08))
+        assertTrue { outActivatedValues.equals(activableArray.values, tolerance = 1.0e-08) }
       }
 
       it("should return the previous activated values as valuesNotActivated") {
-        assertEquals(true, expectedActivatedValues.equals(activableArray.valuesNotActivated, tolerance = 1.0e-08))
+        assertTrue { expectedActivatedValues.equals(activableArray.valuesNotActivated, tolerance = 1.0e-08) }
       }
     }
 
@@ -182,11 +183,11 @@ class ActivableArraySpec : Spek({
         val cloneArray = activableArray.clone()
 
         it("should have the same not activated values") {
-          assertEquals(true, activableArray.valuesNotActivated.equals(cloneArray.valuesNotActivated))
+          assertTrue { activableArray.valuesNotActivated.equals(cloneArray.valuesNotActivated) }
         }
 
         it("should have the same activated values") {
-          assertEquals(true, activableArray.values.equals(cloneArray.values))
+          assertTrue { activableArray.values.equals(cloneArray.values) }
         }
       }
     }

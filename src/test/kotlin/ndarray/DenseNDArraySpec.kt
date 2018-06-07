@@ -40,11 +40,11 @@ class DenseNDArraySpec : Spek({
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
 
         it("should have the expected number of rows") {
-          assertEquals(true, array.rows == 4)
+          assertEquals(4, array.rows)
         }
 
         it("should have the expected number of columns") {
-          assertEquals(true, array.columns == 1)
+          assertEquals(1, array.columns)
         }
 
         it("should contain the expected value at index 0") {
@@ -69,11 +69,11 @@ class DenseNDArraySpec : Spek({
         val array = DenseNDArrayFactory.zeros(Shape(2, 3))
 
         it("should have the expected number of rows") {
-          assertEquals(true, array.rows == 2)
+          assertEquals(2, array.rows)
         }
 
         it("should have the expected number of columns") {
-          assertEquals(true, array.columns == 3)
+          assertEquals(3, array.columns)
         }
 
         it("should be filled with zeros") {
@@ -86,11 +86,11 @@ class DenseNDArraySpec : Spek({
         val array = DenseNDArrayFactory.ones(Shape(2, 3))
 
         it("should have the expected number of rows") {
-          assertEquals(true, array.rows == 2)
+          assertEquals(2, array.rows)
         }
 
         it("should have the expected number of columns") {
-          assertEquals(true, array.columns == 3)
+          assertEquals(3, array.columns)
         }
 
         it("should be filled with ones") {
@@ -124,7 +124,7 @@ class DenseNDArraySpec : Spek({
         }
 
         it("should have the expected values") {
-          assertEquals(true, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 1.0, 0.0)).equals(array))
+          assertTrue { DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 1.0, 0.0)).equals(array) }
         }
       }
 
@@ -175,11 +175,11 @@ class DenseNDArraySpec : Spek({
           doubleArrayOf(0.123000001, 0.234000001, 0.345000001, 0.012000001))
 
         it("should result equal with a large tolerance") {
-          assertEquals(true, array.equals(arrayToCompare, tolerance=1.0e-03))
+          assertTrue { array.equals(arrayToCompare, tolerance=1.0e-03) }
         }
 
         it("should result equal with a strict tolerance") {
-          assertEquals(true, array.equals(arrayToCompare, tolerance=1.0e-08))
+          assertTrue { array.equals(arrayToCompare, tolerance=1.0e-08) }
         }
       }
 
@@ -189,7 +189,7 @@ class DenseNDArraySpec : Spek({
           doubleArrayOf(0.12303, 0.23403, 0.34503, 0.01203))
 
         it("should result not equal") {
-          assertEquals(false, array.equals(arrayToCompare, tolerance=1.0e-05))
+          assertFalse { array.equals(arrayToCompare, tolerance=1.0e-05) }
         }
       }
     }
@@ -201,11 +201,11 @@ class DenseNDArraySpec : Spek({
       on("properties") {
 
         it("should be a vector") {
-          assertEquals(true, array.isVector)
+          assertTrue { array.isVector }
         }
 
         it("should not be a matrix") {
-          assertEquals(false, array.isMatrix)
+          assertFalse { array.isMatrix }
         }
 
         it("should have the expected length") {
@@ -221,18 +221,18 @@ class DenseNDArraySpec : Spek({
         }
 
         it("should have the expected shape") {
-          assertEquals(true, array.shape == Shape(4))
+          assertEquals(Shape(4), array.shape)
         }
       }
 
       on("generic methods") {
 
         it("should be equal to itself") {
-          assertEquals(true, array.equals(array))
+          assertTrue { array.equals(array) }
         }
 
         it("should be equal to its copy") {
-          assertEquals(true, array.equals(array.copy()))
+          assertTrue { array.equals(array.copy()) }
         }
       }
 
@@ -246,13 +246,15 @@ class DenseNDArraySpec : Spek({
         }
 
         it("should return the expected range (0, 3)") {
-          assertEquals(true, DenseNDArrayFactory.arrayOf(doubleArrayOf(
-            0.1, 0.2, 0.3)).equals(a))
+          assertTrue {
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3)).equals(a)
+          }
         }
 
         it("should return the expected range (2, 4)") {
-          assertEquals(true, DenseNDArrayFactory.arrayOf(doubleArrayOf(
-            0.3, 0.0)).equals(b))
+          assertTrue {
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.0)).equals(b)
+          }
         }
 
         it("should raise an IndexOutOfBoundsException requesting for a range out of bounds") {
@@ -267,7 +269,7 @@ class DenseNDArraySpec : Spek({
         val transposedArray = array.t
 
         it("should give a transposed array with the expected shape") {
-          assertEquals(true, transposedArray.shape == Shape(1, 4))
+          assertEquals(Shape(1, 4), transposedArray.shape)
         }
 
         it("should give a transposed array with the expected values") {
@@ -315,11 +317,11 @@ class DenseNDArraySpec : Spek({
         val res = array.sum(n)
 
         it("should return a new DenseNDArray") {
-          assertEquals(false, array === res)
+          assertFalse { array === res }
         }
 
         it("should return the expected values") {
-          assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -329,11 +331,11 @@ class DenseNDArraySpec : Spek({
         val res = array.sum(a)
 
         it("should return a new DenseNDArray") {
-          assertEquals(false, array === res)
+          assertFalse { array === res }
         }
 
         it("should return the expected values") {
-          assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -343,11 +345,11 @@ class DenseNDArraySpec : Spek({
         val res = array.sub(n)
 
         it("should return a new DenseNDArray") {
-          assertEquals(false, array === res)
+          assertFalse { array === res }
         }
 
         it("should return the expected values") {
-          assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -357,11 +359,11 @@ class DenseNDArraySpec : Spek({
         val res = array.reverseSub(n)
 
         it("should return a new DenseNDArray") {
-          assertEquals(false, array === res)
+          assertFalse { array === res }
         }
 
         it("should return the expected values") {
-          assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -376,15 +378,15 @@ class DenseNDArraySpec : Spek({
         val res = array.dot(a.t)
 
         it("should return a new DenseNDArray") {
-          assertEquals(false, array === res)
+          assertFalse { array === res }
         }
 
         it("should throw an error with not compatible shapes") {
-          assertFails({ array.dot(a) })
+          assertFails { array.dot(a) }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -394,11 +396,11 @@ class DenseNDArraySpec : Spek({
         val res = array.prod(n)
 
         it("should return a new DenseNDArray") {
-          assertEquals(false, array === res)
+          assertFalse { array === res }
         }
 
         it("should return the expected values") {
-          assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -408,11 +410,11 @@ class DenseNDArraySpec : Spek({
         val res = array.prod(a)
 
         it("should return a new DenseNDArray") {
-          assertEquals(false, array === res)
+          assertFalse { array === res }
         }
 
         it("should return the expected values") {
-          assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -430,11 +432,11 @@ class DenseNDArraySpec : Spek({
         val res = matrix.prod(colVector)
 
         it("should return a new DenseNDArray") {
-          assertEquals(false, matrix === res)
+          assertFalse { matrix === res }
         }
 
         it("should return the expected values") {
-          assertEquals(true, res.equals(expectedMatrix, tolerance = 1.0e-04))
+          assertTrue { res.equals(expectedMatrix, tolerance = 1.0e-04) }
         }
       }
 
@@ -444,11 +446,11 @@ class DenseNDArraySpec : Spek({
         val res = array.div(n)
 
         it("should return a new DenseNDArray") {
-          assertEquals(false, array === res)
+          assertFalse { array === res }
         }
 
         it("should return the expected values") {
-          assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -458,11 +460,11 @@ class DenseNDArraySpec : Spek({
         val res = array.div(a)
 
         it("should return a new DenseNDArray") {
-          assertEquals(false, array === res)
+          assertFalse { array === res }
         }
 
         it("should return the expected values") {
-          assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -472,18 +474,18 @@ class DenseNDArraySpec : Spek({
         val res = array.roundInt(threshold = 0.2)
 
         it("should return a new DenseNDArray") {
-          assertEquals(false, array === res)
+          assertFalse { array === res }
         }
 
         it("should return the expected values") {
-          assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
       on("avg() method") {
 
         it("should return the expected average") {
-          assertEquals(true, equals(0.15, array.avg(), tolerance = 1.0e-08))
+          assertTrue { equals(0.15, array.avg(), tolerance = 1.0e-08) }
         }
       }
 
@@ -494,11 +496,11 @@ class DenseNDArraySpec : Spek({
         val res = signedArray.sign()
 
         it("should return a new DenseNDArray") {
-          assertEquals(false, signedArray === res)
+          assertFalse { signedArray === res }
         }
 
         it("should return the expected values") {
-          assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -509,11 +511,11 @@ class DenseNDArraySpec : Spek({
         val res = signedArray.nonZeroSign()
 
         it("should return a new DenseNDArray") {
-          assertEquals(false, signedArray === res)
+          assertFalse { signedArray === res }
         }
 
         it("should return the expected values") {
-          assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -523,11 +525,11 @@ class DenseNDArraySpec : Spek({
         val res = array.sqrt()
 
         it("should return a new DenseNDArray") {
-          assertEquals(false, array === res)
+          assertFalse { array === res }
         }
 
         it("should return the expected values") {
-          assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -537,11 +539,11 @@ class DenseNDArraySpec : Spek({
         val res = array.pow(0.62)
 
         it("should return a new DenseNDArray") {
-          assertEquals(false, array === res)
+          assertFalse { array === res }
         }
 
         it("should return the expected values") {
-          assertEquals(true, res.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
     }
@@ -559,11 +561,11 @@ class DenseNDArraySpec : Spek({
         val res = array.assignSum(n)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -574,11 +576,11 @@ class DenseNDArraySpec : Spek({
         val res = array.assignSum(a, n)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -589,11 +591,11 @@ class DenseNDArraySpec : Spek({
         val res = array.assignSum(a, b)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -604,11 +606,11 @@ class DenseNDArraySpec : Spek({
         val res = array.assignSum(a)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -619,11 +621,11 @@ class DenseNDArraySpec : Spek({
         val res = array.assignSub(n)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -634,11 +636,11 @@ class DenseNDArraySpec : Spek({
         val res = array.assignSub(a)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -655,15 +657,15 @@ class DenseNDArraySpec : Spek({
         val res = array.assignDot(a, a1)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should throw an error with not compatible shapes") {
-          assertFails({ array.assignDot(a, b.t) })
+          assertFails { array.assignDot(a, b.t) }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -686,7 +688,7 @@ class DenseNDArraySpec : Spek({
         val res = array.assignDot(m, v)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should throw an error with not compatible shapes") {
@@ -696,11 +698,11 @@ class DenseNDArraySpec : Spek({
             doubleArrayOf(0.3, 0.5),
             doubleArrayOf(0.7, 0.5)
           ))
-          assertFails({ array.assignDot(a.t, m2) })
+          assertFails { array.assignDot(a.t, m2) }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -784,11 +786,11 @@ class DenseNDArraySpec : Spek({
         val res = array.assignProd(n)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -799,11 +801,11 @@ class DenseNDArraySpec : Spek({
         val res = array.assignProd(a, n)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -814,11 +816,11 @@ class DenseNDArraySpec : Spek({
         val res = array.assignProd(a, b)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -829,11 +831,11 @@ class DenseNDArraySpec : Spek({
         val res = array.assignProd(a)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -844,11 +846,11 @@ class DenseNDArraySpec : Spek({
         val res = array.assignDiv(n)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -859,11 +861,11 @@ class DenseNDArraySpec : Spek({
         val res = array.assignDiv(a)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -874,11 +876,11 @@ class DenseNDArraySpec : Spek({
         val res = array.assignPow(0.62)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -889,11 +891,11 @@ class DenseNDArraySpec : Spek({
         val res = array.assignRoundInt(threshold = 0.2)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should assign the expected values") {
-          assertEquals(true, array.equals(expectedArray, tolerance = 1.0e-04))
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
 
@@ -908,11 +910,11 @@ class DenseNDArraySpec : Spek({
         val res = array.randomize(randomGeneratorMock)
 
         it("should return the same DenseNDArray") {
-          assertEquals(true, array === res)
+          assertTrue { array === res }
         }
 
         it("should return the expected values") {
-          assertEquals(true, res.equals(a))
+          assertTrue { res.equals(a) }
         }
       }
     }
@@ -924,14 +926,14 @@ class DenseNDArraySpec : Spek({
       on("sum() method") {
 
         it("should give the expected sum of its elements") {
-          assertEquals(true, equals(0.6, array.sum(), tolerance = 1.0e-10))
+          assertTrue { equals(0.6, array.sum(), tolerance = 1.0e-10) }
         }
       }
 
       on("norm2() method") {
 
         it("should return the expected euclidean norm") {
-          assertEquals(true, equals(0.37417, array.norm2(), tolerance = 1.0e-05))
+          assertTrue { equals(0.37417, array.norm2(), tolerance = 1.0e-05) }
         }
       }
 
@@ -960,11 +962,11 @@ class DenseNDArraySpec : Spek({
       on("properties") {
 
         it("should not be a vector") {
-          assertEquals(false, array.isVector)
+          assertFalse { array.isVector }
         }
 
         it("should be a matrix") {
-          assertEquals(true, array.isMatrix)
+          assertTrue { array.isMatrix }
         }
 
         it("should have the expected length") {
@@ -980,18 +982,18 @@ class DenseNDArraySpec : Spek({
         }
 
         it("should have the expected shape") {
-          assertEquals(true, array.shape == Shape(2, 4))
+          assertEquals(Shape(2, 4), array.shape)
         }
       }
 
       on("generic methods") {
 
         it("should be equal to itself") {
-          assertEquals(true, array.equals(array))
+          assertTrue { array.equals(array) }
         }
 
         it("should be equal to its copy") {
-          assertEquals(true, array.equals(array.copy()))
+          assertTrue { array.equals(array.copy()) }
         }
       }
 
@@ -1013,8 +1015,7 @@ class DenseNDArraySpec : Spek({
         }
 
         it("should return the expected row values") {
-          assertEquals(true, row.equals(DenseNDArrayFactory.arrayOf(
-            listOf(doubleArrayOf(0.5, 0.6, 0.7, 0.8)))))
+          assertTrue { row.equals(DenseNDArrayFactory.arrayOf(listOf(doubleArrayOf(0.5, 0.6, 0.7, 0.8)))) }
         }
       }
 
@@ -1027,7 +1028,7 @@ class DenseNDArraySpec : Spek({
         }
 
         it("should return the expected column values") {
-          assertEquals(true, column.equals(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, 0.6))))
+          assertTrue { column.equals(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, 0.6))) }
         }
       }
 
@@ -1036,7 +1037,7 @@ class DenseNDArraySpec : Spek({
         val transposedArray = array.t
 
         it("should give a transposed array with the expected shape") {
-          assertEquals(true, transposedArray.shape == Shape(4, 2))
+          assertEquals(Shape(4, 2), transposedArray.shape)
         }
 
         it("should give a transposed array with the expected values") {
@@ -1055,7 +1056,7 @@ class DenseNDArraySpec : Spek({
       }
 
       it("should have the expected values") {
-        assertEquals(true, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0)).equals(arrayOfZeros))
+        assertTrue { DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0)).equals(arrayOfZeros) }
       }
     }
 
@@ -1069,7 +1070,7 @@ class DenseNDArraySpec : Spek({
       }
 
       it("should have the expected values") {
-        assertEquals(true, DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 1.0, 1.0, 1.0)).equals(arrayOfOnes))
+        assertTrue { DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 1.0, 1.0, 1.0)).equals(arrayOfOnes) }
       }
     }
 
@@ -1121,7 +1122,7 @@ class DenseNDArraySpec : Spek({
         array.assignValues(arrayToAssign)
 
         it("should contain the expected assigned values") {
-          assertEquals(true, array.equals(arrayToAssign))
+          assertTrue { array.equals(arrayToAssign) }
         }
       }
 
@@ -1224,11 +1225,13 @@ class DenseNDArraySpec : Spek({
       }
 
       it("should have the expected values") {
-        assertEquals(true,
+        assertTrue {
           DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(0.1, 0.4),
             doubleArrayOf(0.2, 0.5),
-            doubleArrayOf(0.3, 0.6))).equals(concatenatedArray))
+            doubleArrayOf(0.3, 0.6))
+          ).equals(concatenatedArray)
+        }
       }
     }
 
@@ -1243,8 +1246,10 @@ class DenseNDArraySpec : Spek({
       }
 
       it("should have the expected values") {
-        assertEquals(true, DenseNDArrayFactory.arrayOf(doubleArrayOf(
-          0.1, 0.2, 0.3, 0.4, 0.5, 0.6)).equals(concatenatedArray))
+        assertTrue {
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.4, 0.5, 0.6))
+            .equals(concatenatedArray)
+        }
       }
     }
 
@@ -1261,8 +1266,10 @@ class DenseNDArraySpec : Spek({
       }
 
       it("should have the expected values") {
-        assertEquals(true, DenseNDArrayFactory.arrayOf(doubleArrayOf(
-          0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9)).equals(concatenatedArray))
+        assertTrue {
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9))
+            .equals(concatenatedArray)
+        }
       }
     }
 

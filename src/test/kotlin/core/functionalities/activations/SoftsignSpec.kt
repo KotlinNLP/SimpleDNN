@@ -13,7 +13,7 @@ import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  *
@@ -34,7 +34,7 @@ class SoftsignSpec : Spek({
       ))
 
       it("should return the expected errors") {
-        assertEquals(true, expectedArray.equals(activatedArray, tolerance = 1.0e-08))
+        assertTrue { expectedArray.equals(activatedArray, tolerance = 1.0e-08) }
       }
     }
 
@@ -46,7 +46,7 @@ class SoftsignSpec : Spek({
       ))
 
       it("should return the expected errors") {
-        assertEquals(true, expectedArray.equals(dfArray, tolerance = 1.0e-08))
+        assertTrue { expectedArray.equals(dfArray, tolerance = 1.0e-08) }
       }
     }
   }

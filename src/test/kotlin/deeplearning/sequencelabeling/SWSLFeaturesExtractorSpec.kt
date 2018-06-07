@@ -43,7 +43,7 @@ class SWSLFeaturesExtractorSpec: Spek({
         val features = featuresExtractor.getFeatures()
 
         it("should return features of shape 20x1") {
-          assertEquals(true, features.shape == Shape(20, 1))
+          assertEquals(Shape(20, 1), features.shape)
         }
 
         it("should return the expected precomputed features") {

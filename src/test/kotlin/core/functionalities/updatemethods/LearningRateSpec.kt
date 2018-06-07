@@ -21,6 +21,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  *
@@ -39,9 +40,11 @@ class LearningRateSpec: Spek({
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildDenseErrors())
 
         it("should match the expected updated array") {
-          assertEquals(true, updatableArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3991, 0.3993, 0.4996, 0.9992, 0.7999)),
-            tolerance = 1.0e-6))
+          assertTrue {
+            updatableArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3991, 0.3993, 0.4996, 0.9992, 0.7999)),
+              tolerance = 1.0e-6)
+          }
         }
       }
     }
@@ -56,9 +59,11 @@ class LearningRateSpec: Spek({
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildSparseErrors())
 
         it("should match the expected updated array") {
-          assertEquals(true, updatableArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.3993, 0.5, 1.0, 0.7997)),
-            tolerance = 1.0e-5))
+          assertTrue {
+            updatableArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.3993, 0.5, 1.0, 0.7997)),
+              tolerance = 1.0e-5)
+          }
         }
       }
     }

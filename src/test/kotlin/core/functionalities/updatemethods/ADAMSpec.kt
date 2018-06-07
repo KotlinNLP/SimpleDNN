@@ -16,7 +16,7 @@ import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /**
  *
@@ -39,9 +39,11 @@ class ADAMSpec : Spek({
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildDenseErrors())
 
         it("should match the expected updated array") {
-          assertEquals(true, updatableArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39928, 0.398751, 0.499414, 0.986165, 0.799575)),
-            tolerance = 1.0e-6))
+          assertTrue {
+            updatableArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39928, 0.398751, 0.499414, 0.986165, 0.799575)),
+              tolerance = 1.0e-6)
+          }
         }
       }
     }
@@ -60,9 +62,11 @@ class ADAMSpec : Spek({
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildSparseErrors())
 
         it("should match the expected updated array") {
-          assertEquals(true, updatableArray.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.398751, 0.5, 1.0, 0.79953)),
-            tolerance = 1.0e-6))
+          assertTrue {
+            updatableArray.values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.398751, 0.5, 1.0, 0.79953)),
+              tolerance = 1.0e-6)
+          }
         }
       }
     }
@@ -74,7 +78,7 @@ class ADAMSpec : Spek({
       updateHelper.newExample()
 
       it("should update the 'alpha' parameter") {
-        assertEquals(true, equals(updateHelper.alpha, 3.1623e-4, tolerance = 1.0e-08))
+        assertTrue { equals(updateHelper.alpha, 3.1623e-4, tolerance = 1.0e-08) }
       }
     }
   }
