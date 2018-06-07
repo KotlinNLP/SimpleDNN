@@ -82,75 +82,25 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
     = this.errorsAccumulator.getParamsErrors(copy = copy)
 
   /**
-   * Forward each array of the [input] within a dedicated feed-forward processor.
+   * Forward each array of the [featuresBatch] within a dedicated feed-forward processor.
    *
-   * @param input the batch to forward
+   * @param featuresBatch the batch to forward
    *
-   * @return an array containing the forwarded input batch
+   * @return a list containing the output of each forwarded processor
    */
-  fun forward(input: List<InputNDArrayType>): List<DenseNDArray> = input.mapIndexed { i, inputI ->
-    this.forward(inputI, firstState = i == 0)
-  }
-
-  /**
-   * Forward the input with a dedicated feed-forward processor.
-   * This method must be used when the input layer is a Merge layer.
-   *
-   * @param input the input
-   * @param firstState true if the [input] is the first of a sequence
-   *
-   * @return an array containing the forwarded sequence
-   */
-  fun forward(input: InputNDArrayType, firstState: Boolean): DenseNDArray {
-
-    if (firstState) this.reset()
-
-    this.curProcessorIndex++
-    this.usedProcessors++
-
-    return this.getProcessor(this.curProcessorIndex).forward(input)
-  }
+  fun forward(featuresBatch: List<InputNDArrayType>): List<DenseNDArray> =
+    featuresBatch.mapIndexed { i, features -> this.forward(features, firstState = i == 0) }
 
   /**
    * Forward the inputs with a dedicated feed-forward processor.
-   * This method must be used when the input layer is not a Merge layer.
+   * This method must be used when the input layer is a Merge layer.
    *
-   * @param inputList the list of inputs
-   * @param firstState true if the [inputList] is the first of a sequence
+   * @param featuresListBatch the batch to forward
    *
-   * @return an array containing the forwarded sequence
+   * @return a list containing the output of each forwarded processor
    */
-  fun forward(inputList: List<InputNDArrayType>, firstState: Boolean): DenseNDArray {
-
-    if (firstState) this.reset()
-
-    this.curProcessorIndex++
-    this.usedProcessors++
-
-    return this.getProcessor(this.curProcessorIndex).forward(inputList)
-  }
-
-  /**
-   * Execute the backward on the processor at the [curProcessorIndex].
-   *
-   * @param outputErrors the output errors of the last used processor
-   * @param propagateToInput whether to propagate the output errors to the input or not
-   */
-  fun backwardStep(outputErrors: DenseNDArray, propagateToInput: Boolean) {
-
-    require(this.curProcessorIndex >= 0)
-
-    this.processorBackward(
-      processor = this.processorsList[this.curProcessorIndex],
-      errors = outputErrors,
-      propagateToInput = propagateToInput)
-
-    if (this.curProcessorIndex == 0) {
-      this.errorsAccumulator.averageErrors()
-    }
-
-    this.curProcessorIndex--
-  }
+  fun forward(featuresListBatch: ArrayList<List<InputNDArrayType>>): List<DenseNDArray> =
+    featuresListBatch.mapIndexed { i, featuresList -> this.forward(featuresList, firstState = i == 0) }
 
   /**
    * Execute the backward for each element of the input batch, given its output errors.
@@ -175,6 +125,42 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
     }
 
     this.errorsAccumulator.averageErrors()
+  }
+
+  /**
+   * Forward the input with a dedicated feed-forward processor, when the input layer is not a Merge layer.
+   *
+   * @param features the input features
+   * @param firstState true if the [features] is the first of a sequence
+   *
+   * @return an array containing the forwarded sequence
+   */
+  private fun forward(features: InputNDArrayType, firstState: Boolean): DenseNDArray {
+
+    if (firstState) this.reset()
+
+    this.curProcessorIndex++
+    this.usedProcessors++
+
+    return this.getProcessor(this.curProcessorIndex).forward(features)
+  }
+
+  /**
+   * Forward the input with a dedicated feed-forward processor, when the input layer is a Merge layer.
+   *
+   * @param featuresList the list of input features
+   * @param firstState true if the [featuresList] is the first of a sequence
+   *
+   * @return an array containing the forwarded sequence
+   */
+  private fun forward(featuresList: List<InputNDArrayType>, firstState: Boolean): DenseNDArray {
+
+    if (firstState) this.reset()
+
+    this.curProcessorIndex++
+    this.usedProcessors++
+
+    return this.getProcessor(this.curProcessorIndex).forward(featuresList)
   }
 
   /**
