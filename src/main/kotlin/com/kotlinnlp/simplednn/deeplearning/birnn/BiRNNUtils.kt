@@ -21,7 +21,7 @@ object BiRNNUtils {
    *
    * @param errorsSequence the errors to split
    *
-   * @return a (array<left-to-right>, array<right-to-left>) errors Pair
+   * @return a pair of <left-to-right, right-to-left> errors sequences
    */
   fun splitErrorsSequence(errorsSequence: List<DenseNDArray>): Pair<List<DenseNDArray>, List<DenseNDArray>> =
     errorsSequence.indices
@@ -61,7 +61,7 @@ object BiRNNUtils {
   }
 
   /**
-   * Create an list of the size of [a] where each element is the concatenation of the i-th [a] and i-th [b] NDArray.
+   * Create a list of the size of [a] where each element is the concatenation of the i-th [a] and i-th [b] NDArray.
    * [b] must have the same size of [a].
    *
    * @param a a list of NDArrays
