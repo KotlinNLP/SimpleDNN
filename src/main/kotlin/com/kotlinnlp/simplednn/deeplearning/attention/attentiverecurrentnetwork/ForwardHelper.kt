@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.attention.attentiverecurrentnetwork
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.layers.feedforward.simple.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetwork
 import com.kotlinnlp.simplednn.simplemath.concatVectorsV

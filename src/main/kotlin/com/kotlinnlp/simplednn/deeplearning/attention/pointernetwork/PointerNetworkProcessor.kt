@@ -9,10 +9,10 @@ package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.mergelayers.MergeLayer
+import com.kotlinnlp.simplednn.core.layers.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.attention.AttentionMechanism
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayersPool
+import com.kotlinnlp.simplednn.core.layers.merge.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.core.layers.merge.affine.AffineLayersPool
 
 /**
  * The [PointerNetworkProcessor].

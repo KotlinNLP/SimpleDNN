@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.*
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.layers.feedforward.simple.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray

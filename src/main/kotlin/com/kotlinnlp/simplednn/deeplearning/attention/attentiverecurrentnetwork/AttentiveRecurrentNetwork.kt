@@ -9,13 +9,13 @@ package com.kotlinnlp.simplednn.deeplearning.attention.attentiverecurrentnetwork
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.layers.feedforward.simple.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetwork
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworksPool
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayersPool
+import com.kotlinnlp.simplednn.core.layers.feedforward.simple.FeedforwardLayersPool
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**

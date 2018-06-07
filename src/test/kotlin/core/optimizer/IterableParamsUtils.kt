@@ -7,7 +7,7 @@
 
 package core.optimizer
 
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.Indices
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.SparseEntry

@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.layers.feedforward.simple.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.layers.feedforward.highway.HighwayLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerStructure
@@ -19,16 +19,16 @@ import com.kotlinnlp.simplednn.core.layers.recurrent.indrnn.IndRNNLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerStructure
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerStructure
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerStructure
-import com.kotlinnlp.simplednn.core.mergelayers.biaffine.BiaffineLayerParameters
-import com.kotlinnlp.simplednn.core.mergelayers.biaffine.BiaffineLayerStructure
-import com.kotlinnlp.simplednn.core.mergelayers.concat.ConcatLayerParameters
-import com.kotlinnlp.simplednn.core.mergelayers.concat.ConcatLayerStructure
-import com.kotlinnlp.simplednn.core.mergelayers.product.ProductLayerParameters
-import com.kotlinnlp.simplednn.core.mergelayers.product.ProductLayerStructure
-import com.kotlinnlp.simplednn.core.mergelayers.sum.SumLayerParameters
-import com.kotlinnlp.simplednn.core.mergelayers.sum.SumLayerStructure
+import com.kotlinnlp.simplednn.core.layers.merge.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.core.layers.merge.affine.AffineLayerStructure
+import com.kotlinnlp.simplednn.core.layers.merge.biaffine.BiaffineLayerParameters
+import com.kotlinnlp.simplednn.core.layers.merge.biaffine.BiaffineLayerStructure
+import com.kotlinnlp.simplednn.core.layers.merge.concat.ConcatLayerParameters
+import com.kotlinnlp.simplednn.core.layers.merge.concat.ConcatLayerStructure
+import com.kotlinnlp.simplednn.core.layers.merge.product.ProductLayerParameters
+import com.kotlinnlp.simplednn.core.layers.merge.product.ProductLayerStructure
+import com.kotlinnlp.simplednn.core.layers.merge.sum.SumLayerParameters
+import com.kotlinnlp.simplednn.core.layers.merge.sum.SumLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory

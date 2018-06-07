@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.feedforward.highway.HighwayLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.deltarnn.DeltaRNNLayerParameters
@@ -17,11 +17,11 @@ import com.kotlinnlp.simplednn.core.layers.recurrent.indrnn.IndRNNLayerParameter
 import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.core.layers.recurrent.simple.SimpleRecurrentLayerParameters
-import com.kotlinnlp.simplednn.core.mergelayers.affine.AffineLayerParameters
-import com.kotlinnlp.simplednn.core.mergelayers.biaffine.BiaffineLayerParameters
-import com.kotlinnlp.simplednn.core.mergelayers.concat.ConcatLayerParameters
-import com.kotlinnlp.simplednn.core.mergelayers.product.ProductLayerParameters
-import com.kotlinnlp.simplednn.core.mergelayers.sum.SumLayerParameters
+import com.kotlinnlp.simplednn.core.layers.merge.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.core.layers.merge.biaffine.BiaffineLayerParameters
+import com.kotlinnlp.simplednn.core.layers.merge.concat.ConcatLayerParameters
+import com.kotlinnlp.simplednn.core.layers.merge.product.ProductLayerParameters
+import com.kotlinnlp.simplednn.core.layers.merge.sum.SumLayerParameters
 
 /**
  * Helper that builds generic [LayerParameters].

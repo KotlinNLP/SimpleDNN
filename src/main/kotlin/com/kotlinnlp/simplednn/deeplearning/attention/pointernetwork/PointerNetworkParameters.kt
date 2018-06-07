@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.mergelayers.MergeLayerParameters
+import com.kotlinnlp.simplednn.core.layers.merge.MergeLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.core.attention.AttentionParameters
 

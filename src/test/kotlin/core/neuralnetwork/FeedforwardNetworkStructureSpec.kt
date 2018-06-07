@@ -10,7 +10,7 @@ package core.neuralnetwork
 import com.kotlinnlp.simplednn.core.functionalities.activations.*
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType.Connection
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.layers.feedforward.simple.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardNetworkStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -19,7 +19,7 @@ import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
-import core.layers.structure.utils.FeedforwardLayerStructureUtils
+import core.layers.feedforward.simple.FeedforwardLayerStructureUtils
 import core.neuralnetwork.utils.FeedforwardNetworkStructureUtils
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertEquals

@@ -8,9 +8,9 @@
 package core.neuralnetwork.utils
 
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
-import com.kotlinnlp.simplednn.core.layers.feedforward.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import core.layers.structure.utils.FeedforwardLayerStructureUtils
+import core.layers.feedforward.simple.FeedforwardLayerStructureUtils
 
 
 /**
