@@ -39,34 +39,6 @@ class BiRNNUtilsSpec : Spek({
       DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, 0.2, 0.3, -0.4, -0.6)),
       DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.5, -0.2, -0.9, 0.4)))
 
-    on("concatenate") {
-
-      val result: List<DenseNDArray> = BiRNNUtils.concatenate(array1, array2)
-
-      val expectedResult = listOf(
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7, 0.1, -0.6, -1.0, -0.1, -0.4)),
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7, 0.5, -0.9, 0.0, 0.8, 0.3)),
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5, -0.3, -0.9, 0.3, 1.0, -0.2)),
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, -0.1, 0.5, -0.2, -0.8, 0.7, 0.2, 0.3, -0.4, -0.6)),
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.6, 0.6, 0.8, -0.1, -0.3, -0.2, 0.5, -0.2, -0.9, 0.4)))
-
-      it("should return an array of the expected size") {
-        assertEquals(expectedResult.size, result.size)
-      }
-
-      it("should return an array with elements of the expected shape") {
-        assertTrue { result.all{ it.shape == Shape(10, 1) } }
-      }
-
-      it("should return an array with elements of same shape of the expected values") {
-        assertTrue { expectedResult.zip(result).all{ (a, b) -> a.shape == b.shape } }
-      }
-
-      it("should return the pre-calculated values") {
-        assertEquals(expectedResult, result)
-      }
-    }
-
     on("sumBidirectionalErrors") {
 
       val result: List<DenseNDArray> = BiRNNUtils.sumBidirectionalErrors(array1, array2)
@@ -108,23 +80,6 @@ class BiRNNUtilsSpec : Spek({
       it("should return the pre-calculated values on ") {
         assertTrue { expectedResult1.equals(result1) }
         assertTrue { expectedResult2.equals(result2) }
-      }
-    }
-
-    on("splitErrorsSequence") {
-
-      val sequence = listOf(
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7, 0.1, -0.6, -1.0, -0.1, -0.4)),
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7, 0.5, -0.9, 0.0, 0.8, 0.3)),
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5, -0.3, -0.9, 0.3, 1.0, -0.2)),
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, -0.1, 0.5, -0.2, -0.8, 0.7, 0.2, 0.3, -0.4, -0.6)),
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.6, 0.6, 0.8, -0.1, -0.3, -0.2, 0.5, -0.2, -0.9, 0.4)))
-
-      val (result1, result2) = BiRNNUtils.splitErrorsSequence(sequence)
-
-      it("should return the pre-calculated values on ") {
-        assertEquals(array1, result1)
-        assertEquals(array2, result2)
       }
     }
   }
