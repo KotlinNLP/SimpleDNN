@@ -43,8 +43,9 @@ class FeedforwardNetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     dropout: Double
   ): LayerStructure<InputNDArrayType> {
 
-    require(outputConfiguration.connectionType!!.property == LayerType.Property.Feedforward) {
-      "Layer connection of type ${outputConfiguration.connectionType} not allowed [only FeedForward connections]"
+    require(outputConfiguration.connectionType!!.property != LayerType.Property.Recurrent) {
+      "Layer connection of type ${outputConfiguration.connectionType} not allowed [only FeedForward or Merge " +
+        "connections]"
     }
 
     return LayerStructureFactory(
