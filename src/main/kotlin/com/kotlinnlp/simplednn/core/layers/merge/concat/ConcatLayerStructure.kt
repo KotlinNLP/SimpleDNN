@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers.merge.concat
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerStructure
 import com.kotlinnlp.simplednn.core.layers.merge.MergeLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -33,14 +34,7 @@ class ConcatLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   id = id
 ) {
 
-  init {
-
-    require(this.inputArrays.all { it.values is DenseNDArray }) {
-      "The Concat layer works only with Dense input arrays."
-    }
-
-    this.checkInputSize()
-  }
+  init { this.checkInputSize() }
 
   /**
    * The helper which execute the forward.
