@@ -218,19 +218,19 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     return when (inputConfiguration.type) {
 
       LayerType.Input.Dense -> this.layerFactory(
-        inputArray = AugmentedArray<DenseNDArray>(size = inputConfiguration.size),
+        inputArrays = inputConfiguration.sizes.map { AugmentedArray<DenseNDArray>(size = it) },
         outputConfiguration = outputConfiguration,
         params = params,
         dropout = inputConfiguration.dropout)
 
       LayerType.Input.Sparse -> this.layerFactory(
-        inputArray = AugmentedArray<SparseNDArray>(size = inputConfiguration.size),
+        inputArrays = inputConfiguration.sizes.map { AugmentedArray<SparseNDArray>(size = it) },
         outputConfiguration = outputConfiguration,
         params = params,
         dropout = inputConfiguration.dropout)
 
       LayerType.Input.SparseBinary -> this.layerFactory(
-        inputArray = AugmentedArray<SparseBinaryNDArray>(size = inputConfiguration.size),
+        inputArrays = inputConfiguration.sizes.map { AugmentedArray<SparseBinaryNDArray>(size = it) },
         outputConfiguration = outputConfiguration,
         params = params,
         dropout = inputConfiguration.dropout)
@@ -241,14 +241,14 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * LayerStructure factory used to concatenate two layers, given the input array (referenced from
    * the previous layer) and the output layersConfiguration.
    *
-   * @param inputArray an AugmentedArray used as referenced input (to concatenate two layers)
+   * @param inputArrays a list of AugmentedArrays used as referenced input (to concatenate two layers)
    * @param outputConfiguration the layersConfiguration of the output array
    * @param params the network parameters of the current layer
    *
    * @return a new LayerStructure
    */
   protected abstract fun <InputNDArrayType : NDArray<InputNDArrayType>> layerFactory(
-    inputArray: AugmentedArray<InputNDArrayType>,
+    inputArrays: List<AugmentedArray<InputNDArrayType>>,
     outputConfiguration: LayerInterface,
     params: LayerParameters<*>,
     dropout: Double): LayerStructure<InputNDArrayType>
@@ -274,7 +274,7 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
           )
         else
           this.layerFactory(
-            inputArray = prevLayer!!.outputArray,
+            inputArrays = listOf(prevLayer!!.outputArray),
             outputConfiguration = this.layersConfiguration[i + 1],
             params = this.params.paramsPerLayer[i],
             dropout = this.layersConfiguration[i].dropout

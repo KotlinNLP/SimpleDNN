@@ -94,7 +94,7 @@ class RecurrentNetworkStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
    * LayerStructure factory used to concatenate two layers, given the input array (referenced from
    * the previous layer) and the output layersConfiguration.
    *
-   * @param inputArray an AugmentedArray used as referenced input (to concatenate two layers)
+   * @param inputArrays a list of AugmentedArrays used as referenced input (to concatenate two layers)
    * @param outputConfiguration the layersConfiguration of the output array
    * @param params the network parameters of the current layer
    * @param dropout the probability of dropout
@@ -102,12 +102,12 @@ class RecurrentNetworkStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return a new LayerStructure
    */
   override fun <InputNDArrayType : NDArray<InputNDArrayType>> layerFactory(
-    inputArray: AugmentedArray<InputNDArrayType>,
+    inputArrays: List<AugmentedArray<InputNDArrayType>>,
     outputConfiguration: LayerInterface,
     params: LayerParameters<*>,
     dropout: Double
   ): LayerStructure<InputNDArrayType> = LayerStructureFactory(
-    inputArrays = listOf(inputArray),
+    inputArrays = inputArrays,
     outputSize = outputConfiguration.size,
     params = params,
     activationFunction = outputConfiguration.activationFunction,
