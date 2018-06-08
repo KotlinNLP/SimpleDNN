@@ -7,6 +7,8 @@
 
 package com.kotlinnlp.simplednn.deeplearning.birnn
 
+import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
+import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.concatVectorsV
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -42,6 +44,17 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   private val rightToLeftProcessor = RecurrentNeuralProcessor<InputNDArrayType>(this.network.rightToLeftNetwork)
 
   /**
+   * The pool of Feed-forward Neural Processors that merge the left-to-right and right-to-left encoded vectors of each
+   * element of the input sequence.
+   */
+  private val outputMergeProcessorsPool = FeedforwardNeuralProcessorsPool<DenseNDArray>(this.network.outputMergeNetwork)
+
+  /**
+   *
+   */
+  private lateinit var outputMergeProcessors: List<FeedforwardNeuralProcessor<DenseNDArray>>
+
+  /**
    * The input sequence.
    */
   private lateinit var sequence: List<InputNDArrayType>
@@ -57,10 +70,13 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   fun encode(sequence: List<InputNDArrayType>, useDropout: Boolean = false): List<DenseNDArray> {
 
     this.sequence = sequence
+    this.setMergeProcessors(sequence.size)
 
-    val (encodedL2R: List<DenseNDArray>, encodedR2L: List<DenseNDArray>) = this.biEncoding(useDropout = useDropout)
+    val encodedVectorsPairs: List<Pair<DenseNDArray, DenseNDArray>> = this.biEncoding(useDropout = useDropout)
 
-    return BiRNNUtils.concatenate(encodedL2R, encodedR2L)
+    return encodedVectorsPairs.zip(this.outputMergeProcessors).map { (vectorsPair, processor) ->
+      processor.forward(vectorsPair.toList())
+    }
   }
 
   /**
@@ -124,7 +140,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   fun backward(outputErrorsSequence: List<DenseNDArray>, propagateToInput: Boolean) {
 
-    val (leftToRightOutputErrors, rightToLeftOutputErrors) = BiRNNUtils.splitErrorsSequence(outputErrorsSequence)
+    val (leftToRightOutputErrors, rightToLeftOutputErrors) = this.outputMergeBackward(outputErrorsSequence).unzip()
 
     this.leftToRightProcessor.backward(
       outputErrorsSequence = leftToRightOutputErrors,
@@ -140,23 +156,34 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return the errors of the input sequence (the errors of the two RNNs are combined by summation)
    */
-  fun getInputSequenceErrors(copy: Boolean = true): List<DenseNDArray> {
-    return BiRNNUtils.sumBidirectionalErrors(
+  fun getInputSequenceErrors(copy: Boolean = true): List<DenseNDArray> =
+    BiRNNUtils.sumBidirectionalErrors(
       leftToRightSequenceErrors = this.leftToRightProcessor.getInputSequenceErrors(copy = copy),
       rightToLeftSequenceErrors = this.rightToLeftProcessor.getInputSequenceErrors(copy = copy)
     )
-  }
 
   /**
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
    * @return the errors of the BiRNN parameters
    */
-  fun getParamsErrors(copy: Boolean = true): BiRNNParameters {
-    return BiRNNParameters(
+  fun getParamsErrors(copy: Boolean = true): BiRNNParameters =
+    BiRNNParameters(
       leftToRight = leftToRightProcessor.getParamsErrors(copy = copy),
       rightToLeft = rightToLeftProcessor.getParamsErrors(copy = copy)
     )
+
+  /**
+   * Set a specific number of output merge processors taking them from the [outputMergeProcessorsPool] and setting the
+   * [outputMergeProcessors] variable.
+   *
+   * @param amount the amount of processors to return
+   */
+  private fun setMergeProcessors(amount: Int) {
+
+    this.outputMergeProcessorsPool.releaseAll()
+
+    this.outputMergeProcessors = (0 until amount).map { this.outputMergeProcessorsPool.getItem() }
   }
 
   /**
@@ -165,9 +192,9 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @param useDropout whether to apply the dropout
    *
-   * @return a pair of lists containing the outputs of the two RNNs
+   * @return a list of pairs containing the outputs of the two RNNs
    */
-  private fun biEncoding(useDropout: Boolean): Pair<List<DenseNDArray>, List<DenseNDArray>> {
+  private fun biEncoding(useDropout: Boolean): List<Pair<DenseNDArray, DenseNDArray>> {
 
     var isFirstElement = true
 
@@ -176,24 +203,33 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     this.sequence.indices.zip(this.sequence.indices.reversed()).forEach { (i, r) ->
 
-        l2rEncodings.add(
-          this.leftToRightProcessor.forward(
-            features = this.sequence[i],
-            firstState = isFirstElement,
-            useDropout = useDropout)
-        )
+      l2rEncodings.add(
+        this.leftToRightProcessor.forward(
+          features = this.sequence[i],
+          firstState = isFirstElement,
+          useDropout = useDropout)
+      )
 
-        r2lEncodings.add(
-          0, // prepend
-          this.rightToLeftProcessor.forward(
-            features = this.sequence[r],
-            firstState = isFirstElement,
-            useDropout = useDropout)
-        )
+      r2lEncodings.add(
+        0, // prepend
+        this.rightToLeftProcessor.forward(
+          features = this.sequence[r],
+          firstState = isFirstElement,
+          useDropout = useDropout)
+      )
 
-        isFirstElement = false
-      }
+      isFirstElement = false
+    }
 
-    return Pair(l2rEncodings, r2lEncodings)
+    return l2rEncodings.zip(r2lEncodings)
   }
+
+  /**
+   *
+   */
+  private fun outputMergeBackward(outputErrorsSequence: List<DenseNDArray>): List<Pair<DenseNDArray, DenseNDArray>> =
+    this.outputMergeProcessors.zip(outputErrorsSequence).map { (processor, outputErrors) ->
+      processor.backward(outputErrors, propagateToInput = true)
+      processor.getInputsErrors(copy = false).let { Pair(it[0], it[1]) }
+    }
 }

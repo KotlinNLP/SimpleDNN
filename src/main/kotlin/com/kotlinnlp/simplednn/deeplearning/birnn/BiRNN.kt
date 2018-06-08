@@ -13,6 +13,7 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.deeplearning.birnn.mergeconfig.*
 import com.kotlinnlp.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream
@@ -34,6 +35,7 @@ import java.io.Serializable
  * @property dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.25.
  * @property outputSize the size of the [BiRNN] output layer results from the concatenation
  *                      of the hidden layers of each RNN
+ * @param outputMergeConfiguration the configuration of the output merge layer
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
@@ -44,6 +46,7 @@ class BiRNN(
   val hiddenActivation: ActivationFunction?,
   val dropout: Double = 0.0,
   val recurrentConnectionType: LayerType.Connection,
+  outputMergeConfiguration: MergeConfiguration = ConcatMerge(),
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()) : Serializable {
 
@@ -69,7 +72,14 @@ class BiRNN(
    * The size of the output layer resulting from the concatenation of the hidden layers of the [leftToRightNetwork] and
    * [rightToLeftNetwork].
    */
-  val outputSize: Int = this.hiddenSize * 2
+  val outputSize: Int = when (outputMergeConfiguration) {
+    is AffineMerge -> outputMergeConfiguration.outputSize
+    is BiaffineMerge -> outputMergeConfiguration.outputSize
+    is ConcatMerge -> 2 * this.hiddenSize
+    is SumMerge -> this.hiddenSize
+    is ProductMerge -> this.hiddenSize
+    else -> throw RuntimeException("Invalid output merge configuration.")
+  }
 
   /**
    * The Recurrent Neural Network to process the sequence left-to-right.
@@ -78,12 +88,11 @@ class BiRNN(
     LayerInterface(
       size = this.inputSize,
       type = this.inputType,
-      dropout = dropout),
+      dropout = this.dropout),
     LayerInterface(
       size = this.hiddenSize,
       activationFunction = this.hiddenActivation,
-      connectionType = this.recurrentConnectionType
-    ),
+      connectionType = this.recurrentConnectionType),
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer
   )
@@ -95,12 +104,22 @@ class BiRNN(
     LayerInterface(
       size = this.inputSize,
       type = this.inputType,
-      dropout = dropout),
+      dropout = this.dropout),
     LayerInterface(
       size = this.hiddenSize,
       activationFunction = this.hiddenActivation,
-      connectionType = this.recurrentConnectionType
-    ),
+      connectionType = this.recurrentConnectionType),
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer
+  )
+
+  /**
+   * The Merge network output that combines the pair of <left-to-right> and <right-to-left> encoded vectors of each
+   * element of the input sequence.
+   */
+  val outputMergeNetwork = NeuralNetwork(
+    LayerInterface(sizes = listOf(this.hiddenSize, this.hiddenSize)),
+    LayerInterface(size = this.outputSize, connectionType = outputMergeConfiguration.type),
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer
   )
