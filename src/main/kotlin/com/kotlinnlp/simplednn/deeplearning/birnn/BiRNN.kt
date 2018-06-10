@@ -114,7 +114,7 @@ class BiRNN(
   )
 
   /**
-   * The Merge network output that combines the pair of <left-to-right> and <right-to-left> encoded vectors of each
+   * The Merge network that combines the pair of <left-to-right> and <right-to-left> encoded vectors of each
    * element of the input sequence.
    */
   val outputMergeNetwork = NeuralNetwork(
@@ -127,7 +127,10 @@ class BiRNN(
   /**
    * The model of this [BiRNN] containing its parameters.
    */
-  val model = BiRNNParameters(leftToRight = this.leftToRightNetwork.model, rightToLeft = this.rightToLeftNetwork.model)
+  val model = BiRNNParameters(
+    leftToRight = this.leftToRightNetwork.model,
+    rightToLeft = this.rightToLeftNetwork.model,
+    merge = this.outputMergeNetwork.model)
 
   /**
    * Check connection to the output layer.

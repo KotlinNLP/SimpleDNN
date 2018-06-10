@@ -16,10 +16,12 @@ import com.kotlinnlp.simplednn.core.optimizer.IterableParams
  *
  * @property leftToRight network parameters of the left-to-right recurrent neural network
  * @property rightToLeft network parameters of the right-to-left recurrent neural network
+ * @property merge network parameters of the merge output network
  */
 class BiRNNParameters(
   val leftToRight: NetworkParameters,
-  val rightToLeft: NetworkParameters
+  val rightToLeft: NetworkParameters,
+  val merge: NetworkParameters
 ) : IterableParams<BiRNNParameters>() {
 
   companion object {
@@ -34,13 +36,15 @@ class BiRNNParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: List<UpdatableArray<*>> = this.leftToRight.paramsList + this.rightToLeft.paramsList
+  override val paramsList: List<UpdatableArray<*>> =
+    this.leftToRight.paramsList + this.rightToLeft.paramsList + this.merge.paramsList
 
   /**
    * @return a new [BiRNNParameters] containing a copy of all values of this
    */
   override fun copy() = BiRNNParameters(
     leftToRight = this.leftToRight.copy(),
-    rightToLeft = this.rightToLeft.copy()
+    rightToLeft = this.rightToLeft.copy(),
+    merge = this.merge.copy()
   )
 }
