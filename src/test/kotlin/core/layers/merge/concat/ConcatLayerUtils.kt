@@ -8,8 +8,8 @@
 package core.layers.merge.concat
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.merge.concat.ConcatLayerParameters
-import com.kotlinnlp.simplednn.core.layers.merge.concat.ConcatLayerStructure
+import com.kotlinnlp.simplednn.core.layers.types.merge.concat.ConcatLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.merge.concat.ConcatLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 

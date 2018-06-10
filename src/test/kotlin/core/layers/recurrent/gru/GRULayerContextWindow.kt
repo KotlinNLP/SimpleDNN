@@ -9,9 +9,9 @@ package core.layers.recurrent.gru
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
-import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerParameters
-import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerStructure
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.gru.GRULayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.gru.GRULayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape

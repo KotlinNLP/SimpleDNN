@@ -9,8 +9,8 @@ package core.layers.merge.affine
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.layers.merge.affine.AffineLayerParameters
-import com.kotlinnlp.simplednn.core.layers.merge.affine.AffineLayerStructure
+import com.kotlinnlp.simplednn.core.layers.types.merge.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.merge.affine.AffineLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 

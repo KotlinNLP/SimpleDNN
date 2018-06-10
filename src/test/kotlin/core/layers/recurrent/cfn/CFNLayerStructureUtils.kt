@@ -9,9 +9,9 @@ package core.layers.recurrent.cfn
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
-import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerParameters
-import com.kotlinnlp.simplednn.core.layers.recurrent.cfn.CFNLayerStructure
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.cfn.CFNLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.cfn.CFNLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape

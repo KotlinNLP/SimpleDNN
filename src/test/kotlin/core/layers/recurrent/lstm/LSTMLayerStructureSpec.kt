@@ -7,7 +7,7 @@
 
 package core.layers.recurrent.lstm
 
-import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory

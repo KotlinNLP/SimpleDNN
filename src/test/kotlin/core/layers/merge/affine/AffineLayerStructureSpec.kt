@@ -7,7 +7,7 @@
 
 package core.layers.merge.affine
 
-import com.kotlinnlp.simplednn.core.layers.merge.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.merge.affine.AffineLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek

@@ -9,9 +9,9 @@ package core.layers.recurrent.lstm
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
-import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerParameters
-import com.kotlinnlp.simplednn.core.layers.recurrent.lstm.LSTMLayerStructure
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.lstm.LSTMLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.lstm.LSTMLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape

@@ -7,8 +7,8 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attention.attentiverecurrentnetwork
 
-import com.kotlinnlp.simplednn.core.layers.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.layers.feedforward.simple.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.layers.types.feedforward.simple.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.feedforward.simple.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworkParameters

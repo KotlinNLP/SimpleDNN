@@ -7,7 +7,7 @@
 
 package deeplearning.multipredictionscorer
 
-import com.kotlinnlp.simplednn.core.layers.feedforward.simple.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.utils.MultiMap
 import com.kotlinnlp.simplednn.deeplearning.multipredictionscorer.MultiPredictionScorer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray

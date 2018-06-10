@@ -10,11 +10,11 @@ package core.attention
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.layers.feedforward.simple.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.layers.types.feedforward.simple.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.feedforward.simple.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.core.attention.AttentionParameters
-import com.kotlinnlp.simplednn.core.layers.LayerUnit
+import com.kotlinnlp.simplednn.core.layers.types.LayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 

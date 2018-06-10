@@ -8,9 +8,9 @@
 package core.layers.recurrent.ran
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
-import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
-import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.nhaarman.mockito_kotlin.mock

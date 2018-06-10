@@ -7,7 +7,7 @@
 
 package core.layers.merge.sum
 
-import com.kotlinnlp.simplednn.core.layers.merge.sum.SumLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.merge.sum.SumLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe

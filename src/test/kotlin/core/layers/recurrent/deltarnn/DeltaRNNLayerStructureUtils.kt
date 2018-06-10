@@ -9,9 +9,9 @@ package core.layers.recurrent.deltarnn
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
-import com.kotlinnlp.simplednn.core.layers.recurrent.deltarnn.DeltaRNNLayerParameters
-import com.kotlinnlp.simplednn.core.layers.recurrent.deltarnn.DeltaRNNLayerStructure
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.deltarnn.DeltaRNNLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.deltarnn.DeltaRNNLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 

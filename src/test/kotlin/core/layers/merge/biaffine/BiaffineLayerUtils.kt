@@ -9,8 +9,8 @@ package core.layers.merge.biaffine
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.layers.merge.biaffine.BiaffineLayerParameters
-import com.kotlinnlp.simplednn.core.layers.merge.biaffine.BiaffineLayerStructure
+import com.kotlinnlp.simplednn.core.layers.types.merge.biaffine.BiaffineLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.merge.biaffine.BiaffineLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 

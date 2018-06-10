@@ -9,8 +9,9 @@ package com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.*
-import com.kotlinnlp.simplednn.core.layers.recurrent.LayerContextWindow
-import com.kotlinnlp.simplednn.core.layers.recurrent.RecurrentLayerStructure
+import com.kotlinnlp.simplednn.core.layers.LayerStructureFactory
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.RecurrentLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray

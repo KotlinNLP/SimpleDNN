@@ -7,7 +7,7 @@
 
 package core.layers.merge.concat
 
-import com.kotlinnlp.simplednn.core.layers.merge.concat.ConcatLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.merge.concat.ConcatLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe

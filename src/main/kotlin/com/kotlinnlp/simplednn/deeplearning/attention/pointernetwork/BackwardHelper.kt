@@ -7,8 +7,8 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
-import com.kotlinnlp.simplednn.core.layers.merge.MergeLayer
-import com.kotlinnlp.simplednn.core.layers.merge.MergeLayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.merge.MergeLayer
+import com.kotlinnlp.simplednn.core.layers.types.merge.MergeLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.attention.AttentionParameters
 import com.kotlinnlp.simplednn.core.attention.AttentionMechanism

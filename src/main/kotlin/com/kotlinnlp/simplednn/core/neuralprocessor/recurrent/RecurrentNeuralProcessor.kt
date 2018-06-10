@@ -11,9 +11,9 @@ import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.LayerStructure
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.recurrent.GatedRecurrentLayerStructure
-import com.kotlinnlp.simplednn.core.layers.recurrent.RecurrentLayerStructure
-import com.kotlinnlp.simplednn.core.layers.merge.MergeLayer
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.GatedRecurrentLayerStructure
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.RecurrentLayerStructure
+import com.kotlinnlp.simplednn.core.layers.types.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.RecurrentNetworkStructure

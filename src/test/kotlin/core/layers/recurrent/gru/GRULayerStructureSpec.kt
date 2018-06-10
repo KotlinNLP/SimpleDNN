@@ -7,7 +7,7 @@
 
 package core.layers.recurrent.gru
 
-import com.kotlinnlp.simplednn.core.layers.recurrent.gru.GRULayerParameters
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.gru.GRULayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory

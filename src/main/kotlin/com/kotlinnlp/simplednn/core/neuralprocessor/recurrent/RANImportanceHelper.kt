@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 
 import com.kotlinnlp.simplednn.core.layers.LayerStructure
-import com.kotlinnlp.simplednn.core.layers.recurrent.ran.RANLayerStructure
+import com.kotlinnlp.simplednn.core.layers.types.recurrent.ran.RANLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
