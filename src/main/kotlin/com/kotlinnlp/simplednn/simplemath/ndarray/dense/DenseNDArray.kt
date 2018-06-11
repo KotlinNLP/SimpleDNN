@@ -786,19 +786,27 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   fun max(): Double = this.storage.max()
 
   /**
+   * Get the index of the highest value eventually skipping the element at the given [exceptIndex] when it is >= 0.
+   *
+   * @param exceptIndex the index to exclude
+   *
    * @return the index of the maximum value (-1 if empty)
    **/
-  override fun argMaxIndex(): Int {
+  override fun argMaxIndex(exceptIndex: Int): Int {
 
     var maxIndex: Int = -1
     var maxValue: Double? = null
 
     (0 until this.length).forEach { i ->
-      val value = this[i]
 
-      if (maxValue == null || value > maxValue!!) {
-        maxValue = value
-        maxIndex = i
+      if (i != exceptIndex) {
+
+        val value = this[i]
+
+        if (maxValue == null || value > maxValue!!) {
+          maxValue = value
+          maxIndex = i
+        }
       }
     }
 

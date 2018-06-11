@@ -339,9 +339,13 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun norm2(): Double
 
   /**
+   * Get the index of the highest value eventually skipping the element at the given [exceptIndex] when it is >= 0.
+   *
+   * @param exceptIndex the index to exclude
+   *
    * @return the index of the maximum value (-1 if empty)
    **/
-  fun argMaxIndex(): Int
+  fun argMaxIndex(exceptIndex: Int = -1): Int
 
   /**
    * Round values to Int
