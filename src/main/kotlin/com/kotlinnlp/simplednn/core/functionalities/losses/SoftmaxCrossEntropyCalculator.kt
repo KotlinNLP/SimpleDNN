@@ -24,8 +24,8 @@ open class SoftmaxCrossEntropyCalculator : LossCalculator {
    *
    *   -G * log(O)
    *
-   * @param output current output layer
-   * @param outputGold expected binary output
+   * @param output the output prediction
+   * @param outputGold the expected output
    *
    * @return the loss within [output] and [outputGold]
    */
@@ -46,8 +46,8 @@ open class SoftmaxCrossEntropyCalculator : LossCalculator {
   /**
    * Calculate the errors between an output and its gold.
    *
-   * @param output current output layer
-   * @param outputGold expected binary output
+   * @param output the output prediction
+   * @param outputGold the expected output
    *
    * @return the derivative of the loss within [output] and [outputGold]
    */
