@@ -942,6 +942,10 @@ class DenseNDArraySpec : Spek({
         it("should have the expected argmax index") {
           assertEquals(2, array.argMaxIndex())
         }
+
+        it("should have the expected argmax index excluding a given index") {
+          assertEquals(1, array.argMaxIndex(exceptIndex = 2))
+        }
       }
 
       on("max() method") {
