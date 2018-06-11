@@ -25,13 +25,18 @@ class ProductForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward the input to the output multiplying element-wise the input arrays.
    */
-  override fun forward() = this.layer.inputArrays.forEachIndexed { i, x ->
-    if (i == 0)
-      this.layer.outputArray.assignValues(
-        x.values.let { if (it is DenseNDArray) it else DenseNDArrayFactory.fromNDArray(it) }
-      )
-    else
-      this.layer.outputArray.values.assignProd(x.values)
+  override fun forward() {
+
+    this.layer.inputArrays.let { arrays ->
+
+      val firstInput: DenseNDArray = arrays.first().values.let {
+        if (it is DenseNDArray) it else DenseNDArrayFactory.fromNDArray(it)
+      }
+
+      this.layer.outputArray.assignValues(firstInput)
+
+      (1 until arrays.size).forEach { i -> this.layer.outputArray.values.assignProd(arrays[i].values) }
+    }
   }
 
   /**
