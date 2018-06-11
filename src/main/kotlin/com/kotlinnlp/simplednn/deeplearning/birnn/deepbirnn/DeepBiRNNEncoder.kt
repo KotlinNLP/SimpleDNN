@@ -25,7 +25,7 @@ class DeepBiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val network:
   /**
    * List of encoders for all the stacked [BiRNN] layers.
    */
-  private val encoders = this.network.layers.mapIndexed { i, biRNN ->
+  private val encoders = this.network.levels.mapIndexed { i, biRNN ->
     if (i == 0)
       BiRNNEncoder<InputNDArrayType>(biRNN)
     else

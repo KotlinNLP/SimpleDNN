@@ -22,9 +22,9 @@ import java.io.Serializable
  *
  * The output size of each BiRNN must be equal to the input size of the following one.
  *
- * @property layers the list of BiRNNs
+ * @property levels the list of BiRNNs
  */
-class DeepBiRNN(val layers: List<BiRNN>) : Serializable {
+class DeepBiRNN(val levels: List<BiRNN>) : Serializable {
 
   companion object {
 
@@ -47,18 +47,18 @@ class DeepBiRNN(val layers: List<BiRNN>) : Serializable {
   /**
    * The model parameters.
    */
-  val model = DeepBiRNNParameters(paramsPerBiRNN = this.layers.map { it.model })
+  val model = DeepBiRNNParameters(paramsPerBiRNN = this.levels.map { it.model })
 
   /**
    * The size of the output layer (of the last BiRNN)
    */
-  val outputSize: Int = this.layers.last().outputSize
+  val outputSize: Int = this.levels.last().outputSize
 
   /**
    * Check the compatibility of the BiRNNs.
    */
   init {
-    require(this.layers.isNotEmpty()) { "The list of BiRNNs cannot be empty" }
+    require(this.levels.isNotEmpty()) { "The list of BiRNNs cannot be empty" }
   }
 
   /**
