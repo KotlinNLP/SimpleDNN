@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.layers.LayerType
 
 /**
- * A data class that defines that the output Merge layer of a [com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN] is an
+ * A data class that defines that the output Merge layer of a [com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN] is a
  * Concat layer followed by a feed-forward layer.
  *
  * @property outputSize the size of the merged output
