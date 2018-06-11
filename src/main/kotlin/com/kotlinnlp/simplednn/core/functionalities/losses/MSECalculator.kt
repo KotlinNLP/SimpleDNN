@@ -37,5 +37,4 @@ open class MSECalculator : LossCalculator {
   override fun calculateErrors(output: DenseNDArray, outputGold: DenseNDArray): DenseNDArray {
     return output.sub(outputGold)
   }
-
 }

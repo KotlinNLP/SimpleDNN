@@ -24,7 +24,7 @@ open class SoftmaxCrossEntropyCalculator : LossCalculator {
    *
    *   -G * log(O)
    *
-   * @param output  current output layer
+   * @param output current output layer
    * @param outputGold expected binary output
    *
    * @return the loss within [output] and [outputGold]
@@ -51,8 +51,22 @@ open class SoftmaxCrossEntropyCalculator : LossCalculator {
    *
    * @return the derivative of the loss within [output] and [outputGold]
    */
-  override fun calculateErrors(output: DenseNDArray, outputGold: DenseNDArray): DenseNDArray {
-    return output.sub(outputGold)
-  }
+  override fun calculateErrors(output: DenseNDArray, outputGold: DenseNDArray): DenseNDArray = output.sub(outputGold)
 
+  /**
+   * Calculate the errors between an output and its gold, given the one hot gold index.
+   *
+   * @param output the output prediction
+   * @param goldIndex the index of the gold value
+   *
+   * @return the derivative of the loss within the [output] and its gold
+   */
+  fun calculateErrors(output: DenseNDArray, goldIndex: Int): DenseNDArray {
+
+    val errors: DenseNDArray = output.copy()
+
+    errors[goldIndex] = errors[goldIndex] - 1.0
+
+    return errors
+  }
 }
