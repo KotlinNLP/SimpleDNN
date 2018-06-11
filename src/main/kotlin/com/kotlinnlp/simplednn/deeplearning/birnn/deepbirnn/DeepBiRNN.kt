@@ -58,7 +58,8 @@ class DeepBiRNN(val levels: List<BiRNN>) : Serializable {
    * Check the compatibility of the BiRNNs.
    */
   init {
-    require(this.levels.isNotEmpty()) { "The list of BiRNNs cannot be empty" }
+    require(this.levels.isNotEmpty()) { "The list of BiRNNs cannot be empty." }
+    require(this.areLevelsCompatible()) { "The input-output size of the levels must be compatible." }
   }
 
   /**
@@ -67,4 +68,21 @@ class DeepBiRNN(val levels: List<BiRNN>) : Serializable {
    * @param outputStream the [OutputStream] in which to write this serialized [DeepBiRNN]
    */
   fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
+
+  /**
+   * @return a boolean indicating if the input-output size of the levels are compatible
+   */
+  private fun areLevelsCompatible(): Boolean {
+
+    var lastOutputSize: Int = this.levels.first().inputSize
+
+    return this.levels.all {
+
+      val isCompatible: Boolean = it.inputSize == lastOutputSize
+
+      lastOutputSize = it.outputSize
+
+      isCompatible
+    }
+  }
 }
