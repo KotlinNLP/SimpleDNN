@@ -17,7 +17,13 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 open class SoftmaxCrossEntropyCalculator : LossCalculator {
 
-  private val eps: Double = 1.0e-08
+  companion object {
+
+    /**
+     * A values threshold to avoid underflow errors.
+     */
+    private const val EPS: Double = 1.0e-08
+  }
 
   /**
    * Calculate the loss between an output and its gold.
@@ -30,6 +36,7 @@ open class SoftmaxCrossEntropyCalculator : LossCalculator {
    * @return the loss within [output] and [outputGold]
    */
   override fun calculateLoss(output: DenseNDArray, outputGold: DenseNDArray): DenseNDArray {
+
     require(outputGold.isOneHotEncoder) {
       "The gold output must be a one hot encoder to calculate the loss with the cross-entropy function."
     }
@@ -38,7 +45,7 @@ open class SoftmaxCrossEntropyCalculator : LossCalculator {
     val loss: DenseNDArray = output.zerosLike()
     val argmaxOutput: Double = output[oneIndex]
 
-    loss[oneIndex] = -Math.log(if (argmaxOutput >= this.eps) argmaxOutput else this.eps)
+    loss[oneIndex] = -Math.log(if (argmaxOutput >= EPS) argmaxOutput else EPS)
 
     return loss
   }
@@ -51,7 +58,8 @@ open class SoftmaxCrossEntropyCalculator : LossCalculator {
    *
    * @return the derivative of the loss within [output] and [outputGold]
    */
-  override fun calculateErrors(output: DenseNDArray, outputGold: DenseNDArray): DenseNDArray = output.sub(outputGold)
+  override fun calculateErrors(output: DenseNDArray, outputGold: DenseNDArray): DenseNDArray =
+    output.sub(outputGold)
 
   /**
    * Calculate the errors between an output and its gold, given the one hot gold index.

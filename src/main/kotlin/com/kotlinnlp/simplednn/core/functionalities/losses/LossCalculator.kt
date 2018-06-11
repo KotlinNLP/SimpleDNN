@@ -9,7 +9,6 @@ package com.kotlinnlp.simplednn.core.functionalities.losses
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
-
 /**
  *
  */
@@ -48,10 +47,9 @@ interface LossCalculator {
 
     require(outputSequence.size == outputGoldSequence.size)
 
-    return List(
-      size = outputSequence.size,
-      init = { i -> this.calculateErrors(outputSequence[i], outputGoldSequence[i]) }
-    )
+    return outputSequence.zip(outputGoldSequence).map {
+      this.calculateErrors(output = it.first, outputGold = it.second)
+    }
   }
 
   /**
