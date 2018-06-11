@@ -10,7 +10,7 @@ package core.neuralnetwork
 import com.kotlinnlp.simplednn.core.functionalities.activations.*
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType.Connection
-import com.kotlinnlp.simplednn.core.layers.types.feedforward.simple.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardNetworkStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray

@@ -7,7 +7,7 @@
 
 package core.layers.recurrent.indrnn
 
-import com.kotlinnlp.simplednn.core.layers.types.recurrent.indrnn.IndRNNLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn.IndRNNLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek

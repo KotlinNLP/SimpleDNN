@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.core.neuralprocessor.feedforward
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
-import com.kotlinnlp.simplednn.core.layers.types.merge.MergeLayer
+import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardNetworkStructure

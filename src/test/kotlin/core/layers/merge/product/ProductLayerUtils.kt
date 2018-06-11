@@ -8,8 +8,8 @@
 package core.layers.merge.product
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.types.merge.product.ProductLayerParameters
-import com.kotlinnlp.simplednn.core.layers.types.merge.product.ProductLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.merge.product.ProductLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.merge.product.ProductLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 

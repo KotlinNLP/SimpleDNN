@@ -10,7 +10,7 @@ package core.layers.recurrent.cfn
 import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
-import com.kotlinnlp.simplednn.core.layers.types.recurrent.cfn.CFNLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever

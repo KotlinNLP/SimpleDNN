@@ -9,10 +9,10 @@ package core.layers.recurrent.indrnn
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.types.recurrent.RecurrentLayerUnit
-import com.kotlinnlp.simplednn.core.layers.types.recurrent.LayerContextWindow
-import com.kotlinnlp.simplednn.core.layers.types.recurrent.indrnn.IndRNNLayerParameters
-import com.kotlinnlp.simplednn.core.layers.types.recurrent.indrnn.IndRNNLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn.IndRNNLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn.IndRNNLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 

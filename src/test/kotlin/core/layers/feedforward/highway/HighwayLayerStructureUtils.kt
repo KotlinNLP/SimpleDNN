@@ -9,8 +9,8 @@ package core.layers.feedforward.highway
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.types.feedforward.highway.HighwayLayerParameters
-import com.kotlinnlp.simplednn.core.layers.types.feedforward.highway.HighwayLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape

@@ -10,9 +10,9 @@ package core.layers.feedforward.simple
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.types.LayerUnit
-import com.kotlinnlp.simplednn.core.layers.types.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.layers.types.feedforward.simple.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.LayerUnit
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape

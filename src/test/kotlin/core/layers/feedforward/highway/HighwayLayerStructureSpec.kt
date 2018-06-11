@@ -7,7 +7,7 @@
 
 package core.layers.feedforward.highway
 
-import com.kotlinnlp.simplednn.core.layers.types.feedforward.highway.HighwayLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek

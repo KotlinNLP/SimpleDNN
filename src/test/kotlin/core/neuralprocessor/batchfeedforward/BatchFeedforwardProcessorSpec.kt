@@ -7,7 +7,7 @@
 
 package core.neuralprocessor.batchfeedforward
 
-import com.kotlinnlp.simplednn.core.layers.types.feedforward.simple.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory

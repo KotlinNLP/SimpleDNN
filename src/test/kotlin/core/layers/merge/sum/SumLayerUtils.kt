@@ -8,8 +8,8 @@
 package core.layers.merge.sum
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.types.merge.sum.SumLayerParameters
-import com.kotlinnlp.simplednn.core.layers.types.merge.sum.SumLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 

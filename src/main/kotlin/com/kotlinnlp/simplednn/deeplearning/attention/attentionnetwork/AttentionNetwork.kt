@@ -9,9 +9,9 @@ package com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.layers.types.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.layers.types.feedforward.simple.FeedforwardLayerStructure
-import com.kotlinnlp.simplednn.core.layers.types.feedforward.simple.FeedforwardLayersPool
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayersPool
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.attention.AttentionParameters
 import com.kotlinnlp.simplednn.core.attention.AttentionLayerStructure

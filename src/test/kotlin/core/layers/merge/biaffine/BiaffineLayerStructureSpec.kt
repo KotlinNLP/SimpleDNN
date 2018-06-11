@@ -7,7 +7,7 @@
 
 package core.layers.merge.biaffine
 
-import com.kotlinnlp.simplednn.core.layers.types.merge.biaffine.BiaffineLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 

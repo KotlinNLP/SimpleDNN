@@ -8,8 +8,8 @@
 package core.layers.recurrent.deltarnn
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
-import com.kotlinnlp.simplednn.core.layers.types.recurrent.LayerContextWindow
-import com.kotlinnlp.simplednn.core.layers.types.recurrent.deltarnn.DeltaRNNLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.nhaarman.mockito_kotlin.mock
