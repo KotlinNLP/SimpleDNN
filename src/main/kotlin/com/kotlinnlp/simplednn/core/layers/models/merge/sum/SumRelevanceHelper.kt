@@ -18,8 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  */
 class SumRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: SumLayerStructure<InputNDArrayType>
-)
-  : RelevanceHelper<InputNDArrayType>(layer) {
+) : RelevanceHelper<InputNDArrayType>(layer) {
 
   /**
    * Not available for the Sum layer.

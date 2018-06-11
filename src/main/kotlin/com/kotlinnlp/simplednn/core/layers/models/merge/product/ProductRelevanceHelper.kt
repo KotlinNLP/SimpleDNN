@@ -18,8 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  */
 class ProductRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: ProductLayerStructure<InputNDArrayType>
-)
-  : RelevanceHelper<InputNDArrayType>(layer) {
+) : RelevanceHelper<InputNDArrayType>(layer) {
 
   /**
    * Not available for the Product layer.
