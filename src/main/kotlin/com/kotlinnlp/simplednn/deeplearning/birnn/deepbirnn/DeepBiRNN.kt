@@ -29,7 +29,7 @@ class DeepBiRNN(val levels: List<BiRNN>) : Serializable {
   companion object {
 
     /**
-     * Private val used to serialize the class (needed from Serializable)
+     * Private val used to serialize the class (needed by Serializable).
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
@@ -50,7 +50,12 @@ class DeepBiRNN(val levels: List<BiRNN>) : Serializable {
   val model = DeepBiRNNParameters(paramsPerBiRNN = this.levels.map { it.model })
 
   /**
-   * The size of the output layer (of the last BiRNN)
+   * The size of the input level (the first BiRNN).
+   */
+  val inputSize: Int = this.levels.first().inputSize
+
+  /**
+   * The size of the output level (the last BiRNN).
    */
   val outputSize: Int = this.levels.last().outputSize
 
