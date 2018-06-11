@@ -12,12 +12,12 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 
 /**
  * A data class that defines that the output Merge layer of a [com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN] is an
- * Concat layer followed by a Linear transformation plus a possible non-linear function.
+ * Concat layer followed by a feed-forward layer.
  *
  * @property outputSize the size of the merged output
  * @property activationFunction the output activation function
  */
-class ConcatAffineMerge(
+class ConcatFeedforwardMerge(
   outputSize: Int,
   activationFunction: ActivationFunction? = null
 ) : OpenOutputMerge(
