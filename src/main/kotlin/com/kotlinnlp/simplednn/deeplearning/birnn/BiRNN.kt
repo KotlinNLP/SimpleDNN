@@ -75,6 +75,7 @@ class BiRNN(
   val outputSize: Int = when (outputMergeConfiguration) {
     is AffineMerge -> outputMergeConfiguration.outputSize
     is BiaffineMerge -> outputMergeConfiguration.outputSize
+    is ConcatAffineMerge -> outputMergeConfiguration.outputSize
     is ConcatMerge -> 2 * this.hiddenSize
     is SumMerge -> this.hiddenSize
     is ProductMerge -> this.hiddenSize
@@ -118,11 +119,15 @@ class BiRNN(
    * element of the input sequence.
    */
   val outputMergeNetwork = NeuralNetwork(
-    LayerInterface(sizes = listOf(this.hiddenSize, this.hiddenSize)),
-    LayerInterface(size = this.outputSize, connectionType = outputMergeConfiguration.type),
+    if (outputMergeConfiguration is ConcatAffineMerge) listOf(
+      LayerInterface(sizes = listOf(this.hiddenSize, this.hiddenSize)),
+      LayerInterface(size = 2 * this.hiddenSize, connectionType = LayerType.Connection.Concat),
+      LayerInterface(size = outputMergeConfiguration.outputSize, connectionType = LayerType.Connection.Feedforward))
+    else listOf(
+      LayerInterface(sizes = listOf(this.hiddenSize, this.hiddenSize)),
+      LayerInterface(size = this.outputSize, connectionType = outputMergeConfiguration.type)),
     weightsInitializer = weightsInitializer,
-    biasesInitializer = biasesInitializer
-  )
+    biasesInitializer = biasesInitializer)
 
   /**
    * The model of this [BiRNN] containing its parameters.
