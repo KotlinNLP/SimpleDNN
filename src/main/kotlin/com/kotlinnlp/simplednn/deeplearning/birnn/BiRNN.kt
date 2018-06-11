@@ -79,6 +79,7 @@ class BiRNN(
     is ConcatMerge -> 2 * this.hiddenSize
     is SumMerge -> this.hiddenSize
     is ProductMerge -> this.hiddenSize
+    is AvgMerge -> this.hiddenSize
     else -> throw RuntimeException("Invalid output merge configuration.")
   }
 
