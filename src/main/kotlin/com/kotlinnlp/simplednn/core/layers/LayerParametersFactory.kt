@@ -18,6 +18,7 @@ import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMLayerParame
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.affine.AffineLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.merge.avg.AvgLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.product.ProductLayerParameters
@@ -83,6 +84,8 @@ object LayerParametersFactory {
     LayerType.Connection.Concat -> ConcatLayerParameters(inputsSize = inputsSize)
 
     LayerType.Connection.Sum -> SumLayerParameters(inputSize = inputsSize.first(), nInputs = inputsSize.size)
+
+    LayerType.Connection.Avg -> AvgLayerParameters(inputSize = inputsSize.first(), nInputs = inputsSize.size)
 
     LayerType.Connection.Product -> ProductLayerParameters(inputSize = inputsSize.first(), nInputs = inputsSize.size)
 

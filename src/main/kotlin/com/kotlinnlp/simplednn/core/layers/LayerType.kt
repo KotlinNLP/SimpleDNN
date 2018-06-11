@@ -31,6 +31,7 @@ sealed class LayerType {
     Biaffine(property = Property.Merge),
     Concat(property = Property.Merge),
     Sum(property = Property.Merge),
+    Avg(property = Property.Merge),
     Product(property = Property.Merge),
     SimpleRecurrent(property = Property.Recurrent),
     GRU(property = Property.Recurrent),

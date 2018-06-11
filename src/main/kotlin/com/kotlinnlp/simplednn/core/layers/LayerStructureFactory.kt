@@ -22,6 +22,8 @@ import com.kotlinnlp.simplednn.core.layers.models.recurrent.ran.RANLayerStructur
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerStructure
 import com.kotlinnlp.simplednn.core.layers.models.merge.affine.AffineLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.affine.AffineLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.merge.avg.AvgLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.merge.avg.AvgLayerStructure
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerStructure
 import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayerParameters
@@ -102,6 +104,11 @@ object LayerStructureFactory {
       inputArrays = inputArrays,
       outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
       params = params as SumLayerParameters)
+
+    LayerType.Connection.Avg -> AvgLayerStructure(
+      inputArrays = inputArrays,
+      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(outputSize))),
+      params = params as AvgLayerParameters)
 
     LayerType.Connection.Product -> ProductLayerStructure(
       inputArrays = inputArrays,
