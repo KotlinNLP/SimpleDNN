@@ -9,7 +9,6 @@ package com.kotlinnlp.simplednn.deeplearning.birnn
 
 import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
-import com.kotlinnlp.simplednn.simplemath.concatVectorsV
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.utils.ItemsPool
@@ -99,25 +98,28 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   }
 
   /**
-   * @return the concatenation of the final output arrays of the two RNNs (left-to-right + right-to-left)
+   * @param copy whether to return a copy of the arrays
+   *
+   * @return a pair containing the last output of the two RNNs [left-to-right, right-to-left].
    */
-  fun getMixedFinalOutput(): DenseNDArray = concatVectorsV(
-    this.leftToRightProcessor.getOutput(copy = false),
-    this.rightToLeftProcessor.getOutput(copy = false)
+  fun getLastOutput(copy: Boolean): Pair<DenseNDArray, DenseNDArray> = Pair(
+    this.leftToRightProcessor.getOutput(copy = copy),
+    this.rightToLeftProcessor.getOutput(copy = copy)
   )
 
   /**
-   * Propagate the errors of the final output of the two RNNs (left-to-right + right-to-left)
+   * Propagate the errors of the last output of the two RNNs [left-to-right, right-to-left].
    *
-   * @param errors the errors to propagate
+   * @param leftToRightErrors the last output errors of the left-to-right network
+   * @param rightToLeftErrors the last output errors of the right-to-left network
    * @param propagateToInput whether to propagate the output errors to the input or not
    */
-  fun backwardMixedFinalOutput(errors: DenseNDArray, propagateToInput: Boolean) {
+  fun backwardLastOutput(leftToRightErrors: DenseNDArray,
+                               rightToLeftErrors: DenseNDArray,
+                               propagateToInput: Boolean) {
 
-    val splitErrors: List<DenseNDArray> = errors.splitV(this.network.hiddenSize)
-
-    this.leftToRightProcessor.backward(outputErrors = splitErrors[0], propagateToInput = propagateToInput)
-    this.rightToLeftProcessor.backward(outputErrors = splitErrors[1], propagateToInput = propagateToInput)
+    this.leftToRightProcessor.backward(outputErrors = leftToRightErrors, propagateToInput = propagateToInput)
+    this.rightToLeftProcessor.backward(outputErrors = rightToLeftErrors, propagateToInput = propagateToInput)
   }
 
   /**
