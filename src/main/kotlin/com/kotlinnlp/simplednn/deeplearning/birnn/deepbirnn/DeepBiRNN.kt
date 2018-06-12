@@ -34,7 +34,7 @@ class DeepBiRNN(val levels: List<BiRNN>) : Serializable {
   /**
    * @property levels the list of BiRNNs
    */
-  constructor(vararg levels: BiRNN) : this(levels.toList())
+  constructor(vararg levels: BiRNN): this(levels.toList())
 
   companion object {
 
@@ -54,46 +54,51 @@ class DeepBiRNN(val levels: List<BiRNN>) : Serializable {
     fun load(inputStream: InputStream): DeepBiRNN = Serializer.deserialize(inputStream)
 
     /**
-     * Build a DeepBiRNN stacking a number of BiRNN.
+     * Build a DeepBiRNN stacking more BiRNNs.
+     *
+     * Each BiRNN reduces (or increases) the size of its output respect to its input thanks to its hidden layer and a
+     * concatenation of the output of its two RNNs.
+     * The gain factor between the input and the output of each BiRNN is controlled passing a list of gain factors, one
+     * for each level.
      *
      * @param inputSize the input size
      * @param inputType the input type
      * @param recurrentConnectionType the type of recurrent layers connection
      * @param dropout the dropout of the recurrent layers
-     * @param numberOfLayers the number of layers
-     * @param gainFactors the gain factors to calculate the output size (one for each layer)
+     * @param numberOfLevels the number of BiRNN levels
+     * @param gainFactors the gain factors between the input size and the output size of each BiRNN
      * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
      * @param biasesInitializer the initializer of the biases (zeros if null, default: null)
      *
      * @return a list of BiRNNs
      */
-    operator fun invoke(inputSize: Int,
-                        inputType: LayerType.Input,
-                        recurrentConnectionType: LayerType.Connection,
-                        hiddenActivation: ActivationFunction?,
-                        dropout: Double = 0.0,
-                        numberOfLayers: Int,
-                        gainFactors: List<Double> = List(
-                          size = numberOfLayers,
-                          init = { i -> if (i == 0) 2.0 else 1.0 }),
-                        weightsInitializer: Initializer? = GlorotInitializer(),
-                        biasesInitializer: Initializer? = null): DeepBiRNN {
+    fun byReduceConcat(inputSize: Int,
+                       inputType: LayerType.Input,
+                       recurrentConnectionType: LayerType.Connection,
+                       hiddenActivation: ActivationFunction?,
+                       dropout: Double = 0.0,
+                       numberOfLevels: Int,
+                       gainFactors: List<Double> = List(
+                         size = numberOfLevels,
+                         init = { i -> if (i == 0) 2.0 else 1.0 }),
+                       weightsInitializer: Initializer? = GlorotInitializer(),
+                       biasesInitializer: Initializer? = null): DeepBiRNN {
 
-      require(numberOfLayers > 0) { "required at least one BiRNN layer" }
+      require(numberOfLevels > 0) { "required at least one BiRNN layer" }
 
       require(recurrentConnectionType.property == LayerType.Property.Recurrent) {
         "required recurrentConnectionType with Recurrent property"
       }
 
-      require(gainFactors.size == numberOfLayers) {
+      require(gainFactors.size == numberOfLevels) {
         "The number of gain factors (%d) doesn't match the number of layers (%d)"
-          .format(gainFactors.size, numberOfLayers)
+          .format(gainFactors.size, numberOfLevels)
       }
 
       var levelInputSize: Int = inputSize
 
       return DeepBiRNN(List(
-        size = numberOfLayers,
+        size = numberOfLevels,
         init = { i ->
 
           val outputSize: Int = this.getBiRNNOutputSize(inputSize = levelInputSize, gain = gainFactors[i])
@@ -117,15 +122,15 @@ class DeepBiRNN(val levels: List<BiRNN>) : Serializable {
     }
 
     /**
-     * Get the size of the output of the BiRNN.
+     * Get the size of the output of a BiRNN level.
      *
-     * Since the output of the BiRNN which use a ConcatMerge is the concatenation of the outputs of 2 RNNs, the output
+     * Since the output of the BiRNN which uses a ConcatMerge is the concatenation of the outputs of 2 RNNs, the output
      * size must be rounded to an odd integer (the next following in this case).
      *
      * @param inputSize the size of the input
      * @param gain the gain factor to calculate the output size
      *
-     * @return the output size of the BiRNN
+     * @return the output size of a BiRNN level
      */
     private fun getBiRNNOutputSize(inputSize: Int, gain: Double): Int {
 
