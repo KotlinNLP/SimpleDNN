@@ -83,13 +83,16 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @param featuresBatch the batch to forward
    * @param continueBatch whether this batch is the continuation of the last forwarded one (without have called a
    *        backward)
+   * @param useDropout whether to apply the dropout
    *
    * @return a list containing the output of each forwarded processor
    */
-  fun forward(featuresBatch: List<InputNDArrayType>, continueBatch: Boolean = false): List<DenseNDArray> =
+  fun forward(featuresBatch: List<InputNDArrayType>,
+              continueBatch: Boolean = false,
+              useDropout: Boolean = false): List<DenseNDArray> =
     featuresBatch.mapIndexed { i, features ->
       if (!continueBatch && i == 0) this.reset()
-      this.forwardProcessor(features)
+      this.forwardProcessor(features, useDropout = useDropout)
     }
 
   /**
@@ -102,14 +105,16 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @param featuresListBatch the batch to forward
    * @param continueBatch whether this batch is the continuation of the last forwarded one (without have called a
    *        backward)
+   * @param useDropout whether to apply the dropout
    *
    * @return a list containing the output of each forwarded processor
    */
   fun forward(featuresListBatch: ArrayList<List<InputNDArrayType>>,
-              continueBatch: Boolean = false): List<DenseNDArray> =
+              continueBatch: Boolean = false,
+              useDropout: Boolean = false): List<DenseNDArray> =
     featuresListBatch.mapIndexed { i, featuresList ->
       if (!continueBatch && i == 0) this.reset()
-      this.forwardProcessor(featuresList)
+      this.forwardProcessor(featuresList, useDropout = useDropout)
     }
 
   /**
@@ -156,26 +161,28 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    * Forward the input with a dedicated feed-forward processor, when the input layer is not a Merge layer.
    *
    * @param features the input features
+   * @param useDropout whether to apply the dropout
    *
    * @return an array containing the forwarded sequence
    */
-  private fun forwardProcessor(features: InputNDArrayType): DenseNDArray =
+  private fun forwardProcessor(features: InputNDArrayType, useDropout: Boolean = false): DenseNDArray =
     this.processorsPool.getItem().let {
       this.usedProcessors.add(it)
-      it.forward(features)
+      it.forward(features, useDropout = useDropout)
     }
 
   /**
    * Forward the input with a dedicated feed-forward processor, when the input layer is a Merge layer.
    *
    * @param featuresList the list of input features
+   * @param useDropout whether to apply the dropout
    *
    * @return an array containing the forwarded sequence
    */
-  private fun forwardProcessor(featuresList: List<InputNDArrayType>): DenseNDArray =
+  private fun forwardProcessor(featuresList: List<InputNDArrayType>, useDropout: Boolean = false): DenseNDArray =
     this.processorsPool.getItem().let {
       this.usedProcessors.add(it)
-      it.forward(featuresList)
+      it.forward(featuresList, useDropout = useDropout)
     }
 
   /**
