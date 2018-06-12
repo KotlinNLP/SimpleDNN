@@ -100,7 +100,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * @param copy whether to return a copy of the arrays
    *
-   * @return a pair containing the last output of the two RNNs [left-to-right, right-to-left].
+   * @return a pair containing the last output of the two RNNs (left-to-right, right-to-left).
    */
   fun getLastOutput(copy: Boolean): Pair<DenseNDArray, DenseNDArray> = Pair(
     this.leftToRightProcessor.getOutput(copy = copy),
@@ -108,15 +108,15 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   )
 
   /**
-   * Propagate the errors of the last output of the two RNNs [left-to-right, right-to-left].
+   * Propagate the errors of the last output of the two RNNs (left-to-right, right-to-left).
    *
    * @param leftToRightErrors the last output errors of the left-to-right network
    * @param rightToLeftErrors the last output errors of the right-to-left network
    * @param propagateToInput whether to propagate the output errors to the input or not
    */
   fun backwardLastOutput(leftToRightErrors: DenseNDArray,
-                               rightToLeftErrors: DenseNDArray,
-                               propagateToInput: Boolean) {
+                         rightToLeftErrors: DenseNDArray,
+                         propagateToInput: Boolean) {
 
     this.leftToRightProcessor.backward(outputErrors = leftToRightErrors, propagateToInput = propagateToInput)
     this.rightToLeftProcessor.backward(outputErrors = rightToLeftErrors, propagateToInput = propagateToInput)
