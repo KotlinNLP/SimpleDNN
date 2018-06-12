@@ -8,18 +8,18 @@
 package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.core.attention.AttentionParameters
+import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 
 /**
  * The parameters of the [PointerNetworkProcessor].
  *
- * @property transformParams the parameters of the affine layer
+ * @property mergeParams the parameters of the merge network
  * @property attentionParams the parameters of the attention structure
  */
 class PointerNetworkParameters(
-  val transformParams: MergeLayerParameters<*>,
+  val mergeParams: NetworkParameters,
   val attentionParams: AttentionParameters
 ) : IterableParams<PointerNetworkParameters>() {
 
@@ -34,13 +34,13 @@ class PointerNetworkParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: List<UpdatableArray<*>> = this.transformParams.paramsList + this.attentionParams.paramsList
+  override val paramsList: List<UpdatableArray<*>> = this.mergeParams.paramsList + this.attentionParams.paramsList
 
   /**
    * @return a new [PointerNetworkParameters] containing a copy of all values of this
    */
   override fun copy() = PointerNetworkParameters(
-    transformParams = this.transformParams.copy(),
+    mergeParams = this.mergeParams.copy(),
     attentionParams = this.attentionParams.copy()
   )
 }

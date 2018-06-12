@@ -8,11 +8,9 @@
 package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.attention.AttentionMechanism
-import com.kotlinnlp.simplednn.core.layers.models.merge.affine.AffineLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.merge.affine.AffineLayersPool
+import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
+import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
 
 /**
  * The [PointerNetworkProcessor].
@@ -35,7 +33,7 @@ class PointerNetworkProcessor(val model: PointerNetworkModel) {
   internal lateinit var inputSequence: List<DenseNDArray>
 
   /**
-   * Return the size of the input sequence.
+   * The size of the current input sequence.
    */
   val inputSequenceSize: Int get() = this.inputSequence.size
 
@@ -50,22 +48,19 @@ class PointerNetworkProcessor(val model: PointerNetworkModel) {
   internal val firstState: Boolean get() = this.forwardCount == 0
 
   /**
-   * The list of transform layers groups used during the last forward.
+   * A pool of processors for the merge network.
    */
-  internal val usedTransformLayers = mutableListOf<List<MergeLayer<DenseNDArray>>>()
+  internal val mergeProcessorsPool = FeedforwardNeuralProcessorsPool<DenseNDArray>(this.model.mergeNetwork)
+
+  /**
+   * The list of merge processors used during the last forward.
+   */
+  internal val usedMergeProcessors = mutableListOf<List<FeedforwardNeuralProcessor<DenseNDArray>>>()
 
   /**
    * The list of attention mechanisms used during the last forward.
    */
   internal val usedAttentionMechanisms = mutableListOf<AttentionMechanism>()
-
-  /**
-   * A pool of Affine Layers used to build the attention arrays.
-   *
-   * TODO: replace with a generic transform layers pool
-   */
-  internal val transformLayersPool: AffineLayersPool<DenseNDArray> =
-    AffineLayersPool(activationFunction = Tanh(), params = this.model.transformParams)
 
   /**
    * The forward helper.
@@ -75,7 +70,7 @@ class PointerNetworkProcessor(val model: PointerNetworkModel) {
   /**
    * The backward helper.
    */
-  private val backwardHelper = BackwardHelper<AffineLayerParameters>(networkProcessor = this)
+  private val backwardHelper = BackwardHelper(networkProcessor = this)
 
   /**
    * Set the encoded sequence.
@@ -91,13 +86,13 @@ class PointerNetworkProcessor(val model: PointerNetworkModel) {
   /**
    * Forward.
    *
-   * @param vector the vector that modulates a content-based attention mechanism over the input sequence
+   * @param context the vector that modulates a content-based attention mechanism over the input sequence
    *
    * @return an array that contains the importance score for each element of the input sequence
    */
-  fun forward(vector: DenseNDArray): DenseNDArray {
+  fun forward(context: DenseNDArray): DenseNDArray {
 
-    val output: DenseNDArray = this.forwardHelper.forward(vector)
+    val output: DenseNDArray = this.forwardHelper.forward(context)
 
     this.forwardCount++
 

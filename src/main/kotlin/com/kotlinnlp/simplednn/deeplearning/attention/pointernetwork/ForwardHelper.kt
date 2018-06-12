@@ -7,8 +7,8 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
-import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.attention.AttentionMechanism
+import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -19,15 +19,15 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
 
   /**
-   * @param vector the vector that modulates a content-based attention mechanism over the input sequence
+   * @param context the vector that modulates a content-based attention mechanism over the input sequence
    *
    * @return an array that contains the importance score for each element of the input sequence
    */
-  fun forward(vector: DenseNDArray): DenseNDArray {
+  fun forward(context: DenseNDArray): DenseNDArray {
 
     if (this.networkProcessor.firstState) this.initForward()
 
-    val attentionArrays: List<DenseNDArray> = this.buildAttentionSequence(vector)
+    val attentionArrays: List<DenseNDArray> = this.buildAttentionSequence(context)
 
     return this.buildAttentionMechanism(attentionArrays).forwardImportanceScore()
   }
@@ -46,38 +46,33 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
   }
 
   /**
-   * @param vector the vector that modulates a content-based attention mechanism over the input sequence
+   * @param context the vector that modulates a content-based attention mechanism over the input sequence
    *
    * @return the sequence of attention arrays
    */
-  private fun buildAttentionSequence(vector: DenseNDArray): List<DenseNDArray> {
+  private fun buildAttentionSequence(context: DenseNDArray): List<DenseNDArray> {
 
-    val transformLayers = this.getTransformLayers(size = this.networkProcessor.inputSequence.size)
+    val mergeProcessors = this.getMergeProcessors(size = this.networkProcessor.inputSequence.size)
 
-    return transformLayers.zip(this.networkProcessor.inputSequence).map { (layer, element) ->
-
-      layer.setInput(0, element)
-      layer.setInput(1, vector)
-      layer.forward()
-
-      layer.outputArray.values
+    return mergeProcessors.zip(this.networkProcessor.inputSequence).map { (processor, inputArray) ->
+      processor.forward(featuresList = listOf(inputArray, context))
     }
   }
 
   /**
-   * Get an available group of transform layers, adding it into the usedTransformLayers list.
+   * Add a new list of available merge processors into the usedMergeProcessors list and return it.
    *
-   * @param size the number of transform layer to build
+   * @param size the number of merge processors to build
    *
-   * @return an available transform layer
+   * @return a list of available merge processors
    */
-  private fun getTransformLayers(size: Int): List<MergeLayer<DenseNDArray>> {
+  private fun getMergeProcessors(size: Int): List<FeedforwardNeuralProcessor<DenseNDArray>> {
 
-    this.networkProcessor.usedTransformLayers.add(
-      List(size = size, init = { this.networkProcessor.transformLayersPool.getItem() })
-    )
+    val processorsList = List(size = size, init = { this.networkProcessor.mergeProcessorsPool.getItem() })
 
-    return this.networkProcessor.usedTransformLayers.last()
+    this.networkProcessor.usedMergeProcessors.add(processorsList)
+
+    return processorsList
   }
 
   /**
@@ -85,8 +80,9 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
    */
   private fun initForward() {
 
-    this.networkProcessor.transformLayersPool.releaseAll()
-    this.networkProcessor.usedTransformLayers.clear()
+    this.networkProcessor.mergeProcessorsPool.releaseAll()
+    this.networkProcessor.usedMergeProcessors.clear()
+
     this.networkProcessor.usedAttentionMechanisms.clear()
   }
 }

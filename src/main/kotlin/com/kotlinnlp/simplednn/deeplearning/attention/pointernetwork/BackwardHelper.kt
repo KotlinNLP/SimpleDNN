@@ -7,11 +7,11 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
-import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
-import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.attention.AttentionParameters
 import com.kotlinnlp.simplednn.core.attention.AttentionMechanism
+import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -21,9 +21,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *
  * @property networkProcessor the attentive recurrent network of this helper
  */
-class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerParametersType>>(
-  private val networkProcessor: PointerNetworkProcessor
-) {
+class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
 
   /**
    * The list of errors of the input sequence.
@@ -43,19 +41,14 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
   private var stateIndex: Int = 0
 
   /**
-   * The params errors accumulator of the transform vectors.
+   * The params errors accumulator of the merge network.
    */
-  private var transformErrorsAccumulator = ParamsErrorsAccumulator<MergeLayerParametersType>()
+  private var mergeErrorsAccumulator = ParamsErrorsAccumulator<NetworkParameters>()
 
   /**
    * The params errors accumulator of the attention structure
    */
   private var attentionErrorsAccumulator = ParamsErrorsAccumulator<AttentionParameters>()
-
-  /**
-   * The structure used to store the params errors of the transform layers during the backward.
-   */
-  private lateinit var transformLayerParamsErrors: MergeLayerParameters<*>
 
   /**
    * The structure used to store the params errors of the attention during the backward.
@@ -78,7 +71,7 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
       this.backwardStep(outputErrors[stateIndex])
     }
 
-    this.transformErrorsAccumulator.averageErrors()
+    this.mergeErrorsAccumulator.averageErrors()
     this.attentionErrorsAccumulator.averageErrors()
   }
 
@@ -88,7 +81,7 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
    * @return the params errors of the [networkProcessor]
    */
   fun getParamsErrors(copy: Boolean = true) = PointerNetworkParameters(
-    transformParams = this.transformErrorsAccumulator.getParamsErrors(copy = copy),
+    mergeParams = this.mergeErrorsAccumulator.getParamsErrors(copy = copy),
     attentionParams = this.attentionErrorsAccumulator.getParamsErrors(copy = copy))
 
   /**
@@ -131,13 +124,13 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
 
     val vectorErrorsSum: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.networkProcessor.model.inputSize))
 
-    val transformLayers: List<MergeLayer<DenseNDArray>>
-      = this.networkProcessor.usedTransformLayers[this.stateIndex]
+    val mergeProcessors: List<FeedforwardNeuralProcessor<DenseNDArray>>
+      = this.networkProcessor.usedMergeProcessors[this.stateIndex]
 
-    transformLayers.zip(outputErrors).forEachIndexed { index, (transformLayer, attentionErrors) ->
+    mergeProcessors.zip(outputErrors).forEachIndexed { index, (mergeProcessor, attentionErrors) ->
 
       val (inputSequenceElementError: DenseNDArray, vectorErrors: DenseNDArray) =
-        this.backwardTransformLayer(layer = transformLayer, outputErrors = attentionErrors)
+        this.backwardMergeProcessor(processor = mergeProcessor, outputErrors = attentionErrors)
 
       vectorErrorsSum.assignSum(vectorErrors)
 
@@ -148,27 +141,21 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
   }
 
   /**
-   * A single transform layer backward.
+   * A single merge processor backward.
    *
-   * @param layer a transform layer
+   * @param processor a merge processor
    * @param outputErrors the errors of the output
    *
    * @return the errors of the input
    */
-  private fun backwardTransformLayer(layer: MergeLayer<DenseNDArray>,
+  private fun backwardMergeProcessor(processor: FeedforwardNeuralProcessor<DenseNDArray>,
                                      outputErrors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
 
-    val paramsErrors = this.getTransformParamsErrors()
+    processor.backward(outputErrors = outputErrors, propagateToInput = true, mePropK = null)
 
-    layer.setErrors(outputErrors)
-    layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+    this.mergeErrorsAccumulator.accumulate(processor.getParamsErrors(copy = false))
 
-    @Suppress("UNCHECKED_CAST")
-    this.transformErrorsAccumulator.accumulate(paramsErrors as MergeLayerParametersType)
-
-    val inputErrors: List<DenseNDArray> = layer.getInputErrors(copy = true)
-
-    return Pair(inputErrors[0], inputErrors[1])
+    return processor.getInputsErrors(copy = true).let{ Pair(it[0], it[1]) }
   }
 
   /**
@@ -179,7 +166,7 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
     this.initInputSequenceErrors()
     this.initVectorsErrors()
 
-    this.transformErrorsAccumulator.reset()
+    this.mergeErrorsAccumulator.reset()
     this.attentionErrorsAccumulator.reset()
   }
 
@@ -201,18 +188,6 @@ class BackwardHelper<MergeLayerParametersType: MergeLayerParameters<MergeLayerPa
     this.vectorsErrors = List(
       size = this.networkProcessor.forwardCount,
       init = { DenseNDArrayFactory.zeros(Shape(this.networkProcessor.model.vectorSize)) })
-  }
-
-  /**
-   * @return the transform layers params errors
-   */
-  private fun getTransformParamsErrors(): MergeLayerParameters<*> {
-
-    if (!this::transformLayerParamsErrors.isInitialized) {
-      this.transformLayerParamsErrors = this.networkProcessor.usedTransformLayers.last().last().params.copy()
-    }
-
-    return this.transformLayerParamsErrors
   }
 
   /**

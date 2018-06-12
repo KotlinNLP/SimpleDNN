@@ -9,8 +9,11 @@ package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.models.merge.affine.AffineLayerParameters
 import com.kotlinnlp.simplednn.core.attention.AttentionParameters
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
+import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.deeplearning.birnn.mergeconfig.MergeConfiguration
+import com.kotlinnlp.simplednn.deeplearning.birnn.mergeconfig.OpenOutputMerge
 import java.io.Serializable
 
 
@@ -19,14 +22,14 @@ import java.io.Serializable
  *
  * @property inputSize the size of the elements of the input sequence
  * @property vectorSize the size of the vector that modulates a content-based attention mechanism over the input sequence
- * @property attentionSize the size of the attention vectors
+ * @param mergeConfig the configuration of the merge network
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: null)
  */
 class PointerNetworkModel(
   val inputSize: Int,
   val vectorSize: Int,
-  val attentionSize: Int,
+  mergeConfig: MergeConfiguration,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null
 ) : Serializable {
@@ -41,11 +44,17 @@ class PointerNetworkModel(
   }
 
   /**
-   * The parameters used to create the attention arrays of the [attentionParams].
+   * The merge network used to create the attention arrays of the [attentionParams].
    */
-  val transformParams = AffineLayerParameters(
-    inputsSize = listOf(this.inputSize, this.vectorSize),
-    outputSize = this.attentionSize,
+  val mergeNetwork = NeuralNetwork(
+    LayerInterface(
+      sizes = listOf(this.inputSize, this.vectorSize)
+    ),
+    LayerInterface(
+      size = (mergeConfig as? OpenOutputMerge)?.outputSize ?: -1,
+      activationFunction = (mergeConfig as? OpenOutputMerge)?.activationFunction,
+      connectionType = mergeConfig.type
+    ),
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
 
@@ -53,13 +62,13 @@ class PointerNetworkModel(
    * The parameters of the attention mechanism.
    */
   val attentionParams = AttentionParameters(
-    attentionSize = this.transformParams.outputSize,
+    attentionSize = this.mergeNetwork.outputSize,
     initializer = weightsInitializer)
 
   /**
    * The structure containing all the parameters of this model.
    */
   val params = PointerNetworkParameters(
-    transformParams = this.transformParams,
+    mergeParams = this.mergeNetwork.model,
     attentionParams = this.attentionParams)
 }
