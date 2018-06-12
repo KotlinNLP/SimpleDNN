@@ -65,7 +65,7 @@
         <mockit-kotlin.version>1.5.0</mockit-kotlin.version>
         <surfire.version>2.19.1</surfire.version>
         <spek.version>1.1.5</spek.version>
-        <dokka.version>0.9.16</dokka.version>
+        <dokka.version>0.9.17</dokka.version>
         <utils.version>2.1.0</utils.version>
     </properties>
 
