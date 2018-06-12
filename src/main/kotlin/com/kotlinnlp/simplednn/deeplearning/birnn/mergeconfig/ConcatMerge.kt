@@ -12,5 +12,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 /**
  * A data class that defines that the output Merge layer of a [com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN] is a
  * Concat layer.
+ *
+ * @property dropout the probability of dropout
  */
-class ConcatMerge : MergeConfiguration(type = LayerType.Connection.Concat)
+class ConcatMerge(dropout: Double = 0.0) : MergeConfiguration(type = LayerType.Connection.Concat, dropout = dropout)

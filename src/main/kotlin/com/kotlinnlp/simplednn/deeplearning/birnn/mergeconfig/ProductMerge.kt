@@ -12,5 +12,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 /**
  * A data class that defines that the output Merge layer of a [com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN] is a
  * Product layer.
+ *
+ * @property dropout the probability of dropout
  */
-class ProductMerge : MergeConfiguration(LayerType.Connection.Product)
+class ProductMerge(dropout: Double = 0.0) : MergeConfiguration(type = LayerType.Connection.Product, dropout = dropout)

@@ -15,11 +15,13 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
  * [com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN] that has a configurable output size and activation.
  *
  * @property type the connection type of the output Merge layer
+ * @property dropout the probability of dropout
  * @property outputSize the size of the merged output
  * @property activationFunction the output activation function
  */
 abstract class OpenOutputMerge(
   type: LayerType.Connection,
+  dropout: Double,
   val outputSize: Int,
   val activationFunction: ActivationFunction?
-) : MergeConfiguration(type)
+) : MergeConfiguration(type = type, dropout = dropout)

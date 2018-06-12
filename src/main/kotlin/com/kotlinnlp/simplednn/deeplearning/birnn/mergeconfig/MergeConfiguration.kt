@@ -14,8 +14,9 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
  * [com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN].
  *
  * @property type the connection type of the output Merge layer
+ * @property dropout the probability of dropout
  */
-abstract class MergeConfiguration(val type: LayerType.Connection) {
+abstract class MergeConfiguration(val type: LayerType.Connection, val dropout: Double) {
 
   /**
    * Check connection type.

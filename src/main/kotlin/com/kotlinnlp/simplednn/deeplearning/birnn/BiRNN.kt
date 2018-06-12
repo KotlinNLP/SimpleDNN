@@ -121,11 +121,11 @@ class BiRNN(
    */
   val outputMergeNetwork = NeuralNetwork(
     if (outputMergeConfiguration is ConcatFeedforwardMerge) listOf(
-      LayerInterface(sizes = listOf(this.hiddenSize, this.hiddenSize)),
+      LayerInterface(sizes = listOf(this.hiddenSize, this.hiddenSize), dropout = outputMergeConfiguration.dropout),
       LayerInterface(size = 2 * this.hiddenSize, connectionType = LayerType.Connection.Concat),
       LayerInterface(size = outputMergeConfiguration.outputSize, connectionType = LayerType.Connection.Feedforward))
     else listOf(
-      LayerInterface(sizes = listOf(this.hiddenSize, this.hiddenSize)),
+      LayerInterface(sizes = listOf(this.hiddenSize, this.hiddenSize), dropout = outputMergeConfiguration.dropout),
       LayerInterface(size = this.outputSize, connectionType = outputMergeConfiguration.type)),
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)

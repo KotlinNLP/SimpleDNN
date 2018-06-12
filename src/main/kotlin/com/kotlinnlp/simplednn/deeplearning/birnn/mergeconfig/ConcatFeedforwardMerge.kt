@@ -16,12 +16,15 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
  *
  * @property outputSize the size of the merged output
  * @property activationFunction the output activation function
+ * @property dropout the probability of dropout
  */
 class ConcatFeedforwardMerge(
   outputSize: Int,
-  activationFunction: ActivationFunction? = null
+  activationFunction: ActivationFunction? = null,
+  dropout: Double = 0.0
 ) : OpenOutputMerge(
   type = LayerType.Connection.Concat,
+  dropout = dropout,
   outputSize = outputSize,
   activationFunction = activationFunction
 )
