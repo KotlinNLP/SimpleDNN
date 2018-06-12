@@ -33,7 +33,7 @@ object LayerParametersFactory {
    * Build new generic [LayerParameters].
    *
    * @param inputsSize the list of input sizes (more then one only for Merge layers)
-   * @param outputSize the size of the output
+   * @param outputSize the size of the output (null for Merge layers with fixed output)
    * @param connectionType the type of connection from the input to the output
    * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
    * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
@@ -43,7 +43,7 @@ object LayerParametersFactory {
    * @return new layer parameters
    */
   operator fun invoke(inputsSize: List<Int>,
-                      outputSize: Int,
+                      outputSize: Int? = null,
                       connectionType: LayerType.Connection,
                       weightsInitializer: Initializer?,
                       biasesInitializer: Initializer?,
@@ -52,7 +52,7 @@ object LayerParametersFactory {
 
     LayerType.Connection.Feedforward -> FeedforwardLayerParameters(
       inputSize = inputsSize.first(),
-      outputSize = outputSize,
+      outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer,
@@ -60,7 +60,7 @@ object LayerParametersFactory {
 
     LayerType.Connection.Highway -> HighwayLayerParameters(
       inputSize = inputsSize.first(),
-      outputSize = outputSize,
+      outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer,
@@ -68,7 +68,7 @@ object LayerParametersFactory {
 
     LayerType.Connection.Affine -> AffineLayerParameters(
       inputsSize = inputsSize,
-      outputSize = outputSize,
+      outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
@@ -76,7 +76,7 @@ object LayerParametersFactory {
     LayerType.Connection.Biaffine -> BiaffineLayerParameters(
       inputSize1 = inputsSize[0],
       inputSize2 = inputsSize[1],
-      outputSize = outputSize,
+      outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
@@ -91,35 +91,35 @@ object LayerParametersFactory {
 
     LayerType.Connection.SimpleRecurrent -> SimpleRecurrentLayerParameters(
       inputSize = inputsSize.first(),
-      outputSize = outputSize,
+      outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
 
     LayerType.Connection.GRU -> GRULayerParameters(
       inputSize = inputsSize.first(),
-      outputSize = outputSize,
+      outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
 
     LayerType.Connection.LSTM -> LSTMLayerParameters(
       inputSize = inputsSize.first(),
-      outputSize = outputSize,
+      outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
 
     LayerType.Connection.CFN -> CFNLayerParameters(
       inputSize = inputsSize.first(),
-      outputSize = outputSize,
+      outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
 
     LayerType.Connection.RAN -> RANLayerParameters(
       inputSize = inputsSize.first(),
-      outputSize = outputSize,
+      outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer,
@@ -127,14 +127,14 @@ object LayerParametersFactory {
 
     LayerType.Connection.DeltaRNN -> DeltaRNNLayerParameters(
       inputSize = inputsSize.first(),
-      outputSize = outputSize,
+      outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
 
     LayerType.Connection.IndRNN -> IndRNNLayerParameters(
       inputSize = inputsSize.first(),
-      outputSize = outputSize,
+      outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
