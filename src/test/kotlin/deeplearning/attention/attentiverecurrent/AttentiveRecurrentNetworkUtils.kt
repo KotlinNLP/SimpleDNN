@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package deeplearning.attentiverecurrentnetwork.utils
+package deeplearning.attention.attentiverecurrent
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
@@ -36,10 +36,10 @@ object AttentiveRecurrentNetworkUtils {
       contextRecurrenceType = LayerType.Connection.SimpleRecurrent,
       outputActivationFunction = Tanh())
 
-    this.setTransformLayerParams(model)
-    this.setAttentionNetworkParams(model)
-    this.setRecurrentContextNetworkParams(model)
-    this.setOutputNetworkParams(model)
+    setTransformLayerParams(model)
+    setAttentionNetworkParams(model)
+    setRecurrentContextNetworkParams(model)
+    setOutputNetworkParams(model)
 
     return model
   }
@@ -112,12 +112,12 @@ object AttentiveRecurrentNetworkUtils {
    */
   fun getExpectedParamsErrors1(): AttentiveRecurrentNetworkParameters {
 
-    val paramsErrors: AttentiveRecurrentNetworkParameters = this.buildModel().params.copy()
+    val paramsErrors: AttentiveRecurrentNetworkParameters = buildModel().params.copy()
 
-    this.setTransformLayerParamsErrors(paramsErrors)
-    this.setAttentionNetworkParamsErrors(paramsErrors)
-    this.setRecurrentContextNetworkParamsErrors(paramsErrors)
-    this.setOutputNetworkParamsErrors(paramsErrors)
+    setTransformLayerParamsErrors(paramsErrors)
+    setAttentionNetworkParamsErrors(paramsErrors)
+    setRecurrentContextNetworkParamsErrors(paramsErrors)
+    setOutputNetworkParamsErrors(paramsErrors)
 
     return paramsErrors
   }

@@ -5,14 +5,13 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package deeplearning.attention
+package deeplearning.attention.attentiverecurrent
 
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerParameters
 import com.kotlinnlp.simplednn.deeplearning.attention.attentiverecurrentnetwork.AttentiveRecurrentNetwork
 import com.kotlinnlp.simplednn.deeplearning.attention.attentiverecurrentnetwork.AttentiveRecurrentNetworkParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import deeplearning.attentiverecurrentnetwork.utils.AttentiveRecurrentNetworkUtils
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
@@ -27,20 +26,18 @@ class AttentiveRecurrentNetworkSpec : Spek({
 
   describe("an AttentiveRecurrentNetwork") {
 
-    val utils = AttentiveRecurrentNetworkUtils
-
     on("forward") {
 
-      val network = AttentiveRecurrentNetwork(model = utils.buildModel())
-      val predictionLabels: List<DenseNDArray?> = utils.buildPredictionLabels()
+      val network = AttentiveRecurrentNetwork(model = AttentiveRecurrentNetworkUtils.buildModel())
+      val predictionLabels: List<DenseNDArray?> = AttentiveRecurrentNetworkUtils.buildPredictionLabels()
 
-      network.setInputSequence(utils.buildInputSequence1())
+      network.setInputSequence(AttentiveRecurrentNetworkUtils.buildInputSequence1())
 
       val output0 = network.forward(lastPredictionLabel = predictionLabels[0], trainingMode = false)
       val output1 = network.forward(lastPredictionLabel = predictionLabels[1], trainingMode = false)
       val output2 = network.forward(lastPredictionLabel = predictionLabels[2], trainingMode = false)
 
-      val expectedOutputs: List<DenseNDArray> = utils.buildExpectedOutputs1()
+      val expectedOutputs: List<DenseNDArray> = AttentiveRecurrentNetworkUtils.buildExpectedOutputs1()
 
       it("should match the expected output at the forward n. 1") {
         assertTrue { output0.equals(expectedOutputs[0], tolerance = 1.0e-06) }
@@ -57,22 +54,22 @@ class AttentiveRecurrentNetworkSpec : Spek({
 
     on("forward with a second sequence") {
 
-      val network = AttentiveRecurrentNetwork(model = utils.buildModel())
-      val predictionLabels: List<DenseNDArray?> = utils.buildPredictionLabels()
+      val network = AttentiveRecurrentNetwork(model = AttentiveRecurrentNetworkUtils.buildModel())
+      val predictionLabels: List<DenseNDArray?> = AttentiveRecurrentNetworkUtils.buildPredictionLabels()
 
-      network.setInputSequence(utils.buildInputSequence1())
+      network.setInputSequence(AttentiveRecurrentNetworkUtils.buildInputSequence1())
 
       network.forward(lastPredictionLabel = predictionLabels[0], trainingMode = false)
       network.forward(lastPredictionLabel = predictionLabels[1], trainingMode = false)
       network.forward(lastPredictionLabel = predictionLabels[2], trainingMode = false)
 
-      network.setInputSequence(utils.buildInputSequence2())
+      network.setInputSequence(AttentiveRecurrentNetworkUtils.buildInputSequence2())
 
       val output0 = network.forward(lastPredictionLabel = predictionLabels[0], trainingMode = false)
       val output1 = network.forward(lastPredictionLabel = predictionLabels[1], trainingMode = false)
       val output2 = network.forward(lastPredictionLabel = predictionLabels[2], trainingMode = false)
 
-      val expectedOutputs: List<DenseNDArray> = utils.buildExpectedOutputs2()
+      val expectedOutputs: List<DenseNDArray> = AttentiveRecurrentNetworkUtils.buildExpectedOutputs2()
 
       it("should match the expected output at the forward n. 1") {
         assertTrue { output0.equals(expectedOutputs[0], tolerance = 1.0e-06) }
@@ -89,24 +86,24 @@ class AttentiveRecurrentNetworkSpec : Spek({
 
     on("backward") {
 
-      val network = AttentiveRecurrentNetwork(model = utils.buildModel())
-      val predictionLabels: List<DenseNDArray?> = utils.buildPredictionLabels()
+      val network = AttentiveRecurrentNetwork(model = AttentiveRecurrentNetworkUtils.buildModel())
+      val predictionLabels: List<DenseNDArray?> = AttentiveRecurrentNetworkUtils.buildPredictionLabels()
 
-      network.setInputSequence(utils.buildInputSequence1())
+      network.setInputSequence(AttentiveRecurrentNetworkUtils.buildInputSequence1())
 
       network.forward(lastPredictionLabel = predictionLabels[0], trainingMode = true)
       network.forward(lastPredictionLabel = predictionLabels[1], trainingMode = true)
       network.forward(lastPredictionLabel = predictionLabels[2], trainingMode = true)
 
-      network.backward(outputErrors = utils.getOutputErrors1())
+      network.backward(outputErrors = AttentiveRecurrentNetworkUtils.getOutputErrors1())
 
       val paramsErrors: AttentiveRecurrentNetworkParameters = network.getParamsErrors()
       val inputSequenceErrors: List<DenseNDArray> = network.getInputSequenceErrors()
       val contextLabelsErrors: List<DenseNDArray?> = network.getContextLabelsErrors()
 
-      val expectedParamsErrors: AttentiveRecurrentNetworkParameters = utils.getExpectedParamsErrors1()
-      val expectedInputErrors: List<DenseNDArray> = utils.getExpectedInputErrors1()
-      val expectedLabelsErrors: List<DenseNDArray?> = utils.getExpectedLabelsErrors1()
+      val expectedParamsErrors: AttentiveRecurrentNetworkParameters = AttentiveRecurrentNetworkUtils.getExpectedParamsErrors1()
+      val expectedInputErrors: List<DenseNDArray> = AttentiveRecurrentNetworkUtils.getExpectedInputErrors1()
+      val expectedLabelsErrors: List<DenseNDArray?> = AttentiveRecurrentNetworkUtils.getExpectedLabelsErrors1()
 
       it("should match the expected errors of the transform layer weights") {
         assertTrue {
