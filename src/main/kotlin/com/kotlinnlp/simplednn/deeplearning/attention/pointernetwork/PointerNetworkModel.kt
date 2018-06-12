@@ -28,7 +28,8 @@ class PointerNetworkModel(
   val vectorSize: Int,
   val attentionSize: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
-  biasesInitializer: Initializer? = null) : Serializable {
+  biasesInitializer: Initializer? = null
+) : Serializable {
 
   companion object {
 

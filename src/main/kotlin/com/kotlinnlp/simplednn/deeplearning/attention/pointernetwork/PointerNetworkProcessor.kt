@@ -65,9 +65,7 @@ class PointerNetworkProcessor(val model: PointerNetworkModel) {
    * TODO: replace with a generic transform layers pool
    */
   internal val transformLayersPool: AffineLayersPool<DenseNDArray> =
-    AffineLayersPool(
-      activationFunction = Tanh(),
-      params = this.model.transformParams)
+    AffineLayersPool(activationFunction = Tanh(), params = this.model.transformParams)
 
   /**
    * The forward helper.

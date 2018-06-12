@@ -13,7 +13,6 @@ import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeura
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import java.util.*
 
 /**
  * The [SWSLabeler] uses a neural network to assign a categorical label to each member of a sequence.
@@ -106,6 +105,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
 
     this.forwardSequence(
       forEachPrediction = {
+
         val goldLabel = this.getGoldLabel(goldLabels)
 
         this.processor.backward(outputErrors = this.getOutputErrors(goldLabel), propagateToInput = true)
@@ -231,8 +231,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
     return NetworkErrors(
       paramsErrors = this.processor.getParamsErrors(copy = false),
       labelsEmbeddingsErrors = inputLayerErrors.getRange(0, this.network.labelsEmbeddingsSize),
-      inputErrors = inputLayerErrors.getRange(this.network.labelsEmbeddingsSize, this.network.featuresSize)
-    )
+      inputErrors = inputLayerErrors.getRange(this.network.labelsEmbeddingsSize, this.network.featuresSize))
   }
 
   /**

@@ -22,9 +22,8 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(val m
   /**
    * A list of processors which encode each input array into multiple vectors.
    */
-  private val encoders: List<BatchFeedforwardProcessor<InputNDArrayType>> = this.model.networks.map { network ->
-    BatchFeedforwardProcessor<InputNDArrayType>(network)
-  }
+  private val encoders: List<BatchFeedforwardProcessor<InputNDArrayType>> =
+    this.model.networks.map { BatchFeedforwardProcessor<InputNDArrayType>(it) }
 
   /**
    * @return the errors of the input sequence
