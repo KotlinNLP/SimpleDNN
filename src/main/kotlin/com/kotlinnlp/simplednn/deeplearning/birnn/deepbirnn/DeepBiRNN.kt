@@ -56,8 +56,8 @@ class DeepBiRNN(val levels: List<BiRNN>) : Serializable {
     /**
      * Build a DeepBiRNN stacking more BiRNNs.
      *
-     * Each BiRNN reduces (or increases) the size of its output respect to its input thanks to its hidden layer and a
-     * concatenation of the output of its two RNNs.
+     * Each BiRNN reduces (or increases) the size of its output respect to its input thanks to its hidden layer size
+     * and a concatenation of the output of its two RNNs.
      * The gain factor between the input and the output of each BiRNN is controlled passing a list of gain factors, one
      * for each level.
      *
@@ -84,10 +84,10 @@ class DeepBiRNN(val levels: List<BiRNN>) : Serializable {
                        weightsInitializer: Initializer? = GlorotInitializer(),
                        biasesInitializer: Initializer? = null): DeepBiRNN {
 
-      require(numberOfLevels > 0) { "required at least one BiRNN layer" }
+      require(numberOfLevels > 0) { "Required at least one BiRNN level." }
 
       require(recurrentConnectionType.property == LayerType.Property.Recurrent) {
-        "required recurrentConnectionType with Recurrent property"
+        "Required a recurrent connection type with Recurrent property."
       }
 
       require(gainFactors.size == numberOfLevels) {
