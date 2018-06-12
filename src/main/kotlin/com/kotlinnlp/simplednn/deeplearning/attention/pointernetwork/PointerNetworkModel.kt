@@ -51,6 +51,7 @@ class PointerNetworkModel(
       sizes = listOf(this.inputSize, this.vectorSize)
     ),
     LayerInterface(
+      // 'size' not used for merge layers with fixed output (e.g. concat, avg, sum, product)
       size = (mergeConfig as? OpenOutputMerge)?.outputSize ?: -1,
       activationFunction = (mergeConfig as? OpenOutputMerge)?.activationFunction,
       connectionType = mergeConfig.type
