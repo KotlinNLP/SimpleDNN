@@ -56,6 +56,12 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
   private lateinit var attentionParamsErrors: AttentionParameters
 
   /**
+   * The merge network parameters object in which to temporary save the errors during the backward.
+   */
+  private val paramsErrors: NetworkParameters =
+    this.networkProcessor.model.mergeNetwork.parametersFactory(forceDense = false)
+
+  /**
    * Perform the back-propagation from the output errors.
    *
    * @param outputErrors the errors to propagate
@@ -151,9 +157,9 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
   private fun backwardMergeProcessor(processor: FeedforwardNeuralProcessor<DenseNDArray>,
                                      outputErrors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
 
-    processor.backward(outputErrors = outputErrors, propagateToInput = true, mePropK = null)
+    processor.backward(outputErrors = outputErrors, paramsErrors = this.paramsErrors, propagateToInput = true)
 
-    this.mergeErrorsAccumulator.accumulate(processor.getParamsErrors(copy = false))
+    this.mergeErrorsAccumulator.accumulate(this.paramsErrors)
 
     return processor.getInputsErrors(copy = true).let{ Pair(it[0], it[1]) }
   }
