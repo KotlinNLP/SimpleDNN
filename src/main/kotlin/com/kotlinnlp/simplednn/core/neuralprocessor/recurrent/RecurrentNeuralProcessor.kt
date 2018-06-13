@@ -63,24 +63,26 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The helper which calculates the importance scores of all the previous states of a given one, in a RAN neural
    * network.
    */
-  private val ranImportanceHelper = RANImportanceHelper()
+  private val ranImportanceHelper: RANImportanceHelper by lazy { RANImportanceHelper() }
 
   /**
    * The errors of the network model parameters calculated during a single backward
    */
-  private var backwardParamsErrors: NetworkParameters = this.neuralNetwork.parametersFactory(forceDense = false)
+  private val backwardParamsErrors: NetworkParameters by lazy {
+    this.neuralNetwork.parametersFactory(forceDense = false)
+  }
 
   /**
    *
    */
-  private var paramsErrorsAccumulator = ParamsErrorsAccumulator<NetworkParameters>()
+  private val paramsErrorsAccumulator by lazy { ParamsErrorsAccumulator<NetworkParameters>() }
 
   /**
    *
    */
-  private val zeroErrors: DenseNDArray = DenseNDArrayFactory.zeros(
-    Shape(this.neuralNetwork.layersConfiguration.last().size)
-  )
+  private val zeroErrors: DenseNDArray by lazy {
+    DenseNDArrayFactory.zeros(shape = Shape(this.neuralNetwork.layersConfiguration.last().size))
+  }
 
   /**
    *

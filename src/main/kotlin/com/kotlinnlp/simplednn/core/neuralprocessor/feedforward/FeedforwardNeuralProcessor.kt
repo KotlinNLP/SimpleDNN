@@ -39,12 +39,16 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The structure in which to save the contributions of the calculations during the forward (needed to calculate the
    * relevance of the input in respect of the output)
    */
-  private val forwardContributions: NetworkParameters = this.neuralNetwork.parametersFactory(forceDense = false)
+  private val forwardContributions: NetworkParameters by lazy {
+    this.neuralNetwork.parametersFactory(forceDense = false)
+  }
 
   /**
    * The errors of the network model parameters
    */
-  private val backwardParamsErrors: NetworkParameters = this.neuralNetwork.parametersFactory(forceDense = false)
+  private val backwardParamsErrors: NetworkParameters by lazy {
+    this.neuralNetwork.parametersFactory(forceDense = false)
+  }
 
   /**
    * @param copy a Boolean indicating whether the returned array must be a copy or a reference
