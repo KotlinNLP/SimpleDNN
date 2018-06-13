@@ -65,12 +65,12 @@ class PointerNetworkProcessor(val model: PointerNetworkModel) {
   /**
    * The forward helper.
    */
-  internal val forwardHelper = ForwardHelper(networkProcessor = this)
+  private val forwardHelper = ForwardHelper(networkProcessor = this)
 
   /**
    * The backward helper.
    */
-  private val backwardHelper = BackwardHelper(networkProcessor = this)
+  private val backwardHelper: BackwardHelper by lazy { BackwardHelper(networkProcessor = this) }
 
   /**
    * Set the encoded sequence.
