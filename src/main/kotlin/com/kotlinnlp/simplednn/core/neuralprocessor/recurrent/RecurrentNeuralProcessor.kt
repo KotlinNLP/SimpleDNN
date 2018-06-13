@@ -87,32 +87,29 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  override fun getPrevStateStructure(): RecurrentNetworkStructure<InputNDArrayType>? {
-    return if (this.curStateIndex in 1 .. this.lastStateIndex)
+  override fun getPrevStateStructure(): RecurrentNetworkStructure<InputNDArrayType>? =
+    if (this.curStateIndex in 1 .. this.lastStateIndex)
       this.sequence.getStateStructure(this.curStateIndex - 1)
     else
       null
-  }
 
   /**
    *
    */
-  override fun getNextStateStructure(): RecurrentNetworkStructure<InputNDArrayType>? {
-    return if (this.curStateIndex < this.lastStateIndex) // it works also for the init hidden structure
+  override fun getNextStateStructure(): RecurrentNetworkStructure<InputNDArrayType>? =
+    if (this.curStateIndex < this.lastStateIndex) // it works also for the init hidden structure
       this.sequence.getStateStructure(this.curStateIndex + 1)
     else
       null
-  }
 
   /**
    *
    */
-  fun getOutput(copy: Boolean = true): DenseNDArray {
-    return if (copy)
+  fun getOutput(copy: Boolean = true): DenseNDArray =
+    if (copy)
       this.sequence.getStateStructure(this.lastStateIndex).outputLayer.outputArray.values.copy()
     else
       this.sequence.getStateStructure(this.lastStateIndex).outputLayer.outputArray.values
-  }
 
   /**
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference

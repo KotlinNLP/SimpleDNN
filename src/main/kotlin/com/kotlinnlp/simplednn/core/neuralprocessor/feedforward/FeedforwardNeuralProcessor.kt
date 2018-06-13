@@ -55,13 +55,11 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the output array of the network
    */
-  fun getOutput(copy: Boolean = true): DenseNDArray {
-    return if (copy) {
+  fun getOutput(copy: Boolean = true): DenseNDArray =
+    if (copy)
       this.structure.outputLayer.outputArray.values.copy()
-    } else {
+    else
       this.structure.outputLayer.outputArray.values
-    }
-  }
 
   /**
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
