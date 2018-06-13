@@ -238,4 +238,25 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
       propagateToInput = propagateToInput,
       mePropK = mePropK)
   }
+
+  /**
+   * Backward errors saving the parameters errors into a given object.
+   *
+   * @param outputErrors the errors of the output
+   * @param paramsErrors the object in which to save the parameters errors
+   * @param propagateToInput whether to propagate the errors to the input
+   * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
+   *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
+   */
+  fun backward(outputErrors: DenseNDArray,
+               paramsErrors: NetworkParameters,
+               propagateToInput: Boolean = false,
+               mePropK: List<Double?>? = null) {
+
+    this.structure.backward(
+      outputErrors = outputErrors,
+      paramsErrors = paramsErrors,
+      propagateToInput = propagateToInput,
+      mePropK = mePropK)
+  }
 }
