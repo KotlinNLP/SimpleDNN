@@ -579,9 +579,10 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
         // Column vector (dot) row vector
 
         val bActiveIndices = b.activeIndicesByColumn.keys
-        val values = doubleArrayOf()
-        val rows = intArrayOf()
-        val columns = intArrayOf()
+        val valuesCount = bActiveIndices.size * a.rows
+        val values = DoubleArray(size = valuesCount)
+        val rows = IntArray(size = valuesCount)
+        val columns = IntArray(size = valuesCount)
 
         var k = 0
         for (j in bActiveIndices) {
