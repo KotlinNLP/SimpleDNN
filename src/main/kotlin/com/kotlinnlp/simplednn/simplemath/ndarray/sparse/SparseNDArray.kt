@@ -411,9 +411,9 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
     val aSize = a.values.size
     val concatSize = thisSize + aSize
 
-    val reducedValues = arrayOfNulls<Double>(size = concatSize)
-    val reducedRows = arrayOfNulls<Int>(size = concatSize)
-    val reducedCols = arrayOfNulls<Int>(size = concatSize)
+    val reducedValues = DoubleArray(size = concatSize)
+    val reducedRows = IntArray(size = concatSize)
+    val reducedCols = IntArray(size = concatSize)
 
     var k = 0
     var aK = 0
@@ -428,7 +428,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
         && ref.rowIndices[index] == reducedRows[lastIndex]
         && ref.colIndices[index] == reducedCols[lastIndex]) {
 
-        reducedValues[lastIndex] = reducedValues[lastIndex]!! + ref.values[index]
+        reducedValues[lastIndex] = reducedValues[lastIndex] + ref.values[index]
 
       } else {
         lastIndex++
@@ -438,9 +438,9 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
       }
     }
 
-    this.values = DoubleArray(size = lastIndex + 1, init = { i -> reducedValues[i]!! })
-    this.rowIndices = IntArray(size = lastIndex + 1, init = { i -> reducedRows[i]!! })
-    this.colIndices= IntArray(size = lastIndex + 1, init = { i -> reducedCols[i]!! })
+    this.values = reducedValues.copyOfRange(0, lastIndex + 1)
+    this.rowIndices = reducedRows.copyOfRange(0, lastIndex + 1)
+    this.colIndices= reducedCols.copyOfRange(0, lastIndex + 1)
 
     return this
   }
