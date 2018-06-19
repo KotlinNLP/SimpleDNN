@@ -133,6 +133,20 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   )
 
   /**
+   * Get the inputs errors of all the elements of the last forwarded sequence, in the same order, in case of the input
+   * layer is a Merge layer.
+   * This method should be called after a backward.
+   *
+   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   *
+   * @return an array containing the errors of the input sequence
+   */
+  fun getInputsSequenceErrors(copy: Boolean = true): List<List<DenseNDArray>> = List(
+    size = this.statesSize,
+    init = { i -> this.getInputsErrors(elementIndex = i, copy = copy) }
+  )
+
+  /**
    * Get the input errors of an element of the last forwarded sequence.
    * This method must be used when the input layer is not a Merge layer and it should be called after a backward.
    *
@@ -156,7 +170,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Get the inputs errors of an element of the last forwarded sequence, in case.
+   * Get the inputs errors of an element of the last forwarded sequence, in case of the input layer is a Merge layer.
    * This method must be used when the input layer is a Merge layer and it should be called after a backward.
    *
    * @param elementIndex the index of an element of the input sequence
