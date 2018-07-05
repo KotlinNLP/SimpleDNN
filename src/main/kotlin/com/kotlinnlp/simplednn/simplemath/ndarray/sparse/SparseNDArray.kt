@@ -827,7 +827,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
-   * Power
+   * Power.
    *
    * @param power the exponent
    *
@@ -838,13 +838,31 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
-   * In-place power
+   * In-place power.
    *
    * @param power the exponent
    *
    * @return this [SparseNDArray] to the power of [power]
    */
   override fun assignPow(power: Double): SparseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   * Logarithm with base 10.
+   *
+   * @return a new [SparseNDArray] containing the element-wise logarithm with base 10 of this array
+   */
+  override fun log10(): SparseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   * Natural logarithm.
+   *
+   * @return a new [SparseNDArray] containing the element-wise natural logarithm of this array
+   */
+  override fun ln(): SparseNDArray {
     TODO("not implemented")
   }
 

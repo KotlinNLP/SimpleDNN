@@ -314,7 +314,7 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun sqrt(mask: NDArrayMask): SparseNDArray
 
   /**
-   * Power
+   * Power.
    *
    * @param power the exponent
    *
@@ -323,13 +323,27 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun pow(power: Double): SelfType
 
   /**
-   * In-place power
+   * In-place power.
    *
    * @param power the exponent
    *
    * @return this [NDArray] to the power of [power]
    */
   fun assignPow(power: Double): SelfType
+
+  /**
+   * Logarithm with base 10.
+   *
+   * @return a new [NDArray] containing the element-wise logarithm with base 10 of this array
+   */
+  fun log10(): SelfType
+
+  /**
+   * Natural logarithm.
+   *
+   * @return a new [NDArray] containing the element-wise natural logarithm of this array
+   */
+  fun ln(): SelfType
 
   /**
    * The norm (L1 distance) of this NDArray.

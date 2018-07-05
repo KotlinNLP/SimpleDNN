@@ -748,9 +748,8 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
     return SparseNDArray(shape = this.shape, values = values, rows = mask.dim1, columns = mask.dim2)
   }
 
-
   /**
-   * Power
+   * Power.
    *
    * @param power the exponent
    *
@@ -759,7 +758,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   override fun pow(power: Double): DenseNDArray = DenseNDArray(MatrixFunctions.pow(this.storage, power))
 
   /**
-   * In-place power
+   * In-place power.
    *
    * @param power the exponent
    *
@@ -768,6 +767,30 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   override fun assignPow(power: Double): DenseNDArray {
     MatrixFunctions.powi(this.storage, power)
     return this
+  }
+
+  /**
+   * Logarithm with base 10.
+   *
+   * @return a new [DenseNDArray] containing the element-wise logarithm with base 10 of this array
+   */
+  override fun log10(): DenseNDArray {
+
+    require((0 until this.length).all { i -> this[i] != 0.0 })
+
+    return DenseNDArray(MatrixFunctions.log10(this.storage))
+  }
+
+  /**
+   * Natural logarithm.
+   *
+   * @return a new [DenseNDArray] containing the element-wise natural logarithm of this array
+   */
+  override fun ln(): DenseNDArray {
+
+    require((0 until this.length).all { i -> this[i] != 0.0 })
+
+    return DenseNDArray(MatrixFunctions.log(this.storage))
   }
 
   /**

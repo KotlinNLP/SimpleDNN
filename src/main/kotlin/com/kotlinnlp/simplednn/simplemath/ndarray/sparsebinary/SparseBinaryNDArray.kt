@@ -600,7 +600,7 @@ class SparseBinaryNDArray(
   }
 
   /**
-   * Power
+   * Power.
    *
    * @param power the exponent
    *
@@ -611,13 +611,31 @@ class SparseBinaryNDArray(
   }
 
   /**
-   * In-place power
+   * In-place power.
    *
    * @param power the exponent
    *
    * @return this [SparseBinaryNDArray] to the power of [power]
    */
   override fun assignPow(power: Double): SparseBinaryNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   * Logarithm with base 10.
+   *
+   * @return a new [SparseBinaryNDArray] containing the element-wise logarithm with base 10 of this array
+   */
+  override fun log10(): SparseBinaryNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   * Natural logarithm.
+   *
+   * @return a new [SparseBinaryNDArray] containing the element-wise natural logarithm of this array
+   */
+  override fun ln(): SparseBinaryNDArray {
     TODO("not implemented")
   }
 
