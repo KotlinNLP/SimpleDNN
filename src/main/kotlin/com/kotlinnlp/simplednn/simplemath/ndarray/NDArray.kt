@@ -353,6 +353,19 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun norm(): Double
 
   /**
+   * Normalize an array with the L1 distance.
+   *
+   * @return a new [NDArray] normalized with the L1 distance
+   */
+  fun normalize(): SelfType {
+
+    val norm: Double = this.norm()
+
+    @Suppress("UNCHECKED_CAST")
+    return if (norm != 0.0) this.div(norm) else this as SelfType
+  }
+
+  /**
    * The Euclidean norm of this NDArray.
    *
    * @return the euclidean norm
@@ -360,16 +373,16 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun norm2(): Double
 
   /**
-   * Normalize an array to a unit vector with the Euclidean norm.
+   * Normalize an array with the Euclidean norm.
    *
-   * @return this array normalized (can be a copy or not)
+   * @return a new [NDArray] normalized with the Euclidean norm
    */
   fun normalize2(): SelfType {
 
-    val norm: Double = this.norm2()
+    val norm2: Double = this.norm2()
 
     @Suppress("UNCHECKED_CAST")
-    return if (norm != 0.0) this.div(norm) else this as SelfType
+    return if (norm2 != 0.0) this.div(norm2) else this as SelfType
   }
 
   /**
