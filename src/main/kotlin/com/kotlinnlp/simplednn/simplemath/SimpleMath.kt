@@ -73,15 +73,15 @@ fun List<DenseNDArray>.assignSum(a: List<DenseNDArray>) {
 }
 
 /**
- * Compute the similarity of two arrays (already normalized with the normalize2 function).
+ * Compute the cosine similarity of two arrays (already normalized with the normalize2 function).
  * The cosine similarity value is limited in the range [0.0, 1.0] applying a ReLU function.
  *
  * @param a a dense normalized array
  * @param b a dense normalized array
  *
- * @return the similarity of the two arrays
+ * @return the cosine similarity of the two arrays
  */
-fun similarity(a: DenseNDArray, b: DenseNDArray): Double = maxOf(0.0, a.t.dot(b)[0])
+fun cosineSimilarity(a: DenseNDArray, b: DenseNDArray): Double = maxOf(0.0, a.t.dot(b)[0])
 
 /**
  * Return the number in a formatted string with the specified number of digits.
