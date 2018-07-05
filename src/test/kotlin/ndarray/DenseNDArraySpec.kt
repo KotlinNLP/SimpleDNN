@@ -920,6 +920,46 @@ class DenseNDArraySpec : Spek({
         }
       }
 
+      on("assignLog10() method") {
+
+        val array1 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
+        val array2 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.3, 0.5, 0.7))
+        val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.397940, -0.522879, -0.301030, -0.154902))
+        val res = array2.assignLog10()
+
+        it("should raise an exception if at least a value is 0.0") {
+          assertFailsWith<IllegalArgumentException> { array1.assignLog10() }
+        }
+
+        it("should return the same DenseNDArray with a valid array") {
+          assertTrue { array2 === res }
+        }
+
+        it("should assign the expected values with a valid array") {
+          assertTrue { array2.equals(expectedArray, tolerance = 1.0e-06) }
+        }
+      }
+
+      on("assignLn() method") {
+
+        val array1 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
+        val array2 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.3, 0.5, 0.7))
+        val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.916291, -1.203973, -0.693147, -0.356675))
+        val res = array2.assignLn()
+
+        it("should raise an exception if at least a value is 0.0") {
+          assertFailsWith<IllegalArgumentException> { array1.assignLn() }
+        }
+
+        it("should return the same DenseNDArray with a valid array") {
+          assertTrue { array2 === res }
+        }
+
+        it("should assign the expected values with a valid array") {
+          assertTrue { array2.equals(expectedArray, tolerance = 1.0e-06) }
+        }
+      }
+
       on("assignRoundInt(threshold) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
