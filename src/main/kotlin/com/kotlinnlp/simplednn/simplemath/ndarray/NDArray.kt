@@ -346,6 +346,19 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun norm2(): Double
 
   /**
+   * Normalize an array to a unit vector with the Euclidean norm.
+   *
+   * @return this array normalized (can be a copy or not)
+   */
+  fun normalize2(): SelfType {
+
+    val norm: Double = this.norm2()
+
+    @Suppress("UNCHECKED_CAST")
+    return if (norm != 0.0) this.div(norm) else this as SelfType
+  }
+
+  /**
    * Get the index of the highest value eventually skipping the element at the given [exceptIndex] when it is >= 0.
    *
    * @param exceptIndex the index to exclude

@@ -12,7 +12,6 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.deeplearning.competitivelearning.CLNetwork
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.normalize
 import com.kotlinnlp.simplednn.simplemath.similarity
 
 /**
@@ -89,6 +88,6 @@ class CLFeedforwardNetwork(val model: CLFeedforwardNetworkModel): CLNetwork(mode
 
     val reconstructedInput: DenseNDArray = this.processors[classIndex].forward(inputArray)
 
-    return similarity(inputArray.normalize(), reconstructedInput.normalize())
+    return similarity(inputArray.normalize2(), reconstructedInput.normalize2())
   }
 }

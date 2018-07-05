@@ -73,7 +73,7 @@ fun List<DenseNDArray>.assignSum(a: List<DenseNDArray>) {
 }
 
 /**
- * Compute the similarity of two arrays (already normalized to unit vectors with the [normalize] function).
+ * Compute the similarity of two arrays (already normalized with the normalize2 function).
  * The cosine similarity value is limited in the range [0.0, 1.0] applying a ReLU function.
  *
  * @param a a dense normalized array
@@ -82,18 +82,6 @@ fun List<DenseNDArray>.assignSum(a: List<DenseNDArray>) {
  * @return the similarity of the two arrays
  */
 fun similarity(a: DenseNDArray, b: DenseNDArray): Double = maxOf(0.0, a.t.dot(b)[0])
-
-/**
- * Normalize an array to a unit vector with the Euclidean norm.
- *
- * @return this array normalized (can be a copy or not)
- */
-fun DenseNDArray.normalize(): DenseNDArray {
-
-  val norm: Double = this.norm2()
-
-  return if (norm != 0.0) this.div(norm) else this
-}
 
 /**
  * Return the number in a formatted string with the specified number of digits.
