@@ -546,6 +546,42 @@ class DenseNDArraySpec : Spek({
           assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
         }
       }
+
+      on("log10() method") {
+
+        val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.397940, -0.522879, -0.301030, -0.154902))
+        val res = a.log10()
+
+        it("should raise an exception if at least a value is 0.0") {
+          assertFailsWith<IllegalArgumentException> { array.log10() }
+        }
+
+        it("should return a new DenseNDArray with a valid array") {
+          assertFalse { a === res }
+        }
+
+        it("should return the expected values with a valid array") {
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-06) }
+        }
+      }
+
+      on("ln() method") {
+
+        val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.916291, -1.203973, -0.693147, -0.356675))
+        val res = a.ln()
+
+        it("should raise an exception if at least a value is 0.0") {
+          assertFailsWith<IllegalArgumentException> { array.ln() }
+        }
+
+        it("should return a new DenseNDArray with a valid array") {
+          assertFalse { a === res }
+        }
+
+        it("should return the expected values with a valid array") {
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-06) }
+        }
+      }
     }
 
     context("math methods in-place") {
