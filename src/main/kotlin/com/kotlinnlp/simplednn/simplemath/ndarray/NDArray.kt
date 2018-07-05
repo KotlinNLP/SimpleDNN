@@ -339,11 +339,25 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun log10(): SelfType
 
   /**
+   * In-place logarithm with base 10.
+   *
+   * @return this [NDArray] after having applied the logarithm with base 10 to its values
+   */
+  fun assignLog10(): SelfType
+
+  /**
    * Natural logarithm.
    *
    * @return a new [NDArray] containing the element-wise natural logarithm of this array
    */
   fun ln(): SelfType
+
+  /**
+   * In-place natural logarithm.
+   *
+   * @return this [NDArray] after having applied the natural logarithm to its values
+   */
+  fun assignLn(): SelfType
 
   /**
    * The norm (L1 distance) of this NDArray.

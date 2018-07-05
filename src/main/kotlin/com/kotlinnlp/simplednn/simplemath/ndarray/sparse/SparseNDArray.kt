@@ -858,11 +858,29 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
+   * In-place logarithm with base 10.
+   *
+   * @return this [SparseNDArray] after having applied the logarithm with base 10 to its values
+   */
+  override fun assignLog10(): SparseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
    * Natural logarithm.
    *
    * @return a new [SparseNDArray] containing the element-wise natural logarithm of this array
    */
   override fun ln(): SparseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   * In-place logarithm with base 10.
+   *
+   * @return this [SparseNDArray] after having applied the logarithm with base 10 to its values
+   */
+  override fun assignLn(): SparseNDArray {
     TODO("not implemented")
   }
 

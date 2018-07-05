@@ -782,6 +782,20 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   * In-place logarithm with base 10.
+   *
+   * @return this [DenseNDArray] after having applied the logarithm with base 10 to its values
+   */
+  override fun assignLog10(): DenseNDArray {
+
+    require((0 until this.length).all { i -> this[i] != 0.0 })
+
+    MatrixFunctions.log10i(this.storage)
+
+    return this
+  }
+
+  /**
    * Natural logarithm.
    *
    * @return a new [DenseNDArray] containing the element-wise natural logarithm of this array
@@ -791,6 +805,20 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
     require((0 until this.length).all { i -> this[i] != 0.0 })
 
     return DenseNDArray(MatrixFunctions.log(this.storage))
+  }
+
+  /**
+   * In-place logarithm with base 10.
+   *
+   * @return this [DenseNDArray] after having applied the logarithm with base 10 to its values
+   */
+  override fun assignLn(): DenseNDArray {
+
+    require((0 until this.length).all { i -> this[i] != 0.0 })
+
+    MatrixFunctions.logi(this.storage)
+
+    return this
   }
 
   /**

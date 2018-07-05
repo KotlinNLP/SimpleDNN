@@ -631,11 +631,29 @@ class SparseBinaryNDArray(
   }
 
   /**
+   * In-place logarithm with base 10.
+   *
+   * @return this [SparseBinaryNDArray] after having applied the logarithm with base 10 to its values
+   */
+  override fun assignLog10(): SparseBinaryNDArray {
+    TODO("not implemented")
+  }
+
+  /**
    * Natural logarithm.
    *
    * @return a new [SparseBinaryNDArray] containing the element-wise natural logarithm of this array
    */
   override fun ln(): SparseBinaryNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   * In-place logarithm with base 10.
+   *
+   * @return this [SparseBinaryNDArray] after having applied the logarithm with base 10 to its values
+   */
+  override fun assignLn(): SparseBinaryNDArray {
     TODO("not implemented")
   }
 
