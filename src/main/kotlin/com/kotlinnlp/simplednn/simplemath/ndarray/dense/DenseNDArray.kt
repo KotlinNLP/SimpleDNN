@@ -771,14 +771,19 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
-   * Euclidean norm of this DenseNDArray
+   * The norm (L1 distance) of this NDArray.
+   *
+   * @return the norm
+   */
+  override fun norm(): Double = (0 until this.length).sumByDouble { i -> abs(this[i]) }
+
+  /**
+   * The Euclidean norm of this DenseNDArray.
    *
    * @return the euclidean norm
    */
-  override fun norm2(): Double {
-    val zeros = this.zerosLike()
-    return this.storage.distance2(zeros.storage)
-  }
+  override fun norm2(): Double =
+    this.storage.distance2(DoubleMatrix.zeros(this.shape.dim1, shape.dim2))
 
   /**
    * @return the maximum value of this NDArray

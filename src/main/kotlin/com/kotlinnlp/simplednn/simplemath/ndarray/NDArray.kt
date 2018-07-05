@@ -332,7 +332,14 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun assignPow(power: Double): SelfType
 
   /**
-   * Euclidean norm of this NDArray
+   * The norm (L1 distance) of this NDArray.
+   *
+   * @return the norm
+   */
+  fun norm(): Double
+
+  /**
+   * The Euclidean norm of this NDArray.
    *
    * @return the euclidean norm
    */

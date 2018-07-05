@@ -849,7 +849,16 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
-   * Euclidean norm of this NDArray
+   * The norm (L1 distance) of this NDArray.
+   *
+   * @return the norm
+   */
+  override fun norm(): Double {
+    TODO("not implemented")
+  }
+
+  /**
+   * The Euclidean norm of this DenseNDArray.
    *
    * @return the euclidean norm
    */
