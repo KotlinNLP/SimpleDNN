@@ -930,6 +930,13 @@ class DenseNDArraySpec : Spek({
         }
       }
 
+      on("norm() method") {
+
+        it("should return the expected norm") {
+          assertTrue { equals(0.6, array.norm(), tolerance = 1.0e-05) }
+        }
+      }
+
       on("norm2() method") {
 
         it("should return the expected euclidean norm") {
