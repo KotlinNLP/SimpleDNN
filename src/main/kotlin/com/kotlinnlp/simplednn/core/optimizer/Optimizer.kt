@@ -17,12 +17,21 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  *
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
-abstract class Optimizer(protected val updateMethod: UpdateMethod<*>) : ScheduledUpdater {
+abstract class Optimizer<in ParamsErrorsType: Any>(protected val updateMethod: UpdateMethod<*>) : ScheduledUpdater {
 
   /**
    * Update the parameters of the neural element associated to this optimizer.
    */
   abstract override fun update()
+
+  /**
+   * Accumulate the given [paramsErrors] into the accumulator.
+   *
+   * @param paramsErrors the parameters errors to accumulate
+   * @param copy a Boolean indicating if the [paramsErrors] can be used as reference or must be copied. Set copy = false
+   *             to optimize the accumulation when the amount of the errors to accumulate is 1. (default = true)
+   */
+  abstract fun accumulate(paramsErrors: ParamsErrorsType, copy: Boolean = true)
 
   /**
    * Method to call every new epoch.

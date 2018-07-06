@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The optimizer of the [CLFeedforwardNetworkModel].
@@ -21,7 +22,7 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 class CLFeedforwardNetworkOptimizer(
   model: CLFeedforwardNetworkModel,
   updateMethod: UpdateMethod<*>
-) : Optimizer(updateMethod) {
+) : Optimizer<Pair<Int, NetworkParameters>>(updateMethod) {
 
   /**
    * A list of [ParamsOptimizer]s, one for each sub-network.
@@ -46,7 +47,7 @@ class CLFeedforwardNetworkOptimizer(
    *             Set copy = false to optimize the accumulation when the amount of the errors to accumulate is 1.
    *             (default = true)
    */
-  fun accumulate(classIndex: Int, errors: NetworkParameters, copy: Boolean = true) {
-    this.networksOptimizers[classIndex].accumulate(errors, copy = copy)
+  override fun accumulate(paramsErrors: Pair<Int, NetworkParameters>, copy: Boolean) {
+    this.networksOptimizers[paramsErrors.first].accumulate(paramsErrors.second, copy = copy)
   }
 }

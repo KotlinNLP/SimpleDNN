@@ -22,7 +22,7 @@ import com.kotlinnlp.simplednn.core.optimizer.Optimizer
  * @property verbose whether to print training details
  */
 abstract class TrainingHelper<ExampleType: Example>(
-  open val optimizer: Optimizer?,
+  open val optimizer: Optimizer<*>?,
   val verbose: Boolean = false) {
 
   /**

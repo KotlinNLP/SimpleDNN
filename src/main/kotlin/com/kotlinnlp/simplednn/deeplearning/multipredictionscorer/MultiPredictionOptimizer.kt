@@ -22,7 +22,7 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 class MultiPredictionOptimizer(
   model: MultiPredictionModel,
   updateMethod: UpdateMethod<*>
-) : Optimizer(updateMethod) {
+) : Optimizer<Map<Int, NetworkParameters>>(updateMethod) {
 
   /**
    * A list of [ParamsOptimizer]s, one for each sub-network.
@@ -42,14 +42,14 @@ class MultiPredictionOptimizer(
   /**
    * Accumulate the given [networksErrors] for each sub-network of the [MultiPredictionScorer].
    *
-   * @param networksErrors a map of sub-networks indices to their params errors
+   * @param paramsErrors a map of sub-networks indices to their params errors
    * @param copy a Boolean indicating if the [networksErrors] can be used as reference or must be copied.
    *             Set copy = false to optimize the accumulation when the amount of the errors to accumulate is 1.
    *             (default = true)
    */
-  fun accumulate(networksErrors: Map<Int, NetworkParameters>, copy: Boolean = true) {
+  override fun accumulate(paramsErrors: Map<Int, NetworkParameters>, copy: Boolean) {
 
-    networksErrors.forEach { networkIndex, errors ->
+    paramsErrors.forEach { networkIndex, errors ->
       this.networksOptimizers[networkIndex].accumulate(errors, copy = copy)
     }
   }

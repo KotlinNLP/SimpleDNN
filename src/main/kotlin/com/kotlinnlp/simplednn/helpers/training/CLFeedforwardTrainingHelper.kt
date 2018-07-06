@@ -51,8 +51,7 @@ class CLFeedforwardTrainingHelper(
   override fun accumulateParamsErrors(batchSize: Int) {
 
     this.optimizer.accumulate(
-      classIndex = this.lastExampleClass,
-      errors = this.network.getParamsErrors(copy = batchSize > 1),
+      paramsErrors = Pair(this.lastExampleClass, this.network.getParamsErrors(copy = batchSize > 1)),
       copy = batchSize > 1)
   }
 }

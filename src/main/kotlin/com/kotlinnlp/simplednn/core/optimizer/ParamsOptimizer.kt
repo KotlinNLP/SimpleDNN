@@ -21,7 +21,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 class ParamsOptimizer<ParamsType: IterableParams<ParamsType>>(
   val params: ParamsType,
   updateMethod: UpdateMethod<*>
-) : Optimizer(updateMethod) {
+) : Optimizer<ParamsType>(updateMethod) {
 
   /**
    * The accumulator of parameters errors.
@@ -48,7 +48,7 @@ class ParamsOptimizer<ParamsType: IterableParams<ParamsType>>(
    * @param copy a Boolean indicating if the [paramsErrors] can be used as reference or must be copied. Set copy = false
    *             to optimize the accumulation when the amount of the errors to accumulate is 1. (default = true)
    */
-  fun accumulate(paramsErrors: ParamsType, copy: Boolean = true) {
+  override fun accumulate(paramsErrors: ParamsType, copy: Boolean) {
 
     require(this.params.zip(paramsErrors).all{ (params, errors) -> params.values.shape == errors.values.shape }) {
       "paramsErrors contains arrays with not compatible shape"

@@ -20,17 +20,23 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 class EmbeddingsOptimizer<in T>(
   private val embeddingsMap: EmbeddingsMap<T>,
   updateMethod: UpdateMethod<*>
-) : Optimizer(updateMethod) {
+) : Optimizer<Pair<Int, DenseNDArray>>(updateMethod) {
 
   /**
    * A support data class to store errors and accumulations count.
    */
-  private data class EmbeddingsErrors(val errors: DenseNDArray, var count: Int)
+  private data class ErrorsAccumulator(val errors: DenseNDArray, var count: Int) {
+
+    fun accumulate(errors: DenseNDArray) {
+      this.errors.assignSum(errors)
+      this.count += 1
+    }
+  }
 
   /**
    * Map embeddings embeddings ids to their errors.
    */
-  private val embeddingsErrorsMap = mutableMapOf<Int, EmbeddingsErrors>()
+  private val embeddingsErrorsMap = mutableMapOf<Int, ErrorsAccumulator>()
 
   /**
    * Update the embeddings.
@@ -48,21 +54,29 @@ class EmbeddingsOptimizer<in T>(
   }
 
   /**
+   * Accumulate the errors of the embedding identified with its Id in the [embeddingsMap].
+   *
+   * @param paramsErrors the pair of id and errors
+   */
+  override fun accumulate(paramsErrors: Pair<Int, DenseNDArray>, copy: Boolean) {
+
+    val item = this.embeddingsErrorsMap[paramsErrors.first]
+
+    if (item != null) {
+      item.accumulate(paramsErrors.second)
+    } else {
+      this.embeddingsErrorsMap[paramsErrors.first] = ErrorsAccumulator(errors = paramsErrors.second.copy(), count = 1)
+    }
+  }
+
+  /**
    * Accumulate the [errors] of the given [embedding].
    *
    * @param embedding the embedding on which to accumulate the [errors]
    * @param errors errors to accumulate
    */
   fun accumulate(embedding: Embedding, errors: DenseNDArray) {
-
-    if (embedding.id in this.embeddingsErrorsMap) {
-      val embeddingErrors: EmbeddingsErrors = this.embeddingsErrorsMap[embedding.id]!!
-      embeddingErrors.errors.assignSum(errors)
-      embeddingErrors.count += 1
-
-    } else {
-      this.embeddingsErrorsMap[embedding.id] = EmbeddingsErrors(errors = errors.copy(), count = 1)
-    }
+    this.accumulate(Pair(embedding.id, errors))
   }
 
   /**
@@ -75,6 +89,6 @@ class EmbeddingsOptimizer<in T>(
    * @param errors errors to accumulate
    */
   fun accumulate(embeddingKey: T?, errors: DenseNDArray) {
-    this.accumulate(embedding = this.embeddingsMap.get(embeddingKey), errors = errors)
+    this.accumulate(Pair(this.embeddingsMap.get(embeddingKey).id, errors))
   }
 }
