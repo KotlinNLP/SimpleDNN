@@ -10,9 +10,9 @@ package com.kotlinnlp.simplednn.simplemath
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-import java.lang.Math.pow
 import kotlin.math.log10
-import kotlin.math.min
+import kotlin.math.max
+import kotlin.math.pow
 
 /**
  * Equals within tolerance.
@@ -107,7 +107,7 @@ fun sedSimilarity(a: DenseNDArray, b: DenseNDArray): Double {
 
   val exp: Double = (0 until a.length).sumByDouble { i -> complexityExp(a[i], b[i]) }
 
-  return 2.0 - pow(10.0, exp)
+  return 2.0 - 10.0.pow(exp)
 }
 
 /**
@@ -132,4 +132,4 @@ private fun complexityExp(a: Double, b: Double): Double =
  *
  * @return the Shannon's entropy of the given number
  */
-private fun negShannonEntropy(x: Double): Double = x * log10(min(x, 1.0e-16)) // limit to avoid overflow errors
+private fun negShannonEntropy(x: Double): Double = x * log10(max(1.0e-16, x)) // limited to avoid overflow errors
