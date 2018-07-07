@@ -10,6 +10,9 @@ package com.kotlinnlp.simplednn.simplemath
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import java.lang.Math.pow
+import kotlin.math.log10
+import kotlin.math.min
 
 /**
  * Equals within tolerance.
@@ -84,8 +87,56 @@ fun List<DenseNDArray>.assignSum(a: List<DenseNDArray>) {
 fun cosineSimilarity(a: DenseNDArray, b: DenseNDArray): Double = maxOf(0.0, a.t.dot(b)[0])
 
 /**
+ * Compute the similarity of two arrays (already normalized to unit vectors with the normalize function) based on the
+ * Structural Entropic Distance (SED).
+ * The similarity value is limited in the range [0.0, 1.0].
+ *
+ * References:
+ * [Connor R., Moss R. (2012) A Multivariate Correlation Distance for Vector Spaces. In: Navarro G., Pestov V. (eds)
+ * Similarity Search and Applications. SISAP 2012. Lecture Notes in Computer Science, vol 7404. Springer, Berlin,
+ * Heidelberg](https://doi.org/10.1007/978-3-642-32153-5_15)
+ *
+ * @param a a dense normalized array
+ * @param b a dense normalized array
+ *
+ * @return the SED similarity of the two arrays
+ */
+fun sedSimilarity(a: DenseNDArray, b: DenseNDArray): Double {
+
+  require(a.shape == b.shape)
+
+  val exp: Double = (0 until a.length).sumByDouble { i -> complexityExp(a[i], b[i]) }
+
+  return 2.0 - pow(10.0, exp)
+}
+
+/**
  * Return the number in a formatted string with the specified number of digits.
  *
  * @param digits precision specifier
  */
 fun Double.format(digits: Int) = java.lang.String.format("%.${digits}f", this)!!
+
+/**
+ * Calculate the SED complexity exponent component of two vectors of the i-th dimension if [a] and [b] are the values of
+ * the vectors of the i-th dimension.
+ *
+ * @param a the i-th element of the first vector
+ * @param b the i-th element of the second vector
+ *
+ * @return the SED complexity exponent component of the i-th dimension of the vectors
+ */
+private fun complexityExp(a: Double, b: Double): Double =
+  0.5 * (negShannonEntropy(a) + negShannonEntropy(b)) - negShannonEntropy(0.5 * (a + b))
+
+/**
+ * Apply the negative Shannon's entropy with base 10 (H_10) to a given double number.
+ *
+ * Shannon's Entropy:
+ *  H_a(x) = - x * log_a(x)
+ *
+ * @param x a double number
+ *
+ * @return the Shannon's entropy of the given number
+ */
+private fun negShannonEntropy(x: Double): Double = x * log10(min(x, 1.0e-16)) // limit to avoid overflow errors
