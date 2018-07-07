@@ -456,12 +456,12 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
-  fun equals(a: SelfType, tolerance: Double = 10e-4): Boolean
+  fun equals(a: SelfType, tolerance: Double = 1.0e-04): Boolean
 
   /**
    *
    */
-  fun equals(a: Any, tolerance: Double = 10e-4): Boolean {
+  fun equals(a: Any, tolerance: Double = 1.0e-04): Boolean {
     @Suppress("UNCHECKED_CAST")
     return a::class.isInstance(this) && this.equals(a as SelfType, tolerance)
   }

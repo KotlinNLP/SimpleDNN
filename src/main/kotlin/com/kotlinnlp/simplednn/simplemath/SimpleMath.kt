@@ -23,7 +23,7 @@ import kotlin.math.pow
  *
  * @return a [Boolean] which indicates if [a] is equal to [b] within the [tolerance]
  */
-fun equals(a: Double, b: Double, tolerance: Double = 10e-4): Boolean {
+fun equals(a: Double, b: Double, tolerance: Double = 1.0e-04): Boolean {
 
   val lower = b - tolerance
   val upper = b + tolerance
@@ -41,7 +41,7 @@ fun equals(a: Double, b: Double, tolerance: Double = 10e-4): Boolean {
  * @return a [Boolean] which indicates if all the elements of [a] are equal to the
  * corresponding elements of [b] within the [tolerance]
  */
-fun equals(a: DoubleArray, b: DoubleArray, tolerance: Double = 10e-4): Boolean =
+fun equals(a: DoubleArray, b: DoubleArray, tolerance: Double = 1.0e-04): Boolean =
   a.zip(b).all { equals(it.first, it.second, tolerance = tolerance) }
 
 /**
