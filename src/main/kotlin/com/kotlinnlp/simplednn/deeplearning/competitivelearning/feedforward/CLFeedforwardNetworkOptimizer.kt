@@ -39,11 +39,10 @@ class CLFeedforwardNetworkOptimizer(
   }
 
   /**
-   * Accumulate the given [errors] of the model sub-network related to the given [classIndex].
+   * Accumulate the given [paramsErrors] of the model of a given sub-network.
    *
-   * @param classIndex the class index
-   * @param errors the errors
-   * @param copy a Boolean indicating if the [errors] can be used as reference or must be copied.
+   * @param paramsErrors a pair with the index of the sub-network to optimize and its params errors
+   * @param copy a Boolean indicating if the [paramsErrors] can be used as reference or must be copied.
    *             Set copy = false to optimize the accumulation when the amount of the errors to accumulate is 1.
    *             (default = true)
    */
