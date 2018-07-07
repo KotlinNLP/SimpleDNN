@@ -80,12 +80,6 @@
         <sourceDirectory>src/main/kotlin</sourceDirectory>
         <testSourceDirectory>src/test/kotlin</testSourceDirectory>
 
-        <resources>
-            <resource>
-                <directory>examples/config</directory>
-            </resource>
-        </resources>
-
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
@@ -107,12 +101,6 @@
                         <goals>
                             <goal>compile</goal>
                         </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <source>examples</source>
-                                <source>src/main/kotlin</source>
-                            </sourceDirs>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>test-compile</id>
