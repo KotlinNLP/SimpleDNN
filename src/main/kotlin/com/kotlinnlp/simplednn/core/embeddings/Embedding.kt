@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.embeddings
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.simplemath.format
 import java.io.Serializable
 
 /**
@@ -38,7 +37,7 @@ data class Embedding(val id: Int, val array: UpdatableDenseArray) : Serializable
     val sb = StringBuilder()
 
     (0 until this.array.values.length).forEach {
-      sb.append(" ").append(this.array.values[it].format(digits))
+      sb.append(" ").append("%.${digits}f".format(this.array.values[it]))
     }
 
     return sb.toString()

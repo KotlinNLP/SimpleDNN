@@ -111,13 +111,6 @@ fun sedSimilarity(a: DenseNDArray, b: DenseNDArray): Double {
 }
 
 /**
- * Return the number in a formatted string with the specified number of digits.
- *
- * @param digits precision specifier
- */
-fun Double.format(digits: Int) = java.lang.String.format("%.${digits}f", this)!!
-
-/**
  * Calculate the SED complexity exponent component of two vectors of the i-th dimension if [a] and [b] are the values of
  * the vectors of the i-th dimension.
  *
