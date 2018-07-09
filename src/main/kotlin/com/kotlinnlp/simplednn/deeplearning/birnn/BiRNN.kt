@@ -48,7 +48,8 @@ class BiRNN(
   val recurrentConnectionType: LayerType.Connection,
   outputMergeConfiguration: MergeConfiguration = ConcatMerge(),
   weightsInitializer: Initializer? = GlorotInitializer(),
-  biasesInitializer: Initializer? = GlorotInitializer()) : Serializable {
+  biasesInitializer: Initializer? = GlorotInitializer()
+) : Serializable {
 
   companion object {
 
