@@ -26,7 +26,10 @@ class BatchFeedforwardProcessorSpec : Spek({
 
     val inputSequence = BatchFeedforwardUtils.buildInputBatch()
     val network = BatchFeedforwardUtils.buildNetwork()
-    val processor = BatchFeedforwardProcessor<DenseNDArray>(network)
+    val processor = BatchFeedforwardProcessor<DenseNDArray>(
+      neuralNetwork = network,
+      useDropout = false,
+      propagateToInput = true)
 
     val output = processor.forward(inputSequence)
 
@@ -57,9 +60,7 @@ class BatchFeedforwardProcessorSpec : Spek({
       }
     }
 
-    processor.backward(
-      outputErrors = BatchFeedforwardUtils.buildOutputErrors(),
-      propagateToInput = true)
+    processor.backward(outputErrors = BatchFeedforwardUtils.buildOutputErrors())
 
     val paramsErrors = processor.getParamsErrors().paramsPerLayer[0] as FeedforwardLayerParameters
 

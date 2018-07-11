@@ -16,10 +16,17 @@ import com.kotlinnlp.utils.ItemsPool
  * A pool of [NeuralProcessor]s which allows to allocate and release processors when needed, without creating a new one.
  * It is useful to optimize the creation of new structures every time a processor is created.
  *
- * @property neuralNetwork the [NeuralNetwork] which the processors of the pool will work with
+ * @param neuralNetwork the [NeuralNetwork] which the processors of the pool will work with
+ * @param useDropout whether to apply the dropout during the forward
+ * @param propagateToInput whether to propagate the errors to the input during the backward
+ * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
+ *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
  */
 class FeedforwardNeuralProcessorsPool<InputNDArrayType : NDArray<InputNDArrayType>>(
-  val neuralNetwork: NeuralNetwork
+  private val neuralNetwork: NeuralNetwork,
+  private val useDropout: Boolean,
+  private val propagateToInput: Boolean,
+  private val mePropK: List<Double?>? = null
 ) : ItemsPool<FeedforwardNeuralProcessor<InputNDArrayType>>() {
 
   /**
@@ -31,6 +38,9 @@ class FeedforwardNeuralProcessorsPool<InputNDArrayType : NDArray<InputNDArrayTyp
    */
   override fun itemFactory(id: Int) = FeedforwardNeuralProcessor<InputNDArrayType>(
     neuralNetwork = this.neuralNetwork,
+    useDropout = this.useDropout,
+    propagateToInput = this.propagateToInput,
+    mePropK = this.mePropK,
     id = id
   )
 }

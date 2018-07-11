@@ -17,16 +17,28 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
- * The [FeedforwardNeuralProcessor] acts on the [neuralNetwork] performing predictions
- * and training based on Examples.
+ * The NeuralProcessor that acts on a Feed-forward Neural Network.
  *
  * @property neuralNetwork a [NeuralNetwork]
+ * @property useDropout whether to apply the dropout during the [forward]
+ * @property propagateToInput whether to propagate the errors to the input during the [backward]
+ * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
+ *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
  * @property id an identification number useful to track a specific processor
  */
 class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
-  neuralNetwork: NeuralNetwork,
-  id: Int = 0
-) : NeuralProcessor(neuralNetwork = neuralNetwork, id = id) {
+  val neuralNetwork: NeuralNetwork,
+  override val useDropout: Boolean,
+  override val propagateToInput: Boolean,
+  private val mePropK: List<Double?>? = null,
+  override val id: Int = 0
+) :  NeuralProcessor<
+  InputNDArrayType, // InputType
+  DenseNDArray, // OutputType
+  DenseNDArray, // ErrorsType
+  DenseNDArray, // InputErrorsType
+  NetworkParameters // ParamsType
+  > {
 
   /**
    * The structure as support of forward and backward.
@@ -89,7 +101,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the errors of the input
    */
-  fun getInputErrors(copy: Boolean = true): DenseNDArray {
+  override fun getInputErrors(copy: Boolean): DenseNDArray {
     require(!this.neuralNetwork.sparseInput) { "Input errors available only if input is dense" }
     require(this.structure.inputLayer !is MergeLayer<InputNDArrayType>)
 
@@ -117,16 +129,15 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward features.
+   * The Forward.
    *
-   * @param features the features to forward from the input to the output
-   * @param useDropout whether to apply the dropout
+   * @param input the input features to forward from the input to the output
    *
    * @return the output array
    */
-  fun forward(features: InputNDArrayType, useDropout: Boolean = false): DenseNDArray {
+  override fun forward(input: InputNDArrayType): DenseNDArray {
 
-    this.structure.forward(features = features, useDropout = useDropout)
+    this.structure.forward(input = input, useDropout = this.useDropout)
 
     return this.structure.outputLayer.outputArray.values
   }
@@ -137,23 +148,21 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param features the features to forward from the input to the output
    * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
    *                          the relevance)
-   * @param useDropout whether to apply the dropout
    *
    * @return the output array
    */
   fun forward(features: InputNDArrayType,
-              saveContributions: Boolean,
-              useDropout: Boolean = false): DenseNDArray {
+              saveContributions: Boolean): DenseNDArray {
 
     if (saveContributions)
       this.structure.forward(
-        features = features,
+        input = features,
         networkContributions = this.forwardContributions,
-        useDropout = useDropout)
+        useDropout = this.useDropout)
     else
       this.structure.forward(
-        features = features,
-        useDropout = useDropout)
+        input = features,
+        useDropout = this.useDropout)
 
     return this.structure.outputLayer.outputArray.values
   }
@@ -162,13 +171,12 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward features when the input layer is a Merge layer.
    *
    * @param featuresList the list of features to forward from the input to the output
-   * @param useDropout whether to apply the dropout
    *
    * @return the output array
    */
-  fun forward(featuresList: List<InputNDArrayType>, useDropout: Boolean = false): DenseNDArray {
+  fun forward(featuresList: List<InputNDArrayType>): DenseNDArray {
 
-    this.structure.forward(featuresList = featuresList, useDropout = useDropout)
+    this.structure.forward(input = featuresList, useDropout = this.useDropout)
 
     return this.structure.outputLayer.outputArray.values
   }
@@ -179,23 +187,21 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param featuresList the list of features to forward from the input to the output
    * @param saveContributions whether to save the contributions of each input to the output (needed to calculate the
    *                          relevance)
-   * @param useDropout whether to apply the dropout
    *
    * @return the output array
    */
   fun forward(featuresList: List<InputNDArrayType>,
-              saveContributions: Boolean,
-              useDropout: Boolean = false): DenseNDArray {
+              saveContributions: Boolean): DenseNDArray {
 
     if (saveContributions)
       this.structure.forward(
-        featuresList = featuresList,
+        input = featuresList,
         networkContributions = this.forwardContributions,
-        useDropout = useDropout)
+        useDropout = this.useDropout)
     else
       this.structure.forward(
-        featuresList = featuresList,
-        useDropout = useDropout)
+        input = featuresList,
+        useDropout = this.useDropout)
 
     return this.structure.outputLayer.outputArray.values
   }
@@ -221,40 +227,27 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Backward errors.
+   * The Backward.
    *
-   * @param outputErrors the errors of the output
-   * @param propagateToInput whether to propagate the errors to the input
-   * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
-   *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
+   * @param outputErrors the errors to propagate
    */
-  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false, mePropK: List<Double?>? = null) {
-
+  override fun backward(outputErrors: DenseNDArray) =
     this.structure.backward(
       outputErrors = outputErrors,
       paramsErrors = this.backwardParamsErrors,
-      propagateToInput = propagateToInput,
-      mePropK = mePropK)
-  }
+      propagateToInput = this.propagateToInput,
+      mePropK = this.mePropK)
 
   /**
    * Backward errors saving the parameters errors into a given object.
    *
    * @param outputErrors the errors of the output
    * @param paramsErrors the object in which to save the parameters errors
-   * @param propagateToInput whether to propagate the errors to the input
-   * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
-   *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
    */
-  fun backward(outputErrors: DenseNDArray,
-               paramsErrors: NetworkParameters,
-               propagateToInput: Boolean = false,
-               mePropK: List<Double?>? = null) {
-
+  fun backward(outputErrors: DenseNDArray, paramsErrors: NetworkParameters) =
     this.structure.backward(
       outputErrors = outputErrors,
       paramsErrors = paramsErrors,
-      propagateToInput = propagateToInput,
-      mePropK = mePropK)
-  }
+      propagateToInput = this.propagateToInput,
+      mePropK = this.mePropK)
 }

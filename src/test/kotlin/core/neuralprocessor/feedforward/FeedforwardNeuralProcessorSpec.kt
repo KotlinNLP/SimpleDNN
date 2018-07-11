@@ -33,7 +33,7 @@ class FeedforwardNeuralProcessorSpec : Spek({
 
     // TODO: set fixed params
 
-    val processor = FeedforwardNeuralProcessor<DenseNDArray>(MLP)
+    val processor = FeedforwardNeuralProcessor<DenseNDArray>(MLP, useDropout = false, propagateToInput = false)
 
     val features = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))
 

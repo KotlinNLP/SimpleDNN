@@ -17,21 +17,37 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The [BatchFeedforwardProcessor] acts on the [neuralNetwork] performing predictions and training based on batch of
- * examples.
+ * The NeuralProcessor that acts on a Feed-forward Neural Network performing operations through with mini-batch.
  *
  * @property neuralNetwork a [NeuralNetwork]
+ * @property useDropout whether to apply the dropout during the [forward]
+ * @property propagateToInput whether to propagate the errors to the input during the [backward]
+ * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
+ *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
  * @property id an identification number useful to track a specific processor
  */
 class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
-  neuralNetwork: NeuralNetwork,
-  id: Int = 0
-) : NeuralProcessor(neuralNetwork = neuralNetwork, id = id) {
+  val neuralNetwork: NeuralNetwork,
+  override val useDropout: Boolean,
+  override val propagateToInput: Boolean,
+  private val mePropK: List<Double?>? = null,
+  override val id: Int = 0
+) : NeuralProcessor<
+  List<InputNDArrayType>, // InputType
+  List<DenseNDArray>, // OutputType
+  List<DenseNDArray>, // ErrorsType
+  List<DenseNDArray>, // InputErrorsType
+  NetworkParameters // ParamsType
+  > {
 
   /**
    * A list of processors, one for each element of the batch.
    */
-  private val processorsPool = FeedforwardNeuralProcessorsPool<InputNDArrayType>(neuralNetwork)
+  private val processorsPool = FeedforwardNeuralProcessorsPool<InputNDArrayType>(
+    neuralNetwork = this.neuralNetwork,
+    useDropout = this.useDropout,
+    propagateToInput = this.propagateToInput,
+    mePropK = this.mePropK)
 
   /**
    * Contains the errors accumulated from the processors during the forward.
@@ -51,7 +67,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return the errors of the input
    */
-  fun getInputErrors(copy: Boolean = true): List<DenseNDArray> =
+  override fun getInputErrors(copy: Boolean): List<DenseNDArray> =
     this.usedProcessors.map { it.getInputErrors(copy = copy) }
 
   /**
@@ -74,25 +90,36 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
     = this.errorsAccumulator.getParamsErrors(copy = copy)
 
   /**
-   * Forward each array of the [featuresBatch] within a dedicated feed-forward processor.
+   * The Forward.
+   *
+   * Start a new batch and forward each array of the [input] within a dedicated feed-forward processor.
+   * This method must be used when the input layer is not a Merge layer.
+   *
+   * @param input the batch to forward
+   *
+   * @return a list containing the output of each forwarded processor
+   */
+  override fun forward(input: List<InputNDArrayType>): List<DenseNDArray> =
+    this.forward(input = input, continueBatch = false)
+
+  /**
+   * Forward each array of the [input] within a dedicated feed-forward processor.
    * This method must be used when the input layer is not a Merge layer.
    *
    * If [continueBatch] is true, the current forwarding batch is expanded with the new elements given,
    * otherwise a new batch is started (the default).
    *
-   * @param featuresBatch the batch to forward
+   * @param input the batch to forward
    * @param continueBatch whether this batch is the continuation of the last forwarded one (without have called a
    *        backward)
-   * @param useDropout whether to apply the dropout
    *
    * @return a list containing the output of each forwarded processor
    */
-  fun forward(featuresBatch: List<InputNDArrayType>,
-              continueBatch: Boolean = false,
-              useDropout: Boolean = false): List<DenseNDArray> =
-    featuresBatch.mapIndexed { i, features ->
+  fun forward(input: List<InputNDArrayType>,
+              continueBatch: Boolean = false): List<DenseNDArray> =
+    input.mapIndexed { i, values ->
       if (!continueBatch && i == 0) this.reset()
-      this.forwardProcessor(features, useDropout = useDropout)
+      this.forwardProcessor(values)
     }
 
   /**
@@ -105,16 +132,14 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @param featuresListBatch the batch to forward
    * @param continueBatch whether this batch is the continuation of the last forwarded one (without have called a
    *        backward)
-   * @param useDropout whether to apply the dropout
    *
    * @return a list containing the output of each forwarded processor
    */
   fun forward(featuresListBatch: ArrayList<List<InputNDArrayType>>,
-              continueBatch: Boolean = false,
-              useDropout: Boolean = false): List<DenseNDArray> =
+              continueBatch: Boolean = false): List<DenseNDArray> =
     featuresListBatch.mapIndexed { i, featuresList ->
       if (!continueBatch && i == 0) this.reset()
-      this.forwardProcessor(featuresList, useDropout = useDropout)
+      this.forwardProcessor(featuresList)
     }
 
   /**
@@ -123,9 +148,8 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @param elementIndex the index of an element of the whole batch
    * @param outputErrors the output errors of a single element of the batch
-   * @param propagateToInput whether to propagate the output errors to the input or not
    */
-  fun backward(elementIndex: Int, outputErrors: DenseNDArray, propagateToInput: Boolean) {
+  fun backward(elementIndex: Int, outputErrors: DenseNDArray) {
 
     require(elementIndex in 0 until this.usedProcessors.size) {
       "The processor index exceeds the last index of the used processors."
@@ -133,17 +157,15 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     this.processorBackward(
       processor = this.usedProcessors[elementIndex],
-      errors = outputErrors,
-      propagateToInput = propagateToInput)
+      errors = outputErrors)
   }
 
   /**
    * Execute the backward for each element of the input batch, given its output errors.
    *
    * @param outputErrors the output errors of the batch to propagate
-   * @param propagateToInput whether to propagate the output errors to the input or not
    */
-  fun backward(outputErrors: List<DenseNDArray>, propagateToInput: Boolean) {
+  override fun backward(outputErrors: List<DenseNDArray>) {
 
     require(outputErrors.size == this.usedProcessors.size) {
       "Number of errors (%d) does not reflect the number of used processors (%d)".format(
@@ -151,7 +173,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
     }
 
     this.usedProcessors.zip(outputErrors).forEach { (processor, errors) ->
-      this.processorBackward(processor = processor, errors = errors, propagateToInput = propagateToInput)
+      this.processorBackward(processor = processor, errors = errors)
     }
 
     this.errorsAccumulator.averageErrors()
@@ -161,29 +183,21 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    * Forward the input with a dedicated feed-forward processor, when the input layer is not a Merge layer.
    *
    * @param features the input features
-   * @param useDropout whether to apply the dropout
    *
    * @return an array containing the forwarded sequence
    */
-  private fun forwardProcessor(features: InputNDArrayType, useDropout: Boolean = false): DenseNDArray =
-    this.processorsPool.getItem().let {
-      this.usedProcessors.add(it)
-      it.forward(features, useDropout = useDropout)
-    }
+  private fun forwardProcessor(features: InputNDArrayType): DenseNDArray =
+    this.processorsPool.getItem().let { this.usedProcessors.add(it); it.forward(features) }
 
   /**
    * Forward the input with a dedicated feed-forward processor, when the input layer is a Merge layer.
    *
-   * @param featuresList the list of input features
-   * @param useDropout whether to apply the dropout
+   * @param input the input
    *
    * @return an array containing the forwarded sequence
    */
-  private fun forwardProcessor(featuresList: List<InputNDArrayType>, useDropout: Boolean = false): DenseNDArray =
-    this.processorsPool.getItem().let {
-      this.usedProcessors.add(it)
-      it.forward(featuresList, useDropout = useDropout)
-    }
+  private fun forwardProcessor(input: List<InputNDArrayType>): DenseNDArray =
+    this.processorsPool.getItem().let { this.usedProcessors.add(it); it.forward(input) }
 
   /**
    * Reset temporary memories.
@@ -199,14 +213,11 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @param processor the processor to perform the backward
    * @param errors the output errors of the [processor]
-   * @param propagateToInput whether to propagate the output errors to the input or not
    */
   private fun processorBackward(processor: FeedforwardNeuralProcessor<InputNDArrayType>,
-                                errors: DenseNDArray,
-                                propagateToInput: Boolean) {
+                                errors: DenseNDArray) {
 
-    processor.backward(outputErrors = errors, propagateToInput = propagateToInput)
-
+    processor.backward(outputErrors = errors)
     this.errorsAccumulator.accumulate(processor.getParamsErrors(copy = false))
   }
 }

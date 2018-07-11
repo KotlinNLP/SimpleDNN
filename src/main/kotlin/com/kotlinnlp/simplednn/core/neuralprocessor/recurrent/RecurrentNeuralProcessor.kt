@@ -30,13 +30,26 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  * and training based on sequences of recurrent Examples.
  *
  * @property neuralNetwork a [NeuralNetwork]
+ * @property useDropout whether to apply the dropout during the [forward]
+ * @property propagateToInput whether to propagate the errors to the input during the [backward]
+ * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
+ *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
  * @property id an identification number useful to track a specific processor
  */
 class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
-  neuralNetwork: NeuralNetwork,
-  id: Int = 0
+  val neuralNetwork: NeuralNetwork,
+  override val useDropout: Boolean,
+  override val propagateToInput: Boolean,
+  private val mePropK: List<Double?>? = null,
+  override val id: Int = 0
 ) : StructureContextWindow<InputNDArrayType>,
-  NeuralProcessor(neuralNetwork = neuralNetwork, id = id) {
+  NeuralProcessor<
+    List<InputNDArrayType>, // InputType
+    List<DenseNDArray>, // OutputType
+    List<DenseNDArray>, // ErrorsType
+    List<DenseNDArray>, // InputErrorsType
+    NetworkParameters // ParamsType
+    > {
 
   /**
    * Sequence of states.
@@ -73,19 +86,19 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   *
+   * The params errors accumulator.
    */
   private val paramsErrorsAccumulator by lazy { ParamsErrorsAccumulator<NetworkParameters>() }
 
   /**
-   *
+   * An array of the size equal to the output layer size filled by zeroes.
    */
   private val zeroErrors: DenseNDArray by lazy {
     DenseNDArrayFactory.zeros(shape = Shape(this.neuralNetwork.layersConfiguration.last().size))
   }
 
   /**
-   *
+   * @return the previous network structure with respect to the [curStateIndex]
    */
   override fun getPrevStateStructure(): RecurrentNetworkStructure<InputNDArrayType>? =
     if (this.curStateIndex in 1 .. this.lastStateIndex)
@@ -94,7 +107,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
       null
 
   /**
-   *
+   * @return the next network structure with respect to the [curStateIndex]
    */
   override fun getNextStateStructure(): RecurrentNetworkStructure<InputNDArrayType>? =
     if (this.curStateIndex < this.lastStateIndex) // it works also for the init hidden structure
@@ -103,7 +116,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
       null
 
   /**
-   *
+   * @return the output of the last [forward]
    */
   fun getOutput(copy: Boolean = true): DenseNDArray =
     if (copy)
@@ -127,7 +140,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return an array containing the errors of the input sequence
    */
-  fun getInputSequenceErrors(copy: Boolean = true): List<DenseNDArray> = List(
+  override fun getInputErrors(copy: Boolean): List<DenseNDArray> = List(
     size = this.statesSize,
     init = { i -> this.getInputErrors(elementIndex = i, copy = copy) }
   )
@@ -215,31 +228,41 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   )
 
   /**
+   * The Forward.
+   *
+   * @param input the input to forward from the input to the output
+   * @param useDropout whether to apply the dropout
+   *
+   * @return the output sequence
+   */
+  override fun forward(input: List<InputNDArrayType>): List<DenseNDArray> {
+    this.forward(input = input, initHiddenArrays = null, saveContributions = false)
+    return this.getOutputSequence(copy = true) // TODO: check copy
+  }
+
+  /**
    * Forward a sequence.
    *
    * Set the [initHiddenArrays] to use them as previous hidden in the first forward. Set some of them to null to don't
    * use them for certain layers.
    *
-   * @param sequenceFeatures the features to forward for each item of the sequence
+   * @param input the features to forward for each item of the sequence
    * @param initHiddenArrays the list of initial hidden arrays (one per layer, null by default)
    * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
    *                          the relevance)
-   * @param useDropout whether to apply the dropout
    *
    * @return the last output of the network after the whole sequence is been forwarded
    */
-  fun forward(sequenceFeatures: List<InputNDArrayType>,
+  fun forward(input: List<InputNDArrayType>,
               initHiddenArrays: List<DenseNDArray?>? = null,
-              saveContributions: Boolean = false,
-              useDropout: Boolean = false): DenseNDArray {
+              saveContributions: Boolean = false): DenseNDArray {
 
-    sequenceFeatures.forEachIndexed { i, features ->
+    input.forEachIndexed { i, values ->
       this.forward(
-        features = features,
+        input = values,
         firstState = (i == 0),
         initHiddenArrays = initHiddenArrays,
-        saveContributions = saveContributions,
-        useDropout = useDropout)
+        saveContributions = saveContributions)
     }
 
     return this.getOutput()
@@ -252,18 +275,16 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * use them for certain layers.
    * [initHiddenArrays] will be ignored if [firstState] is false.
    *
-   * @param features the features to forward from the input to the output
+   * @param input the features to forward from the input to the output
    * @param firstState whether the current one is the first state
    * @param initHiddenArrays the list of initial hidden arrays (one per layer, null by default)
    * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
    *                          the relevance)
-   * @param useDropout whether to apply the dropout
    */
-  fun forward(features: InputNDArrayType,
+  fun forward(input: InputNDArrayType,
               firstState: Boolean,
               initHiddenArrays: List<DenseNDArray?>? = null,
-              saveContributions: Boolean = false,
-              useDropout: Boolean = false): DenseNDArray {
+              saveContributions: Boolean = false): DenseNDArray {
 
     if (firstState) this.reset()
 
@@ -272,10 +293,9 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.curStateIndex = this.lastStateIndex // crucial to provide the right context
 
     this.forwardCurrentState(
-      features = features,
+      features = input,
       initHiddenArrays = initHiddenArrays,
-      saveContributions = saveContributions,
-      useDropout = useDropout)
+      saveContributions = saveContributions)
 
     return this.getOutput()
   }
@@ -286,26 +306,23 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Set the [initHiddenArrays] to use them as previous hidden in the first forward. Set some of them to null to don't
    * use them for certain layers.
    *
-   * @param sequenceFeaturesLists the list of features to forward for each item of the sequence
+   * @param input the list of features to forward for each item of the sequence
    * @param initHiddenArrays the list of initial hidden arrays (one per layer, null by default)
    * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
    *                          the relevance)
-   * @param useDropout whether to apply the dropout
    *
    * @return the last output of the network after the whole sequence is been forwarded
    */
-  fun forward(sequenceFeaturesLists: ArrayList<List<InputNDArrayType>>,
+  fun forward(input: ArrayList<List<InputNDArrayType>>,
               initHiddenArrays: List<DenseNDArray?>? = null,
-              saveContributions: Boolean = false,
-              useDropout: Boolean = false): DenseNDArray {
+              saveContributions: Boolean = false): DenseNDArray {
 
-    sequenceFeaturesLists.forEachIndexed { i, featuresList ->
+    input.forEachIndexed { i, values ->
       this.forward(
-        featuresList = featuresList,
+        input = values,
         firstState = (i == 0),
         initHiddenArrays = initHiddenArrays,
-        saveContributions = saveContributions,
-        useDropout = useDropout)
+        saveContributions = saveContributions)
     }
 
     return this.getOutput()
@@ -318,18 +335,16 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * use them for certain layers.
    * [initHiddenArrays] will be ignored if [firstState] is false.
    *
-   * @param featuresList the list of features to forward from the input to the output
+   * @param input the list of features to forward from the input to the output
    * @param firstState whether the current one is the first state
    * @param initHiddenArrays the list of initial hidden arrays (one per layer, null by default)
    * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
    *                          the relevance)
-   * @param useDropout whether to apply the dropout
    */
-  fun forward(featuresList: List<InputNDArrayType>,
+  fun forward(input: List<InputNDArrayType>,
               firstState: Boolean,
               initHiddenArrays: List<DenseNDArray?>? = null,
-              saveContributions: Boolean = false,
-              useDropout: Boolean = false): DenseNDArray {
+              saveContributions: Boolean = false): DenseNDArray {
 
     if (firstState) {
       this.reset()
@@ -340,10 +355,9 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.curStateIndex = this.lastStateIndex // crucial to provide the right context
 
     this.forwardCurrentState(
-      featuresList = featuresList,
+      input = input,
       initHiddenArrays = initHiddenArrays,
-      saveContributions = saveContributions,
-      useDropout = useDropout)
+      saveContributions = saveContributions)
 
     return this.getOutput()
   }
@@ -405,39 +419,28 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Backward errors.
    *
    * @param outputErrors the errors of the output
-   * @param propagateToInput whether to propagate the errors to the input (default = false)
-   * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
-   *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
    */
-  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false, mePropK: List<Double?>? = null) {
-
-    val outputErrorsSequence = List(
-      size = this.statesSize,
-      init = { i -> if (i == this.lastStateIndex) outputErrors else this.zeroErrors }
-    )
-
-    this.backward(outputErrorsSequence = outputErrorsSequence, propagateToInput = propagateToInput, mePropK = mePropK)
-  }
+  fun backward(outputErrors: DenseNDArray) = this.backward(List(size = this.statesSize, init = { i ->
+    if (i == this.lastStateIndex) outputErrors else this.zeroErrors
+  } ))
 
   /**
-   * Backward errors of a sequence.
+   * The Backward.
    *
-   * @param outputErrorsSequence output errors for each item of the sequence
+   * @param outputErrors the output errors for each item of the sequence
    * @param propagateToInput whether to propagate the errors to the input (default = false)
    * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
    *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
    */
-  fun backward(outputErrorsSequence: List<DenseNDArray>,
-               propagateToInput: Boolean = false,
-               mePropK: List<Double?>? = null) {
+  override fun backward(outputErrors: List<DenseNDArray>) {
 
-    require(outputErrorsSequence.size == (this.statesSize)) {
+    require(outputErrors.size == (this.statesSize)) {
       "Number of errors (%d) does not reflect the length of the sequence (%d)"
-        .format(outputErrorsSequence.size, this.statesSize)
+        .format(outputErrors.size, this.statesSize)
     }
 
     for (i in (0 .. this.lastStateIndex).reversed()) {
-      this.backwardStep(outputErrors = outputErrorsSequence[i], propagateToInput = propagateToInput, mePropK = mePropK)
+      this.backwardStep(outputErrors = outputErrors[i])
     }
   }
 
@@ -446,13 +449,8 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Each time this function is called, the focus state index decrease of 1.
    *
    * @param outputErrors output errors of the current item of the sequence
-   * @param propagateToInput whether to propagate the errors to the input (default = false)
-   * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
-   *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
    */
-  fun backwardStep(outputErrors: DenseNDArray,
-                   propagateToInput: Boolean = false,
-                   mePropK: List<Double?>? = null) {
+  fun backwardStep(outputErrors: DenseNDArray) {
 
     require(this.curStateIndex <= this.lastStateIndex) {
       "The current state (%d) cannot be greater then the last state index (%d)."
@@ -462,8 +460,8 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.sequence.getStateStructure(this.curStateIndex).backward(
       outputErrors = outputErrors,
       paramsErrors = this.backwardParamsErrors,
-      propagateToInput = propagateToInput,
-      mePropK = mePropK)
+      propagateToInput = this.propagateToInput,
+      mePropK = this.mePropK)
 
     this.paramsErrorsAccumulator.accumulate(this.backwardParamsErrors)
 
@@ -502,13 +500,11 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param initHiddenArrays the list of initial hidden arrays (one per layer, can be null)
    * @param saveContributions whether to save the contributions of each input to its output (needed to calculate the
    *                          relevance)
-   * @param useDropout whether to apply the dropout
    */
   private fun forwardCurrentState(
     features: InputNDArrayType,
     initHiddenArrays: List<DenseNDArray?>?,
-    saveContributions: Boolean,
-    useDropout: Boolean = false) {
+    saveContributions: Boolean) {
 
     val structure: RecurrentNetworkStructure<InputNDArrayType> = this.sequence.getStateStructure(this.lastStateIndex)
 
@@ -516,29 +512,27 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     if (saveContributions)
       structure.forward(
-        features = features,
+        input = features,
         networkContributions = this.sequence.getStateContributions(this.lastStateIndex),
-        useDropout = useDropout)
+        useDropout = this.useDropout)
     else
       structure.forward(
-        features = features,
-        useDropout = useDropout)
+        input = features,
+        useDropout = this.useDropout)
   }
 
   /**
    * Forward the current state when the input layer is a Merge layer.
    *
-   * @param featuresList the list of features to forward from the input to the output
+   * @param input the list of features to forward from the input to the output
    * @param initHiddenArrays the list of initial hidden arrays (one per layer, can be null)
    * @param saveContributions whether to save the contributions of each input to its output (needed to calculate the
    *                          relevance)
-   * @param useDropout whether to apply the dropout
    */
   private fun forwardCurrentState(
-    featuresList: List<InputNDArrayType>,
+    input: List<InputNDArrayType>,
     initHiddenArrays: List<DenseNDArray?>?,
-    saveContributions: Boolean,
-    useDropout: Boolean = false) {
+    saveContributions: Boolean) {
 
     val structure: RecurrentNetworkStructure<InputNDArrayType> = this.sequence.getStateStructure(this.lastStateIndex)
 
@@ -546,14 +540,14 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     if (saveContributions) {
       structure.forward(
-        featuresList = featuresList,
+        input = input,
         networkContributions = this.sequence.getStateContributions(this.lastStateIndex),
-        useDropout = useDropout)
+        useDropout = this.useDropout)
 
     } else {
       structure.forward(
-        featuresList = featuresList,
-        useDropout = useDropout)
+        input = input,
+        useDropout = this.useDropout)
     }
   }
 
