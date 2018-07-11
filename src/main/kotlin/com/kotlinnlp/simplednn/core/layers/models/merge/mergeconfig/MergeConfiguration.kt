@@ -5,13 +5,12 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.birnn.mergeconfig
+package com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig
 
 import com.kotlinnlp.simplednn.core.layers.LayerType
 
 /**
- * A class that defines the configuration of the output Merge layer of a
- * [com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN].
+ * A class that defines the configuration of a Merge layer.
  *
  * @property type the connection type of the output Merge layer
  * @property dropout the probability of dropout

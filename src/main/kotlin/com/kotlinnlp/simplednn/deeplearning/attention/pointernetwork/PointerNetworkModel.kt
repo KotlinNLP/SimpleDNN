@@ -12,8 +12,8 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.attention.AttentionParameters
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.deeplearning.birnn.mergeconfig.MergeConfiguration
-import com.kotlinnlp.simplednn.deeplearning.birnn.mergeconfig.OpenOutputMerge
+import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.MergeConfiguration
+import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.OpenOutputMerge
 import java.io.Serializable
 
 

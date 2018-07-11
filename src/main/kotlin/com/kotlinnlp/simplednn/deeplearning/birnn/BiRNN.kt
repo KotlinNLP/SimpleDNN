@@ -12,8 +12,8 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializ
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.*
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.deeplearning.birnn.mergeconfig.*
 import com.kotlinnlp.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream
