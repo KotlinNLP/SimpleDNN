@@ -19,14 +19,11 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 /**
  * @property optimizer the optimizer
  * @property verbose whether to print training details
- * @property mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
- *                   percentage) output nodes with the top errors of each layer (the list and each element can be null)
  */
 class SequenceWithFinalOutputTrainingHelper<NDArrayType: NDArray<NDArrayType>>(
   val neuralProcessor: RecurrentNeuralProcessor<NDArrayType>,
   override val optimizer: ParamsOptimizer<NetworkParameters>,
   val lossCalculator: LossCalculator,
-  private val mePropK: List<Double?>? = null,
   verbose: Boolean = false
 ) : TrainingHelper<SequenceExampleWithFinalOutput<NDArrayType>>(
   optimizer = optimizer,
@@ -56,10 +53,12 @@ class SequenceWithFinalOutputTrainingHelper<NDArrayType: NDArray<NDArrayType>>(
    */
   override fun learnFromExample(example: SequenceExampleWithFinalOutput<NDArrayType>): Double {
 
-    val output = this.neuralProcessor.forward(example.sequenceFeatures)
+    this.neuralProcessor.forward(example.sequenceFeatures)
+
+    val output = this.neuralProcessor.getOutput(copy = true)
     val outputError = this.lossCalculator.calculateErrors(output = output, outputGold = example.outputGold)
 
-    this.neuralProcessor.backward(outputError, mePropK = this.mePropK)
+    this.neuralProcessor.backward(outputError)
 
     return this.lossCalculator.calculateLoss(output = output, outputGold = example.outputGold).avg()
   }
