@@ -50,7 +50,10 @@ class PointerNetworkProcessor(val model: PointerNetworkModel) {
   /**
    * A pool of processors for the merge network.
    */
-  internal val mergeProcessorsPool = FeedforwardNeuralProcessorsPool<DenseNDArray>(this.model.mergeNetwork)
+  internal val mergeProcessorsPool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
+    neuralNetwork = this.model.mergeNetwork,
+    useDropout = false,
+    propagateToInput = true)
 
   /**
    * The list of merge processors used during the last forward.

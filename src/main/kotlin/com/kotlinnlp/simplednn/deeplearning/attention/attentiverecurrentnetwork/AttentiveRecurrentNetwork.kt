@@ -67,14 +67,14 @@ class AttentiveRecurrentNetwork(val model: AttentiveRecurrentNetworkModel) {
    * The processor of the recurrent context network.
    */
   val recurrentContextProcessor: RecurrentNeuralProcessor<DenseNDArray> =
-    RecurrentNeuralProcessor(this.model.recurrentContextNetwork)
+    RecurrentNeuralProcessor(this.model.recurrentContextNetwork, useDropout = false, propagateToInput = true)
 
   /**
    * The pool of Feedforward Neural Processors used to interpolate the state encoding together with the recurrent
    * context.
    */
   val outputNetworkPool: FeedforwardNeuralProcessorsPool<DenseNDArray> =
-    FeedforwardNeuralProcessorsPool(this.model.outputNetwork)
+    FeedforwardNeuralProcessorsPool(this.model.outputNetwork, useDropout = false, propagateToInput = true)
 
   /**
    * The list of transform layers groups used during the last forward.

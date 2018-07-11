@@ -157,7 +157,7 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
   private fun backwardMergeProcessor(processor: FeedforwardNeuralProcessor<DenseNDArray>,
                                      outputErrors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
 
-    processor.backward(outputErrors = outputErrors, paramsErrors = this.paramsErrors, propagateToInput = true)
+    processor.backward(outputErrors = outputErrors, paramsErrors = this.paramsErrors)
 
     this.mergeErrorsAccumulator.accumulate(this.paramsErrors)
 

@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.multitasknetwork
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
+import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -18,30 +19,54 @@ import com.kotlinnlp.utils.ItemsPool
  * feed-forward layer.
  *
  * @property model the model of this network
+ * @property useDropout whether to apply the dropout during the forward
+ * @property propagateToInput whether to propagate the errors to the input during the backward
+ * @param inputMePropK the input layer k factor of the 'meProp' algorithm to propagate from the k (in percentage)
+ *                     hidden nodes with the top errors (can be null)
+ * @param outputMePropK a list of k factors (one for each output layer) of the 'meProp' algorithm to propagate from
+ *                      the k (in percentage) output nodes with the top errors (the list and each element can be null)
  * @property id an identification number useful to track a specific [MultiTaskNetwork]
  */
 class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
   val model: MultiTaskNetworkModel,
+  override val useDropout: Boolean,
+  override val propagateToInput: Boolean,
+  private val inputMePropK: Double? = null,
+  private val outputMePropK: List<Double?>? = null,
   override val id: Int = 0
-) : ItemsPool.IDItem {
+) : NeuralProcessor<
+  InputNDArrayType, // InputType
+  List<DenseNDArray>, // OutputType
+  List<DenseNDArray>, // ErrorsType
+  DenseNDArray, // InputErrorsType
+  MultiTaskNetworkParameters // ParamsType
+  > {
 
   /**
    * The neural processor of the input network.
    */
-  val inputProcessor = FeedforwardNeuralProcessor<InputNDArrayType>(this.model.inputNetwork)
+  val inputProcessor = FeedforwardNeuralProcessor<InputNDArrayType>(
+    neuralNetwork = this.model.inputNetwork,
+    useDropout = this.useDropout,
+    propagateToInput = this.propagateToInput)
 
   /**
    * The list of neural processors of the output networks.
    */
   val outputProcessors: List<FeedforwardNeuralProcessor<DenseNDArray>> =
-    this.model.outputNetworks.map { FeedforwardNeuralProcessor<DenseNDArray>(it) }
+    this.model.outputNetworks.mapIndexed { i, network ->
+      FeedforwardNeuralProcessor<DenseNDArray>(
+        neuralNetwork = network,
+        useDropout = this.useDropout,
+        propagateToInput = true,
+        mePropK = listOf(this.outputMePropK?.get(i))) }
 
   /**
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
    *
    * @return the errors of the neural parameters
    */
-  fun getParamsErrors(copy: Boolean) = MultiTaskNetworkParameters(
+  override fun getParamsErrors(copy: Boolean) = MultiTaskNetworkParameters(
     inputParams = this.inputProcessor.getParamsErrors(copy = copy),
     outputParamsList = this.outputProcessors.map { it.getParamsErrors(copy = copy) }
   )
@@ -51,21 +76,20 @@ class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the errors of the input
    */
-  fun getInputErrors(copy: Boolean = true): DenseNDArray = this.inputProcessor.getInputErrors(copy = copy)
+  override fun getInputErrors(copy: Boolean): DenseNDArray = this.inputProcessor.getInputErrors(copy = copy)
 
   /**
    * Forward features.
    *
-   * @param features the features to forward from the input to the output
-   * @param useDropout whether to apply the dropout
+   * @param input the input to forward from the input to the output
    *
    * @return the list of output arrays, one for each output network
    */
-  fun forward(features: InputNDArrayType, useDropout: Boolean = false): List<DenseNDArray> {
+  override fun forward(input: InputNDArrayType): List<DenseNDArray> {
 
-    val hiddenOutput: DenseNDArray = this.inputProcessor.forward(features = features, useDropout = useDropout)
+    val hiddenOutput: DenseNDArray = this.inputProcessor.forward(input)
 
-    return this.outputProcessors.map { it.forward(features = hiddenOutput, useDropout = useDropout) }
+    return this.outputProcessors.map { it.forward(input = hiddenOutput) }
   }
 
   /**
@@ -74,21 +98,18 @@ class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param features the features to forward from the input to the output
    * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
    *                          the relevance)
-   * @param useDropout whether to apply the dropout
    *
    * @return the list of output arrays, one for each output network
    */
   fun forward(features: InputNDArrayType,
-              saveContributions: Boolean,
-              useDropout: Boolean = false): List<DenseNDArray> {
+              saveContributions: Boolean): List<DenseNDArray> {
 
     val hiddenOutput: DenseNDArray = this.inputProcessor.forward(
       features = features,
-      saveContributions = saveContributions,
-      useDropout = useDropout)
+      saveContributions = saveContributions)
 
     return this.outputProcessors.map {
-      it.forward(features = hiddenOutput, saveContributions = saveContributions, useDropout = useDropout)
+      it.forward(features = hiddenOutput, saveContributions = saveContributions)
     }
   }
 
@@ -121,38 +142,24 @@ class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Backward errors.
+   * The Backward.
    *
-   * @param outputErrorsList the list of output errors, one for each output network
-   * @param propagateToInput whether to propagate the errors to the input
-   * @param inputMePropK the input layer k factor of the 'meProp' algorithm to propagate from the k (in percentage)
-   *                     hidden nodes with the top errors (can be null)
-   * @param outputMePropK a list of k factors (one for each output layer) of the 'meProp' algorithm to propagate from
-   *                      the k (in percentage) output nodes with the top errors (the list and each element can be null)
+   * @param outputErrors the list of output errors, one for each output network
    */
-  fun backward(outputErrorsList: List<DenseNDArray>,
-               propagateToInput: Boolean = false,
-               inputMePropK: Double? = null,
-               outputMePropK: List<Double?>? = null) {
+  override fun backward(outputErrors: List<DenseNDArray>) {
 
-    val hiddenErrors: DenseNDArray =
-      this.backwardOutputProcessors(outputErrorsList = outputErrorsList, outputMePropK = outputMePropK)
-
-    this.inputProcessor
-      .backward(outputErrors = hiddenErrors, propagateToInput = propagateToInput, mePropK = listOf(inputMePropK))
+    val hiddenErrors: DenseNDArray = this.backwardOutputProcessors(outputErrorsList = outputErrors)
+    this.inputProcessor.backward(outputErrors = hiddenErrors)
   }
 
   /**
    * Output processors backwards.
    *
    * @param outputErrorsList the list of output errors, one for each output network
-   * @param outputMePropK a list of k factors (one for each output layer) of the 'meProp' algorithm to propagate from
-   *                      the k (in percentage) output nodes with the top errors (the list and each element can be null)
    *
    * @return the sum of the input errors of each output network
    */
-  private fun backwardOutputProcessors(outputErrorsList: List<DenseNDArray>,
-                                       outputMePropK: List<Double?>? = null): DenseNDArray {
+  private fun backwardOutputProcessors(outputErrorsList: List<DenseNDArray>): DenseNDArray {
 
     require(outputErrorsList.size == this.outputProcessors.size) {
       "The list of output errors must have a size equal to the number of output networks."
@@ -160,9 +167,9 @@ class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     var hiddenErrors: DenseNDArray? = null
 
-    this.outputProcessors.zip(outputErrorsList).forEachIndexed { i, (processor, errors) ->
+    this.outputProcessors.zip(outputErrorsList).forEach { (processor, errors) ->
 
-      processor.backward(outputErrors = errors, propagateToInput = true, mePropK = listOf(outputMePropK?.get(i)))
+      processor.backward(outputErrors = errors)
 
       if (hiddenErrors == null)
         hiddenErrors = processor.getInputErrors(copy = true)

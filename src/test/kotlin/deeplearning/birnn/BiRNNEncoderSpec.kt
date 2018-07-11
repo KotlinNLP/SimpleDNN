@@ -27,9 +27,9 @@ class BiRNNEncoderSpec : Spek({
 
     val inputSequence = BiRNNEncoderUtils.buildInputSequence()
     val birnn = BiRNNEncoderUtils.buildBiRNN()
-    val encoder = BiRNNEncoder<DenseNDArray>(birnn)
+    val encoder = BiRNNEncoder<DenseNDArray>(birnn, useDropout = false, propagateToInput = true)
 
-    val encodedSequence = encoder.encode(inputSequence)
+    val encodedSequence = encoder.forward(inputSequence)
 
     it("should match the expected first output array") {
       assertTrue {
@@ -58,9 +58,7 @@ class BiRNNEncoderSpec : Spek({
       }
     }
 
-    encoder.backward(
-      outputErrorsSequence = BiRNNEncoderUtils.buildOutputErrorsSequence(),
-      propagateToInput = true)
+    encoder.backward(outputErrors = BiRNNEncoderUtils.buildOutputErrorsSequence())
 
     val paramsErrors: BiRNNParameters = encoder.getParamsErrors()
     val l2rErrors = paramsErrors.leftToRight.paramsPerLayer[0] as SimpleRecurrentLayerParameters
@@ -136,7 +134,7 @@ class BiRNNEncoderSpec : Spek({
       }
     }
 
-    val inputErrors: List<DenseNDArray> = encoder.getInputSequenceErrors()
+    val inputErrors: List<DenseNDArray> = encoder.getInputErrors()
 
     it("should match the expected errors of first input array") {
       assertTrue {

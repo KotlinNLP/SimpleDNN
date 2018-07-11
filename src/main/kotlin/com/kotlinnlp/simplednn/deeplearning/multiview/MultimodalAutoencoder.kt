@@ -39,7 +39,7 @@ class MultimodalAutoencoder(model: MultiTaskNetworkModel) {
   /**
    * The multi-task network used as multi-view auto-encoder
    */
-  private val network = MultiTaskNetwork<DenseNDArray>(model)
+  private val network = MultiTaskNetwork<DenseNDArray>(model, useDropout = false, propagateToInput = false) // TODO
 
   /**
    * The loss calculator used to calculate the distance between the original and the reconstructed views.
@@ -70,7 +70,7 @@ class MultimodalAutoencoder(model: MultiTaskNetworkModel) {
    * @param copy a Boolean indicating whether the returned array must be a copy or a reference
    */
   fun getSharedRepresentations(inputArray: DenseNDArray, copy: Boolean = true): DenseNDArray {
-    this.network.inputProcessor.forward(features = inputArray)
+    this.network.inputProcessor.forward(input = inputArray)
     return this.network.inputProcessor.getOutput(copy = copy)
   }
 

@@ -88,7 +88,7 @@ class ForwardHelper(private val network: AttentiveRecurrentNetwork) {
   private fun forwardRecurrentContext(lastPredictionLabel: DenseNDArray, initHidden: DenseNDArray?): DenseNDArray {
 
     val output: DenseNDArray = this.network.recurrentContextProcessor.forward(
-      features = concatVectorsV(this.getLastStateEncoding(), lastPredictionLabel),
+      input = concatVectorsV(this.getLastStateEncoding(), lastPredictionLabel),
       initHiddenArrays = if (this.firstRecurrentState) listOf(initHidden) else null,
       firstState = this.firstRecurrentState)
 

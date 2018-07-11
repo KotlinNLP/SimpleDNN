@@ -240,7 +240,7 @@ class TreeEncoder(val network: TreeRNN) {
      */
     private fun backwardConcat(errors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
 
-      this.concatProcessor.backward(errors, propagateToInput = true)
+      this.concatProcessor.backward(errors)
 
       return this.splitLeftAndRightErrors(this.concatProcessor.getInputErrors(copy = false))
     }
@@ -275,9 +275,9 @@ class TreeEncoder(val network: TreeRNN) {
                                  children: List<Node>,
                                  errors: DenseNDArray) {
 
-      processor.backward(errors, propagateToInput = true)
+      processor.backward(errors)
 
-      val sequenceErrors = processor.getInputSequenceErrors()
+      val sequenceErrors = processor.getInputErrors()
 
       this.vectorErrors.assignSum(sequenceErrors[0])
 
@@ -312,17 +312,26 @@ class TreeEncoder(val network: TreeRNN) {
   /**
    * The pool of processors for the left RNN.
    */
-  private val leftProcessorsPool = RecurrentNeuralProcessorsPool<DenseNDArray>(this.network.leftRNN)
+  private val leftProcessorsPool = RecurrentNeuralProcessorsPool<DenseNDArray>(
+    neuralNetwork = this.network.leftRNN,
+    useDropout = false,
+    propagateToInput = true)
 
   /**
    * The pool of processors for the right RNN.
    */
-  private val rightProcessorsPool = RecurrentNeuralProcessorsPool<DenseNDArray>(this.network.rightRNN)
+  private val rightProcessorsPool = RecurrentNeuralProcessorsPool<DenseNDArray>(
+    neuralNetwork = this.network.rightRNN,
+    useDropout = false,
+    propagateToInput = true)
 
   /**
    * The pool of processors for the concat output network.
    */
-  private val concatProcessorsPool = FeedforwardNeuralProcessorsPool<DenseNDArray>(this.network.concatNetwork)
+  private val concatProcessorsPool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
+    neuralNetwork = this.network.concatNetwork,
+    useDropout = false,
+    propagateToInput = true)
 
   /**
    * The nodes mapped to their IDs.
@@ -415,7 +424,10 @@ class TreeEncoder(val network: TreeRNN) {
    */
   fun propagateErrors(optimizer: ParamsOptimizer<TreeRNNParameters>) {
 
-    this.nodes.values.filter({ it.isRoot }).forEach { this.launchErrorsPropagation(it) }
+    this.nodes.values
+      .filter { it.isRoot }
+      .forEach { this.launchErrorsPropagation(it) }
+
     this.accumulateParamsErrors(optimizer)
     this.clearNodeErrors()
   }

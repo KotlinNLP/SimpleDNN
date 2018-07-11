@@ -25,7 +25,10 @@ class CLFeedforwardNetwork(val model: CLFeedforwardNetworkModel): CLNetwork(mode
    * The list of feed-forward processors, one per class.
    */
   private val processors: List<FeedforwardNeuralProcessor<DenseNDArray>> = this.model.classes.map {
-    FeedforwardNeuralProcessor<DenseNDArray>(neuralNetwork = this.model.networks[it])
+    FeedforwardNeuralProcessor<DenseNDArray>(
+      neuralNetwork = this.model.networks[it],
+      useDropout = false, // TODO: set dropout
+      propagateToInput = true) // TODO set propagateToInput
   }
 
   /**

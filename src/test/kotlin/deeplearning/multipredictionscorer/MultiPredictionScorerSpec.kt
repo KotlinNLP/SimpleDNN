@@ -31,7 +31,11 @@ class MultiPredictionScorerSpec : Spek({
 
       on("forward") {
 
-        val scorer = MultiPredictionScorer<DenseNDArray>(model = MultiPredictionScorerUtils.buildModel())
+        val scorer = MultiPredictionScorer<DenseNDArray>(
+          model = MultiPredictionScorerUtils.buildModel(),
+          useDropout = false,
+          propagateToInput = false)
+
         val outputs = scorer.score(featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap())
 
         it("should return the expected output associated to the indices (0, 0)") {
@@ -82,9 +86,13 @@ class MultiPredictionScorerSpec : Spek({
 
       on("backward") {
 
-        val scorer = MultiPredictionScorer<DenseNDArray>(model = MultiPredictionScorerUtils.buildModel())
+        val scorer = MultiPredictionScorer<DenseNDArray>(
+          model = MultiPredictionScorerUtils.buildModel(),
+          useDropout = false,
+          propagateToInput = true)
+
         scorer.score(featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap())
-        scorer.backward(outputsErrors = MultiPredictionScorerUtils.buildOutputErrors(), propagateToInput = true)
+        scorer.backward(outputsErrors = MultiPredictionScorerUtils.buildOutputErrors())
 
         val inputErrors = scorer.getInputErrors(copy = false)
         val paramsErrors = scorer.getParamsErrors(copy = false)
@@ -358,7 +366,11 @@ class MultiPredictionScorerSpec : Spek({
 
       on("backward of (0, 2) and (1, 0) predictions only") {
 
-        val scorer = MultiPredictionScorer<DenseNDArray>(model = MultiPredictionScorerUtils.buildModel())
+        val scorer = MultiPredictionScorer<DenseNDArray>(
+          model = MultiPredictionScorerUtils.buildModel(),
+          useDropout = false,
+          propagateToInput = true)
+
         scorer.score(featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap())
 
         val outputErrorsMap = MultiPredictionScorerUtils.buildOutputErrors()
@@ -366,8 +378,7 @@ class MultiPredictionScorerSpec : Spek({
           outputsErrors = MultiMap(mapOf(
             Pair(0, mapOf(Pair(2, outputErrorsMap[0, 2]!!))),
             Pair(1, mapOf(Pair(0, outputErrorsMap[1, 0]!!)))
-          )),
-          propagateToInput = true)
+          )))
 
         val inputErrors = scorer.getInputErrors(copy = false)
         val paramsErrors = scorer.getParamsErrors(copy = false)
@@ -486,7 +497,12 @@ class MultiPredictionScorerSpec : Spek({
       on("forward") {
 
         val featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap()
-        val scorer = MultiPredictionScorer<DenseNDArray>(model = MultiPredictionScorerUtils.buildModel())
+
+        val scorer = MultiPredictionScorer<DenseNDArray>(
+          model = MultiPredictionScorerUtils.buildModel(),
+          useDropout = false,
+          propagateToInput = false)
+
         val outputs = scorer.score(featuresMap = MultiMap(mapOf(Pair(1, featuresMap[1]!!))))
 
         it("should return the expected output associated to the indices (1, 0)") {
@@ -511,11 +527,16 @@ class MultiPredictionScorerSpec : Spek({
       on("backward") {
 
         val featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap()
-        val scorer = MultiPredictionScorer<DenseNDArray>(model = MultiPredictionScorerUtils.buildModel())
+
+        val scorer = MultiPredictionScorer<DenseNDArray>(
+          model = MultiPredictionScorerUtils.buildModel(),
+          useDropout = false,
+          propagateToInput = true)
+
         scorer.score(featuresMap = MultiMap(mapOf(Pair(1, featuresMap[1]!!))))
 
         val outputErrorsMap = MultiPredictionScorerUtils.buildOutputErrors()
-        scorer.backward(outputsErrors = MultiMap(mapOf(Pair(1, outputErrorsMap[1]!!))), propagateToInput = true)
+        scorer.backward(outputsErrors = MultiMap(mapOf(Pair(1, outputErrorsMap[1]!!))))
 
         val inputErrors = scorer.getInputErrors(copy = false)
         val paramsErrors = scorer.getParamsErrors(copy = false)
@@ -631,14 +652,19 @@ class MultiPredictionScorerSpec : Spek({
       on("two consecutive backwards") {
 
         val featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap()
-        val scorer = MultiPredictionScorer<DenseNDArray>(model = MultiPredictionScorerUtils.buildModel())
+
+        val scorer = MultiPredictionScorer<DenseNDArray>(
+          model = MultiPredictionScorerUtils.buildModel(),
+          useDropout = false,
+          propagateToInput = true)
+
         val outputErrorsMap = MultiPredictionScorerUtils.buildOutputErrors()
 
         scorer.score(featuresMap = MultiMap(mapOf(Pair(1, featuresMap[1]!!))))
-        scorer.backward(outputsErrors = MultiMap(mapOf(Pair(1, outputErrorsMap[1]!!))), propagateToInput = true)
+        scorer.backward(outputsErrors = MultiMap(mapOf(Pair(1, outputErrorsMap[1]!!))))
 
         scorer.score(featuresMap = MultiMap(mapOf(Pair(1, featuresMap[1]!!))))
-        scorer.backward(outputsErrors = MultiMap(mapOf(Pair(1, outputErrorsMap[1]!!))), propagateToInput = true)
+        scorer.backward(outputsErrors = MultiMap(mapOf(Pair(1, outputErrorsMap[1]!!))))
 
         val inputErrors = scorer.getInputErrors(copy = false)
         val paramsErrors = scorer.getParamsErrors(copy = false)
@@ -754,12 +780,17 @@ class MultiPredictionScorerSpec : Spek({
       on("backward with the output errors of all networks") {
 
         val featuresMap = MultiPredictionScorerUtils.buildInputFeaturesMap()
-        val scorer = MultiPredictionScorer<DenseNDArray>(model = MultiPredictionScorerUtils.buildModel())
+
+        val scorer = MultiPredictionScorer<DenseNDArray>(
+          model = MultiPredictionScorerUtils.buildModel(),
+          useDropout = false,
+          propagateToInput = true)
+
         scorer.score(featuresMap = MultiMap(mapOf(Pair(1, featuresMap[1]!!))))
 
         it("should raise an exception") {
           assertFailsWith<IllegalArgumentException> {
-            scorer.backward(outputsErrors = MultiPredictionScorerUtils.buildOutputErrors(), propagateToInput = true)
+            scorer.backward(outputsErrors = MultiPredictionScorerUtils.buildOutputErrors())
           }
         }
       }

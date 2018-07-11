@@ -209,9 +209,9 @@ class BackwardHelper(private val network: AttentiveRecurrentNetwork) {
 
     val processor = this.network.usedOutputProcessors[this.stateIndex]
 
-    processor.backward(outputErrors, propagateToInput = true)
+    // TODO: return processor.propagateErrors(outputErrors, this.outputErrorsAccumulator)
+    processor.backward(outputErrors)
     this.outputErrorsAccumulator.accumulate(processor.getParamsErrors(copy = false))
-
     return processor.getInputErrors(copy = false)
   }
 
@@ -287,9 +287,7 @@ class BackwardHelper(private val network: AttentiveRecurrentNetwork) {
    */
   private fun recurrentContextBackwardStep(): Pair<DenseNDArray, DenseNDArray> {
 
-    this.network.recurrentContextProcessor.backwardStep(
-      outputErrors = this.recurrentContextErrors,
-      propagateToInput = true)
+    this.network.recurrentContextProcessor.backwardStep(outputErrors = this.recurrentContextErrors)
 
     return this.splitRNNInputErrors(errors = this.network.recurrentContextProcessor.getInputErrors(
       elementIndex = this.stateIndex - 1, // in the i-th state the encoding of the previous state (i-1) is used as input

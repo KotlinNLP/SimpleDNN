@@ -19,9 +19,13 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *
  * Note: The SWSLabeler can can process one sequence as time therefore is not thread-safe.
  *
- * @property network the [SWSLNetwork] of this encoder
+ * @param network the [SWSLNetwork] of this encoder
+ * @param useDropout whether to apply the dropout during the forward
  */
-class SWSLabeler(private val network: SWSLNetwork) {
+class SWSLabeler(
+  private val network: SWSLNetwork,
+  private val useDropout: Boolean = false
+) {
 
   /**
    * @property paramsErrors the errors on the network parameters
@@ -55,7 +59,10 @@ class SWSLabeler(private val network: SWSLNetwork) {
   /**
    * The feed-forward neural processor.
    */
-  private val processor = FeedforwardNeuralProcessor<DenseNDArray>(neuralNetwork = this.network.classifier)
+  private val processor = FeedforwardNeuralProcessor<DenseNDArray>(
+    neuralNetwork = this.network.classifier,
+    useDropout = this.useDropout,
+    propagateToInput = true)
 
   /**
    * The loss calculator used to calculate the loss between the expected output and the predicted output.
@@ -80,7 +87,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
 
     this.setNewSequence(inputSequence)
 
-    this.forwardSequence(forEachPrediction = { this.addLabel(this.getBestLabel()) }, useDropout = false)
+    this.forwardSequence(forEachPrediction = { this.addLabel(this.getBestLabel()) } )
 
     return this.labels
   }
@@ -91,12 +98,10 @@ class SWSLabeler(private val network: SWSLNetwork) {
    * @param inputSequence the input sequence to annotate
    * @param goldLabels the expected labels for each element
    * @param optimizer the optimize of parameters and embeddings
-   * @param useDropout whether to apply the dropout (default = false)
    */
   fun learn(inputSequence: List<DenseNDArray>,
             goldLabels: IntArray,
-            optimizer: SWSLOptimizer,
-            useDropout: Boolean = false) {
+            optimizer: SWSLOptimizer) {
 
     require(inputSequence.isNotEmpty())
 
@@ -108,13 +113,13 @@ class SWSLabeler(private val network: SWSLNetwork) {
 
         val goldLabel = this.getGoldLabel(goldLabels)
 
-        this.processor.backward(outputErrors = this.getOutputErrors(goldLabel), propagateToInput = true)
+        this.processor.backward(outputErrors = this.getOutputErrors(goldLabel))
 
         this.accumulateErrors(optimizer)
 
         this.addLabel(goldLabel)
-      },
-      useDropout = useDropout)
+      }
+    )
   }
 
   /**
@@ -172,13 +177,11 @@ class SWSLabeler(private val network: SWSLNetwork) {
   private fun getGoldLabel(goldLabels: IntArray) = Label(index = goldLabels[this.sequence.focusIndex], score = 1.0)
 
   /**
-   * This function iterates the complete sequence to make a prediction for each element using the
-   * [FeedforwardNeuralProcessor].
+   * This function iterates the complete sequence to make a prediction for each element.
    *
    * @param forEachPrediction the callback called after the forward on each element
-   * @param useDropout whether to apply the dropout
    */
-  private fun forwardSequence(forEachPrediction: () -> Unit, useDropout: Boolean) {
+  private fun forwardSequence(forEachPrediction: () -> Unit) {
 
     val featuresExtractor = SWSLFeaturesExtractor(
       sequence = this.sequence,
@@ -187,7 +190,7 @@ class SWSLabeler(private val network: SWSLNetwork) {
 
     while (this.sequence.focusInRange()) {
 
-      this.processor.forward(featuresExtractor.getFeatures(), useDropout = useDropout)
+      this.processor.forward(featuresExtractor.getFeatures())
 
       forEachPrediction()
 

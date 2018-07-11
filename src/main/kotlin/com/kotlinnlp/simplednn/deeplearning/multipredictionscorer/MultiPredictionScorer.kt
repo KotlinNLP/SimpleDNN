@@ -19,15 +19,24 @@ import com.kotlinnlp.utils.MultiMap
  * The MultiPredictionScorer.
  *
  * @property model the neural model of this scorer
+ * @property useDropout whether to apply the dropout during the forward
+ * @property propagateToInput whether to propagate the errors to the input during the backward
  */
-class MultiPredictionScorer<InputNDArrayType : NDArray<InputNDArrayType>>(val model: MultiPredictionModel) {
+class MultiPredictionScorer<InputNDArrayType : NDArray<InputNDArrayType>>(
+  val model: MultiPredictionModel,
+  val useDropout: Boolean,
+  val propagateToInput: Boolean
+) {
 
   /**
    * The list of processors pools, one for each sub-network.
    */
   private val processorsPools = List<FeedforwardNeuralProcessorsPool<InputNDArrayType>>(
     size = this.model.networks.size,
-    init = { i -> FeedforwardNeuralProcessorsPool(this.model.networks[i]) }
+    init = { i -> FeedforwardNeuralProcessorsPool(
+      neuralNetwork = this.model.networks[i],
+      useDropout = this.useDropout,
+      propagateToInput = this.propagateToInput) }
   )
 
   /**
@@ -68,18 +77,17 @@ class MultiPredictionScorer<InputNDArrayType : NDArray<InputNDArrayType>>(val mo
    * Get the output score arrays given the inputs.
    *
    * @param featuresMap a multimap of input features, one for each prediction
-   * @param useDropout whether to apply the dropout
    *
    * @return a multimap of output arrays, one for each prediction done
    */
-  fun score(featuresMap: MultiMap<InputNDArrayType>, useDropout: Boolean = false): MultiMap<DenseNDArray> {
+  fun score(featuresMap: MultiMap<InputNDArrayType>): MultiMap<DenseNDArray> {
 
     this.checkInputMapKeys(featuresMap)
 
     this.initUsedProcessors(featuresMap)
 
     return featuresMap.map { i, j, features ->
-      this.usedProcessors[i, j]!!.forward(features, useDropout = useDropout)
+      this.usedProcessors.getValue(i, j).forward(features)
     }
   }
 
@@ -90,20 +98,18 @@ class MultiPredictionScorer<InputNDArrayType : NDArray<InputNDArrayType>>(val mo
    * @param featuresMap a multimap of input features, one for each prediction
    * @param saveContributions whether to save the contributions of each input to its output (needed to calculate
    *                          the relevance)
-   * @param useDropout whether to apply the dropout
    *
    * @return a multimap of output arrays
    */
   fun score(featuresMap: MultiMap<InputNDArrayType>,
-            saveContributions: Boolean,
-            useDropout: Boolean = false): MultiMap<DenseNDArray> {
+            saveContributions: Boolean): MultiMap<DenseNDArray> {
 
     this.checkInputMapKeys(featuresMap)
 
     this.initUsedProcessors(featuresMap)
 
     return featuresMap.map { i, j, features ->
-      this.usedProcessors[i, j]!!.forward(features, saveContributions= saveContributions, useDropout = useDropout)
+      this.usedProcessors.getValue(i, j).forward(features, saveContributions = saveContributions)
     }
   }
 
@@ -127,7 +133,7 @@ class MultiPredictionScorer<InputNDArrayType : NDArray<InputNDArrayType>>(val mo
     this.checkInputMapPredictionIndices(relevantOutcomesDistribution)
 
     return relevantOutcomesDistribution.map { i, j, outcomesDistribution ->
-      this.usedProcessors[i, j]!!.calculateInputRelevance(outcomesDistribution, copy = copy)
+      this.usedProcessors.getValue(i, j).calculateInputRelevance(outcomesDistribution, copy = copy)
     }
   }
 
@@ -135,9 +141,8 @@ class MultiPredictionScorer<InputNDArrayType : NDArray<InputNDArrayType>>(val mo
    * Backward the errors of the given predictions.
    *
    * @param outputsErrors a multimap of outputs errors
-   * @param propagateToInput whether to propagate the errors to the input
    */
-  fun backward(outputsErrors: MultiMap<DenseNDArray>, propagateToInput: Boolean) {
+  fun backward(outputsErrors: MultiMap<DenseNDArray>) {
 
     this.checkInputMapKeys(outputsErrors)
     this.checkInputMapUsedKeys(outputsErrors)
@@ -146,7 +151,7 @@ class MultiPredictionScorer<InputNDArrayType : NDArray<InputNDArrayType>>(val mo
     this.setBackwardedProcessors(outputsErrors)
 
     outputsErrors.forEach { i, j, errors ->
-      this.usedProcessors[i, j]!!.backward(errors, propagateToInput = propagateToInput)
+      this.usedProcessors.getValue(i, j).backward(errors)
     }
   }
 
