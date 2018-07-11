@@ -71,14 +71,14 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward features.
    *
-   * @param features the features to forward from the input to the output
+   * @param input the input to forward from the input to the output
    * @param useDropout whether to apply the dropout
    *
    * @return the output [NDArray]
    */
-  fun forward(features: InputNDArrayType, useDropout: Boolean = false): DenseNDArray {
+  fun forward(input: InputNDArrayType, useDropout: Boolean = false): DenseNDArray {
 
-    this.inputLayer.setInput(features)
+    this.inputLayer.setInput(input)
 
     for ((i, layer) in this.layers.withIndex()) {
       this.curLayerIndex = i
@@ -91,18 +91,18 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward features, saving the contributions.
    *
-   * @param features the features to forward from the input to the output
+   * @param input the input to forward from the input to the output
    * @param networkContributions the [NetworkParameters] in which to save the contributions of the input of each layer
    *                             in respect of the related output
    * @param useDropout whether to apply the dropout
    *
    * @return the output [NDArray]
    */
-  fun forward(features: InputNDArrayType,
+  fun forward(input: InputNDArrayType,
               networkContributions: NetworkParameters,
               useDropout: Boolean = false): DenseNDArray {
 
-    this.inputLayer.setInput(features)
+    this.inputLayer.setInput(input)
 
     for ((i, layer) in this.layers.withIndex()) {
       this.curLayerIndex = i
@@ -115,19 +115,19 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward a list of features if the first layer is a Merge layer.
    *
-   * @param featuresList the list of features to forward from the input to the output
+   * @param input the input to forward from the input to the output
    * @param useDropout whether to apply the dropout
    *
    * @return the output [NDArray]
    */
-  fun forward(featuresList: List<InputNDArrayType>, useDropout: Boolean = false): DenseNDArray {
+  fun forward(input: List<InputNDArrayType>, useDropout: Boolean = false): DenseNDArray {
 
     require(this.inputLayer is MergeLayer<InputNDArrayType>) {
       "Cannot call the forward with multiple features if the first layer is not a Merge layer."
     }
 
     (this.inputLayer as MergeLayer<InputNDArrayType>).let {
-      featuresList.forEachIndexed { i, features -> it.setInput(index = i, values = features) }
+      input.forEachIndexed { i, values -> it.setInput(index = i, values = values) }
     }
 
     for ((i, layer) in this.layers.withIndex()) {
@@ -142,14 +142,14 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward a list of features if the first layer is a Merge layer, saving the contributions.
    *
-   * @param featuresList the list of features to forward from the input to the output
+   * @param input the input to forward from the input to the output
    * @param networkContributions the [NetworkParameters] in which to save the contributions of the input of each layer
    *                             in respect of the related output
    * @param useDropout whether to apply the dropout
    *
    * @return the output [NDArray]
    */
-  fun forward(featuresList: List<InputNDArrayType>,
+  fun forward(input: List<InputNDArrayType>,
               networkContributions: NetworkParameters,
               useDropout: Boolean = false): DenseNDArray {
 
@@ -158,7 +158,7 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
     }
 
     (this.inputLayer as MergeLayer<InputNDArrayType>).let {
-      featuresList.forEachIndexed { i, features -> it.setInput(index = i, values = features) }
+      input.forEachIndexed { i, values -> it.setInput(index = i, values = values) }
     }
 
     for ((i, layer) in this.layers.withIndex()) {
