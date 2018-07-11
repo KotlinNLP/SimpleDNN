@@ -32,7 +32,6 @@ data class TrainingStatistics(
    * Method to call every new epoch.
    *
    * It increments the epochCount and sets the batchCount and the exampleCount to zero
-   *
    */
   fun newEpoch() {
     this.epochCount += 1
@@ -42,9 +41,8 @@ data class TrainingStatistics(
 
   /**
    * Method to call every new batch.
-
-   * It increments the batchCount and sets the exampleCount to zero
    *
+   * It increments the batchCount and sets the exampleCount to zero
    */
   fun newBatch() {
     this.batchCount += 1
@@ -55,7 +53,6 @@ data class TrainingStatistics(
    * Method to call every new example.
    *
    * It increments the exampleCount
-   *
    */
   fun newExample() {
     this.exampleCount += 1
