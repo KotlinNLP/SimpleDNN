@@ -109,13 +109,19 @@ class SumSignRelevanceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<De
       updateMethod = LearningRateMethod(learningRate = 0.01))
 
     val trainingHelper = SequenceWithFinalOutputTrainingHelper<DenseNDArray>(
-      neuralProcessor = RecurrentNeuralProcessor(this.neuralNetwork),
+      neuralProcessor = RecurrentNeuralProcessor(
+        neuralNetwork = this.neuralNetwork,
+        useDropout = false,
+        propagateToInput = false),
       optimizer = optimizer,
       lossCalculator = SoftmaxCrossEntropyCalculator(),
       verbose = true)
 
     val validationHelper = SequenceWithFinalOutputValidationHelper(
-      neuralProcessor = RecurrentNeuralProcessor<DenseNDArray>(this.neuralNetwork),
+      neuralProcessor = RecurrentNeuralProcessor<DenseNDArray>(
+        neuralNetwork = this.neuralNetwork,
+        useDropout = false,
+        propagateToInput = false),
       outputEvaluationFunction = ClassificationEvaluation())
 
     trainingHelper.train(
@@ -134,7 +140,10 @@ class SumSignRelevanceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<De
 
     println("\n-- PRINT RELEVANCE OF %d EXAMPLES\n".format(this.examplesToPrint))
 
-    val validationProcessor = RecurrentNeuralProcessor<DenseNDArray>(neuralNetwork)
+    val validationProcessor = RecurrentNeuralProcessor<DenseNDArray>(
+      neuralNetwork = neuralNetwork,
+      useDropout = false,
+      propagateToInput = false)
 
     val validationHelper = SequenceWithFinalOutputValidationHelper(
       neuralProcessor = validationProcessor,

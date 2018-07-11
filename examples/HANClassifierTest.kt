@@ -99,7 +99,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
       outputSize = 2,
       outputActivation = Softmax())
 
-    return HANEncoder(model)
+    return HANEncoder(model = model, useDropout = false, propagateToInput = false)
   }
 
   /**
@@ -149,7 +149,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
       val inputSequence = this.extractInputSequence(example)
 
       val output: DenseNDArray = this.classifier.forward(inputSequence.toHierarchySequence())
-      this.classifier.backward(outputErrors = output.assignSub(example.outputGold), propagateToInput = false)
+      this.classifier.backward(outputErrors = output.assignSub(example.outputGold))
 
       optimizer.accumulate(this.classifier.getParamsErrors(copy = false))
       optimizer.update()

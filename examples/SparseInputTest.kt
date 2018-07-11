@@ -73,13 +73,13 @@ class SparseInputTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArray>>) {
     )
 
     val trainingHelper = FeedforwardTrainingHelper<SparseBinaryNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork),
+      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork, useDropout = false, propagateToInput = false),
       optimizer = optimizer,
       lossCalculator = SoftmaxCrossEntropyCalculator(),
       verbose = true)
 
     val validationHelper = FeedforwardValidationHelper<SparseBinaryNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork),
+      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork, useDropout = false, propagateToInput = false),
       outputEvaluationFunction = ClassificationEvaluation())
 
     trainingHelper.train(

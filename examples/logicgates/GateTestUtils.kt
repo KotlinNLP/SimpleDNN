@@ -82,7 +82,10 @@ object GateTestUtils {
       params = neuralNetwork.model,
       updateMethod = updateMethod)
 
-    val neuralProcessor = FeedforwardNeuralProcessor<DenseNDArray>(neuralNetwork)
+    val neuralProcessor = FeedforwardNeuralProcessor<DenseNDArray>(
+      neuralNetwork = neuralNetwork,
+      useDropout = false,
+      propagateToInput = false)
 
     val trainingHelper = FeedforwardTrainingHelper(
       neuralProcessor = neuralProcessor,

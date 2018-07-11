@@ -73,14 +73,17 @@ class MNISTMePropTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
       updateMethod = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999))
 
     val trainingHelper = FeedforwardTrainingHelper<DenseNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork),
+      neuralProcessor = FeedforwardNeuralProcessor(
+        neuralNetwork = this.neuralNetwork,
+        useDropout = false,
+        propagateToInput = false,
+        mePropK = listOf(0.16, null)),
       optimizer = optimizer,
       lossCalculator = SoftmaxCrossEntropyCalculator(),
-      mePropK = listOf(0.16, null),
       verbose = true)
 
     val validationHelper = FeedforwardValidationHelper<DenseNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork),
+      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork, propagateToInput = false, useDropout = false),
       outputEvaluationFunction = ClassificationEvaluation())
 
     trainingHelper.train(
@@ -98,7 +101,7 @@ class MNISTMePropTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
   private fun evaluate() {
 
     val validationHelper = FeedforwardValidationHelper<DenseNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork),
+      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork, propagateToInput = false, useDropout = false),
       outputEvaluationFunction = ClassificationEvaluation())
 
     println("\n-- EVALUATION ON %d TEST SENTENCES".format(this.dataset.test.size))

@@ -81,13 +81,19 @@ class MNISTSparseBinaryTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArra
         decayMethod = HyperbolicDecay(decay = 0.5, initLearningRate = 0.01)))
 
     val trainingHelper = FeedforwardTrainingHelper<SparseBinaryNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork),
+      neuralProcessor = FeedforwardNeuralProcessor(
+        neuralNetwork = this.neuralNetwork,
+        useDropout = false,
+        propagateToInput = false),
       optimizer = optimizer,
       lossCalculator = SoftmaxCrossEntropyCalculator(),
       verbose = true)
 
     val validationHelper = FeedforwardValidationHelper<SparseBinaryNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork),
+      neuralProcessor = FeedforwardNeuralProcessor(
+        neuralNetwork = this.neuralNetwork,
+        useDropout = false,
+        propagateToInput = false),
       outputEvaluationFunction = ClassificationEvaluation())
 
     trainingHelper.train(
@@ -106,7 +112,10 @@ class MNISTSparseBinaryTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArra
 
     println("\n-- PRINT IMAGES RELEVANCE\n")
 
-    val neuralProcessor = FeedforwardNeuralProcessor<SparseBinaryNDArray>(neuralNetwork)
+    val neuralProcessor = FeedforwardNeuralProcessor<SparseBinaryNDArray>(
+      neuralNetwork = this.neuralNetwork,
+      useDropout = false,
+      propagateToInput = false)
 
     val validationHelper = FeedforwardValidationHelper(
       neuralProcessor = neuralProcessor,

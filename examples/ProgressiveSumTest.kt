@@ -66,7 +66,7 @@ class ProgressiveSumTest(val dataset: Corpus<SequenceExample<DenseNDArray>>) {
     println("\n-- VALIDATION BEFORE TRAINING\n")
 
     val validationHelper = SequenceValidationHelper<DenseNDArray>(
-      neuralProcessor = RecurrentNeuralProcessor(this.neuralNetwork),
+      neuralProcessor = RecurrentNeuralProcessor(this.neuralNetwork, useDropout = false, propagateToInput = false),
       outputEvaluationFunction = ClassificationEvaluation())
 
     val accuracy: Double = validationHelper.validate(this.dataset.validation)
@@ -86,13 +86,13 @@ class ProgressiveSumTest(val dataset: Corpus<SequenceExample<DenseNDArray>>) {
       updateMethod = LearningRateMethod(learningRate = 0.1))
 
     val trainingHelper = SequenceTrainingHelper<DenseNDArray>(
-      neuralProcessor = RecurrentNeuralProcessor(this.neuralNetwork),
+      neuralProcessor = RecurrentNeuralProcessor(this.neuralNetwork, useDropout = false, propagateToInput = false),
       optimizer = optimizer,
       lossCalculator = SoftmaxCrossEntropyCalculator(),
       verbose = true)
 
     val validationHelper = SequenceValidationHelper<DenseNDArray>(
-      neuralProcessor = RecurrentNeuralProcessor(this.neuralNetwork),
+      neuralProcessor = RecurrentNeuralProcessor(this.neuralNetwork, useDropout = false, propagateToInput = false),
       outputEvaluationFunction = ClassificationEvaluation())
 
     trainingHelper.train(

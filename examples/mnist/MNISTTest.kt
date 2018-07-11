@@ -71,13 +71,18 @@ class MNISTTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
       updateMethod = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999))
 
     val trainingHelper = FeedforwardTrainingHelper<DenseNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork),
+      neuralProcessor = FeedforwardNeuralProcessor(
+        this.neuralNetwork,
+        useDropout = false,
+        propagateToInput = false),
       optimizer = optimizer,
       lossCalculator = SoftmaxCrossEntropyCalculator(),
       verbose = true)
 
     val validationHelper = FeedforwardValidationHelper<DenseNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork),
+      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork,
+        useDropout = false,
+        propagateToInput = false),
       outputEvaluationFunction = ClassificationEvaluation())
 
     trainingHelper.train(
