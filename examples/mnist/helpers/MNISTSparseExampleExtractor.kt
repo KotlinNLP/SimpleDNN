@@ -7,14 +7,13 @@
 
 package mnist.helpers
 
-import com.jsoniter.JsonIterator
-import com.jsoniter.ValueType
+import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonBase
 import com.kotlinnlp.simplednn.dataset.SimpleExample
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArrayFactory
 import utils.exampleextractor.ExampleExtractor
+import utils.readSparseBinaryNDArrayFromDense
 
 /**
  *
@@ -24,46 +23,13 @@ class MNISTSparseExampleExtractor(val outputSize: Int) : ExampleExtractor<Simple
   /**
    *
    */
-  override fun extract(iterator: JsonIterator): SimpleExample<SparseBinaryNDArray> {
+  override fun extract(jsonElement: JsonBase): SimpleExample<SparseBinaryNDArray> {
 
-    val outputGold = DenseNDArrayFactory.zeros(Shape(outputSize))
-    var goldIndex: Int
-    var features: SparseBinaryNDArray? = null
+    val jsonArray = jsonElement as JsonArray<*>
 
-    while (iterator.readArray()) {
+    val features: SparseBinaryNDArray = (jsonArray[0] as JsonArray<*>).readSparseBinaryNDArrayFromDense(size = 784)
+    val outputGold = DenseNDArrayFactory.oneHotEncoder(length = outputSize, oneAt = jsonArray[1] as Int)
 
-      if (iterator.whatIsNext() == ValueType.ARRAY) {
-        features = iterator.readSparseBinaryNDArray(size = 784)
-
-      } else if (iterator.whatIsNext() == ValueType.NUMBER) {
-        goldIndex = iterator.readInt() // - 1
-        outputGold[goldIndex] = 1.0
-      }
-    }
-
-    return SimpleExample(features!!, outputGold)
-  }
-
-
-  /**
-   *
-   */
-  private fun JsonIterator.readSparseBinaryNDArray(size: Int): SparseBinaryNDArray {
-
-    val array = ArrayList<Int>()
-    var index = 0
-
-    while (this.readArray()) {
-
-      val pixel: Double = this.readDouble()
-
-      if (pixel >= 0.5) {
-        array.add(index)
-      }
-
-      index++
-    }
-
-    return SparseBinaryNDArrayFactory.arrayOf(activeIndices = array.sorted(), shape = Shape(size))
+    return SimpleExample(features, outputGold)
   }
 }

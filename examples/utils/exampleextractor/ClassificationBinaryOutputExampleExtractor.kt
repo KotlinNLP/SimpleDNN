@@ -7,8 +7,8 @@
 
 package utils.exampleextractor
 
-import com.jsoniter.JsonIterator
-import com.jsoniter.ValueType
+import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonBase
 import com.kotlinnlp.simplednn.dataset.BinaryOutputExample
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import utils.readDenseNDArray
@@ -21,21 +21,13 @@ class ClassificationBinaryOutputExampleExtractor : ExampleExtractor<BinaryOutput
   /**
    *
    */
-  override fun extract(iterator: JsonIterator): BinaryOutputExample<DenseNDArray> {
+  override fun extract(jsonElement: JsonBase): BinaryOutputExample<DenseNDArray> {
 
-    var goldIndex = 0
-    var features: DenseNDArray? = null
+    val jsonArray = jsonElement as JsonArray<*>
 
-    while (iterator.readArray()) {
+    val features: DenseNDArray = (jsonArray[0] as JsonArray<*>).readDenseNDArray()
+    val goldIndex: Int = jsonArray[1] as Int
 
-      if (iterator.whatIsNext() == ValueType.ARRAY) {
-        features = iterator.readDenseNDArray()
-
-      } else if (iterator.whatIsNext() == ValueType.NUMBER) {
-        goldIndex = iterator.readInt()
-      }
-    }
-
-    return BinaryOutputExample(features!!, goldIndex)
+    return BinaryOutputExample(features, goldIndex)
   }
 }

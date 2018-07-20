@@ -7,13 +7,13 @@
 
 package utils
 
-import com.jsoniter.JsonIterator
 import com.kotlinnlp.simplednn.dataset.Corpus
 import com.kotlinnlp.simplednn.dataset.Example
 import utils.exampleextractor.ExampleExtractor
-import java.io.BufferedInputStream
 import java.io.FileInputStream
 import CorpusPaths
+import com.beust.klaxon.JsonArray
+import com.beust.klaxon.Parser
 
 /**
  * A helper to read corpora from file (containing training, validation and test sets).
@@ -82,9 +82,10 @@ class CorpusReader<ExampleType : Example> {
 
     val examples = ArrayList<ExampleType>()
     val file = FileInputStream(filename)
+    val jsonParser = Parser()
 
     file.reader().forEachLine {
-      examples.add(exampleExtractor.extract(JsonIterator.parse(it)))
+      examples.add(exampleExtractor.extract(jsonParser.parse(StringBuilder(it)) as JsonArray<*>))
     }
 
     return examples
@@ -102,10 +103,9 @@ class CorpusReader<ExampleType : Example> {
                                        exampleExtractor: ExampleExtractor<ExampleType>): ArrayList<ExampleType> {
 
     val examples = ArrayList<ExampleType>()
-    val iterator = JsonIterator.parse(BufferedInputStream(FileInputStream(filename)), 2048)
 
-    while(iterator.readArray()) {
-      examples.add(exampleExtractor.extract(iterator))
+    (Parser().parse(filename) as JsonArray<*>).forEach {
+      examples.add(exampleExtractor.extract(it as JsonArray<*>))
     }
 
     return examples

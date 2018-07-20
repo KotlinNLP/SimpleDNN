@@ -7,7 +7,7 @@
 
 package utils
 
-import com.jsoniter.JsonIterator
+import com.beust.klaxon.JsonArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -17,25 +17,22 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
 /**
  *
  */
-fun JsonIterator.readDenseNDArray(): DenseNDArray {
-
-  val array = ArrayList<Double>()
-
-  while (this.readArray()) array.add(this.readDouble())
-
-  return DenseNDArrayFactory.arrayOf(array.toDoubleArray())
-}
+fun JsonArray<*>.readDenseNDArray(): DenseNDArray =
+  DenseNDArrayFactory.arrayOf(DoubleArray(size = this.size, init = { i -> this[i] as Double }))
 
 /**
  *
  */
-fun JsonIterator.readSparseBinaryNDArray(size: Int): SparseBinaryNDArray {
+fun JsonArray<*>.readSparseBinaryNDArray(size: Int): SparseBinaryNDArray =
+  SparseBinaryNDArrayFactory.arrayOf(activeIndices = this.map { it as Int }.sorted(), shape = Shape(size))
 
-  val array = ArrayList<Int>()
+/**
+ *
+ */
+fun JsonArray<*>.readSparseBinaryNDArrayFromDense(size: Int): SparseBinaryNDArray {
 
-  while (this.readArray()) {
-    array.add(this.readInt())
-  }
+  val activeIndices: List<Int> =
+    this.mapIndexed { index, it -> if (it as Double > 0.5) index else -1 }.filter { it > 0 }
 
-  return SparseBinaryNDArrayFactory.arrayOf(activeIndices = array.sorted(), shape = Shape(size))
+  return SparseBinaryNDArrayFactory.arrayOf(activeIndices = activeIndices.sorted(), shape = Shape(size))
 }

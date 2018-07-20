@@ -7,7 +7,7 @@
 
 package utils.exampleextractor
 
-import com.jsoniter.JsonIterator
+import com.beust.klaxon.JsonBase
 import com.kotlinnlp.simplednn.dataset.Example
 
 /**
@@ -18,5 +18,5 @@ interface ExampleExtractor<out ExampleType: Example> {
   /**
    *
    */
-  fun extract(iterator: JsonIterator): ExampleType
+  fun extract(jsonElement: JsonBase): ExampleType
 }

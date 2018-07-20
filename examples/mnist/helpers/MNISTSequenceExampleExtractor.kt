@@ -7,14 +7,13 @@
 
 package mnist.helpers
 
-import com.jsoniter.JsonIterator
-import com.jsoniter.ValueType
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonBase
+import com.beust.klaxon.JsonObject
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.dataset.SequenceExampleWithFinalOutput
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import utils.exampleextractor.ExampleExtractor
-import utils.readDenseNDArray
 
 /**
  *
@@ -25,29 +24,15 @@ class MNISTSequenceExampleExtractor(val outputSize: Int)
   /**
    *
    */
-  override fun extract(iterator: JsonIterator): SequenceExampleWithFinalOutput<DenseNDArray> {
+  override fun extract(jsonElement: JsonBase): SequenceExampleWithFinalOutput<DenseNDArray> {
 
-    val featuresList = ArrayList<DenseNDArray>()
-    val outputGold = DenseNDArrayFactory.zeros(Shape(10))
+    val jsonObject = jsonElement as JsonObject
 
-    // read "digit"
-    iterator.readObject()
-    outputGold[iterator.readInt()] = 1.0
-
-    // skip "id"
-    iterator.readObject()
-    iterator.readAny()
-
-    // read "sequence_data"
-    iterator.readObject()
-
-    while (iterator.readArray()) {
-      if (iterator.whatIsNext() == ValueType.ARRAY) {
-        val features = iterator.readDenseNDArray()
-        val deltaX = features[0]
-        val deltaY = features[1]
-        featuresList.add(DenseNDArrayFactory.arrayOf(doubleArrayOf(deltaX, deltaY)))
-      }
+    val outputGold = DenseNDArrayFactory.oneHotEncoder(length = 10, oneAt = jsonObject.int("digit")!!)
+    val featuresList: List<DenseNDArray> = jsonElement.array<JsonArray<*>>("sequence_data")!!.map {
+      val deltaX = (it[0] as Int).toDouble()
+      val deltaY = (it[1] as Int).toDouble()
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(deltaX, deltaY))
     }
 
     return SequenceExampleWithFinalOutput(featuresList, outputGold)

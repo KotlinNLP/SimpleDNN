@@ -7,13 +7,11 @@
 
 package utils.exampleextractor
 
-import com.jsoniter.JsonIterator
-import com.jsoniter.ValueType
+import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonBase
 import com.kotlinnlp.simplednn.dataset.SequenceExample
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import utils.readDenseNDArray
 
 /**
  *
@@ -23,22 +21,18 @@ class ClassificationSequenceExampleExtractor(val outputSize: Int) : ExampleExtra
   /**
    *
    */
-  override fun extract(iterator: JsonIterator): SequenceExample<DenseNDArray> {
+  override fun extract(jsonElement: JsonBase): SequenceExample<DenseNDArray> {
+
+    val jsonArray = jsonElement as JsonArray<*>
 
     val featuresList = ArrayList<DenseNDArray>()
     val outputGoldList = ArrayList<DenseNDArray>()
 
-    while (iterator.readArray()) {
-      if (iterator.whatIsNext() == ValueType.ARRAY) {
-        val singleExample = iterator.readDenseNDArray()
-        val features = DenseNDArrayFactory.arrayOf(doubleArrayOf(singleExample[0]))
-        val outputGold = DenseNDArrayFactory.zeros(Shape(11))
+    jsonArray.forEach {
+      it as JsonArray<*>
 
-        outputGold[singleExample[1].toInt()] = 1.0
-
-        featuresList.add(features)
-        outputGoldList.add(outputGold)
-      }
+      featuresList.add(DenseNDArrayFactory.arrayOf(doubleArrayOf(it[0] as Double)))
+      outputGoldList.add(DenseNDArrayFactory.oneHotEncoder(length = 11, oneAt = it[1] as Int))
     }
 
     return SequenceExample(featuresList, outputGoldList)

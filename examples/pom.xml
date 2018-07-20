@@ -13,10 +13,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kotlin.version>1.2.41</kotlin.version>
-        <jsoniter.version>0.9.2</jsoniter.version>
         <fasterxml.jackson.version>2.7.1</fasterxml.jackson.version>
         <fasterxml.jackson.databind.version>${fasterxml.jackson.version}-1</fasterxml.jackson.databind.version>
         <fasterxml.jackson-module-kotlin.version>${fasterxml.jackson.version}-2</fasterxml.jackson-module-kotlin.version>
+        <klaxon.version>3.0.5</klaxon.version>
         <simplednn.version>0.11.0</simplednn.version>
         <utils.version>2.1.0</utils.version>
     </properties>
@@ -80,12 +80,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.jsoniter</groupId>
-            <artifactId>jsoniter</artifactId>
-            <version>${jsoniter.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${fasterxml.jackson.databind.version}</version>
@@ -101,6 +95,12 @@
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
             <version>${fasterxml.jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>klaxon</artifactId>
+            <version>${klaxon.version}</version>
         </dependency>
 
         <dependency>
