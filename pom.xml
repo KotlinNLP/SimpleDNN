@@ -55,12 +55,7 @@
         <maven-source-plugin.version>3.0.0</maven-source-plugin.version>
         <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
         <kotlin.version>1.2.41</kotlin.version>
-        <slf4j.version>1.7.21</slf4j.version>
         <jblas.version>1.2.4</jblas.version>
-        <jsoniter.version>0.9.2</jsoniter.version>
-        <fasterxml.jackson.version>2.7.1</fasterxml.jackson.version>
-        <fasterxml.jackson.databind.version>${fasterxml.jackson.version}-1</fasterxml.jackson.databind.version>
-        <fasterxml.jackson-module-kotlin.version>${fasterxml.jackson.version}-2</fasterxml.jackson-module-kotlin.version>
         <mockit-kotlin.version>1.5.0</mockit-kotlin.version>
         <surfire.version>2.19.1</surfire.version>
         <spek.version>1.1.5</spek.version>
@@ -207,39 +202,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.jblas</groupId>
             <artifactId>jblas</artifactId>
             <version>${jblas.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.jsoniter</groupId>
-            <artifactId>jsoniter</artifactId>
-            <version>${jsoniter.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${fasterxml.jackson.databind.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-kotlin</artifactId>
-            <version>${fasterxml.jackson-module-kotlin.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>${fasterxml.jackson.version}</version>
         </dependency>
 
         <dependency>
