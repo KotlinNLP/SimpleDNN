@@ -83,10 +83,14 @@ interface NeuralProcessor<
    *
    * @return the input errors
    */
-  fun propagateErrors(errors: ErrorsType, optimizer: Optimizer<ParamsErrorsType>, copy: Boolean = false): InputErrorsType {
+  fun propagateErrors(errors: ErrorsType,
+                      optimizer: Optimizer<ParamsErrorsType>,
+                      copy: Boolean = false): InputErrorsType {
 
-    backward(errors)
+    this.backward(errors)
+
     optimizer.accumulate(getParamsErrors(copy = copy))
+
     return getInputErrors(copy = copy)
   }
 }
