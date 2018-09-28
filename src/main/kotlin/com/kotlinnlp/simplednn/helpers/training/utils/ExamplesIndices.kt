@@ -30,16 +30,16 @@ class ExamplesIndices(private val size: Int, shuffler: Shuffler? = null) : Itera
     /**
      * Iterator hasNext method.
      */
-    override fun hasNext(): Boolean = this.count < (ExampleIndices@size)
+    override fun hasNext(): Boolean = this.count < (size)
 
     /**
      * Iterator next method.
      */
-    override fun next(): Int = ExampleIndices@indices[this.count++]
+    override fun next(): Int = indices[this.count++]
   }
 
   /**
-   * The
+   * The array of indices.
    */
   private val indices = IntArray(size = size, init = { it })
 
