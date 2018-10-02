@@ -167,7 +167,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
-   *
+   * @return a new [DenseNDArray] with the same shape of this, filled with zeros.
    */
   override fun zerosLike(): DenseNDArray = DenseNDArray(DoubleMatrix.zeros(this.shape.dim1, shape.dim2))
 
