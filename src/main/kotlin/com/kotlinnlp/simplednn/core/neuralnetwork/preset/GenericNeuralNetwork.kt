@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 /**
  * A Generic [NeuralNetwork] factory.
  */
-internal object GenericNeuralNetwork {
+object GenericNeuralNetwork {
 
   /**
    * @param inputSize the size of the input layer
