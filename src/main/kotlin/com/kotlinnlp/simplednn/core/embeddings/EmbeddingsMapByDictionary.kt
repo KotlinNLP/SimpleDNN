@@ -89,9 +89,11 @@ class EmbeddingsMapByDictionary(
 
     File(filename).printWriter().use { out ->
 
-      out.println("%d %d".format(this.count, this.size))
+      val elements: List<String> = this.dictionary.getElements()
 
-      this.dictionary.getElements().forEach {
+      out.println("%d %d".format(elements.size, this.size))
+
+      elements.forEach {
         out.print(it)
         out.println(this.get(it).toString(digits = digits))
         out.flush()
