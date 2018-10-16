@@ -231,7 +231,6 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The Forward.
    *
    * @param input the input to forward from the input to the output
-   * @param useDropout whether to apply the dropout
    *
    * @return the output sequence
    */
@@ -428,9 +427,6 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The Backward.
    *
    * @param outputErrors the output errors for each item of the sequence
-   * @param propagateToInput whether to propagate the errors to the input (default = false)
-   * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
-   *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
    */
   override fun backward(outputErrors: List<DenseNDArray>) {
 
