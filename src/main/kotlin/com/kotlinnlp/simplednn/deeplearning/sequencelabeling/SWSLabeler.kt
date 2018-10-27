@@ -87,7 +87,7 @@ class SWSLabeler(
 
     this.setNewSequence(inputSequence)
 
-    this.forwardSequence(forEachPrediction = { this.addLabel(this.getBestLabel()) } )
+    this.forEachPrediction { this.addLabel(this.getBestLabel()) }
 
     return this.labels
   }
@@ -108,18 +108,16 @@ class SWSLabeler(
     this.setNewSequence(inputSequence)
     this.initInputErrors(inputSequence.size)
 
-    this.forwardSequence(
-      forEachPrediction = {
+    this.forEachPrediction {
 
-        val goldLabel = this.getGoldLabel(goldLabels)
+      val goldLabel = this.getGoldLabel(goldLabels)
 
-        this.processor.backward(outputErrors = this.getOutputErrors(goldLabel))
+      this.processor.backward(outputErrors = this.getOutputErrors(goldLabel))
 
-        this.accumulateErrors(optimizer)
+      this.accumulateErrors(optimizer)
 
-        this.addLabel(goldLabel)
-      }
-    )
+      this.addLabel(goldLabel)
+    }
   }
 
   /**
@@ -179,9 +177,9 @@ class SWSLabeler(
   /**
    * This function iterates the complete sequence to make a prediction for each element.
    *
-   * @param forEachPrediction the callback called after the forward on each element
+   * @param callback the callback called after the forward on each element
    */
-  private fun forwardSequence(forEachPrediction: () -> Unit) {
+  private fun forEachPrediction(callback: () -> Unit) {
 
     val featuresExtractor = SWSLFeaturesExtractor(
       sequence = this.sequence,
@@ -192,7 +190,7 @@ class SWSLabeler(
 
       this.processor.forward(featuresExtractor.getFeatures())
 
-      forEachPrediction()
+      callback()
 
       this.sequence.shift()
     }
