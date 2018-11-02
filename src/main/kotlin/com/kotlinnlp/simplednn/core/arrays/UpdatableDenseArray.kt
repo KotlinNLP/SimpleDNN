@@ -16,6 +16,15 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  */
 class UpdatableDenseArray(override val values: DenseNDArray) : UpdatableArray<DenseNDArray>(values = values) {
 
+  /**
+   * Build an [UpdatableDenseArray] with values initialized to zeros.
+   *
+   * @param shape the shape of the [values] array
+   *
+   * @return a new array with values initialized to zeros
+   */
+  constructor(shape: Shape) : this(DenseNDArrayFactory.zeros(shape))
+
   companion object {
 
     /**
@@ -23,14 +32,5 @@ class UpdatableDenseArray(override val values: DenseNDArray) : UpdatableArray<De
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
-
-    /**
-     * Build an [UpdatableDenseArray] with values initialized to zeros.
-     *
-     * @param shape the shape of the [values] array
-     *
-     * @return a new array with values initialized to zeros
-     */
-    operator fun invoke(shape: Shape) = UpdatableDenseArray(DenseNDArrayFactory.zeros(shape))
   }
 }

@@ -16,6 +16,15 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  */
 class UpdatableSparseArray(override val values: SparseNDArray) : UpdatableArray<SparseNDArray>(values = values) {
 
+  /**
+   * Build an [UpdatableSparseArray] with values initialized to zeros.
+   *
+   * @param shape the shape of the [values] array
+   *
+   * @return a new array with values initialized to zeros
+   */
+  constructor(shape: Shape) : this(SparseNDArrayFactory.zeros(shape))
+
   companion object {
 
     /**
@@ -23,14 +32,5 @@ class UpdatableSparseArray(override val values: SparseNDArray) : UpdatableArray<
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
-
-    /**
-     * Build an [UpdatableSparseArray] with values initialized to zeros.
-     *
-     * @param shape the shape of the [values] array
-     *
-     * @return a new array with values initialized to zeros
-     */
-    operator fun invoke(shape: Shape) = UpdatableSparseArray(SparseNDArrayFactory.zeros(shape))
   }
 }
