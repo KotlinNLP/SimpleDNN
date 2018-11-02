@@ -21,15 +21,13 @@ import com.kotlinnlp.simplednn.core.layers.models.ParametersUnit
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  * @param sparseInput whether the weights connected to the input are sparse or not
- * @param meProp whether to use the 'meProp' errors propagation algorithm (params are sparse)
  */
 class HighwayLayerParameters(
   inputSize: Int,
   outputSize: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
-  private val sparseInput: Boolean = false,
-  private val meProp: Boolean = false
+  private val sparseInput: Boolean = false
 ) : LayerParameters<HighwayLayerParameters>(
   inputSize = inputSize,
   outputSize = outputSize,
@@ -51,8 +49,7 @@ class HighwayLayerParameters(
   val input = ParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
-    sparseInput = this.sparseInput,
-    meProp = this.meProp)
+    sparseInput = this.sparseInput)
 
   /**
    *
@@ -60,8 +57,7 @@ class HighwayLayerParameters(
   val transformGate = ParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
-    sparseInput = this.sparseInput,
-    meProp = this.meProp)
+    sparseInput = this.sparseInput)
 
   /**
    * The list of all parameters.

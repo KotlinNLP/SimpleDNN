@@ -44,7 +44,7 @@ class SumLayerStructureSpec : Spek({
       layer.forward()
 
       layer.outputArray.assignErrors(SumLayerUtils.getOutputErrors())
-      layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+      layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
       it("should match the expected errors of the inputArray at index 0") {
         assertTrue {

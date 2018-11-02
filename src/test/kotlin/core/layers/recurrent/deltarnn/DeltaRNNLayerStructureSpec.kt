@@ -363,7 +363,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         layer.forward()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(DeltaRNNLayerStructureUtils.getOutputGold()))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -475,7 +475,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         layer.forward()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(DeltaRNNLayerStructureUtils.getOutputGold()))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -591,7 +591,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         layer.forward()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(DeltaRNNLayerStructureUtils.getOutputGold()))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -703,7 +703,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         layer.forward()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(DeltaRNNLayerStructureUtils.getOutputGold()))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {

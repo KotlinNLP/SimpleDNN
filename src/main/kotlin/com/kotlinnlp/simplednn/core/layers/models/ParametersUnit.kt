@@ -19,13 +19,11 @@ import java.io.Serializable
  * @property inputSize input size
  * @property outputSize output size
  * @param sparseInput whether the weights connected to the input are sparse or not (default false)
- * @param meProp whether to use the 'meProp' errors propagation algorithm (params are sparse) (default false)
  */
 open class ParametersUnit(
   val inputSize: Int,
   val outputSize: Int,
-  private val sparseInput: Boolean = false,
-  private val meProp: Boolean = false
+  private val sparseInput: Boolean = false
 ) : Serializable {
 
   companion object {
@@ -40,13 +38,13 @@ open class ParametersUnit(
   /**
    *
    */
-  val biases: UpdatableArray<*> = this.buildUpdatableArray(dim1 = this.outputSize, sparse = this.meProp)
+  val biases: UpdatableArray<*> = this.buildUpdatableArray(dim1 = this.outputSize)
 
   /**
    *
    */
   val weights: UpdatableArray<*> = this.buildUpdatableArray(
-    dim1 = this.outputSize, dim2 = this.inputSize, sparse = this.sparseInput || this.meProp)
+    dim1 = this.outputSize, dim2 = this.inputSize, sparse = this.sparseInput)
 
   /**
    *

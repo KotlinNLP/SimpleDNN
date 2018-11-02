@@ -182,7 +182,7 @@ class FeedforwardLayerStructureSpec : Spek({
         layer.forward()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -235,7 +235,7 @@ class FeedforwardLayerStructureSpec : Spek({
         layer.forward()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -284,7 +284,7 @@ class FeedforwardLayerStructureSpec : Spek({
         layer.forward()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {

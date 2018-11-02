@@ -62,7 +62,7 @@ class IndRNNLayerStructureSpec : Spek({
         layer.forward()
 
         layer.outputArray.assignErrors(IndRNNLayerStructureUtils.getOutputErrors())
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(
@@ -109,7 +109,7 @@ class IndRNNLayerStructureSpec : Spek({
         layer.forward()
 
         layer.outputArray.assignErrors(IndRNNLayerStructureUtils.getOutputErrors())
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(
@@ -156,7 +156,7 @@ class IndRNNLayerStructureSpec : Spek({
         layer.forward()
 
         layer.outputArray.assignErrors(IndRNNLayerStructureUtils.getOutputErrors())
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(
@@ -203,7 +203,7 @@ class IndRNNLayerStructureSpec : Spek({
         layer.forward()
 
         layer.outputArray.assignErrors(IndRNNLayerStructureUtils.getOutputErrors())
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(

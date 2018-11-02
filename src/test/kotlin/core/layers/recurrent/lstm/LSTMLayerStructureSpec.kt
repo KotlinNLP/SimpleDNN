@@ -208,7 +208,7 @@ class LSTMLayerStructureSpec : Spek({
           outputGold = LSTMLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -423,7 +423,7 @@ class LSTMLayerStructureSpec : Spek({
           outputGold = LSTMLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -641,7 +641,7 @@ class LSTMLayerStructureSpec : Spek({
           outputGold = LSTMLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -680,7 +680,7 @@ class LSTMLayerStructureSpec : Spek({
           outputGold = LSTMLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -895,7 +895,7 @@ class LSTMLayerStructureSpec : Spek({
           outputGold = LSTMLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {

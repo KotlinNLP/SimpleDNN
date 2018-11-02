@@ -131,16 +131,12 @@ abstract class LayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * @param paramsErrors the structure in which to save the errors of the parameters
    * @param propagateToInput whether to propagate the errors to the input
-   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
-   *                the top errors (ignored if null)
    */
-  fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean, mePropK: Double?) {
-    require(mePropK == null || mePropK in 0.0 .. 1.0) { "The mePropK must be a percentage in range [0.0, 1.0]" }
+  fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
     this.backwardHelper.backward(
       paramsErrors = paramsErrors,
-      propagateToInput = propagateToInput,
-      mePropK = mePropK)
+      propagateToInput = propagateToInput)
   }
 
   /**

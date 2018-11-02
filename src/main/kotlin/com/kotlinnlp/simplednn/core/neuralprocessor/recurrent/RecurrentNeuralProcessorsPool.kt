@@ -40,7 +40,6 @@ class RecurrentNeuralProcessorsPool<InputNDArrayType : NDArray<InputNDArrayType>
     neuralNetwork = this.neuralNetwork,
     useDropout = this.useDropout,
     propagateToInput = this.propagateToInput,
-    mePropK = this.mePropK,
     id = id
   )
 }

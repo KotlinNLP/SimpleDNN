@@ -21,15 +21,13 @@ import com.kotlinnlp.simplednn.core.layers.models.ParametersUnit
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  * @param sparseInput whether the weights connected to the input are sparse or not
- * @param meProp whether to use the 'meProp' errors propagation algorithm (params are sparse)
  */
 class FeedforwardLayerParameters(
   inputSize: Int,
   outputSize: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
-  private val sparseInput: Boolean = false,
-  private val meProp: Boolean = false
+  private val sparseInput: Boolean = false
 ) : LayerParameters<FeedforwardLayerParameters>(
   inputSize = inputSize,
   outputSize = outputSize,
@@ -51,8 +49,7 @@ class FeedforwardLayerParameters(
   val unit = ParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
-    sparseInput = this.sparseInput,
-    meProp = this.meProp)
+    sparseInput = this.sparseInput)
 
   /**
    * The list of all parameters.

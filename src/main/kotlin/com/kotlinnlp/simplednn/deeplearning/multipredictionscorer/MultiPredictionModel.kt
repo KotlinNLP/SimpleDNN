@@ -60,10 +60,8 @@ class MultiPredictionModel(
         hiddenSize = networksConfig[i].hiddenSize,
         hiddenActivation = networksConfig[i].hiddenActivation,
         hiddenDropout = networksConfig[i].hiddenDropout,
-        hiddenMeProp = networksConfig[i].hiddenMeProp,
         outputSize = networksConfig[i].outputSize,
         outputActivation = networksConfig[i].outputActivation,
-        outputMeProp = networksConfig[i].outputMeProp,
         weightsInitializer = weightsInitializer,
         biasesInitializer = biasesInitializer
       )

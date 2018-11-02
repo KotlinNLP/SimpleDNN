@@ -32,15 +32,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  * @property neuralNetwork a [NeuralNetwork]
  * @property useDropout whether to apply the dropout during the [forward]
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
- * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
- *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
  * @property id an identification number useful to track a specific processor
  */
 class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   val neuralNetwork: NeuralNetwork,
   override val useDropout: Boolean,
   override val propagateToInput: Boolean,
-  private val mePropK: List<Double?>? = null,
   override val id: Int = 0
 ) : StructureContextWindow<InputNDArrayType>,
   NeuralProcessor<
@@ -456,8 +453,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.sequence.getStateStructure(this.curStateIndex).backward(
       outputErrors = outputErrors,
       paramsErrors = this.backwardParamsErrors,
-      propagateToInput = this.propagateToInput,
-      mePropK = this.mePropK)
+      propagateToInput = this.propagateToInput)
 
     this.paramsErrorsAccumulator.accumulate(this.backwardParamsErrors)
 

@@ -26,8 +26,7 @@ class RecurrentParametersUnit(
 ) : ParametersUnit(
   inputSize = inputSize,
   outputSize = outputSize,
-  sparseInput = sparseInput,
-  meProp = meProp) {
+  sparseInput = sparseInput) {
 
   /**
    *

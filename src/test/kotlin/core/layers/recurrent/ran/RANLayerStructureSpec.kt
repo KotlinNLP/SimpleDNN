@@ -392,7 +392,7 @@ class RANLayerStructureSpec : Spek({
           outputGold = RANLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -541,7 +541,7 @@ class RANLayerStructureSpec : Spek({
           outputGold = RANLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -690,7 +690,7 @@ class RANLayerStructureSpec : Spek({
           outputGold = RANLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -839,7 +839,7 @@ class RANLayerStructureSpec : Spek({
           outputGold = RANLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {

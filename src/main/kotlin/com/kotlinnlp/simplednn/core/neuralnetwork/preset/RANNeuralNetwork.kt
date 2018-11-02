@@ -25,11 +25,9 @@ object RANNeuralNetwork {
    * @param hiddenSize the size of the hidden layers
    * @param hiddenActivation the activation function of the hidden layers
    * @param hiddenDropout the dropout probability of the hidden layers (default 0.0).
-   * @param hiddenMeProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
    * @param numOfHidden the number of hidden layers (must be >= 0, default 1)
    * @param outputSize the size of the output layer
    * @param outputActivation the activation function of the output layer
-   * @param outputMeProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
    * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
    * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
    */
@@ -39,11 +37,9 @@ object RANNeuralNetwork {
                       hiddenSize: Int,
                       hiddenActivation: ActivationFunction?,
                       hiddenDropout: Double = 0.0,
-                      hiddenMeProp: Boolean = false,
                       numOfHidden: Int = 1,
                       outputSize: Int,
                       outputActivation: ActivationFunction?,
-                      outputMeProp: Boolean = false,
                       weightsInitializer: Initializer? = GlorotInitializer(),
                       biasesInitializer: Initializer? = GlorotInitializer()): NeuralNetwork =
     GenericNeuralNetwork(
@@ -53,12 +49,10 @@ object RANNeuralNetwork {
       hiddenSize = hiddenSize,
       hiddenActivation = hiddenActivation,
       hiddenDropout = hiddenDropout,
-      hiddenMeProp = hiddenMeProp,
       hiddenConnection = LayerType.Connection.RAN,
       numOfHidden = numOfHidden,
       outputSize = outputSize,
       outputActivation = outputActivation,
-      outputMeProp = outputMeProp,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer
     )

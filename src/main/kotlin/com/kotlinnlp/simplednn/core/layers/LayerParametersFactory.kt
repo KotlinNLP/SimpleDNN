@@ -38,7 +38,6 @@ object LayerParametersFactory {
    * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
    * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
    * @param sparseInput whether the weights connected to the input are sparse or not
-   * @param meProp whether to use the 'meProp' errors propagation algorithm (params are sparse)
    *
    * @return new layer parameters
    */
@@ -47,31 +46,28 @@ object LayerParametersFactory {
                       connectionType: LayerType.Connection,
                       weightsInitializer: Initializer?,
                       biasesInitializer: Initializer?,
-                      sparseInput: Boolean = false,
-                      meProp: Boolean = false): LayerParameters<*> = when (connectionType) {
+                      sparseInput: Boolean = false): LayerParameters<*> = when (connectionType) {
 
     LayerType.Connection.Feedforward -> FeedforwardLayerParameters(
       inputSize = inputsSize.first(),
       outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer,
-      meProp = meProp)
+      biasesInitializer = biasesInitializer)
 
     LayerType.Connection.Highway -> HighwayLayerParameters(
       inputSize = inputsSize.first(),
       outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer,
-      meProp = meProp)
+      biasesInitializer = biasesInitializer)
 
     LayerType.Connection.Affine -> AffineLayerParameters(
       inputsSize = inputsSize,
       outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
+      biasesInitializer = biasesInitializer)
 
     LayerType.Connection.Biaffine -> BiaffineLayerParameters(
       inputSize1 = inputsSize[0],
@@ -79,7 +75,7 @@ object LayerParametersFactory {
       outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
+      biasesInitializer = biasesInitializer)
 
     LayerType.Connection.Concat -> ConcatLayerParameters(inputsSize = inputsSize)
 
@@ -94,49 +90,48 @@ object LayerParametersFactory {
       outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
+      biasesInitializer = biasesInitializer)
 
     LayerType.Connection.GRU -> GRULayerParameters(
       inputSize = inputsSize.first(),
       outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
+      biasesInitializer = biasesInitializer)
 
     LayerType.Connection.LSTM -> LSTMLayerParameters(
       inputSize = inputsSize.first(),
       outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
+      biasesInitializer = biasesInitializer)
 
     LayerType.Connection.CFN -> CFNLayerParameters(
       inputSize = inputsSize.first(),
       outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
+      biasesInitializer = biasesInitializer)
 
     LayerType.Connection.RAN -> RANLayerParameters(
       inputSize = inputsSize.first(),
       outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer,
-      meProp = meProp)
+      biasesInitializer = biasesInitializer)
 
     LayerType.Connection.DeltaRNN -> DeltaRNNLayerParameters(
       inputSize = inputsSize.first(),
       outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
+      biasesInitializer = biasesInitializer)
 
     LayerType.Connection.IndRNN -> IndRNNLayerParameters(
       inputSize = inputsSize.first(),
       outputSize = outputSize!!,
       sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer) // TODO: set 'meProp' param
+      biasesInitializer = biasesInitializer)
   }
 }

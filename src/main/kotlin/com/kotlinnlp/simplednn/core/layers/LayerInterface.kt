@@ -19,14 +19,12 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
  * @property activationFunction the activation function (meaningless if this is an input interface)
  * @property dropout the probability of dropout (meaningless in case of input interface). If applying it, the usual
  *                   value is 0.5 (better 0.25 if it's the first layer).
- * @property meProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
  */
 data class LayerInterface(
   val sizes: List<Int>,
   val type: LayerType.Input = LayerType.Input.Dense,
   val connectionType: LayerType.Connection? = null,
   val activationFunction: ActivationFunction? = null,
-  val meProp: Boolean = false,
   val dropout: Double = 0.0
 ) : Serializable {
 
@@ -48,21 +46,18 @@ data class LayerInterface(
    * @param activationFunction the activation function (meaningless if this is an input interface)
    * @param dropout the probability of dropout (meaningless in case of input interface). If applying it, the usual
    *                value is 0.5 (better 0.25 if it's the first layer).
-   * @param meProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
    */
   constructor(
     size: Int,
     type: LayerType.Input = LayerType.Input.Dense,
     connectionType: LayerType.Connection? = null,
     activationFunction: ActivationFunction? = null,
-    meProp: Boolean = false,
     dropout: Double = 0.0
   ): this(
     sizes = listOf(size),
     type = type,
     connectionType = connectionType,
     activationFunction = activationFunction,
-    meProp = meProp,
     dropout = dropout
   )
 

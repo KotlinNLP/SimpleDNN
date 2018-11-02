@@ -19,11 +19,9 @@ object HighwayNeuralNetwork {
    * @param hiddenSize the size of the hidden layers
    * @param hiddenActivation the activation function of the hidden layers
    * @param hiddenDropout the dropout probability of the hidden layers (default 0.0).
-   * @param hiddenMeProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
    * @param numOfHighway the number of hidden highway layers (at least 1, the default)
    * @param outputSize the size of the output layer
    * @param outputActivation the activation function of the output layer
-   * @param outputMeProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
    * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
    * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
    */
@@ -33,11 +31,9 @@ object HighwayNeuralNetwork {
                       hiddenSize: Int,
                       hiddenActivation: ActivationFunction?,
                       hiddenDropout: Double = 0.0,
-                      hiddenMeProp: Boolean = false,
                       numOfHighway: Int = 1,
                       outputSize: Int,
                       outputActivation: ActivationFunction?,
-                      outputMeProp: Boolean = false,
                       weightsInitializer: Initializer? = GlorotInitializer(),
                       biasesInitializer: Initializer? = GlorotInitializer()): NeuralNetwork {
 
@@ -55,8 +51,7 @@ object HighwayNeuralNetwork {
       size = hiddenSize,
       activationFunction = hiddenActivation,
       connectionType = LayerType.Connection.Feedforward,
-      dropout = hiddenDropout,
-      meProp = hiddenMeProp
+      dropout = hiddenDropout
     ))
 
     layersConfiguration.addAll((0 until numOfHighway).map {
@@ -64,16 +59,14 @@ object HighwayNeuralNetwork {
         size = hiddenSize,
         activationFunction = hiddenActivation,
         connectionType = LayerType.Connection.Highway,
-        dropout = hiddenDropout,
-        meProp = hiddenMeProp
+        dropout = hiddenDropout
       )
     })
 
     layersConfiguration.add(LayerInterface(
       size = outputSize,
       activationFunction = outputActivation,
-      connectionType = LayerType.Connection.Feedforward,
-      meProp = outputMeProp
+      connectionType = LayerType.Connection.Feedforward
     ))
 
     return NeuralNetwork(

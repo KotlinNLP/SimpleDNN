@@ -29,7 +29,6 @@ import java.io.Serializable
  * @property hiddenActivation the activation function of the hidden layer
  * @property hiddenDropout the probability of dropout of the hidden layer (default 0.0).
  *                         If applying it, the usual value is 0.5.
- * @property hiddenMeProp whether to use the 'meProp' errors propagation algorithm for the hidden layer (default false)
  * @property outputConfigurations a list of configurations of the output networks
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
@@ -41,7 +40,6 @@ class MultiTaskNetworkModel(
   val hiddenSize: Int,
   val hiddenActivation: ActivationFunction?,
   val hiddenDropout: Double = 0.0,
-  val hiddenMeProp: Boolean = false,
   val outputConfigurations: List<MultiTaskNetworkConfig>,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
@@ -76,8 +74,7 @@ class MultiTaskNetworkModel(
     LayerInterface(
       size = this.hiddenSize,
       connectionType = LayerType.Connection.Feedforward,
-      activationFunction = this.hiddenActivation,
-      meProp = this.hiddenMeProp),
+      activationFunction = this.hiddenActivation),
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer
   )
@@ -94,8 +91,7 @@ class MultiTaskNetworkModel(
       LayerInterface(
         size = it.outputSize,
         connectionType = LayerType.Connection.Feedforward,
-        activationFunction = it.outputActivation,
-        meProp = it.outputMeProp),
+        activationFunction = it.outputActivation),
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer
     )

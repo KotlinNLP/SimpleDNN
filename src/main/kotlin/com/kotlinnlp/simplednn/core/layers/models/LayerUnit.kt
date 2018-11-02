@@ -52,43 +52,28 @@ open class LayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : 
    *
    * @param paramsErrors the parameters associated to this unit
    * @param x the input of the unit
-   * @param mePropMask the mask of the top k output nodes, in order to execute the 'meProp' algorithm
    */
-  fun assignParamsGradients(paramsErrors: ParametersUnit, x: InputNDArrayType, mePropMask: NDArrayMask? = null) {
+  fun assignParamsGradients(paramsErrors: ParametersUnit, x: InputNDArrayType) {
 
     val gw: NDArray<*> = paramsErrors.weights.values
     val gb: NDArray<*> = paramsErrors.biases.values
 
-    if (mePropMask != null) {
-      require(x is DenseNDArray) { "Cannot apply 'meProp' method if input is not dense" }
-      require(gw is SparseNDArray && gb is SparseNDArray) {
-        "Cannot apply 'meProp' method with errors not sparse. Ensure to enable 'meProp' into the params."
-      }
-
-      x as DenseNDArray; gw as SparseNDArray; gb as SparseNDArray
-
-      gb.assignValues(this.errors, mask = mePropMask)
-      gw.assignDot(this.errors.maskBy(mePropMask), x.t)
-
-    } else {
-      gb.assignValues(this.errors)
-      gw.assignDot(this.errors, x.t)
-    }
+    gb.assignValues(this.errors)
+    gw.assignDot(this.errors, x.t)
   }
 
   /**
    * Get the errors of the input of the unit. The errors of the output must be already set.
    *
    * @param parameters the parameters associated to this unit
-   * @param mePropMask the mask of the top k output nodes, in order to execute the 'meProp' algorithm
    *
    * @return the errors of the input of this unit
    */
-  fun getInputErrors(parameters: ParametersUnit, mePropMask: NDArrayMask? = null): DenseNDArray {
+  fun getInputErrors(parameters: ParametersUnit): DenseNDArray {
 
     val w: DenseNDArray = parameters.weights.values as DenseNDArray
 
-    return if (mePropMask != null) this.errors.maskBy(mePropMask).t.dot(w) else this.errors.t.dot(w)
+    return this.errors.t.dot(w)
   }
 
   /**

@@ -27,20 +27,15 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
-   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
-   *                the top errors (ignored if null, the default)
    */
-  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean, mePropK: Double?) {
+  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
     this.layer.applyOutputActivationDeriv()
 
-    // Be careful: the mask must be get after applying the output activation derivative.
-    val outputMask: NDArrayMask? = if (mePropK != null) this.layer.outputArray.getMePropMask(mePropK) else null
-
-    this.assignParamsGradients(paramsErrors as FeedforwardLayerParameters, mePropMask = outputMask)
+    this.assignParamsGradients(paramsErrors as FeedforwardLayerParameters)
 
     if (propagateToInput) {
-      this.assignLayerGradients(mePropMask = outputMask)
+      this.assignLayerGradients()
     }
   }
 
@@ -49,27 +44,23 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * gw = gy (dot) x
    *
    * @param paramsErrors the errors of the parameters which will be filled
-   * @param mePropMask the mask of the k output nodes with the top errors
    */
-  private fun assignParamsGradients(paramsErrors: FeedforwardLayerParameters, mePropMask: NDArrayMask?) {
+  private fun assignParamsGradients(paramsErrors: FeedforwardLayerParameters) {
 
     this.layer.outputArray.assignParamsGradients(
       paramsErrors = paramsErrors.unit,
-      x = this.layer.inputArray.values,
-      mePropMask = mePropMask)
+      x = this.layer.inputArray.values)
   }
 
   /**
    * gx = gy (dot) w
-   *
-   * @param mePropMask the mask of the k output nodes with the top errors
    */
-  private fun assignLayerGradients(mePropMask: NDArrayMask?) {
+  private fun assignLayerGradients() {
 
     this.layer.params as FeedforwardLayerParameters
 
     this.layer.inputArray.assignErrors(
-      errors = this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit, mePropMask = mePropMask)
+      errors = this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit)
     )
   }
 }

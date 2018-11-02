@@ -26,11 +26,9 @@ object GenericNeuralNetwork {
    * @param hiddenActivation the activation function of the hidden layers
    * @param hiddenConnection the type of connection of the hidden layers
    * @param hiddenDropout the dropout probability of the hidden layers
-   * @param hiddenMeProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
    * @param numOfHidden the number of hidden layers (must be >= 0)
    * @param outputSize the size of the output layer
    * @param outputActivation the activation function of the output layer
-   * @param outputMeProp whether to use the 'meProp' errors propagation algorithm (params errors are sparse)
    * @param weightsInitializer the initializer of the weights (zeros if null)
    * @param biasesInitializer the initializer of the biases (zeros if null)
    */
@@ -41,11 +39,9 @@ object GenericNeuralNetwork {
                       hiddenActivation: ActivationFunction?,
                       hiddenConnection: LayerType.Connection,
                       hiddenDropout: Double,
-                      hiddenMeProp: Boolean,
                       numOfHidden: Int,
                       outputSize: Int,
                       outputActivation: ActivationFunction?,
-                      outputMeProp: Boolean,
                       weightsInitializer: Initializer?,
                       biasesInitializer: Initializer?): NeuralNetwork {
 
@@ -64,16 +60,14 @@ object GenericNeuralNetwork {
         size = hiddenSize,
         activationFunction = hiddenActivation,
         connectionType = hiddenConnection,
-        dropout = hiddenDropout,
-        meProp = hiddenMeProp
+        dropout = hiddenDropout
       ))
     }
 
     layersConfiguration.add(LayerInterface(
       size = outputSize,
       activationFunction = outputActivation,
-      connectionType = LayerType.Connection.Feedforward,
-      meProp = outputMeProp
+      connectionType = LayerType.Connection.Feedforward
     ))
 
     return NeuralNetwork(

@@ -49,12 +49,10 @@ object GRUNeuralNetwork {
       hiddenSize = hiddenSize,
       hiddenActivation = hiddenActivation,
       hiddenDropout = hiddenDropout,
-      hiddenMeProp = false,
       hiddenConnection = LayerType.Connection.GRU,
       numOfHidden = numOfHidden,
       outputSize = outputSize,
       outputActivation = outputActivation,
-      outputMeProp = false,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer
     )

@@ -28,23 +28,18 @@ class HighwayBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
-   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
-   *                the top errors (ignored if null, the default)
    */
-  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean, mePropK: Double?) {
+  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
     // TODO: extend for all input types
     require(this.layer.inputArray.values is DenseNDArray) { "Highway layer supports only dense input." }
 
-    // Be careful: the mask must be get after applying the output activation derivative.
-    val outputMask: NDArrayMask? = if (mePropK != null) this.layer.outputArray.getMePropMask(mePropK) else null
-
     this.assignGatesGradients()
 
-    this.assignParamsGradients(paramsErrors as HighwayLayerParameters, mePropMask = outputMask)
+    this.assignParamsGradients(paramsErrors as HighwayLayerParameters)
 
     if (propagateToInput) {
-      this.assignLayerGradients(mePropMask = outputMask)
+      this.assignLayerGradients()
     }
   }
 
@@ -76,32 +71,25 @@ class HighwayBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *   gw = gy (dot) x
    *
    * @param paramsErrors the errors of the parameters which will be filled
-   * @param mePropMask the mask of the k output nodes with the top errors
    */
-  private fun assignParamsGradients(paramsErrors: HighwayLayerParameters, mePropMask: NDArrayMask?) {
+  private fun assignParamsGradients(paramsErrors: HighwayLayerParameters) {
 
     this.layer.inputUnit.assignParamsGradients(
       paramsErrors = paramsErrors.input,
-      x = this.layer.inputArray.values,
-      mePropMask = mePropMask)
+      x = this.layer.inputArray.values)
 
     this.layer.transformGate.assignParamsGradients(
       paramsErrors = paramsErrors.transformGate,
-      x = this.layer.inputArray.values,
-      mePropMask = mePropMask)
+      x = this.layer.inputArray.values)
   }
 
   /**
    * gx = (1 - T) * gy + gIn
-   *
-   * @param mePropMask the mask of the k output nodes with the top errors
    */
-  private fun assignLayerGradients(mePropMask: NDArrayMask?) { this.layer.params as HighwayLayerParameters
+  private fun assignLayerGradients() { this.layer.params as HighwayLayerParameters
 
     val tGate: DenseNDArray = this.layer.transformGate.values
-    val gxIn: DenseNDArray = this.layer.inputUnit.getInputErrors(
-      parameters = this.layer.params.input,
-      mePropMask = mePropMask)
+    val gxIn: DenseNDArray = this.layer.inputUnit.getInputErrors(this.layer.params.input)
     val gy: DenseNDArray = this.layer.outputArray.errors
 
     this.layer.inputArray.assignErrors(tGate.reverseSub(1.0).assignProd(gy).assignSum(gxIn))

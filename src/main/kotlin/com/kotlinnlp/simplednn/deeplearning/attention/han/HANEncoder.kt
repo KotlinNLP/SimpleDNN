@@ -309,8 +309,7 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
     this.usedAttentionNetworksPerLevel[levelIndex][groupIndex].backward(
       outputErrors = outputErrors,
       paramsErrors = paramsErrors,
-      propagateToInput = true,
-      mePropK = this.mePropK)
+      propagateToInput = true)
 
     accumulator.accumulate(paramsErrors)
   }

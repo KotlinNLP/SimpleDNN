@@ -175,17 +175,10 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param outputErrors the errors to propagate from the output
    * @param paramsErrors the structure in which to save the errors of the parameters
    * @param propagateToInput whether to propagate the errors to the input
-   * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
-   *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
    */
   fun backward(outputErrors: DenseNDArray,
                paramsErrors: NetworkParameters,
-               propagateToInput: Boolean = false,
-               mePropK: List<Double?>?) {
-
-    require(mePropK == null || mePropK.size == this.layers.size) {
-      "Invalid size of the list of mePropK factors: needed one factor per layer."
-    }
+               propagateToInput: Boolean = false) {
 
     this.outputLayer.setErrors(outputErrors)
 
@@ -193,8 +186,7 @@ abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
       this.curLayerIndex = i
       layer.backward(
         paramsErrors = paramsErrors.paramsPerLayer[i],
-        propagateToInput = (i > 0 || propagateToInput),
-        mePropK = mePropK?.get(i))
+        propagateToInput = (i > 0 || propagateToInput))
     }
   }
 

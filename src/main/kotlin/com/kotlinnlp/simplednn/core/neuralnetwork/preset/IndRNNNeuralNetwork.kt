@@ -42,12 +42,10 @@ object IndRNNNeuralNetwork {
       hiddenSize = hiddenSize,
       hiddenActivation = hiddenActivation,
       hiddenDropout = hiddenDropout,
-      hiddenMeProp = false,
       hiddenConnection = LayerType.Connection.IndRNN,
       numOfHidden = numOfHidden,
       outputSize = outputSize,
       outputActivation = outputActivation,
-      outputMeProp = false,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer
     )

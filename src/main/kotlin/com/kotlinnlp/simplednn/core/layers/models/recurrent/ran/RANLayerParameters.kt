@@ -29,8 +29,7 @@ class RANLayerParameters(
   outputSize: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
-  private val sparseInput: Boolean = false,
-  private val meProp: Boolean = false
+  private val sparseInput: Boolean = false
 ) : LayerParameters<RANLayerParameters>(
   inputSize = inputSize,
   outputSize = outputSize,
@@ -52,8 +51,7 @@ class RANLayerParameters(
   val inputGate = RecurrentParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
-    sparseInput = this.sparseInput,
-    meProp = this.meProp)
+    sparseInput = this.sparseInput)
 
   /**
    *
@@ -61,8 +59,7 @@ class RANLayerParameters(
   val forgetGate = RecurrentParametersUnit(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
-    sparseInput = this.sparseInput,
-    meProp = this.meProp)
+    sparseInput = this.sparseInput)
 
   /**
    *
@@ -70,8 +67,7 @@ class RANLayerParameters(
   val candidate = ParametersUnit(
     inputSize = inputSize,
     outputSize = outputSize,
-    sparseInput = this.sparseInput,
-    meProp = this.meProp)
+    sparseInput = this.sparseInput)
 
   /**
    * The list of all parameters.

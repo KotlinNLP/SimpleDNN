@@ -28,12 +28,8 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
    *
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
-   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
-   *                the top errors (ignored if null)
    */
-  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean, mePropK: Double?) {
-
-    // TODO: implement 'meProp' algorithm
+  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
     val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer()
     val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer()

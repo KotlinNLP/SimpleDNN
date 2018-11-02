@@ -11,7 +11,6 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -24,57 +23,31 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
-   * The masks used to execute the 'meProp' propagation algorithm.
-   *
-   * @param input the mask of the k nodes of the input gate with the top errors
-   * @param forget the mask of the k nodes of the forget gate with the top errors
-   * @param candidate the mask of the k nodes of the candidate with the top errors
-   */
-  private data class MePropMasks(val input: NDArrayMask, val forget: NDArrayMask, val candidate: NDArrayMask)
-
-  /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
    * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
-   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
-   *                the top errors (ignored if null)
    */
-  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean, mePropK: Double?) {
+  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
     val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer() as? RANLayerStructure
     val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer() as? RANLayerStructure
 
     this.layer.applyOutputActivationDeriv() // must be applied BEFORE having added the recurrent contribution
 
-    this.addOutputRecurrentGradients(nextStateLayer = nextStateLayer, mePropK = mePropK)
+    this.addOutputRecurrentGradients(nextStateLayer = nextStateLayer)
 
     this.assignGatesGradients(prevStateLayer)
 
-    // Be careful: the masks must be get after assigning gates gradients.
-    val mePropMasks: MePropMasks? = if (mePropK != null) this.getGateMasks(mePropK) else null
-
     this.assignParamsGradients(
       paramsErrors = paramsErrors as RANLayerParameters,
-      prevStateOutput = prevStateLayer?.outputArray,
-      mePropMasks = mePropMasks)
+      prevStateOutput = prevStateLayer?.outputArray)
 
     if (propagateToInput) {
-      this.assignLayerGradients(mePropMasks)
+      this.assignLayerGradients()
     }
   }
-
-  /**
-   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
-   *                the top errors
-   *
-   * @return the gate masks used to execute the 'meProp' propagation algorithm
-   */
-  private fun getGateMasks(mePropK: Double) = MePropMasks(
-    input = this.layer.inputGate.getMePropMask(mePropK),
-    forget = this.layer.forgetGate.getMePropMask(mePropK),
-    candidate = this.layer.candidate.getMePropMask(mePropK))
 
   /**
    * @param prevStateLayer the layer in the previous state
@@ -109,51 +82,39 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * @param paramsErrors the errors of the parameters which will be filled
    * @param prevStateOutput the outputArray in the previous state
-   * @param mePropMasks the gate masks used to execute the 'meProp' propagation algorithm
    */
   private fun assignParamsGradients(paramsErrors: RANLayerParameters,
-                                    prevStateOutput: AugmentedArray<DenseNDArray>?,
-                                    mePropMasks: MePropMasks?) {
+                                    prevStateOutput: AugmentedArray<DenseNDArray>?) {
 
     val x: InputNDArrayType = this.layer.inputArray.values
     val yPrev: DenseNDArray? = prevStateOutput?.valuesNotActivated
 
-    this.layer.inputGate.assignParamsGradients(
-      paramsErrors = paramsErrors.inputGate, x = x, yPrev = yPrev, mePropMask = mePropMasks?.input)
-
-    this.layer.forgetGate.assignParamsGradients(
-      paramsErrors = paramsErrors.forgetGate, x = x, yPrev = yPrev, mePropMask = mePropMasks?.forget)
-
-    this.layer.candidate.assignParamsGradients(
-      paramsErrors = paramsErrors.candidate, x = x, mePropMask = mePropMasks?.candidate)
+    this.layer.inputGate.assignParamsGradients(paramsErrors.inputGate, x = x, yPrev = yPrev)
+    this.layer.forgetGate.assignParamsGradients(paramsErrors.forgetGate, x = x, yPrev = yPrev)
+    this.layer.candidate.assignParamsGradients(paramsErrors.candidate, x = x)
   }
 
   /**
-   * @param mePropMasks the gate masks used to execute the 'meProp' propagation algorithm
+   *
    */
-  private fun assignLayerGradients(mePropMasks: MePropMasks?) {
+  private fun assignLayerGradients() {
 
     this.layer.params as RANLayerParameters
 
     this.layer.inputArray
-      .assignErrors(this.layer.inputGate.getInputErrors(
-        parameters = this.layer.params.inputGate, mePropMask = mePropMasks?.input))
-      .assignSum(this.layer.forgetGate.getInputErrors(
-        parameters = this.layer.params.forgetGate, mePropMask = mePropMasks?.forget))
-      .assignSum(this.layer.candidate.getInputErrors(
-        parameters = this.layer.params.candidate, mePropMask = mePropMasks?.candidate))
+      .assignErrors(this.layer.inputGate.getInputErrors(this.layer.params.inputGate))
+      .assignSum(this.layer.forgetGate.getInputErrors(this.layer.params.forgetGate))
+      .assignSum(this.layer.candidate.getInputErrors(this.layer.params.candidate))
   }
 
   /**
    * @param nextStateLayer the layer structure in the next state
-   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
-   *                the top errors (ignored if null)
    */
-  private fun addOutputRecurrentGradients(nextStateLayer: RANLayerStructure<*>?, mePropK: Double?) {
+  private fun addOutputRecurrentGradients(nextStateLayer: RANLayerStructure<*>?) {
 
     if (nextStateLayer != null) {
       val gy: DenseNDArray = this.layer.outputArray.errors
-      val gyRec: DenseNDArray = this.getLayerRecurrentContribution(nextStateLayer = nextStateLayer, mePropK = mePropK)
+      val gyRec: DenseNDArray = this.getLayerRecurrentContribution(nextStateLayer = nextStateLayer)
 
       gy.assignSum(gyRec)
     }
@@ -161,10 +122,8 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
   /**
    * @param nextStateLayer the layer structure in the next state
-   * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
-   *                the top errors (ignored if null)
    */
-  private fun getLayerRecurrentContribution(nextStateLayer: RANLayerStructure<*>, mePropK: Double?): DenseNDArray {
+  private fun getLayerRecurrentContribution(nextStateLayer: RANLayerStructure<*>): DenseNDArray {
 
     this.layer.params as RANLayerParameters
 
@@ -172,14 +131,8 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val forG: DenseNDArray = nextStateLayer.forgetGate.values
 
     val gRec1: DenseNDArray = forG.assignProd(gyNext)
-
-    val gRec2: DenseNDArray = nextStateLayer.inputGate.getRecurrentErrors(
-      parameters = this.layer.params.inputGate,
-      mePropMask = if (mePropK != null) nextStateLayer.inputGate.getMePropMask(mePropK) else null)
-
-    val gRec3: DenseNDArray = nextStateLayer.forgetGate.getRecurrentErrors(
-      parameters = this.layer.params.forgetGate,
-      mePropMask = if (mePropK != null) nextStateLayer.forgetGate.getMePropMask(mePropK) else null)
+    val gRec2: DenseNDArray = nextStateLayer.inputGate.getRecurrentErrors(this.layer.params.inputGate)
+    val gRec3: DenseNDArray = nextStateLayer.forgetGate.getRecurrentErrors(this.layer.params.forgetGate)
 
     return gRec1.assignSum(gRec2).assignSum(gRec3)
   }

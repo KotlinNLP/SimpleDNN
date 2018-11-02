@@ -196,7 +196,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         val outputGold = SimpleRecurrentLayerStructureUtils.getOutputGold()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(
@@ -251,7 +251,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         val outputGold = SimpleRecurrentLayerStructureUtils.getOutputGold()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(
@@ -306,7 +306,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         val outputGold = SimpleRecurrentLayerStructureUtils.getOutputGold()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(
@@ -361,7 +361,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         val outputGold = SimpleRecurrentLayerStructureUtils.getOutputGold()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true, mePropK = null)
+        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(

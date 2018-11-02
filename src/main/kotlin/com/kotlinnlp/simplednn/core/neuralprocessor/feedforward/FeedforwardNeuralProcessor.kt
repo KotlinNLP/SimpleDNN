@@ -235,8 +235,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.structure.backward(
       outputErrors = outputErrors,
       paramsErrors = this.backwardParamsErrors,
-      propagateToInput = this.propagateToInput,
-      mePropK = this.mePropK)
+      propagateToInput = this.propagateToInput)
 
   /**
    * Backward errors saving the parameters errors into a given object.
@@ -248,6 +247,5 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.structure.backward(
       outputErrors = outputErrors,
       paramsErrors = paramsErrors,
-      propagateToInput = this.propagateToInput,
-      mePropK = this.mePropK)
+      propagateToInput = this.propagateToInput)
 }

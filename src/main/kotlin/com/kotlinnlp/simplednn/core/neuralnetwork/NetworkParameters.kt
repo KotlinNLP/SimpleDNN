@@ -61,8 +61,7 @@ class NetworkParameters(
         connectionType = this.layersConfiguration[i + 1].connectionType!!,
         weightsInitializer = weightsInitializer,
         biasesInitializer = biasesInitializer,
-        sparseInput = !this.forceDense && this.layersConfiguration[i].type == LayerType.Input.SparseBinary,
-        meProp = !this.forceDense && this.layersConfiguration[i + 1].meProp)
+        sparseInput = !this.forceDense && this.layersConfiguration[i].type == LayerType.Input.SparseBinary)
     }
   )
 

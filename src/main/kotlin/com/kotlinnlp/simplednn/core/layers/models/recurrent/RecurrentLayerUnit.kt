@@ -12,9 +12,7 @@ import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceUtils
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 
 /**
  * The basic unit of the recurrent layer, which extends the [LayerUnit] with the recurrent contribution.
@@ -50,36 +48,19 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    * @param paramsErrors the parameters errors associated to this unit
    * @param x the input of the unit
    * @param yPrev the output array as contribution from the previous state
-   * @param mePropMask the mask of the top k output nodes, in order to execute the 'meProp' algorithm
    */
   fun assignParamsGradients(paramsErrors: RecurrentParametersUnit,
                             x: InputNDArrayType,
-                            yPrev: DenseNDArray? = null,
-                            mePropMask: NDArrayMask? = null) {
+                            yPrev: DenseNDArray? = null) {
 
-    super.assignParamsGradients(paramsErrors = paramsErrors, x = x, mePropMask = mePropMask)
+    super.assignParamsGradients(paramsErrors = paramsErrors, x = x)
 
     val gwRec: NDArray<*> = paramsErrors.recurrentWeights.values
 
-    if (yPrev != null) {
-
-      if (mePropMask != null) {
-        require(x is DenseNDArray) { "Cannot apply 'meProp' method if input is not dense" }
-        require(gwRec is SparseNDArray) {
-          "Cannot apply 'meProp' method with errors not sparse. Ensure to enable 'meProp' into the params."
-        }
-
-        x as DenseNDArray; gwRec as SparseNDArray
-
-        gwRec.assignDot(this.errors.maskBy(mePropMask), yPrev.t)
-
-      } else {
-        gwRec.assignDot(this.errors, yPrev.t)
-      }
-
-    } else {
+    if (yPrev != null)
+      gwRec.assignDot(this.errors, yPrev.t)
+    else
       gwRec.zeros()
-    }
   }
 
   /**
@@ -87,18 +68,14 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    * already set.
    *
    * @param parameters the parameters associated to this unit
-   * @param mePropMask the mask of the top k output nodes, in order to execute the 'meProp' algorithm
    *
    * @return the errors of the recursion of this unit
    */
-  fun getRecurrentErrors(parameters: RecurrentParametersUnit, mePropMask: NDArrayMask? = null): DenseNDArray {
+  fun getRecurrentErrors(parameters: RecurrentParametersUnit): DenseNDArray {
 
     val wRec: DenseNDArray = parameters.recurrentWeights.values as DenseNDArray
 
-    return if (mePropMask != null)
-      this.errors.t.dot(wRec, mask = mePropMask)
-    else
-      this.errors.t.dot(wRec)
+    return this.errors.t.dot(wRec)
   }
 
   /**
