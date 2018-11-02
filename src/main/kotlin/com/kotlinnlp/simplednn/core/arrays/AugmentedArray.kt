@@ -80,20 +80,19 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    * @return the errors of this [AugmentedArray]
    */
   fun assignErrors(errors: DenseNDArray): DenseNDArray {
+
     require(errors.length == this.size) { "Errors must have the same size of the values" }
 
-    try {
+    if (::_errors.isInitialized) {
+
       this._errors.assignValues(errors)
 
-    } catch (e: UninitializedPropertyAccessException) {
-      require(errors.length == this.size)
+    } else {
 
-      if (this._values.columns == 1 && errors.rows == 1 || this._values.rows == 1 && errors.columns == 1) {
-        // Assignment between row and column vectors
-        this._errors = errors.t
-      } else {
-        this._errors = errors.copy()
-      }
+      this._errors = if (this._values.columns == 1 && errors.rows == 1 || this._values.rows == 1 && errors.columns == 1)
+        errors.t // Assignment between row and column vectors
+      else
+        errors.copy()
     }
 
     return this._errors
@@ -108,12 +107,10 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    */
   fun assignZeroErrors(): DenseNDArray {
 
-    try {
+    if (::_errors.isInitialized)
       this._errors.zeros()
-
-    } catch (e: UninitializedPropertyAccessException) {
+    else
       this._errors = DenseNDArrayFactory.zeros(Shape(this.size))
-    }
 
     return this._errors
   }
@@ -129,14 +126,13 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    * @return the errors of this [AugmentedArray]
    */
   fun assignErrorsByProd(a: DenseNDArray, b: DenseNDArray): DenseNDArray {
+
     require(a.length == this.size) { "Invalid arrays size" }
 
-    try {
+    if (::_errors.isInitialized)
       this._errors.assignProd(a, b)
-
-    } catch (e: UninitializedPropertyAccessException) {
+    else
       this._errors = a.prod(b)
-    }
 
     return this._errors
   }
@@ -152,14 +148,13 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    * @return the errors of this [AugmentedArray]
    */
   fun assignErrorsByProd(a: DenseNDArray, b: Double): DenseNDArray {
+
     require(a.length == this.size) { "Invalid arrays size" }
 
-    try {
+    if (::_errors.isInitialized)
       this._errors.assignProd(a, b)
-
-    } catch (e: UninitializedPropertyAccessException) {
+    else
       this._errors = a.prod(b)
-    }
 
     return this._errors
   }
@@ -176,12 +171,10 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    */
   fun assignErrorsByDot(a: DenseNDArray, b: NDArray<*>): DenseNDArray {
 
-    try {
+    if (::_errors.isInitialized)
       this._errors.assignDot(a, b)
-
-    } catch (e: UninitializedPropertyAccessException) {
+    else
       this._errors = a.dot(b)
-    }
 
     return this._errors
   }
@@ -198,12 +191,10 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    */
   fun assignErrorsByDotT(a: DenseNDArray, b: NDArray<*>): DenseNDArray {
 
-    try {
+    if (::_errors.isInitialized)
       this._errors.assignValues(a.dot(b))
-
-    } catch (e: UninitializedPropertyAccessException) {
+    else
       this._errors = a.dot(b).t
-    }
 
     return this._errors
   }
@@ -215,16 +206,13 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    *                  It must have the same size of the values of this [AugmentedArray].
    */
   fun assignRelevance(relevance: NDArray<*>) {
+
     require(relevance.length == this.size) { "Relevance must have the same size of the values" }
 
-    try {
+    if (::_relevance.isInitialized)
       this._relevance.assignValues(relevance)
-
-    } catch (e: UninitializedPropertyAccessException) {
-      require(relevance.length == this.size)
-
+    else
       this._relevance = relevance.copy()
-    }
   }
 
   /**
@@ -234,16 +222,13 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    *                  It must have the same size of the values of this [AugmentedArray].
    */
   fun assignRecurrentRelevance(relevance: NDArray<*>) {
+
     require(relevance.length == this.size) { "Relevance must have the same size of the values" }
 
-    try {
+    if (::_recurrentRelevance.isInitialized)
       this._recurrentRelevance.assignValues(relevance)
-
-    } catch (e: UninitializedPropertyAccessException) {
-      require(relevance.length == this.size)
-
+    else
       this._recurrentRelevance = relevance.copy()
-    }
   }
 
   /**
@@ -256,9 +241,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
 
     super.assignValues(values)
 
-    try {
-      this._errors.zeros()
-    } catch (e: RuntimeException) {}
+    if (::_errors.isInitialized) this._errors.zeros()
   }
 
   /**
@@ -283,17 +266,9 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
       clonedArray.setActivation(this.activationFunction!!)
     }
 
-    try {
-      clonedArray.assignErrors(this._errors)
-    } catch (e: UninitializedPropertyAccessException) {}
-
-    try {
-      clonedArray.assignRelevance(this._relevance)
-    } catch (e: UninitializedPropertyAccessException) {}
-
-    try {
-      clonedArray.assignRecurrentRelevance(this._recurrentRelevance)
-    } catch (e: UninitializedPropertyAccessException) {}
+    if (::_errors.isInitialized) clonedArray.assignErrors(this._errors)
+    if (::_relevance.isInitialized) clonedArray.assignRelevance(this._relevance)
+    if (::_recurrentRelevance.isInitialized) clonedArray.assignRecurrentRelevance(this._recurrentRelevance)
 
     return clonedArray
   }

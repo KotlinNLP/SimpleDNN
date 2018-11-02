@@ -51,11 +51,7 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
   /**
    * An [NDArray] containing the values not activated of this [ActivableArray] (respect on the last call of activate())
    */
-  val valuesNotActivated: NDArrayType get() =
-    if (this._valuesNotActivated != null)
-      this._valuesNotActivated!!
-    else
-      this._values
+  val valuesNotActivated: NDArrayType get() = this._valuesNotActivated ?: this._values
 
   /**
    * The function used to activate this [ActivableArray] (e.g. Tanh, Sigmoid, ReLU, ELU)
@@ -78,14 +74,12 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
    */
   open fun assignValues(values: NDArrayType) {
 
-    try {
+    require(values.length == this.size)
+
+    if (::_values.isInitialized)
       this._values.assignValues(values)
-
-    } catch (e: UninitializedPropertyAccessException) {
-      require(values.length == this.size)
-
+    else
       this._values = values.copy()
-    }
   }
 
   /**
@@ -117,9 +111,7 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
    * Activate the array without modifying it, but only returning the values
    * @return the activated values
    */
-  fun getActivatedValues(): DenseNDArray {
-    return this.activationFunction!!.f(this.valuesNotActivated as DenseNDArray)
-  }
+  fun getActivatedValues(): DenseNDArray = this.activationFunction!!.f(this.valuesNotActivated as DenseNDArray)
 
   /**
    *
@@ -127,9 +119,7 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
    *         optimized function because all the common functions used as activation contain
    *         the activated values themselves in their derivative)
    */
-  fun calculateActivationDeriv(): DenseNDArray {
-    return this.activationFunction!!.dfOptimized(this._values as DenseNDArray)
-  }
+  fun calculateActivationDeriv(): DenseNDArray = this.activationFunction!!.dfOptimized(this._values as DenseNDArray)
 
   /**
    *
@@ -139,9 +129,7 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
 
     val clonedArray = ActivableArray<NDArrayType>(size = this.size)
 
-    try {
-      clonedArray.assignValues(this._values)
-    } catch (e: UninitializedPropertyAccessException) {}
+    if (::_values.isInitialized) clonedArray.assignValues(this._values)
 
     if (this.hasActivation) {
 
