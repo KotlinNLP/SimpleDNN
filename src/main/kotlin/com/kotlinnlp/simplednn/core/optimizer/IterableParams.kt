@@ -15,7 +15,7 @@ import java.io.Serializable
  * A container of iterable parameters as [UpdatableArray]s, with some utilities methods to assign and copy them.
  */
 abstract class IterableParams<SelfType: IterableParams<SelfType>>
-  : Serializable, Iterable<com.kotlinnlp.simplednn.core.arrays.UpdatableArray<*>> {
+  : Serializable, Iterable<UpdatableArray<*>> {
 
   companion object {
 
@@ -39,16 +39,12 @@ abstract class IterableParams<SelfType: IterableParams<SelfType>>
     /**
      * The hasNext() method of the Iterator.
      */
-    override fun hasNext(): Boolean {
-      return this.nextParamIndex < this@IterableParams.paramsList.size
-    }
+    override fun hasNext(): Boolean = this.nextParamIndex < this@IterableParams.paramsList.size
 
     /**
      * The next() method of the Iterator.
      */
-    override fun next(): UpdatableArray<*> {
-      return this@IterableParams.paramsList[this.nextParamIndex++]
-    }
+    override fun next(): UpdatableArray<*> = this@IterableParams.paramsList[this.nextParamIndex++]
   }
 
   /**
@@ -66,9 +62,7 @@ abstract class IterableParams<SelfType: IterableParams<SelfType>>
    *
    * @return the parameter at the given index
    */
-  operator fun get(i: Int): UpdatableArray<*> {
-    return this.paramsList[i]
-  }
+  operator fun get(i: Int): UpdatableArray<*> = this.paramsList[i]
 
   /**
    * The iterator to use to iterate over all the parameters of all the layers
@@ -97,6 +91,7 @@ abstract class IterableParams<SelfType: IterableParams<SelfType>>
   fun assignSum(x: SelfType) {
 
     this.zip(x).forEach {
+
       val first = it.first.values
       val second = it.second.values
 
