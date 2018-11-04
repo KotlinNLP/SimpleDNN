@@ -41,14 +41,12 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
   /**
    * The number of states.
    */
-  val length: Int
-    get() = this.states.size
+  val length: Int get() = this.states.size
 
   /**
    * The last index of the sequence.
    */
-  val lastIndex: Int
-    get() = this.states.size - 1
+  val lastIndex: Int get() = this.states.size - 1
 
   /**
    * Get the structure of the state at the given [stateIndex].

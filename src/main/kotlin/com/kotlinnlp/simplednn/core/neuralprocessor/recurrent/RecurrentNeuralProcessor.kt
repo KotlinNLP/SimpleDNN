@@ -66,8 +66,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The total amount of states processed in the current sequence.
    */
-  private val statesSize: Int
-    get() = this.lastStateIndex + 1
+  private val statesSize: Int get() = this.lastStateIndex + 1
 
   /**
    * The helper which calculates the importance scores of all the previous states of a given one, in a RAN neural
