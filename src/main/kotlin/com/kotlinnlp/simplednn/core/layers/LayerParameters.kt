@@ -62,7 +62,7 @@ abstract class LayerParameters<SelfType: LayerParameters<SelfType>>(
       this.weightsList.forEach { this.weightsInitializer.initialize(it.values as DenseNDArray) }
     }
 
-    if (this.biasesInitializer!= null) {
+    if (this.biasesInitializer != null) {
       require(this.biasesList.all { it is UpdatableDenseArray }) { "Cannot initialize biases not dense" }
       this.biasesList.forEach { this.biasesInitializer.initialize(it.values as DenseNDArray) }
     }
