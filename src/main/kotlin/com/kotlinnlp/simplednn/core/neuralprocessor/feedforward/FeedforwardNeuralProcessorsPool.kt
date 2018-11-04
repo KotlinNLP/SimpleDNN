@@ -19,8 +19,6 @@ import com.kotlinnlp.utils.ItemsPool
  * @param neuralNetwork the [NeuralNetwork] which the processors of the pool will work with
  * @param useDropout whether to apply the dropout during the forward
  * @param propagateToInput whether to propagate the errors to the input during the backward
- * @param mePropK a list of k factors (one per layer) of the 'meProp' algorithm to propagate from the k (in
- *                percentage) output nodes with the top errors of each layer (the list and each element can be null)
  */
 class FeedforwardNeuralProcessorsPool<InputNDArrayType : NDArray<InputNDArrayType>>(
   private val neuralNetwork: NeuralNetwork,
@@ -40,7 +38,6 @@ class FeedforwardNeuralProcessorsPool<InputNDArrayType : NDArray<InputNDArrayTyp
     neuralNetwork = this.neuralNetwork,
     useDropout = this.useDropout,
     propagateToInput = this.propagateToInput,
-    mePropK = this.mePropK,
     id = id
   )
 }

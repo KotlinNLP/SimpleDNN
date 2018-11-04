@@ -21,18 +21,12 @@ import com.kotlinnlp.utils.ItemsPool
  * @property model the model of this network
  * @property useDropout whether to apply the dropout during the forward
  * @property propagateToInput whether to propagate the errors to the input during the backward
- * @param inputMePropK the input layer k factor of the 'meProp' algorithm to propagate from the k (in percentage)
- *                     hidden nodes with the top errors (can be null)
- * @param outputMePropK a list of k factors (one for each output layer) of the 'meProp' algorithm to propagate from
- *                      the k (in percentage) output nodes with the top errors (the list and each element can be null)
  * @property id an identification number useful to track a specific [MultiTaskNetwork]
  */
 class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
   val model: MultiTaskNetworkModel,
   override val useDropout: Boolean,
   override val propagateToInput: Boolean,
-  private val inputMePropK: Double? = null,
-  private val outputMePropK: List<Double?>? = null,
   override val id: Int = 0
 ) : NeuralProcessor<
   InputNDArrayType, // InputType
@@ -58,8 +52,7 @@ class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
       FeedforwardNeuralProcessor<DenseNDArray>(
         neuralNetwork = network,
         useDropout = this.useDropout,
-        propagateToInput = true,
-        mePropK = listOf(this.outputMePropK?.get(i))) }
+        propagateToInput = true) }
 
   /**
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
