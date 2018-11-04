@@ -11,7 +11,7 @@ import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonBase
 import com.beust.klaxon.JsonObject
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.simplednn.dataset.SequenceExampleWithFinalOutput
+import utils.SequenceExampleWithFinalOutput
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import utils.exampleextractor.ExampleExtractor
 

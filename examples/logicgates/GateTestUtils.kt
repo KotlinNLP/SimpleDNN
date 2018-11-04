@@ -11,20 +11,22 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
-import com.kotlinnlp.simplednn.helpers.training.FeedforwardTrainingHelper
+import traininghelpers.training.FeedforwardTrainingHelper
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
+import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
-import com.kotlinnlp.simplednn.dataset.Shuffler
-import com.kotlinnlp.simplednn.dataset.SimpleExample
+
+import utils.SimpleExample
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.MulticlassEvaluation
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvaluationFunction
-import com.kotlinnlp.simplednn.helpers.validation.FeedforwardValidationHelper
+import traininghelpers.validation.FeedforwardValidationHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.utils.Shuffler
 
 object GateTestUtils {
 
@@ -90,9 +92,12 @@ object GateTestUtils {
     val trainingHelper = FeedforwardTrainingHelper(
       neuralProcessor = neuralProcessor,
       optimizer = optimizer,
-      lossCalculator = SoftmaxCrossEntropyCalculator())
+      lossCalculator = if (evaluationFunction is ClassificationEvaluation)
+        SoftmaxCrossEntropyCalculator()
+      else
+        MSECalculator())
 
-    val validationHelper =  FeedforwardValidationHelper(
+    val validationHelper = FeedforwardValidationHelper(
       neuralProcessor = neuralProcessor,
       outputEvaluationFunction = evaluationFunction)
 

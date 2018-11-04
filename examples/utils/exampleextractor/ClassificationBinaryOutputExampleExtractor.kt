@@ -9,7 +9,7 @@ package utils.exampleextractor
 
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonBase
-import com.kotlinnlp.simplednn.dataset.BinaryOutputExample
+import utils.BinaryOutputExample
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import utils.readDenseNDArray
 

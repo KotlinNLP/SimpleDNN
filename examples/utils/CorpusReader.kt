@@ -7,8 +7,6 @@
 
 package utils
 
-import com.kotlinnlp.simplednn.dataset.Corpus
-import com.kotlinnlp.simplednn.dataset.Example
 import utils.exampleextractor.ExampleExtractor
 import java.io.FileInputStream
 import CorpusPaths

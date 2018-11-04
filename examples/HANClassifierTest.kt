@@ -6,7 +6,6 @@
  * ------------------------------------------------------------------*/
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
-import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.layers.LayerType
@@ -15,10 +14,13 @@ import com.kotlinnlp.simplednn.deeplearning.attention.han.HAN
 import com.kotlinnlp.simplednn.deeplearning.attention.han.HANEncoder
 import com.kotlinnlp.simplednn.deeplearning.attention.han.HANParameters
 import com.kotlinnlp.simplednn.deeplearning.attention.han.toHierarchySequence
-import com.kotlinnlp.simplednn.helpers.training.utils.ExamplesIndices
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
+import com.kotlinnlp.utils.ExamplesIndices
+import com.kotlinnlp.utils.Shuffler
+import utils.Corpus
+import utils.SimpleExample
 import utils.CorpusReader
 import utils.exampleextractor.ClassificationExampleExtractor
 

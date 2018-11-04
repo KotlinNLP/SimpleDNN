@@ -10,11 +10,10 @@ package mnist
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
-import com.kotlinnlp.simplednn.helpers.training.FeedforwardTrainingHelper
+import traininghelpers.training.FeedforwardTrainingHelper
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
-import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
-import com.kotlinnlp.simplednn.helpers.validation.FeedforwardValidationHelper
+import traininghelpers.validation.FeedforwardValidationHelper
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import utils.exampleextractor.ClassificationExampleExtractor
@@ -22,6 +21,9 @@ import utils.CorpusReader
 import Configuration
 import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
+import com.kotlinnlp.utils.Shuffler
+import utils.Corpus
+import utils.SimpleExample
 
 fun main(args: Array<String>) {
 

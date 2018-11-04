@@ -13,12 +13,14 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.preset.GRUNeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
-import com.kotlinnlp.simplednn.dataset.*
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
-import com.kotlinnlp.simplednn.helpers.training.SequenceWithFinalOutputTrainingHelper
-import com.kotlinnlp.simplednn.helpers.validation.SequenceWithFinalOutputValidationHelper
+import traininghelpers.training.SequenceWithFinalOutputTrainingHelper
+import traininghelpers.validation.SequenceWithFinalOutputValidationHelper
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.utils.Shuffler
+import utils.Corpus
+import utils.SequenceExampleWithFinalOutput
 import mnist.helpers.MNISTSequenceExampleExtractor
 import utils.CorpusReader
 

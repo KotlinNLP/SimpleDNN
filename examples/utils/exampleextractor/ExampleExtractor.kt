@@ -8,7 +8,7 @@
 package utils.exampleextractor
 
 import com.beust.klaxon.JsonBase
-import com.kotlinnlp.simplednn.dataset.Example
+import utils.Example
 
 /**
  *

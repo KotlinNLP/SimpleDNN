@@ -14,12 +14,12 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
-import com.kotlinnlp.simplednn.dataset.Corpus
-import com.kotlinnlp.simplednn.dataset.Shuffler
-import com.kotlinnlp.simplednn.dataset.SimpleExample
-import com.kotlinnlp.simplednn.helpers.training.FeedforwardTrainingHelper
-import com.kotlinnlp.simplednn.helpers.validation.FeedforwardValidationHelper
+import utils.Corpus
+import utils.SimpleExample
+import traininghelpers.training.FeedforwardTrainingHelper
+import traininghelpers.validation.FeedforwardValidationHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
+import com.kotlinnlp.utils.Shuffler
 import utils.CorpusReader
 import utils.exampleextractor.ClassificationSparseExampleExtractor
 

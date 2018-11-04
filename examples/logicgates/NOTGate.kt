@@ -7,7 +7,7 @@
 
 package logicgates
 
-import com.kotlinnlp.simplednn.dataset.SimpleExample
+import utils.SimpleExample
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 fun main(args: Array<String>) {

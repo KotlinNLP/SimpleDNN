@@ -7,12 +7,12 @@
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
-import com.kotlinnlp.simplednn.dataset.Shuffler
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerStructure
-import com.kotlinnlp.simplednn.helpers.training.utils.ExamplesIndices
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import com.kotlinnlp.utils.ExamplesIndices
+import com.kotlinnlp.utils.Shuffler
 import java.io.File
 
 fun main(args: Array<String>) {
@@ -147,7 +147,7 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
 
     this.biaffineLayer.setErrors(errors = this.predict(example).sub(example.third))
 
-    this.biaffineLayer.backward(this.paramsErrors, propagateToInput = false, mePropK = null)
+    this.biaffineLayer.backward(this.paramsErrors, propagateToInput = false)
 
     this.optimizer.accumulate(this.paramsErrors)
     this.optimizer.update()
