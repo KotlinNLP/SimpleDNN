@@ -136,7 +136,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.structure.forward(input = input, useDropout = this.useDropout)
 
-    return this.structure.outputLayer.outputArray.values
+    return this.structure.outputLayer.outputArray.values // TODO: check copy
   }
 
   /**
