@@ -687,6 +687,17 @@ class SparseBinaryNDArray(
   }
 
   /**
+   * Get the index of the highest value skipping all the elements at the indices in given set.
+   *
+   * @param exceptIndices the set of indices to exclude
+   *
+   * @return the index of the maximum value (-1 if empty)
+   **/
+  override fun argMaxIndex(exceptIndices: Set<Int>): Int {
+    TODO("not implemented")
+  }
+
+  /**
    * Round values to Int
    *
    * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise

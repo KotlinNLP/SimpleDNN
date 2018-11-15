@@ -77,7 +77,7 @@ class DenseNDArraySpec : Spek({
         }
 
         it("should be filled with zeros") {
-          (0 until array.length).forEach({ assertEquals(0.0, array[it]) })
+          (0 until array.length).forEach { assertEquals(0.0, array[it]) }
         }
       }
 
@@ -94,7 +94,7 @@ class DenseNDArraySpec : Spek({
         }
 
         it("should be filled with ones") {
-          (0 until array.length).forEach({ assertEquals(1.0, array[it]) })
+          (0 until array.length).forEach { assertEquals(1.0, array[it]) }
         }
       }
 
@@ -141,10 +141,10 @@ class DenseNDArraySpec : Spek({
         }
 
         it("should contain values within the expected range") {
-          (0 until array.length).forEach({ i ->
+          (0 until array.length).forEach { i ->
             val value = array[i]
             assertTrue { value >= 0.5 && value < 0.89 }
-          })
+          }
         }
       }
     }
@@ -1028,6 +1028,10 @@ class DenseNDArraySpec : Spek({
 
         it("should have the expected argmax index excluding a given index") {
           assertEquals(1, array.argMaxIndex(exceptIndex = 2))
+        }
+
+        it("should have the expected argmax index excluding more indices") {
+          assertEquals(0, array.argMaxIndex(exceptIndices = setOf(1, 2)))
         }
       }
 

@@ -870,6 +870,34 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   * Get the index of the highest value skipping all the elements at the indices in given set.
+   *
+   * @param exceptIndices the set of indices to exclude
+   *
+   * @return the index of the maximum value (-1 if empty)
+   **/
+  override fun argMaxIndex(exceptIndices: Set<Int>): Int {
+
+    var maxIndex: Int = -1
+    var maxValue: Double? = null
+
+    (0 until this.length).forEach { i ->
+
+      if (i !in exceptIndices) {
+
+        val value = this[i]
+
+        if (maxValue == null || value > maxValue!!) {
+          maxValue = value
+          maxIndex = i
+        }
+      }
+    }
+
+    return maxIndex
+  }
+
+  /**
    * Round values to Int
    *
    * @param threshold a value is rounded to the next Int if is >= [threshold], to the previous otherwise
