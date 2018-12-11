@@ -1056,4 +1056,31 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    *
    */
   fun toDoubleArray(): DoubleArray = this.storage.dup().data
+
+  /**
+   * @param reverse whether to sort in descending order
+   *
+   * @return a permutation of indices which makes the 1-D array sorted.
+   */
+  fun argSort(reverse: Boolean = false): IntArray {
+
+    require(this.isVector) { "Operation supported only by vectors." }
+
+    val doubleArray = this.storage.data
+    val comparator = Comparator(IndexedDoubleValue::compareTo)
+    val indexedValues = Array(doubleArray.size) { IndexedDoubleValue(it, this[it]) }
+
+    indexedValues.sortWith(if (reverse) comparator.reversed() else comparator)
+    return IntArray(doubleArray.size) { indexedValues[it].index }
+  }
+
+  /**
+   * A version of [IndexedValue] specialized to [Double].
+   */
+  private data class IndexedDoubleValue(val index: Int, val value: Double) : Comparable<IndexedDoubleValue> {
+
+    override fun compareTo(other: IndexedDoubleValue): Int = this.value.compareTo(other.value).let { res ->
+      return if (res == 0) index.compareTo(other.index) else res
+    }
+  }
 }
