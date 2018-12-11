@@ -13,6 +13,7 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.*
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.utils.Serializer
 import java.io.InputStream
@@ -149,6 +150,9 @@ class BiRNN(
     require(this.recurrentConnectionType.property == LayerType.Property.Recurrent) {
       "required recurrentConnectionType with Recurrent property"
     }
+
+    (this.rightToLeftNetwork.model.paramsPerLayer.last() as? LSTMLayerParameters)?.initForgetGateBiasToOne()
+    (this.leftToRightNetwork.model.paramsPerLayer.last() as? LSTMLayerParameters)?.initForgetGateBiasToOne()
   }
 
   /**
