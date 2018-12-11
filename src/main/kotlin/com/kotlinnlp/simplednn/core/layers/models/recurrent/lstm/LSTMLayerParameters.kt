@@ -8,10 +8,12 @@
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentParametersUnit
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The parameters of the layer of type LSTM.
@@ -144,4 +146,10 @@ class LSTMLayerParameters(
 
     return clonedParams
   }
+
+  /**
+   * Adding a bias of size 1 to the forget gate improves the general performance of the LSTM.
+   * (Greff et al., 2015 and Jozefowicz et al., 2015)
+   */
+  fun initForgetGateBiasToOne() = ConstantInitializer(1.0).initialize(this.forgetGate.biases.values as DenseNDArray)
 }
