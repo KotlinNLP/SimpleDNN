@@ -1060,9 +1060,9 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    * @param reverse whether to sort in descending order
    *
-   * @return a permutation of indices which makes the 1-D array sorted.
+   * @return a permutation of the indices of this array, whose order makes this array sorted.
    */
-  fun argSort(reverse: Boolean = false): IntArray {
+  fun argSorted(reverse: Boolean = false): IntArray {
 
     require(this.isVector) { "Operation supported only by vectors." }
 
