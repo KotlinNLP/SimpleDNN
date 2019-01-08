@@ -10,6 +10,7 @@ package ndarray
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.simplemath.concatVectorsV
 import com.kotlinnlp.simplednn.simplemath.equals
+import com.kotlinnlp.simplednn.simplemath.exp
 import com.kotlinnlp.simplednn.simplemath.ndarray.Indices
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -98,6 +99,23 @@ class DenseNDArraySpec : Spek({
         }
       }
 
+      on("fill()") {
+
+        val array = DenseNDArrayFactory.fill(shape = Shape(2, 3), value = 0.35)
+
+        it("should have the expected number of rows") {
+          assertEquals(2, array.rows)
+        }
+
+        it("should have the expected number of columns") {
+          assertEquals(3, array.columns)
+        }
+
+        it("should be filled with the expected value") {
+          (0 until array.length).forEach { assertEquals(0.35, array[it]) }
+        }
+      }
+
       on("emptyArray()") {
 
         val array = DenseNDArrayFactory.emptyArray(Shape(3, 2))
@@ -145,6 +163,39 @@ class DenseNDArraySpec : Spek({
             val value = array[i]
             assertTrue { value >= 0.5 && value < 0.89 }
           }
+        }
+      }
+
+      on("exp()") {
+
+        val power = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.1, 0.2),
+          doubleArrayOf(0.3, 0.0)
+        ))
+        val array = exp(power)
+
+        it("should have the expected number of rows") {
+          assertEquals(2, array.rows)
+        }
+
+        it("should have the expected number of columns") {
+          assertEquals(2, array.columns)
+        }
+
+        it("should contain the expected value at index 0") {
+          assertTrue { equals(1.105171, array[0, 0], tolerance = 1.0e-06) }
+        }
+
+        it("should contain the expected value at index 1") {
+          assertTrue { equals(1.221403, array[0, 1], tolerance = 1.0e-06) }
+        }
+
+        it("should contain the expected value at index 2") {
+          assertTrue { equals(1.349859, array[1, 0], tolerance = 1.0e-06) }
+        }
+
+        it("should contain the expected value at index 3") {
+          assertTrue { equals(1.0, array[1, 1], tolerance = 1.0e-06) }
         }
       }
     }
