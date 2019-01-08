@@ -43,6 +43,16 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
   }
 
   /**
+   * @param shape shape
+   * @param value the init value
+   *
+   * @return a new [DenseNDArray] filled with the given value
+   */
+  override fun fill(shape: Shape, value: Double): DenseNDArray {
+    return DenseNDArray(DoubleMatrix.zeros(shape.dim1, shape.dim2).fill(value))
+  }
+
+  /**
    * Build a new DenseNDArray filled with zeros but one with 1.0
    *
    * @param length the length of the array

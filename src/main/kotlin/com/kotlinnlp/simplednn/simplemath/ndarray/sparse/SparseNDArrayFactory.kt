@@ -40,6 +40,18 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
    * @return a new [SparseNDArray] filled with zeros
    */
   override fun zeros(shape: Shape) = SparseNDArray(shape = shape)
+
+  /**
+   *
+   * @param shape shape
+   * @param value the init value
+   *
+   * @return a new [SparseNDArray] filled with the given value
+   */
+  override fun fill(shape: Shape, value: Double): SparseNDArray {
+    TODO("not implemented")
+  }
+
   /**
    * Build a new [SparseNDArray] filled with zeros but one with 1.0
    *

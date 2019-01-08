@@ -31,6 +31,16 @@ interface NDArrayFactory<NDArrayType : NDArray<NDArrayType>> : Serializable {
   fun zeros(shape: Shape): NDArrayType
 
   /**
+   * Build a new [NDArrayType] filled with a given value.
+   *
+   * @param shape shape
+   * @param value the init value
+   *
+   * @return a new [NDArrayType]
+   */
+  fun fill(shape: Shape, value: Double): NDArrayType
+
+  /**
    * Build a new [NDArrayType] filled with zeros but one with 1.0
    *
    * @param length the length of the array

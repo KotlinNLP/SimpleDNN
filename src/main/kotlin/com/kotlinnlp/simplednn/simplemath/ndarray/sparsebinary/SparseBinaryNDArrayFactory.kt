@@ -42,6 +42,17 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
   }
 
   /**
+   *
+   * @param shape shape
+   * @param value the init value
+   *
+   * @return a new [SparseBinaryNDArray] filled with the given value
+   */
+  override fun fill(shape: Shape, value: Double): SparseBinaryNDArray {
+    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  }
+
+  /**
    * Build a new [SparseBinaryNDArray] filled with zeros but one with 1.0
    *
    * @param length the length of the array
