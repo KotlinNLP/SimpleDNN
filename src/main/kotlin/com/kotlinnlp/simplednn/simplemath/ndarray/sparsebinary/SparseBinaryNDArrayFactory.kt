@@ -29,7 +29,7 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
    * @return a new empty [SparseBinaryNDArray]
    */
   override fun emptyArray(shape: Shape): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -38,7 +38,7 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
    * @return a new [SparseBinaryNDArray] filled with zeros
    */
   override fun zeros(shape: Shape): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -49,7 +49,7 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
    * @return a new [SparseBinaryNDArray] filled with the given value
    */
   override fun fill(shape: Shape, value: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -60,7 +60,7 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
    * @return a oneHotEncoder [SparseBinaryNDArray]
    */
   override fun oneHotEncoder(length: Int, oneAt: Int): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**
@@ -72,7 +72,7 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
    * @return a new [SparseBinaryNDArray] filled with random values
    */
   override fun random(shape: Shape, from: Double, to: Double): SparseBinaryNDArray {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    TODO("not implemented")
   }
 
   /**

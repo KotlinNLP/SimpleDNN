@@ -29,18 +29,16 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
    * @param shape shape
    * @return a new empty DenseNDArray
    */
-  override fun emptyArray(shape: Shape): DenseNDArray {
-    return DenseNDArray(DoubleMatrix.zeros(shape.dim1, shape.dim2))
-  }
+  override fun emptyArray(shape: Shape): DenseNDArray =
+    DenseNDArray(DoubleMatrix.zeros(shape.dim1, shape.dim2))
 
   /**
    *
    * @param shape shape
    * @return a new DenseNDArray filled with zeros
    */
-  override fun zeros(shape: Shape): DenseNDArray {
-    return this.emptyArray(shape)
-  }
+  override fun zeros(shape: Shape): DenseNDArray =
+    this.emptyArray(shape)
 
   /**
    * @param shape shape
@@ -48,9 +46,8 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
    *
    * @return a new [DenseNDArray] filled with the given value
    */
-  override fun fill(shape: Shape, value: Double): DenseNDArray {
-    return DenseNDArray(DoubleMatrix.zeros(shape.dim1, shape.dim2).fill(value))
-  }
+  override fun fill(shape: Shape, value: Double): DenseNDArray =
+    DenseNDArray(DoubleMatrix.zeros(shape.dim1, shape.dim2).fill(value))
 
   /**
    * Build a new DenseNDArray filled with zeros but one with 1.0
@@ -98,9 +95,8 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
    *
    * @return a new DenseNDArray filled with ones
    */
-  fun ones(shape: Shape): DenseNDArray {
-    return DenseNDArray(DoubleMatrix.ones(shape.dim1, shape.dim2))
-  }
+  fun ones(shape: Shape): DenseNDArray =
+    DenseNDArray(DoubleMatrix.ones(shape.dim1, shape.dim2))
 
   /**
    *

@@ -108,5 +108,4 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
       columns = columns.toIntArray(),
       values = values.toDoubleArray())
   }
-
 }
