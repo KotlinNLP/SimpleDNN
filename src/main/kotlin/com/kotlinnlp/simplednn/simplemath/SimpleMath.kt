@@ -13,6 +13,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import kotlin.math.log10
 import kotlin.math.max
 import kotlin.math.pow
+import kotlin.math.exp
 
 /**
  * Equals within tolerance.
@@ -108,6 +109,22 @@ fun sedSimilarity(a: DenseNDArray, b: DenseNDArray): Double {
   val exp: Double = (0 until a.length).sumByDouble { i -> complexityExp(a[i], b[i]) }
 
   return 2.0 - 10.0.pow(exp)
+}
+
+/**
+ * Build an array with the exponential of the values of a given array.
+ *
+ * @param a a dense array
+ *
+ * @return the exponential of the given array
+ */
+fun exp(a: DenseNDArray): DenseNDArray {
+
+  val ret: DenseNDArray = DenseNDArrayFactory.emptyArray(a.shape)
+
+  (0 until ret.length).forEach { i -> ret[i] = exp(a[i]) }
+
+  return ret
 }
 
 /**
