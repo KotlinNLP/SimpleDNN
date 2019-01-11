@@ -40,6 +40,14 @@ class DenseNDArraySpec : Spek({
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
 
+        it("should have the expected length") {
+          assertEquals(4, array.length)
+        }
+
+        it("should have the expected last index") {
+          assertEquals(3, array.lastIndex)
+        }
+
         it("should have the expected number of rows") {
           assertEquals(4, array.rows)
         }
@@ -69,6 +77,14 @@ class DenseNDArraySpec : Spek({
 
         val array = DenseNDArrayFactory.zeros(Shape(2, 3))
 
+        it("should have the expected length") {
+          assertEquals(6, array.length)
+        }
+
+        it("should have the expected last index") {
+          assertEquals(5, array.lastIndex)
+        }
+
         it("should have the expected number of rows") {
           assertEquals(2, array.rows)
         }
@@ -85,6 +101,14 @@ class DenseNDArraySpec : Spek({
       on("ones()") {
 
         val array = DenseNDArrayFactory.ones(Shape(2, 3))
+
+        it("should have the expected length") {
+          assertEquals(6, array.length)
+        }
+
+        it("should have the expected last index") {
+          assertEquals(5, array.lastIndex)
+        }
 
         it("should have the expected number of rows") {
           assertEquals(2, array.rows)
@@ -103,6 +127,14 @@ class DenseNDArraySpec : Spek({
 
         val array = DenseNDArrayFactory.fill(shape = Shape(2, 3), value = 0.35)
 
+        it("should have the expected length") {
+          assertEquals(6, array.length)
+        }
+
+        it("should have the expected last index") {
+          assertEquals(5, array.lastIndex)
+        }
+
         it("should have the expected number of rows") {
           assertEquals(2, array.rows)
         }
@@ -119,6 +151,14 @@ class DenseNDArraySpec : Spek({
       on("emptyArray()") {
 
         val array = DenseNDArrayFactory.emptyArray(Shape(3, 2))
+
+        it("should have the expected length") {
+          assertEquals(6, array.length)
+        }
+
+        it("should have the expected last index") {
+          assertEquals(5, array.lastIndex)
+        }
 
         it("should have the expected number of rows") {
           assertEquals(3, array.rows)
@@ -137,6 +177,14 @@ class DenseNDArraySpec : Spek({
           assertEquals(4, array.length)
         }
 
+        it("should have the expected last index") {
+          assertEquals(3, array.lastIndex)
+        }
+
+        it("should have the expected length") {
+          assertEquals(4, array.length)
+        }
+
         it("should be a column vector") {
           assertEquals(1, array.columns)
         }
@@ -149,6 +197,14 @@ class DenseNDArraySpec : Spek({
       on("random()") {
 
         val array = DenseNDArrayFactory.random(shape = Shape(216, 648), from = 0.5, to = 0.89)
+
+        it("should have the expected length") {
+          assertEquals(139968, array.length)
+        }
+
+        it("should have the expected last index") {
+          assertEquals(139967, array.lastIndex)
+        }
 
         it("should have the expected number of rows") {
           assertEquals(216, array.rows)
@@ -173,6 +229,14 @@ class DenseNDArraySpec : Spek({
           doubleArrayOf(0.3, 0.0)
         ))
         val array = exp(power)
+
+        it("should have the expected length") {
+          assertEquals(4, array.length)
+        }
+
+        it("should have the expected last index") {
+          assertEquals(3, array.lastIndex)
+        }
 
         it("should have the expected number of rows") {
           assertEquals(2, array.rows)
