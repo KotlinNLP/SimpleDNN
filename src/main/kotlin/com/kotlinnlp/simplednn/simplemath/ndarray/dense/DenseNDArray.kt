@@ -48,21 +48,21 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   override val isOneHotEncoder: Boolean get() {
 
-    var isTrue = false
+    var isOneHot = false
 
     if (this.isVector) {
       (0 until this.length)
+        .asSequence()
         .filter { this[it] != 0.0 }
         .forEach {
-          if (this[it] == 1.0 && !isTrue) {
-            isTrue = true
-          } else {
+          if (this[it] == 1.0 && !isOneHot)
+            isOneHot = true
+          else
             return false
-          }
         }
     }
 
-    return isTrue
+    return isOneHot
   }
 
   /**
@@ -89,16 +89,13 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
 
   /**
    *
-   * @return
    */
-  override val shape: Shape
-    get() = Shape(this.rows, this.columns)
+  override val shape: Shape get() = Shape(this.rows, this.columns)
 
   /**
    *
    */
-  override val t: DenseNDArray
-    get() = DenseNDArray(this.storage.transpose())
+  override val t: DenseNDArray get() = DenseNDArray(this.storage.transpose())
 
   /**
    *
