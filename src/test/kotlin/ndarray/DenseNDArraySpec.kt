@@ -397,6 +397,7 @@ class DenseNDArraySpec : Spek({
 
       val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
       val oneHotEncoder = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 1.0, 0.0))
+      val oneHotEncoderDouble = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 1.0, 1.0, 0.0))
       val oneHotEncoderFake = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.0, 0.0))
       val array2 = DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.1, 0.2, 0.3, 0.0),
@@ -413,6 +414,10 @@ class DenseNDArraySpec : Spek({
 
       it("should return false on an array with one element equal to 0.1") {
         assertFalse { oneHotEncoderFake.isOneHotEncoder }
+      }
+
+      it("should return false on an array with two elements equal to 1.0") {
+        assertFalse { oneHotEncoderDouble.isOneHotEncoder }
       }
 
       it("should return true on an array with one element equal to 1.0") {
