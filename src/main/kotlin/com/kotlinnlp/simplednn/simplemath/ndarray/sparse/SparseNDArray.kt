@@ -131,6 +131,11 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   override val length: Int = this.rows * this.columns
 
   /**
+   *
+   */
+  override val lastIndex: Int = this.length - 1
+
+  /**
    * Transpose
    */
   override val t: SparseNDArray get() = SparseNDArray(

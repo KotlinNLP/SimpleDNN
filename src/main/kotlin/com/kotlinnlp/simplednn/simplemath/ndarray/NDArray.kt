@@ -55,6 +55,11 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
+  val lastIndex: Int
+
+  /**
+   *
+   */
   val shape: Shape
 
   /**

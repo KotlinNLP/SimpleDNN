@@ -80,8 +80,12 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override val length: Int
-    get() = this.storage.length
+  override val length: Int get() = this.storage.length
+
+  /**
+   *
+   */
+  override val lastIndex: Int = this.length - 1
 
   /**
    *
