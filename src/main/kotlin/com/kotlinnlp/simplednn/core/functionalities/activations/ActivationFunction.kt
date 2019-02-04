@@ -33,8 +33,11 @@ interface ActivationFunction : Serializable {
    * @return a new NDArray containing the result
    */
   fun f(array: DenseNDArray): DenseNDArray {
+
     val out: DenseNDArray = array.factory.emptyArray(array.shape)
+
     this.f(array, out)
+
     return out
   }
 
@@ -54,8 +57,11 @@ interface ActivationFunction : Serializable {
    * @return a new NDArray containing the result
    */
   fun df(xArray: DenseNDArray): DenseNDArray {
+
     val out: DenseNDArray = xArray.factory.emptyArray(xArray.shape)
+
     this.dfOptimized(this.f(xArray), out)
+
     return out
   }
 
@@ -66,6 +72,7 @@ interface ActivationFunction : Serializable {
    * @param out the NDArray in which the result is written
    */
   fun df(xArray: DenseNDArray, out: DenseNDArray) {
+
     this.dfOptimized(this.f(xArray), out)
   }
 
@@ -77,8 +84,11 @@ interface ActivationFunction : Serializable {
    * @return a new NDArray containing the result
    */
   fun dfOptimized(fxArray: DenseNDArray): DenseNDArray {
+
     val out: DenseNDArray = fxArray.factory.emptyArray(fxArray.shape)
+
     this.dfOptimized(fxArray, out)
+
     return out
   }
 
