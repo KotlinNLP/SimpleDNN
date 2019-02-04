@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.attention
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.SoftmaxBase
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -18,11 +19,13 @@ import com.kotlinnlp.utils.ItemsPool
  *
  * @property attentionSequence the sequence of attention arrays
  * @property params the parameters of the Attention
+ * @property activation the activation function (default SoftmaxBase)
  * @property id an identification number useful to track a specific [AttentionMechanism]
  */
 open class AttentionMechanism(
   val attentionSequence: List<DenseNDArray>,
   val params: AttentionParameters,
+  private val activation: ActivationFunction = SoftmaxBase(),
   override val id: Int = 0
 ) : ItemsPool.IDItem {
 
@@ -50,13 +53,13 @@ open class AttentionMechanism(
   }
 
   /**
-   * Perform the forward of the Attention Mechanism.
+   * Execute the forward of the Attention Mechanism.
    *
    *   am = attention matrix
    *   cv = context vector
    *
    *   ac = am (dot) cv  // attention context
-   *   alpha = softmax(ac)  // importance score
+   *   importance = activation(ac)
    *
    * @return the importance score
    */
@@ -65,25 +68,24 @@ open class AttentionMechanism(
     val contextVector: DenseNDArray = this.params.contextVector.values
     val attentionContext: DenseNDArray = this.attentionMatrix.values.dot(contextVector)
 
-    this.importanceScore = SoftmaxBase().f(attentionContext)
+    this.importanceScore = this.activation.f(attentionContext)
 
     return this.importanceScore
   }
 
   /**
-   * Executes the backward assigning the errors of the context vector and the attention matrix.
+   * Execute the backward assigning the errors of the context vector and the attention matrix.
    *
-   *   x_i = i-th input array
-   *   alpha_i = i-th value of alpha
    *   am = attention matrix
+   *   cv = context vector
+   *   ac = attention context
    *   gy = output errors
+   *   gImportance = importance score errors
    *
-   *   gScore_i = x_i' (dot) gy
-   *   gAC = softmax_jacobian(alpha) (dot) gScore  // attention context errors
+   *   gAC = activation'(ac) * gImportance  // attention context errors
    *   gCV = am (dot) gAC  // context vector errors
    *
    *   gAM = gAC (dot) cv  // attention matrix errors
-   *   gx_i = gy * alpha_i  // errors of the i-th input array
    *
    * @param paramsErrors the errors of the Attention parameters
    * @param importanceScoreErrors the errors of the importance score
@@ -91,8 +93,12 @@ open class AttentionMechanism(
   fun backwardImportanceScore(paramsErrors: AttentionParameters, importanceScoreErrors: DenseNDArray) {
 
     val contextVector: DenseNDArray = this.params.contextVector.values
-    val softmaxGradients: DenseNDArray = SoftmaxBase().dfOptimized(this.importanceScore)
-    val acErrors: DenseNDArray = softmaxGradients.dot(importanceScoreErrors)
+    val activationGradients: DenseNDArray = this.activation.dfOptimized(this.importanceScore)
+
+    val acErrors: DenseNDArray = if (activationGradients.isMatrix) // e.g. softmax jacobian
+      activationGradients.dot(importanceScoreErrors)
+    else
+      activationGradients.prod(importanceScoreErrors)
 
     paramsErrors.contextVector.values.assignValues(acErrors.t.dot(this.attentionMatrix.values).t)
 
