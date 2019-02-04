@@ -10,6 +10,8 @@ package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.attention.AttentionParameters
+import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
+import com.kotlinnlp.simplednn.core.functionalities.activations.SoftmaxBase
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.MergeConfiguration
@@ -22,6 +24,7 @@ import java.io.Serializable
  *
  * @property inputSize the size of the elements of the input sequence
  * @property vectorSize the size of the vector that modulates a content-based attention mechanism over the input sequence
+ * @param activation the activation function of the attention mechanism (default SoftmaxBase)
  * @param mergeConfig the configuration of the merge network
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: null)
@@ -29,6 +32,7 @@ import java.io.Serializable
 class PointerNetworkModel(
   val inputSize: Int,
   val vectorSize: Int,
+  internal val activation: ActivationFunction = SoftmaxBase(),
   mergeConfig: MergeConfiguration,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = null

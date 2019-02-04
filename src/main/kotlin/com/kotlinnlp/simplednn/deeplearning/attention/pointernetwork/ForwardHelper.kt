@@ -40,7 +40,10 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
   private fun buildAttentionMechanism(attentionArrays: List<DenseNDArray>): AttentionMechanism {
 
     this.networkProcessor.usedAttentionMechanisms.add(
-      AttentionMechanism(attentionArrays, params = this.networkProcessor.model.attentionParams))
+      AttentionMechanism(
+        attentionSequence = attentionArrays,
+        params = this.networkProcessor.model.attentionParams,
+        activation = this.networkProcessor.model.activation))
 
     return this.networkProcessor.usedAttentionMechanisms.last()
   }
