@@ -28,7 +28,7 @@ class Softmax : ActivationFunction {
   override fun f(array: DenseNDArray, out: DenseNDArray) {
 
     val max: Double = array[array.argMaxIndex()]
-    var sum: Double = 0.0
+    var sum = 0.0
 
     for (i in 0 until array.length) {
       val e: Double = Math.exp(array[i] - max)
