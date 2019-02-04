@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 abstract class ScalarActivationFunction : ActivationFunction {
 
   /**
-   * Apply the activation function to [x].
+   * Calculate the activation function in [x].
    *
    * @param x input
    *
@@ -25,9 +25,9 @@ abstract class ScalarActivationFunction : ActivationFunction {
   protected abstract fun f(x: Double): Double
 
   /**
-   * Optimized derivative of the activation function, calculated in [fx]
+   * Optimized derivative of the activation function, calculated in [fx].
    *
-   * @param fx input (WARNING: it must be f(x) for optimization)
+   * @param fx the input already activated [f(x)]
    *
    * @return the derivative of f calculated in x
    */
@@ -36,7 +36,7 @@ abstract class ScalarActivationFunction : ActivationFunction {
   /**
    * Assign to [out] the result of the activation function applied to [array].
    *
-   * @param array the input NDArray
+   * @param array the input array
    * @param out the NDArray in which the result is written
    */
   override fun f(array: DenseNDArray, out: DenseNDArray) {
@@ -44,9 +44,10 @@ abstract class ScalarActivationFunction : ActivationFunction {
   }
 
   /**
-   * Assign to [out] the activation function derivative calculated in [fxArray].
+   * Assign to [out] the activation function derivative calculated respect to the input array already activated, as
+   * optimization.
    *
-   * @param fxArray the input NDArray (WARNING: it must be f(x) for optimization)
+   * @param fxArray the input array already activated
    * @param out the NDArray in which the result is written
    */
   override fun dfOptimized(fxArray: DenseNDArray, out: DenseNDArray) {

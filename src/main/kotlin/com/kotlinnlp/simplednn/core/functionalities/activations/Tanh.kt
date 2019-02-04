@@ -14,7 +14,7 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
 class Tanh : ScalarActivationFunction() {
 
   /**
-   * Apply the activation function to [x].
+   * Calculate the activation function in [x].
    *
    * @param x input
    *
@@ -23,9 +23,9 @@ class Tanh : ScalarActivationFunction() {
   override fun f(x: Double): Double = Math.tanh(x)
 
   /**
-   * Optimized derivative of the Tanh function, calculated in x
+   * Optimized derivative of the Tanh function, calculated respect to the input already activated.
    *
-   * @param fx input (WARNING: it must be f(x) for optimization)
+   * @param fx the input already activated [f(x)]
    *
    * @return the Tanh derivative calculated in x
    */

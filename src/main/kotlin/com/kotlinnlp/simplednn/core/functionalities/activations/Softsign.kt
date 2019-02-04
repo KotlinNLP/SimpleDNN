@@ -16,7 +16,7 @@ import java.lang.Math.abs
 class Softsign : ScalarActivationFunction() {
 
   /**
-   * Apply the activation function to [x].
+   * Calculate the activation function in [x].
    *
    * @param x input
    *
@@ -25,9 +25,9 @@ class Softsign : ScalarActivationFunction() {
   override fun f(x: Double): Double = x / (1.0 + abs(x))
 
   /**
-   * Optimized derivative of the Softsign function, calculated in x
+   * Optimized derivative of the Softsign function, calculated respect to the input already activated.
    *
-   * @param fx input (WARNING: it must be f(x) for optimization)
+   * @param fx the input already activated [f(x)]
    *
    * @return the Softsign derivative calculated in x
    */

@@ -14,7 +14,7 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
 class Sigmoid : ScalarActivationFunction() {
 
   /**
-   * Apply the Sigmoid function to [x].
+   * Calculate the Sigmoid function in [x].
    *
    * @param x input
    *
@@ -23,9 +23,9 @@ class Sigmoid : ScalarActivationFunction() {
   override fun f(x: Double): Double = 1.0 / (1.0 + Math.exp(-x))
 
   /**
-   * Optimized derivative of the Sigmoid function, calculated in x
+   * Optimized derivative of the Sigmoid function, calculated respect to the input already activated.
    *
-   * @param fx input (WARNING: it must be f(x) for optimization)
+   * @param fx the input already activated [f(x)]
    *
    * @return the Sigmoid derivative calculated in x
    */

@@ -17,7 +17,7 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
 class ReLU : ScalarActivationFunction() {
 
   /**
-   * Apply the ReLU function to [x].
+   * Calculate the ReLU function in [x].
    *
    * @param x input
    *
@@ -26,9 +26,9 @@ class ReLU : ScalarActivationFunction() {
   override fun f(x: Double): Double = if (x <= 0.0) 0.0 else x
 
   /**
-   * Optimized derivative of the ReLU function, calculated in x
+   * Optimized derivative of the ReLU function, calculated respect to the input already activated.
    *
-   * @param fx input (WARNING: it must be f(x) for optimization)
+   * @param fx the input already activated [f(x)]
    *
    * @return the ReLU derivative calculated in x
    */

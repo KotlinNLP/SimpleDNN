@@ -20,7 +20,7 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
 class ELU(val alpha: Double = 1.0) : ScalarActivationFunction() {
 
   /**
-   * Apply the ELU function to [x].
+   * Calculate the ELU function in [x].
    * [alternative form: max(0, x) + min(0, alpha * (exp(x) - 1)))]
    *
    * @param x input
@@ -30,9 +30,9 @@ class ELU(val alpha: Double = 1.0) : ScalarActivationFunction() {
   override fun f(x: Double): Double = if (x > 0) x else this.alpha * (Math.exp(x) - 1.0)
 
   /**
-   * Optimized derivative of the ELU function, calculated in x
+   * Optimized derivative of the ELU function, calculated respect to the input already activated.
    *
-   * @param fx input (WARNING: it must be f(x) for optimization)
+   * @param fx the input already activated [f(x)]
    *
    * @return the ELU derivative calculated in x
    */

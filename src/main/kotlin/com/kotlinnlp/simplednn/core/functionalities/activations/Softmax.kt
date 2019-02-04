@@ -20,9 +20,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 class Softmax : ActivationFunction {
 
   /**
-   * Assign to [out] the result of Softmax function applied to [array].
+   * Assign to [out] the result of the Softmax function calculated respect to the input array.
    *
-   * @param array the input NDArray
+   * @param array the input array
    * @param out the NDArray in which the result is written
    */
   override fun f(array: DenseNDArray, out: DenseNDArray) {
@@ -40,9 +40,9 @@ class Softmax : ActivationFunction {
   }
 
   /**
-   * Apply the Softmax function derivative to [xArray].
+   * Calculate the Softmax derivative respect to the input array.
    *
-   * @param xArray the input NDArray
+   * @param xArray the input array
    *
    * @return a new NDArray containing the result (the Jacobian matrix)
    */
@@ -65,18 +65,18 @@ class Softmax : ActivationFunction {
   }
 
   /**
-   * Apply the Softmax function derivative to [fxArray].
+   * Calculate the Softmax derivative respect to the input array already activated, as optimization.
    *
-   * @param fxArray the input NDArray (WARNING: it must be f(x) for optimization)
+   * @param fxArray the input array already activated
    *
    * @return a new NDArray containing the result
    */
   override fun dfOptimized(fxArray: DenseNDArray): DenseNDArray = DenseNDArrayFactory.ones(fxArray.shape)
 
   /**
-   * Assign to [out] the Softmax function derivative calculated in [fxArray].
+   * Assign to [out] the Softmax derivative calculated respect to the input array already activated, as optimization.
    *
-   * @param fxArray the input NDArray (WARNING: it must be f(x) for optimization)
+   * @param fxArray the input array already activated
    * @param out the NDArray in which the result is written
    */
   override fun dfOptimized(fxArray: DenseNDArray, out: DenseNDArray) {

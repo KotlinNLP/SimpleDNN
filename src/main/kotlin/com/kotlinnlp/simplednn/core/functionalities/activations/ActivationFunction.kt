@@ -26,9 +26,9 @@ interface ActivationFunction : Serializable {
   }
 
   /**
-   * Apply the activation function to [array].
+   * Calculate the activation function respect to the input array.
    *
-   * @param array the input NDArray
+   * @param array the input array
    *
    * @return a new NDArray containing the result
    */
@@ -39,17 +39,17 @@ interface ActivationFunction : Serializable {
   }
 
   /**
-   * Assign to [out] the result of the activation function applied to [array].
+   * Assign to [out] the result of the activation function calculated respect to the input array.
    *
-   * @param array the input NDArray
+   * @param array the input array
    * @param out the NDArray in which the result is written
    */
   fun f(array: DenseNDArray, out: DenseNDArray)
 
   /**
-   * Apply the activation function derivative to [xArray].
+   * Calculate the activation function derivative respect to the input array.
    *
-   * @param xArray the input NDArray
+   * @param xArray the input array
    *
    * @return a new NDArray containing the result
    */
@@ -60,9 +60,9 @@ interface ActivationFunction : Serializable {
   }
 
   /**
-   * Assign to [out] the activation function derivative calculated in [xArray].
+   * Assign to [out] the activation function derivative calculated respect to the input array.
    *
-   * @param xArray the input NDArray
+   * @param xArray the input array
    * @param out the NDArray in which the result is written
    */
   fun df(xArray: DenseNDArray, out: DenseNDArray) {
@@ -70,9 +70,9 @@ interface ActivationFunction : Serializable {
   }
 
   /**
-   * Apply the activation function derivative to [fxArray].
+   * Calculate the activation function derivative respect to the input array already activated, as optimization.
    *
-   * @param fxArray the input NDArray (WARNING: it must be f(x) for optimization)
+   * @param fxArray the input array already activated
    *
    * @return a new NDArray containing the result
    */
@@ -83,9 +83,10 @@ interface ActivationFunction : Serializable {
   }
 
   /**
-   * Assign to [out] the activation function derivative calculated in [fxArray].
+   * Assign to [out] the activation function derivative calculated respect to the input array already activated, as
+   * optimization.
    *
-   * @param fxArray the input NDArray (WARNING: it must be f(x) for optimization)
+   * @param fxArray the input array already activated
    * @param out the NDArray in which the result is written
    */
   fun dfOptimized(fxArray: DenseNDArray, out: DenseNDArray)
