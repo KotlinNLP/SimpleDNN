@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.core.attention
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
+import com.kotlinnlp.simplednn.core.functionalities.activations.SoftmaxBase
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.utils.ItemsPool
@@ -65,7 +65,7 @@ open class AttentionMechanism(
     val contextVector: DenseNDArray = this.params.contextVector.values
     val attentionContext: DenseNDArray = this.attentionMatrix.values.dot(contextVector)
 
-    this.importanceScore = Softmax().f(attentionContext)
+    this.importanceScore = SoftmaxBase().f(attentionContext)
 
     return this.importanceScore
   }
@@ -91,7 +91,7 @@ open class AttentionMechanism(
   fun backwardImportanceScore(paramsErrors: AttentionParameters, importanceScoreErrors: DenseNDArray) {
 
     val contextVector: DenseNDArray = this.params.contextVector.values
-    val softmaxGradients: DenseNDArray = Softmax().df(this.importanceScore)
+    val softmaxGradients: DenseNDArray = SoftmaxBase().dfOptimized(this.importanceScore)
     val acErrors: DenseNDArray = softmaxGradients.dot(importanceScoreErrors)
 
     paramsErrors.contextVector.values.assignValues(acErrors.t.dot(this.attentionMatrix.values).t)
