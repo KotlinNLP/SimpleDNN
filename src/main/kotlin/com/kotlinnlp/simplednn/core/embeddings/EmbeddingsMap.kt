@@ -198,7 +198,7 @@ open class EmbeddingsMap<T>(
    *
    * @return the [Embedding] with the given not-null [key] or [nullEmbedding] or [unknownEmbedding]
    */
-  fun get(key: T?, dropout: Double = 0.0): Embedding {
+  operator fun get(key: T?, dropout: Double = 0.0): Embedding {
     require(dropout in 0.0 .. 1.0)
 
     return when {
