@@ -19,6 +19,15 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
  */
 class ELU(val alpha: Double = 1.0) : ScalarActivationFunction() {
 
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed by Serializable).
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
+
   /**
    * Calculate the ELU function in [x].
    * [alternative form: max(0, x) + min(0, alpha * (exp(x) - 1)))]
