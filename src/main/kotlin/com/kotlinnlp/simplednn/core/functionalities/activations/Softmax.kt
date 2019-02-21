@@ -17,7 +17,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *
  * Attention!
  * This class is an optimized extension of the base Softmax.
- * It should be used as output activation of neural modules that use the difference with the gold value as errors.
+ * It should be used as output activation of neural modules that use the cross entropy as loss function and calculate
+ * the output errors as difference with the gold values.
  */
 class Softmax : SoftmaxBase() {
 
