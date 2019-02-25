@@ -7,10 +7,8 @@
 
 package com.kotlinnlp.simplednn.core.embeddings
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import java.io.File
 import java.io.InputStreamReader
 import java.io.Serializable
