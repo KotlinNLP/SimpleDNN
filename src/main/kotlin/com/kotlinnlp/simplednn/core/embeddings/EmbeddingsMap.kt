@@ -24,7 +24,7 @@ import java.util.*
  * @param pseudoRandomDropout a Boolean indicating if embeddings must be dropped out with pseudo random probability
  *                            (default = true)
  */
-open class EmbeddingsMap<T>(
+class EmbeddingsMap<T>(
   val size: Int,
   private val initializer: Initializer? = GlorotInitializer(),
   private val pseudoRandomDropout: Boolean = true
@@ -198,12 +198,12 @@ open class EmbeddingsMap<T>(
   /**
    * The map of keys to embeddings.
    */
-  protected open val embeddings: MutableMap<T, Embedding> = mutableMapOf()
+  private val embeddings: MutableMap<T, Embedding> = mutableMapOf()
 
   /**
    * The map of ids to embeddings.
    */
-  protected open val embeddingsById: MutableMap<Int, Embedding> = mutableMapOf(
+  private val embeddingsById: MutableMap<Int, Embedding> = mutableMapOf(
     Pair(this.unknownEmbedding.id, this.unknownEmbedding),
     Pair(this.nullEmbedding.id, this.nullEmbedding)
   )
