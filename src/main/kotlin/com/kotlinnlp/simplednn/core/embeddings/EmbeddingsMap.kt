@@ -68,12 +68,7 @@ open class EmbeddingsMap<T>(
         initializer = initializer)
 
       forEachDataLine(filename = filename, vectorSize = size) { key, vector ->
-        embeddingsMap.set(
-          key = key,
-          embedding = Embedding(
-            id = embeddingsMap.count,
-            array = UpdatableDenseArray(values = DenseNDArrayFactory.arrayOf(vector)))
-        )
+        embeddingsMap.set(key = key, embedding = Embedding(id = embeddingsMap.count, vector = vector))
       }
 
       require(embeddingsMap.count == count) {
