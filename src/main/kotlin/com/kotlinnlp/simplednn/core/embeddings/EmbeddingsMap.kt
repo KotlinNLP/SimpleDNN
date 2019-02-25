@@ -74,7 +74,7 @@ class EmbeddingsMap<T>(
         pseudoRandomDropout = pseudoRandomDropout,
         initializer = initializer)
 
-      forEachDataLine(filename = filename, vectorSize = size) { key, vector ->
+      forEachDataLine(filename) { key, vector ->
         embeddingsMap.set(key = key, embedding = Embedding(id = embeddingsMap.count, vector = vector))
         progress?.tick()
       }
@@ -109,11 +109,9 @@ class EmbeddingsMap<T>(
      * Loop the data lines of the given file.
      *
      * @param filename the input filename
-     * @param vectorSize the size of each vector
      * @param callback the callback called for each line, passing it the key and the vector of the line
      */
     private fun forEachDataLine(filename: String,
-                                vectorSize: Int,
                                 callback: (key: String, vector: DoubleArray) -> Unit) {
 
       var isFirstLine = true
@@ -124,10 +122,13 @@ class EmbeddingsMap<T>(
           isFirstLine = false
 
         } else {
-          val elements: List<String> = line.split(" ")
-          val vector = DoubleArray(size = vectorSize, init = { i -> elements[i + 1].toDouble() })
 
-          callback(elements.first(), vector)
+          val vector: DoubleArray = line
+            .substringAfter(' ')
+            .split(" ")
+            .let { DoubleArray(size = it.size, init = { i -> it[i].toDouble() }) }
+
+          callback(line.substringBefore(' '), vector)
         }
       }
     }
