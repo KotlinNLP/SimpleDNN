@@ -123,6 +123,28 @@ open class EmbeddingsMap<T>(
     }
 
     /**
+     * Load an [EmbeddingsMap] with [String] keys from the given [elements] set.
+     *
+     * @param elements the set of elements from which to create the embedding map
+     * @param size the size of each embedding
+     * @param pseudoRandomDropout the pseudoRandomDropout that is propagated to the [EmbeddingsMap] constructor
+     * @param initializer the initializer of the values of the other embeddings (zeros if null, default: Glorot)
+     *
+     * @return an [EmbeddingsMap] of [String]s
+     */
+    fun fromSet(elements: Set<String>,
+                size: Int,
+                initializer: Initializer? = GlorotInitializer(),
+                pseudoRandomDropout: Boolean = true) =
+      EmbeddingsMap<String>(
+        size = size,
+        initializer = initializer,
+        pseudoRandomDropout = pseudoRandomDropout).apply {
+
+        elements.forEach { embeddingKey -> set(embeddingKey) }
+      }
+
+    /**
      * Export the embeddings map writing its entries to a file with the given [filename].
      *
      * The file will contain one header line and N following data lines:
