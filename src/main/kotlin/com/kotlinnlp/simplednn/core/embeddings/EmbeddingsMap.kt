@@ -121,6 +121,31 @@ open class EmbeddingsMap<T>(
         }
       }
     }
+
+    /**
+     * Export the embeddings map writing its entries to a file with the given [filename].
+     *
+     * The file will contain one header line and N following data lines:
+     *   - The header line contains the number N of data lines and the size S of the vectors (the same for all),
+     *     separated by a space.
+     *   - Each data line contains the key, followed by S double numbers, each separated by a space.
+     *
+     * @param filename the output filename
+     * @param digits precision specifier
+     */
+    fun EmbeddingsMap<String>.dump(filename: String, digits: Int) {
+
+      File(filename).printWriter().use { out ->
+
+        out.println("%d %d".format(this.count, this.size))
+
+        this.embeddings.forEach { key, value ->
+          out.print(key)
+          out.println(value.toString(digits = digits))
+          out.flush()
+        }
+      }
+    }
   }
 
   /**
