@@ -253,14 +253,7 @@ open class EmbeddingsMap<T>(
    *
    * @return a new [Embedding] with the given [id]
    */
-  private fun buildEmbedding(id: Int): Embedding {
-
-    val embedding = Embedding(id = id, array = UpdatableDenseArray(Shape(size)))
-
-    this.initializer?.initialize(embedding.array.values)
-
-    return embedding
-  }
+  private fun buildEmbedding(id: Int) = Embedding(id = id, size = this.size, initializer = this.initializer)
 
   /**
    * @param dropout the probability of dropout
