@@ -9,6 +9,8 @@ package com.kotlinnlp.simplednn.core.embeddings
 
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
+import com.kotlinnlp.utils.getLinesCount
+import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
 import java.io.File
 import java.io.InputStreamReader
 import java.io.Serializable
@@ -47,12 +49,19 @@ open class EmbeddingsMap<T>(
      * @param filename the input filename
      * @param pseudoRandomDropout the pseudoRandomDropout that is propagated to the [EmbeddingsMap] constructor
      * @param initializer the initializer of the values of the other embeddings (zeros if null, default: Glorot)
+     * @param verbose a Boolean indicating whether to enable the verbose mode (default = true)
      *
      * @return an [EmbeddingsMap] of [String]s loaded from the given file
      */
     fun load(filename: String,
              pseudoRandomDropout: Boolean = true,
-             initializer: Initializer? = GlorotInitializer()): EmbeddingsMap<String> {
+             initializer: Initializer? = GlorotInitializer(),
+             verbose: Boolean = true): EmbeddingsMap<String> {
+
+      val progress: ProgressIndicatorBar? = if (verbose)
+        ProgressIndicatorBar(total = getLinesCount(filename) - 1)
+      else
+        null
 
       val firstLine: String = readFirstLine(filename)
       val firstLineSplit: List<String> = firstLine.split(" ")
@@ -67,6 +76,7 @@ open class EmbeddingsMap<T>(
 
       forEachDataLine(filename = filename, vectorSize = size) { key, vector ->
         embeddingsMap.set(key = key, embedding = Embedding(id = embeddingsMap.count, vector = vector))
+        progress?.tick()
       }
 
       require(embeddingsMap.count == count) {
