@@ -24,7 +24,7 @@ import java.util.*
  * @param pseudoRandomDropout a Boolean indicating if embeddings must be dropped out with pseudo random probability
  *                            (default = true)
  */
-class EmbeddingsMap<T>(
+open class EmbeddingsMap<T>(
   val size: Int,
   private val initializer: Initializer? = GlorotInitializer(),
   private val pseudoRandomDropout: Boolean = true
