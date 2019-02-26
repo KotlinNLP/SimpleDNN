@@ -150,8 +150,8 @@ open class EmbeddingsMap<T>(
       EmbeddingsMap<String>(
         size = size,
         initializer = initializer,
-        pseudoRandomDropout = pseudoRandomDropout).apply {
-
+        pseudoRandomDropout = pseudoRandomDropout
+      ).apply {
         elements.forEach { embeddingKey -> set(embeddingKey) }
       }
 

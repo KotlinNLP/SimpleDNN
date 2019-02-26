@@ -39,7 +39,7 @@ data class Embedding(val id: Int, val array: UpdatableDenseArray) : Serializable
    *
    * @return a new embedding
    */
-  constructor(id: Int, vector: DoubleArray): this(
+  constructor(id: Int, vector: DoubleArray) : this(
     id = id,
     array = UpdatableDenseArray(values = DenseNDArrayFactory.arrayOf(vector))
   )
@@ -52,7 +52,7 @@ data class Embedding(val id: Int, val array: UpdatableDenseArray) : Serializable
    *
    * @return a new embedding
    */
-  constructor(id: Int, vector: DenseNDArray): this(
+  constructor(id: Int, vector: DenseNDArray) : this(
     id = id,
     array = UpdatableDenseArray(values = vector)
   )
@@ -66,7 +66,7 @@ data class Embedding(val id: Int, val array: UpdatableDenseArray) : Serializable
    *
    * @return a new [Embedding] with the given [id]
    */
-  constructor(id: Int, size: Int, initializer: Initializer?): this(
+  constructor(id: Int, size: Int, initializer: Initializer?) : this(
     id = id,
     array = UpdatableDenseArray(Shape(size)).apply { initializer?.initialize(values) }
   )
