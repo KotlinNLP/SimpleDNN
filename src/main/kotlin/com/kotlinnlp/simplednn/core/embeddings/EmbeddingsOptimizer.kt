@@ -89,6 +89,6 @@ class EmbeddingsOptimizer<in T>(
    * @param errors errors to accumulate
    */
   fun accumulate(embeddingKey: T?, errors: DenseNDArray) {
-    this.accumulate(Pair(this.embeddingsMap.get(embeddingKey).id, errors))
+    this.accumulate(Pair(this.embeddingsMap[embeddingKey].id, errors))
   }
 }
