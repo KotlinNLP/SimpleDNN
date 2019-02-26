@@ -244,11 +244,22 @@ open class EmbeddingsMap<T>(
    * If no embedding has the given [key] return the [unknownEmbedding].
    *
    * @param key the key associated to an embedding (can be null)
-   * @param dropout the probability to get the [unknownEmbedding] (default = 0.0 = no dropout)
    *
    * @return the [Embedding] with the given not-null [key] or [nullEmbedding] or [unknownEmbedding]
    */
-  operator fun get(key: T?, dropout: Double = 0.0): Embedding {
+  operator fun get(key: T?): Embedding = this.get(key = key, dropout = 0.0)
+
+  /**
+   * Get the embedding with the given [key].
+   * If the [key] is null return the [nullEmbedding].
+   * If no embedding has the given [key] return the [unknownEmbedding].
+   *
+   * @param key the key associated to an embedding (can be null)
+   * @param dropout the probability to get the [unknownEmbedding] (0.0 = no dropout)
+   *
+   * @return the [Embedding] with the given not-null [key] or [nullEmbedding] or [unknownEmbedding]
+   */
+  fun get(key: T?, dropout: Double): Embedding {
     require(dropout in 0.0 .. 1.0)
 
     return when {
