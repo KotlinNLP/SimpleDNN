@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 
 /**
- * The NetworkStructure.
+ * The StackedLayersStructure.
  *
  * Layers are defined as a list [x, y, z] in the [layersConfiguration].
  * The structure contains layers as input-output pairs [x-y, y-z].
@@ -27,7 +27,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
  * @property layersConfiguration layers layersConfiguration
  * @property params the network parameters per layer
  */
-abstract class NetworkStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+abstract class StackedLayersStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   val layersConfiguration: List<LayerInterface>,
   val params: NetworkParameters
 ) {

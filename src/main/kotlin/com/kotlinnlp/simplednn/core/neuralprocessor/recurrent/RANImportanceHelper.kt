@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 
 import com.kotlinnlp.simplednn.core.layers.LayerStructure
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ran.RANLayerStructure
-import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
+import com.kotlinnlp.simplednn.core.neuralnetwork.structure.StackedLayersStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -22,7 +22,7 @@ class RANImportanceHelper {
   /**
    * The list of previous states structures.
    */
-  private lateinit var prevStates: List<NetworkStructure<*>>
+  private lateinit var prevStates: List<StackedLayersStructure<*>>
 
   /**
    * The incremental product of the forget gates of the states, in reversed order.
@@ -44,7 +44,7 @@ class RANImportanceHelper {
    *
    * @return the array containing the importance scores of the previous states
    */
-  fun getImportanceScores(states: List<NetworkStructure<*>>): DenseNDArray {
+  fun getImportanceScores(states: List<StackedLayersStructure<*>>): DenseNDArray {
 
     this.initVars(states)
 
@@ -65,7 +65,7 @@ class RANImportanceHelper {
   /**
    * Initialize the variables needed for the calculations.
    */
-  private fun initVars(states: List<NetworkStructure<*>>) {
+  private fun initVars(states: List<StackedLayersStructure<*>>) {
 
     this.prevStates = states.subList(0, states.lastIndex)
 

@@ -17,10 +17,10 @@ interface StructureContextWindow<InputNDArrayType : NDArray<InputNDArrayType>> {
   /**
    *
    */
-  fun getPrevStateStructure(): RecurrentNetworkStructure<InputNDArrayType>?
+  fun getPrevStateStructure(): RecurrentStackedLayersStructure<InputNDArrayType>?
 
   /**
    *
    */
-  fun getNextStateStructure(): RecurrentNetworkStructure<InputNDArrayType>?
+  fun getNextStateStructure(): RecurrentStackedLayersStructure<InputNDArrayType>?
 }

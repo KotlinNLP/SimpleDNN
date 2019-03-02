@@ -24,7 +24,7 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
    * @param structure neural network
    */
   inner class NNState(
-    val structure: RecurrentNetworkStructure<InputNDArrayType>,
+    val structure: RecurrentStackedLayersStructure<InputNDArrayType>,
     val contributions: NetworkParameters? = null
   )
 
@@ -55,7 +55,7 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
    *
    * @return the structure of the state at the given [stateIndex]
    */
-  fun getStateStructure(stateIndex: Int): RecurrentNetworkStructure<InputNDArrayType>
+  fun getStateStructure(stateIndex: Int): RecurrentStackedLayersStructure<InputNDArrayType>
     = this.states[stateIndex].structure
 
   /**
@@ -70,10 +70,10 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
   /**
    * Add a new state to the sequence.
    *
-   * @param structure the [RecurrentNetworkStructure] of the state
+   * @param structure the [RecurrentStackedLayersStructure] of the state
    * @param saveContributions whether to include the contributions structure into the state
    */
-  fun add(structure: RecurrentNetworkStructure<InputNDArrayType>, saveContributions: Boolean) {
+  fun add(structure: RecurrentStackedLayersStructure<InputNDArrayType>, saveContributions: Boolean) {
 
     // TODO: set always contributions?? (structures are created only when it's needed)
     this.states.add(

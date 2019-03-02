@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerStruct
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.RecurrentNetworkStructure
+import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.RecurrentStackedLayersStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.StructureContextWindow
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
@@ -96,7 +96,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * @return the previous network structure with respect to the [curStateIndex]
    */
-  override fun getPrevStateStructure(): RecurrentNetworkStructure<InputNDArrayType>? =
+  override fun getPrevStateStructure(): RecurrentStackedLayersStructure<InputNDArrayType>? =
     if (this.curStateIndex in 1 .. this.lastStateIndex)
       this.sequence.getStateStructure(this.curStateIndex - 1)
     else
@@ -105,7 +105,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * @return the next network structure with respect to the [curStateIndex]
    */
-  override fun getNextStateStructure(): RecurrentNetworkStructure<InputNDArrayType>? =
+  override fun getNextStateStructure(): RecurrentStackedLayersStructure<InputNDArrayType>? =
     if (this.curStateIndex < this.lastStateIndex) // it works also for the init hidden structure
       this.sequence.getStateStructure(this.curStateIndex + 1)
     else
@@ -171,7 +171,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
         .format(elementIndex, this.lastStateIndex)
     }
 
-    val structure: RecurrentNetworkStructure<InputNDArrayType> = this.sequence.getStateStructure(elementIndex)
+    val structure: RecurrentStackedLayersStructure<InputNDArrayType> = this.sequence.getStateStructure(elementIndex)
 
     require(structure.inputLayer !is MergeLayer<InputNDArrayType>)
 
@@ -194,7 +194,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
         .format(elementIndex, this.lastStateIndex)
     }
 
-    val structure: RecurrentNetworkStructure<InputNDArrayType> = this.sequence.getStateStructure(elementIndex)
+    val structure: RecurrentStackedLayersStructure<InputNDArrayType> = this.sequence.getStateStructure(elementIndex)
 
     require(structure.inputLayer is MergeLayer<InputNDArrayType>)
 
@@ -473,7 +473,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     if (this.lastStateIndex == this.sequence.lastIndex) {
 
-      val structure = RecurrentNetworkStructure(
+      val structure = RecurrentStackedLayersStructure(
         layersConfiguration = this.neuralNetwork.layersConfiguration,
         params = this.neuralNetwork.model,
         structureContextWindow = this)
@@ -497,7 +497,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     initHiddenArrays: List<DenseNDArray?>?,
     saveContributions: Boolean) {
 
-    val structure: RecurrentNetworkStructure<InputNDArrayType> = this.sequence.getStateStructure(this.lastStateIndex)
+    val structure: RecurrentStackedLayersStructure<InputNDArrayType> = this.sequence.getStateStructure(this.lastStateIndex)
 
     structure.setInitHidden(arrays = if (this.curStateIndex == 0) initHiddenArrays else null)
 
@@ -525,7 +525,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     initHiddenArrays: List<DenseNDArray?>?,
     saveContributions: Boolean) {
 
-    val structure: RecurrentNetworkStructure<InputNDArrayType> = this.sequence.getStateStructure(this.lastStateIndex)
+    val structure: RecurrentStackedLayersStructure<InputNDArrayType> = this.sequence.getStateStructure(this.lastStateIndex)
 
     structure.setInitHidden(arrays = if (this.curStateIndex == 0) initHiddenArrays else null)
 
@@ -550,7 +550,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun propagateRelevanceOnCurrentState(isFirstState: Boolean, isLastState: Boolean) {
 
-    val structure: RecurrentNetworkStructure<InputNDArrayType> = this.sequence.getStateStructure(this.curStateIndex)
+    val structure: RecurrentStackedLayersStructure<InputNDArrayType> = this.sequence.getStateStructure(this.curStateIndex)
     var isPropagating: Boolean = isLastState
 
     for ((layerIndex, layer) in structure.layers.withIndex().reversed()) {

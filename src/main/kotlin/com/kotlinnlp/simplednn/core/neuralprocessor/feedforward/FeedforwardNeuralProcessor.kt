@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardNetworkStructure
+import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardStackedLayersStructure
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -40,7 +40,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The structure as support of forward and backward.
    */
-  var structure = FeedforwardNetworkStructure<InputNDArrayType>(
+  var structure = FeedforwardStackedLayersStructure<InputNDArrayType>(
     layersConfiguration = this.neuralNetwork.layersConfiguration,
     params = this.neuralNetwork.model)
 

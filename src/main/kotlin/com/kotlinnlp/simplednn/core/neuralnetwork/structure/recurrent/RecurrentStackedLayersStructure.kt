@@ -13,23 +13,23 @@ import com.kotlinnlp.simplednn.core.layers.LayerStructureFactory
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.structure.NetworkStructure
+import com.kotlinnlp.simplednn.core.neuralnetwork.structure.StackedLayersStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The RecurrentNetworkStructure.
+ * The RecurrentStackedLayersStructure.
  *
  * @property layersConfiguration layers layersConfiguration
  * @property params the network parameters per layer
  * @property structureContextWindow the context window to get the previous and the next state of the structure
  */
-class RecurrentNetworkStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
+class RecurrentStackedLayersStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
   layersConfiguration: List<LayerInterface>,
   params: NetworkParameters,
   val structureContextWindow: StructureContextWindow<InputNDArrayType>
 ) : LayerContextWindow,
-  NetworkStructure<InputNDArrayType>(layersConfiguration = layersConfiguration, params = params) {
+  StackedLayersStructure<InputNDArrayType>(layersConfiguration = layersConfiguration, params = params) {
 
   /**
    * A list of booleans indicating if the init hidden layers must be used in the next forward.

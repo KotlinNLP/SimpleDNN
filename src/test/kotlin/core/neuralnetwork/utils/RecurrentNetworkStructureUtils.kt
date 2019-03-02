@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.RecurrentNetworkStructure
+import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.RecurrentStackedLayersStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.StructureContextWindow
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import core.layers.feedforward.simple.FeedforwardLayerStructureUtils
@@ -49,7 +49,7 @@ object RecurrentNetworkStructureUtils {
    *
    */
   fun buildStructure(structureContextWindow: StructureContextWindow<DenseNDArray>):
-    RecurrentNetworkStructure<DenseNDArray> {
+    RecurrentStackedLayersStructure<DenseNDArray> {
 
     val layersConfiguration = arrayOf(
       LayerInterface(size = 4),
@@ -57,7 +57,7 @@ object RecurrentNetworkStructureUtils {
       LayerInterface(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
     ).toList()
 
-    return RecurrentNetworkStructure(
+    return RecurrentStackedLayersStructure(
       layersConfiguration = layersConfiguration,
       params = this.buildParams(layersConfiguration),
       structureContextWindow = structureContextWindow)

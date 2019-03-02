@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType.Connection
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardNetworkStructure
+import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardStackedLayersStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -31,7 +31,7 @@ import kotlin.test.assertTrue
  */
 class FeedforwardNetworkStructureSpec : Spek({
 
-  describe("a FeedforwardNetworkStructure") {
+  describe("a FeedforwardStackedLayersStructure") {
 
     context("invalid configurations") {
 
@@ -51,7 +51,7 @@ class FeedforwardNetworkStructureSpec : Spek({
 
         it("should throw an exception") {
           assertFailsWith<IllegalArgumentException> {
-            FeedforwardNetworkStructure<DenseNDArray>(
+            FeedforwardStackedLayersStructure<DenseNDArray>(
               layersConfiguration = wrongLayersConfiguration,
               params = NetworkParameters(correctLayersConfiguration))
           }
@@ -68,7 +68,7 @@ class FeedforwardNetworkStructureSpec : Spek({
 
         it("should throw an exception") {
           assertFailsWith<IllegalArgumentException> {
-            FeedforwardNetworkStructure<DenseNDArray>(
+            FeedforwardStackedLayersStructure<DenseNDArray>(
               layersConfiguration = layersConfiguration,
               params = NetworkParameters(layersConfiguration))
           }
@@ -84,7 +84,7 @@ class FeedforwardNetworkStructureSpec : Spek({
         LayerInterface(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
       ).toList()
 
-      val structure = FeedforwardNetworkStructure<DenseNDArray>(
+      val structure = FeedforwardStackedLayersStructure<DenseNDArray>(
         layersConfiguration = layersConfiguration,
         params = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration))
 
