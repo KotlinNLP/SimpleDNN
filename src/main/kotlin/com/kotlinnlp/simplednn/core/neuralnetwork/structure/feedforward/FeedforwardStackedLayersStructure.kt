@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerStructureFactory
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerStructure
 import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.structure.StackedLayersStructure
+import com.kotlinnlp.simplednn.core.layers.StackedLayersStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
