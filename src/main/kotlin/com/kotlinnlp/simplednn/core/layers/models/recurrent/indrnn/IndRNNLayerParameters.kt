@@ -54,7 +54,7 @@ class IndRNNLayerParameters(
   /**
    * The recurrent weights.
    */
-  val recurrentWeights: UpdatableArray<*> = this.buildUpdatableArray(dim1 = this.outputSize, sparseInput = false)
+  val recurrentWeights: UpdatableArray<*> = UpdatableArray(dim1 = this.outputSize, sparse = false)
 
   /**
    * The list of all parameters.

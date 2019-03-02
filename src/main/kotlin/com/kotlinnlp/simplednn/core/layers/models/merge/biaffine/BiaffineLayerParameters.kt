@@ -50,24 +50,24 @@ class BiaffineLayerParameters(
   /**
    * The weights connected to the first input array.
    */
-  val w1: UpdatableArray<*> = this.buildUpdatableArray(this.outputSize, this.inputSize1, sparseInput = this.sparseInput)
+  val w1: UpdatableArray<*> = UpdatableArray(this.outputSize, this.inputSize1, sparse = this.sparseInput)
 
   /**
    * The parameters connected to the second input array.
    */
-  val w2: UpdatableArray<*> = this.buildUpdatableArray(this.outputSize, this.inputSize2, sparseInput = this.sparseInput)
+  val w2: UpdatableArray<*> = UpdatableArray(this.outputSize, this.inputSize2, sparse = this.sparseInput)
 
   /**
    * The bias array.
    */
-  val b: UpdatableDenseArray = this.buildDenseArray(this.outputSize)
+  val b: UpdatableDenseArray = UpdatableDenseArray(this.outputSize)
 
   /**
    * The weights connected to each the first and the second input arrays.
    */
   val w: List<UpdatableArray<*>> = List(
     size = this.outputSize,
-    init = { this.buildUpdatableArray(this.inputSize2, this.inputSize1, sparseInput = this.sparseInput) }
+    init = { UpdatableArray(this.inputSize2, this.inputSize1, sparse = this.sparseInput) }
   )
 
   /**

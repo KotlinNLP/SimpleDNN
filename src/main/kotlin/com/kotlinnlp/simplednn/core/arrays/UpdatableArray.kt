@@ -24,6 +24,21 @@ open class UpdatableArray<NDArrayType: NDArray<NDArrayType>>(open val values: ND
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
+
+    /**
+     * Build an [UpdatableArray] with values initialized to zeros.
+     *
+     * @param dim1 the first dimension of the array
+     * @param dim2 the second dimension of the array (default = 1)
+     * @param sparse whether the array is sparse or dense
+     *
+     * @return a new updatable array with values initialized to zeros
+     */
+    operator fun invoke(dim1: Int, dim2: Int = 1, sparse: Boolean = false): UpdatableArray<*> =
+      if (sparse)
+        UpdatableSparseArray(dim1, dim2)
+      else
+        UpdatableDenseArray(dim1, dim2)
   }
 
   /**

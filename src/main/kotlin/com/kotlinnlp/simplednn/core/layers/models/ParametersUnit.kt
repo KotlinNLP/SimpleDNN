@@ -38,40 +38,11 @@ open class ParametersUnit(
   /**
    *
    */
-  val biases: UpdatableArray<*> = this.buildUpdatableArray(dim1 = this.outputSize)
+  val biases: UpdatableArray<*> = UpdatableArray(dim1 = this.outputSize)
 
   /**
    *
    */
-  val weights: UpdatableArray<*> = this.buildUpdatableArray(
+  val weights: UpdatableArray<*> = UpdatableArray(
     dim1 = this.outputSize, dim2 = this.inputSize, sparse = this.sparseInput)
-
-  /**
-   *
-   */
-  protected fun buildUpdatableArray(dim1: Int, dim2: Int = 1, sparse: Boolean = false): UpdatableArray<*> =
-    if (sparse)
-      this.buildSparseArray(dim1, dim2)
-    else
-      this.buildDenseArray(dim1, dim2)
-
-  /**
-   * Build an [UpdatableDenseArray] with values initialized to zeros.
-   *
-   * @param dim1 the first dimension of the array
-   * @param dim2 the second dimension of the array (default = 1)
-   *
-   * @return a new dense array with values initialized to zeros
-   */
-  private fun buildDenseArray(dim1: Int, dim2: Int = 1) = UpdatableDenseArray(Shape(dim1, dim2))
-
-  /**
-   * Build an [UpdatableSparseArray] with values initialized to zeros.
-   *
-   * @param dim1 the first dimension of the array
-   * @param dim2 the second dimension of the array (default = 1)
-   *
-   * @return a new dense array with values initialized to zeros
-   */
-  private fun buildSparseArray(dim1: Int, dim2: Int = 1) = UpdatableSparseArray(Shape(dim1, dim2))
 }

@@ -31,7 +31,7 @@ class RecurrentParametersUnit(
   /**
    *
    */
-  val recurrentWeights: UpdatableArray<*> = this.buildUpdatableArray(
+  val recurrentWeights: UpdatableArray<*> = UpdatableArray(
     dim1 = this.outputSize,
     dim2 = this.outputSize,
     sparse = meProp)

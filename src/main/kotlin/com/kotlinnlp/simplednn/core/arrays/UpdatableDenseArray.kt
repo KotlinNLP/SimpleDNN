@@ -25,6 +25,16 @@ class UpdatableDenseArray(override val values: DenseNDArray) : UpdatableArray<De
    */
   constructor(shape: Shape) : this(DenseNDArrayFactory.zeros(shape))
 
+  /**
+   * Build an [UpdatableDenseArray] with values initialized to zeros.
+   *
+   * @param dim1 the first dimension of the array
+   * @param dim2 the second dimension of the array (default = 1)
+   *
+   * @return a new dense array with values initialized to zeros
+   */
+  constructor(dim1: Int, dim2: Int = 1) : this(Shape(dim1, dim2))
+
   companion object {
 
     /**

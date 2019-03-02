@@ -25,6 +25,16 @@ class UpdatableSparseArray(override val values: SparseNDArray) : UpdatableArray<
    */
   constructor(shape: Shape) : this(SparseNDArrayFactory.zeros(shape))
 
+  /**
+   * Build an [UpdatableSparseArray] with values initialized to zeros.
+   *
+   * @param dim1 the first dimension of the array
+   * @param dim2 the second dimension of the array (default = 1)
+   *
+   * @return a new dense array with values initialized to zeros
+   */
+  constructor(dim1: Int, dim2: Int = 1) : this(Shape(dim1, dim2))
+
   companion object {
 
     /**
