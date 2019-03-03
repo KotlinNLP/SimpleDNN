@@ -22,9 +22,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
- * @property id an identification number useful to track a specific [AffineLayerStructure]
+ * @property id an identification number useful to track a specific [AffineLayer]
  */
-class AffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+class AffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArrays: List<AugmentedArray<InputNDArrayType>>,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: AffineLayerParameters,

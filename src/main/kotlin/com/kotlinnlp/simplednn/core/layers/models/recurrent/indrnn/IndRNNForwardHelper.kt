@@ -9,15 +9,16 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.forward
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * The helper which executes the forward on a [layer].
  *
- * @property layer the [IndRNNLayerStructure] in which the forward is executed
+ * @property layer the [IndRNNLayer] in which the forward is executed
  */
 class IndRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: IndRNNLayerStructure<InputNDArrayType>
+  override val layer: IndRNNLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
@@ -28,10 +29,14 @@ class IndRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override fun forward() { this.layer.params as IndRNNLayerParameters
 
     // y = w (dot) x + b
-    this.layer.outputArray.forward(parameters = this.layer.params.feedforwardUnit, x = this.layer.inputArray.values)
+    this.layer.outputArray.forward(
+      w = this.layer.params.feedforwardUnit.weights.values,
+      b = this.layer.params.feedforwardUnit.biases.values,
+      x = this.layer.inputArray.values
+    )
 
     // y += wRec * yPrev
-    this.layer.layerContextWindow.getPrevStateLayer()?.let { prevStateLayer ->
+    this.layer.layerContextWindow.getPrevState()?.let { prevStateLayer ->
 
       val wRec = this.layer.params.recurrentWeights.values
       this.layer.outputArray.values.assignSum(wRec.prod(prevStateLayer.outputArray.values))

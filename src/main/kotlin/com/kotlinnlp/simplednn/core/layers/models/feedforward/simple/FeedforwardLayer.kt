@@ -10,8 +10,8 @@ package com.kotlinnlp.simplednn.core.layers.models.feedforward.simple
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.*
-import com.kotlinnlp.simplednn.core.layers.models.LayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.ItemsPool
 
 /**
@@ -25,15 +25,15 @@ import com.kotlinnlp.utils.ItemsPool
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  * @property id an identification number useful to track a specific layer (default: 0)
  */
-class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+class FeedforwardLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
-  override val outputArray: LayerUnit<InputNDArrayType>,
+  override val outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters<*>,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0,
   override val id: Int = 0
 ) : ItemsPool.IDItem,
-  LayerStructure<InputNDArrayType>(
+  Layer<InputNDArrayType>(
     inputArray = inputArray,
     outputArray = outputArray,
     params = params,
@@ -61,7 +61,7 @@ class FeedforwardLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   init {
     if (activationFunction != null) {
-      outputArray.setActivation(activationFunction)
+      this.outputArray.setActivation(activationFunction)
     }
   }
 }

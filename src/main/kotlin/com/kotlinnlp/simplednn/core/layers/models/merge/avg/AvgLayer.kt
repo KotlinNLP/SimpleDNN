@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.models.merge.sum
+package com.kotlinnlp.simplednn.core.layers.models.merge.avg
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
@@ -13,16 +13,16 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The Sum Layer Structure.
+ * The Avg Layer Structure.
  *
  * @property inputArrays the input arrays of the layer
  * @property params the parameters which connect the input to the output
- * @property id an identification number useful to track a specific [SumLayerStructure]
+ * @property id an identification number useful to track a specific [AvgLayer]
  */
-class SumLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+class AvgLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArrays: List<AugmentedArray<InputNDArrayType>>,
   outputArray: AugmentedArray<DenseNDArray>,
-  override val params: SumLayerParameters,
+  override val params: AvgLayerParameters,
   id: Int = 0
 ) : MergeLayer<InputNDArrayType>(
   inputArrays = inputArrays,
@@ -37,22 +37,22 @@ class SumLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The helper which execute the forward.
    */
-  override val forwardHelper = SumForwardHelper(layer = this)
+  override val forwardHelper = AvgForwardHelper(layer = this)
 
   /**
    * The helper which execute the backward.
    */
-  override val backwardHelper = SumBackwardHelper(layer = this)
+  override val backwardHelper = AvgBackwardHelper(layer = this)
 
   /**
    * The helper which calculates the relevance.
    */
-  override val relevanceHelper = SumRelevanceHelper(layer = this)
+  override val relevanceHelper = AvgRelevanceHelper(layer = this)
 
   /**
-   * @return the [SumLayerParameters] used to store errors
+   * @return the [AvgLayerParameters] used to store errors
    */
-  override fun parametersErrorsFactory() = SumLayerParameters(
+  override fun parametersErrorsFactory() = AvgLayerParameters(
     inputSize = this.params.inputSize,
     nInputs = this.params.nInputs)
 }

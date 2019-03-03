@@ -9,6 +9,9 @@ package com.kotlinnlp.simplednn.core.layers
 
 import java.io.Serializable
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The configuration of the (input or output) interface of a layer.
@@ -27,15 +30,6 @@ data class LayerInterface(
   val activationFunction: ActivationFunction? = null,
   val dropout: Double = 0.0
 ) : Serializable {
-
-  companion object {
-
-    /**
-     * Private val used to serialize the class (needed by Serializable).
-     */
-    @Suppress("unused")
-    private const val serialVersionUID: Long = 1L
-  }
 
   /**
    * Build a [LayerInterface] with a unique array (not the input of a Merge layer).
@@ -65,4 +59,13 @@ data class LayerInterface(
    * The size of the unique array of this interface (meaningless in case of input interface of a Merge layer).
    */
   val size: Int = if (sizes.size == 1) sizes.first() else -1
+
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed by Serializable).
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
 }

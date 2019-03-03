@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
@@ -23,7 +23,7 @@ object SimpleRecurrentLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow) = SimpleRecurrentLayerStructure(
+  fun buildLayer(layerContextWindow: LayerContextWindow) = SimpleRecurrentLayer(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
     outputArray = RecurrentLayerUnit(5),
     params = buildParams(),

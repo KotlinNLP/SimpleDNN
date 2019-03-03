@@ -141,7 +141,7 @@ class HAN(
   val params = HANParameters(
     biRNNs = this.biRNNs.map { it.model },
     attentionNetworks = this.attentionNetworksParams,
-    outputNetwork = this.outputNetwork.model
+    outputStackedLayers = this.outputNetwork.model
   )
 
   /**

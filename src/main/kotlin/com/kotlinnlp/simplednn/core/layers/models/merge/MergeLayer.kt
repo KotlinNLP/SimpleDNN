@@ -9,13 +9,13 @@ package com.kotlinnlp.simplednn.core.layers.models.merge
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The Merge Layer abstract class.
- * It is a [LayerStructure] with two inputs instead of one.
+ * It is a [Layer] with two inputs instead of one.
  *
  * @property inputArrays the input arrays of the layer
  * @property outputArray the output array of the layer
@@ -32,7 +32,7 @@ abstract class MergeLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0,
   id: Int = 0
-) : LayerStructure<InputNDArrayType>(
+) : Layer<InputNDArrayType>(
   inputArray = inputArrays[0],
   outputArray = outputArray,
   params = params,

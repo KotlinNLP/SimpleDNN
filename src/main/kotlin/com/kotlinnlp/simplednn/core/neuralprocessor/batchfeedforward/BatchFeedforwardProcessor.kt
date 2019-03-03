@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward
 
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
@@ -34,7 +34,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
   List<DenseNDArray>, // OutputType
   List<DenseNDArray>, // ErrorsType
   List<DenseNDArray>, // InputErrorsType
-  NetworkParameters // ParamsType
+  StackedLayersParameters // ParamsType
   > {
 
   /**
@@ -48,7 +48,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * Contains the errors accumulated from the processors during the forward.
    */
-  private val errorsAccumulator = ParamsErrorsAccumulator<NetworkParameters>()
+  private val errorsAccumulator = ParamsErrorsAccumulator<StackedLayersParameters>()
 
   /**
    * The amount of processors used at a given time.
@@ -82,7 +82,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return the errors of the internal network
    */
-  override fun getParamsErrors(copy: Boolean): NetworkParameters
+  override fun getParamsErrors(copy: Boolean): StackedLayersParameters
     = this.errorsAccumulator.getParamsErrors(copy = copy)
 
   /**

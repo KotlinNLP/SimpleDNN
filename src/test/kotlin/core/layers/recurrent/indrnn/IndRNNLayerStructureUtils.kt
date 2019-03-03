@@ -12,7 +12,8 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn.IndRNNLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn.IndRNNLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn.IndRNNLayer
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
@@ -23,9 +24,9 @@ object IndRNNLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow) = IndRNNLayerStructure(
+  fun buildLayer(layerContextWindow: LayerContextWindow) = IndRNNLayer(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
-    outputArray = RecurrentLayerUnit(5),
+    outputArray = RecurrentLayerUnit<DenseNDArray>(5),
     params = buildParams(),
     activationFunction = Tanh(),
     layerContextWindow = layerContextWindow)

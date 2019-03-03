@@ -14,12 +14,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The helper which executes the forward on a [ConcatLayerStructure].
+ * The helper which executes the forward on a [ConcatLayer].
  *
  * @property layer the layer in which the forward is executed
  */
 class ConcatForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: ConcatLayerStructure<InputNDArrayType>
+  override val layer: ConcatLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**

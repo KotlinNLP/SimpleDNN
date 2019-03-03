@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayersPool
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.attention.AttentionParameters
@@ -45,7 +45,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * The transform layer which creates an attention array from each array of an input sequence.
    */
-  private lateinit var transformLayers: List<FeedforwardLayerStructure<InputNDArrayType>>
+  private lateinit var transformLayers: List<FeedforwardLayer<InputNDArrayType>>
 
   /**
    * The transform layers pool.

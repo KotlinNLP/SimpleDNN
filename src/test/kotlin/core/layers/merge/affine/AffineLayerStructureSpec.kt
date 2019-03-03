@@ -21,7 +21,7 @@ import kotlin.test.assertTrue
  */
 class AffineLayerStructureSpec : Spek({
 
-  describe("an AffineLayerStructure") {
+  describe("an AffineLayer") {
 
     on("forward") {
 

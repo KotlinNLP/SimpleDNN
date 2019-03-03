@@ -14,10 +14,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 /**
  * The helper which calculates the relevance of the input of a [layer] respect of its output.
  *
- * @property layer the [IndRNNLayerStructure] in which to calculate the input relevance
+ * @property layer the [IndRNNLayer] in which to calculate the input relevance
  */
 class IndRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: IndRNNLayerStructure<InputNDArrayType>
+  override val layer: IndRNNLayer<InputNDArrayType>
 ) : RecurrentRelevanceHelper<InputNDArrayType>(layer) {
 
   /**

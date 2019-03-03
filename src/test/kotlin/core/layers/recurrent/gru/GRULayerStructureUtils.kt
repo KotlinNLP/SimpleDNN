@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.gru.GRULayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.gru.GRULayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.gru.GRULayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
@@ -25,7 +25,7 @@ object GRULayerStructureUtils {
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow): GRULayerStructure<DenseNDArray> = GRULayerStructure(
+  fun buildLayer(layerContextWindow: LayerContextWindow): GRULayer<DenseNDArray> = GRULayer(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
     outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))),
     params = buildParams(),

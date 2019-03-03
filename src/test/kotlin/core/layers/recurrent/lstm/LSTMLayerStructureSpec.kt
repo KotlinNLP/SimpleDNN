@@ -23,7 +23,7 @@ import kotlin.test.assertTrue
  */
 class LSTMLayerStructureSpec : Spek({
 
-  describe("a LSTMLayerStructure") {
+  describe("a LSTMLayer") {
 
     context("forward") {
 
@@ -661,7 +661,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the init hidden array") {
           assertTrue {
-            contextWindow.getPrevStateLayer().getInitHiddenErrors().equals(
+            contextWindow.getPrevState().getInitHiddenErrors().equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.020, -0.051, 0.017, -0.264, 0.449)),
               tolerance = 0.0005)
           }

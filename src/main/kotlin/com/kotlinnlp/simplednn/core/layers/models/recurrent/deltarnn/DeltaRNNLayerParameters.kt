@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.ParametersUnit
+import com.kotlinnlp.simplednn.core.layers.models.LinearParams
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
@@ -48,7 +48,7 @@ class DeltaRNNLayerParameters(
   /**
    *
    */
-  val feedforwardUnit = ParametersUnit(
+  val feedforwardUnit = LinearParams(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
@@ -56,7 +56,7 @@ class DeltaRNNLayerParameters(
   /**
    *
    */
-  val recurrentUnit = ParametersUnit(inputSize = this.outputSize, outputSize = this.outputSize)
+  val recurrentUnit = LinearParams(inputSize = this.outputSize, outputSize = this.outputSize)
 
   /**
    *

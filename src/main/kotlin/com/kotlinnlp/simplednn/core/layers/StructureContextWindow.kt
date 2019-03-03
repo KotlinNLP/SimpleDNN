@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent
+package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
@@ -17,10 +17,10 @@ interface StructureContextWindow<InputNDArrayType : NDArray<InputNDArrayType>> {
   /**
    *
    */
-  fun getPrevStateStructure(): RecurrentStackedLayersStructure<InputNDArrayType>?
+  fun getPrevState(): RecurrentStackedLayers<InputNDArrayType>?
 
   /**
    *
    */
-  fun getNextStateStructure(): RecurrentStackedLayersStructure<InputNDArrayType>?
+  fun getNextState(): RecurrentStackedLayers<InputNDArrayType>?
 }

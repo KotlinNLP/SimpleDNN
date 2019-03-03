@@ -13,12 +13,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The helper which executes the backward on an [AffineLayerStructure].
+ * The helper which executes the backward on an [AffineLayer].
  *
  * @property layer the layer in which the backward is executed
  */
 class AffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: AffineLayerStructure<InputNDArrayType>
+  override val layer: AffineLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
 
   /**

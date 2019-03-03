@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.sequenceencoder
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 
 /**
@@ -17,7 +17,7 @@ import com.kotlinnlp.simplednn.core.optimizer.IterableParams
  * @property networksParams a list of feedforward network parameters
  */
 class ParallelEncoderParameters(
-  val networksParams: List<NetworkParameters>
+  val networksParams: List<StackedLayersParameters>
 ) : IterableParams<ParallelEncoderParameters>() {
 
   companion object {

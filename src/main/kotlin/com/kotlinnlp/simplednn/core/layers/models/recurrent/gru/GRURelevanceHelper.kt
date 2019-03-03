@@ -14,10 +14,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 /**
  * The helper which calculates the relevance of the input of a [layer] respect of its output.
  *
- * @property layer the [GRULayerStructure] in which to calculate the input relevance
+ * @property layer the [GRULayer] in which to calculate the input relevance
  */
 class GRURelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  layer: GRULayerStructure<InputNDArrayType>
+  layer: GRULayer<InputNDArrayType>
 ) : GatedRecurrentRelevanceHelper<InputNDArrayType>(layer) {
 
   /**

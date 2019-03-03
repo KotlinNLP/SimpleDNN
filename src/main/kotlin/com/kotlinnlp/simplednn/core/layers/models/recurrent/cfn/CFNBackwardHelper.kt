@@ -16,10 +16,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * The helper which executes the backward on a [layer].
  *
- * @property layer the [CFNLayerStructure] in which the backward is executed
+ * @property layer the [CFNLayer] in which the backward is executed
  */
 class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: CFNLayerStructure<InputNDArrayType>
+  override val layer: CFNLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
@@ -31,8 +31,8 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
-    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer() as? CFNLayerStructure
-    val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer() as? CFNLayerStructure
+    val prevStateLayer = this.layer.layerContextWindow.getPrevState() as? CFNLayer
+    val nextStateLayer = this.layer.layerContextWindow.getNextState() as? CFNLayer
 
     if (nextStateLayer != null) {
       this.addOutputRecurrentGradients(nextStateLayer)
@@ -53,7 +53,7 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param prevStateLayer the layer in the previous state
    */
-  private fun assignGatesGradients(prevStateLayer: CFNLayerStructure<*>?) {
+  private fun assignGatesGradients(prevStateLayer: CFNLayer<*>?) {
 
 
     val gy: DenseNDArray = this.layer.outputArray.errors
@@ -128,7 +128,7 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun addOutputRecurrentGradients(nextStateLayer: CFNLayerStructure<*>) {
+  private fun addOutputRecurrentGradients(nextStateLayer: CFNLayer<*>) {
 
     val gy: DenseNDArray = this.layer.outputArray.errors
     val gyRec: DenseNDArray = this.getLayerRecurrentContribution(nextStateLayer)
@@ -140,7 +140,7 @@ class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getLayerRecurrentContribution(nextStateLayer: CFNLayerStructure<*>): DenseNDArray {
+  private fun getLayerRecurrentContribution(nextStateLayer: CFNLayer<*>): DenseNDArray {
 
     this.layer.params as CFNLayerParameters
 

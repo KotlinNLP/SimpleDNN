@@ -9,17 +9,18 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.core.layers.Layer
+import com.kotlinnlp.simplednn.core.layers.forward
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the forward on a [layer].
  *
- * @property layer the [CFNLayerStructure] in which the forward is executed
+ * @property layer the [CFNLayer] in which the forward is executed
  */
 class CFNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: CFNLayerStructure<InputNDArrayType>
+  override val layer: CFNLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
@@ -29,7 +30,7 @@ class CFNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun forward() {
 
-    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer()
+    val prevStateLayer = this.layer.layerContextWindow.getPrevState()
 
     this.setGates(prevStateLayer) // must be called before accessing to the activated values of the gates
 
@@ -70,14 +71,24 @@ class CFNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * forG = sigmoid(wForG (dot) x + bForG + wrForG (dot) yPrev)
    * c = f(wc (dot) x)
    */
-  private fun setGates(prevStateLayer: LayerStructure<*>?) { this.layer.params as CFNLayerParameters
+  private fun setGates(prevStateLayer: Layer<*>?) { this.layer.params as CFNLayerParameters
 
     val x: InputNDArrayType = this.layer.inputArray.values
     val c: DenseNDArray = this.layer.candidate.values
     val wc: DenseNDArray = this.layer.params.candidateWeights.values as DenseNDArray
 
-    this.layer.inputGate.forward(this.layer.params.inputGate, x)
-    this.layer.forgetGate.forward(this.layer.params.forgetGate, x)
+    this.layer.inputGate.forward(
+      w = this.layer.params.inputGate.weights.values,
+      b = this.layer.params.inputGate.biases.values,
+      x = x
+    )
+
+    this.layer.forgetGate.forward(
+      w = this.layer.params.forgetGate.weights.values,
+      b = this.layer.params.forgetGate.biases.values,
+      x = x
+    )
+
     c.assignDot(wc, x)
 
     if (prevStateLayer != null) { // recurrent contribution for input and forget gates

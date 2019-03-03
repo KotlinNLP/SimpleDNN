@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.multitasknetwork
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import java.io.Serializable
 
@@ -16,8 +16,8 @@ import java.io.Serializable
  * The neural parameters of the [MultiTaskNetwork].
  */
 class MultiTaskNetworkParameters(
-  val inputParams: NetworkParameters,
-  val outputParamsList: List<NetworkParameters>
+  val inputParams: StackedLayersParameters,
+  val outputParamsList: List<StackedLayersParameters>
 ) : Serializable, IterableParams<MultiTaskNetworkParameters>() {
 
   companion object {

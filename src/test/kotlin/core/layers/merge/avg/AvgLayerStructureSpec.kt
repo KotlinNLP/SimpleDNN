@@ -20,7 +20,7 @@ import kotlin.test.assertTrue
  */
 class AvgLayerStructureSpec : Spek({
 
-  describe("a AvgLayerStructure") {
+  describe("a AvgLayer") {
 
     on("forward") {
 

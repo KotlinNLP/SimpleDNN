@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.gru.GRULayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.gru.GRULayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.gru.GRULayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
@@ -26,9 +26,9 @@ sealed class GRULayerContextWindow: LayerContextWindow {
    */
   class Empty: GRULayerContextWindow() {
 
-    override fun getPrevStateLayer() = null
+    override fun getPrevState() = null
 
-    override fun getNextStateLayer() = null
+    override fun getNextState() = null
   }
 
   /**
@@ -36,9 +36,9 @@ sealed class GRULayerContextWindow: LayerContextWindow {
    */
   class Back: GRULayerContextWindow() {
 
-    override fun getPrevStateLayer(): GRULayerStructure<DenseNDArray> = buildPrevStateLayer()
+    override fun getPrevState(): GRULayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextStateLayer() = null
+    override fun getNextState() = null
   }
 
   /**
@@ -46,9 +46,9 @@ sealed class GRULayerContextWindow: LayerContextWindow {
    */
   class Front: GRULayerContextWindow() {
 
-    override fun getPrevStateLayer() = null
+    override fun getPrevState() = null
 
-    override fun getNextStateLayer(): GRULayerStructure<DenseNDArray> = buildNextStateLayer()
+    override fun getNextState(): GRULayer<DenseNDArray> = buildNextStateLayer()
   }
 
   /**
@@ -56,21 +56,21 @@ sealed class GRULayerContextWindow: LayerContextWindow {
    */
   class Bilateral: GRULayerContextWindow() {
 
-    override fun getPrevStateLayer(): GRULayerStructure<DenseNDArray> = buildPrevStateLayer()
+    override fun getPrevState(): GRULayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextStateLayer(): GRULayerStructure<DenseNDArray> = buildNextStateLayer()
+    override fun getNextState(): GRULayer<DenseNDArray> = buildNextStateLayer()
   }
 }
 
 /**
  *
  */
-private fun buildPrevStateLayer(): GRULayerStructure<DenseNDArray> {
+private fun buildPrevStateLayer(): GRULayer<DenseNDArray> {
 
   val outputArray = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
   outputArray.activate()
 
-  return GRULayerStructure(
+  return GRULayer(
     inputArray = AugmentedArray<DenseNDArray>(size = 4),
     outputArray = outputArray,
     params = GRULayerParameters(inputSize = 4, outputSize = 5),
@@ -82,12 +82,12 @@ private fun buildPrevStateLayer(): GRULayerStructure<DenseNDArray> {
 /**
  *
  */
-private fun buildNextStateLayer(): GRULayerStructure<DenseNDArray> {
+private fun buildNextStateLayer(): GRULayer<DenseNDArray> {
 
   val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(5)))
   outputArray.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
-  val layer = GRULayerStructure(
+  val layer = GRULayer(
     inputArray = AugmentedArray<DenseNDArray>(size = 4),
     outputArray = outputArray,
     params = GRULayerParameters(inputSize = 4, outputSize = 5),

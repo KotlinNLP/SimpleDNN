@@ -20,7 +20,7 @@ import kotlin.test.assertTrue
  */
 class ConcatLayerStructureSpec : Spek({
 
-  describe("a ConcatLayerStructure") {
+  describe("a ConcatLayer") {
 
     on("forward") {
 

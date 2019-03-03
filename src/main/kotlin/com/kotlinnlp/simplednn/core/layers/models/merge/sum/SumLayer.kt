@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.models.merge.product
+package com.kotlinnlp.simplednn.core.layers.models.merge.sum
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
@@ -13,16 +13,16 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The Product Layer Structure.
+ * The Sum Layer Structure.
  *
  * @property inputArrays the input arrays of the layer
  * @property params the parameters which connect the input to the output
- * @property id an identification number useful to track a specific [ProductLayerStructure]
+ * @property id an identification number useful to track a specific [SumLayer]
  */
-class ProductLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+class SumLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArrays: List<AugmentedArray<InputNDArrayType>>,
   outputArray: AugmentedArray<DenseNDArray>,
-  override val params: ProductLayerParameters,
+  override val params: SumLayerParameters,
   id: Int = 0
 ) : MergeLayer<InputNDArrayType>(
   inputArrays = inputArrays,
@@ -37,22 +37,22 @@ class ProductLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The helper which execute the forward.
    */
-  override val forwardHelper = ProductForwardHelper(layer = this)
+  override val forwardHelper = SumForwardHelper(layer = this)
 
   /**
    * The helper which execute the backward.
    */
-  override val backwardHelper = ProductBackwardHelper(layer = this)
+  override val backwardHelper = SumBackwardHelper(layer = this)
 
   /**
    * The helper which calculates the relevance.
    */
-  override val relevanceHelper = ProductRelevanceHelper(layer = this)
+  override val relevanceHelper = SumRelevanceHelper(layer = this)
 
   /**
-   * @return the [ProductLayerParameters] used to store errors
+   * @return the [SumLayerParameters] used to store errors
    */
-  override fun parametersErrorsFactory() = ProductLayerParameters(
+  override fun parametersErrorsFactory() = SumLayerParameters(
     inputSize = this.params.inputSize,
     nInputs = this.params.nInputs)
 }

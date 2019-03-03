@@ -5,31 +5,26 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent
+package com.kotlinnlp.simplednn.core.layers
 
-import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.*
-import com.kotlinnlp.simplednn.core.layers.LayerStructureFactory
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerStructure
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.core.layers.StackedLayersStructure
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The RecurrentStackedLayersStructure.
+ * The RecurrentStackedLayers.
  *
  * @property layersConfiguration layers layersConfiguration
- * @property params the network parameters per layer
+ * @property paramsPerLayer the parameters per layer
  * @property structureContextWindow the context window to get the previous and the next state of the structure
  */
-class RecurrentStackedLayersStructure <InputNDArrayType : NDArray<InputNDArrayType>>(
+class RecurrentStackedLayers <InputNDArrayType : NDArray<InputNDArrayType>>(
   layersConfiguration: List<LayerInterface>,
-  params: NetworkParameters,
+  paramsPerLayer: List<LayerParameters<*>>,
   val structureContextWindow: StructureContextWindow<InputNDArrayType>
 ) : LayerContextWindow,
-  StackedLayersStructure<InputNDArrayType>(layersConfiguration = layersConfiguration, params = params) {
+  StackedLayers<InputNDArrayType>(layersConfiguration = layersConfiguration, paramsPerLayer = paramsPerLayer) {
 
   /**
    * A list of booleans indicating if the init hidden layers must be used in the next forward.
@@ -40,7 +35,7 @@ class RecurrentStackedLayersStructure <InputNDArrayType : NDArray<InputNDArrayTy
    * The initial hidden layers from which to take the previous hidden if the method [setInitHidden] is called before a
    * forward.
    */
-  private val initHiddenLayers: List<LayerStructure<*>> = this.buildLayers()
+  private val initHiddenLayers: List<Layer<*>> = this.buildLayers()
 
   /**
    * Set the initial hidden arrays of each layer. They will be used as previous hidden in the next forward.
@@ -55,7 +50,7 @@ class RecurrentStackedLayersStructure <InputNDArrayType : NDArray<InputNDArrayTy
 
     if (arrays != null) {
       this.initHiddenLayers.zip(arrays).forEach { (layer, array) ->
-        if (layer is RecurrentLayerStructure && array != null) layer.setInitHidden(array)
+        if (layer is RecurrentLayer && array != null) layer.setInitHidden(array)
       }
     }
 
@@ -70,49 +65,24 @@ class RecurrentStackedLayersStructure <InputNDArrayType : NDArray<InputNDArrayTy
    */
   fun getInitHiddenErrors(): List<DenseNDArray?> =
     this.useInitHidden.zip(this.initHiddenLayers).map { (useInitHidden, layer) ->
-      if (useInitHidden && layer is RecurrentLayerStructure) layer.getInitHiddenErrors() else null
+      if (useInitHidden && layer is RecurrentLayer) layer.getInitHiddenErrors() else null
     }
 
   /**
    * @return the current layer in previous state
    */
-  override fun getPrevStateLayer(): LayerStructure<*>? = if (this.useInitHidden[this.curLayerIndex]) {
+  override fun getPrevState(): Layer<*>? = if (this.useInitHidden[this.curLayerIndex]) {
     this.initHiddenLayers[this.curLayerIndex]
   } else {
-    val prevStateStructure = this.structureContextWindow.getPrevStateStructure()
+    val prevStateStructure = this.structureContextWindow.getPrevState()
     prevStateStructure?.layers?.get(this.curLayerIndex)
   }
 
   /**
    * @return the current layer in next state
    */
-  override fun getNextStateLayer(): LayerStructure<*>? {
-    val nextStateStructure = this.structureContextWindow.getNextStateStructure()
+  override fun getNextState(): Layer<*>? {
+    val nextStateStructure = this.structureContextWindow.getNextState()
     return nextStateStructure?.layers?.get(this.curLayerIndex)
   }
-
-  /**
-   * LayerStructure factory used to concatenate two layers, given the input array (referenced from
-   * the previous layer) and the output layersConfiguration.
-   *
-   * @param inputArrays a list of AugmentedArrays used as referenced input (to concatenate two layers)
-   * @param outputConfiguration the layersConfiguration of the output array
-   * @param params the network parameters of the current layer
-   * @param dropout the probability of dropout
-   *
-   * @return a new LayerStructure
-   */
-  override fun <InputNDArrayType : NDArray<InputNDArrayType>> layerFactory(
-    inputArrays: List<AugmentedArray<InputNDArrayType>>,
-    outputConfiguration: LayerInterface,
-    params: LayerParameters<*>,
-    dropout: Double
-  ): LayerStructure<InputNDArrayType> = LayerStructureFactory(
-    inputArrays = inputArrays,
-    outputSize = outputConfiguration.size,
-    params = params,
-    activationFunction = outputConfiguration.activationFunction,
-    connectionType = outputConfiguration.connectionType!!,
-    dropout = dropout,
-    contextWindow = this)
 }

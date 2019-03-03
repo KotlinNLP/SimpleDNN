@@ -13,10 +13,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 /**
  * The helper which calculates the relevance of the input of a gated recurrent [layer] respect of its output.
  *
- * @property layer the [RecurrentLayerStructure] in which to calculate the input relevance
+ * @property layer the [RecurrentLayer] in which to calculate the input relevance
  */
 abstract class GatedRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  layer: RecurrentLayerStructure<InputNDArrayType>
+  layer: RecurrentLayer<InputNDArrayType>
 ) : RecurrentRelevanceHelper<InputNDArrayType>(layer) {
 
   /**

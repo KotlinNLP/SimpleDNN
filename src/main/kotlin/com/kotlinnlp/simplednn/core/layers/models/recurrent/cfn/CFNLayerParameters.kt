@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentParametersUnit
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLinearParams
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 
 /**
@@ -46,7 +46,7 @@ class CFNLayerParameters(
   /**
    *
    */
-  val inputGate = RecurrentParametersUnit(
+  val inputGate = RecurrentLinearParams(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
@@ -54,7 +54,7 @@ class CFNLayerParameters(
   /**
    *
    */
-  val forgetGate = RecurrentParametersUnit(
+  val forgetGate = RecurrentLinearParams(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)

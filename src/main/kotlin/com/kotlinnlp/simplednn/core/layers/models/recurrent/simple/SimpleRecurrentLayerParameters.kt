@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentParametersUnit
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLinearParams
 
 /**
  * The parameters of the layer of type SimpleRecurrent.
@@ -46,7 +46,7 @@ class SimpleRecurrentLayerParameters(
   /**
    *
    */
-  val unit = RecurrentParametersUnit(
+  val unit = RecurrentLinearParams(
     outputSize = this.outputSize,
     inputSize = this.inputSize,
     sparseInput = this.sparseInput)

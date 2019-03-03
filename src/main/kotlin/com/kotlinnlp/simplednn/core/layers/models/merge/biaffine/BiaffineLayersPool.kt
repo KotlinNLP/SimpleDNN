@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.biaffine
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.LayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -18,7 +17,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
 import com.kotlinnlp.utils.ItemsPool
 
 /**
- * A pool of [BiaffineLayerStructure]s which allows to allocate and release layers when needed, without creating
+ * A pool of [BiaffineLayer]s which allows to allocate and release layers when needed, without creating
  * a new one every time.
  *
  * @property params the parameters which connect the input to the output
@@ -31,16 +30,16 @@ class BiaffineLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputType: LayerType.Input,
   val activationFunction: ActivationFunction?,
   val dropout: Double = 0.0
-) : ItemsPool<BiaffineLayerStructure<InputNDArrayType>>() {
+) : ItemsPool<BiaffineLayer<InputNDArrayType>>() {
 
   /**
    * The factory of a new layer structure.
    *
    * @param id the id of the processor to create
    *
-   * @return a new [BiaffineLayerStructure] with the given [id]
+   * @return a new [BiaffineLayer] with the given [id]
    */
-  override fun itemFactory(id: Int): BiaffineLayerStructure<InputNDArrayType> {
+  override fun itemFactory(id: Int): BiaffineLayer<InputNDArrayType> {
 
     val (inputArray1, inputArray2) = when (this.inputType) {
 
@@ -58,10 +57,10 @@ class BiaffineLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
     }
 
     @Suppress("UNCHECKED_CAST")
-    return BiaffineLayerStructure(
+    return BiaffineLayer(
       inputArray1 = inputArray1 as AugmentedArray<InputNDArrayType>,
       inputArray2 = inputArray2 as AugmentedArray<InputNDArrayType>,
-      outputArray = LayerUnit<DenseNDArray>(this.params.outputSize),
+      outputArray = AugmentedArray.zeros(this.params.outputSize),
       params = this.params,
       activationFunction = this.activationFunction,
       dropout = this.dropout,

@@ -9,9 +9,8 @@ package core.layers
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.layers.models.LayerUnit
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.simplemath.equals
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -27,7 +26,7 @@ import kotlin.test.assertTrue
  */
 class LayerStructureSpec : Spek({
 
-  describe("a generic LayerStructure") {
+  describe("a generic Layer") {
 
     context("initialization with dropout") {
 
@@ -36,9 +35,9 @@ class LayerStructureSpec : Spek({
         val inputArray = AugmentedArray(DenseNDArrayFactory.random(shape = Shape(100000)))
         val inputArrayCopy = inputArray.clone()
 
-        val layer = FeedforwardLayerStructure(
+        val layer = FeedforwardLayer(
           inputArray = inputArray,
-          outputArray = LayerUnit(5),
+          outputArray = AugmentedArray.zeros(5),
           params = FeedforwardLayerParameters(inputSize = 100000, outputSize = 5),
           activationFunction = Tanh(),
           dropout = 0.25)

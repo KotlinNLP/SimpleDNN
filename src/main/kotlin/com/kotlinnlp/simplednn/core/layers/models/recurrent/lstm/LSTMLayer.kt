@@ -5,21 +5,22 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.models.recurrent.ran
+package com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.LayerUnit
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
- * The RAN Layer Structure.
+ * The LSTM Layer Structure.
  *
  * @property inputArray the input array of the layer
  * @property outputArray the output array of the layer
@@ -29,14 +30,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
-class RANLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+class LSTMLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters<*>,
   layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
-) : GatedRecurrentLayerStructure<InputNDArrayType>(
+) : GatedRecurrentLayer<InputNDArrayType>(
   inputArray = inputArray,
   outputArray = outputArray,
   params = params,
@@ -47,12 +48,12 @@ class RANLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  val candidate = LayerUnit<InputNDArrayType>(outputArray.size)
+  val inputGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
    *
    */
-  val inputGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+  val outputGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
    *
@@ -60,19 +61,29 @@ class RANLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   val forgetGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
+   *
+   */
+  val candidate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+
+  /**
+   *
+   */
+  val cell = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(outputArray.size)))
+
+  /**
    * The helper which executes the forward
    */
-  override val forwardHelper = RANForwardHelper(layer = this)
+  override val forwardHelper = LSTMForwardHelper(layer = this)
 
   /**
    * The helper which executes the backward
    */
-  override val backwardHelper = RANBackwardHelper(layer = this)
+  override val backwardHelper = LSTMBackwardHelper(layer = this)
 
   /**
    * The helper which calculates the relevance
    */
-  override val relevanceHelper = RANRelevanceHelper(layer = this)
+  override val relevanceHelper = LSTMRelevanceHelper(layer = this)
 
   /**
    * Initialization: set the activation function of the gates
@@ -80,10 +91,12 @@ class RANLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   init {
 
     this.inputGate.setActivation(Sigmoid())
+    this.outputGate.setActivation(Sigmoid())
     this.forgetGate.setActivation(Sigmoid())
 
-    if (this.activationFunction != null) {
-      this.outputArray.setActivation(this.activationFunction)
+    if (activationFunction != null) {
+      this.candidate.setActivation(activationFunction)
+      this.cell.setActivation(activationFunction)
     }
   }
 
@@ -94,7 +107,8 @@ class RANLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param array the initial hidden array
    */
   override fun setInitHidden(array: DenseNDArray) {
-    TODO("not implemented")
+    this.cell.values.zeros()
+    this.outputArray.assignValues(array)
   }
 
   /**
@@ -103,7 +117,7 @@ class RANLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the errors of the initial hidden array
    */
-  override fun getInitHiddenErrors(): DenseNDArray {
-    TODO("not implemented")
-  }
+  override fun getInitHiddenErrors(): DenseNDArray =
+    this.backwardHelper.getLayerRecurrentContribution(
+      nextStateLayer = this.layerContextWindow.getNextState() as LSTMLayer<*>).t
 }

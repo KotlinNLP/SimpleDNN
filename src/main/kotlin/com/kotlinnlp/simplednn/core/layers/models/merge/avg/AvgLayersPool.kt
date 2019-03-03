@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
 import com.kotlinnlp.utils.ItemsPool
 
 /**
- * A pool of [AvgLayerStructure]s which allows to allocate and release layers when needed, without creating
+ * A pool of [AvgLayer]s which allows to allocate and release layers when needed, without creating
  * a new one every time.
  *
  * @property params the parameters which connect the input to the output
@@ -25,16 +25,16 @@ import com.kotlinnlp.utils.ItemsPool
 class AvgLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
   val params: AvgLayerParameters,
   val inputType: LayerType.Input
-) : ItemsPool<AvgLayerStructure<InputNDArrayType>>() {
+) : ItemsPool<AvgLayer<InputNDArrayType>>() {
 
   /**
    * The factory of a new layer structure.
    *
    * @param id the id of the processor to create
    *
-   * @return a new [AvgLayerStructure] with the given [id]
+   * @return a new [AvgLayer] with the given [id]
    */
-  override fun itemFactory(id: Int): AvgLayerStructure<InputNDArrayType> {
+  override fun itemFactory(id: Int): AvgLayer<InputNDArrayType> {
 
     @Suppress("UNCHECKED_CAST")
     val inputArrays: List<AugmentedArray<InputNDArrayType>> = List(
@@ -48,9 +48,9 @@ class AvgLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
       }
     )
 
-    return AvgLayerStructure(
+    return AvgLayer(
       inputArrays = inputArrays,
-      outputArray = AugmentedArray(this.params.outputSize),
+      outputArray = AugmentedArray.zeros(this.params.outputSize),
       params = this.params,
       id = id
     )

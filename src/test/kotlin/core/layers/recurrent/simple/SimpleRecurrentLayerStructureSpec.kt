@@ -27,7 +27,7 @@ import kotlin.test.assertTrue
  */
 class SimpleRecurrentLayerStructureSpec : Spek({
 
-  describe("a SimpleRecurrentLayerStructure") {
+  describe("a SimpleRecurrentLayer") {
 
     context("forward") {
 
@@ -111,12 +111,12 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
       on("with previous state context") {
 
-        val prevStateLayer = SimpleRecurrentLayerContextWindow.Back().getPrevStateLayer()
+        val prevStateLayer = SimpleRecurrentLayerContextWindow.Back().getPrevState()
         val contextWindow = mock<LayerContextWindow>()
         val layer = SimpleRecurrentLayerStructureUtils.buildLayer(contextWindow)
         val contributions = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5)
 
-        whenever(contextWindow.getPrevStateLayer()).thenReturn(prevStateLayer)
+        whenever(contextWindow.getPrevState()).thenReturn(prevStateLayer)
 
         layer.forward(layerContributions = contributions)
 

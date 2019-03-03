@@ -24,30 +24,48 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
-abstract class GatedRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+abstract class RecurrentLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters<*>,
-  layerContextWindow: LayerContextWindow,
+  val layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
-) : RecurrentLayerStructure<InputNDArrayType>(
+) : Layer<InputNDArrayType>(
   inputArray = inputArray,
   outputArray = outputArray,
   params = params,
-  layerContextWindow = layerContextWindow,
   activationFunction = activationFunction,
   dropout = dropout) {
 
   /**
    * The helper which calculates the relevance
    */
-  abstract override val relevanceHelper: GatedRecurrentRelevanceHelper<InputNDArrayType>
+  abstract override val relevanceHelper: RecurrentRelevanceHelper<InputNDArrayType>
 
   /**
+   * Calculate the relevance of the output in the previous state respect of the current one and assign it to the output
+   * array of the previous state.
+   *
    * @param layerContributions the contributions saved during the last forward
    */
-  fun propagateRelevanceToGates(layerContributions: LayerParameters<*>) {
-    this.relevanceHelper.propagateRelevanceToGates(layerContributions)
+  fun setRecurrentRelevance(layerContributions: LayerParameters<*>) {
+    this.relevanceHelper.setRecurrentRelevance(layerContributions = layerContributions)
   }
+
+  /**
+   * Set the initial hidden array.
+   * This method should be used when this layer is used as initial hidden state in a recurrent neural network.
+   *
+   * @param array the initial hidden array
+   */
+  abstract fun setInitHidden(array: DenseNDArray)
+
+  /**
+   * Get the errors of the initial hidden array.
+   * This method should be used only if this layer is used as initial hidden state in a recurrent neural network.
+   *
+   * @return the errors of the initial hidden array
+   */
+  abstract fun getInitHiddenErrors(): DenseNDArray
 }

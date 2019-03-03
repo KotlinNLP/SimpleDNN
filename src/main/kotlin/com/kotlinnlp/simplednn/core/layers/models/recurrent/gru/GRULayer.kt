@@ -5,19 +5,20 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.models.recurrent.simple
+package com.kotlinnlp.simplednn.core.layers.models.recurrent.gru
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
+import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerStructure
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
- * The SimpleRecurrent Layer Structure.
+ * The CRU Layer Structure.
  *
  * @property inputArray the input array of the layer
  * @property outputArray the output array of the layer
@@ -27,14 +28,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
-class SimpleRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+class GRULayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
-  override val outputArray: RecurrentLayerUnit<InputNDArrayType>,
+  outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters<*>,
   layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
-) : RecurrentLayerStructure<InputNDArrayType>(
+) : GatedRecurrentLayer<InputNDArrayType>(
   inputArray = inputArray,
   outputArray = outputArray,
   params = params,
@@ -43,26 +44,45 @@ class SimpleRecurrentLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>
   dropout = dropout) {
 
   /**
+   *
+   */
+  val candidate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+
+  /**
+   *
+   */
+  val resetGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+
+  /**
+   *
+   */
+  val partitionGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+
+  /**
    * The helper which executes the forward
    */
-  override val forwardHelper = SimpleRecurrentForwardHelper(layer = this)
+  override val forwardHelper = GRUForwardHelper(layer = this)
 
   /**
    * The helper which executes the backward
    */
-  override val backwardHelper = SimpleRecurrentBackwardHelper(layer = this)
+  override val backwardHelper = GRUBackwardHelper(layer = this)
 
   /**
    * The helper which calculates the relevance
    */
-  override val relevanceHelper = SimpleRecurrentRelevanceHelper(layer = this)
+  override val relevanceHelper = GRURelevanceHelper(layer = this)
 
   /**
-   * Initialization: set the activation function of the output array.
+   * Initialization: set the activation function of the gates
    */
   init {
+
+    this.resetGate.setActivation(Sigmoid())
+    this.partitionGate.setActivation(Sigmoid())
+
     if (activationFunction != null) {
-      outputArray.setActivation(activationFunction)
+      this.candidate.setActivation(activationFunction)
     }
   }
 

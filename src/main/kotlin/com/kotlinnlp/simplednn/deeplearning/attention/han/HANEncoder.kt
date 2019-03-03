@@ -213,7 +213,7 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
         if (copy) paramsErrors.copy() else paramsErrors
       }
     ),
-    outputNetwork = this.outputProcessor.getParamsErrors(copy = copy)
+    outputStackedLayers = this.outputProcessor.getParamsErrors(copy = copy)
   )
 
   /**

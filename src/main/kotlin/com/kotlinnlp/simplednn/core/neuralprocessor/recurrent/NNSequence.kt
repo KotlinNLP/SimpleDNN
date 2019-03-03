@@ -8,9 +8,9 @@
 package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 
 
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.RecurrentStackedLayers
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.*
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
@@ -24,8 +24,8 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
    * @param structure neural network
    */
   inner class NNState(
-    val structure: RecurrentStackedLayersStructure<InputNDArrayType>,
-    val contributions: NetworkParameters? = null
+    val structure: RecurrentStackedLayers<InputNDArrayType>,
+    val contributions: StackedLayersParameters? = null
   )
 
   /**
@@ -36,7 +36,7 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
   /**
    *
    */
-  private val paramsErrorsAccumulator = ParamsErrorsAccumulator<NetworkParameters>()
+  private val paramsErrorsAccumulator = ParamsErrorsAccumulator<StackedLayersParameters>()
 
   /**
    * The number of states.
@@ -55,7 +55,7 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
    *
    * @return the structure of the state at the given [stateIndex]
    */
-  fun getStateStructure(stateIndex: Int): RecurrentStackedLayersStructure<InputNDArrayType>
+  fun getStateStructure(stateIndex: Int): RecurrentStackedLayers<InputNDArrayType>
     = this.states[stateIndex].structure
 
   /**
@@ -65,15 +65,15 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
    *
    * @return the contributions of the state at the given [stateIndex]
    */
-  fun getStateContributions(stateIndex: Int): NetworkParameters = this.states[stateIndex].contributions!!
+  fun getStateContributions(stateIndex: Int): StackedLayersParameters = this.states[stateIndex].contributions!!
 
   /**
    * Add a new state to the sequence.
    *
-   * @param structure the [RecurrentStackedLayersStructure] of the state
+   * @param structure the [RecurrentStackedLayers] of the state
    * @param saveContributions whether to include the contributions structure into the state
    */
-  fun add(structure: RecurrentStackedLayersStructure<InputNDArrayType>, saveContributions: Boolean) {
+  fun add(structure: RecurrentStackedLayers<InputNDArrayType>, saveContributions: Boolean) {
 
     // TODO: set always contributions?? (structures are created only when it's needed)
     this.states.add(

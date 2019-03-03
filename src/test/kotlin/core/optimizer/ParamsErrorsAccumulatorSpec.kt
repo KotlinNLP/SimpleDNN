@@ -8,7 +8,7 @@
 package core.optimizer
 
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -30,7 +30,7 @@ class ParamsErrorsAccumulatorSpec : Spek({
 
     on("initialization") {
 
-      val accumulator = ParamsErrorsAccumulator<NetworkParameters>()
+      val accumulator = ParamsErrorsAccumulator<StackedLayersParameters>()
 
       it("should raise an Exception when calling getParamsErrors() before accumulation") {
         assertFailsWith<IllegalArgumentException> { accumulator.getParamsErrors() }

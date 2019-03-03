@@ -10,16 +10,18 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.assignParamsGradients
+import com.kotlinnlp.simplednn.core.layers.getInputErrors
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the backward on a [layer].
  *
- * @property layer the [IndRNNLayerStructure] in which the backward is executed
+ * @property layer the [IndRNNLayer] in which the backward is executed
  */
 class IndRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: IndRNNLayerStructure<InputNDArrayType>
+  override val layer: IndRNNLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
@@ -31,11 +33,11 @@ class IndRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
-    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer()
-    val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer()
+    val prevStateLayer = this.layer.layerContextWindow.getPrevState()
+    val nextStateLayer = this.layer.layerContextWindow.getNextState()
 
     if (nextStateLayer != null) {
-      this.addLayerRecurrentGradients(nextStateLayer as IndRNNLayerStructure<*>)
+      this.addLayerRecurrentGradients(nextStateLayer as IndRNNLayer<*>)
     }
 
     this.layer.applyOutputActivationDeriv() // must be applied AFTER having added the recurrent contribution
@@ -60,11 +62,11 @@ class IndRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun assignParamsGradients(paramsErrors: IndRNNLayerParameters,
                                     prevStateOutput: AugmentedArray<DenseNDArray>?) {
 
-    // TODO: mePropMask
-
     this.layer.outputArray.assignParamsGradients(
-      paramsErrors = paramsErrors.feedforwardUnit,
-      x = this.layer.inputArray.values)
+      gw = paramsErrors.feedforwardUnit.weights.values,
+      gb = paramsErrors.feedforwardUnit.biases.values,
+      x = this.layer.inputArray.values
+    )
 
     val gwRec = paramsErrors.recurrentWeights.values as DenseNDArray
     val yPrev = prevStateOutput?.values
@@ -80,13 +82,15 @@ class IndRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignLayerGradients() { this.layer.params as IndRNNLayerParameters
 
-    this.layer.inputArray.assignErrors(this.layer.outputArray.getInputErrors(this.layer.params.feedforwardUnit))
+    this.layer.inputArray.assignErrors(
+      this.layer.outputArray.getInputErrors(w = this.layer.params.feedforwardUnit.weights.values)
+    )
   }
 
   /**
    * gy += gyNext * wRec
    */
-  private fun addLayerRecurrentGradients(nextStateLayer: IndRNNLayerStructure<*>) {
+  private fun addLayerRecurrentGradients(nextStateLayer: IndRNNLayer<*>) {
 
     // TODO: mePropMask
 

@@ -9,16 +9,17 @@ package com.kotlinnlp.simplednn.core.layers.models.feedforward.simple
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.forward
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the forward on a [layer].
  *
- * @property layer the [FeedforwardLayerStructure] in which the forward is executed
+ * @property layer the [FeedforwardLayer] in which the forward is executed
  */
 class FeedforwardForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: FeedforwardLayerStructure<InputNDArrayType>
+  override val layer: FeedforwardLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
@@ -28,7 +29,11 @@ class FeedforwardForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun forward() { this.layer.params as FeedforwardLayerParameters
 
-    this.layer.outputArray.forward(parameters = this.layer.params.unit, x = this.layer.inputArray.values)
+    this.layer.outputArray.forward(
+      w = this.layer.params.unit.weights.values,
+      b = this.layer.params.unit.biases.values,
+      x = this.layer.inputArray.values)
+
     this.layer.outputArray.activate()
   }
 

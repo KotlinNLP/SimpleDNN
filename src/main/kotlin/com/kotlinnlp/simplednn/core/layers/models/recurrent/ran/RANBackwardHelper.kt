@@ -10,16 +10,18 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.ran
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.assignParamsGradients
+import com.kotlinnlp.simplednn.core.layers.getInputErrors
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the backward on a [layer].
  *
- * @property layer the [RANLayerStructure] in which the backward is executed
+ * @property layer the [RANLayer] in which the backward is executed
  */
 class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: RANLayerStructure<InputNDArrayType>
+  override val layer: RANLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
@@ -31,8 +33,8 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
-    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer() as? RANLayerStructure
-    val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer() as? RANLayerStructure
+    val prevStateLayer = this.layer.layerContextWindow.getPrevState() as? RANLayer
+    val nextStateLayer = this.layer.layerContextWindow.getNextState() as? RANLayer
 
     this.layer.applyOutputActivationDeriv() // must be applied BEFORE having added the recurrent contribution
 
@@ -52,7 +54,7 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * @param prevStateLayer the layer in the previous state
    */
-  private fun assignGatesGradients(prevStateLayer: RANLayerStructure<*>?) {
+  private fun assignGatesGradients(prevStateLayer: RANLayer<*>?) {
 
     val gy: DenseNDArray = this.layer.outputArray.errors
 
@@ -91,7 +93,10 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.layer.inputGate.assignParamsGradients(paramsErrors.inputGate, x = x, yPrev = yPrev)
     this.layer.forgetGate.assignParamsGradients(paramsErrors.forgetGate, x = x, yPrev = yPrev)
-    this.layer.candidate.assignParamsGradients(paramsErrors.candidate, x = x)
+    this.layer.candidate.assignParamsGradients(
+      gw = paramsErrors.candidate.weights.values,
+      gb = paramsErrors.candidate.biases.values,
+      x = x)
   }
 
   /**
@@ -102,15 +107,15 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.params as RANLayerParameters
 
     this.layer.inputArray
-      .assignErrors(this.layer.inputGate.getInputErrors(this.layer.params.inputGate))
-      .assignSum(this.layer.forgetGate.getInputErrors(this.layer.params.forgetGate))
-      .assignSum(this.layer.candidate.getInputErrors(this.layer.params.candidate))
+      .assignErrors(this.layer.inputGate.getInputErrors(w = this.layer.params.inputGate.weights.values))
+      .assignSum(this.layer.forgetGate.getInputErrors(w = this.layer.params.forgetGate.weights.values))
+      .assignSum(this.layer.candidate.getInputErrors(w = this.layer.params.candidate.weights.values))
   }
 
   /**
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun addOutputRecurrentGradients(nextStateLayer: RANLayerStructure<*>?) {
+  private fun addOutputRecurrentGradients(nextStateLayer: RANLayer<*>?) {
 
     if (nextStateLayer != null) {
       val gy: DenseNDArray = this.layer.outputArray.errors
@@ -123,7 +128,7 @@ class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getLayerRecurrentContribution(nextStateLayer: RANLayerStructure<*>): DenseNDArray {
+  private fun getLayerRecurrentContribution(nextStateLayer: RANLayer<*>): DenseNDArray {
 
     this.layer.params as RANLayerParameters
 

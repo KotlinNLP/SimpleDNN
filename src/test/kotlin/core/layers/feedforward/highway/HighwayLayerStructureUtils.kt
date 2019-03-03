@@ -10,7 +10,7 @@ package core.layers.feedforward.highway
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
@@ -24,9 +24,9 @@ object HighwayLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer(): HighwayLayerStructure<DenseNDArray> = HighwayLayerStructure(
+  fun buildLayer(): HighwayLayer<DenseNDArray> = HighwayLayer(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
-    outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(4))),
+    outputArray = AugmentedArray.zeros(4),
     params = buildParams(),
     activationFunction = Tanh())
 

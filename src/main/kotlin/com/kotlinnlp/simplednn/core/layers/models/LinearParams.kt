@@ -8,19 +8,16 @@
 package com.kotlinnlp.simplednn.core.layers.models
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.core.arrays.UpdatableSparseArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import java.io.Serializable
 
 /**
- * The parameters associated to a [LayerUnit].
+ * The parameters for a linear transformation.
  *
  * @property inputSize input size
  * @property outputSize output size
  * @param sparseInput whether the weights connected to the input are sparse or not (default false)
  */
-open class ParametersUnit(
+open class LinearParams(
   val inputSize: Int,
   val outputSize: Int,
   private val sparseInput: Boolean = false
@@ -38,11 +35,14 @@ open class ParametersUnit(
   /**
    *
    */
-  val biases: UpdatableArray<*> = UpdatableArray(dim1 = this.outputSize)
+  val biases: UpdatableArray<*> = UpdatableArray(this.outputSize)
 
   /**
    *
    */
   val weights: UpdatableArray<*> = UpdatableArray(
-    dim1 = this.outputSize, dim2 = this.inputSize, sparse = this.sparseInput)
+    dim1 = this.outputSize,
+    dim2 = this.inputSize,
+    sparse = this.sparseInput
+  )
 }

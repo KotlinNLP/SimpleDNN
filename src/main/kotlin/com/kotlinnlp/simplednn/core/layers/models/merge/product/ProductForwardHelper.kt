@@ -14,12 +14,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
- * The helper which executes the forward on a [ProductLayerStructure].
+ * The helper which executes the forward on a [ProductLayer].
  *
  * @property layer the layer in which the forward is executed
  */
 class ProductForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: ProductLayerStructure<InputNDArrayType>
+  override val layer: ProductLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**

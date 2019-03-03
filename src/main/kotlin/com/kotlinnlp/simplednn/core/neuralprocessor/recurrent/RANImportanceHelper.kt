@@ -7,9 +7,9 @@
 
 package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.ran.RANLayerStructure
-import com.kotlinnlp.simplednn.core.layers.StackedLayersStructure
+import com.kotlinnlp.simplednn.core.layers.Layer
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.ran.RANLayer
+import com.kotlinnlp.simplednn.core.layers.StackedLayers
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -22,7 +22,7 @@ class RANImportanceHelper {
   /**
    * The list of previous states structures.
    */
-  private lateinit var prevStates: List<StackedLayersStructure<*>>
+  private lateinit var prevStates: List<StackedLayers<*>>
 
   /**
    * The incremental product of the forget gates of the states, in reversed order.
@@ -44,7 +44,7 @@ class RANImportanceHelper {
    *
    * @return the array containing the importance scores of the previous states
    */
-  fun getImportanceScores(states: List<StackedLayersStructure<*>>): DenseNDArray {
+  fun getImportanceScores(states: List<StackedLayers<*>>): DenseNDArray {
 
     this.initVars(states)
 
@@ -52,7 +52,7 @@ class RANImportanceHelper {
 
     (0 until this.prevStates.size).reversed().forEach { i ->
 
-      val layer: RANLayerStructure<*> = this.getRANLayer(i)
+      val layer: RANLayer<*> = this.getRANLayer(i)
 
       scores[i] = layer.inputGate.values.prod(this.incrementalForgetProd).max()
 
@@ -65,14 +65,14 @@ class RANImportanceHelper {
   /**
    * Initialize the variables needed for the calculations.
    */
-  private fun initVars(states: List<StackedLayersStructure<*>>) {
+  private fun initVars(states: List<StackedLayers<*>>) {
 
     this.prevStates = states.subList(0, states.lastIndex)
 
-    val lastStateLayers: List<LayerStructure<*>> = states.last().layers
-    this.ranLayerIndex = lastStateLayers.indexOfFirst { it is RANLayerStructure }
+    val lastStateLayers: List<Layer<*>> = states.last().layers
+    this.ranLayerIndex = lastStateLayers.indexOfFirst { it is RANLayer }
 
-    val lastStateLayer: RANLayerStructure<*> = lastStateLayers[this.ranLayerIndex] as RANLayerStructure
+    val lastStateLayer: RANLayer<*> = lastStateLayers[this.ranLayerIndex] as RANLayer
     this.incrementalForgetProd = lastStateLayer.forgetGate.values.copy()
   }
 
@@ -81,6 +81,6 @@ class RANImportanceHelper {
    *
    * @return the RAN layer of the given state
    */
-  private fun getRANLayer(stateIndex: Int): RANLayerStructure<*> =
-    this.prevStates[stateIndex].layers[this.ranLayerIndex] as RANLayerStructure
+  private fun getRANLayer(stateIndex: Int): RANLayer<*> =
+    this.prevStates[stateIndex].layers[this.ranLayerIndex] as RANLayer
 }

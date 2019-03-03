@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.attention.han
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
@@ -18,12 +18,12 @@ import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
  *
  * @property biRNNs a list containing the parameters of the BiRNNs of the HAN.
  * @property attentionNetworks a list containing the parameters of the AttentionNetworks of the HAN
- * @property outputNetwork the parameters of the output Feedforward network
+ * @property outputStackedLayers the parameters of the output Feedforward network
  */
 class HANParameters(
   val biRNNs: List<BiRNNParameters>,
   val attentionNetworks: List<AttentionNetworkParameters>,
-  val outputNetwork: NetworkParameters
+  val outputStackedLayers: StackedLayersParameters
 ) : IterableParams<HANParameters>() {
 
   companion object {
@@ -41,7 +41,7 @@ class HANParameters(
   override val paramsList: List<UpdatableArray<*>> =
     this.biRNNs.flatMap { it.paramsList } +
       this.attentionNetworks.flatMap { it.paramsList } +
-      this.outputNetwork.paramsList
+      this.outputStackedLayers.paramsList
 
   /**
    * @return a new [HANParameters] containing a copy of all values of this
@@ -49,6 +49,6 @@ class HANParameters(
   override fun copy() = HANParameters(
     biRNNs = this.biRNNs.map { it.copy() },
     attentionNetworks = this.attentionNetworks.map { it.copy() },
-    outputNetwork = this.outputNetwork.copy()
+    outputStackedLayers = this.outputStackedLayers.copy()
   )
 }

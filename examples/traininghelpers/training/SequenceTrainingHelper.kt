@@ -10,7 +10,7 @@ package traininghelpers.training
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.functionalities.losses.LossCalculator
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -23,7 +23,7 @@ import utils.SequenceExample
  */
 class SequenceTrainingHelper<NDArrayType: NDArray<NDArrayType>>(
   val neuralProcessor: RecurrentNeuralProcessor<NDArrayType>,
-  override val optimizer: ParamsOptimizer<NetworkParameters>,
+  override val optimizer: ParamsOptimizer<StackedLayersParameters>,
   val lossCalculator: LossCalculator,
   verbose: Boolean = false
 ) : TrainingHelper<SequenceExample<NDArrayType>>(

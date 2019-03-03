@@ -9,17 +9,18 @@ package com.kotlinnlp.simplednn.core.layers.models.feedforward.highway
 
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.assignParamsGradients
+import com.kotlinnlp.simplednn.core.layers.getInputErrors
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the backward on a [layer].
  *
- * @property layer the [HighwayLayerStructure] in which the backward is executed
+ * @property layer the [HighwayLayer] in which the backward is executed
  */
 class HighwayBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: HighwayLayerStructure<InputNDArrayType>
+  override val layer: HighwayLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
@@ -75,11 +76,13 @@ class HighwayBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun assignParamsGradients(paramsErrors: HighwayLayerParameters) {
 
     this.layer.inputUnit.assignParamsGradients(
-      paramsErrors = paramsErrors.input,
+      gw = paramsErrors.input.weights.values,
+      gb = paramsErrors.input.biases.values,
       x = this.layer.inputArray.values)
 
     this.layer.transformGate.assignParamsGradients(
-      paramsErrors = paramsErrors.transformGate,
+      gw = paramsErrors.transformGate.weights.values,
+      gb = paramsErrors.transformGate.biases.values,
       x = this.layer.inputArray.values)
   }
 
@@ -89,7 +92,7 @@ class HighwayBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun assignLayerGradients() { this.layer.params as HighwayLayerParameters
 
     val tGate: DenseNDArray = this.layer.transformGate.values
-    val gxIn: DenseNDArray = this.layer.inputUnit.getInputErrors(this.layer.params.input)
+    val gxIn: DenseNDArray = this.layer.inputUnit.getInputErrors(w = this.layer.params.input.weights.values)
     val gy: DenseNDArray = this.layer.outputArray.errors
 
     this.layer.inputArray.assignErrors(tGate.reverseSub(1.0).assignProd(gy).assignSum(gxIn))

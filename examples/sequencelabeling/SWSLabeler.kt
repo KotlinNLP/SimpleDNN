@@ -8,7 +8,7 @@
 package sequencelabeling
 
 import com.kotlinnlp.simplednn.core.functionalities.losses.MulticlassMSECalculator
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -33,7 +33,7 @@ class SWSLabeler(
    * @param inputErrors the errors on the input elements
    */
   data class NetworkErrors(
-    val paramsErrors: NetworkParameters,
+    val paramsErrors: StackedLayersParameters,
     val labelsEmbeddingsErrors: DenseNDArray,
     val inputErrors: DenseNDArray)
 

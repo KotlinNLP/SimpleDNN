@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * ActivationsFunction can either be used through an [com.kotlinnlp.simplednn.core.arrays.ActivableArray],
- * or through the activation of a [com.kotlinnlp.simplednn.core.layers.LayerStructure]
+ * or through the activation of a [com.kotlinnlp.simplednn.core.layers.Layer]
  */
 abstract class ScalarActivationFunction : ActivationFunction {
 

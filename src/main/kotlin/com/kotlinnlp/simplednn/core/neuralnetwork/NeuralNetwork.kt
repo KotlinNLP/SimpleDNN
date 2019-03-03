@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializ
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream
@@ -97,7 +98,7 @@ class NeuralNetwork(
   /**
    * The model containing all the trainable parameters of the network.
    */
-  val model: NetworkParameters = this.parametersFactory(
+  val model: StackedLayersParameters = this.parametersFactory(
     forceDense = true,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
@@ -110,7 +111,7 @@ class NeuralNetwork(
   fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
 
   /**
-   * Generate [NetworkParameters] compatible with the configuration of this network
+   * Generate [StackedLayersParameters] compatible with the configuration of this network
    *
    * @param forceDense force all parameters to be dense (false by default)
    * @param weightsInitializer the initializer of the weights (null by default)
@@ -120,7 +121,7 @@ class NeuralNetwork(
    */
   fun parametersFactory(forceDense: Boolean,
                         weightsInitializer: Initializer? = null,
-                        biasesInitializer: Initializer? = null) = NetworkParameters(
+                        biasesInitializer: Initializer? = null) = StackedLayersParameters(
     layersConfiguration = this.layersConfiguration,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer,

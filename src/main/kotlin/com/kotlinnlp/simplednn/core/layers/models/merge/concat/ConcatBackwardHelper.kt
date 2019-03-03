@@ -14,12 +14,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.utils.SplitVHelper
 
 /**
- * The helper which executes the backward on a [ConcatLayerStructure].
+ * The helper which executes the backward on a [ConcatLayer].
  *
  * @property layer the layer in which the backward is executed
  */
 class ConcatBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: ConcatLayerStructure<InputNDArrayType>
+  override val layer: ConcatLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
 
   /**

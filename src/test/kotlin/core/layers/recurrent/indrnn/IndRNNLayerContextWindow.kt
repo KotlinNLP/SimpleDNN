@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn.IndRNNLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn.IndRNNLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn.IndRNNLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
@@ -26,9 +26,9 @@ sealed class IndRNNLayerContextWindow: LayerContextWindow {
    */
   class Empty: IndRNNLayerContextWindow() {
 
-    override fun getPrevStateLayer(): IndRNNLayerStructure<DenseNDArray>? = null
+    override fun getPrevState(): IndRNNLayer<DenseNDArray>? = null
 
-    override fun getNextStateLayer(): IndRNNLayerStructure<DenseNDArray>? = null
+    override fun getNextState(): IndRNNLayer<DenseNDArray>? = null
   }
 
   /**
@@ -36,9 +36,9 @@ sealed class IndRNNLayerContextWindow: LayerContextWindow {
    */
   class Back: IndRNNLayerContextWindow() {
 
-    override fun getPrevStateLayer(): IndRNNLayerStructure<DenseNDArray> = buildPrevStateLayer()
+    override fun getPrevState(): IndRNNLayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextStateLayer(): IndRNNLayerStructure<DenseNDArray>? = null
+    override fun getNextState(): IndRNNLayer<DenseNDArray>? = null
   }
 
   /**
@@ -46,9 +46,9 @@ sealed class IndRNNLayerContextWindow: LayerContextWindow {
    */
   class Front: IndRNNLayerContextWindow() {
 
-    override fun getPrevStateLayer(): IndRNNLayerStructure<DenseNDArray>? = null
+    override fun getPrevState(): IndRNNLayer<DenseNDArray>? = null
 
-    override fun getNextStateLayer(): IndRNNLayerStructure<DenseNDArray> = buildNextStateLayer()
+    override fun getNextState(): IndRNNLayer<DenseNDArray> = buildNextStateLayer()
   }
 
   /**
@@ -56,23 +56,23 @@ sealed class IndRNNLayerContextWindow: LayerContextWindow {
    */
   class Bilateral: IndRNNLayerContextWindow() {
 
-    override fun getPrevStateLayer(): IndRNNLayerStructure<DenseNDArray> = buildPrevStateLayer()
+    override fun getPrevState(): IndRNNLayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextStateLayer(): IndRNNLayerStructure<DenseNDArray> = buildNextStateLayer()
+    override fun getNextState(): IndRNNLayer<DenseNDArray> = buildNextStateLayer()
   }
 }
 
 /**
  *
  */
-private fun buildPrevStateLayer(): IndRNNLayerStructure<DenseNDArray> {
+private fun buildPrevStateLayer(): IndRNNLayer<DenseNDArray> {
 
   val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
   outputArray.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
   outputArray.setActivation(Tanh())
   outputArray.activate()
 
-  return IndRNNLayerStructure(
+  return IndRNNLayer(
     inputArray = AugmentedArray(size = 4),
     outputArray = outputArray,
     params = IndRNNLayerParameters(inputSize = 4, outputSize = 5),
@@ -83,12 +83,12 @@ private fun buildPrevStateLayer(): IndRNNLayerStructure<DenseNDArray> {
 /**
  *
  */
-private fun buildNextStateLayer(): IndRNNLayerStructure<DenseNDArray> {
+private fun buildNextStateLayer(): IndRNNLayer<DenseNDArray> {
 
   val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
   outputArray.assignErrors(errors =  DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
-  return IndRNNLayerStructure(
+  return IndRNNLayer(
     inputArray = AugmentedArray(size = 4),
     outputArray = outputArray,
     params = IndRNNLayerParameters(inputSize = 4, outputSize = 5),

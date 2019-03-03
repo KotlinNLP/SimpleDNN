@@ -9,16 +9,17 @@ package com.kotlinnlp.simplednn.core.layers.models.feedforward.highway
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.forward
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the forward on a [layer].
  *
- * @property layer the [HighwayLayerStructure] in which the forward is executed
+ * @property layer the [HighwayLayer] in which the forward is executed
  */
 class HighwayForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: HighwayLayerStructure<InputNDArrayType>
+  override val layer: HighwayLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
@@ -37,10 +38,20 @@ class HighwayForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val inputUnit: DenseNDArray = this.layer.inputUnit.values
     val tGate: DenseNDArray = this.layer.transformGate.values
 
-    this.layer.inputUnit.forward(parameters = this.layer.params.input, x = x)
+    this.layer.inputUnit.forward(
+      w = this.layer.params.input.weights.values,
+      b = this.layer.params.input.biases.values,
+      x = x
+    )
+
     this.layer.inputUnit.activate()
 
-    this.layer.transformGate.forward(parameters = this.layer.params.transformGate, x = x)
+    this.layer.transformGate.forward(
+      w = this.layer.params.transformGate.weights.values,
+      b = this.layer.params.transformGate.biases.values,
+      x = x
+    )
+
     this.layer.transformGate.activate()
 
     y.assignProd(tGate, inputUnit).assignSum(tGate.reverseSub(1.0).assignProd(x as DenseNDArray))

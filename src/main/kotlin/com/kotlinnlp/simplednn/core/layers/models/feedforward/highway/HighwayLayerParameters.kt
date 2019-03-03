@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.ParametersUnit
+import com.kotlinnlp.simplednn.core.layers.models.LinearParams
 
 /**
  * The parameters of the Highway layer.
@@ -46,7 +46,7 @@ class HighwayLayerParameters(
   /**
    *
    */
-  val input = ParametersUnit(
+  val input = LinearParams(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
@@ -54,7 +54,7 @@ class HighwayLayerParameters(
   /**
    *
    */
-  val transformGate = ParametersUnit(
+  val transformGate = LinearParams(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)

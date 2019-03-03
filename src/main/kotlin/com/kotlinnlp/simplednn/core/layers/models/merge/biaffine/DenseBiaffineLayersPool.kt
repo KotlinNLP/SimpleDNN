@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.ItemsPool
 
 /**
- * A pool of [BiaffineLayerStructure]s with dense input, which allows to allocate and release one when needed, without
+ * A pool of [BiaffineLayer]s with dense input, which allows to allocate and release one when needed, without
  * creating a new one.
  * It is useful to optimize the creation of new structures every time a new encoder is created.
  *
@@ -21,16 +21,16 @@ import com.kotlinnlp.utils.ItemsPool
 class DenseBiaffineLayersPool(
   val model: BiaffineLayerModel,
   val dropout: Double = 0.0
-) : ItemsPool<BiaffineLayerStructure<DenseNDArray>>() {
+) : ItemsPool<BiaffineLayer<DenseNDArray>>() {
 
   /**
-   * The factory of a new [BiaffineLayerStructure].
+   * The factory of a new [BiaffineLayer].
    *
    * @param id the unique id of the item to create
    *
-   * @return a new [BiaffineLayerStructure] with the given [id]
+   * @return a new [BiaffineLayer] with the given [id]
    */
-  override fun itemFactory(id: Int) = BiaffineLayerStructure<DenseNDArray>(
+  override fun itemFactory(id: Int) = BiaffineLayer<DenseNDArray>(
     params = this.model.params,
     activationFunction = this.model.activationFunction,
     dropout = this.dropout,

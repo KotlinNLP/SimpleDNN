@@ -10,9 +10,8 @@ package core.layers.feedforward.simple
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.models.LayerUnit
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
@@ -27,11 +26,11 @@ object FeedforwardLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer45(): FeedforwardLayerStructure<DenseNDArray> {
+  fun buildLayer45(): FeedforwardLayer<DenseNDArray> {
 
-    return FeedforwardLayerStructure(
+    return FeedforwardLayer(
       inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
-      outputArray = LayerUnit(5),
+      outputArray = AugmentedArray.zeros(5),
       params = getParams45(),
       activationFunction = Tanh())
   }
@@ -67,13 +66,13 @@ object FeedforwardLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer53(): FeedforwardLayerStructure<DenseNDArray> {
+  fun buildLayer53(): FeedforwardLayer<DenseNDArray> {
 
     val inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.2)))
 
-    return FeedforwardLayerStructure(
+    return FeedforwardLayer(
       inputArray = inputArray,
-      outputArray = LayerUnit(3),
+      outputArray = AugmentedArray.zeros(3),
       params = getParams53(),
       activationFunction = Softmax())
   }
@@ -81,16 +80,16 @@ object FeedforwardLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer53SparseBinary(): FeedforwardLayerStructure<SparseBinaryNDArray> {
+  fun buildLayer53SparseBinary(): FeedforwardLayer<SparseBinaryNDArray> {
 
     val inputArray = AugmentedArray(SparseBinaryNDArrayFactory.arrayOf(
       activeIndices = listOf(2, 4),
       shape = Shape(5)))
     inputArray.setActivation(Tanh())
 
-    return FeedforwardLayerStructure(
+    return FeedforwardLayer(
       inputArray = inputArray,
-      outputArray = LayerUnit(3),
+      outputArray = AugmentedArray.zeros(3),
       params = getParams53(),
       activationFunction = Softmax())
   }

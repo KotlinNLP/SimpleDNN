@@ -23,7 +23,7 @@ import kotlin.test.assertTrue
  */
 class GRULayerStructureSpec : Spek({
 
-  describe("a GRULayerStructure") {
+  describe("a GRULayer") {
 
     context("forward") {
 

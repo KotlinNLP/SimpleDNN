@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers.helpers
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
@@ -17,9 +17,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 interface BackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>> {
 
   /**
-   * The [LayerStructure] in which the backward is executed.
+   * The [Layer] in which the backward is executed.
    */
-  val layer: LayerStructure<InputNDArrayType>
+  val layer: Layer<InputNDArrayType>
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD

@@ -22,7 +22,7 @@ import kotlin.test.assertTrue
  */
 class BiaffineLayerStructureSpec : Spek({
 
-  describe("a BiaffineLayerStructure") {
+  describe("a BiaffineLayer") {
 
     on("forward") {
 

@@ -9,7 +9,7 @@ package core.neuralnetwork.utils
 
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import core.layers.feedforward.simple.FeedforwardLayerStructureUtils
 
 
@@ -18,9 +18,9 @@ import core.layers.feedforward.simple.FeedforwardLayerStructureUtils
  */
 object FeedforwardNetworkStructureUtils {
 
-  fun buildParams(layersConfiguration: List<LayerInterface>): NetworkParameters {
+  fun buildParams(layersConfiguration: List<LayerInterface>): StackedLayersParameters {
 
-    val params = NetworkParameters(layersConfiguration)
+    val params = StackedLayersParameters(layersConfiguration)
     val inputParams = (params.paramsPerLayer[0] as FeedforwardLayerParameters)
     val outputParams = (params.paramsPerLayer[1] as FeedforwardLayerParameters)
 

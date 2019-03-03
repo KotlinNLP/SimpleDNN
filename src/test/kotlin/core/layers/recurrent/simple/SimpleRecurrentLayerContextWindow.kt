@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
@@ -26,9 +26,9 @@ sealed class SimpleRecurrentLayerContextWindow: LayerContextWindow {
    */
   class Empty: SimpleRecurrentLayerContextWindow() {
 
-    override fun getPrevStateLayer() = null
+    override fun getPrevState() = null
 
-    override fun getNextStateLayer() = null
+    override fun getNextState() = null
   }
 
   /**
@@ -36,9 +36,9 @@ sealed class SimpleRecurrentLayerContextWindow: LayerContextWindow {
    */
   class Back: SimpleRecurrentLayerContextWindow() {
 
-    override fun getPrevStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> = buildPrevStateLayer()
+    override fun getPrevState(): SimpleRecurrentLayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextStateLayer() = null
+    override fun getNextState() = null
   }
 
   /**
@@ -46,9 +46,9 @@ sealed class SimpleRecurrentLayerContextWindow: LayerContextWindow {
    */
   class Front: SimpleRecurrentLayerContextWindow() {
 
-    override fun getPrevStateLayer() = null
+    override fun getPrevState() = null
 
-    override fun getNextStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> = buildNextStateLayer()
+    override fun getNextState(): SimpleRecurrentLayer<DenseNDArray> = buildNextStateLayer()
   }
 
   /**
@@ -56,23 +56,23 @@ sealed class SimpleRecurrentLayerContextWindow: LayerContextWindow {
    */
   class Bilateral: SimpleRecurrentLayerContextWindow() {
 
-    override fun getPrevStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> = buildPrevStateLayer()
+    override fun getPrevState(): SimpleRecurrentLayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> = buildNextStateLayer()
+    override fun getNextState(): SimpleRecurrentLayer<DenseNDArray> = buildNextStateLayer()
   }
 }
 
 /**
  *
  */
-private fun buildPrevStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> {
+private fun buildPrevStateLayer(): SimpleRecurrentLayer<DenseNDArray> {
 
   val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
   outputArray.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
   outputArray.setActivation(Tanh())
   outputArray.activate()
 
-  return SimpleRecurrentLayerStructure(
+  return SimpleRecurrentLayer(
     inputArray = AugmentedArray(size = 4),
     outputArray = outputArray,
     params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5),
@@ -83,12 +83,12 @@ private fun buildPrevStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> {
 /**
  *
  */
-private fun buildNextStateLayer(): SimpleRecurrentLayerStructure<DenseNDArray> {
+private fun buildNextStateLayer(): SimpleRecurrentLayer<DenseNDArray> {
 
   val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
   outputArray.assignErrors(errors =  DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
-  val layer = SimpleRecurrentLayerStructure(
+  val layer = SimpleRecurrentLayer(
     inputArray = AugmentedArray<DenseNDArray>(size = 4),
     outputArray = outputArray,
     params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5),

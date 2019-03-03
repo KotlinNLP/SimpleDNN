@@ -10,9 +10,9 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.ran
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentParametersUnit
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLinearParams
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.ParametersUnit
+import com.kotlinnlp.simplednn.core.layers.models.LinearParams
 
 /**
  * The parameters of the layer of type RAN.
@@ -22,7 +22,6 @@ import com.kotlinnlp.simplednn.core.layers.models.ParametersUnit
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  * @param sparseInput whether the weights connected to the input are sparse or not
- * @param meProp whether to use the 'meProp' errors propagation algorithm (params are sparse)
  */
 class RANLayerParameters(
   inputSize: Int,
@@ -48,7 +47,7 @@ class RANLayerParameters(
   /**
    *
    */
-  val inputGate = RecurrentParametersUnit(
+  val inputGate = RecurrentLinearParams(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
@@ -56,7 +55,7 @@ class RANLayerParameters(
   /**
    *
    */
-  val forgetGate = RecurrentParametersUnit(
+  val forgetGate = RecurrentLinearParams(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
@@ -64,7 +63,7 @@ class RANLayerParameters(
   /**
    *
    */
-  val candidate = ParametersUnit(
+  val candidate = LinearParams(
     inputSize = inputSize,
     outputSize = outputSize,
     sparseInput = this.sparseInput)

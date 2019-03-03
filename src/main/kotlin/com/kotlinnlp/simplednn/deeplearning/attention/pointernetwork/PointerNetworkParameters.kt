@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.core.attention.AttentionParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 
 /**
  * The parameters of the [PointerNetworkProcessor].
@@ -19,7 +19,7 @@ import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
  * @property attentionParams the parameters of the attention structure
  */
 class PointerNetworkParameters(
-  val mergeParams: NetworkParameters,
+  val mergeParams: StackedLayersParameters,
   val attentionParams: AttentionParameters
 ) : IterableParams<PointerNetworkParameters>() {
 

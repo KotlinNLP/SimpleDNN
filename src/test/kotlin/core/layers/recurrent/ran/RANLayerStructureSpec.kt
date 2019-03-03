@@ -28,7 +28,7 @@ import kotlin.test.assertTrue
  */
 class RANLayerStructureSpec : Spek({
 
-  describe("a RANLayerStructure") {
+  describe("a RANLayer") {
 
     context("forward") {
 
@@ -206,12 +206,12 @@ class RANLayerStructureSpec : Spek({
 
       on("with previous state context") {
 
-        val prevStateLayer = RANLayerContextWindow.Back().getPrevStateLayer()
+        val prevStateLayer = RANLayerContextWindow.Back().getPrevState()
         val contextWindow = mock<LayerContextWindow>()
         val layer = RANLayerStructureUtils.buildLayer(contextWindow)
         val contributions = RANLayerParameters(inputSize = 4, outputSize = 5)
 
-        whenever(contextWindow.getPrevStateLayer()).thenReturn(prevStateLayer)
+        whenever(contextWindow.getPrevState()).thenReturn(prevStateLayer)
 
         layer.forward(layerContributions = contributions)
 

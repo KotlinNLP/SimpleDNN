@@ -10,7 +10,7 @@ package sequencelabeling
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGradMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.optimizer.ScheduledUpdater
@@ -86,7 +86,7 @@ class SWSLOptimizer(
    *
    * @param errors the params errors to accumulate
    */
-  fun accumulateParamsErrors(errors: NetworkParameters) {
+  fun accumulateParamsErrors(errors: StackedLayersParameters) {
     this.classifierOptimizer.accumulate(errors)
   }
 

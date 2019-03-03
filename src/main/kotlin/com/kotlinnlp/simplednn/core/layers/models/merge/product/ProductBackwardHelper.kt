@@ -13,12 +13,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The helper which executes the backward on a [ProductLayerStructure].
+ * The helper which executes the backward on a [ProductLayer].
  *
  * @property layer the layer in which the backward is executed
  */
 class ProductBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: ProductLayerStructure<InputNDArrayType>
+  override val layer: ProductLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
 
   /**

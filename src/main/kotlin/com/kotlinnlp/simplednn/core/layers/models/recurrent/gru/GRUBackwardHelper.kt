@@ -16,10 +16,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * The helper which executes the backward on a [layer].
  *
- * @property layer the [GRULayerStructure] in which the backward is executed
+ * @property layer the [GRULayer] in which the backward is executed
  */
 class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: GRULayerStructure<InputNDArrayType>
+  override val layer: GRULayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
@@ -31,10 +31,10 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
-    val prevStateOutput = this.layer.layerContextWindow.getPrevStateLayer()?.outputArray
-    val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer()
+    val prevStateOutput = this.layer.layerContextWindow.getPrevState()?.outputArray
+    val nextStateLayer = this.layer.layerContextWindow.getNextState()
 
-    this.addOutputRecurrentGradients(nextStateLayer as? GRULayerStructure<*>)
+    this.addOutputRecurrentGradients(nextStateLayer as? GRULayer<*>)
 
     this.assignGatesGradients(prevStateOutput)
 
@@ -128,7 +128,7 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun addOutputRecurrentGradients(nextStateLayer: GRULayerStructure<*>?) {
+  private fun addOutputRecurrentGradients(nextStateLayer: GRULayer<*>?) {
 
     if (nextStateLayer != null) {
       val gy: DenseNDArray = this.layer.outputArray.errors
@@ -141,7 +141,7 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getLayerRecurrentContribution(nextStateLayer: GRULayerStructure<*>): DenseNDArray {
+  private fun getLayerRecurrentContribution(nextStateLayer: GRULayer<*>): DenseNDArray {
 
     this.layer.params as GRULayerParameters
 

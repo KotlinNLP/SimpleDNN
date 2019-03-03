@@ -8,7 +8,7 @@
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.utils.ExamplesIndices
@@ -41,7 +41,7 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
   /**
    *
    */
-  private val biaffineLayer = BiaffineLayerStructure<DenseNDArray>(
+  private val biaffineLayer = BiaffineLayer<DenseNDArray>(
     params = BiaffineLayerParameters(
       inputSize1 = 5,
       inputSize2 = 5,

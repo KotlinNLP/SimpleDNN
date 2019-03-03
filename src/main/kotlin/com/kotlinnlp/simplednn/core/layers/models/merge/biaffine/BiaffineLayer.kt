@@ -27,10 +27,10 @@ import com.kotlinnlp.utils.ItemsPool
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
- * @property id an identification number useful to track a specific [BiaffineLayerStructure]
+ * @property id an identification number useful to track a specific [BiaffineLayer]
  *
  */
-class BiaffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+class BiaffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   internal val inputArray1: AugmentedArray<InputNDArrayType>,
   internal val inputArray2: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
@@ -63,7 +63,7 @@ class BiaffineLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
               id: Int = 0): this(
     inputArray1 = AugmentedArray<InputNDArrayType>(size = params.inputSize1),
     inputArray2 = AugmentedArray<InputNDArrayType>(size = params.inputSize2),
-    outputArray = AugmentedArray<DenseNDArray>(size = params.outputSize),
+    outputArray = AugmentedArray.zeros(size = params.outputSize),
     params = params,
     activationFunction = activationFunction,
     dropout = dropout,

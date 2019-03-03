@@ -14,12 +14,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
- * The helper which executes the forward on a [SumLayerStructure].
+ * The helper which executes the forward on a [SumLayer].
  *
  * @property layer the layer in which the forward is executed
  */
 class SumForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: SumLayerStructure<InputNDArrayType>
+  override val layer: SumLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**

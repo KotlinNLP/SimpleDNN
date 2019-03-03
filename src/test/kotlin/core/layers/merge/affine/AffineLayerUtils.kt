@@ -10,7 +10,7 @@ package core.layers.merge.affine
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.models.merge.affine.AffineLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.merge.affine.AffineLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.merge.affine.AffineLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
@@ -22,7 +22,7 @@ object AffineLayerUtils {
   /**
    *
    */
-  fun buildLayer(): AffineLayerStructure<DenseNDArray> = AffineLayerStructure(
+  fun buildLayer(): AffineLayer<DenseNDArray> = AffineLayer(
     inputArrays = listOf(
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9))),
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.2, 0.6)))),

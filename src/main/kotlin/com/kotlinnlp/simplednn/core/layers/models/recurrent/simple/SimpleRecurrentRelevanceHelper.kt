@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.simple
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentRelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -16,10 +16,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * The helper which calculates the relevance of the input of a [layer] respect of its output.
  *
- * @property layer the [SimpleRecurrentLayerStructure] in which to calculate the input relevance
+ * @property layer the [SimpleRecurrentLayer] in which to calculate the input relevance
  */
 class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: SimpleRecurrentLayerStructure<InputNDArrayType>
+  override val layer: SimpleRecurrentLayer<InputNDArrayType>
 ) : RecurrentRelevanceHelper<InputNDArrayType>(layer) {
 
   /**
@@ -33,7 +33,7 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
     return this.layer.outputArray.getInputRelevance(
       x = this.layer.inputArray.values,
       contributions = layerContributions.unit,
-      prevStateExists = this.layer.layerContextWindow.getPrevStateLayer() != null)
+      prevStateExists = this.layer.layerContextWindow.getPrevState() != null)
   }
 
   /**
@@ -46,7 +46,7 @@ class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType
   override fun setRecurrentRelevance(layerContributions: LayerParameters<*>) {
     layerContributions as SimpleRecurrentLayerParameters
 
-    val prevStateLayer: LayerStructure<*> = this.layer.layerContextWindow.getPrevStateLayer()!!
+    val prevStateLayer: Layer<*> = this.layer.layerContextWindow.getPrevState()!!
     val recurrentRelevance: DenseNDArray = this.layer.outputArray.getRecurrentRelevance(
       contributions = layerContributions.unit,
       yPrev = prevStateLayer.outputArray.values)

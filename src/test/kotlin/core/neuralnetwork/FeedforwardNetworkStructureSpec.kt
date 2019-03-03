@@ -10,9 +10,9 @@ package core.neuralnetwork
 import com.kotlinnlp.simplednn.core.functionalities.activations.*
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType.Connection
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerStructure
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardStackedLayersStructure
+import com.kotlinnlp.simplednn.core.layers.StackedLayers
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -31,7 +31,7 @@ import kotlin.test.assertTrue
  */
 class FeedforwardNetworkStructureSpec : Spek({
 
-  describe("a FeedforwardStackedLayersStructure") {
+  describe("a FeedforwardStackedLayers") {
 
     context("invalid configurations") {
 
@@ -51,26 +51,9 @@ class FeedforwardNetworkStructureSpec : Spek({
 
         it("should throw an exception") {
           assertFailsWith<IllegalArgumentException> {
-            FeedforwardStackedLayersStructure<DenseNDArray>(
+            StackedLayers<DenseNDArray>(
               layersConfiguration = wrongLayersConfiguration,
-              params = NetworkParameters(correctLayersConfiguration))
-          }
-        }
-      }
-
-      on("initialization with connection types not allowed") {
-
-        val layersConfiguration = arrayOf(
-          LayerInterface(size = 4),
-          LayerInterface(size = 5, activationFunction = Tanh(), connectionType = Connection.GRU),
-          LayerInterface(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
-        ).toList()
-
-        it("should throw an exception") {
-          assertFailsWith<IllegalArgumentException> {
-            FeedforwardStackedLayersStructure<DenseNDArray>(
-              layersConfiguration = layersConfiguration,
-              params = NetworkParameters(layersConfiguration))
+              paramsPerLayer = StackedLayersParameters(correctLayersConfiguration).paramsPerLayer)
           }
         }
       }
@@ -84,9 +67,9 @@ class FeedforwardNetworkStructureSpec : Spek({
         LayerInterface(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
       ).toList()
 
-      val structure = FeedforwardStackedLayersStructure<DenseNDArray>(
+      val structure = StackedLayers<DenseNDArray>(
         layersConfiguration = layersConfiguration,
-        params = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration))
+        paramsPerLayer = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration).paramsPerLayer)
 
       on("architecture") {
 
@@ -112,7 +95,7 @@ class FeedforwardNetworkStructureSpec : Spek({
       on("layers factory") {
 
         it("should contain layers of the expected type") {
-          structure.layers.forEach { assertTrue { it is FeedforwardLayerStructure } }
+          structure.layers.forEach { assertTrue { it is FeedforwardLayer } }
         }
       }
 
@@ -130,7 +113,7 @@ class FeedforwardNetworkStructureSpec : Spek({
 
         structure.backward(
           outputErrors = structure.outputLayer.outputArray.values.sub(outputGold),
-          paramsErrors = NetworkParameters(layersConfiguration),
+          paramsErrors = StackedLayersParameters(layersConfiguration),
           propagateToInput = true)
 
         val inputErrors = structure.inputLayer.inputArray.errors

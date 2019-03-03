@@ -11,7 +11,6 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.layers.*
-import com.kotlinnlp.simplednn.core.layers.models.LayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.ItemsPool
@@ -27,7 +26,7 @@ import com.kotlinnlp.utils.ItemsPool
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  * @property id an identification number useful to track a specific layer (default: 0)
  */
-class HighwayLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+class HighwayLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters<*>,
@@ -35,7 +34,7 @@ class HighwayLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   dropout: Double = 0.0,
   override val id: Int = 0
 ) : ItemsPool.IDItem,
-  LayerStructure<InputNDArrayType>(
+  Layer<InputNDArrayType>(
     inputArray = inputArray,
     outputArray = outputArray,
     params = params,
@@ -46,12 +45,12 @@ class HighwayLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The input unit.
    */
-  val inputUnit = LayerUnit<InputNDArrayType>(outputArray.size)
+  val inputUnit = AugmentedArray.zeros(outputArray.size)
 
   /**
    * The transform gate.
    */
-  val transformGate = LayerUnit<InputNDArrayType>(outputArray.size)
+  val transformGate = AugmentedArray.zeros(outputArray.size)
 
   /**
    * The helper which executes the forward

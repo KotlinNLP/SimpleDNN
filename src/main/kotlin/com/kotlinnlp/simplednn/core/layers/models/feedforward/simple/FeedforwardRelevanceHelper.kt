@@ -8,16 +8,17 @@
 package com.kotlinnlp.simplednn.core.layers.models.feedforward.simple
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.getInputRelevance
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * The helper which calculates the relevance of the input of a [layer] respect of its output.
  *
- * @property layer the [FeedforwardLayerStructure] in which to calculate the input relevance
+ * @property layer the [FeedforwardLayer] in which to calculate the input relevance
  */
 class FeedforwardRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: FeedforwardLayerStructure<InputNDArrayType>
+  override val layer: FeedforwardLayer<InputNDArrayType>
 ) : RelevanceHelper<InputNDArrayType>(layer) {
 
   /**
@@ -30,6 +31,6 @@ class FeedforwardRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     return this.layer.outputArray.getInputRelevance(
       x = this.layer.inputArray.values,
-      contributions = layerContributions.unit)
+      cw = layerContributions.unit.weights.values)
   }
 }

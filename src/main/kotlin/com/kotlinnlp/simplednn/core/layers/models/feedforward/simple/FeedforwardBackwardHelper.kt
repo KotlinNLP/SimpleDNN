@@ -9,16 +9,17 @@ package com.kotlinnlp.simplednn.core.layers.models.feedforward.simple
 
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.assignParamsGradients
+import com.kotlinnlp.simplednn.core.layers.getInputErrors
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
 
 /**
  * The helper which executes the backward on a [layer].
  *
- * @property layer the [FeedforwardLayerStructure] in which the backward is executed
+ * @property layer the [FeedforwardLayer] in which the backward is executed
  */
 class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: FeedforwardLayerStructure<InputNDArrayType>
+  override val layer: FeedforwardLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
@@ -48,7 +49,8 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun assignParamsGradients(paramsErrors: FeedforwardLayerParameters) {
 
     this.layer.outputArray.assignParamsGradients(
-      paramsErrors = paramsErrors.unit,
+      gw = paramsErrors.unit.weights.values,
+      gb = paramsErrors.unit.biases.values,
       x = this.layer.inputArray.values)
   }
 
@@ -60,7 +62,7 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.params as FeedforwardLayerParameters
 
     this.layer.inputArray.assignErrors(
-      errors = this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit)
+      errors = this.layer.outputArray.getInputErrors(w = this.layer.params.unit.weights.values)
     )
   }
 }

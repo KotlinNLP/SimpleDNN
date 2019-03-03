@@ -10,16 +10,17 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.simple
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.getInputErrors
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the backward on a [layer].
  *
- * @property layer the [SimpleRecurrentLayerStructure] in which the backward is executed
+ * @property layer the [SimpleRecurrentLayer] in which the backward is executed
  */
 class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: SimpleRecurrentLayerStructure<InputNDArrayType>
+  override val layer: SimpleRecurrentLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
@@ -31,11 +32,11 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
    */
   override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
-    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer()
-    val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer()
+    val prevStateLayer = this.layer.layerContextWindow.getPrevState()
+    val nextStateLayer = this.layer.layerContextWindow.getNextState()
 
     if (nextStateLayer != null) {
-      this.addLayerRecurrentGradients(nextStateLayer as SimpleRecurrentLayerStructure<*>)
+      this.addLayerRecurrentGradients(nextStateLayer as SimpleRecurrentLayer<*>)
     }
 
     this.layer.applyOutputActivationDeriv() // must be applied AFTER having added the recurrent contribution
@@ -71,13 +72,13 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
    */
   private fun assignLayerGradients() { this.layer.params as SimpleRecurrentLayerParameters
 
-    this.layer.inputArray.assignErrors(this.layer.outputArray.getInputErrors(parameters = this.layer.params.unit))
+    this.layer.inputArray.assignErrors(this.layer.outputArray.getInputErrors(w = this.layer.params.unit.weights.values))
   }
 
   /**
    * gy += gyNext (dot) wRec
    */
-  private fun addLayerRecurrentGradients(nextStateLayer: SimpleRecurrentLayerStructure<*>) {
+  private fun addLayerRecurrentGradients(nextStateLayer: SimpleRecurrentLayer<*>) {
 
     this.layer.params as SimpleRecurrentLayerParameters
 

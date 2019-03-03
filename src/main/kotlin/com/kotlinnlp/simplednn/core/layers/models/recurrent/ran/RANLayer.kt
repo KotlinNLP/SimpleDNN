@@ -5,22 +5,20 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn
+package com.kotlinnlp.simplednn.core.layers.models.recurrent.ran
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
-import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
- * The DeltaRNN Layer Structure.
+ * The RAN Layer Structure.
  *
  * @property inputArray the input array of the layer
  * @property outputArray the output array of the layer
@@ -30,14 +28,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
-class DeltaRNNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+class RANLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters<*>,
   layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
-) : GatedRecurrentLayerStructure<InputNDArrayType>(
+) : GatedRecurrentLayer<InputNDArrayType>(
   inputArray = inputArray,
   outputArray = outputArray,
   params = params,
@@ -46,71 +44,46 @@ class DeltaRNNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   dropout = dropout) {
 
   /**
-   * The candidate array.
+   *
    */
-  val candidate = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
+  val candidate = AugmentedArray.zeros(outputArray.size)
 
   /**
-   * The partition array.
+   *
    */
-  val partition = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
+  val inputGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
-   * The array which contains the result of the dot product between the input (x) and the input weights (w).
+   *
    */
-  val wx = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
-
-  /**
-   * The array which contains the result of the dot product between the output in the previous state and the recurrent
-   * weights.
-   */
-  val wyRec = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
-
-  /**
-   * The support structure used to save temporary results during a forward and using them to calculate the relevance
-   * later.
-   */
-  val relevanceSupport: DeltaRNNRelevanceSupport
-    get() = try {
-      this._relevanceSupport
-
-    } catch (e: UninitializedPropertyAccessException) {
-      this._relevanceSupport = DeltaRNNRelevanceSupport(outputSize = this.outputArray.size)
-      this._relevanceSupport
-    }
+  val forgetGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
    * The helper which executes the forward
    */
-  override val forwardHelper = DeltaRNNForwardHelper(layer = this)
+  override val forwardHelper = RANForwardHelper(layer = this)
 
   /**
    * The helper which executes the backward
    */
-  override val backwardHelper = DeltaRNNBackwardHelper(layer = this)
+  override val backwardHelper = RANBackwardHelper(layer = this)
 
   /**
    * The helper which calculates the relevance
    */
-  override val relevanceHelper = DeltaRNNRelevanceHelper(layer = this)
+  override val relevanceHelper = RANRelevanceHelper(layer = this)
 
   /**
-   * The support structure used to save temporary results during a forward and using them to calculate the relevance
-   * later.
-   */
-  lateinit private var _relevanceSupport: DeltaRNNRelevanceSupport
-
-  /**
-   * Initialization: set the activation functions.
+   * Initialization: set the activation function of the gates
    */
   init {
 
-    if (activationFunction != null) {
-      outputArray.setActivation(activationFunction)
-    }
+    this.inputGate.setActivation(Sigmoid())
+    this.forgetGate.setActivation(Sigmoid())
 
-    this.candidate.setActivation(activationFunction ?: Tanh())
-    this.partition.setActivation(Sigmoid())
+    if (this.activationFunction != null) {
+      this.outputArray.setActivation(this.activationFunction)
+    }
   }
 
   /**

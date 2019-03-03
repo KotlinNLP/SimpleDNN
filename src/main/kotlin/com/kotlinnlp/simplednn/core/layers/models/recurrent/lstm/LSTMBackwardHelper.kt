@@ -16,10 +16,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * The helper which executes the backward on a [layer].
  *
- * @property layer the [LSTMLayerStructure] in which the backward is executed
+ * @property layer the [LSTMLayer] in which the backward is executed
  */
 class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: LSTMLayerStructure<InputNDArrayType>
+  override val layer: LSTMLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
@@ -31,8 +31,8 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
-    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer() as? LSTMLayerStructure
-    val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer() as? LSTMLayerStructure
+    val prevStateLayer = this.layer.layerContextWindow.getPrevState() as? LSTMLayer
+    val nextStateLayer = this.layer.layerContextWindow.getNextState() as? LSTMLayer
 
     if (nextStateLayer != null) {
       this.addOutputRecurrentGradients(nextStateLayer)
@@ -53,7 +53,7 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  fun getLayerRecurrentContribution(nextStateLayer: LSTMLayerStructure<*>): DenseNDArray {
+  fun getLayerRecurrentContribution(nextStateLayer: LSTMLayer<*>): DenseNDArray {
 
     this.layer.params as LSTMLayerParameters
 
@@ -80,7 +80,7 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param prevStateLayer the layer in the previous state
    * @param nextStateLayer the layer in the next state
    */
-  private fun assignGatesGradients(prevStateLayer: LSTMLayerStructure<*>?, nextStateLayer: LSTMLayerStructure<*>?) {
+  private fun assignGatesGradients(prevStateLayer: LSTMLayer<*>?, nextStateLayer: LSTMLayer<*>?) {
 
     val gy: DenseNDArray = this.layer.outputArray.errors
 
@@ -165,7 +165,7 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun addOutputRecurrentGradients(nextStateLayer: LSTMLayerStructure<*>) {
+  private fun addOutputRecurrentGradients(nextStateLayer: LSTMLayer<*>) {
 
     val gy: DenseNDArray = this.layer.outputArray.errors
     val gyRec: DenseNDArray = this.getLayerRecurrentContribution(nextStateLayer)
@@ -177,7 +177,7 @@ class LSTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun getCellRecurrentContribution(nextStateLayer: LSTMLayerStructure<*>): DenseNDArray {
+  private fun getCellRecurrentContribution(nextStateLayer: LSTMLayer<*>): DenseNDArray {
 
     val gCellNext: DenseNDArray = nextStateLayer.cell.errors
     val forGNext: DenseNDArray = nextStateLayer.forgetGate.values

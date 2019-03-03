@@ -13,12 +13,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The helper which executes the backward on a [AvgLayerStructure].
+ * The helper which executes the backward on a [AvgLayer].
  *
  * @property layer the layer in which the backward is executed
  */
 class AvgBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: AvgLayerStructure<InputNDArrayType>
+  override val layer: AvgLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
 
   /**

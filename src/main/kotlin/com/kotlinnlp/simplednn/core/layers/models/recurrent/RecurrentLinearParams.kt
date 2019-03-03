@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers.models.recurrent
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.layers.models.ParametersUnit
+import com.kotlinnlp.simplednn.core.layers.models.LinearParams
 
 /**
  * The parameters associated to a [RecurrentLayerUnit].
@@ -18,12 +18,12 @@ import com.kotlinnlp.simplednn.core.layers.models.ParametersUnit
  * @param sparseInput whether the weights connected to the input are sparse or not (default false)
  * @param meProp whether to use the 'meProp' errors propagation algorithm (params are sparse) (default false)
  */
-class RecurrentParametersUnit(
+class RecurrentLinearParams(
   inputSize: Int,
   outputSize: Int,
   sparseInput: Boolean = false,
   meProp: Boolean = false
-) : ParametersUnit(
+) : LinearParams(
   inputSize = inputSize,
   outputSize = outputSize,
   sparseInput = sparseInput) {

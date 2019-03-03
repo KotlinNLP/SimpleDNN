@@ -23,7 +23,7 @@ import kotlin.test.assertTrue
  */
 class CFNLayerStructureSpec : Spek({
 
-  describe("a CFNLayerStructure") {
+  describe("a CFNLayer") {
 
     context("forward") {
 

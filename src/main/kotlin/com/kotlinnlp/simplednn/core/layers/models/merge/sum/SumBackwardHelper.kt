@@ -13,12 +13,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The helper which executes the backward on a [SumLayerStructure].
+ * The helper which executes the backward on a [SumLayer].
  *
  * @property layer the layer in which the backward is executed
  */
 class SumBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: SumLayerStructure<InputNDArrayType>
+  override val layer: SumLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
 
   /**

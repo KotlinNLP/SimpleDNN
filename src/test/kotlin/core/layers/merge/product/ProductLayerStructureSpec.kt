@@ -20,7 +20,7 @@ import kotlin.test.assertTrue
  */
 class ProductLayerStructureSpec : Spek({
 
-  describe("a ProductLayerStructure") {
+  describe("a ProductLayer") {
 
     on("forward") {
 

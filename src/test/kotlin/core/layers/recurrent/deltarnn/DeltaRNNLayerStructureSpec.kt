@@ -27,7 +27,7 @@ import kotlin.test.assertTrue
  */
 class DeltaRNNLayerStructureSpec : Spek({
 
-  describe("a DeltaRNNLayerStructure") {
+  describe("a DeltaRNNLayer") {
 
     context("forward") {
 
@@ -212,12 +212,12 @@ class DeltaRNNLayerStructureSpec : Spek({
 
       on("with previous state context") {
 
-        val prevStateLayer = DeltaLayerContextWindow.Back().getPrevStateLayer()
+        val prevStateLayer = DeltaLayerContextWindow.Back().getPrevState()
         val contextWindow = mock<LayerContextWindow>()
         val layer = DeltaRNNLayerStructureUtils.buildLayer(contextWindow)
         val contributions = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5)
 
-        whenever(contextWindow.getPrevStateLayer()).thenReturn(prevStateLayer)
+        whenever(contextWindow.getPrevState()).thenReturn(prevStateLayer)
 
         layer.forward(layerContributions = contributions)
 

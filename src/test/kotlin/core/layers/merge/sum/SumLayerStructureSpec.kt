@@ -20,7 +20,7 @@ import kotlin.test.assertTrue
  */
 class SumLayerStructureSpec : Spek({
 
-  describe("a SumLayerStructure") {
+  describe("a SumLayer") {
 
     on("forward") {
 

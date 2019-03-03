@@ -5,18 +5,15 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.neuralnetwork
+package com.kotlinnlp.simplednn.core.layers
 
-import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerParametersFactory
-import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 
 /**
- * [NetworkParameters] contains all the parameters of the layers defined in [layersConfiguration],
+ * [StackedLayersParameters] contains all the parameters of the layers defined in [layersConfiguration],
  * grouped per layer.
  *
  * @property layersConfiguration a list of configurations, one per layer
@@ -24,12 +21,12 @@ import com.kotlinnlp.simplednn.core.optimizer.IterableParams
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  * @param forceDense force all parameters to be dense (false by default)
  */
-class NetworkParameters(
+class StackedLayersParameters(
   val layersConfiguration: List<LayerInterface>,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   private val forceDense: Boolean = false
-) : IterableParams<NetworkParameters>() {
+) : IterableParams<StackedLayersParameters>() {
 
   companion object {
 
@@ -71,11 +68,11 @@ class NetworkParameters(
   override val paramsList: List<UpdatableArray<*>> = this.buildParamsList()
 
   /**
-   * @return a new [NetworkParameters] containing a copy of all parameters of this
+   * @return a new [StackedLayersParameters] containing a copy of all parameters of this
    */
-  override fun copy(): NetworkParameters {
+  override fun copy(): StackedLayersParameters {
 
-    val clonedParams = NetworkParameters(
+    val clonedParams = StackedLayersParameters(
       layersConfiguration = this.layersConfiguration,
       forceDense = this.forceDense,
       weightsInitializer = null,

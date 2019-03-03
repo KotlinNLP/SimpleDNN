@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import core.layers.recurrent.simple.SimpleRecurrentLayerContextWindow
@@ -27,9 +27,9 @@ sealed class DeltaLayerContextWindow: LayerContextWindow {
    */
   class Empty: DeltaLayerContextWindow() {
 
-    override fun getPrevStateLayer() = null
+    override fun getPrevState() = null
 
-    override fun getNextStateLayer() = null
+    override fun getNextState() = null
   }
 
   /**
@@ -37,9 +37,9 @@ sealed class DeltaLayerContextWindow: LayerContextWindow {
    */
   class Back: DeltaLayerContextWindow() {
 
-    override fun getPrevStateLayer(): DeltaRNNLayerStructure<DenseNDArray> = buildPrevStateLayer()
+    override fun getPrevState(): DeltaRNNLayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextStateLayer() = null
+    override fun getNextState() = null
   }
 
   /**
@@ -47,9 +47,9 @@ sealed class DeltaLayerContextWindow: LayerContextWindow {
    */
   class Front: DeltaLayerContextWindow() {
 
-    override fun getPrevStateLayer() = null
+    override fun getPrevState() = null
 
-    override fun getNextStateLayer(): DeltaRNNLayerStructure<DenseNDArray> = buildNextStateLayer()
+    override fun getNextState(): DeltaRNNLayer<DenseNDArray> = buildNextStateLayer()
   }
 
   /**
@@ -57,23 +57,23 @@ sealed class DeltaLayerContextWindow: LayerContextWindow {
    */
   class Bilateral: DeltaLayerContextWindow() {
 
-    override fun getPrevStateLayer(): DeltaRNNLayerStructure<DenseNDArray> = buildPrevStateLayer()
+    override fun getPrevState(): DeltaRNNLayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextStateLayer(): DeltaRNNLayerStructure<DenseNDArray> = buildNextStateLayer()
+    override fun getNextState(): DeltaRNNLayer<DenseNDArray> = buildNextStateLayer()
   }
 }
 
 /**
  *
  */
-private fun buildPrevStateLayer(): DeltaRNNLayerStructure<DenseNDArray> {
+private fun buildPrevStateLayer(): DeltaRNNLayer<DenseNDArray> {
 
   val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
   outputArray.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
   outputArray.setActivation(Tanh())
   outputArray.activate()
 
-  return DeltaRNNLayerStructure(
+  return DeltaRNNLayer(
     inputArray = AugmentedArray(size = 4),
     outputArray = outputArray,
     params = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5),
@@ -84,12 +84,12 @@ private fun buildPrevStateLayer(): DeltaRNNLayerStructure<DenseNDArray> {
 /**
  *
  */
-private fun buildNextStateLayer(): DeltaRNNLayerStructure<DenseNDArray> {
+private fun buildNextStateLayer(): DeltaRNNLayer<DenseNDArray> {
 
   val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
   outputArray.assignErrors(errors =  DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
-  val layer = DeltaRNNLayerStructure(
+  val layer = DeltaRNNLayer(
     inputArray = AugmentedArray<DenseNDArray>(size = 4),
     outputArray = outputArray,
     params = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5),

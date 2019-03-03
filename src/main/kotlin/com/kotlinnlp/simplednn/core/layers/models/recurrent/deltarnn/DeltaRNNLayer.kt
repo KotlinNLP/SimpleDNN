@@ -5,22 +5,22 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm
+package com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
+import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
- * The LSTM Layer Structure.
+ * The DeltaRNN Layer Structure.
  *
  * @property inputArray the input array of the layer
  * @property outputArray the output array of the layer
@@ -30,14 +30,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
-class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+class DeltaRNNLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters<*>,
   layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
-) : GatedRecurrentLayerStructure<InputNDArrayType>(
+) : GatedRecurrentLayer<InputNDArrayType>(
   inputArray = inputArray,
   outputArray = outputArray,
   params = params,
@@ -46,58 +46,71 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   dropout = dropout) {
 
   /**
-   *
+   * The candidate array.
    */
-  val inputGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+  val candidate = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
 
   /**
-   *
+   * The partition array.
    */
-  val outputGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+  val partition = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
 
   /**
-   *
+   * The array which contains the result of the dot product between the input (x) and the input weights (w).
    */
-  val forgetGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+  val wx = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
 
   /**
-   *
+   * The array which contains the result of the dot product between the output in the previous state and the recurrent
+   * weights.
    */
-  val candidate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+  val wyRec = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(this.outputArray.size)))
 
   /**
-   *
+   * The support structure used to save temporary results during a forward and using them to calculate the relevance
+   * later.
    */
-  val cell = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(outputArray.size)))
+  val relevanceSupport: DeltaRNNRelevanceSupport
+    get() = try {
+      this._relevanceSupport
+
+    } catch (e: UninitializedPropertyAccessException) {
+      this._relevanceSupport = DeltaRNNRelevanceSupport(outputSize = this.outputArray.size)
+      this._relevanceSupport
+    }
 
   /**
    * The helper which executes the forward
    */
-  override val forwardHelper = LSTMForwardHelper(layer = this)
+  override val forwardHelper = DeltaRNNForwardHelper(layer = this)
 
   /**
    * The helper which executes the backward
    */
-  override val backwardHelper = LSTMBackwardHelper(layer = this)
+  override val backwardHelper = DeltaRNNBackwardHelper(layer = this)
 
   /**
    * The helper which calculates the relevance
    */
-  override val relevanceHelper = LSTMRelevanceHelper(layer = this)
+  override val relevanceHelper = DeltaRNNRelevanceHelper(layer = this)
 
   /**
-   * Initialization: set the activation function of the gates
+   * The support structure used to save temporary results during a forward and using them to calculate the relevance
+   * later.
+   */
+  lateinit private var _relevanceSupport: DeltaRNNRelevanceSupport
+
+  /**
+   * Initialization: set the activation functions.
    */
   init {
 
-    this.inputGate.setActivation(Sigmoid())
-    this.outputGate.setActivation(Sigmoid())
-    this.forgetGate.setActivation(Sigmoid())
-
     if (activationFunction != null) {
-      this.candidate.setActivation(activationFunction)
-      this.cell.setActivation(activationFunction)
+      outputArray.setActivation(activationFunction)
     }
+
+    this.candidate.setActivation(activationFunction ?: Tanh())
+    this.partition.setActivation(Sigmoid())
   }
 
   /**
@@ -107,8 +120,7 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param array the initial hidden array
    */
   override fun setInitHidden(array: DenseNDArray) {
-    this.cell.values.zeros()
-    this.outputArray.assignValues(array)
+    TODO("not implemented")
   }
 
   /**
@@ -117,7 +129,7 @@ class LSTMLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the errors of the initial hidden array
    */
-  override fun getInitHiddenErrors(): DenseNDArray =
-    this.backwardHelper.getLayerRecurrentContribution(
-      nextStateLayer = this.layerContextWindow.getNextStateLayer() as LSTMLayerStructure<*>).t
+  override fun getInitHiddenErrors(): DenseNDArray {
+    TODO("not implemented")
+  }
 }

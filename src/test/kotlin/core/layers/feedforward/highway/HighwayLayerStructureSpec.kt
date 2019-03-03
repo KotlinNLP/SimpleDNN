@@ -21,7 +21,7 @@ import kotlin.test.assertTrue
  */
 class HighwayLayerStructureSpec : Spek({
 
-  describe("a HighwayLayerStructure") {
+  describe("a HighwayLayer") {
 
     on("forward") {
 

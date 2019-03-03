@@ -12,12 +12,12 @@ import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
- * The helper which calculates the relevance of the input of a [ConcatLayerStructure] respect of its output.
+ * The helper which calculates the relevance of the input of a [ConcatLayer] respect of its output.
  *
  * @property layer the layer in which to calculate the input relevance
  */
 class ConcatRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: ConcatLayerStructure<InputNDArrayType>
+  override val layer: ConcatLayer<InputNDArrayType>
 ) : RelevanceHelper<InputNDArrayType>(layer) {
 
   /**

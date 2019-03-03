@@ -8,16 +8,16 @@
 package com.kotlinnlp.simplednn.core.layers.helpers
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * The helper which calculates the relevance of the input of a [layer] respect of its output.
  *
- * @property layer the [LayerStructure] in which to calculate the input relevance
+ * @property layer the [Layer] in which to calculate the input relevance
  */
 abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  protected open val layer: LayerStructure<InputNDArrayType>
+  protected open val layer: Layer<InputNDArrayType>
 ) {
 
   /**

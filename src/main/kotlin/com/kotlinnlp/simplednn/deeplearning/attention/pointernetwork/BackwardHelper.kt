@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.attention.AttentionParameters
 import com.kotlinnlp.simplednn.core.attention.AttentionMechanism
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -43,7 +43,7 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
   /**
    * The params errors accumulator of the merge network.
    */
-  private var mergeErrorsAccumulator = ParamsErrorsAccumulator<NetworkParameters>()
+  private var mergeErrorsAccumulator = ParamsErrorsAccumulator<StackedLayersParameters>()
 
   /**
    * The params errors accumulator of the attention structure
@@ -58,7 +58,7 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
   /**
    * The merge network parameters object in which to temporary save the errors during the backward.
    */
-  private val paramsErrors: NetworkParameters =
+  private val paramsErrors: StackedLayersParameters =
     this.networkProcessor.model.mergeNetwork.parametersFactory(forceDense = false)
 
   /**

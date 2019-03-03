@@ -9,7 +9,7 @@ package core.neuralnetwork
 
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -23,11 +23,11 @@ import kotlin.test.assertFalse
  */
 class NetworkParametersSpec: Spek({
 
-  describe("a NetworkParameters") {
+  describe("a StackedLayersParameters") {
 
     context("iteration over SimpleRecurrent + Feedforward parameters") {
 
-      val params = NetworkParameters(listOf(
+      val params = StackedLayersParameters(listOf(
         LayerInterface(size = 3),
         LayerInterface(size = 4, connectionType = LayerType.Connection.SimpleRecurrent),
         LayerInterface(size = 2, connectionType = LayerType.Connection.Feedforward)

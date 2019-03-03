@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentParametersUnit
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLinearParams
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -48,7 +48,7 @@ class LSTMLayerParameters(
   /**
    *
    */
-  val inputGate = RecurrentParametersUnit(
+  val inputGate = RecurrentLinearParams(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
@@ -56,7 +56,7 @@ class LSTMLayerParameters(
   /**
    *
    */
-  val outputGate = RecurrentParametersUnit(
+  val outputGate = RecurrentLinearParams(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
@@ -64,7 +64,7 @@ class LSTMLayerParameters(
   /**
    *
    */
-  val forgetGate = RecurrentParametersUnit(
+  val forgetGate = RecurrentLinearParams(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
@@ -72,7 +72,7 @@ class LSTMLayerParameters(
   /**
    *
    */
-  val candidate = RecurrentParametersUnit(
+  val candidate = RecurrentLinearParams(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)

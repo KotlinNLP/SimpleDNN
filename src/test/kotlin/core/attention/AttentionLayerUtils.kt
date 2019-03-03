@@ -11,10 +11,9 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.core.attention.AttentionParameters
-import com.kotlinnlp.simplednn.core.layers.models.LayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
@@ -49,7 +48,7 @@ object AttentionLayerUtils {
    */
   fun buildAttentionSequence(inputSequence: List<AugmentedArray<DenseNDArray>>): List<DenseNDArray> {
 
-    val transformLayer: FeedforwardLayerStructure<DenseNDArray> = buildTransformLayer()
+    val transformLayer: FeedforwardLayer<DenseNDArray> = buildTransformLayer()
 
     return arrayListOf(*Array(
       size = inputSequence.size,
@@ -142,9 +141,9 @@ object AttentionLayerUtils {
   /**
    *
    */
-  private fun buildTransformLayer(): FeedforwardLayerStructure<DenseNDArray> = FeedforwardLayerStructure(
+  private fun buildTransformLayer(): FeedforwardLayer<DenseNDArray> = FeedforwardLayer(
     inputArray = AugmentedArray(size = 4),
-    outputArray = LayerUnit(2),
+    outputArray = AugmentedArray.zeros(2),
     params = buildTransformLayerParams1(),
     activationFunction = Tanh()
   )

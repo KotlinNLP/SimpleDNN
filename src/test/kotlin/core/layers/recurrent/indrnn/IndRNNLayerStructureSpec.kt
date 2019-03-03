@@ -22,7 +22,7 @@ import kotlin.test.assertTrue
  */
 class IndRNNLayerStructureSpec : Spek({
 
-  describe("an IndRNNLayerStructure") {
+  describe("an IndRNNLayer") {
 
     context("forward") {
 

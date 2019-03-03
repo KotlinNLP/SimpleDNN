@@ -23,15 +23,15 @@ data class DeltaRNNRelevanceSupport(val outputSize: Int) {
   /**
    * The contribution from the input to the d1 array, including half biases of the candidate.
    */
-  val d1Input = AugmentedArray<DenseNDArray>(values = DenseNDArrayFactory.emptyArray(Shape(this.outputSize)))
+  val d1Input = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(this.outputSize)))
 
   /**
    * The contribution from the previous state to the d1 array, including half biases of the candidate.
    */
-  val d1Rec = AugmentedArray<DenseNDArray>(values = DenseNDArrayFactory.emptyArray(Shape(this.outputSize)))
+  val d1Rec = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(this.outputSize)))
 
   /**
    * The d2 array.
    */
-  val d2 = AugmentedArray<DenseNDArray>(values = DenseNDArrayFactory.emptyArray(Shape(this.outputSize)))
+  val d2 = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(this.outputSize)))
 }

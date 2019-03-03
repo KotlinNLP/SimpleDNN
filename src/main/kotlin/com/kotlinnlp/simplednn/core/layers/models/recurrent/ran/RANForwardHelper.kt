@@ -9,18 +9,18 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.ran
 
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
-import com.kotlinnlp.simplednn.core.layers.models.ParametersUnit
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentParametersUnit
+import com.kotlinnlp.simplednn.core.layers.models.LinearParams
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLinearParams
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the forward on a [layer].
  *
- * @property layer the [RANLayerStructure] in which the forward is executed
+ * @property layer the [RANLayer] in which the forward is executed
  */
 class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: RANLayerStructure<InputNDArrayType>
+  override val layer: RANLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
@@ -30,7 +30,7 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun forward() {
 
-    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer()
+    val prevStateLayer = this.layer.layerContextWindow.getPrevState()
 
     this.setGates(prevStateLayer) // must be called before accessing to the activated values of the gates
 
@@ -62,7 +62,7 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun forward(layerContributions: LayerParameters<*>) {
 
-    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer()
+    val prevStateLayer = this.layer.layerContextWindow.getPrevState()
 
     // must be called before accessing to the activated values of the gates
     this.setGates(prevStateLayer = prevStateLayer, layerContributions = layerContributions as RANLayerParameters)
@@ -98,13 +98,27 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param prevStateLayer the layer in the previous state
    */
-  private fun setGates(prevStateLayer: LayerStructure<*>?) { this.layer.params as RANLayerParameters
+  private fun setGates(prevStateLayer: Layer<*>?) { this.layer.params as RANLayerParameters
 
     val x: InputNDArrayType = this.layer.inputArray.values
 
-    this.layer.inputGate.forward(parameters = this.layer.params.inputGate, x = x)
-    this.layer.forgetGate.forward(parameters = this.layer.params.forgetGate, x = x)
-    this.layer.candidate.forward(parameters = this.layer.params.candidate, x = x)
+    this.layer.inputGate.forward(
+      w = this.layer.params.inputGate.weights.values,
+      b = this.layer.params.inputGate.biases.values,
+      x = x
+    )
+
+    this.layer.forgetGate.forward(
+      w = this.layer.params.forgetGate.weights.values,
+      b = this.layer.params.forgetGate.biases.values,
+      x = x
+    )
+
+    this.layer.candidate.forward(
+      w = this.layer.params.candidate.weights.values,
+      b = this.layer.params.candidate.biases.values,
+      x = x
+    )
 
     if (prevStateLayer != null) { // recurrent contribution for input and forget gates
       val yPrev = prevStateLayer.outputArray.valuesNotActivated
@@ -126,13 +140,13 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param prevStateLayer the layer in the previous state
    * @param layerContributions the structure in which to save the contributions of the input in respect of the output
    */
-  private fun setGates(prevStateLayer: LayerStructure<*>?, layerContributions: RANLayerParameters) {
+  private fun setGates(prevStateLayer: Layer<*>?, layerContributions: RANLayerParameters) {
     this.layer.params as RANLayerParameters
 
     // biases are divided equally within the sum if there's a contribution coming from recursion
     val splitBiases: Boolean = prevStateLayer != null
-    val inGParams: RecurrentParametersUnit = this.layer.params.inputGate
-    val forGParams: RecurrentParametersUnit = this.layer.params.forgetGate
+    val inGParams: RecurrentLinearParams = this.layer.params.inputGate
+    val forGParams: RecurrentLinearParams = this.layer.params.forgetGate
     val bInGBase: DenseNDArray = inGParams.biases.values as DenseNDArray
     val bForGBase: DenseNDArray = forGParams.biases.values as DenseNDArray
     val bInG: DenseNDArray = if (splitBiases) bInGBase.div(2.0) else bInGBase
@@ -165,7 +179,7 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.params as RANLayerParameters
 
     val x: InputNDArrayType = this.layer.inputArray.values
-    val candidateParams: ParametersUnit = this.layer.params.candidate
+    val candidateParams: LinearParams = this.layer.params.candidate
 
     this.forwardArray(
       contributions = layerContributions.candidate.weights.values,
@@ -206,8 +220,8 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.layer.params as RANLayerParameters
 
-    val inGParams: RecurrentParametersUnit = this.layer.params.inputGate
-    val forGParams: RecurrentParametersUnit = this.layer.params.forgetGate
+    val inGParams: RecurrentLinearParams = this.layer.params.inputGate
+    val forGParams: RecurrentLinearParams = this.layer.params.forgetGate
 
     this.addRecurrentContribution(
       yPrev = yPrev,

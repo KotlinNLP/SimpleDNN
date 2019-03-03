@@ -9,17 +9,18 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.simple
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.core.layers.Layer
+import com.kotlinnlp.simplednn.core.layers.forward
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the forward on a [layer].
  *
- * @property layer the [SimpleRecurrentLayerStructure] in which the forward is executed
+ * @property layer the [SimpleRecurrentLayer] in which the forward is executed
  */
 class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: SimpleRecurrentLayerStructure<InputNDArrayType>
+  override val layer: SimpleRecurrentLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
@@ -30,10 +31,13 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
   override fun forward() { this.layer.params as SimpleRecurrentLayerParameters
 
     // y = w (dot) x + b
-    this.layer.outputArray.forward(parameters = this.layer.params.unit, x = this.layer.inputArray.values)
+    this.layer.outputArray.forward(
+      w = this.layer.params.unit.weights.values,
+      b = this.layer.params.unit.biases.values,
+      x = this.layer.inputArray.values)
 
     // y += wRec (dot) yPrev
-    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer()
+    val prevStateLayer = this.layer.layerContextWindow.getPrevState()
     if (prevStateLayer != null) {
       this.layer.outputArray.addRecurrentContribution(
         parameters = this.layer.params.unit,
@@ -54,7 +58,7 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
     this.layer.params as SimpleRecurrentLayerParameters
     layerContributions as SimpleRecurrentLayerParameters
 
-    val prevStateLayer: LayerStructure<*>? = this.layer.layerContextWindow.getPrevStateLayer()
+    val prevStateLayer: Layer<*>? = this.layer.layerContextWindow.getPrevState()
     val b: DenseNDArray = this.layer.params.unit.biases.values as DenseNDArray
     val bContrib: DenseNDArray = if (prevStateLayer != null) b.div(2.0) else b
     // if there's a recurrent contribution b is divided equally within the sum

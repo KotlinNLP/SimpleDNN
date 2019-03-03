@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
 import com.kotlinnlp.utils.ItemsPool
 
 /**
- * A pool of [ProductLayerStructure]s which allows to allocate and release layers when needed, without creating
+ * A pool of [ProductLayer]s which allows to allocate and release layers when needed, without creating
  * a new one every time.
  *
  * @property params the parameters which connect the input to the output
@@ -25,16 +25,16 @@ import com.kotlinnlp.utils.ItemsPool
 class ProductLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
   val params: ProductLayerParameters,
   val inputType: LayerType.Input
-) : ItemsPool<ProductLayerStructure<InputNDArrayType>>() {
+) : ItemsPool<ProductLayer<InputNDArrayType>>() {
 
   /**
    * The factory of a new layer structure.
    *
    * @param id the id of the processor to create
    *
-   * @return a new [ProductLayerStructure] with the given [id]
+   * @return a new [ProductLayer] with the given [id]
    */
-  override fun itemFactory(id: Int): ProductLayerStructure<InputNDArrayType> {
+  override fun itemFactory(id: Int): ProductLayer<InputNDArrayType> {
 
     @Suppress("UNCHECKED_CAST")
     val inputArrays: List<AugmentedArray<InputNDArrayType>> = List(
@@ -48,9 +48,9 @@ class ProductLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
       }
     )
 
-    return ProductLayerStructure(
+    return ProductLayer(
       inputArrays = inputArrays,
-      outputArray = AugmentedArray(this.params.outputSize),
+      outputArray = AugmentedArray.zeros(this.params.outputSize),
       params = this.params,
       id = id
     )

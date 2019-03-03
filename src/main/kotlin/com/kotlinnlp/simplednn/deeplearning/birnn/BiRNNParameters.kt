@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.birnn
 
 import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 
 /**
@@ -19,9 +19,9 @@ import com.kotlinnlp.simplednn.core.optimizer.IterableParams
  * @property merge network parameters of the merge output network
  */
 class BiRNNParameters(
-  val leftToRight: NetworkParameters,
-  val rightToLeft: NetworkParameters,
-  val merge: NetworkParameters
+  val leftToRight: StackedLayersParameters,
+  val rightToLeft: StackedLayersParameters,
+  val merge: StackedLayersParameters
 ) : IterableParams<BiRNNParameters>() {
 
   companion object {

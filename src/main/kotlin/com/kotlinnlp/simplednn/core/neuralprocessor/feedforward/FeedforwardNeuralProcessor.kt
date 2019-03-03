@@ -8,10 +8,10 @@
 package com.kotlinnlp.simplednn.core.neuralprocessor.feedforward
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
+import com.kotlinnlp.simplednn.core.layers.StackedLayers
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.core.neuralnetwork.structure.feedforward.FeedforwardStackedLayersStructure
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -34,28 +34,28 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   DenseNDArray, // OutputType
   DenseNDArray, // ErrorsType
   DenseNDArray, // InputErrorsType
-  NetworkParameters // ParamsType
+  StackedLayersParameters // ParamsType
   > {
 
   /**
    * The structure as support of forward and backward.
    */
-  var structure = FeedforwardStackedLayersStructure<InputNDArrayType>(
+  var structure = StackedLayers<InputNDArrayType>(
     layersConfiguration = this.neuralNetwork.layersConfiguration,
-    params = this.neuralNetwork.model)
+    paramsPerLayer = this.neuralNetwork.model.paramsPerLayer)
 
   /**
    * The structure in which to save the contributions of the calculations during the forward (needed to calculate the
    * relevance of the input in respect of the output)
    */
-  private val forwardContributions: NetworkParameters by lazy {
+  private val forwardContributions: StackedLayersParameters by lazy {
     this.neuralNetwork.parametersFactory(forceDense = false)
   }
 
   /**
    * The errors of the network model parameters
    */
-  private val backwardParamsErrors: NetworkParameters by lazy {
+  private val backwardParamsErrors: StackedLayersParameters by lazy {
     this.neuralNetwork.parametersFactory(forceDense = false)
   }
 
@@ -75,9 +75,9 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the errors of the network parameters
    */
-  override fun getParamsErrors(copy: Boolean): NetworkParameters {
+  override fun getParamsErrors(copy: Boolean): StackedLayersParameters {
 
-    val paramsError: NetworkParameters
+    val paramsError: StackedLayersParameters
 
     if (copy) {
       paramsError = this.neuralNetwork.parametersFactory(forceDense = false)
@@ -154,7 +154,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     if (saveContributions)
       this.structure.forward(
         input = features,
-        networkContributions = this.forwardContributions,
+        stackedLayersContributions = this.forwardContributions,
         useDropout = this.useDropout)
     else
       this.structure.forward(
@@ -193,7 +193,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     if (saveContributions)
       this.structure.forward(
         input = featuresList,
-        networkContributions = this.forwardContributions,
+        stackedLayersContributions = this.forwardContributions,
         useDropout = this.useDropout)
     else
       this.structure.forward(
@@ -217,7 +217,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun calculateInputRelevance(relevantOutcomesDistribution: DistributionArray, copy: Boolean = true): NDArray<*> {
 
     this.structure.propagateRelevance(
-      networkContributions = this.forwardContributions,
+      stackedLayersContributions = this.forwardContributions,
       relevantOutcomesDistribution = relevantOutcomesDistribution)
 
     return this.structure.inputLayer.inputArray.relevance.let { if (copy) it.copy() else it }
@@ -240,7 +240,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param outputErrors the errors of the output
    * @param paramsErrors the object in which to save the parameters errors
    */
-  fun backward(outputErrors: DenseNDArray, paramsErrors: NetworkParameters) =
+  fun backward(outputErrors: DenseNDArray, paramsErrors: StackedLayersParameters) =
     this.structure.backward(
       outputErrors = outputErrors,
       paramsErrors = paramsErrors,

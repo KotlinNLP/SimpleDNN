@@ -16,12 +16,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
- * The helper which executes the forward on a [BiaffineLayerStructure].
+ * The helper which executes the forward on a [BiaffineLayer].
  *
  * @property layer the layer in which the forward is executed
  */
 class BiaffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: BiaffineLayerStructure<InputNDArrayType>
+  override val layer: BiaffineLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**

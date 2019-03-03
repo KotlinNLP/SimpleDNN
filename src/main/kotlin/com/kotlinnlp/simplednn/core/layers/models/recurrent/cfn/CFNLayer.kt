@@ -5,20 +5,22 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.models.recurrent.gru
+package com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
- * The CRU Layer Structure.
+ * The CFN Layer Structure.
  *
  * @property inputArray the input array of the layer
  * @property outputArray the output array of the layer
@@ -28,14 +30,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
-class GRULayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+class CFNLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters<*>,
   layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
-) : GatedRecurrentLayerStructure<InputNDArrayType>(
+) : GatedRecurrentLayer<InputNDArrayType>(
   inputArray = inputArray,
   outputArray = outputArray,
   params = params,
@@ -46,43 +48,48 @@ class GRULayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  val candidate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+  val candidate = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(outputArray.size)))
 
   /**
    *
    */
-  val resetGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+  val inputGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
 
   /**
    *
    */
-  val partitionGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+  val forgetGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+
+  /**
+   *
+   */
+  var activatedPrevOutput: DenseNDArray? = null
 
   /**
    * The helper which executes the forward
    */
-  override val forwardHelper = GRUForwardHelper(layer = this)
+  override val forwardHelper = CFNForwardHelper(layer = this)
 
   /**
    * The helper which executes the backward
    */
-  override val backwardHelper = GRUBackwardHelper(layer = this)
+  override val backwardHelper = CFNBackwardHelper(layer = this)
 
   /**
    * The helper which calculates the relevance
    */
-  override val relevanceHelper = GRURelevanceHelper(layer = this)
+  override val relevanceHelper = CFNRelevanceHelper(layer = this)
 
   /**
    * Initialization: set the activation function of the gates
    */
   init {
 
-    this.resetGate.setActivation(Sigmoid())
-    this.partitionGate.setActivation(Sigmoid())
+    this.inputGate.setActivation(Sigmoid())
+    this.forgetGate.setActivation(Sigmoid())
 
-    if (activationFunction != null) {
-      this.candidate.setActivation(activationFunction)
+    if (this.activationFunction != null) {
+      this.candidate.setActivation(this.activationFunction)
     }
   }
 

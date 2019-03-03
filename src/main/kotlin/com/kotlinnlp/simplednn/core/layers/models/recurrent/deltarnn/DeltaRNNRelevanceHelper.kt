@@ -18,10 +18,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 /**
  * The helper which calculates the relevance of the input of a [layer] respect of its output.
  *
- * @property layer the [DeltaRNNLayerStructure] in which to calculate the input relevance
+ * @property layer the [DeltaRNNLayer] in which to calculate the input relevance
  */
 class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: DeltaRNNLayerStructure<InputNDArrayType>
+  override val layer: DeltaRNNLayer<InputNDArrayType>
 ) : GatedRecurrentRelevanceHelper<InputNDArrayType>(layer) {
 
   /**
@@ -32,7 +32,7 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override fun propagateRelevanceToGates(layerContributions: LayerParameters<*>) {
     layerContributions as DeltaRNNLayerParameters
 
-    val previousStateExists: Boolean = this.layer.layerContextWindow.getPrevStateLayer() != null
+    val previousStateExists: Boolean = this.layer.layerContextWindow.getPrevState() != null
 
     val halfOutputRelevance: DenseNDArray = (this.layer.outputArray.relevance as DenseNDArray).div(2.0)
 
@@ -63,7 +63,7 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val wxContrib: NDArray<*> = layerContributions.feedforwardUnit.weights.values
 
     val relevanceSupport: DeltaRNNRelevanceSupport = this.layer.relevanceSupport
-    val previousStateExists: Boolean = this.layer.layerContextWindow.getPrevStateLayer() != null
+    val previousStateExists: Boolean = this.layer.layerContextWindow.getPrevState() != null
 
     val bp: DenseNDArray = this.layer.params.recurrentUnit.biases.values as DenseNDArray
     val bc: DenseNDArray = this.layer.params.feedforwardUnit.biases.values as DenseNDArray
@@ -114,7 +114,7 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.params as DeltaRNNLayerParameters
     layerContributions as DeltaRNNLayerParameters
 
-    val prevStateOutput: AugmentedArray<DenseNDArray> = this.layer.layerContextWindow.getPrevStateLayer()!!.outputArray
+    val prevStateOutput: AugmentedArray<DenseNDArray> = this.layer.layerContextWindow.getPrevState()!!.outputArray
     val yPrev: DenseNDArray = prevStateOutput.values
 
     val wyRecContrib: DenseNDArray = layerContributions.recurrentUnit.weights.values as DenseNDArray

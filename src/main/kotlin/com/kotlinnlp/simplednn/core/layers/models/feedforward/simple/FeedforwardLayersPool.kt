@@ -11,7 +11,6 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.LayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -19,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
 import com.kotlinnlp.utils.ItemsPool
 
 /**
- * A pool of [FeedforwardLayerStructure]s which allows to allocate and release layers when needed, without creating
+ * A pool of [FeedforwardLayer]s which allows to allocate and release layers when needed, without creating
  * a new one every time.
  *
  * @property params the parameters which connect the input to the output
@@ -32,16 +31,16 @@ class FeedforwardLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputType: LayerType.Input,
   val activationFunction: ActivationFunction?,
   val dropout: Double = 0.0
-) : ItemsPool<FeedforwardLayerStructure<InputNDArrayType>>() {
+) : ItemsPool<FeedforwardLayer<InputNDArrayType>>() {
 
   /**
    * The factory of a new layer structure.
    *
    * @param id the id of the processor to create
    *
-   * @return a new [FeedforwardLayerStructure] with the given [id]
+   * @return a new [FeedforwardLayer] with the given [id]
    */
-  override fun itemFactory(id: Int): FeedforwardLayerStructure<InputNDArrayType> {
+  override fun itemFactory(id: Int): FeedforwardLayer<InputNDArrayType> {
 
     @Suppress("UNCHECKED_CAST")
     val inputArray = when (this.inputType) {
@@ -50,9 +49,9 @@ class FeedforwardLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
       LayerType.Input.SparseBinary -> AugmentedArray<SparseBinaryNDArray>(size = this.params.inputSize)
     } as AugmentedArray<InputNDArrayType>
 
-    return FeedforwardLayerStructure(
+    return FeedforwardLayer(
       inputArray = inputArray,
-      outputArray = LayerUnit(this.params.outputSize),
+      outputArray = AugmentedArray.zeros(this.params.outputSize),
       params = this.params,
       activationFunction = this.activationFunction,
       dropout = this.dropout,

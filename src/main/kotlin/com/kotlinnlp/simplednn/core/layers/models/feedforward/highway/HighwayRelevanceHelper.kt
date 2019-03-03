@@ -14,10 +14,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 /**
  * The helper which calculates the relevance of the input of a [layer] respect of its output.
  *
- * @property layer the [HighwayLayerStructure] in which to calculate the input relevance
+ * @property layer the [HighwayLayer] in which to calculate the input relevance
  */
 class HighwayRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: HighwayLayerStructure<InputNDArrayType>
+  override val layer: HighwayLayer<InputNDArrayType>
 ) : RelevanceHelper<InputNDArrayType>(layer) {
 
   /**

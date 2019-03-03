@@ -9,7 +9,7 @@ package core.layers.merge.concat
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
@@ -21,7 +21,7 @@ object ConcatLayerUtils {
   /**
    *
    */
-  fun buildLayer(): ConcatLayerStructure<DenseNDArray> = ConcatLayerStructure(
+  fun buildLayer(): ConcatLayer<DenseNDArray> = ConcatLayer(
     inputArrays = listOf(
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9, 0.9, 0.6, 0.1))),
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.5))),

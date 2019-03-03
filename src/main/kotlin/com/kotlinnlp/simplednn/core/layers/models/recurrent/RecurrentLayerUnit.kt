@@ -7,7 +7,9 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.recurrent
 
-import com.kotlinnlp.simplednn.core.layers.models.LayerUnit
+import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.assignParamsGradients
+import com.kotlinnlp.simplednn.core.layers.getInputRelevance
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceUtils
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -15,9 +17,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
- * The basic unit of the recurrent layer, which extends the [LayerUnit] with the recurrent contribution.
+ * The basic unit of the recurrent layer, which extends the [AugmentedArray] with the recurrent contribution.
  */
-class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : LayerUnit<InputNDArrayType>(size) {
+class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : AugmentedArray<DenseNDArray>(size) {
 
   init {
     this.assignValues(DenseNDArrayFactory.emptyArray(Shape(size)))
@@ -31,7 +33,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    *
    * g += wRec (dot) prevContribution
    */
-  fun addRecurrentContribution(parameters: RecurrentParametersUnit, prevContribution: DenseNDArray) {
+  fun addRecurrentContribution(parameters: RecurrentLinearParams, prevContribution: DenseNDArray) {
 
     val wRec = parameters.recurrentWeights.values
 
@@ -49,11 +51,15 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    * @param x the input of the unit
    * @param yPrev the output array as contribution from the previous state
    */
-  fun assignParamsGradients(paramsErrors: RecurrentParametersUnit,
+  fun assignParamsGradients(paramsErrors: RecurrentLinearParams,
                             x: InputNDArrayType,
                             yPrev: DenseNDArray? = null) {
 
-    super.assignParamsGradients(paramsErrors = paramsErrors, x = x)
+    this.assignParamsGradients(
+      gw = paramsErrors.weights.values,
+      gb = paramsErrors.biases.values,
+      x = x
+    )
 
     val gwRec: NDArray<*> = paramsErrors.recurrentWeights.values
 
@@ -71,7 +77,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    *
    * @return the errors of the recursion of this unit
    */
-  fun getRecurrentErrors(parameters: RecurrentParametersUnit): DenseNDArray {
+  fun getRecurrentErrors(parameters: RecurrentLinearParams): DenseNDArray {
 
     val wRec: DenseNDArray = parameters.recurrentWeights.values as DenseNDArray
 
@@ -87,13 +93,13 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    * @return the relevance of the input of the unit
    */
   fun getInputRelevance(x: InputNDArrayType,
-                        contributions: RecurrentParametersUnit,
+                        contributions: RecurrentLinearParams,
                         prevStateExists: Boolean): NDArray<*> {
 
     return if (prevStateExists)
       this.getInputRelevancePartitioned(x = x, contributions = contributions)
     else
-      this.getInputRelevance(x = x, contributions = contributions)
+      this.getInputRelevance(x = x, cw = contributions.weights.values)
   }
 
   /**
@@ -102,7 +108,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    *
    * @return the relevance of the input of the unit, calculated from the input partition of the output relevance
    */
-  private fun getInputRelevancePartitioned(x: InputNDArrayType, contributions: RecurrentParametersUnit): NDArray<*> {
+  private fun getInputRelevancePartitioned(x: InputNDArrayType, contributions: RecurrentLinearParams): NDArray<*> {
 
     val y: DenseNDArray = this.valuesNotActivated
     val yRec: DenseNDArray = contributions.biases.values as DenseNDArray
@@ -130,7 +136,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    *
    * @return the relevance of the output in the previous state in respect of the current one
    */
-  fun getRecurrentRelevance(contributions: RecurrentParametersUnit, yPrev: DenseNDArray): DenseNDArray {
+  fun getRecurrentRelevance(contributions: RecurrentLinearParams, yPrev: DenseNDArray): DenseNDArray {
 
     val yRec: DenseNDArray = contributions.biases.values as DenseNDArray
     val yRecRelevance: DenseNDArray = RelevanceUtils.getRelevancePartition2(

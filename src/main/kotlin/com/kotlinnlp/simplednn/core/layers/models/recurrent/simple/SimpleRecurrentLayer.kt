@@ -5,22 +5,19 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn
+package com.kotlinnlp.simplednn.core.layers.models.recurrent.simple
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
-import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayerStructure
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The CFN Layer Structure.
+ * The SimpleRecurrent Layer Structure.
  *
  * @property inputArray the input array of the layer
  * @property outputArray the output array of the layer
@@ -30,14 +27,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
-class CFNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
+class SimpleRecurrentLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
-  outputArray: AugmentedArray<DenseNDArray>,
+  override val outputArray: RecurrentLayerUnit<InputNDArrayType>,
   params: LayerParameters<*>,
   layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
-) : GatedRecurrentLayerStructure<InputNDArrayType>(
+) : RecurrentLayer<InputNDArrayType>(
   inputArray = inputArray,
   outputArray = outputArray,
   params = params,
@@ -46,50 +43,26 @@ class CFNLayerStructure<InputNDArrayType : NDArray<InputNDArrayType>>(
   dropout = dropout) {
 
   /**
-   *
-   */
-  val candidate = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(outputArray.size)))
-
-  /**
-   *
-   */
-  val inputGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
-
-  /**
-   *
-   */
-  val forgetGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
-
-  /**
-   *
-   */
-  var activatedPrevOutput: DenseNDArray? = null
-
-  /**
    * The helper which executes the forward
    */
-  override val forwardHelper = CFNForwardHelper(layer = this)
+  override val forwardHelper = SimpleRecurrentForwardHelper(layer = this)
 
   /**
    * The helper which executes the backward
    */
-  override val backwardHelper = CFNBackwardHelper(layer = this)
+  override val backwardHelper = SimpleRecurrentBackwardHelper(layer = this)
 
   /**
    * The helper which calculates the relevance
    */
-  override val relevanceHelper = CFNRelevanceHelper(layer = this)
+  override val relevanceHelper = SimpleRecurrentRelevanceHelper(layer = this)
 
   /**
-   * Initialization: set the activation function of the gates
+   * Initialization: set the activation function of the output array.
    */
   init {
-
-    this.inputGate.setActivation(Sigmoid())
-    this.forgetGate.setActivation(Sigmoid())
-
-    if (this.activationFunction != null) {
-      this.candidate.setActivation(this.activationFunction)
+    if (activationFunction != null) {
+      outputArray.setActivation(activationFunction)
     }
   }
 

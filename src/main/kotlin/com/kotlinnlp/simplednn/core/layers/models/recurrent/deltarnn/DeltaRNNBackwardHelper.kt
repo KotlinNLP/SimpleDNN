@@ -16,10 +16,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * The helper which executes the backward on a [layer].
  *
- * @property layer the [DeltaRNNLayerStructure] in which the backward is executed
+ * @property layer the [DeltaRNNLayer] in which the backward is executed
  */
 class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: DeltaRNNLayerStructure<InputNDArrayType>
+  override val layer: DeltaRNNLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType> {
 
   /**
@@ -31,11 +31,11 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
 
-    val prevStateOutput = this.layer.layerContextWindow.getPrevStateLayer()?.outputArray
-    val nextStateLayer = this.layer.layerContextWindow.getNextStateLayer()
+    val prevStateOutput = this.layer.layerContextWindow.getPrevState()?.outputArray
+    val nextStateLayer = this.layer.layerContextWindow.getNextState()
 
     if (nextStateLayer != null) {
-      this.addOutputRecurrentGradients(nextStateLayer as DeltaRNNLayerStructure<*>)
+      this.addOutputRecurrentGradients(nextStateLayer as DeltaRNNLayer<*>)
     }
 
     this.layer.applyOutputActivationDeriv() // must be applied AFTER having added the recurrent gradients
@@ -75,7 +75,7 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param nextStateLayer the layer structure in the next state
    */
-  private fun addOutputRecurrentGradients(nextStateLayer: DeltaRNNLayerStructure<*>) {
+  private fun addOutputRecurrentGradients(nextStateLayer: DeltaRNNLayer<*>) {
 
     val gy: DenseNDArray = this.layer.outputArray.errors
     val gyRec: DenseNDArray = this.getLayerRecurrentContribution(nextStateLayer)
@@ -88,7 +88,7 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the error of the output in the next state in respect of the current state
    */
-  private fun getLayerRecurrentContribution(nextStateLayer: DeltaRNNLayerStructure<*>): DenseNDArray {
+  private fun getLayerRecurrentContribution(nextStateLayer: DeltaRNNLayer<*>): DenseNDArray {
 
     this.layer.params as DeltaRNNLayerParameters
 

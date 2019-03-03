@@ -9,17 +9,18 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.core.layers.Layer
+import com.kotlinnlp.simplednn.core.layers.forward
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the forward on a [layer].
  *
- * @property layer the [LSTMLayerStructure] in which the forward is executed
+ * @property layer the [LSTMLayer] in which the forward is executed
  */
 class LSTMForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: LSTMLayerStructure<InputNDArrayType>
+  override val layer: LSTMLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
@@ -29,7 +30,7 @@ class LSTMForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun forward() {
 
-    this.setGates(this.layer.layerContextWindow.getPrevStateLayer()) // must be called before accessing to the activated values of the gates
+    this.setGates(this.layer.layerContextWindow.getPrevState()) // must be called before accessing to the activated values of the gates
 
     val y: DenseNDArray = this.layer.outputArray.values
     val outG: DenseNDArray = this.layer.outputGate.values
@@ -56,7 +57,7 @@ class LSTMForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * cand = f(wCand (dot) x + bC + wCandRec (dot) yPrev)
    * cell = inG * cand + forG * cellPrev
    */
-  private fun setGates(prevStateLayer: LayerStructure<*>?) {
+  private fun setGates(prevStateLayer: Layer<*>?) {
 
     this.forwardGates()
 
@@ -73,7 +74,7 @@ class LSTMForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     if (prevStateLayer != null) { // add recurrent contribution to the cell
       val forG: DenseNDArray = this.layer.forgetGate.values
-      val cellPrev: DenseNDArray = (prevStateLayer as LSTMLayerStructure).cell.valuesNotActivated
+      val cellPrev: DenseNDArray = (prevStateLayer as LSTMLayer).cell.valuesNotActivated
       cell.assignSum(forG.prod(cellPrev))
     }
 
@@ -87,16 +88,35 @@ class LSTMForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     val x: InputNDArrayType = this.layer.inputArray.values
 
-    this.layer.inputGate.forward(this.layer.params.inputGate, x)
-    this.layer.outputGate.forward(this.layer.params.outputGate, x)
-    this.layer.forgetGate.forward(this.layer.params.forgetGate, x)
-    this.layer.candidate.forward(this.layer.params.candidate, x)
+    this.layer.inputGate.forward(
+      w = this.layer.params.inputGate.weights.values,
+      b = this.layer.params.inputGate.biases.values,
+      x = x
+    )
+
+    this.layer.outputGate.forward(
+      w = this.layer.params.outputGate.weights.values,
+      b = this.layer.params.outputGate.biases.values,
+      x = x
+    )
+
+    this.layer.forgetGate.forward(
+      w = this.layer.params.forgetGate.weights.values,
+      b = this.layer.params.forgetGate.biases.values,
+      x = x
+    )
+
+    this.layer.candidate.forward(
+      w = this.layer.params.candidate.weights.values,
+      b = this.layer.params.candidate.biases.values,
+      x = x
+    )
   }
 
   /**
    *
    */
-  private fun addGatesRecurrentContribution(prevStateLayer: LayerStructure<*>) {
+  private fun addGatesRecurrentContribution(prevStateLayer: Layer<*>) {
     this.layer.params as LSTMLayerParameters
 
     val yPrev: DenseNDArray = prevStateLayer.outputArray.values

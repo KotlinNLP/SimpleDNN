@@ -9,17 +9,18 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.gru
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.core.layers.Layer
+import com.kotlinnlp.simplednn.core.layers.forward
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the forward on a [layer].
  *
- * @property layer the [GRULayerStructure] in which the forward is executed
+ * @property layer the [GRULayer] in which the forward is executed
  */
 class GRUForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: GRULayerStructure<InputNDArrayType>
+  override val layer: GRULayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
@@ -29,7 +30,7 @@ class GRUForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun forward() {
 
-    val prevStateLayer = this.layer.layerContextWindow.getPrevStateLayer()
+    val prevStateLayer = this.layer.layerContextWindow.getPrevState()
 
     this.setGates(prevStateLayer) // must be called before accessing to the activated values of the gates
 
@@ -63,13 +64,27 @@ class GRUForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * p = sigmoid(wp (dot) x + bp + wpRec (dot) yPrev)
    * c = f(wc (dot) x + bc + wcRec (dot) (yPrev * r))
    */
-  private fun setGates(prevStateLayer: LayerStructure<*>?) { this.layer.params as GRULayerParameters
+  private fun setGates(prevStateLayer: Layer<*>?) { this.layer.params as GRULayerParameters
 
     val x: InputNDArrayType = this.layer.inputArray.values
 
-    this.layer.resetGate.forward(this.layer.params.resetGate, x)
-    this.layer.partitionGate.forward(this.layer.params.partitionGate, x)
-    this.layer.candidate.forward(this.layer.params.candidate, x)
+    this.layer.resetGate.forward(
+      w = this.layer.params.resetGate.weights.values,
+      b = this.layer.params.resetGate.biases.values,
+      x = x
+    )
+
+    this.layer.partitionGate.forward(
+      w = this.layer.params.partitionGate.weights.values,
+      b = this.layer.params.partitionGate.biases.values,
+      x = x
+    )
+
+    this.layer.candidate.forward(
+      w = this.layer.params.candidate.weights.values,
+      b = this.layer.params.candidate.biases.values,
+      x = x
+    )
 
     if (prevStateLayer != null) { // recurrent contribution for r and p
       val yPrev = prevStateLayer.outputArray.values

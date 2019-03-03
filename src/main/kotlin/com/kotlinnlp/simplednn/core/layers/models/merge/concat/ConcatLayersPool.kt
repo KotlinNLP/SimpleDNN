@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
 import com.kotlinnlp.utils.ItemsPool
 
 /**
- * A pool of [ConcatLayerStructure]s which allows to allocate and release layers when needed, without creating
+ * A pool of [ConcatLayer]s which allows to allocate and release layers when needed, without creating
  * a new one every time.
  *
  * @property params the parameters which connect the input to the output
@@ -25,16 +25,16 @@ import com.kotlinnlp.utils.ItemsPool
 class ConcatLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
   val params: ConcatLayerParameters,
   val inputType: LayerType.Input
-) : ItemsPool<ConcatLayerStructure<InputNDArrayType>>() {
+) : ItemsPool<ConcatLayer<InputNDArrayType>>() {
 
   /**
    * The factory of a new layer structure.
    *
    * @param id the id of the processor to create
    *
-   * @return a new [ConcatLayerStructure] with the given [id]
+   * @return a new [ConcatLayer] with the given [id]
    */
-  override fun itemFactory(id: Int): ConcatLayerStructure<InputNDArrayType> {
+  override fun itemFactory(id: Int): ConcatLayer<InputNDArrayType> {
 
     @Suppress("UNCHECKED_CAST")
     val inputArrays: List<AugmentedArray<InputNDArrayType>> = this.params.inputsSize.map {
@@ -45,9 +45,9 @@ class ConcatLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
       } as AugmentedArray<InputNDArrayType>
     }
 
-    return ConcatLayerStructure(
+    return ConcatLayer(
       inputArrays = inputArrays,
-      outputArray = AugmentedArray(this.params.outputSize),
+      outputArray = AugmentedArray.zeros(this.params.outputSize),
       params = this.params,
       id = id
     )

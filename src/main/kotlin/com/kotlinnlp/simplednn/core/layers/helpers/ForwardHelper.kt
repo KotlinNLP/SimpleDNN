@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers.helpers
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -17,10 +17,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
 /**
  * The helper which executes the forward on a [layer].
  *
- * @property layer the [LayerStructure] in which the forward is executed.
+ * @property layer the [Layer] in which the forward is executed.
  */
 abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  protected open val layer: LayerStructure<InputNDArrayType>
+  protected open val layer: Layer<InputNDArrayType>
 ) {
 
   /**

@@ -9,17 +9,17 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the forward on a [layer].
  *
- * @property layer the [DeltaRNNLayerStructure] in which the forward is executed
+ * @property layer the [DeltaRNNLayer] in which the forward is executed
  */
 class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: DeltaRNNLayerStructure<InputNDArrayType>
+  override val layer: DeltaRNNLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
@@ -32,7 +32,7 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val x: InputNDArrayType = this.layer.inputArray.values
     val w: DenseNDArray = this.layer.params.feedforwardUnit.weights.values as DenseNDArray
     val wx: DenseNDArray = this.layer.wx.values
-    val prevStateLayer: LayerStructure<*>? = this.layer.layerContextWindow.getPrevStateLayer()
+    val prevStateLayer: Layer<*>? = this.layer.layerContextWindow.getPrevState()
     val yPrev: DenseNDArray? = prevStateLayer?.outputArray?.values
 
     wx.assignDot(w, x)
@@ -63,7 +63,7 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     val wx: DenseNDArray = this.layer.wx.values
     var wyRec: DenseNDArray? = null
-    val prevStateLayer: LayerStructure<*>? = this.layer.layerContextWindow.getPrevStateLayer()
+    val prevStateLayer: Layer<*>? = this.layer.layerContextWindow.getPrevState()
     val yPrev: DenseNDArray? = prevStateLayer?.outputArray?.values
 
     // w (dot) x

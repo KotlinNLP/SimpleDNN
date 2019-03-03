@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
 import com.kotlinnlp.utils.ItemsPool
 
 /**
- * A pool of [SumLayerStructure]s which allows to allocate and release layers when needed, without creating
+ * A pool of [SumLayer]s which allows to allocate and release layers when needed, without creating
  * a new one every time.
  *
  * @property params the parameters which connect the input to the output
@@ -25,16 +25,16 @@ import com.kotlinnlp.utils.ItemsPool
 class SumLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
   val params: SumLayerParameters,
   val inputType: LayerType.Input
-) : ItemsPool<SumLayerStructure<InputNDArrayType>>() {
+) : ItemsPool<SumLayer<InputNDArrayType>>() {
 
   /**
    * The factory of a new layer structure.
    *
    * @param id the id of the processor to create
    *
-   * @return a new [SumLayerStructure] with the given [id]
+   * @return a new [SumLayer] with the given [id]
    */
-  override fun itemFactory(id: Int): SumLayerStructure<InputNDArrayType> {
+  override fun itemFactory(id: Int): SumLayer<InputNDArrayType> {
 
     @Suppress("UNCHECKED_CAST")
     val inputArrays: List<AugmentedArray<InputNDArrayType>> = List(
@@ -48,9 +48,9 @@ class SumLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
       }
     )
 
-    return SumLayerStructure(
+    return SumLayer(
       inputArrays = inputArrays,
-      outputArray = AugmentedArray(this.params.outputSize),
+      outputArray = AugmentedArray.zeros(this.params.outputSize),
       params = this.params,
       id = id
     )

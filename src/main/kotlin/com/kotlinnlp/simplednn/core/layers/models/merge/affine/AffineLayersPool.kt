@@ -9,13 +9,11 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.affine
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
-import com.kotlinnlp.simplednn.core.layers.models.LayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.ItemsPool
 
 /**
- * A pool of [AffineLayerStructure]s which allows to allocate and release layers when needed, without creating
+ * A pool of [AffineLayer]s which allows to allocate and release layers when needed, without creating
  * a new one every time.
  *
  * @property params the parameters which connect the input to the output
@@ -26,25 +24,25 @@ class AffineLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
   val params: AffineLayerParameters,
   val activationFunction: ActivationFunction?,
   val dropout: Double = 0.0
-) : ItemsPool<AffineLayerStructure<InputNDArrayType>>() {
+) : ItemsPool<AffineLayer<InputNDArrayType>>() {
 
   /**
    * The factory of a new layer structure.
    *
    * @param id the id of the processor to create
    *
-   * @return a new [AffineLayerStructure] with the given [id]
+   * @return a new [AffineLayer] with the given [id]
    */
-  override fun itemFactory(id: Int): AffineLayerStructure<InputNDArrayType> {
+  override fun itemFactory(id: Int): AffineLayer<InputNDArrayType> {
 
     val inputArrays: List<AugmentedArray<InputNDArrayType>> =
       List(size = this.params.inputsSize.size, init = {
         AugmentedArray<InputNDArrayType>(size = this.params.inputsSize[it])
       })
 
-    return AffineLayerStructure(
+    return AffineLayer(
       inputArrays = inputArrays,
-      outputArray = LayerUnit<DenseNDArray>(this.params.outputSize),
+      outputArray = AugmentedArray.zeros(this.params.outputSize),
       params = this.params,
       activationFunction = this.activationFunction,
       dropout = this.dropout,

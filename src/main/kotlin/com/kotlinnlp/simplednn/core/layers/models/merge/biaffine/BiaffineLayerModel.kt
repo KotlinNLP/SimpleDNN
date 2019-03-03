@@ -16,8 +16,8 @@ import java.io.Serializable
 /**
  * The model of a Biaffine Layer.
  *
- * @property params the parameters of the [BiaffineLayerStructure]s of the pool
- * @property activationFunction the activation function of the [BiaffineLayerStructure]s of the pool
+ * @property params the parameters of the [BiaffineLayer]s of the pool
+ * @property activationFunction the activation function of the [BiaffineLayer]s of the pool
  */
 data class BiaffineLayerModel(
   val params: BiaffineLayerParameters,

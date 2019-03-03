@@ -13,9 +13,9 @@ import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.RecurrentStackedLayersStructure
-import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.StructureContextWindow
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
+import com.kotlinnlp.simplednn.core.layers.RecurrentStackedLayers
+import com.kotlinnlp.simplednn.core.layers.StructureContextWindow
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import core.layers.feedforward.simple.FeedforwardLayerStructureUtils
 import core.layers.recurrent.simple.SimpleRecurrentLayerStructureUtils
@@ -28,9 +28,9 @@ object RecurrentNetworkStructureUtils {
   /**
    *
    */
-  fun buildParams(layersConfiguration: List<LayerInterface>): NetworkParameters {
+  fun buildParams(layersConfiguration: List<LayerInterface>): StackedLayersParameters {
 
-    val params = NetworkParameters(layersConfiguration)
+    val params = StackedLayersParameters(layersConfiguration)
     val inputParams = (params.paramsPerLayer[0] as SimpleRecurrentLayerParameters)
     val outputParams = (params.paramsPerLayer[1] as FeedforwardLayerParameters)
     val recurrentParams = SimpleRecurrentLayerStructureUtils.buildParams()
@@ -49,7 +49,7 @@ object RecurrentNetworkStructureUtils {
    *
    */
   fun buildStructure(structureContextWindow: StructureContextWindow<DenseNDArray>):
-    RecurrentStackedLayersStructure<DenseNDArray> {
+    RecurrentStackedLayers<DenseNDArray> {
 
     val layersConfiguration = arrayOf(
       LayerInterface(size = 4),
@@ -57,9 +57,9 @@ object RecurrentNetworkStructureUtils {
       LayerInterface(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
     ).toList()
 
-    return RecurrentStackedLayersStructure(
+    return RecurrentStackedLayers(
       layersConfiguration = layersConfiguration,
-      params = this.buildParams(layersConfiguration),
+      paramsPerLayer = this.buildParams(layersConfiguration).paramsPerLayer,
       structureContextWindow = structureContextWindow)
   }
 }

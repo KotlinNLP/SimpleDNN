@@ -9,15 +9,15 @@ package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.LayerStructure
+import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayerStructure
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerStructure
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayer
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
-import com.kotlinnlp.simplednn.core.neuralnetwork.NetworkParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
-import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.RecurrentStackedLayersStructure
-import com.kotlinnlp.simplednn.core.neuralnetwork.structure.recurrent.StructureContextWindow
+import com.kotlinnlp.simplednn.core.layers.RecurrentStackedLayers
+import com.kotlinnlp.simplednn.core.layers.StructureContextWindow
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -45,7 +45,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     List<DenseNDArray>, // OutputType
     List<DenseNDArray>, // ErrorsType
     List<DenseNDArray>, // InputErrorsType
-    NetworkParameters // ParamsType
+    StackedLayersParameters // ParamsType
     > {
 
   /**
@@ -77,14 +77,14 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The errors of the network model parameters calculated during a single backward
    */
-  private val backwardParamsErrors: NetworkParameters by lazy {
+  private val backwardParamsErrors: StackedLayersParameters by lazy {
     this.neuralNetwork.parametersFactory(forceDense = false)
   }
 
   /**
    * The params errors accumulator.
    */
-  private val paramsErrorsAccumulator by lazy { ParamsErrorsAccumulator<NetworkParameters>() }
+  private val paramsErrorsAccumulator by lazy { ParamsErrorsAccumulator<StackedLayersParameters>() }
 
   /**
    * An array of the size equal to the output layer size filled by zeroes.
@@ -96,7 +96,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * @return the previous network structure with respect to the [curStateIndex]
    */
-  override fun getPrevStateStructure(): RecurrentStackedLayersStructure<InputNDArrayType>? =
+  override fun getPrevState(): RecurrentStackedLayers<InputNDArrayType>? =
     if (this.curStateIndex in 1 .. this.lastStateIndex)
       this.sequence.getStateStructure(this.curStateIndex - 1)
     else
@@ -105,7 +105,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * @return the next network structure with respect to the [curStateIndex]
    */
-  override fun getNextStateStructure(): RecurrentStackedLayersStructure<InputNDArrayType>? =
+  override fun getNextState(): RecurrentStackedLayers<InputNDArrayType>? =
     if (this.curStateIndex < this.lastStateIndex) // it works also for the init hidden structure
       this.sequence.getStateStructure(this.curStateIndex + 1)
     else
@@ -125,7 +125,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the accumulated errors of the network parameters
    */
-  override fun getParamsErrors(copy: Boolean): NetworkParameters =
+  override fun getParamsErrors(copy: Boolean): StackedLayersParameters =
     this.paramsErrorsAccumulator.getParamsErrors(copy = copy)
 
   /**
@@ -171,7 +171,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
         .format(elementIndex, this.lastStateIndex)
     }
 
-    val structure: RecurrentStackedLayersStructure<InputNDArrayType> = this.sequence.getStateStructure(elementIndex)
+    val structure: RecurrentStackedLayers<InputNDArrayType> = this.sequence.getStateStructure(elementIndex)
 
     require(structure.inputLayer !is MergeLayer<InputNDArrayType>)
 
@@ -194,7 +194,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
         .format(elementIndex, this.lastStateIndex)
     }
 
-    val structure: RecurrentStackedLayersStructure<InputNDArrayType> = this.sequence.getStateStructure(elementIndex)
+    val structure: RecurrentStackedLayers<InputNDArrayType> = this.sequence.getStateStructure(elementIndex)
 
     require(structure.inputLayer is MergeLayer<InputNDArrayType>)
 
@@ -473,9 +473,9 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     if (this.lastStateIndex == this.sequence.lastIndex) {
 
-      val structure = RecurrentStackedLayersStructure(
+      val structure = RecurrentStackedLayers(
         layersConfiguration = this.neuralNetwork.layersConfiguration,
-        params = this.neuralNetwork.model,
+        paramsPerLayer = this.neuralNetwork.model.paramsPerLayer,
         structureContextWindow = this)
 
       this.sequence.add(structure = structure, saveContributions = saveContributions)
@@ -497,14 +497,14 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     initHiddenArrays: List<DenseNDArray?>?,
     saveContributions: Boolean) {
 
-    val structure: RecurrentStackedLayersStructure<InputNDArrayType> = this.sequence.getStateStructure(this.lastStateIndex)
+    val structure: RecurrentStackedLayers<InputNDArrayType> = this.sequence.getStateStructure(this.lastStateIndex)
 
     structure.setInitHidden(arrays = if (this.curStateIndex == 0) initHiddenArrays else null)
 
     if (saveContributions)
       structure.forward(
         input = features,
-        networkContributions = this.sequence.getStateContributions(this.lastStateIndex),
+        stackedLayersContributions = this.sequence.getStateContributions(this.lastStateIndex),
         useDropout = this.useDropout)
     else
       structure.forward(
@@ -525,14 +525,14 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     initHiddenArrays: List<DenseNDArray?>?,
     saveContributions: Boolean) {
 
-    val structure: RecurrentStackedLayersStructure<InputNDArrayType> = this.sequence.getStateStructure(this.lastStateIndex)
+    val structure: RecurrentStackedLayers<InputNDArrayType> = this.sequence.getStateStructure(this.lastStateIndex)
 
     structure.setInitHidden(arrays = if (this.curStateIndex == 0) initHiddenArrays else null)
 
     if (saveContributions) {
       structure.forward(
         input = input,
-        networkContributions = this.sequence.getStateContributions(this.lastStateIndex),
+        stackedLayersContributions = this.sequence.getStateContributions(this.lastStateIndex),
         useDropout = this.useDropout)
 
     } else {
@@ -550,15 +550,15 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun propagateRelevanceOnCurrentState(isFirstState: Boolean, isLastState: Boolean) {
 
-    val structure: RecurrentStackedLayersStructure<InputNDArrayType> = this.sequence.getStateStructure(this.curStateIndex)
+    val structure: RecurrentStackedLayers<InputNDArrayType> = this.sequence.getStateStructure(this.curStateIndex)
     var isPropagating: Boolean = isLastState
 
     for ((layerIndex, layer) in structure.layers.withIndex().reversed()) {
 
       structure.curLayerIndex = layerIndex // crucial to provide the right context
 
-      val isCurLayerRecurrent = layer is RecurrentLayerStructure
-      val isPrevLayerRecurrent = layerIndex > 0 && structure.layers[layerIndex - 1] is RecurrentLayerStructure
+      val isCurLayerRecurrent = layer is RecurrentLayer
+      val isPrevLayerRecurrent = layerIndex > 0 && structure.layers[layerIndex - 1] is RecurrentLayer
 
       isPropagating = isPropagating || isCurLayerRecurrent
 
@@ -583,7 +583,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param propagateToInput whether to propagate to the input
    * @param replaceInputRelevance a Boolean if the relevance of the input must be replaced or added
    */
-  private fun propagateLayerRelevance(layer: LayerStructure<*>,
+  private fun propagateLayerRelevance(layer: Layer<*>,
                                       layerIndex: Int,
                                       propagateToPrevState: Boolean,
                                       propagateToInput: Boolean,
@@ -594,7 +594,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     val contributions: LayerParameters<*>
       = this.sequence.getStateContributions(this.curStateIndex).paramsPerLayer[layerIndex]
 
-    if (layer is GatedRecurrentLayerStructure) {
+    if (layer is GatedRecurrentLayer) {
       layer.propagateRelevanceToGates(layerContributions = contributions)
     }
 
@@ -607,7 +607,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     }
 
     if (propagateToPrevState) {
-      (layer as RecurrentLayerStructure).setRecurrentRelevance(layerContributions = contributions)
+      (layer as RecurrentLayer).setRecurrentRelevance(layerContributions = contributions)
     }
   }
 

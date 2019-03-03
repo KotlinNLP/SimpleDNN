@@ -12,12 +12,12 @@ import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
- * The helper which calculates the relevance of the input of a [SumLayerStructure] respect of its output.
+ * The helper which calculates the relevance of the input of a [SumLayer] respect of its output.
  *
  * @property layer the layer in which to calculate the input relevance
  */
 class SumRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: SumLayerStructure<InputNDArrayType>
+  override val layer: SumLayer<InputNDArrayType>
 ) : RelevanceHelper<InputNDArrayType>(layer) {
 
   /**
