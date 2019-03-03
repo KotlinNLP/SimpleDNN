@@ -11,21 +11,20 @@ import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.StackedLayers
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
- * The NeuralProcessor that acts on a Feed-forward Neural Network.
+ * The NeuralProcessor that acts on stacked-layers networks.
  *
- * @property neuralNetwork a [NeuralNetwork]
+ * @property model the stacked-layers parameters
  * @property useDropout whether to apply the dropout during the [forward]
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
  * @property id an identification number useful to track a specific processor
  */
 class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
-  val neuralNetwork: NeuralNetwork,
+  val model: StackedLayersParameters,
   override val useDropout: Boolean,
   override val propagateToInput: Boolean,
   override val id: Int = 0
@@ -41,22 +40,30 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The structure as support of forward and backward.
    */
   var structure = StackedLayers<InputNDArrayType>(
-    layersConfiguration = this.neuralNetwork.layersConfiguration,
-    paramsPerLayer = this.neuralNetwork.model.paramsPerLayer)
+    layersConfiguration = this.model.layersConfiguration,
+    paramsPerLayer = this.model.paramsPerLayer)
 
   /**
    * The structure in which to save the contributions of the calculations during the forward (needed to calculate the
    * relevance of the input in respect of the output)
    */
   private val forwardContributions: StackedLayersParameters by lazy {
-    this.neuralNetwork.parametersFactory(forceDense = false)
+    StackedLayersParameters(
+      layersConfiguration = this.model.layersConfiguration,
+      weightsInitializer = null,
+      biasesInitializer = null,
+      forceDense = false)
   }
 
   /**
    * The errors of the network model parameters
    */
   private val backwardParamsErrors: StackedLayersParameters by lazy {
-    this.neuralNetwork.parametersFactory(forceDense = false)
+    StackedLayersParameters(
+      layersConfiguration = this.model.layersConfiguration,
+      weightsInitializer = null,
+      biasesInitializer = null,
+      forceDense = false)
   }
 
   /**
@@ -80,7 +87,13 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     val paramsError: StackedLayersParameters
 
     if (copy) {
-      paramsError = this.neuralNetwork.parametersFactory(forceDense = false)
+
+      paramsError = StackedLayersParameters(
+        layersConfiguration = this.model.layersConfiguration,
+        weightsInitializer = null,
+        biasesInitializer = null,
+        forceDense = false)
+
       paramsError.assignValues(this.backwardParamsErrors)
 
     } else {
@@ -99,7 +112,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return the errors of the input
    */
   override fun getInputErrors(copy: Boolean): DenseNDArray {
-    require(!this.neuralNetwork.sparseInput) { "Input errors available only if input is dense" }
+    require(!this.model.sparseInput) { "Input errors available only if input is dense" }
     require(this.structure.inputLayer !is MergeLayer<InputNDArrayType>)
 
     return this.structure.inputLayer.inputArray.errors.let { if (copy) it.copy() else it }
@@ -114,14 +127,14 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return the list of errors of the inputs
    */
   fun getInputsErrors(copy: Boolean = true): List<DenseNDArray> {
-    require(!this.neuralNetwork.sparseInput) { "Input errors available only if input is dense" }
+    require(!this.model.sparseInput) { "Input errors available only if input is dense" }
     require(this.structure.inputLayer is MergeLayer<InputNDArrayType>)
 
-    return (this.structure.inputLayer as MergeLayer<InputNDArrayType>).let {
+    return (this.structure.inputLayer as MergeLayer<InputNDArrayType>).let { layer ->
       if (copy)
-        it.inputArrays.map { it.errors.copy() }
+        layer.inputArrays.map { it.errors.copy() }
       else
-        it.inputArrays.map { it.errors }
+        layer.inputArrays.map { it.errors }
     }
   }
 

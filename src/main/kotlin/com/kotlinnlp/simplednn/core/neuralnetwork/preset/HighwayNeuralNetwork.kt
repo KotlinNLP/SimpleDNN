@@ -5,7 +5,7 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializ
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 
 /**
  * The Highway Neural Network factory.
@@ -35,7 +35,7 @@ object HighwayNeuralNetwork {
                       outputSize: Int,
                       outputActivation: ActivationFunction?,
                       weightsInitializer: Initializer? = GlorotInitializer(),
-                      biasesInitializer: Initializer? = GlorotInitializer()): NeuralNetwork {
+                      biasesInitializer: Initializer? = GlorotInitializer()): StackedLayersParameters {
 
     require(numOfHighway >= 1) { "The number of highway layers must be >= 1." }
 
@@ -69,10 +69,11 @@ object HighwayNeuralNetwork {
       connectionType = LayerType.Connection.Feedforward
     ))
 
-    return NeuralNetwork(
-      layerConfiguration = *layersConfiguration.toTypedArray(),
+    return StackedLayersParameters(
+      layersConfiguration = *layersConfiguration.toTypedArray(),
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer
+      biasesInitializer = biasesInitializer,
+      forceDense = false
     )
   }
 }

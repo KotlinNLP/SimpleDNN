@@ -45,7 +45,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * The [RecurrentNeuralProcessor] which encodes the sequence left-to-right.
    */
   private val leftToRightProcessor = RecurrentNeuralProcessor<InputNDArrayType>(
-    neuralNetwork = this.network.leftToRightNetwork,
+    model = this.network.leftToRightNetwork,
     useDropout = this.useDropout,
     propagateToInput = this.propagateToInput)
 
@@ -53,7 +53,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * The [RecurrentNeuralProcessor] which encodes the sequence right-to-left.
    */
   private val rightToLeftProcessor = RecurrentNeuralProcessor<InputNDArrayType>(
-    neuralNetwork = this.network.rightToLeftNetwork,
+    model = this.network.rightToLeftNetwork,
     useDropout = this.useDropout,
     propagateToInput = this.propagateToInput)
 
@@ -61,7 +61,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * The processor that merge the left-to-right and right-to-left encoded vectors.
    */
   private val outputMergeProcessors = BatchFeedforwardProcessor<DenseNDArray>(
-    neuralNetwork = this.network.outputMergeNetwork,
+    model = this.network.outputMergeNetwork,
     useDropout = this.useDropout,
     propagateToInput = true)
 

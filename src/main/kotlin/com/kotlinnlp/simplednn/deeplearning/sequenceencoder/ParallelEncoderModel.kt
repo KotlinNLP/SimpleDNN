@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.deeplearning.sequenceencoder
 
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream
@@ -18,7 +18,7 @@ import java.io.Serializable
  *
  * @property networks a list of sequence feedforward networks
  */
-class ParallelEncoderModel(val networks: List<NeuralNetwork>) : Serializable {
+class ParallelEncoderModel(val networks: List<StackedLayersParameters>) : Serializable {
 
   companion object {
 
@@ -41,7 +41,7 @@ class ParallelEncoderModel(val networks: List<NeuralNetwork>) : Serializable {
   /**
    * The parameters of all networks.
    */
-  val params = ParallelEncoderParameters(this.networks.map { it.model })
+  val params = ParallelEncoderParameters(this.networks)
 
   /**
    * Serialize this [ParallelEncoderModel] and write it to an output stream.

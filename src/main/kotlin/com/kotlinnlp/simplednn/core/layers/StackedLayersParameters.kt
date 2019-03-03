@@ -11,6 +11,9 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
+import com.kotlinnlp.utils.Serializer
+import java.io.InputStream
+import java.io.OutputStream
 
 /**
  * [StackedLayersParameters] contains all the parameters of the layers defined in [layersConfiguration],
@@ -28,14 +31,69 @@ class StackedLayersParameters(
   private val forceDense: Boolean = false
 ) : IterableParams<StackedLayersParameters>() {
 
+  /**
+   * Secondary constructor.
+   *
+   * @param layersConfiguration a list of configurations, one per layer
+   * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+   * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
+   *
+   * @return a new NeuralNetwork
+   */
+  constructor(
+    vararg layersConfiguration: LayerInterface,
+    weightsInitializer: Initializer? = GlorotInitializer(),
+    biasesInitializer: Initializer? = GlorotInitializer(),
+    forceDense: Boolean = false
+  ): this(
+    layersConfiguration = layersConfiguration.toList(),
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer,
+    forceDense = forceDense
+  )
+
   companion object {
 
     /**
-     * Private val used to serialize the class (needed by Serializable)
+     * Private val used to serialize the class (needed by Serializable).
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
+
+    /**
+     * Read a [StackedLayersParameters] (serialized) from an input stream and decode it.
+     *
+     * @param inputStream the [InputStream] from which to read the serialized [StackedLayersParameters]
+     *
+     * @return the [StackedLayersParameters] read from [inputStream] and decoded
+     */
+    fun load(inputStream: InputStream): StackedLayersParameters = Serializer.deserialize(inputStream)
   }
+
+  /**
+   * The type of the input array.
+   */
+  val inputType: LayerType.Input = this.layersConfiguration.first().type
+
+  /**
+   * Whether the input array is sparse binary.
+   */
+  val sparseInput: Boolean = this.inputType == LayerType.Input.SparseBinary
+
+  /**
+   * The size of the input, meaningful when the first layer is not a Merge layer.
+   */
+  val inputSize: Int = this.layersConfiguration.first().size
+
+  /**
+   * The size of the inputs, meaningful when the first layer is a Merge layer.
+   */
+  val inputsSize: List<Int> = this.layersConfiguration.first().sizes
+
+  /**
+   * The output size.
+   */
+  val outputSize: Int = this.layersConfiguration.last().size
 
   /**
    * A list containing a [LayerParameters] for each layer.
@@ -68,4 +126,11 @@ class StackedLayersParameters(
 
     return clonedParams
   }
+
+  /**
+   * Serialize this [StackedLayersParameters] and write it to an output stream.
+   *
+   * @param outputStream the [OutputStream] in which to write this serialized [StackedLayersParameters]
+   */
+  fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
 }

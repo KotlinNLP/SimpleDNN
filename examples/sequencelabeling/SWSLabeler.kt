@@ -60,7 +60,7 @@ class SWSLabeler(
    * The feed-forward neural processor.
    */
   private val processor = FeedforwardNeuralProcessor<DenseNDArray>(
-    neuralNetwork = this.network.classifier,
+    model = this.network.classifier,
     useDropout = this.useDropout,
     propagateToInput = true)
 

@@ -12,8 +12,8 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializ
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import core.neuralnetwork.utils.SerializedNetwork
@@ -35,13 +35,13 @@ class NeuralNetworkSpec: Spek({
     on("loading from a byte array input stream") {
 
       it("should load a NeuralNetwork without failing") {
-        NeuralNetwork.load(inputStream = ByteArrayInputStream(SerializedNetwork.byteArray))
+        StackedLayersParameters.load(inputStream = ByteArrayInputStream(SerializedNetwork.byteArray))
       }
     }
 
     on("dumping to a byte array output stream") {
 
-      val network = NeuralNetwork(
+      val network = StackedLayersParameters(
         LayerInterface(size = 3),
         LayerInterface(size = 5, connectionType = LayerType.Connection.Feedforward)
       )
@@ -68,14 +68,14 @@ class NeuralNetworkSpec: Spek({
       val randomGenerator = mock<RandomGenerator>()
       whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
-      val network = NeuralNetwork(
+      val network = StackedLayersParameters(
         LayerInterface(size = 3),
         LayerInterface(size = 2, connectionType = LayerType.Connection.Feedforward),
         weightsInitializer = RandomInitializer(randomGenerator),
         biasesInitializer = ConstantInitializer(0.9)
       )
 
-      val params = network.model.paramsPerLayer[0] as FeedforwardLayerParameters
+      val params = network.paramsPerLayer[0] as FeedforwardLayerParameters
       val w = params.unit.weights.values
       val b = params.unit.biases.values
 

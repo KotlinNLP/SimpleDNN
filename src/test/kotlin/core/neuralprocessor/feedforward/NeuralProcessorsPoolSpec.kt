@@ -27,7 +27,7 @@ class NeuralProcessorsPoolSpec : Spek({
     on("getItem") {
 
       val pool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
-        neuralNetwork = FeedforwardNeuralNetwork(
+        model = FeedforwardNeuralNetwork(
           inputSize = 5,
           hiddenSize = 3,
           hiddenActivation = null,
@@ -59,7 +59,7 @@ class NeuralProcessorsPoolSpec : Spek({
     on("releaseItem") {
 
       val pool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
-        neuralNetwork = FeedforwardNeuralNetwork(
+        model = FeedforwardNeuralNetwork(
           inputSize = 5,
           hiddenSize = 3,
           hiddenActivation = null,
@@ -85,7 +85,7 @@ class NeuralProcessorsPoolSpec : Spek({
     on("releaseAll") {
 
       val pool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
-        neuralNetwork = FeedforwardNeuralNetwork(
+        model = FeedforwardNeuralNetwork(
           inputSize = 5,
           hiddenSize = 3,
           hiddenActivation = null,
@@ -111,7 +111,7 @@ class NeuralProcessorsPoolSpec : Spek({
     on("getItem after releaseAll") {
 
       val pool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
-        neuralNetwork = FeedforwardNeuralNetwork(
+        model = FeedforwardNeuralNetwork(
           inputSize = 5,
           hiddenSize = 3,
           hiddenActivation = null,

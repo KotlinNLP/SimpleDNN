@@ -33,7 +33,7 @@ class SWSLOptimizer(
   /**
    * The [Optimizer] used to optimize the network
    */
-  private val classifierOptimizer = ParamsOptimizer(this.network.classifier.model, this.paramsUpdateMethod)
+  private val classifierOptimizer = ParamsOptimizer(this.network.classifier, this.paramsUpdateMethod)
 
   /**
    * The [Optimizer] used to optimize the labels embeddings.

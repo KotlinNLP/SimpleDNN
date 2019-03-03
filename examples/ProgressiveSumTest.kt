@@ -84,7 +84,7 @@ class ProgressiveSumTest(val dataset: Corpus<SequenceExample<DenseNDArray>>) {
     println("\n-- TRAINING\n")
 
     val optimizer = ParamsOptimizer(
-      params = this.neuralNetwork.model,
+      params = this.neuralNetwork,
       updateMethod = LearningRateMethod(learningRate = 0.1))
 
     val trainingHelper = SequenceTrainingHelper<DenseNDArray>(

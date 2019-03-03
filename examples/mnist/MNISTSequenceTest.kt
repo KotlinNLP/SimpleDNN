@@ -68,10 +68,10 @@ class MNISTSequenceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<Dense
 
     println("\n-- TRAINING")
 
-    val optimizer = ParamsOptimizer(params = this.neuralNetwork.model, updateMethod = ADAMMethod(stepSize = 0.001))
+    val optimizer = ParamsOptimizer(params = this.neuralNetwork, updateMethod = ADAMMethod(stepSize = 0.001))
 
     val neuralProcessor = RecurrentNeuralProcessor<DenseNDArray>(
-      neuralNetwork = this.neuralNetwork,
+      model = this.neuralNetwork,
       useDropout = false,
       propagateToInput = false)
 

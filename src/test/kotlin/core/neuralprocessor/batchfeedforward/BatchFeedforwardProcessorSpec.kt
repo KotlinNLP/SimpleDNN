@@ -27,7 +27,7 @@ class BatchFeedforwardProcessorSpec : Spek({
     val inputSequence = BatchFeedforwardUtils.buildInputBatch()
     val network = BatchFeedforwardUtils.buildNetwork()
     val processor = BatchFeedforwardProcessor<DenseNDArray>(
-      neuralNetwork = network,
+      model = network,
       useDropout = false,
       propagateToInput = true)
 

@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward
 
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
@@ -19,13 +18,13 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * The NeuralProcessor that acts on a Feed-forward Neural Network performing operations through with mini-batch.
  *
- * @property neuralNetwork a [NeuralNetwork]
+ * @property model the stacked-layers parameters
  * @property useDropout whether to apply the dropout during the [forward]
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
  * @property id an identification number useful to track a specific processor
  */
 class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
-  val neuralNetwork: NeuralNetwork,
+  val model: StackedLayersParameters,
   override val useDropout: Boolean,
   override val propagateToInput: Boolean,
   override val id: Int = 0
@@ -41,7 +40,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    * A list of processors, one for each element of the batch.
    */
   private val processorsPool = FeedforwardNeuralProcessorsPool<InputNDArrayType>(
-    neuralNetwork = this.neuralNetwork,
+    model = this.model,
     useDropout = this.useDropout,
     propagateToInput = this.propagateToInput)
 

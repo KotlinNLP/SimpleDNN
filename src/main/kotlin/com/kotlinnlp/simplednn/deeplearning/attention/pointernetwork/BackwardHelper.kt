@@ -58,8 +58,12 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
   /**
    * The merge network parameters object in which to temporary save the errors during the backward.
    */
-  private val paramsErrors: StackedLayersParameters =
-    this.networkProcessor.model.mergeNetwork.parametersFactory(forceDense = false)
+  private val paramsErrors = StackedLayersParameters(
+    layersConfiguration = this.networkProcessor.model.mergeNetwork.layersConfiguration,
+    weightsInitializer = null,
+    biasesInitializer = null,
+    forceDense = false
+  )
 
   /**
    * Perform the back-propagation from the output errors.

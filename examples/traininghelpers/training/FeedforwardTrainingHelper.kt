@@ -36,7 +36,7 @@ class FeedforwardTrainingHelper<NDArrayType: NDArray<NDArrayType>>(
    */
   init {
 
-    val activation = this.neuralProcessor.neuralNetwork.layersConfiguration.last().activationFunction
+    val activation = this.neuralProcessor.model.layersConfiguration.last().activationFunction
 
     require(
       (this.lossCalculator is SoftmaxCrossEntropyCalculator && activation is Softmax) ||

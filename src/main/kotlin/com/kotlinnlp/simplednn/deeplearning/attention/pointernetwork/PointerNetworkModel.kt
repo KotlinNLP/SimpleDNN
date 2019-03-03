@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.core.attention.AttentionParameters
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.SoftmaxBase
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.MergeConfiguration
 import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.OpenOutputMerge
 import java.io.Serializable
@@ -50,7 +50,7 @@ class PointerNetworkModel(
   /**
    * The merge network used to create the attention arrays of the [attentionParams].
    */
-  val mergeNetwork = NeuralNetwork(
+  val mergeNetwork = StackedLayersParameters(
     LayerInterface(
       sizes = listOf(this.inputSize, this.vectorSize)
     ),
@@ -74,6 +74,6 @@ class PointerNetworkModel(
    * The structure containing all the parameters of this model.
    */
   val params = PointerNetworkParameters(
-    mergeParams = this.mergeNetwork.model,
+    mergeParams = this.mergeNetwork,
     attentionParams = this.attentionParams)
 }

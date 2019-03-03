@@ -68,7 +68,7 @@ class SparseInputTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArray>>) {
     println("\n-- TRAINING")
 
     val optimizer = ParamsOptimizer(
-      params = this.neuralNetwork.model,
+      params = this.neuralNetwork,
       updateMethod = AdaGradMethod(learningRate = 0.1)
     )
 

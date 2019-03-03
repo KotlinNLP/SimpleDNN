@@ -130,7 +130,7 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * The processor for the output Feedforward network (single layer).
    */
   private val outputProcessor = FeedforwardNeuralProcessor<DenseNDArray>(
-    neuralNetwork = this.model.outputNetwork,
+    model = this.model.outputNetwork,
     propagateToInput = true,
     useDropout = false) // TODO: set dropout
 

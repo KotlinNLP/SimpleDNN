@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.utils.ItemsPool
@@ -16,12 +16,12 @@ import com.kotlinnlp.utils.ItemsPool
  * A pool of [NeuralProcessor]s which allows to allocate and release processors when needed, without creating a new one.
  * It is useful to optimize the creation of new structures every time a processor is created.
  *
- * @property neuralNetwork the [NeuralNetwork] which the processors of the pool will work with
+ * @property model the stacked-layers parameters
  * @param useDropout whether to apply the dropout during the forward
  * @param propagateToInput whether to propagate the errors to the input during the backward
  */
 class RecurrentNeuralProcessorsPool<InputNDArrayType : NDArray<InputNDArrayType>>(
-  val neuralNetwork: NeuralNetwork,
+  val model: StackedLayersParameters,
   private val useDropout: Boolean,
   private val propagateToInput: Boolean
 ) : ItemsPool<RecurrentNeuralProcessor<InputNDArrayType>>() {
@@ -34,7 +34,7 @@ class RecurrentNeuralProcessorsPool<InputNDArrayType : NDArray<InputNDArrayType>
    * @return a new [RecurrentNeuralProcessor] with the given [id]
    */
   override fun itemFactory(id: Int) = RecurrentNeuralProcessor<InputNDArrayType>(
-    neuralNetwork = this.neuralNetwork,
+    model = this.model,
     useDropout = this.useDropout,
     propagateToInput = this.propagateToInput,
     id = id

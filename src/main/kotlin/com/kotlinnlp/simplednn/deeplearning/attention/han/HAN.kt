@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializ
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNN
 import com.kotlinnlp.utils.Serializer
@@ -121,7 +121,7 @@ class HAN(
    * The network (a single Feedforward layer) which transforms the output of the last hierarchical level to the output
    * of the [HANEncoder].
    */
-  val outputNetwork = NeuralNetwork(
+  val outputNetwork = StackedLayersParameters(
     LayerInterface(
       size = this.biRNNs.first().outputSize, // level 0 = top level
       type = LayerType.Input.Dense
@@ -141,7 +141,7 @@ class HAN(
   val params = HANParameters(
     biRNNs = this.biRNNs.map { it.model },
     attentionNetworks = this.attentionNetworksParams,
-    outputStackedLayers = this.outputNetwork.model
+    outputStackedLayers = this.outputNetwork
   )
 
   /**

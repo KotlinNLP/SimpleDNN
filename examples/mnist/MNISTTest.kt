@@ -69,7 +69,7 @@ class MNISTTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
     println("\n-- TRAINING")
 
     val optimizer = ParamsOptimizer(
-      params = this.neuralNetwork.model,
+      params = this.neuralNetwork,
       updateMethod = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999))
 
     val trainingHelper = FeedforwardTrainingHelper<DenseNDArray>(

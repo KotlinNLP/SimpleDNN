@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializ
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream
@@ -66,7 +66,7 @@ class MultiTaskNetworkModel(
   /**
    * The input network (composed by a single layer).
    */
-  val inputNetwork = NeuralNetwork(
+  val inputNetwork = StackedLayersParameters(
     LayerInterface(
       size = this.inputSize,
       type = this.inputType,
@@ -82,8 +82,8 @@ class MultiTaskNetworkModel(
   /**
    * The list of output networks (each composed by a single layer).
    */
-  val outputNetworks: List<NeuralNetwork> = this.outputConfigurations.map {
-    NeuralNetwork(
+  val outputNetworks: List<StackedLayersParameters> = this.outputConfigurations.map {
+    StackedLayersParameters(
       LayerInterface(
         size = this.hiddenSize,
         type = LayerType.Input.Dense,
@@ -101,8 +101,8 @@ class MultiTaskNetworkModel(
    * The neural parameters of this model.
    */
   val params = MultiTaskNetworkParameters(
-    inputParams = this.inputNetwork.model,
-    outputParamsList = this.outputNetworks.map { it.model }
+    inputParams = this.inputNetwork,
+    outputParamsList = this.outputNetworks
   )
 
   /**

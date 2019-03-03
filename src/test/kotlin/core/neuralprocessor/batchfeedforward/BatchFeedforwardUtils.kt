@@ -10,8 +10,8 @@ package core.neuralprocessor.batchfeedforward
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
@@ -41,9 +41,9 @@ object BatchFeedforwardUtils {
   /**
    *
    */
-  fun buildNetwork(): NeuralNetwork {
+  fun buildNetwork(): StackedLayersParameters {
 
-    val network = NeuralNetwork(
+    val network = StackedLayersParameters(
       LayerInterface(
         size = 3,
         type = LayerType.Input.Dense),
@@ -53,7 +53,7 @@ object BatchFeedforwardUtils {
         connectionType = LayerType.Connection.Feedforward
       ))
 
-    initParameters(network.model.paramsPerLayer[0] as FeedforwardLayerParameters)
+    initParameters(network.paramsPerLayer[0] as FeedforwardLayerParameters)
 
     return network
   }

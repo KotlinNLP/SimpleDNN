@@ -12,9 +12,9 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializ
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.*
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMLayerParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream
@@ -88,7 +88,7 @@ class BiRNN(
   /**
    * The Recurrent Neural Network to process the sequence left-to-right.
    */
-  val leftToRightNetwork = NeuralNetwork(
+  val leftToRightNetwork = StackedLayersParameters(
     LayerInterface(
       size = this.inputSize,
       type = this.inputType,
@@ -104,7 +104,7 @@ class BiRNN(
   /**
    * The Recurrent Neural Network to process the sequence right-to-left.
    */
-  val rightToLeftNetwork = NeuralNetwork(
+  val rightToLeftNetwork = StackedLayersParameters(
     LayerInterface(
       size = this.inputSize,
       type = this.inputType,
@@ -121,7 +121,7 @@ class BiRNN(
    * The Merge network that combines the pair of <left-to-right> and <right-to-left> encoded vectors of each
    * element of the input sequence.
    */
-  val outputMergeNetwork = NeuralNetwork(
+  val outputMergeNetwork = StackedLayersParameters(
     if (outputMergeConfiguration is ConcatFeedforwardMerge) listOf(
       LayerInterface(sizes = listOf(this.hiddenSize, this.hiddenSize), dropout = outputMergeConfiguration.dropout),
       LayerInterface(size = 2 * this.hiddenSize, connectionType = LayerType.Connection.Concat),
@@ -139,9 +139,9 @@ class BiRNN(
    * The model of this [BiRNN] containing its parameters.
    */
   val model = BiRNNParameters(
-    leftToRight = this.leftToRightNetwork.model,
-    rightToLeft = this.rightToLeftNetwork.model,
-    merge = this.outputMergeNetwork.model)
+    leftToRight = this.leftToRightNetwork,
+    rightToLeft = this.rightToLeftNetwork,
+    merge = this.outputMergeNetwork)
 
   /**
    * Check connection to the output layer.
@@ -151,8 +151,8 @@ class BiRNN(
       "required recurrentConnectionType with Recurrent property"
     }
 
-    (this.rightToLeftNetwork.model.paramsPerLayer.last() as? LSTMLayerParameters)?.initForgetGateBiasToOne()
-    (this.leftToRightNetwork.model.paramsPerLayer.last() as? LSTMLayerParameters)?.initForgetGateBiasToOne()
+    (this.rightToLeftNetwork.paramsPerLayer.last() as? LSTMLayerParameters)?.initForgetGateBiasToOne()
+    (this.leftToRightNetwork.paramsPerLayer.last() as? LSTMLayerParameters)?.initForgetGateBiasToOne()
   }
 
   /**

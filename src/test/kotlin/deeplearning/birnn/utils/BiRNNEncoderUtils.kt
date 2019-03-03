@@ -50,8 +50,8 @@ object BiRNNEncoderUtils {
       recurrentConnectionType = LayerType.Connection.SimpleRecurrent
     )
 
-    this.initL2RParameters(params = birnn.leftToRightNetwork.model.paramsPerLayer[0] as SimpleRecurrentLayerParameters)
-    this.initR2LParameters(params = birnn.rightToLeftNetwork.model.paramsPerLayer[0] as SimpleRecurrentLayerParameters)
+    this.initL2RParameters(params = birnn.leftToRightNetwork.paramsPerLayer[0] as SimpleRecurrentLayerParameters)
+    this.initR2LParameters(params = birnn.rightToLeftNetwork.paramsPerLayer[0] as SimpleRecurrentLayerParameters)
 
     return birnn
   }

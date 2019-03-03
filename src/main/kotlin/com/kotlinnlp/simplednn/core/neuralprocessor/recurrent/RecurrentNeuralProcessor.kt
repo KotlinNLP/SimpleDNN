@@ -15,7 +15,6 @@ import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.layers.RecurrentStackedLayers
 import com.kotlinnlp.simplednn.core.layers.StructureContextWindow
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
@@ -26,16 +25,15 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
- * The [RecurrentNeuralProcessor] acts on the [neuralNetwork] performing predictions
- * and training based on sequences of recurrent Examples.
+ * The NeuralProcessor that acts on stacked-layers networks with recurrent connections.
  *
- * @property neuralNetwork a [NeuralNetwork]
+ * @property model the stacked-layers parameters
  * @property useDropout whether to apply the dropout during the [forward]
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
  * @property id an identification number useful to track a specific processor
  */
 class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
-  val neuralNetwork: NeuralNetwork,
+  val model: StackedLayersParameters,
   override val useDropout: Boolean,
   override val propagateToInput: Boolean,
   override val id: Int = 0
@@ -51,7 +49,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Sequence of states.
    */
-  private val sequence = NNSequence<InputNDArrayType>(neuralNetwork)
+  private val sequence = NNSequence<InputNDArrayType>(this.model)
 
   /**
    * Set each time a single forward or a single backward are called
@@ -78,7 +76,12 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The errors of the network model parameters calculated during a single backward
    */
   private val backwardParamsErrors: StackedLayersParameters by lazy {
-    this.neuralNetwork.parametersFactory(forceDense = false)
+
+    StackedLayersParameters(
+      layersConfiguration = this.model.layersConfiguration,
+      weightsInitializer = null,
+      biasesInitializer = null,
+      forceDense = false)
   }
 
   /**
@@ -90,7 +93,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * An array of the size equal to the output layer size filled by zeroes.
    */
   private val zeroErrors: DenseNDArray by lazy {
-    DenseNDArrayFactory.zeros(shape = Shape(this.neuralNetwork.layersConfiguration.last().size))
+    DenseNDArrayFactory.zeros(shape = Shape(this.model.layersConfiguration.last().size))
   }
 
   /**
@@ -402,7 +405,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun getRANImportanceScores(stateIndex: Int): DenseNDArray {
 
     require(stateIndex > 0) { "Cannot get the importance score of the first state." }
-    require(this.neuralNetwork.layersConfiguration.count { it.connectionType == LayerType.Connection.RAN } == 1) {
+    require(this.model.layersConfiguration.count { it.connectionType == LayerType.Connection.RAN } == 1) {
       "It is required that only one layer must be a RAN layer to get the RAN importance score."
     }
 
@@ -474,8 +477,8 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     if (this.lastStateIndex == this.sequence.lastIndex) {
 
       val structure = RecurrentStackedLayers(
-        layersConfiguration = this.neuralNetwork.layersConfiguration,
-        paramsPerLayer = this.neuralNetwork.model.paramsPerLayer,
+        layersConfiguration = this.model.layersConfiguration,
+        paramsPerLayer = this.model.paramsPerLayer,
         structureContextWindow = this)
 
       this.sequence.add(structure = structure, saveContributions = saveContributions)

@@ -38,7 +38,7 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   private val encoders: List<BatchFeedforwardProcessor<InputNDArrayType>> =
     this.model.networks.map { BatchFeedforwardProcessor<InputNDArrayType>(
-      neuralNetwork = it,
+      model = it,
       useDropout = this.useDropout,
       propagateToInput = this.propagateToInput
     ) }

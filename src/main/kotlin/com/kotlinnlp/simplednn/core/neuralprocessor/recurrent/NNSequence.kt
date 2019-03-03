@@ -10,14 +10,13 @@ package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 
 import com.kotlinnlp.simplednn.core.layers.RecurrentStackedLayers
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  *
  */
-class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork: NeuralNetwork) {
+class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val model: StackedLayersParameters) {
 
   /**
    *
@@ -79,7 +78,13 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val neuralNetwork
     this.states.add(
       NNState(
         structure = structure,
-        contributions = if (saveContributions) this.neuralNetwork.parametersFactory(forceDense = false) else null
+        contributions = if (saveContributions) StackedLayersParameters(
+          layersConfiguration = this.model.layersConfiguration,
+          weightsInitializer = null,
+          biasesInitializer = null,
+          forceDense = false)
+        else
+          null
       )
     )
   }

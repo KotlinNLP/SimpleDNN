@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 
 /**
  * A Generic [NeuralNetwork] factory.
@@ -43,7 +43,7 @@ object GenericNeuralNetwork {
                       outputSize: Int,
                       outputActivation: ActivationFunction?,
                       weightsInitializer: Initializer?,
-                      biasesInitializer: Initializer?): NeuralNetwork {
+                      biasesInitializer: Initializer?): StackedLayersParameters {
 
     require(numOfHidden >= 0) { "The number of hidden layers must be >= 0." }
 
@@ -70,10 +70,11 @@ object GenericNeuralNetwork {
       connectionType = LayerType.Connection.Feedforward
     ))
 
-    return NeuralNetwork(
-      layerConfiguration = *layersConfiguration.toTypedArray(),
+    return StackedLayersParameters(
+      layersConfiguration = *layersConfiguration.toTypedArray(),
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer
+      biasesInitializer = biasesInitializer,
+      forceDense = false
     )
   }
 }

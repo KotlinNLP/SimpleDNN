@@ -4,7 +4,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 
 /**
  * The IndRNN Neural Network factory.
@@ -34,7 +34,7 @@ object IndRNNNeuralNetwork {
                       outputSize: Int,
                       outputActivation: ActivationFunction?,
                       weightsInitializer: Initializer? = GlorotInitializer(),
-                      biasesInitializer: Initializer? = GlorotInitializer()): NeuralNetwork =
+                      biasesInitializer: Initializer? = GlorotInitializer()): StackedLayersParameters =
     GenericNeuralNetwork(
       inputSize = inputSize,
       inputType = inputType,

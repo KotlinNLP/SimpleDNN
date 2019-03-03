@@ -39,7 +39,7 @@ class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The neural processor of the input network.
    */
   val inputProcessor = FeedforwardNeuralProcessor<InputNDArrayType>(
-    neuralNetwork = this.model.inputNetwork,
+    model = this.model.inputNetwork,
     useDropout = this.useDropout,
     propagateToInput = this.propagateToInput)
 
@@ -49,7 +49,7 @@ class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
   val outputProcessors: List<FeedforwardNeuralProcessor<DenseNDArray>> =
     this.model.outputNetworks.map { network ->
       FeedforwardNeuralProcessor<DenseNDArray>(
-        neuralNetwork = network,
+        model = network,
         useDropout = this.useDropout,
         propagateToInput = true) }
 

@@ -16,7 +16,6 @@ import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
-import com.kotlinnlp.simplednn.core.neuralnetwork.NeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 
@@ -24,6 +23,7 @@ import utils.SimpleExample
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.MulticlassEvaluation
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvaluationFunction
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import traininghelpers.validation.FeedforwardValidationHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.Shuffler
@@ -71,7 +71,7 @@ object GateTestUtils {
   /**
    *
    */
-  private fun testAccuracy(neuralNetwork: NeuralNetwork,
+  private fun testAccuracy(neuralNetwork: StackedLayersParameters,
                            examples: ArrayList<SimpleExample<DenseNDArray>>,
                            evaluationFunction: OutputEvaluationFunction,
                            epochs: Int): Double {
@@ -81,11 +81,11 @@ object GateTestUtils {
       decayMethod = HyperbolicDecay(decay = 0.0, initLearningRate = 0.01))
 
     val optimizer = ParamsOptimizer(
-      params = neuralNetwork.model,
+      params = neuralNetwork,
       updateMethod = updateMethod)
 
     val neuralProcessor = FeedforwardNeuralProcessor<DenseNDArray>(
-      neuralNetwork = neuralNetwork,
+      model = neuralNetwork,
       useDropout = false,
       propagateToInput = false)
 
