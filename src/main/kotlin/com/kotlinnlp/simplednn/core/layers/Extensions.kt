@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers
 
+import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
@@ -80,6 +81,28 @@ fun List<LayerInterface>.toLayers(paramsPerLayer: List<LayerParameters<*>>,
       prevLayer = layer
 
       layer
+    }
+  )
+}
+
+/**
+ * @return the list with parameters of all layers
+ */
+fun List<LayerParameters<*>>.toUpdatableArrays(): List<UpdatableArray<*>> {
+
+  var layerIndex = 0
+  var paramIndex = 0
+
+  return List(
+    size = this.sumBy { it.size },
+    init = {
+
+      if (paramIndex == this[layerIndex].size) {
+        layerIndex++
+        paramIndex = 0
+      }
+
+      this[layerIndex][paramIndex++]
     }
   )
 }
