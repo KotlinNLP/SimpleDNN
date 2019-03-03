@@ -7,7 +7,31 @@
 
 package com.kotlinnlp.simplednn.core.layers
 
+import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+
+/**
+ * Build a list containing a [LayerParameters] for each layer.
+ *
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
+ * @param forceDenseInput force all parameters to be dense (false by default)
+ */
+fun List<LayerInterface>.toLayerParameters(
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = GlorotInitializer(),
+  forceDenseInput: Boolean = false
+): List<LayerParameters<*>> = List(size = this.size - 1, init = { i ->
+  LayerParametersFactory(
+    inputsSize = this[i].sizes,
+    outputSize = this[i + 1].size,
+    connectionType = this[i + 1].connectionType!!,
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer,
+    sparseInput = !forceDenseInput && this[i].type == LayerType.Input.SparseBinary
+  )
+})
 
 /**
  * Build a new list of layer.
