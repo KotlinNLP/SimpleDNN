@@ -39,6 +39,13 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
 
       return array
     }
+
+    /**
+     * @param size the length of the array
+     *
+     * @return an [AugmentedArray] of length [size] with the values initialized to zero
+     */
+    fun zeros(size: Int) = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(size)))
   }
 
   /**
