@@ -38,34 +38,18 @@ class StackedLayersParameters(
   }
 
   /**
-   * The number of layers.
-   */
-  private val numOfLayers: Int = this.layersConfiguration.size - 1
-
-  /**
    * A list containing a [LayerParameters] for each layer.
-   *
-   * In [layersConfiguration] layers are defined as a list [x, y, z], but the structure
-   * contains layers as input-output pairs [x-y, y-z].
-   * The output of a layer is a reference of the input of the next layer.
    */
-  val paramsPerLayer: List<LayerParameters<*>> = List(
-    size = this.numOfLayers,
-    init = { i ->
-      LayerParametersFactory(
-        inputsSize = this.layersConfiguration[i].sizes,
-        outputSize = this.layersConfiguration[i + 1].size,
-        connectionType = this.layersConfiguration[i + 1].connectionType!!,
-        weightsInitializer = weightsInitializer,
-        biasesInitializer = biasesInitializer,
-        sparseInput = !this.forceDense && this.layersConfiguration[i].type == LayerType.Input.SparseBinary)
-    }
+  val paramsPerLayer: List<LayerParameters<*>> = this.layersConfiguration.toLayerParameters(
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer,
+    forceDenseInput = this.forceDense
   )
 
   /**
    * The list of all parameters.
    */
-  override val paramsList: List<UpdatableArray<*>> = this.buildParamsList()
+  override val paramsList: List<UpdatableArray<*>> = this.paramsPerLayer.toUpdatableArrays()
 
   /**
    * @return a new [StackedLayersParameters] containing a copy of all parameters of this
@@ -83,26 +67,5 @@ class StackedLayersParameters(
     }
 
     return clonedParams
-  }
-
-  /**
-   * @return the list with parameters of all layers
-   */
-  private fun buildParamsList(): List<UpdatableArray<*>> {
-
-    var layerIndex = 0
-    var paramIndex = 0
-
-    return List(
-      size = this.paramsPerLayer.sumBy { it.size },
-      init = {
-
-        if (paramIndex == this.paramsPerLayer[layerIndex].size) {
-          layerIndex++
-          paramIndex = 0
-        }
-
-        this.paramsPerLayer[layerIndex][paramIndex++] }
-    )
   }
 }
