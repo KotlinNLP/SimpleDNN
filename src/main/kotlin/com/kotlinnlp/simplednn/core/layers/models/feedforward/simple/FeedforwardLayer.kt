@@ -27,7 +27,7 @@ import com.kotlinnlp.utils.ItemsPool
  */
 class FeedforwardLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
-  override val outputArray: AugmentedArray<DenseNDArray>,
+  outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters<*>,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0,

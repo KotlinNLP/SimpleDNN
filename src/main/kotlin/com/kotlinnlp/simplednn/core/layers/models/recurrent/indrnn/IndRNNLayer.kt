@@ -28,7 +28,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class IndRNNLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
-  override val outputArray: AugmentedArray<DenseNDArray>,
+  outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters<*>,
   layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
