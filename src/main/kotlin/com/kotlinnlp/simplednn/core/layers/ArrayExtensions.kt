@@ -17,11 +17,11 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * g = w (dot) x + b
  *
- * @param w the weights
+ * @param w the weights (must be Dense)
  * @param b the biases
  * @param x the input array of the current layer
  */
-fun <InputNDArrayType : NDArray<InputNDArrayType>>AugmentedArray<DenseNDArray>.forward(
+fun <InputNDArrayType : NDArray<InputNDArrayType>>AugmentedArray<*>.forward(
   w: NDArray<*>, b: NDArray<*>, x: InputNDArrayType
 ) = this.values.assignDot(w as DenseNDArray, x).assignSum(b)
 
@@ -35,7 +35,7 @@ fun <InputNDArrayType : NDArray<InputNDArrayType>>AugmentedArray<DenseNDArray>.f
  * @param gb the gradients of the biases
  * @param x the input of the unit
  */
-fun <InputNDArrayType : NDArray<InputNDArrayType>>AugmentedArray<DenseNDArray>.assignParamsGradients(
+fun <InputNDArrayType : NDArray<InputNDArrayType>>AugmentedArray<*>.assignParamsGradients(
   gw: NDArray<*>, gb: NDArray<*>, x: InputNDArrayType
 ) {
   gb.assignValues(this.errors)
