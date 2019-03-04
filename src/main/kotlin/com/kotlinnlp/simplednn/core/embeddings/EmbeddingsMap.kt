@@ -124,6 +124,7 @@ open class EmbeddingsMap<T>(
         } else {
 
           val vector: DoubleArray = line
+            .trim()
             .substringAfter(' ')
             .split(" ")
             .let { DoubleArray(size = it.size, init = { i -> it[i].toDouble() }) }
