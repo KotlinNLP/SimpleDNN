@@ -124,7 +124,7 @@ open class EmbeddingsMap<T>(
         } else {
 
           val vector: DoubleArray = line
-            .trim()
+            .trimEnd() // remove trailing whitespaces
             .substringAfter(' ')
             .split(" ")
             .let { DoubleArray(size = it.size, init = { i -> it[i].toDouble() }) }
