@@ -10,7 +10,9 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.distance
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 class DistanceBackwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
     override val layer: DistanceLayer<InputNDArrayType>
@@ -35,6 +37,31 @@ class DistanceBackwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignLayerGradients() {
 
-    TODO("Not implemented")
+    val gy: DenseNDArray = this.layer.outputArray.errors
+
+    gy.assignProd(this.layer.outputArray.values)
+
+    val scoreError = gy[0]
+
+    val input1Errors = DenseNDArrayFactory.fill(this.layer.inputArray1.values.shape, scoreError)
+    val input2Errors = DenseNDArrayFactory.fill(this.layer.inputArray2.values.shape, scoreError)
+
+    (0 until this.layer.inputArray1.values.length).forEach { i ->
+
+      when {
+        this.layer.inputArray1.values[i].toDouble() > this.layer.inputArray2.values[i].toDouble() ->
+          input1Errors[i] *= -1.0
+        this.layer.inputArray1.values[i].toDouble() < this.layer.inputArray2.values[i].toDouble() ->
+          input2Errors[i] *= -1.0
+        else -> {
+          input1Errors[i] = 0.0
+          input2Errors[i] = 0.0
+        }
+      }
+
+    }
+
+    this.layer.inputArray1.assignErrors(input1Errors)
+    this.layer.inputArray2.assignErrors(input2Errors)
   }
 }
