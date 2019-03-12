@@ -103,6 +103,12 @@ class PointerNetworkProcessor(val model: PointerNetworkModel) {
   }
 
   /**
+   * @return an array that contains the importance scores NOT activated resulting from the last forward
+   */
+  fun getLastNotActivatedImportanceScores(): DenseNDArray =
+    this.usedAttentionMechanisms.last().importanceScore.valuesNotActivated.copy()
+
+  /**
    * Back-propagation of the errors.
    *
    * @param outputErrors the output errors
