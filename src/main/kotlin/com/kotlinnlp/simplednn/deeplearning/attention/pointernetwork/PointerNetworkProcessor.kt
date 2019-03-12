@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.core.attention.AttentionMechanism
+import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
 
@@ -16,8 +17,28 @@ import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeura
  * The [PointerNetworkProcessor].
  *
  * @property model the model of the network
+ * @property id an identification number useful to track a specific processor
  */
-class PointerNetworkProcessor(val model: PointerNetworkModel) {
+class PointerNetworkProcessor(
+  val model: PointerNetworkModel,
+  override val id: Int = 0
+) : NeuralProcessor<
+  DenseNDArray, // InputType
+  DenseNDArray, // OutputType
+  List<DenseNDArray>, // ErrorsType
+  PointerNetworkProcessor.InputErrors, // InputErrorsType
+  PointerNetworkParameters // ParamsType
+  > {
+
+  /**
+   * Propagate to the input by default
+   */
+  override val propagateToInput: Boolean = true
+
+  /**
+   * TODO: implement the dropout
+   */
+  override val useDropout: Boolean = false
 
   /**
    * @param inputSequenceErrors the list of errors of the input sequence
@@ -31,11 +52,6 @@ class PointerNetworkProcessor(val model: PointerNetworkModel) {
    * The input sequence that must be set using the [setInputSequence] method.
    */
   internal lateinit var inputSequence: List<DenseNDArray>
-
-  /**
-   * The size of the current input sequence.
-   */
-  val inputSequenceSize: Int get() = this.inputSequence.size
 
   /**
    * The number of forwards performed during the last decoding.
@@ -89,13 +105,13 @@ class PointerNetworkProcessor(val model: PointerNetworkModel) {
   /**
    * Forward.
    *
-   * @param context the vector that modulates a content-based attention mechanism over the input sequence
+   * @param input the vector that modulates a content-based attention mechanism over the input sequence
    *
    * @return an array that contains the importance score for each element of the input sequence
    */
-  fun forward(context: DenseNDArray): DenseNDArray {
+  override fun forward(input: DenseNDArray): DenseNDArray {
 
-    val output: DenseNDArray = this.forwardHelper.forward(context)
+    val output: DenseNDArray = this.forwardHelper.forward(input)
 
     this.forwardCount++
 
@@ -113,7 +129,7 @@ class PointerNetworkProcessor(val model: PointerNetworkModel) {
    *
    * @param outputErrors the output errors
    */
-  fun backward(outputErrors: List<DenseNDArray>) {
+  override fun backward(outputErrors: List<DenseNDArray>) {
 
     require(outputErrors.size == this.forwardCount)
 
@@ -121,17 +137,20 @@ class PointerNetworkProcessor(val model: PointerNetworkModel) {
   }
 
   /**
-   * @param copy a Boolean indicating if the returned errors must be a copy or a reference
+   * @param copy a Boolean indicating if the returned errors must be a copy or a reference (default true)
    *
    * @return the params errors of this network
    */
-  fun getParamsErrors(copy: Boolean = true): PointerNetworkParameters =
+  override fun getParamsErrors(copy: Boolean): PointerNetworkParameters =
     this.backwardHelper.getParamsErrors(copy = copy)
 
   /**
-   * @return the errors of the sequence
+   * @param copy a Boolean indicating if the returned errors must be a copy or a reference (default true)
+   *
+   * @return the input errors
    */
-  fun getInputErrors() = InputErrors(
+  override fun getInputErrors(copy: Boolean) = InputErrors(
     inputSequenceErrors = this.backwardHelper.inputSequenceErrors,
-    inputVectorsErrors = this.backwardHelper.vectorsErrors)
+    inputVectorsErrors = this.backwardHelper.vectorsErrors
+  )
 }
