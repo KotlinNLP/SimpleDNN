@@ -136,7 +136,7 @@ class AttentionLayerStructureSpec : Spek({
 
       it("should match the expected importance score") {
         assertTrue {
-          structure.importanceScore.equals(
+          structure.importanceScore.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(0.304352, 0.348001, 0.347647)),
             tolerance = 1.0e-06)
         }

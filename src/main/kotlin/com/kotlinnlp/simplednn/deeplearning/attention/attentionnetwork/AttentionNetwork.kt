@@ -167,9 +167,9 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   fun getImportanceScore(copy: Boolean = true): DenseNDArray =
     if (copy)
-      this.attentionLayer.importanceScore.copy()
+      this.attentionLayer.importanceScore.values.copy()
     else
-      this.attentionLayer.importanceScore
+      this.attentionLayer.importanceScore.values
 
   /**
    * Set the input sequence.

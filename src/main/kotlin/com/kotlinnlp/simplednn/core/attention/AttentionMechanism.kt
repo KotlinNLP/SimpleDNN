@@ -19,13 +19,13 @@ import com.kotlinnlp.utils.ItemsPool
  *
  * @property attentionSequence the sequence of attention arrays
  * @property params the parameters of the Attention
- * @property activation the activation function (default SoftmaxBase)
+ * @param activation the activation function (default SoftmaxBase)
  * @property id an identification number useful to track a specific [AttentionMechanism]
  */
 open class AttentionMechanism(
   val attentionSequence: List<DenseNDArray>,
   val params: AttentionParameters,
-  private val activation: ActivationFunction = SoftmaxBase(),
+  activation: ActivationFunction = SoftmaxBase(),
   override val id: Int = 0
 ) : ItemsPool.IDItem {
 
@@ -33,13 +33,13 @@ open class AttentionMechanism(
    * A matrix containing the attention arrays as rows.
    */
   val attentionMatrix: AugmentedArray<DenseNDArray> = AugmentedArray(
-    values = DenseNDArrayFactory.arrayOf(this.attentionSequence.map { it.toDoubleArray() })
+    DenseNDArrayFactory.arrayOf(this.attentionSequence.map { it.toDoubleArray() })
   )
 
   /**
    * The array containing the importance score.
    */
-  lateinit var importanceScore: DenseNDArray
+  val importanceScore = AugmentedArray<DenseNDArray>(this.attentionSequence.size)
 
   /**
    * Check requirements.
@@ -50,6 +50,8 @@ open class AttentionMechanism(
     require(this.attentionSequence.all { it.length == this.params.attentionSize }) {
       "The attention arrays must have the expected size (%d).".format(this.params.attentionSize)
     }
+
+    this.importanceScore.setActivation(activation)
   }
 
   /**
@@ -58,19 +60,16 @@ open class AttentionMechanism(
    *   am = attention matrix
    *   cv = context vector
    *
-   *   ac = am (dot) cv  // attention context
-   *   importance = activation(ac)
+   *   importance = activation(am (dot) cv)
    *
    * @return the importance score
    */
   fun forwardImportanceScore(): DenseNDArray {
 
-    val contextVector: DenseNDArray = this.params.contextVector.values
-    val attentionContext: DenseNDArray = this.attentionMatrix.values.dot(contextVector)
+    this.importanceScore.assignValues(this.attentionMatrix.values.dot(this.params.contextVector.values))
+    this.importanceScore.activate()
 
-    this.importanceScore = this.activation.f(attentionContext)
-
-    return this.importanceScore
+    return this.importanceScore.values
   }
 
   /**
@@ -92,17 +91,9 @@ open class AttentionMechanism(
    */
   fun backwardImportanceScore(paramsErrors: AttentionParameters, importanceScoreErrors: DenseNDArray) {
 
-    val contextVector: DenseNDArray = this.params.contextVector.values
-    val activationGradients: DenseNDArray = this.activation.dfOptimized(this.importanceScore)
-
-    val acErrors: DenseNDArray = if (activationGradients.isMatrix) // e.g. softmax jacobian
-      activationGradients.dot(importanceScoreErrors)
-    else
-      activationGradients.prod(importanceScoreErrors)
-
-    paramsErrors.contextVector.values.assignValues(acErrors.t.dot(this.attentionMatrix.values).t)
-
-    this.attentionMatrix.assignErrorsByDot(acErrors, contextVector.t)
+    this.assignImportanceScoreErrors(importanceScoreErrors)
+    this.assignParamsErrors(paramsErrors)
+    this.assignAttentionMatrixErrors()
   }
 
   /**
@@ -112,4 +103,31 @@ open class AttentionMechanism(
     size = this.attentionMatrix.values.shape.dim1,
     init = { i -> this.attentionMatrix.errors.getRow(i).t }
   )
+
+  /**
+   * @param outputErrors the output errors of the importance scores
+   */
+  private fun assignImportanceScoreErrors(outputErrors: DenseNDArray) {
+
+    val gI = this.importanceScore.calculateActivationDeriv()
+
+    if (gI.isMatrix) // Jacobian matrix
+      this.importanceScore.assignErrorsByDot(gI, outputErrors)
+    else
+      this.importanceScore.assignErrorsByProd(gI, outputErrors)
+  }
+
+  /**
+   * @param paramsErrors where to assign the errors of the Attention parameters
+   */
+  private fun assignParamsErrors(paramsErrors: AttentionParameters) {
+    paramsErrors.contextVector.values.assignValues(this.importanceScore.errors.t.dot(this.attentionMatrix.values).t)
+  }
+
+  /**
+   * Assign the errors of the [attentionMatrix].
+   */
+  private fun assignAttentionMatrixErrors() {
+    this.attentionMatrix.assignErrorsByDot(this.importanceScore.errors, this.params.contextVector.values.t)
+  }
 }
