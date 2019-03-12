@@ -14,8 +14,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.functionalities.activations.SoftmaxBase
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
-import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.MergeConfiguration
-import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.OpenOutputMerge
+import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.*
 import java.io.Serializable
 
 
@@ -48,6 +47,21 @@ class PointerNetworkModel(
   }
 
   /**
+   * The size of the merge output layer.
+   */
+  private val mergeOutputSize: Int = when (mergeConfig) {
+    is AffineMerge -> mergeConfig.outputSize
+    is BiaffineMerge -> mergeConfig.outputSize
+    is ConcatFeedforwardMerge -> mergeConfig.outputSize
+    is ConcatMerge -> this.inputSize + this.vectorSize
+    is SumMerge, is ProductMerge, is AvgMerge -> {
+      require(this.inputSize == this.vectorSize)
+      this.inputSize
+    }
+    else -> throw RuntimeException("Invalid output merge configuration.")
+  }
+
+  /**
    * The merge network used to create the attention arrays of the [attentionParams].
    */
   val mergeNetwork = StackedLayersParameters(
@@ -55,8 +69,7 @@ class PointerNetworkModel(
       sizes = listOf(this.inputSize, this.vectorSize)
     ),
     LayerInterface(
-      // 'size' not used for merge layers with fixed output (e.g. concat, avg, sum, product)
-      size = (mergeConfig as? OpenOutputMerge)?.outputSize ?: -1,
+      size = this.mergeOutputSize,
       activationFunction = (mergeConfig as? OpenOutputMerge)?.activationFunction,
       connectionType = mergeConfig.type
     ),
