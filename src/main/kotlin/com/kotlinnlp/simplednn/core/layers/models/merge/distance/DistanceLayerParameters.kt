@@ -16,13 +16,13 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
  * @property inputSize the size of each input
  */
 class DistanceLayerParameters(
-    inputSize: Int
+  inputSize: Int
 ) : MergeLayerParameters<DistanceLayerParameters>(
-    inputsSize = List(size = 2, init = { inputSize }),
-    outputSize = 1,
-    weightsInitializer = null,
-    biasesInitializer = null,
-    sparseInput = false // actually not used because there are no parameters
+  inputsSize = List(size = 2, init = { inputSize }),
+  outputSize = 1,
+  weightsInitializer = null,
+  biasesInitializer = null,
+  sparseInput = false // actually not used because there are no parameters
 ){
 
   companion object {

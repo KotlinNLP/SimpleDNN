@@ -9,14 +9,15 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.distance
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
-class DistanceBackwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
-    override val layer: DistanceLayer<InputNDArrayType>
-) : BackwardHelper<InputNDArrayType> {
+/**
+ * The helper which executes the forward on a [DistanceLayer].
+ *
+ * @property layer the layer in which the forward is executed
+ */
+class DistanceBackwardHelper(override val layer: DistanceLayer) : BackwardHelper<DenseNDArray> {
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
@@ -49,10 +50,8 @@ class DistanceBackwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
     (0 until this.layer.inputArray1.values.length).forEach { i ->
 
       when {
-        this.layer.inputArray1.values[i].toDouble() > this.layer.inputArray2.values[i].toDouble() ->
-          input1Errors[i] *= -1.0
-        this.layer.inputArray1.values[i].toDouble() < this.layer.inputArray2.values[i].toDouble() ->
-          input2Errors[i] *= -1.0
+        this.layer.inputArray1.values[i] > this.layer.inputArray2.values[i] -> input1Errors[i] *= -1.0
+        this.layer.inputArray1.values[i] < this.layer.inputArray2.values[i] -> input2Errors[i] *= -1.0
         else -> {
           input1Errors[i] = 0.0
           input2Errors[i] = 0.0

@@ -10,17 +10,17 @@ package core.layers.merge.distance
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.models.merge.distance.DistanceLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.distance.DistanceLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 object DistanceLayerUtils {
+
   /**
    *
    */
-  fun buildLayer(): DistanceLayer<DenseNDArray> = DistanceLayer(
-      inputArray1 = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.7, -0.7, 0.8, 0.6))),
-      inputArray2 = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.4, 0.8, -0.7))),
-      params = DistanceLayerParameters(inputSize = 4))
+  fun buildLayer(): DistanceLayer = DistanceLayer(
+    inputArray1 = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.7, -0.7, 0.8, 0.6))),
+    inputArray2 = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.4, 0.8, -0.7))),
+    params = DistanceLayerParameters(inputSize = 4))
 
   /**
    *

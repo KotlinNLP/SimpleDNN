@@ -9,7 +9,6 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.distance
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import java.lang.Math.abs
@@ -20,9 +19,7 @@ import kotlin.math.exp
  *
  * @property layer the layer in which the forward is executed
  */
-class DistanceForwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
-    override val layer: DistanceLayer<InputNDArrayType>
-) : ForwardHelper<InputNDArrayType>(layer){
+class DistanceForwardHelper(override val layer: DistanceLayer) : ForwardHelper<DenseNDArray>(layer){
 
   /**
    * Forward the input to the output calculating a score value d ∈ [0, 1]. d = exp(-||input1-input2||1)
@@ -34,11 +31,11 @@ class DistanceForwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
     val outputScore = DoubleArray(1)
 
     diffVector.assignSub(this.layer.inputArray2.values)
-
     diffVector.toDoubleArray().forEach { element -> sum += abs(element) }
-    outputScore[0] = exp(-sum)
-    this.layer.outputArray.assignValues(DenseNDArrayFactory.arrayOf(outputScore))
 
+    outputScore[0] = exp(-sum)
+
+    this.layer.outputArray.assignValues(DenseNDArrayFactory.arrayOf(outputScore))
   }
 
   /**
@@ -48,6 +45,6 @@ class DistanceForwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
   override fun forward(layerContributions: LayerParameters<*>) {
-    throw NotImplementedError("Forward with contributions not available for the Sum layer.")
+    throw NotImplementedError("Forward with contributions not available for the Distance layer.")
   }
 }
