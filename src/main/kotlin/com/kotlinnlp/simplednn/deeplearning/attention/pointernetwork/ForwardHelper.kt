@@ -29,7 +29,7 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
 
     val attentionArrays: List<DenseNDArray> = this.buildAttentionSequence(context)
 
-    return this.buildAttentionMechanism(attentionArrays).forwardImportanceScore()
+    return this.buildAttentionMechanism(attentionArrays).forward()
   }
 
   /**
@@ -37,16 +37,12 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
    *
    * @return an attention mechanisms
    */
-  private fun buildAttentionMechanism(attentionArrays: List<DenseNDArray>): AttentionMechanism {
-
-    this.networkProcessor.usedAttentionMechanisms.add(
+  private fun buildAttentionMechanism(attentionArrays: List<DenseNDArray>): AttentionMechanism =
+    this.networkProcessor.usedAttentionMechanisms.addAndReturn(
       AttentionMechanism(
-        attentionSequence = attentionArrays,
+        inputArrays = attentionArrays,
         params = this.networkProcessor.model.attentionParams,
         activation = this.networkProcessor.model.activation))
-
-    return this.networkProcessor.usedAttentionMechanisms.last()
-  }
 
   /**
    * @param context the vector that modulates a content-based attention mechanism over the input sequence
@@ -69,14 +65,10 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
    *
    * @return a list of available merge processors
    */
-  private fun getMergeProcessors(size: Int): List<FeedforwardNeuralProcessor<DenseNDArray>> {
-
-    val processorsList = List(size = size, init = { this.networkProcessor.mergeProcessorsPool.getItem() })
-
-    this.networkProcessor.usedMergeProcessors.add(processorsList)
-
-    return processorsList
-  }
+  private fun getMergeProcessors(size: Int): List<FeedforwardNeuralProcessor<DenseNDArray>> =
+    this.networkProcessor.usedMergeProcessors.addAndReturn(List(size = size, init = {
+      this.networkProcessor.mergeProcessorsPool.getItem()
+    }))
 
   /**
    * Initialize the structures used during the forward.
@@ -85,7 +77,16 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
 
     this.networkProcessor.mergeProcessorsPool.releaseAll()
     this.networkProcessor.usedMergeProcessors.clear()
-
     this.networkProcessor.usedAttentionMechanisms.clear()
+  }
+
+  /**
+   * @param element the element to add to the list
+   *
+   * @return the given [element]
+   */
+  private fun <E>MutableList<E>.addAndReturn(element: E): E {
+    this.add(element)
+    return element
   }
 }

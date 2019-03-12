@@ -116,13 +116,13 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
 
     val attentionMechanism: AttentionMechanism = this.networkProcessor.usedAttentionMechanisms[this.stateIndex]
 
-    attentionMechanism.backwardImportanceScore(
+    attentionMechanism.backward(
       paramsErrors = this.getAttentionParamsErrors(),
-      importanceScoreErrors = outputErrors)
+      outputErrors = outputErrors)
 
     this.attentionErrorsAccumulator.accumulate(this.attentionParamsErrors)
 
-    return attentionMechanism.getAttentionErrors()
+    return attentionMechanism.getInputErrors()
   }
 
   /**
