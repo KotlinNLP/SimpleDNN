@@ -17,13 +17,13 @@ import com.kotlinnlp.utils.ItemsPool
 /**
  * The Attention Mechanism.
  *
- * @property attentionSequence the sequence of attention arrays
+ * @property inputArrays the sequence of attention arrays
  * @property params the parameters of the Attention
  * @param activation the activation function (default SoftmaxBase)
  * @property id an identification number useful to track a specific [AttentionMechanism]
  */
-open class AttentionMechanism(
-  val attentionSequence: List<DenseNDArray>,
+class AttentionMechanism(
+  val inputArrays: List<DenseNDArray>,
   val params: AttentionParameters,
   activation: ActivationFunction = SoftmaxBase(),
   override val id: Int = 0
@@ -32,27 +32,27 @@ open class AttentionMechanism(
   /**
    * A matrix containing the attention arrays as rows.
    */
-  internal val attentionMatrix: AugmentedArray<DenseNDArray> = AugmentedArray(
-    DenseNDArrayFactory.arrayOf(this.attentionSequence.map { it.toDoubleArray() })
+  val attentionMatrix: AugmentedArray<DenseNDArray> = AugmentedArray(
+    DenseNDArrayFactory.arrayOf(this.inputArrays.map { it.toDoubleArray() })
   )
-
-  /**
-   * The array containing the attention context
-   */
-  private val attentionContext = AugmentedArray<DenseNDArray>(this.attentionSequence.size)
 
   /**
    * The array containing the importance score.
    */
-  val importanceScore = AugmentedArray<DenseNDArray>(this.attentionSequence.size)
+  val importanceScore = AugmentedArray<DenseNDArray>(this.inputArrays.size)
+
+  /**
+   * The array containing the attention context
+   */
+  private val attentionContext = AugmentedArray<DenseNDArray>(this.inputArrays.size)
 
   /**
    * Check requirements.
    */
   init {
 
-    require(this.attentionSequence.isNotEmpty()) { "The attention sequence cannot be empty." }
-    require(this.attentionSequence.all { it.length == this.params.attentionSize }) {
+    require(this.inputArrays.isNotEmpty()) { "The attention sequence cannot be empty." }
+    require(this.inputArrays.all { it.length == this.params.attentionSize }) {
       "The attention arrays must have the expected size (%d).".format(this.params.attentionSize)
     }
 
@@ -71,7 +71,7 @@ open class AttentionMechanism(
    *
    * @return the importance score
    */
-  fun forwardImportanceScore(): DenseNDArray {
+  fun forward(): DenseNDArray {
 
     this.attentionContext.assignValues(this.attentionMatrix.values.dot(this.params.contextVector.values))
     this.importanceScore.assignValues(this.attentionContext.values)
@@ -94,11 +94,11 @@ open class AttentionMechanism(
    *   gAM = gAC (dot) cv  // attention matrix errors
    *
    * @param paramsErrors the errors of the Attention parameters
-   * @param importanceScoreErrors the errors of the importance score
+   * @param outputErrors the errors of the importance score
    */
-  fun backwardImportanceScore(paramsErrors: AttentionParameters, importanceScoreErrors: DenseNDArray) {
+  fun backward(paramsErrors: AttentionParameters, outputErrors: DenseNDArray) {
 
-    this.importanceScore.assignErrors(importanceScoreErrors)
+    this.importanceScore.assignErrors(outputErrors)
     this.assignAttentionContextErrors()
     this.assignParamsErrors(paramsErrors)
     this.assignAttentionMatrixErrors()
@@ -107,7 +107,7 @@ open class AttentionMechanism(
   /**
    * @return the errors of the attention arrays.
    */
-  fun getAttentionErrors(): List<DenseNDArray> = List(
+  fun getInputErrors(): List<DenseNDArray> = List(
     size = this.attentionMatrix.values.shape.dim1,
     init = { i -> this.attentionMatrix.errors.getRow(i).t }
   )
