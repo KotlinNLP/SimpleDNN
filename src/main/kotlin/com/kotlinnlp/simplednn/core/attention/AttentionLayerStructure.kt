@@ -8,25 +8,27 @@
 package com.kotlinnlp.simplednn.core.attention
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.functionalities.activations.SoftmaxBase
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import com.kotlinnlp.utils.ItemsPool
 
 /**
  * The structure of the Attention Layer.
  *
  * @property inputSequence the sequence of input arrays
- * @property attentionSequence the sequence of attention arrays
- * @property params the parameters of the Attention Layer
+ * @param attentionSequence the sequence of attention arrays
+ * @param params the parameters of the Attention Layer
  * @property id an identification number useful to track a specific [AttentionLayerStructure]
  */
 class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   val inputSequence: List<AugmentedArray<InputNDArrayType>>,
   attentionSequence: List<DenseNDArray>,
   params: AttentionParameters,
-  id: Int = 0
-) : AttentionMechanism(attentionSequence = attentionSequence, params = params, id = id) {
+  override val id: Int = 0
+) : ItemsPool.IDItem {
 
   /**
    * The output dense array.
@@ -34,9 +36,27 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   val outputArray: AugmentedArray<DenseNDArray>
 
   /**
+   * The importance scores.
+   */
+  val importanceScore: AugmentedArray<DenseNDArray> get() = this.attentionMechanism.importanceScore
+
+  /**
+   * The attention matrix.
+   */
+  val attentionMatrix: AugmentedArray<DenseNDArray> get() = this.attentionMechanism.attentionMatrix
+
+  /**
    * The size of each array of input.
    */
   private val inputSize: Int
+
+  /**
+   * The attention mechanism.
+   */
+  private val attentionMechanism = AttentionMechanism(
+    inputArrays = attentionSequence,
+    params = params,
+    activation = SoftmaxBase())
 
   /**
    * Initialize values.
@@ -66,7 +86,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   fun forward(): DenseNDArray {
 
-    super.forwardImportanceScore()
+    this.attentionMechanism.forward()
 
     this.calculateOutput()
 
@@ -94,12 +114,17 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   fun backward(paramsErrors: AttentionParameters, propagateToInput: Boolean) {
 
-    super.backwardImportanceScore(paramsErrors = paramsErrors, importanceScoreErrors = this.getScoreErrors())
+    this.attentionMechanism.backward(paramsErrors = paramsErrors, outputErrors = this.getScoreErrors())
 
     if (propagateToInput) {
       this.setInputErrors()
     }
   }
+
+  /**
+   * @return the errors of the attention arrays
+   */
+  fun getAttentionErrors(): List<DenseNDArray> = this.attentionMechanism.getInputErrors()
 
   /**
    * Calculate the values of the output array.
@@ -113,7 +138,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
     y.zeros()
 
     this.inputSequence.forEachIndexed { i, inputArray ->
-      y.assignSum(inputArray.values.prod(this.importanceScore.values[i]))
+      y.assignSum(inputArray.values.prod(this.attentionMechanism.importanceScore.values[i]))
     }
   }
 
@@ -143,7 +168,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   private fun setInputErrors() {
 
     val outputErrors: DenseNDArray = this.outputArray.errors
-    val score: DenseNDArray = this.importanceScore.values
+    val score: DenseNDArray = this.attentionMechanism.importanceScore.values
 
     for (i in 0 until this.inputSequence.size) {
       this.inputSequence[i].assignErrorsByProd(outputErrors, score[i])
