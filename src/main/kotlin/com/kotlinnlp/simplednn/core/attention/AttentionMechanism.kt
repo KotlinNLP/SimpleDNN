@@ -32,9 +32,14 @@ open class AttentionMechanism(
   /**
    * A matrix containing the attention arrays as rows.
    */
-  val attentionMatrix: AugmentedArray<DenseNDArray> = AugmentedArray(
+  internal val attentionMatrix: AugmentedArray<DenseNDArray> = AugmentedArray(
     DenseNDArrayFactory.arrayOf(this.attentionSequence.map { it.toDoubleArray() })
   )
+
+  /**
+   * The array containing the attention context
+   */
+  private val attentionContext = AugmentedArray<DenseNDArray>(this.attentionSequence.size)
 
   /**
    * The array containing the importance score.
@@ -59,14 +64,17 @@ open class AttentionMechanism(
    *
    *   am = attention matrix
    *   cv = context vector
+   *   ac = attention context
    *
-   *   importance = activation(am (dot) cv)
+   *   ac = am (dot) cv
+   *   importance = activation(ac)
    *
    * @return the importance score
    */
   fun forwardImportanceScore(): DenseNDArray {
 
-    this.importanceScore.assignValues(this.attentionMatrix.values.dot(this.params.contextVector.values))
+    this.attentionContext.assignValues(this.attentionMatrix.values.dot(this.params.contextVector.values))
+    this.importanceScore.assignValues(this.attentionContext.values)
     this.importanceScore.activate()
 
     return this.importanceScore.values
@@ -78,10 +86,9 @@ open class AttentionMechanism(
    *   am = attention matrix
    *   cv = context vector
    *   ac = attention context
-   *   gy = output errors
-   *   gImportance = importance score errors
+   *   gI = importance score errors
    *
-   *   gAC = activation'(ac) * gImportance  // attention context errors
+   *   gAC = activation'(ac) * gI  // attention context errors
    *   gCV = am (dot) gAC  // context vector errors
    *
    *   gAM = gAC (dot) cv  // attention matrix errors
@@ -91,7 +98,8 @@ open class AttentionMechanism(
    */
   fun backwardImportanceScore(paramsErrors: AttentionParameters, importanceScoreErrors: DenseNDArray) {
 
-    this.assignImportanceScoreErrors(importanceScoreErrors)
+    this.importanceScore.assignErrors(importanceScoreErrors)
+    this.assignAttentionContextErrors()
     this.assignParamsErrors(paramsErrors)
     this.assignAttentionMatrixErrors()
   }
@@ -105,29 +113,32 @@ open class AttentionMechanism(
   )
 
   /**
-   * @param outputErrors the output errors of the importance scores
+   * Assign the errors of the [attentionContext].
    */
-  private fun assignImportanceScoreErrors(outputErrors: DenseNDArray) {
+  private fun assignAttentionContextErrors() {
 
-    val gI = this.importanceScore.calculateActivationDeriv()
+    val gI = this.importanceScore.errors
 
-    if (gI.isMatrix) // Jacobian matrix
-      this.importanceScore.assignErrorsByDot(gI, outputErrors)
-    else
-      this.importanceScore.assignErrorsByProd(gI, outputErrors)
+    this.importanceScore.calculateActivationDeriv().let {
+
+      if (it.isMatrix) // Jacobian matrix
+        this.attentionContext.assignErrorsByDot(it, gI)
+      else
+        this.attentionContext.assignErrorsByProd(it, gI)
+    }
   }
 
   /**
    * @param paramsErrors where to assign the errors of the Attention parameters
    */
   private fun assignParamsErrors(paramsErrors: AttentionParameters) {
-    paramsErrors.contextVector.values.assignValues(this.importanceScore.errors.t.dot(this.attentionMatrix.values).t)
+    paramsErrors.contextVector.values.assignValues(this.attentionContext.errors.t.dot(this.attentionMatrix.values).t)
   }
 
   /**
    * Assign the errors of the [attentionMatrix].
    */
   private fun assignAttentionMatrixErrors() {
-    this.attentionMatrix.assignErrorsByDot(this.importanceScore.errors, this.params.contextVector.values.t)
+    this.attentionMatrix.assignErrorsByDot(this.attentionContext.errors, this.params.contextVector.values.t)
   }
 }
