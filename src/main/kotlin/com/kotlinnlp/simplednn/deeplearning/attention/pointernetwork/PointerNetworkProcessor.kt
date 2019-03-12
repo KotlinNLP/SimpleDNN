@@ -122,7 +122,7 @@ class PointerNetworkProcessor(
    * @return an array that contains the importance scores NOT activated resulting from the last forward
    */
   fun getLastNotActivatedImportanceScores(): DenseNDArray =
-    this.usedAttentionMechanisms.last().importanceScore.valuesNotActivated.copy()
+    this.usedAttentionMechanisms.last().outputArray.valuesNotActivated.copy()
 
   /**
    * Back-propagation of the errors.

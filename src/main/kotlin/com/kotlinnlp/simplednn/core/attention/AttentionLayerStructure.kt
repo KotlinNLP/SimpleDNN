@@ -38,7 +38,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * The importance scores.
    */
-  val importanceScore: AugmentedArray<DenseNDArray> get() = this.attentionMechanism.importanceScore
+  val importanceScore: AugmentedArray<DenseNDArray> get() = this.attentionMechanism.outputArray
 
   /**
    * The attention matrix.
@@ -138,7 +138,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
     y.zeros()
 
     this.inputSequence.forEachIndexed { i, inputArray ->
-      y.assignSum(inputArray.values.prod(this.attentionMechanism.importanceScore.values[i]))
+      y.assignSum(inputArray.values.prod(this.attentionMechanism.outputArray.values[i]))
     }
   }
 
@@ -168,7 +168,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   private fun setInputErrors() {
 
     val outputErrors: DenseNDArray = this.outputArray.errors
-    val score: DenseNDArray = this.attentionMechanism.importanceScore.values
+    val score: DenseNDArray = this.attentionMechanism.outputArray.values
 
     for (i in 0 until this.inputSequence.size) {
       this.inputSequence[i].assignErrorsByProd(outputErrors, score[i])

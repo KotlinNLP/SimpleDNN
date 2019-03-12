@@ -39,10 +39,10 @@ class AttentionMechanism(
   /**
    * The array containing the importance score.
    */
-  val importanceScore = AugmentedArray<DenseNDArray>(this.inputArrays.size)
+  val outputArray = AugmentedArray<DenseNDArray>(this.inputArrays.size).apply { setActivation(activation) }
 
   /**
-   * The array containing the attention context
+   * The array containing the attention context.
    */
   private val attentionContext = AugmentedArray<DenseNDArray>(this.inputArrays.size)
 
@@ -55,8 +55,6 @@ class AttentionMechanism(
     require(this.inputArrays.all { it.length == this.params.attentionSize }) {
       "The attention arrays must have the expected size (%d).".format(this.params.attentionSize)
     }
-
-    this.importanceScore.setActivation(activation)
   }
 
   /**
@@ -74,10 +72,10 @@ class AttentionMechanism(
   fun forward(): DenseNDArray {
 
     this.attentionContext.assignValues(this.attentionMatrix.values.dot(this.params.contextVector.values))
-    this.importanceScore.assignValues(this.attentionContext.values)
-    this.importanceScore.activate()
+    this.outputArray.assignValues(this.attentionContext.values)
+    this.outputArray.activate()
 
-    return this.importanceScore.values
+    return this.outputArray.values
   }
 
   /**
@@ -98,7 +96,7 @@ class AttentionMechanism(
    */
   fun backward(paramsErrors: AttentionParameters, outputErrors: DenseNDArray) {
 
-    this.importanceScore.assignErrors(outputErrors)
+    this.outputArray.assignErrors(outputErrors)
     this.assignAttentionContextErrors()
     this.assignParamsErrors(paramsErrors)
     this.assignAttentionMatrixErrors()
@@ -117,11 +115,11 @@ class AttentionMechanism(
    */
   private fun assignAttentionContextErrors() {
 
-    val gI = this.importanceScore.errors
+    val gI = this.outputArray.errors
 
-    this.importanceScore.calculateActivationDeriv().let {
+    this.outputArray.calculateActivationDeriv().let {
 
-      if (it.isMatrix) // Jacobian matrix
+      if (it.isMatrix) // e.g., Jacobian matrix
         this.attentionContext.assignErrorsByDot(it, gI)
       else
         this.attentionContext.assignErrorsByProd(it, gI)
