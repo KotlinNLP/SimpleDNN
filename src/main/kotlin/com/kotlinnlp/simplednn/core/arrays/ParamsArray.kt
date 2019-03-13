@@ -40,6 +40,11 @@ class ParamsArray<NDArrayType: NDArray<NDArrayType>>(values: NDArrayType) : Upda
      * The instance of the [ParamsArray] from witch the [ParamsErrors] has been created.
      */
     val refParams: ParamsArray<NDArrayType> = this@ParamsArray
+
+    /**
+     * @return a copy of this params errors (the copy share the same [refParams])
+     */
+    fun copy() = ParamsErrors(this.values.copy())
   }
 
   /**
