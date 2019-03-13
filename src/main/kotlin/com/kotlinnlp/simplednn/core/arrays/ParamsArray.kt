@@ -22,6 +22,20 @@ import java.util.UUID
  */
 class ParamsArray<NDArrayType: NDArray<NDArrayType>>(values: NDArrayType) : UpdatableArray<NDArrayType>(values) {
 
+  companion object {
+
+    /**
+     * Return a new [ParamsArray] with the same values and updaterSupportStructure of the given [array].
+     *
+     * @param array an updatable array
+     *
+     * @return a new params array
+     */
+    operator fun <T: NDArray<T>>invoke(array: UpdatableArray<T>) = ParamsArray(array.values).apply {
+      updaterSupportStructure = array.updaterSupportStructure
+    }
+  }
+
   /**
    * The unique identifier of this [ParamsArray].
    */
