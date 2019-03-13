@@ -1,0 +1,64 @@
+/* Copyright 2016-present The KotlinNLP Authors. All Rights Reserved.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ * ------------------------------------------------------------------*/
+
+package com.kotlinnlp.simplednn.core.arrays
+
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArrayFactory
+import java.util.UUID
+
+/**
+ * The [ParamsArray] is a wrapper of an [UpdatableArray] extending it with an unique identifier [uuid] and methods to
+ * build errors [ParamsErrors].
+ *
+ * @property values the values of the parameters
+ */
+class ParamsArray<NDArrayType: NDArray<NDArrayType>>(values: NDArrayType) : UpdatableArray<NDArrayType>(values) {
+
+  /**
+   * The unique identifier of this [ParamsArray].
+   */
+  val uuid = UUID.randomUUID().toString()
+
+  /**
+   * ParamsErrors.
+   *
+   * @property values the error of the parameters
+   */
+  inner class ParamsErrors<T: NDArray<T>>(val values: T) {
+
+    /**
+     * Reference parameters.
+     *
+     * The instance of the [ParamsArray] from witch the [ParamsErrors] has been created.
+     */
+    val refParams: ParamsArray<NDArrayType> = this@ParamsArray
+  }
+
+  /**
+   * Return a new instance of [ParamsErrors] initialized to zeros or with the given [values] if not null.
+   *
+   * @param values the values used to initialize the errors (can be null)
+   *
+   * @return a new instance of errors parameters
+   */
+  fun buildDenseErrors(values: DenseNDArray? = null) =
+    ParamsErrors(values ?: DenseNDArrayFactory.zeros(this.values.shape))
+
+  /**
+   * Return a new instance of [ParamsErrors] initialized to zeros or with the given [values] if not null.
+   *
+   * @param values the values used to initialize the errors (can be null)
+   *
+   * @return a new instance of errors parameters
+   */
+  fun buildSparseErrors(values: SparseNDArray? = null) =
+    ParamsErrors(values ?: SparseNDArrayFactory.zeros(this.values.shape))
+}
