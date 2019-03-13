@@ -7,5 +7,50 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.merge.cosinesimilarity
 
-class CosineLayerParameters {
+import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
+
+/**
+ * The parameters of the Distance layer.
+ *
+ * @property inputSize the size of each input
+ */
+class CosineLayerParameters (
+    inputSize: Int
+) : MergeLayerParameters<CosineLayerParameters>(
+    inputsSize = List(size = 2, init = { inputSize }),
+    outputSize = 1,
+    weightsInitializer = null,
+    biasesInitializer = null,
+    sparseInput = false // actually not used because there are no parameters
+){
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed by Serializable).
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
+
+  /**
+   * The list of all parameters.
+   */
+  override val paramsList = emptyList<UpdatableArray<*>>()
+
+  /**
+   * The list of weights parameters.
+   */
+  override val weightsList = emptyList<UpdatableArray<*>>()
+
+  /**
+   * The list of biases parameters.
+   */
+  override val biasesList = emptyList<UpdatableArray<*>>()
+
+  /**
+   * @return a new [CosineLayerParameters] containing a copy of all parameters of this
+   */
+  override fun copy() = CosineLayerParameters(inputSize = this.inputSize)
+
 }

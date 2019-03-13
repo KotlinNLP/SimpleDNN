@@ -7,5 +7,35 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.merge.cosinesimilarity
 
-class CosineForwardHelper {
+import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+
+/**
+ * The helper which executes the forward on a [CosineLayer].
+ *
+ * @property layer the layer in which the forward is executed
+ */
+class CosineForwardHelper (override val layer: CosineLayer) : ForwardHelper<DenseNDArray>(layer) {
+
+
+  /**
+   * Forward the input to the output calculating a score value d ∈ [-1, 1]. d = cosine_similarity(input1-input2)
+   * cosine_similarity(input1, input2) = (input1 dot input2) / (||input1||2 * ||input2||2)
+   */
+  override fun forward() {
+
+    TODO("Not implemented")
+  }
+
+  /**
+   * Forward the input to the output saving the contributions.
+   * Not available for the Cosine layer.
+   *
+   * @param layerContributions the structure in which to save the contributions during the calculations
+   */
+  override fun forward(layerContributions: LayerParameters<*>) {
+    throw NotImplementedError("Forward with contributions not available for the Distance layer.")
+  }
+
 }
