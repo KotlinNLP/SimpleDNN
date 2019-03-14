@@ -9,7 +9,6 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.cosinesimilarity
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
-import com.kotlinnlp.simplednn.core.layers.models.merge.distance.DistanceLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.ItemsPool
 

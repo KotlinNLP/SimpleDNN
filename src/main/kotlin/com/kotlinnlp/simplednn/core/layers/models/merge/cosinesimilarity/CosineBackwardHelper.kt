@@ -33,7 +33,6 @@ class CosineBackwardHelper (override val layer: CosineLayer) : BackwardHelper<De
     }
   }
 
-
   /**
    * Assign the the layer gradients.
    */

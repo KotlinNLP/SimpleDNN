@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
 
 /**
- * The parameters of the Distance layer.
+ * The parameters of the Cosine layer.
  *
  * @property inputSize the size of each input
  */
