@@ -8,7 +8,7 @@
 package core.arrays
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -52,7 +52,7 @@ class ParamsArraySpec : Spek({
 
       on("from an UpdatableArray") {
 
-        val updatableArray = UpdatableArray(DenseNDArrayFactory.zeros(Shape(3, 7))).apply {
+        val updatableArray = UpdatableDenseArray(DenseNDArrayFactory.zeros(Shape(3, 7))).apply {
           getOrSetSupportStructure<LearningRateStructure>()
         }
 

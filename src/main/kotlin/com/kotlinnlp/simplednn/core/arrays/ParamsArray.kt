@@ -20,7 +20,7 @@ import java.util.UUID
  *
  * @property values the values of the parameters
  */
-class ParamsArray<NDArrayType: NDArray<NDArrayType>>(values: NDArrayType) : UpdatableArray<NDArrayType>(values) {
+class ParamsArray(values: DenseNDArray) : UpdatableDenseArray(values) {
 
   companion object {
 
@@ -31,7 +31,7 @@ class ParamsArray<NDArrayType: NDArray<NDArrayType>>(values: NDArrayType) : Upda
      *
      * @return a new params array
      */
-    operator fun <T: NDArray<T>>invoke(array: UpdatableArray<T>) = ParamsArray(array.values).apply {
+    operator fun invoke(array: UpdatableDenseArray) = ParamsArray(array.values).apply {
       updaterSupportStructure = array.updaterSupportStructure
     }
   }
@@ -53,7 +53,7 @@ class ParamsArray<NDArrayType: NDArray<NDArrayType>>(values: NDArrayType) : Upda
      *
      * The instance of the [ParamsArray] from witch the [ParamsErrors] has been created.
      */
-    val refParams: ParamsArray<NDArrayType> = this@ParamsArray
+    val refParams: ParamsArray = this@ParamsArray
 
     /**
      * @return a copy of this params errors (the copy share the same [refParams])

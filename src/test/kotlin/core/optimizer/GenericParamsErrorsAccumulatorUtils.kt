@@ -10,7 +10,6 @@ package core.optimizer
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
@@ -21,7 +20,7 @@ object GenericParamsErrorsAccumulatorUtils {
   /**
    *
    */
-  fun buildEmptyParams(): List<ParamsArray<DenseNDArray>> {
+  fun buildEmptyParams(): List<ParamsArray> {
 
     val params = FeedforwardLayerParameters(inputSize = 4, outputSize = 2)
 

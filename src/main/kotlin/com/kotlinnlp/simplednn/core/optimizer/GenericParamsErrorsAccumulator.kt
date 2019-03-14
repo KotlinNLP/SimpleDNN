@@ -21,7 +21,7 @@ class GenericParamsErrorsAccumulator {
    * @param byReference whether the [paramsErrors] are by reference or a copy
    */
   class AccumulatedParamsErrors private constructor(
-    val paramsErrors: ParamsArray<*>.ParamsErrors<*>,
+    val paramsErrors: ParamsArray.ParamsErrors<*>,
     private val byReference: Boolean
   ) {
 
@@ -32,7 +32,7 @@ class GenericParamsErrorsAccumulator {
        *
        * @return a new [AccumulatedParamsErrors] where the [paramsErrors] are copy
        */
-      fun byCopy(paramsErrors: ParamsArray<*>.ParamsErrors<*>) =
+      fun byCopy(paramsErrors: ParamsArray.ParamsErrors<*>) =
         AccumulatedParamsErrors(paramsErrors.copy(), byReference = false)
 
       /**
@@ -40,7 +40,7 @@ class GenericParamsErrorsAccumulator {
        *
        * @return a new [AccumulatedParamsErrors] where the [paramsErrors] are by reference
        */
-      fun byReference(paramsErrors: ParamsArray<*>.ParamsErrors<*>) =
+      fun byReference(paramsErrors: ParamsArray.ParamsErrors<*>) =
         AccumulatedParamsErrors(paramsErrors, byReference = true)
     }
 
@@ -56,7 +56,7 @@ class GenericParamsErrorsAccumulator {
      *
      * @throws IllegalArgumentException if the [paramsErrors] are by reference
      */
-    fun accumulate(other: ParamsArray<*>.ParamsErrors<*>) {
+    fun accumulate(other: ParamsArray.ParamsErrors<*>) {
 
       require(!this.byReference) { "Cannot accumulate errors into paramsErrors given by reference" }
 
@@ -100,7 +100,7 @@ class GenericParamsErrorsAccumulator {
    * @param copy a Boolean indicating if [paramsErrors] can be used as reference or must be copied. Set copy = false
    *             to optimize the accumulation when immediately followed by an update. (default = true)
    */
-  fun accumulate(paramsErrors: ParamsArray<*>.ParamsErrors<*>, copy: Boolean = true) {
+  fun accumulate(paramsErrors: ParamsArray.ParamsErrors<*>, copy: Boolean = true) {
 
     val paramsUUID = paramsErrors.refParams.uuid
 
