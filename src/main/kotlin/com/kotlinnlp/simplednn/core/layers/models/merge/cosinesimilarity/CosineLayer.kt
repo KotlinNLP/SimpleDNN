@@ -24,7 +24,7 @@ import com.kotlinnlp.utils.ItemsPool
 class CosineLayer(
     internal val inputArray1: AugmentedArray<DenseNDArray>,
     internal val inputArray2: AugmentedArray<DenseNDArray>,
-    override val params: DistanceLayerParameters,
+    override val params: CosineLayerParameters,
     id: Int = 0
 ) :
     ItemsPool.IDItem,
@@ -37,6 +37,16 @@ class CosineLayer(
         id = id
     ) {
   init { this.checkInputSize() }
+
+  /**
+   * The Euclidean norm of input1
+   */
+  var input1Norm = 0.0
+
+  /**
+   * The Euclidean norm of input2
+   */
+  var input2Norm = 0.0
 
   /**
    * The helper which execute the forward.

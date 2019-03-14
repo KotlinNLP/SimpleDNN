@@ -10,6 +10,8 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.cosinesimilarity
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import kotlin.math.sqrt
 
 /**
  * The helper which executes the forward on a [CosineLayer].
@@ -25,7 +27,26 @@ class CosineForwardHelper (override val layer: CosineLayer) : ForwardHelper<Dens
    */
   override fun forward() {
 
-    TODO("Not implemented")
+    val dotProduct = this.layer.inputArray1.values.t.dot(this.layer.inputArray2.values)[0]
+
+    var input1Norm = 0.0
+    var input2Norm = 0.0
+
+    val outputScore = DoubleArray(1)
+
+    (0 until this.layer.inputArray1.values.length).forEach { i ->
+      input1Norm += this.layer.inputArray1.values[i] * this.layer.inputArray1.values[i]
+      input2Norm += this.layer.inputArray2.values[i] * this.layer.inputArray2.values[i]
+    }
+
+    input1Norm = sqrt(input1Norm)
+    input2Norm = sqrt(input2Norm)
+
+    outputScore[0] = dotProduct / (input1Norm * input2Norm)
+    this.layer.input1Norm = input1Norm
+    this.layer.input2Norm = input2Norm
+    this.layer.outputArray.assignValues(DenseNDArrayFactory.arrayOf(outputScore))
+
   }
 
   /**
