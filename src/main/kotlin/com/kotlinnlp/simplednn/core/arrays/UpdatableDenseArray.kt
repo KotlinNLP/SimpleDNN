@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 /**
  * The [UpdatableDenseArray] is a wrapper of a [DenseNDArray]
  */
-class UpdatableDenseArray(override val values: DenseNDArray) : UpdatableArray<DenseNDArray>(values = values) {
+open class UpdatableDenseArray(override val values: DenseNDArray) : UpdatableArray<DenseNDArray>(values = values) {
 
   /**
    * Build an [UpdatableDenseArray] with values initialized to zeros.
