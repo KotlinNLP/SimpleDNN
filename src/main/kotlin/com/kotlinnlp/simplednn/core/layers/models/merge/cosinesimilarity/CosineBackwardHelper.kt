@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.cosinesimilarity
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * The helper which executes the forward on a [CosineLayer].
@@ -37,6 +38,25 @@ class CosineBackwardHelper (override val layer: CosineLayer) : BackwardHelper<De
    * Assign the the layer gradients.
    */
   private fun assignLayerGradients() {
-  TODO("Not implemented")
+
+    val gy: DenseNDArray = this.layer.outputArray.errors
+    val input1Errors = DenseNDArrayFactory.fill(this.layer.inputArray1.values.shape, 0.0)
+    val input2Errors = DenseNDArrayFactory.fill(this.layer.inputArray2.values.shape, 0.0)
+    val normProd = this.layer.input1Norm * this.layer.input2Norm
+
+    (0 until this.layer.inputArray1.values.length).forEach { i ->
+
+      input1Errors[i] = gy[0] * ((this.layer.inputArray2.values[i] / normProd) -
+          ((this.layer.inputArray1.values[i] * this.layer.inputArray1.values[i] * this.layer.inputArray2.values[i]) /
+              (normProd * this.layer.input1Norm * this.layer.input1Norm) ) )
+
+      input2Errors[i] = gy[0] * ((this.layer.inputArray1.values[i] / normProd) -
+          ((this.layer.inputArray2.values[i] * this.layer.inputArray2.values[i] * this.layer.inputArray1.values[i]) /
+              (normProd * this.layer.input2Norm * this.layer.input2Norm) ) )
+    }
+
+    this.layer.inputArray1.assignErrors(input1Errors)
+    this.layer.inputArray2.assignErrors(input2Errors)
+
   }
 }

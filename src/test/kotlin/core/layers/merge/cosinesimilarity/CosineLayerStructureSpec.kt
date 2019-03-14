@@ -2,7 +2,6 @@ package core.layers.merge.cosinesimilarity
 
 import com.kotlinnlp.simplednn.core.layers.models.merge.cosinesimilarity.CosineLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import core.layers.merge.distance.DistanceLayerUtils
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
@@ -33,7 +32,7 @@ class CosineLayerStructureSpec: Spek({
 
     on("backward") {
 
-      val layer = DistanceLayerUtils.buildLayer()
+      val layer = CosineLayerUtils.buildLayer()
       val paramsErrors = CosineLayerParameters(inputSize = 4)
 
       layer.forward()
@@ -44,7 +43,7 @@ class CosineLayerStructureSpec: Spek({
       it("should match the expected errors of the inputArray1") {
         assertTrue {
           layer.inputArrays[0].errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.04864, -0.04864, 0.0, 0.04864)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.20470, -0.16376, 0.29455, -0.31159)),
               tolerance = 1.0e-05)
         }
       }
@@ -52,7 +51,7 @@ class CosineLayerStructureSpec: Spek({
       it("should match the expected errors of the inputArray2") {
         assertTrue {
           layer.inputArrays[1].errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.04864, 0.04864, 0.0, -0.04864)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.31900, -0.34126, 0.25436, 0.22256)),
               tolerance = 1.0e-05)
         }
       }

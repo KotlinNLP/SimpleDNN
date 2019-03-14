@@ -66,6 +66,6 @@ class CosineLayer(
   /**
    * @return the [CosineLayerParameters] used to store errors
    */
-  override fun parametersErrorsFactory() = DistanceLayerParameters(inputSize = this.params.inputSize)
+  override fun parametersErrorsFactory() = CosineLayerParameters(inputSize = this.params.inputSize)
 
 }

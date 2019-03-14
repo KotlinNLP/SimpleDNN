@@ -41,7 +41,6 @@ class CosineForwardHelper (override val layer: CosineLayer) : ForwardHelper<Dens
 
     input1Norm = sqrt(input1Norm)
     input2Norm = sqrt(input2Norm)
-
     outputScore[0] = dotProduct / (input1Norm * input2Norm)
     this.layer.input1Norm = input1Norm
     this.layer.input2Norm = input2Norm
