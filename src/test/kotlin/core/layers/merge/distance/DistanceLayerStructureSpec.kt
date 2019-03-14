@@ -19,7 +19,7 @@ import kotlin.test.assertTrue
  */
 class DistanceLayerStructureSpec: Spek({
 
-  describe("a SumLayer")
+  describe("a DistanceLayer")
   {
 
     on("forward") {
