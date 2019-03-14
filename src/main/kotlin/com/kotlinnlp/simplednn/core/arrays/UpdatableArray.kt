@@ -14,6 +14,7 @@ import java.io.Serializable
 /**
  * The [UpdatableArray] is a wrapper of an [NDArray] extending it with an [updaterSupportStructure]
  *
+ * @property values the values of this updatable array
  */
 open class UpdatableArray<NDArrayType: NDArray<NDArrayType>>(open val values: NDArrayType) : Serializable {
 
@@ -44,12 +45,12 @@ open class UpdatableArray<NDArrayType: NDArray<NDArrayType>>(open val values: ND
   /**
    * The updater support structure used by [com.kotlinnlp.simplednn.core.functionalities.updatemethods].
    */
-  lateinit var updaterSupportStructure: UpdaterSupportStructure
+  var updaterSupportStructure: UpdaterSupportStructure? = null
 
   /**
    * Return the [updaterSupportStructure].
    *
-   * If the [updaterSupportStructure] is not initialized, set it with a new [StructureType].
+   * If the [updaterSupportStructure] is null, set it with a new [StructureType].
    * If the [updaterSupportStructure] has already been initialized, it must be compatible with the required
    * [StructureType].
    *
@@ -57,9 +58,7 @@ open class UpdatableArray<NDArrayType: NDArray<NDArrayType>>(open val values: ND
    */
   inline fun <reified StructureType: UpdaterSupportStructure>getOrSetSupportStructure(): StructureType {
 
-    try {
-      this.updaterSupportStructure
-    } catch (e: UninitializedPropertyAccessException) {
+    if (this.updaterSupportStructure == null) {
       this.updaterSupportStructure = StructureType::class.constructors.first().call(this.values.shape)
     }
 
