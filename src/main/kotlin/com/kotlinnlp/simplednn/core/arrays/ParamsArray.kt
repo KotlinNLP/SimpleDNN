@@ -16,7 +16,7 @@ import java.util.UUID
 
 /**
  * The [ParamsArray] is a wrapper of an [UpdatableArray] extending it with an unique identifier [uuid] and methods to
- * build errors [ParamsErrors].
+ * build the params [Errors].
  *
  * @property values the values of the parameters
  */
@@ -46,38 +46,38 @@ class ParamsArray(values: DenseNDArray) : UpdatableDenseArray(values) {
    *
    * @property values the error of the parameters
    */
-  inner class ParamsErrors<T: NDArray<T>>(val values: T) {
+  inner class Errors<T: NDArray<T>>(val values: T) {
 
     /**
      * Reference parameters.
      *
-     * The instance of the [ParamsArray] from witch the [ParamsErrors] has been created.
+     * The instance of the [ParamsArray] from witch the [Errors] has been created.
      */
     val refParams: ParamsArray = this@ParamsArray
 
     /**
      * @return a copy of this params errors (the copy share the same [refParams])
      */
-    fun copy() = ParamsErrors(this.values.copy())
+    fun copy() = Errors(this.values.copy())
   }
 
   /**
-   * Return a new instance of [ParamsErrors] initialized to zeros or with the given [values] if not null.
+   * Return a new instance of [Errors] initialized to zeros or with the given [values] if not null.
    *
    * @param values the values used to initialize the errors (can be null)
    *
    * @return a new instance of errors parameters
    */
   fun buildDenseErrors(values: DenseNDArray? = null) =
-    ParamsErrors(values ?: DenseNDArrayFactory.zeros(this.values.shape))
+    Errors(values ?: DenseNDArrayFactory.zeros(this.values.shape))
 
   /**
-   * Return a new instance of [ParamsErrors] initialized to zeros or with the given [values] if not null.
+   * Return a new instance of [Errors] initialized to zeros or with the given [values] if not null.
    *
    * @param values the values used to initialize the errors (can be null)
    *
    * @return a new instance of errors parameters
    */
   fun buildSparseErrors(values: SparseNDArray? = null) =
-    ParamsErrors(values ?: SparseNDArrayFactory.zeros(this.values.shape))
+    Errors(values ?: SparseNDArrayFactory.zeros(this.values.shape))
 }
