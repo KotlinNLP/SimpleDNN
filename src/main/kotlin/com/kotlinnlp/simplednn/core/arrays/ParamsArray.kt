@@ -14,6 +14,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArrayFactory
+import java.io.Serializable
 import java.util.UUID
 
 /**
@@ -25,6 +26,12 @@ import java.util.UUID
 class ParamsArray(values: DenseNDArray) : UpdatableDenseArray(values) {
 
   companion object {
+
+    /**
+     * Private val used to serialize the class (needed from [Serializable])
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
 
     /**
      * Return a new [ParamsArray] with the same values and updaterSupportStructure of the given [array].
