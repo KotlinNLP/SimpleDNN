@@ -7,7 +7,9 @@
 
 package com.kotlinnlp.simplednn.core.arrays
 
+import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -35,6 +37,48 @@ class ParamsArray(values: DenseNDArray) : UpdatableDenseArray(values) {
       updaterSupportStructure = array.updaterSupportStructure
     }
   }
+
+  /**
+   * Build a new [ParamsArray] with the given [values].
+   *
+   * @param values the values
+   *
+   * @return a new params array
+   */
+  constructor(values: DoubleArray) : this(DenseNDArrayFactory.arrayOf(values))
+
+  /**
+   * Build a new [ParamsArray] with the given [values].
+   *
+   * @param values the values
+   *
+   * @return a new params array
+   */
+  constructor(values: List<DoubleArray>) : this(DenseNDArrayFactory.arrayOf(values))
+
+  /**
+   * Build a new [ParamsArray] with the given [shape].
+   *
+   * @param shape the shape
+   * @param initializer the initializer of the values (can be null)
+   *
+   * @return a new params array
+   */
+  constructor(shape: Shape, initializer: Initializer?) : this(
+    values = DenseNDArrayFactory.zeros(shape).apply { initializer?.initialize(this) }
+  )
+
+  /**
+   * Build a new [ParamsArray] with the given [size].
+   *
+   * @param size the size
+   * @param initializer the initializer of the values (can be null)
+   *
+   * @return a new params array
+   */
+  constructor(size: Int, initializer: Initializer?) : this(
+    values = DenseNDArrayFactory.zeros(Shape(size)).apply { initializer?.initialize(this) }
+  )
 
   /**
    * The unique identifier of this [ParamsArray].

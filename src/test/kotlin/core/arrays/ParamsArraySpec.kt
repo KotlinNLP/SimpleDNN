@@ -9,6 +9,7 @@ package core.arrays
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -41,8 +42,8 @@ class ParamsArraySpec : Spek({
           assertEquals(7, paramsArray.values.columns)
         }
 
-        it("should raise an Exception when trying to access its structure without setting it") {
-          assertFailsWith<UninitializedPropertyAccessException> { paramsArray.updaterSupportStructure }
+        it("should contain a support structure initialized with null") {
+          assertNull(paramsArray.updaterSupportStructure)
         }
 
         it("should have a different uuid of the one of another instance") {
@@ -64,6 +65,53 @@ class ParamsArraySpec : Spek({
 
         it("should have the same support structure as the updatable array") {
           assertSame(paramsArray.updaterSupportStructure, updatableArray.updaterSupportStructure)
+        }
+      }
+
+      on("with a DoubleArray") {
+
+        val paramsArray = ParamsArray(doubleArrayOf(0.3, 0.4, 0.2, -0.2))
+
+        it("should contain the expected values") {
+          assertEquals(paramsArray.values, DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.4, 0.2, -0.2)))
+        }
+      }
+
+      on("with a list of DoubleArray") {
+
+        val paramsArray = ParamsArray(listOf(
+          doubleArrayOf(0.3, 0.4, 0.2, -0.2),
+          doubleArrayOf(0.2, -0.1, 0.1, 0.6)
+        ))
+
+        it("should contain the expected values") {
+          assertEquals(paramsArray.values, DenseNDArrayFactory.arrayOf(listOf(
+            doubleArrayOf(0.3, 0.4, 0.2, -0.2),
+            doubleArrayOf(0.2, -0.1, 0.1, 0.6)
+          )))
+        }
+      }
+
+      on("with a matrix shape and initialized values") {
+
+        val paramsArray = ParamsArray(Shape(2, 4), initializer = ConstantInitializer(0.42))
+
+        it("should contain the expected values") {
+          assertEquals(paramsArray.values, DenseNDArrayFactory.arrayOf(listOf(
+            doubleArrayOf(0.42, 0.42, 0.42, 0.42),
+            doubleArrayOf(0.42, 0.42, 0.42, 0.42)
+          )))
+        }
+      }
+
+      on("with a vector shape and initialized values") {
+
+        val paramsArray = ParamsArray(size = 4, initializer = ConstantInitializer(0.42))
+
+        it("should contain the expected values") {
+          assertEquals(paramsArray.values, DenseNDArrayFactory.arrayOf(
+            doubleArrayOf(0.42, 0.42, 0.42, 0.42)
+          ))
         }
       }
     }
