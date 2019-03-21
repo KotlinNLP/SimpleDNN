@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.embeddings
 
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.utils.getLinesCount
@@ -75,7 +76,7 @@ open class EmbeddingsMap<T>(
         initializer = initializer)
 
       forEachDataLine(filename) { key, vector ->
-        embeddingsMap.set(key = key, embedding = Embedding(id = embeddingsMap.count, vector = vector))
+        embeddingsMap.set(key = key, embedding = ParamsArray(vector))
         progress?.tick()
       }
 
@@ -190,25 +191,17 @@ open class EmbeddingsMap<T>(
   /**
    * The Unknown Embedding.
    */
-  val unknownEmbedding: Embedding = this.buildEmbedding(id = -1)
+  val unknownEmbedding: ParamsArray = this.buildEmbedding()
 
   /**
    * The Null Embedding.
    */
-  val nullEmbedding: Embedding = this.buildEmbedding(id = -2)
+  val nullEmbedding: ParamsArray = this.buildEmbedding()
 
   /**
    * The map of keys to embeddings.
    */
-  private val embeddings: MutableMap<T, Embedding> = mutableMapOf()
-
-  /**
-   * The map of ids to embeddings.
-   */
-  private val embeddingsById: MutableMap<Int, Embedding> = mutableMapOf(
-    Pair(this.unknownEmbedding.id, this.unknownEmbedding),
-    Pair(this.nullEmbedding.id, this.nullEmbedding)
-  )
+  private val embeddings: MutableMap<T, ParamsArray> = mutableMapOf()
 
   /**
    * The random generator used to decide if an embedding must be dropped out.
@@ -218,23 +211,22 @@ open class EmbeddingsMap<T>(
   /**
    * Associate a new embedding to the given [key].
    * It is required that the [key] is never been associated previously.
-   * If [embedding] is null a new randomly initialize [Embedding] is associated to the given [key].
+   * If [embedding] is null a new randomly initialize [ParamsArray] is associated to the given [key].
    *
    * @param key the key to associate to the new embedding
    * @param embedding the embedding to associate to the given [key] (optional, default = null)
    *
-   * @return the [Embedding] set
+   * @return the embedding set
    */
-  fun set(key: T, embedding: Embedding? = null): Embedding {
+  fun set(key: T, embedding: ParamsArray? = null): ParamsArray {
     require(key !in this.embeddings) { "Embedding with key %s already set.".format(key) }
-    require(embedding == null || embedding.array.values.length == this.size) {
-      "Embedding size not compatible (%d != %d).".format(embedding!!.array.values.length, this.size)
+    require(embedding == null || embedding.values.length == this.size) {
+      "Embedding size not compatible (%d != %d).".format(embedding!!.values.length, this.size)
     }
 
-    val newEmbedding: Embedding = embedding ?: this.buildEmbedding(id = this.count)
+    val newEmbedding: ParamsArray = embedding ?: this.buildEmbedding()
 
     this.embeddings[key] = newEmbedding
-    this.embeddingsById[newEmbedding.id] = newEmbedding
 
     return newEmbedding
   }
@@ -246,9 +238,9 @@ open class EmbeddingsMap<T>(
    *
    * @param key the key associated to an embedding (can be null)
    *
-   * @return the [Embedding] with the given not-null [key] or [nullEmbedding] or [unknownEmbedding]
+   * @return the embedding with the given not-null [key] or [nullEmbedding] or [unknownEmbedding]
    */
-  operator fun get(key: T?): Embedding = this.get(key = key, dropout = 0.0)
+  operator fun get(key: T?): ParamsArray = this.get(key = key, dropout = 0.0)
 
   /**
    * Get the embedding with the given [key].
@@ -258,9 +250,9 @@ open class EmbeddingsMap<T>(
    * @param key the key associated to an embedding (can be null)
    * @param dropout the probability to get the [unknownEmbedding] (0.0 = no dropout)
    *
-   * @return the [Embedding] with the given not-null [key] or [nullEmbedding] or [unknownEmbedding]
+   * @return the embedding with the given not-null [key] or [nullEmbedding] or [unknownEmbedding]
    */
-  fun get(key: T?, dropout: Double): Embedding {
+  fun get(key: T?, dropout: Double): ParamsArray {
     require(dropout in 0.0 .. 1.0)
 
     return when {
@@ -272,15 +264,6 @@ open class EmbeddingsMap<T>(
   }
 
   /**
-   * Get the embedding with the given [id].
-   *
-   * @param id the id of an embedding
-   *
-   * @return the [Embedding] with the given [id] (including the [nullEmbedding] and the [unknownEmbedding])
-   */
-  fun getById(id: Int): Embedding? = this.embeddingsById[id]
-
-  /**
    * Get the embedding with the given [key].
    * If the [key] is null return the [nullEmbedding].
    * If no embedding has the given [key] associate a new initialized embedding to it and return it.
@@ -289,9 +272,9 @@ open class EmbeddingsMap<T>(
    * @param key the key of an embedding (can be null)
    * @param dropout the probability to get the [unknownEmbedding] (default = 0.0 = no dropout)
    *
-   * @return the [Embedding] with the given not-null [key] or [nullEmbedding] or [unknownEmbedding]
+   * @return the embedding with the given not-null [key] or [nullEmbedding] or [unknownEmbedding]
    */
-  fun getOrSet(key: T?, dropout: Double = 0.0): Embedding {
+  fun getOrSet(key: T?, dropout: Double = 0.0): ParamsArray {
     require(dropout in 0.0 .. 1.0)
 
     return when {
@@ -309,13 +292,11 @@ open class EmbeddingsMap<T>(
   operator fun contains(key: T): Boolean = key in this.embeddings
 
   /**
-   * Build a new [Embedding] with randomly initialized values.
+   * Build a new embedding with randomly initialized values.
    *
-   * @param id the Int id of the [Embedding] to build
-   *
-   * @return a new [Embedding] with the given [id]
+   * @return a new embedding
    */
-  private fun buildEmbedding(id: Int) = Embedding(id = id, size = this.size, initializer = this.initializer)
+  private fun buildEmbedding() = ParamsArray(size = this.size, initializer = this.initializer)
 
   /**
    * @param dropout the probability of dropout
@@ -323,4 +304,20 @@ open class EmbeddingsMap<T>(
    * @return a Boolean indicating if an Embedding must be dropped out
    */
   private fun mustBeDropped(dropout: Double): Boolean = this.dropoutRandomGenerator.nextDouble() < dropout
+
+  /**
+   * @param digits precision specifier
+   *
+   * @return a string representation of the embedding values, concatenating the elements with the space character.
+   */
+  private fun ParamsArray.toString(digits: Int): String {
+
+    val sb = StringBuilder()
+
+    (0 until this.values.length).forEach {
+      sb.append(" ").append("%.${digits}f".format(this.values[it]))
+    }
+
+    return sb.toString()
+  }
 }
