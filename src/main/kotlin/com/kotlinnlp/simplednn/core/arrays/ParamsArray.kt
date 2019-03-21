@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.arrays
 
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -18,12 +19,12 @@ import java.io.Serializable
 import java.util.UUID
 
 /**
- * The [ParamsArray] is a wrapper of an [UpdatableArray] extending it with an unique identifier [uuid] and methods to
- * build the params [Errors].
+ * The [ParamsArray] is a wrapper of an [UpdatableArray] extending it with an unique identifier [uuid],
+ * with an [updaterSupportStructure] methods to build the params [Errors].
  *
  * @property values the values of the parameters
  */
-class ParamsArray(values: DenseNDArray) : UpdatableDenseArray(values) {
+class ParamsArray(val values: DenseNDArray) {
 
   companion object {
 
@@ -32,17 +33,32 @@ class ParamsArray(values: DenseNDArray) : UpdatableDenseArray(values) {
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
+  }
 
-    /**
-     * Return a new [ParamsArray] with the same values and updaterSupportStructure of the given [array].
-     *
-     * @param array an updatable array
-     *
-     * @return a new params array
-     */
-    operator fun invoke(array: UpdatableDenseArray) = ParamsArray(array.values).apply {
-      updaterSupportStructure = array.updaterSupportStructure
+  /**
+   * The updater support structure used by [com.kotlinnlp.simplednn.core.functionalities.updatemethods].
+   */
+  var updaterSupportStructure: UpdaterSupportStructure? = null
+
+  /**
+   * Return the [updaterSupportStructure].
+   *
+   * If the [updaterSupportStructure] is null, set it with a new [StructureType].
+   * If the [updaterSupportStructure] has already been initialized, it must be compatible with the required
+   * [StructureType].
+   *
+   * @return the [updaterSupportStructure]
+   */
+  inline fun <reified StructureType: UpdaterSupportStructure>getOrSetSupportStructure(): StructureType {
+
+    if (this.updaterSupportStructure == null) {
+      this.updaterSupportStructure = StructureType::class.constructors.first().call(this.values.shape)
     }
+
+    require(this.updaterSupportStructure is StructureType) { "Incompatible support structure" }
+
+    @Suppress("UNCHECKED_CAST")
+    return this.updaterSupportStructure as StructureType
   }
 
   /**
@@ -66,12 +82,25 @@ class ParamsArray(values: DenseNDArray) : UpdatableDenseArray(values) {
   /**
    * Build a new [ParamsArray] with the given [shape].
    *
+   * @param dim1 the first dimension of the array
+   * @param dim2 the second dimension of the array
+   * @param initializer the initializer of the values (can be null)
+   *
+   * @return a new params array
+   */
+  constructor(dim1: Int, dim2: Int, initializer: Initializer? = null) : this(
+    values = DenseNDArrayFactory.zeros(Shape(dim1, dim2)).apply { initializer?.initialize(this) }
+  )
+
+  /**
+   * Build a new [ParamsArray] with the given [shape].
+   *
    * @param shape the shape
    * @param initializer the initializer of the values (can be null)
    *
    * @return a new params array
    */
-  constructor(shape: Shape, initializer: Initializer?) : this(
+  constructor(shape: Shape, initializer: Initializer? = null) : this(
     values = DenseNDArrayFactory.zeros(shape).apply { initializer?.initialize(this) }
   )
 
@@ -83,7 +112,7 @@ class ParamsArray(values: DenseNDArray) : UpdatableDenseArray(values) {
    *
    * @return a new params array
    */
-  constructor(size: Int, initializer: Initializer?) : this(
+  constructor(size: Int, initializer: Initializer? = null) : this(
     values = DenseNDArrayFactory.zeros(Shape(size)).apply { initializer?.initialize(this) }
   )
 

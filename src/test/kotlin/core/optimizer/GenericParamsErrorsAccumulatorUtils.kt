@@ -8,8 +8,8 @@
 package core.optimizer
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
@@ -33,7 +33,7 @@ object GenericParamsErrorsAccumulatorUtils {
       doubleArrayOf(0.0, 0.0)
     ))
 
-    return params.paramsList.map { ParamsArray(it as UpdatableDenseArray) }
+    return params.paramsList.map { ParamsArray(it.values as DenseNDArray) }
   }
 
   /**

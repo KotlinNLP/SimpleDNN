@@ -51,23 +51,6 @@ class ParamsArraySpec : Spek({
         }
       }
 
-      on("from an UpdatableArray") {
-
-        val updatableArray = UpdatableDenseArray(DenseNDArrayFactory.zeros(Shape(3, 7))).apply {
-          getOrSetSupportStructure<LearningRateStructure>()
-        }
-
-        val paramsArray = ParamsArray(updatableArray)
-
-        it("should have the same values as the updatable array") {
-          assertSame(paramsArray.values, updatableArray.values)
-        }
-
-        it("should have the same support structure as the updatable array") {
-          assertSame(paramsArray.updaterSupportStructure, updatableArray.updaterSupportStructure)
-        }
-      }
-
       on("with a DoubleArray") {
 
         val paramsArray = ParamsArray(doubleArrayOf(0.3, 0.4, 0.2, -0.2))
@@ -113,6 +96,17 @@ class ParamsArraySpec : Spek({
             doubleArrayOf(0.42, 0.42, 0.42, 0.42)
           ))
         }
+      }
+    }
+
+    on("support structure") {
+
+      val paramsArray = ParamsArray(DenseNDArrayFactory.zeros(Shape(3, 7))).apply {
+        getOrSetSupportStructure<LearningRateStructure>()
+      }
+
+      it("should have the expected support structure type") {
+        assertTrue { paramsArray.updaterSupportStructure is LearningRateStructure }
       }
     }
 
