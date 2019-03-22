@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.core.layers.helpers
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.Layer
-import com.kotlinnlp.simplednn.core.optimizer.GenericParamsErrorsCollector
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsCollector
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
@@ -25,7 +25,7 @@ abstract class BackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The errors of the parameters which will be filled at each [backward].
    */
-  private val paramsErrorsCollector = GenericParamsErrorsCollector()
+  private val paramsErrorsCollector = ParamsErrorsCollector()
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
