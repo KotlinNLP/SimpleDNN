@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  *
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
-class GenericParamsOptimizer(private val updateMethod: UpdateMethod<*>) : ScheduledUpdater {
+class ParamsOptimizer(private val updateMethod: UpdateMethod<*>) : ScheduledUpdater {
 
   /**
    * The accumulator of parameters errors.

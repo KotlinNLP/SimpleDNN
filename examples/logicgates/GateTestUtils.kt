@@ -23,7 +23,7 @@ import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.Classificat
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.MulticlassEvaluation
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvaluationFunction
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
-import com.kotlinnlp.simplednn.core.optimizer.GenericParamsOptimizer
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import traininghelpers.validation.FeedforwardValidationHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.Shuffler
@@ -80,7 +80,7 @@ object GateTestUtils {
       learningRate = 0.01,
       decayMethod = HyperbolicDecay(decay = 0.0, initLearningRate = 0.01))
 
-    val optimizer = GenericParamsOptimizer(updateMethod = updateMethod)
+    val optimizer = ParamsOptimizer(updateMethod = updateMethod)
 
     val neuralProcessor = FeedforwardNeuralProcessor<DenseNDArray>(
       model = neuralNetwork,

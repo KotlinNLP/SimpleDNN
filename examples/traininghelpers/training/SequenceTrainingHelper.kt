@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.functionalities.losses.LossCalculator
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
-import com.kotlinnlp.simplednn.core.optimizer.GenericParamsOptimizer
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import utils.SequenceExample
@@ -22,7 +22,7 @@ import utils.SequenceExample
  */
 class SequenceTrainingHelper<NDArrayType: NDArray<NDArrayType>>(
   val neuralProcessor: RecurrentNeuralProcessor<NDArrayType>,
-  override val optimizer: GenericParamsOptimizer,
+  override val optimizer: ParamsOptimizer,
   val lossCalculator: LossCalculator,
   verbose: Boolean = false
 ) : TrainingHelper<SequenceExample<NDArrayType>>(

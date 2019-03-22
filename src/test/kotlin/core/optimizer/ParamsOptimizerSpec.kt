@@ -8,7 +8,7 @@
 package core.optimizer
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
-import com.kotlinnlp.simplednn.core.optimizer.GenericParamsOptimizer
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -20,15 +20,15 @@ import kotlin.test.assertTrue
 /**
  *
  */
-class GenericParamsOptimizerSpec : Spek({
+class ParamsOptimizerSpec : Spek({
 
-  describe("a GenericParamsOptimizer") {
+  describe("a ParamsOptimizer") {
 
     val learningRateMethod = LearningRateMethod(learningRate = 0.1)
 
     context("update after accumulate") {
 
-      val optimizer = GenericParamsOptimizer(learningRateMethod)
+      val optimizer = ParamsOptimizer(learningRateMethod)
 
       val params = GenericParamsOptimizerUtils.buildParams()
 

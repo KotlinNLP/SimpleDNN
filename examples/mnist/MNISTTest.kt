@@ -20,7 +20,7 @@ import utils.CorpusReader
 import Configuration
 import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
-import com.kotlinnlp.simplednn.core.optimizer.GenericParamsOptimizer
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.utils.Shuffler
 import utils.Corpus
 import utils.SimpleExample
@@ -68,7 +68,7 @@ class MNISTTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
 
     println("\n-- TRAINING")
 
-    val optimizer = GenericParamsOptimizer(
+    val optimizer = ParamsOptimizer(
       updateMethod = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999))
 
     val trainingHelper = FeedforwardTrainingHelper<DenseNDArray>(

@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.deeplearning.attention.han.toHierarchySequence
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
-import com.kotlinnlp.simplednn.core.optimizer.GenericParamsOptimizer
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.utils.ExamplesIndices
 import com.kotlinnlp.utils.Shuffler
 import utils.Corpus
@@ -108,7 +108,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
    */
   private fun train() {
 
-    val optimizer = GenericParamsOptimizer(updateMethod = ADAMMethod(stepSize = 0.005))
+    val optimizer = ParamsOptimizer(updateMethod = ADAMMethod(stepSize = 0.005))
     val shuffler = Shuffler(enablePseudoRandom = true, seed = 743)
     val trainingSize = Math.round(this.dataset.training.size * this.trainingSetPartition).toInt()
     val trainingSet = ArrayList(this.dataset.training.subList(0, trainingSize))
@@ -134,7 +134,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
    * @param trainingSet the training set
    * @param shuffler the [Shuffler] to shuffle examples before training
    */
-  private fun trainEpoch(optimizer: GenericParamsOptimizer,
+  private fun trainEpoch(optimizer: ParamsOptimizer,
                          trainingSet: ArrayList<SimpleExample<DenseNDArray>>,
                          shuffler: Shuffler) {
 

@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCa
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.SimpleRecurrentNeuralNetwork
-import com.kotlinnlp.simplednn.core.optimizer.GenericParamsOptimizer
+import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import traininghelpers.training.SequenceWithFinalOutputTrainingHelper
 import traininghelpers.validation.SequenceWithFinalOutputValidationHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -106,7 +106,7 @@ class SumSignRelevanceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<De
 
     println("\n-- TRAINING\n")
 
-    val optimizer = GenericParamsOptimizer(
+    val optimizer = ParamsOptimizer(
       updateMethod = LearningRateMethod(learningRate = 0.01))
 
     val trainingHelper = SequenceWithFinalOutputTrainingHelper<DenseNDArray>(
