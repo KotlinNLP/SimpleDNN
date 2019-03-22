@@ -83,10 +83,11 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
   }
 
   /**
+   * @param activationFunction the activation function (can be set as null)
    *
    * @return set the activation function of this [ActivableArray]
    */
-  open fun setActivation(activationFunction: ActivationFunction) {
+  open fun setActivation(activationFunction: ActivationFunction?) {
     this.activationFunction = activationFunction
   }
 
