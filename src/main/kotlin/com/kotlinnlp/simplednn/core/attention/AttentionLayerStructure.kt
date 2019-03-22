@@ -9,6 +9,9 @@ package com.kotlinnlp.simplednn.core.attention
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.SoftmaxBase
+import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayer
+import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayerParameters
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -26,7 +29,7 @@ import com.kotlinnlp.utils.ItemsPool
 class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   val inputSequence: List<AugmentedArray<InputNDArrayType>>,
   attentionSequence: List<DenseNDArray>,
-  params: AttentionParameters,
+  params: AttentionMechanismLayerParameters,
   override val id: Int = 0
 ) : ItemsPool.IDItem {
 
@@ -53,8 +56,8 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * The attention mechanism.
    */
-  private val attentionMechanism = AttentionMechanism(
-    inputArrays = attentionSequence,
+  private val attentionMechanism = AttentionMechanismLayer(
+    inputArrays = attentionSequence.map { AugmentedArray(it) },
     params = params,
     activation = SoftmaxBase())
 
@@ -109,22 +112,24 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
    *   gAM = gAC (dot) cv  // attention matrix errors
    *   gx_i = gy * alpha_i  // errors of the i-th input array
    *
-   * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input sequence
    */
-  fun backward(paramsErrors: AttentionParameters, propagateToInput: Boolean) {
+  fun backward(propagateToInput: Boolean): ParamsErrorsList {
 
-    this.attentionMechanism.backward(paramsErrors = paramsErrors, outputErrors = this.getScoreErrors())
+    this.attentionMechanism.outputArray.assignErrors(this.getScoreErrors())
+    val paramsErrors = this.attentionMechanism.backward(propagateToInput = true)
 
     if (propagateToInput) {
       this.setInputErrors()
     }
+
+    return paramsErrors
   }
 
   /**
    * @return the errors of the attention arrays
    */
-  fun getAttentionErrors(): List<DenseNDArray> = this.attentionMechanism.getInputErrors()
+  fun getAttentionErrors(): List<DenseNDArray> = this.attentionMechanism.inputArrays.map { it.values }
 
   /**
    * Calculate the values of the output array.
