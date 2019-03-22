@@ -20,10 +20,17 @@ class GenericParamsErrorsCollector {
   private val paramsErrorsMap = mutableMapOf<String, ParamsArray.Errors<*>>()
 
   /**
-   * Return the current errors of this parameters.
+   * @param params a parameters
+   *
+   * @return the current errors of the given parameters
    */
   fun getErrors(params: ParamsArray) =
     this.paramsErrorsMap.getOrPut(params.uuid, defaultValue = { params.buildDenseErrors() } )
+
+  /**
+   * @return all the collected params errors
+   */
+  fun getAll(): ParamsErrorsList = this.paramsErrorsMap.values.toList()
 
   /**
    * Clear the accumulated errors.
