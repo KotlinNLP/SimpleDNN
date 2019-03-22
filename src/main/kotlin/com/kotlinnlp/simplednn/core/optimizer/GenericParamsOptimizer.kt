@@ -47,6 +47,18 @@ class GenericParamsOptimizer(private val updateMethod: UpdateMethod<*>) : Schedu
    * @param copy a Boolean indicating if the [paramsErrors] can be used as reference or must be copied. Set copy = false
    *             to optimize the accumulation when the amount of the errors to accumulate is 1. (default = true)
    */
+  fun accumulate(paramsErrors: ParamsErrorsList, copy: Boolean = true) {
+
+    this.paramsErrorsAccumulator.accumulate(paramsErrors = paramsErrors, copy = copy)
+  }
+
+  /**
+   * Accumulate the given [paramsErrors] into the accumulator.
+   *
+   * @param paramsErrors the parameters errors to accumulate
+   * @param copy a Boolean indicating if the [paramsErrors] can be used as reference or must be copied. Set copy = false
+   *             to optimize the accumulation when the amount of the errors to accumulate is 1. (default = true)
+   */
   fun accumulate(paramsErrors: ParamsArray.Errors<*>, copy: Boolean = true) {
 
     this.paramsErrorsAccumulator.accumulate(paramsErrors = paramsErrors, copy = copy)
