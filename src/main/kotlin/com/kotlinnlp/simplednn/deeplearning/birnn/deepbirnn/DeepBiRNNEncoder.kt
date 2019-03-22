@@ -33,8 +33,7 @@ class DeepBiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   List<InputNDArrayType>, // InputType
   List<DenseNDArray>, // OutputType
   List<DenseNDArray>, // ErrorsType
-  List<DenseNDArray>, // InputErrorsType
-  DeepBiRNNParameters // ParamsType
+  List<DenseNDArray> // InputErrorsType
   > {
 
   /**
@@ -97,7 +96,5 @@ class DeepBiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return the errors of the DeepBiRNN parameters
    */
-  override fun getParamsErrors(copy: Boolean) = DeepBiRNNParameters(
-    paramsPerBiRNN = this.encoders.map { it.getParamsErrors(copy = copy) }
-  )
+  override fun getParamsErrors(copy: Boolean) = this.encoders.flatMap { it.getParamsErrors(copy = copy) }
 }

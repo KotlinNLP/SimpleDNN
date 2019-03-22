@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.core.layers.StackedLayers
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
@@ -32,8 +33,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   InputNDArrayType, // InputType
   DenseNDArray, // OutputType
   DenseNDArray, // ErrorsType
-  DenseNDArray, // InputErrorsType
-  StackedLayersParameters // ParamsType
+  DenseNDArray // InputErrorsType
   > {
 
   /**
@@ -58,13 +58,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The errors of the network model parameters
    */
-  private val backwardParamsErrors: StackedLayersParameters by lazy {
-    StackedLayersParameters(
-      layersConfiguration = this.model.layersConfiguration,
-      weightsInitializer = null,
-      biasesInitializer = null,
-      forceDense = false)
-  }
+  private var backwardParamsErrors: ParamsErrorsList = listOf()
 
   /**
    * @param copy a Boolean indicating whether the returned array must be a copy or a reference
@@ -82,26 +76,12 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the errors of the network parameters
    */
-  override fun getParamsErrors(copy: Boolean): StackedLayersParameters {
+  override fun getParamsErrors(copy: Boolean): ParamsErrorsList =
+    if (copy)
+      this.backwardParamsErrors.map { it.copy() }
+    else
+      this.backwardParamsErrors
 
-    val paramsError: StackedLayersParameters
-
-    if (copy) {
-
-      paramsError = StackedLayersParameters(
-        layersConfiguration = this.model.layersConfiguration,
-        weightsInitializer = null,
-        biasesInitializer = null,
-        forceDense = false)
-
-      paramsError.assignValues(this.backwardParamsErrors)
-
-    } else {
-      paramsError = this.backwardParamsErrors
-    }
-
-    return paramsError
-  }
 
   /**
    * Get the errors of the input.
@@ -241,21 +221,10 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param outputErrors the errors to propagate
    */
-  override fun backward(outputErrors: DenseNDArray) =
-    this.structure.backward(
-      outputErrors = outputErrors,
-      paramsErrors = this.backwardParamsErrors,
-      propagateToInput = this.propagateToInput)
+  override fun backward(outputErrors: DenseNDArray) {
 
-  /**
-   * Backward errors saving the parameters errors into a given object.
-   *
-   * @param outputErrors the errors of the output
-   * @param paramsErrors the object in which to save the parameters errors
-   */
-  fun backward(outputErrors: DenseNDArray, paramsErrors: StackedLayersParameters) =
-    this.structure.backward(
+    this.backwardParamsErrors = this.structure.backward(
       outputErrors = outputErrors,
-      paramsErrors = paramsErrors,
       propagateToInput = this.propagateToInput)
+  }
 }

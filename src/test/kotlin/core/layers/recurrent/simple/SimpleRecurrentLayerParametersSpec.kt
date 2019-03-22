@@ -11,7 +11,6 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitial
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.jetbrains.spek.api.Spek
@@ -60,32 +59,7 @@ class SimpleRecurrentLayerParametersSpec : Spek({
         }
       }
 
-      on("sparse input") {
-
-        val params = SimpleRecurrentLayerParameters(
-          inputSize = 3,
-          outputSize = 2,
-          sparseInput = true,
-          weightsInitializer = null,
-          biasesInitializer = null)
-
-        val w = params.unit.weights.values
-
-        it("should contain sparse weights") {
-          assertTrue { w is SparseNDArray }
-        }
-
-        it("should throw an Exception when trying to initialize") {
-          assertFails {
-            SimpleRecurrentLayerParameters(
-              inputSize = 3,
-              outputSize = 2,
-              sparseInput = true,
-              weightsInitializer = ConstantInitializer(0.1),
-              biasesInitializer = ConstantInitializer(0.1))
-          }
-        }
-      }
+      // TODO: resinsert tests for sparse input
     }
 
     context("iteration") {

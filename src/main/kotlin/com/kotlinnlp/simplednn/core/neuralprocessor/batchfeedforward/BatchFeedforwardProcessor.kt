@@ -11,7 +11,8 @@ import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
-import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.optimizer.GenericParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -32,8 +33,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
   List<InputNDArrayType>, // InputType
   List<DenseNDArray>, // OutputType
   List<DenseNDArray>, // ErrorsType
-  List<DenseNDArray>, // InputErrorsType
-  StackedLayersParameters // ParamsType
+  List<DenseNDArray> // InputErrorsType
   > {
 
   /**
@@ -47,7 +47,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * Contains the errors accumulated from the processors during the forward.
    */
-  private val errorsAccumulator = ParamsErrorsAccumulator<StackedLayersParameters>()
+  private val errorsAccumulator = GenericParamsErrorsAccumulator()
 
   /**
    * The amount of processors used at a given time.
@@ -81,7 +81,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return the errors of the internal network
    */
-  override fun getParamsErrors(copy: Boolean): StackedLayersParameters
+  override fun getParamsErrors(copy: Boolean): ParamsErrorsList
     = this.errorsAccumulator.getParamsErrors(copy = copy)
 
   /**
@@ -200,7 +200,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
   private fun reset() {
     this.processorsPool.releaseAll()
     this.usedProcessors.clear()
-    this.errorsAccumulator.reset()
+    this.errorsAccumulator.clear()
   }
 
   /**

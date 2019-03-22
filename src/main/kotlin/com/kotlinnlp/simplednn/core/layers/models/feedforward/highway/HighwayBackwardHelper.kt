@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers.models.feedforward.highway
 
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.assignParamsGradients
 import com.kotlinnlp.simplednn.core.layers.getInputErrors
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -21,23 +20,22 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class HighwayBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: HighwayLayer<InputNDArrayType>
-) : BackwardHelper<InputNDArrayType> {
+) : BackwardHelper<InputNDArrayType>(layer) {
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
-   * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
+  override fun execBackward(propagateToInput: Boolean) {
 
     // TODO: extend for all input types
     require(this.layer.inputArray.values is DenseNDArray) { "Highway layer supports only dense input." }
 
     this.assignGatesGradients()
 
-    this.assignParamsGradients(paramsErrors as HighwayLayerParameters)
+    this.assignParamsGradients()
 
     if (propagateToInput) {
       this.assignLayerGradients()
@@ -70,19 +68,17 @@ class HighwayBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * For each gate:
    *   gb = gy * 1
    *   gw = gy (dot) x
-   *
-   * @param paramsErrors the errors of the parameters which will be filled
    */
-  private fun assignParamsGradients(paramsErrors: HighwayLayerParameters) {
+  private fun assignParamsGradients() { this.layer.params as HighwayLayerParameters
 
     this.layer.inputUnit.assignParamsGradients(
-      gw = paramsErrors.input.weights.values,
-      gb = paramsErrors.input.biases.values,
+      gw = this.layer.params.input.weights.errors.values,
+      gb = this.layer.params.input.biases.errors.values,
       x = this.layer.inputArray.values)
 
     this.layer.transformGate.assignParamsGradients(
-      gw = paramsErrors.transformGate.weights.values,
-      gb = paramsErrors.transformGate.biases.values,
+      gw = this.layer.params.transformGate.weights.errors.values,
+      gb = this.layer.params.transformGate.biases.errors.values,
       x = this.layer.inputArray.values)
   }
 

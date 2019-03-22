@@ -9,11 +9,11 @@ package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.attention.AttentionParameters
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.SoftmaxBase
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
+import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig.*
 import java.io.Serializable
 
@@ -79,9 +79,9 @@ class PointerNetworkModel(
   /**
    * The parameters of the attention mechanism.
    */
-  val attentionParams = AttentionParameters(
-    attentionSize = this.mergeNetwork.outputSize,
-    initializer = weightsInitializer)
+  val attentionParams = AttentionMechanismLayerParameters(
+    inputSize = this.mergeNetwork.outputSize,
+    weightsInitializer = weightsInitializer)
 
   /**
    * The structure containing all the parameters of this model.

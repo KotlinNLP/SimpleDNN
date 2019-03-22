@@ -9,6 +9,7 @@ package core.layers.recurrent.lstm
 
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
+import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -199,7 +200,6 @@ class LSTMLayerStructureSpec : Spek({
       on("without previous and next state") {
 
         val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayerContextWindow.Empty())
-        val paramsErrors = LSTMLayerParameters(inputSize = 4, outputSize = 5)
 
         layer.forward()
 
@@ -208,7 +208,9 @@ class LSTMLayerStructureSpec : Spek({
           outputGold = LSTMLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as LSTMLayerParameters
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -260,7 +262,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate biases") {
           assertTrue {
-            paramsErrors.candidate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.candidate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.20, -0.07, 0.0, -0.01, -0.01)),
               tolerance = 0.005)
           }
@@ -268,7 +270,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate biases") {
           assertTrue {
-            paramsErrors.inputGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.05, 0.03, 0.0, -0.09, 0.02)),
               tolerance = 0.005)
           }
@@ -276,7 +278,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the output gate biases") {
           assertTrue {
-            paramsErrors.outputGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.outputGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.01, 0.02, 0.0, -0.2, 0.04)),
               tolerance = 0.005)
           }
@@ -284,7 +286,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate biases") {
           assertTrue {
-            paramsErrors.forgetGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
               tolerance = 0.005)
           }
@@ -292,7 +294,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertTrue {
-            (paramsErrors.candidate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.candidate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.16, 0.18, 0.18, -0.2),
                 doubleArrayOf(0.05, 0.06, 0.06, -0.07),
@@ -306,7 +308,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate weights") {
           assertTrue {
-            (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.inputGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.04, -0.05, -0.05, 0.05),
                 doubleArrayOf(-0.02, -0.03, -0.03, 0.03),
@@ -320,7 +322,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the output gate weights") {
           assertTrue {
-            (paramsErrors.outputGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.outputGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.01, -0.01, -0.01, 0.01),
                 doubleArrayOf(-0.02, -0.02, -0.02, 0.02),
@@ -334,7 +336,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate weights") {
           assertTrue {
-            (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.forgetGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0),
@@ -348,7 +350,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate recurrent weights") {
           assertTrue {
-            paramsErrors.candidate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.candidate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -362,7 +364,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate recurrent weights") {
           assertTrue {
-            paramsErrors.inputGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -376,7 +378,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the output gate recurrent weights") {
           assertTrue {
-            paramsErrors.outputGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.outputGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -390,7 +392,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate recurrent weights") {
           assertTrue {
-            paramsErrors.forgetGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -414,7 +416,6 @@ class LSTMLayerStructureSpec : Spek({
       on("with previous state only") {
 
         val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayerContextWindow.Back())
-        val paramsErrors = LSTMLayerParameters(inputSize = 4, outputSize = 5)
 
         layer.forward()
 
@@ -423,7 +424,9 @@ class LSTMLayerStructureSpec : Spek({
           outputGold = LSTMLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as LSTMLayerParameters
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -475,7 +478,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate biases") {
           assertTrue {
-            paramsErrors.candidate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.candidate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.048, -0.03, 0.0, -0.006, -0.015)),
               tolerance = 0.0005)
           }
@@ -483,7 +486,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate biases") {
           assertTrue {
-            paramsErrors.inputGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.003, -0.008, -0.002, -0.055, 0.046)),
               tolerance = 0.0005)
           }
@@ -491,7 +494,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the output gate biases") {
           assertTrue {
-            paramsErrors.outputGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.outputGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.004, 0.033, 0.002, -0.182, 0.059)),
               tolerance = 0.0005)
           }
@@ -499,7 +502,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate biases") {
           assertTrue {
-            paramsErrors.forgetGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.005, 0.019, 0.001, -0.003, -0.005)),
               tolerance = 0.0005)
           }
@@ -507,7 +510,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertTrue {
-            (paramsErrors.candidate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.candidate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.038, 0.043, 0.043, -0.048),
                 doubleArrayOf(0.024, 0.027, 0.027, -0.03),
@@ -521,7 +524,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate weights") {
           assertTrue {
-            (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.inputGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.003, -0.003, -0.003, 0.003),
                 doubleArrayOf(0.007, 0.007, 0.007, -0.008),
@@ -535,7 +538,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the output gate weights") {
           assertTrue {
-            (paramsErrors.outputGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.outputGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.003, 0.004, 0.004, -0.004),
                 doubleArrayOf(-0.027, -0.03, -0.03, 0.033),
@@ -549,7 +552,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate weights") {
           assertTrue {
-            (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.forgetGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.004, 0.004, 0.004, -0.005),
                 doubleArrayOf(-0.015, -0.017, -0.017, 0.019),
@@ -563,7 +566,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate recurrent weights") {
           assertTrue {
-            paramsErrors.candidate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.candidate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.01, -0.01, 0.014, 0.043, 0.038),
                 doubleArrayOf(0.006, -0.006, 0.009, 0.027, 0.024),
@@ -577,7 +580,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate recurrent weights") {
           assertTrue {
-            paramsErrors.inputGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.001, 0.001, -0.001, -0.003, -0.003),
                 doubleArrayOf(0.002, -0.002, 0.002, 0.007, 0.007),
@@ -591,7 +594,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the output gate recurrent weights") {
           assertTrue {
-            paramsErrors.outputGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.outputGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.001, -0.001, 0.001, 0.004, 0.003),
                 doubleArrayOf(-0.007, 0.007, -0.01, -0.03, -0.027),
@@ -605,7 +608,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate recurrent weights") {
           assertTrue {
-            paramsErrors.forgetGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.001, -0.001, 0.001, 0.004, 0.004),
                 doubleArrayOf(-0.004, 0.004, -0.006, -0.017, -0.015),
@@ -630,7 +633,6 @@ class LSTMLayerStructureSpec : Spek({
 
         val contextWindow = LSTMLayerContextWindow.BackHidden()
         val layer = LSTMLayerStructureUtils.buildLayer(contextWindow)
-        val paramsErrors = LSTMLayerParameters(inputSize = 4, outputSize = 5)
 
         contextWindow.setRefLayer(layer)
 
@@ -641,7 +643,7 @@ class LSTMLayerStructureSpec : Spek({
           outputGold = LSTMLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        layer.backward(propagateToInput = true)
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -671,7 +673,6 @@ class LSTMLayerStructureSpec : Spek({
       on("with next state only") {
 
         val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayerContextWindow.Front())
-        val paramsErrors = LSTMLayerParameters(inputSize = 4, outputSize = 5)
 
         layer.forward()
 
@@ -680,7 +681,9 @@ class LSTMLayerStructureSpec : Spek({
           outputGold = LSTMLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as LSTMLayerParameters
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -732,7 +735,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate biases") {
           assertTrue {
-            paramsErrors.candidate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.candidate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.023, -0.136, 0.081, -0.009, -0.068)),
               tolerance = 0.0005)
           }
@@ -740,7 +743,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate biases") {
           assertTrue {
-            paramsErrors.inputGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.006, 0.058, -0.238, -0.071, 0.155)),
               tolerance = 0.0005)
           }
@@ -748,7 +751,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the output gate biases") {
           assertTrue {
-            paramsErrors.outputGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.outputGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.004, 0.024, -0.063, -0.299, 0.157)),
               tolerance = 0.0005)
           }
@@ -756,7 +759,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate biases") {
           assertTrue {
-            paramsErrors.forgetGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
               tolerance = 0.0005)
           }
@@ -764,7 +767,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertTrue {
-            (paramsErrors.candidate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.candidate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.018, 0.02, 0.02, -0.023),
                 doubleArrayOf(0.109, 0.123, 0.123, -0.136),
@@ -778,7 +781,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate weights") {
           assertTrue {
-            (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.inputGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.005, -0.005, -0.005, 0.006),
                 doubleArrayOf(-0.047, -0.053, -0.053, 0.058),
@@ -792,7 +795,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the output gate weights") {
           assertTrue {
-            (paramsErrors.outputGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.outputGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.003, -0.003, -0.003, 0.004),
                 doubleArrayOf(-0.019, -0.021, -0.021, 0.024),
@@ -806,7 +809,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate weights") {
           assertTrue {
-            (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.forgetGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0),
@@ -820,7 +823,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate recurrent weights") {
           assertTrue {
-            paramsErrors.candidate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.candidate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -834,7 +837,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate recurrent weights") {
           assertTrue {
-            paramsErrors.inputGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -848,7 +851,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the output gate recurrent weights") {
           assertTrue {
-            paramsErrors.outputGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.outputGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -862,7 +865,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate recurrent weights") {
           assertTrue {
-            paramsErrors.forgetGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -886,7 +889,6 @@ class LSTMLayerStructureSpec : Spek({
       on("with previous and next state") {
 
         val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayerContextWindow.Bilateral())
-        val paramsErrors = LSTMLayerParameters(inputSize = 4, outputSize = 5)
 
         layer.forward()
 
@@ -895,7 +897,9 @@ class LSTMLayerStructureSpec : Spek({
           outputGold = LSTMLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as LSTMLayerParameters
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -947,7 +951,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate biases") {
           assertTrue {
-            paramsErrors.candidate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.candidate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.249, -0.103, 0.053, -0.004, -0.074)),
               tolerance = 0.0005)
           }
@@ -955,7 +959,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate biases") {
           assertTrue {
-            paramsErrors.inputGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.016, -0.028, -0.227, -0.04, 0.228)),
               tolerance = 0.0005)
           }
@@ -963,7 +967,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the output gate biases") {
           assertTrue {
-            paramsErrors.outputGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.outputGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.017, 0.035, 0.021, -0.288, 0.225)),
               tolerance = 0.0005)
           }
@@ -971,7 +975,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate biases") {
           assertTrue {
-            paramsErrors.forgetGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.024, 0.065, 0.13, -0.002, -0.023)),
               tolerance = 0.0005)
           }
@@ -979,7 +983,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertTrue {
-            (paramsErrors.candidate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.candidate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.199, -0.224, -0.224, 0.249),
                 doubleArrayOf(0.082, 0.093, 0.093, -0.103),
@@ -993,7 +997,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate weights") {
           assertTrue {
-            (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.inputGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.013, 0.015, 0.015, -0.016),
                 doubleArrayOf(0.023, 0.026, 0.026, -0.028),
@@ -1007,7 +1011,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the output gate weights") {
           assertTrue {
-            (paramsErrors.outputGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.outputGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.013, -0.015, -0.015, 0.017),
                 doubleArrayOf(-0.028, -0.032, -0.032, 0.035),
@@ -1021,7 +1025,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate weights") {
           assertTrue {
-            (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.forgetGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.019, -0.021, -0.021, 0.024),
                 doubleArrayOf(-0.052, -0.059, -0.059, 0.065),
@@ -1035,7 +1039,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate recurrent weights") {
           assertTrue {
-            paramsErrors.candidate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.candidate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.05, 0.05, -0.075, -0.224, -0.199),
                 doubleArrayOf(0.021, -0.021, 0.031, 0.093, 0.082),
@@ -1049,7 +1053,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate recurrent weights") {
           assertTrue {
-            paramsErrors.inputGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.003, -0.003, 0.005, 0.015, 0.013),
                 doubleArrayOf(0.006, -0.006, 0.009, 0.026, 0.023),
@@ -1063,7 +1067,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the output gate recurrent weights") {
           assertTrue {
-            paramsErrors.outputGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.outputGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.003, 0.003, -0.005, -0.015, -0.013),
                 doubleArrayOf(-0.007, 0.007, -0.011, -0.032, -0.028),
@@ -1077,7 +1081,7 @@ class LSTMLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate recurrent weights") {
           assertTrue {
-            paramsErrors.forgetGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.005, 0.005, -0.007, -0.021, -0.019),
                 doubleArrayOf(-0.013, 0.013, -0.02, -0.059, -0.052),

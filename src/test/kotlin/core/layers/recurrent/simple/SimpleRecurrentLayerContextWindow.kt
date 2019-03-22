@@ -89,7 +89,7 @@ private fun buildNextStateLayer(): SimpleRecurrentLayer<DenseNDArray> {
   outputArray.assignErrors(errors =  DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
 
   val layer = SimpleRecurrentLayer(
-    inputArray = AugmentedArray<DenseNDArray>(size = 4),
+    inputArray = AugmentedArray(size = 4),
     outputArray = outputArray,
     params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),

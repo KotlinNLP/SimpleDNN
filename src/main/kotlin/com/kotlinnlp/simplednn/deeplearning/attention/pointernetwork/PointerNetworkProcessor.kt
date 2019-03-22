@@ -8,10 +8,11 @@
 package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.core.attention.AttentionMechanism
+import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayer
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 
 /**
  * The [PointerNetworkProcessor].
@@ -26,8 +27,7 @@ class PointerNetworkProcessor(
   DenseNDArray, // InputType
   DenseNDArray, // OutputType
   List<DenseNDArray>, // ErrorsType
-  PointerNetworkProcessor.InputErrors, // InputErrorsType
-  PointerNetworkParameters // ParamsType
+  PointerNetworkProcessor.InputErrors // InputErrorsType
   > {
 
   /**
@@ -79,7 +79,7 @@ class PointerNetworkProcessor(
   /**
    * The list of attention mechanisms used during the last forward.
    */
-  internal val usedAttentionMechanisms = mutableListOf<AttentionMechanism>()
+  internal val usedAttentionMechanisms = mutableListOf<AttentionMechanismLayer>()
 
   /**
    * The forward helper.
@@ -141,7 +141,7 @@ class PointerNetworkProcessor(
    *
    * @return the params errors of this network
    */
-  override fun getParamsErrors(copy: Boolean): PointerNetworkParameters =
+  override fun getParamsErrors(copy: Boolean): ParamsErrorsList =
     this.backwardHelper.getParamsErrors(copy = copy)
 
   /**

@@ -7,7 +7,7 @@
 
 package core.functionalities.updatemethods
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum.MomentumMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -35,7 +35,7 @@ class MomentumSpec: Spek({
       on("update") {
 
         val updateHelper = MomentumMethod(learningRate = 0.001, momentum = 0.9)
-        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
+        val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.v.assignValues(UpdateMethodsUtils.supportArray1())
@@ -57,7 +57,7 @@ class MomentumSpec: Spek({
       on("update") {
 
         val updateHelper = MomentumMethod(learningRate = 0.001, momentum = 0.9)
-        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
+        val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.v.assignValues(UpdateMethodsUtils.supportArray1())

@@ -7,7 +7,8 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
-import com.kotlinnlp.simplednn.core.attention.AttentionMechanism
+import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayer
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -29,7 +30,11 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
 
     val attentionArrays: List<DenseNDArray> = this.buildAttentionSequence(context)
 
-    return this.buildAttentionMechanism(attentionArrays).forward()
+    val attentionMechanism = this.buildAttentionMechanism(attentionArrays)
+
+    attentionMechanism.forward()
+
+    return attentionMechanism.outputArray.values
   }
 
   /**
@@ -37,10 +42,10 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
    *
    * @return an attention mechanisms
    */
-  private fun buildAttentionMechanism(attentionArrays: List<DenseNDArray>): AttentionMechanism =
+  private fun buildAttentionMechanism(attentionArrays: List<DenseNDArray>): AttentionMechanismLayer =
     this.networkProcessor.usedAttentionMechanisms.addAndReturn(
-      AttentionMechanism(
-        inputArrays = attentionArrays,
+      AttentionMechanismLayer(
+        inputArrays = attentionArrays.map { AugmentedArray(it) },
         params = this.networkProcessor.model.attentionParams,
         activation = this.networkProcessor.model.activation))
 

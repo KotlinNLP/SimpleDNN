@@ -41,7 +41,7 @@ object BatchFeedforwardUtils {
   /**
    *
    */
-  fun buildNetwork(): StackedLayersParameters {
+  fun buildParams(): StackedLayersParameters {
 
     val network = StackedLayersParameters(
       LayerInterface(

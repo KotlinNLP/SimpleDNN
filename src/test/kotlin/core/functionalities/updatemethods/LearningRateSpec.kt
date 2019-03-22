@@ -7,7 +7,7 @@
 
 package core.functionalities.updatemethods
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -35,7 +35,7 @@ class LearningRateSpec: Spek({
       on("update") {
 
         val updateHelper = LearningRateMethod(learningRate = 0.001)
-        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
+        val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
 
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildDenseErrors())
 
@@ -54,7 +54,7 @@ class LearningRateSpec: Spek({
       on("update") {
 
         val updateHelper = LearningRateMethod(learningRate = 0.001)
-        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
+        val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
 
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildSparseErrors())
 

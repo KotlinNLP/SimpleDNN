@@ -11,8 +11,6 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitial
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.jetbrains.spek.api.Spek
@@ -59,10 +57,6 @@ class FeedforwardLayerParametersSpec : Spek({
           assertTrue { b === params[1].values  }
         }
 
-        it("should contain dense weights") {
-          assertTrue { w is DenseNDArray }
-        }
-
         it("should contain the expected initialized weights") {
           (0 until w.length).forEach { i -> assertEquals(initValues[i], w[i]) }
         }
@@ -72,32 +66,7 @@ class FeedforwardLayerParametersSpec : Spek({
         }
       }
 
-      on("sparse input") {
-
-        val params = FeedforwardLayerParameters(
-          inputSize = 3,
-          outputSize = 2,
-          sparseInput = true,
-          weightsInitializer = null,
-          biasesInitializer = null)
-
-        val w = params.unit.weights.values
-
-        it("should contain sparse weights") {
-          assertTrue { w is SparseNDArray }
-        }
-
-        it("should throw an Exception when trying to initialize") {
-          assertFails {
-            FeedforwardLayerParameters(
-              inputSize = 3,
-              outputSize = 2,
-              sparseInput = true,
-              weightsInitializer = ConstantInitializer(0.1),
-              biasesInitializer = ConstantInitializer(0.1))
-          }
-        }
-      }
+      // TODO: reintegrate tests for sparse input
     }
 
     context("iteration") {

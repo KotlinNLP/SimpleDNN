@@ -9,13 +9,12 @@ package com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayersPool
-import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
-import com.kotlinnlp.simplednn.core.attention.AttentionParameters
 import com.kotlinnlp.simplednn.core.attention.AttentionLayerStructure
 import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.optimizer.GenericParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.ItemsPool
@@ -40,7 +39,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * The accumulator of errors of the transform layer parameters.
    */
-  private val transformParamsErrorsAccumulator = ParamsErrorsAccumulator<FeedforwardLayerParameters>()
+  private val transformParamsErrorsAccumulator = GenericParamsErrorsAccumulator()
 
   /**
    * The transform layer which creates an attention array from each array of an input sequence.
@@ -114,29 +113,30 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
    * Propagate the output errors using the gradient descent algorithm.
    *
    * @param outputErrors the errors to propagate from the output
-   * @param paramsErrors the structure in which to save the errors of the parameters
    * @param propagateToInput whether to propagate the errors to the input
    */
   fun backward(outputErrors: DenseNDArray,
-               paramsErrors: AttentionNetworkParameters,
-               propagateToInput: Boolean = false) {
+               propagateToInput: Boolean = false): ParamsErrorsList {
 
-    this.backwardAttentionLayer(
-      outputErrors = outputErrors,
-      paramsErrors = paramsErrors.attentionParams,
-      propagateToInput = propagateToInput)
+    val paramsErrors = mutableListOf<ParamsErrorsList>()
+
+    paramsErrors.add(
+      this.backwardAttentionLayer(
+        outputErrors = outputErrors,
+        propagateToInput = propagateToInput))
 
     if (this.internalAttentionArraysUsed) {
 
       // WARNING: call it after the backward of the attention layer
-      this.backwardTransformLayers(
-        paramsErrors = paramsErrors.transformParams,
-        propagateToInput = propagateToInput)
+      paramsErrors.add(
+        this.backwardTransformLayers(propagateToInput))
 
       if (propagateToInput) {
         this.addTransformErrorsToInput()
       }
     }
+
+    return paramsErrors.flatten()
   }
 
   /**
@@ -221,37 +221,34 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @param propagateToInput whether to propagate the errors to the input
    */
   private fun backwardAttentionLayer(outputErrors: DenseNDArray,
-                                     paramsErrors: AttentionParameters,
-                                     propagateToInput: Boolean = false) {
+                                     propagateToInput: Boolean = false): ParamsErrorsList {
 
     this.attentionLayer.setOutputErrors(outputErrors)
-    this.attentionLayer.backward(paramsErrors = paramsErrors, propagateToInput = propagateToInput)
+    return this.attentionLayer.backward(propagateToInput = propagateToInput)
   }
 
   /**
    * Transform Layers backward.
    *
-   * @param paramsErrors the structure in which to save the errors of the parameters
    * @param propagateToInput whether to propagate the errors to the input
    */
-  private fun backwardTransformLayers(paramsErrors: FeedforwardLayerParameters,
-                                      propagateToInput: Boolean = false) {
+  private fun backwardTransformLayers(propagateToInput: Boolean = false): ParamsErrorsList {
 
     val attentionErrors: List<DenseNDArray> = this.getAttentionErrors()
 
     // Accumulate errors into the accumulator
     this.transformLayers.forEachIndexed { i, layer ->
       layer.setErrors(attentionErrors[i])
-      layer.backward(paramsErrors = paramsErrors, propagateToInput = propagateToInput)
-      this.transformParamsErrorsAccumulator.accumulate(paramsErrors)
+      this.transformParamsErrorsAccumulator.accumulate(layer.backward(propagateToInput))
     }
 
     this.transformParamsErrorsAccumulator.averageErrors()
 
-    val accumulatedErrors: FeedforwardLayerParameters = this.transformParamsErrorsAccumulator.getParamsErrors()
-    paramsErrors.zip(accumulatedErrors).forEach { (a, b) -> a.values.assignValues(b.values) }
+    val accumulatedErrors = this.transformParamsErrorsAccumulator.getParamsErrors()
 
-    this.transformParamsErrorsAccumulator.reset()
+    this.transformParamsErrorsAccumulator.clear()
+
+    return accumulatedErrors
   }
 
   /**

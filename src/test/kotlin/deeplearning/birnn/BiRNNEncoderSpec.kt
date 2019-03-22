@@ -8,8 +8,8 @@
 package deeplearning.birnn
 
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerParameters
+import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNEncoder
-import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import deeplearning.birnn.utils.BiRNNEncoderUtils
@@ -60,13 +60,14 @@ class BiRNNEncoderSpec : Spek({
 
     encoder.backward(outputErrors = BiRNNEncoderUtils.buildOutputErrorsSequence())
 
-    val paramsErrors: BiRNNParameters = encoder.getParamsErrors()
-    val l2rErrors = paramsErrors.leftToRight.paramsPerLayer[0] as SimpleRecurrentLayerParameters
-    val r2lErrors = paramsErrors.rightToLeft.paramsPerLayer[0] as SimpleRecurrentLayerParameters
+    val paramsErrors = encoder.getParamsErrors()
+
+    val l2rParams = birnn.leftToRightNetwork.paramsPerLayer[0] as SimpleRecurrentLayerParameters
+    val r2lParams = birnn.rightToLeftNetwork.paramsPerLayer[0] as SimpleRecurrentLayerParameters
 
     it("should match the expected errors of the Left-to-right biases") {
       assertTrue {
-        l2rErrors.unit.biases.values.equals(
+        paramsErrors.getErrorsOf(l2rParams.unit.biases)!!.values.equals(
           DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.071016, 0.268027, 0.345019)),
           tolerance = 1.0e-06
         )
@@ -75,7 +76,7 @@ class BiRNNEncoderSpec : Spek({
 
     it("should match the expected errors of the Left-to-right weights") {
       assertTrue {
-        (l2rErrors.unit.weights.values as DenseNDArray).equals(
+        (paramsErrors.getErrorsOf(l2rParams.unit.weights)!!.values as DenseNDArray).equals(
           DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(0.001234, -0.107987),
             doubleArrayOf(0.175039, 0.015738),
@@ -88,7 +89,7 @@ class BiRNNEncoderSpec : Spek({
 
     it("should match the expected errors of the Left-to-right recurrent weights") {
       assertTrue {
-        l2rErrors.unit.recurrentWeights.values.equals(
+        paramsErrors.getErrorsOf(l2rParams.unit.recurrentWeights)!!.values.equals(
           DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(0.041817, -0.059241, 0.013592),
             doubleArrayOf(0.042229, -0.086071, 0.019157),
@@ -101,7 +102,7 @@ class BiRNNEncoderSpec : Spek({
 
     it("should match the expected errors of the Right-to-left biases") {
       assertTrue {
-        r2lErrors.unit.biases.values.equals(
+        paramsErrors.getErrorsOf(r2lParams.unit.biases)!!.values.equals(
           DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03906, 0.237598, -0.137858)),
           tolerance = 1.0e-06
         )
@@ -110,7 +111,7 @@ class BiRNNEncoderSpec : Spek({
 
     it("should match the expected errors of the Right-to-left weights") {
       assertTrue {
-        (r2lErrors.unit.weights.values as DenseNDArray).equals(
+        (paramsErrors.getErrorsOf(r2lParams.unit.weights)!!.values as DenseNDArray).equals(
           DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(0.145713, 0.234548),
             doubleArrayOf(0.050135, 0.070768),
@@ -123,7 +124,7 @@ class BiRNNEncoderSpec : Spek({
 
     it("should match the expected errors of the Right-to-left recurrent weights") {
       assertTrue {
-        r2lErrors.unit.recurrentWeights.values.equals(
+        paramsErrors.getErrorsOf(r2lParams.unit.recurrentWeights)!!.values.equals(
           DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(-0.029278, -0.112568, -0.089725),
             doubleArrayOf(-0.074426, 0.003116, -0.070784),

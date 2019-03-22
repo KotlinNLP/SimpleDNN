@@ -9,7 +9,6 @@ package core.optimizer
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
@@ -33,7 +32,7 @@ object GenericParamsOptimizerUtils {
       doubleArrayOf(0.3, -0.4)
     ))
 
-    return params.paramsList.map { ParamsArray(it.values as DenseNDArray) }
+    return params.paramsList.map { ParamsArray(it.values) }
   }
 
   /**

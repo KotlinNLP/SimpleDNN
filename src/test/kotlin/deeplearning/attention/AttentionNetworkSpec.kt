@@ -70,12 +70,9 @@ class AttentionNetworkSpec : Spek({
         inputType = LayerType.Input.Dense,
         model = AttentionLayerUtils.buildAttentionNetworkParams1())
 
-      val errors = AttentionNetworkParameters(inputSize = 4, attentionSize = 2)
-
       network.forward(inputSequence = AttentionLayerUtils.buildInputSequence())
       network.backward(
         outputErrors = AttentionLayerUtils.buildOutputErrors(),
-        paramsErrors = errors,
         propagateToInput = true)
 
       val inputErrors = network.getInputErrors()

@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers.models.merge.affine
 
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -19,20 +18,19 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class AffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: AffineLayer<InputNDArrayType>
-) : BackwardHelper<InputNDArrayType> {
+) : BackwardHelper<InputNDArrayType>(layer) {
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
-   * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
+  override fun execBackward(propagateToInput: Boolean) {
 
     this.layer.applyOutputActivationDeriv()
 
-    this.assignParamsGradients(paramsErrors as AffineLayerParameters)
+    this.assignParamsGradients()
 
     if (propagateToInput) {
       this.assignLayerGradients()
@@ -40,16 +38,16 @@ class AffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * @param paramsErrors the errors of the parameters which will be filled
+   *
    */
-  private fun assignParamsGradients(paramsErrors: AffineLayerParameters) {
+  private fun assignParamsGradients() {
 
     val gy: DenseNDArray = this.layer.outputArray.errors
-    val gb: NDArray<*> = paramsErrors.b.values
+    val gb: NDArray<*> = this.layer.params.b.errors.values
 
     gb.assignValues(gy)
 
-    this.layer.inputArrays.zip(paramsErrors.w).forEach { (x, gw) ->
+    this.layer.inputArrays.zip(this.layer.params.w.map { it.errors }).forEach { (x, gw) ->
       gw.values.assignDot(gy, x.values.t)
     }
   }

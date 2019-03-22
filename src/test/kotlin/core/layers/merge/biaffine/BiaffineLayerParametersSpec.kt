@@ -11,16 +11,12 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitial
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.*
 import kotlin.test.assertEquals
-import kotlin.test.assertFails
 import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 /**
  *
@@ -52,26 +48,6 @@ class BiaffineLayerParametersSpec : Spek({
         val b = params.b.values
         val w = params.w
 
-        it("should contain a dense w1") {
-          assertTrue { w1 is DenseNDArray }
-        }
-
-        it("should contain a dense w2") {
-          assertTrue { w2 is DenseNDArray }
-        }
-
-        it("should contain the expected number of w core.arrays") {
-          assertEquals(2, w.size)
-        }
-
-        it("should contain a dense first w array") {
-          assertTrue { w[0].values is DenseNDArray }
-        }
-
-        it("should contain a dense second w array") {
-          assertTrue { w[1].values is DenseNDArray }
-        }
-
         it("should contain the expected initialized w1") {
           (0 until w1.length).forEach { i -> assertEquals(initValues[i], w1[i]) }
         }
@@ -93,52 +69,7 @@ class BiaffineLayerParametersSpec : Spek({
         }
       }
 
-      on("sparse input") {
-
-        val params = BiaffineLayerParameters(
-          inputSize1 = 2,
-          inputSize2 = 3,
-          outputSize = 2,
-          sparseInput = true,
-          weightsInitializer = null,
-          biasesInitializer = null)
-
-        val w1 = params.w1.values
-        val w2 = params.w2.values
-        val w = params.w
-
-        it("should contain a sparse w1") {
-          assertTrue { w1 is SparseNDArray }
-        }
-
-        it("should contain a sparse w2") {
-          assertTrue { w2 is SparseNDArray }
-        }
-
-        it("should contain the expected number of w core.arrays") {
-          assertEquals(2, w.size)
-        }
-
-        it("should contain a sparse first w array") {
-          assertTrue { w[0].values is SparseNDArray }
-        }
-
-        it("should contain a sparse second w array") {
-          assertTrue { w[1].values is SparseNDArray }
-        }
-
-        it("should throw an Exception when trying to initialize") {
-          assertFails {
-            BiaffineLayerParameters(
-              inputSize1 = 2,
-              inputSize2 = 3,
-              outputSize = 2,
-              sparseInput = true,
-              weightsInitializer = ConstantInitializer(0.1),
-              biasesInitializer = ConstantInitializer(0.1))
-          }
-        }
-      }
+      // TODO: reintegrate tests for sparse input
     }
 
     context("iteration") {

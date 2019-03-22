@@ -8,7 +8,7 @@
 package core.layers.feedforward.highway
 
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
@@ -56,12 +56,13 @@ class HighwayLayerStructureSpec : Spek({
     on("backward") {
 
       val layer = HighwayLayerStructureUtils.buildLayer()
-      val paramsErrors = HighwayLayerParameters(inputSize = 4, outputSize = 4)
 
       layer.forward()
 
       layer.outputArray.assignErrors(HighwayLayerStructureUtils.getOutputErrors())
-      layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+
+      val paramsErrors = layer.backward(propagateToInput = true)
+      val params = layer.params as HighwayLayerParameters
 
       it("should match the expected errors of the outputArray") {
         assertTrue {
@@ -89,7 +90,7 @@ class HighwayLayerStructureSpec : Spek({
 
       it("should match the expected errors of the input unit biases") {
         assertTrue {
-          paramsErrors.input.biases.values.equals(
+          paramsErrors.getErrorsOf(params.input.biases)!!.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(0.409706, 0.118504, -0.017413, 0.433277)),
             tolerance = 1.0e-06)
         }
@@ -97,7 +98,7 @@ class HighwayLayerStructureSpec : Spek({
 
       it("should match the expected errors of the transform gate biases") {
         assertTrue {
-          paramsErrors.transformGate.biases.values.equals(
+          paramsErrors.getErrorsOf(params.transformGate.biases)!!.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(0.028775, 0.018987, -0.013853, -0.122241)),
             tolerance = 1.0e-06)
         }
@@ -105,7 +106,7 @@ class HighwayLayerStructureSpec : Spek({
 
       it("should match the expected errors of the input unit weights") {
         assertTrue {
-          (paramsErrors.input.weights.values as DenseNDArray).equals(
+          (paramsErrors.getErrorsOf(params.input.weights)!!.values).equals(
             DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.327765, -0.368736, -0.368736, 0.409706),
               doubleArrayOf(-0.094803, -0.106653, -0.106653, 0.118504),
@@ -118,7 +119,7 @@ class HighwayLayerStructureSpec : Spek({
 
       it("should match the expected errors of the transform gate weights") {
         assertTrue {
-          (paramsErrors.transformGate.weights.values as DenseNDArray).equals(
+          (paramsErrors.getErrorsOf(params.transformGate.weights)!!.values).equals(
             DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.023020, -0.025897, -0.025897, 0.028775),
               doubleArrayOf(-0.015190, -0.017088, -0.017088, 0.018987),

@@ -7,7 +7,7 @@
 
 package core.functionalities.updatemethods
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.simplemath.equals
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -30,7 +30,7 @@ class ADAMSpec : Spek({
       on("update") {
 
         val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
-        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
+        val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.firstOrderMoments.assignValues(UpdateMethodsUtils.supportArray1())
@@ -53,7 +53,7 @@ class ADAMSpec : Spek({
       on("update") {
 
         val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
-        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
+        val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.firstOrderMoments.assignValues(UpdateMethodsUtils.supportArray1())

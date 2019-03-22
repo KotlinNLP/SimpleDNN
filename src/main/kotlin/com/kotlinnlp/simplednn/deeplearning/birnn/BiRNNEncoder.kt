@@ -37,8 +37,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   List<InputNDArrayType>, // InputType
   List<DenseNDArray>, // OutputType
   List<DenseNDArray>, // ErrorsType
-  List<DenseNDArray>, // InputErrorsType
-  BiRNNParameters // ParamsType
+  List<DenseNDArray> // InputErrorsType
   > {
 
   /**
@@ -166,11 +165,11 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return the errors of the BiRNN parameters
    */
-  override fun getParamsErrors(copy: Boolean) = BiRNNParameters(
-    leftToRight = this.leftToRightProcessor.getParamsErrors(copy = copy),
-    rightToLeft = this.rightToLeftProcessor.getParamsErrors(copy = copy),
-    merge = this.outputMergeProcessors.getParamsErrors(copy = copy)
-  )
+  override fun getParamsErrors(copy: Boolean) =
+    this.leftToRightProcessor.getParamsErrors(copy = copy) +
+      this.rightToLeftProcessor.getParamsErrors(copy = copy) +
+        this.outputMergeProcessors.getParamsErrors(copy = copy)
+
 
   /**
    * Get the left-to-right and right-to-left lists containing the encoded vectors of the input [sequence].

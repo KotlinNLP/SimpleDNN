@@ -7,7 +7,6 @@
 
 package core.layers.merge.product
 
-import com.kotlinnlp.simplednn.core.layers.models.merge.product.ProductLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
@@ -39,12 +38,11 @@ class ProductLayerStructureSpec : Spek({
     on("backward") {
 
       val layer = ProductLayerUtils.buildLayer()
-      val paramsErrors = ProductLayerParameters(inputSize = 3, nInputs = 5)
 
       layer.forward()
 
       layer.outputArray.assignErrors(ProductLayerUtils.getOutputErrors())
-      layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+      layer.backward(propagateToInput = true)
 
       it("should match the expected errors of the inputArray at index 0") {
         assertTrue {

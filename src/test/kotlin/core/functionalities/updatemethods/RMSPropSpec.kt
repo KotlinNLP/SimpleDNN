@@ -7,7 +7,7 @@
 
 package core.functionalities.updatemethods
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop.RMSPropMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -29,7 +29,7 @@ class RMSPropSpec: Spek({
       on("update") {
 
         val updateHelper = RMSPropMethod(learningRate = 0.001, epsilon = 1e-06, decay = 0.9)
-        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
+        val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.secondOrderMoments.assignValues(UpdateMethodsUtils.supportArray2())
@@ -51,7 +51,7 @@ class RMSPropSpec: Spek({
       on("update") {
 
         val updateHelper = RMSPropMethod(learningRate = 0.001, epsilon = 1e-06, decay = 0.9)
-        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
+        val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.secondOrderMoments.assignValues(UpdateMethodsUtils.supportArray2())

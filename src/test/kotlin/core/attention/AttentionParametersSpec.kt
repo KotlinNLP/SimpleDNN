@@ -9,7 +9,7 @@ package core.attention
 
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
-import com.kotlinnlp.simplednn.core.attention.AttentionParameters
+import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
@@ -32,7 +32,7 @@ class AttentionParametersSpec : Spek({
       var i = 0.0
       whenever(randomGenerator.next()).thenAnswer { i++ }
 
-      val params = AttentionParameters(attentionSize = 2, initializer = RandomInitializer(randomGenerator))
+      val params = AttentionMechanismLayerParameters(inputSize = 2, weightsInitializer = RandomInitializer(randomGenerator))
 
       it("should have a context vector with the expected initialized values") {
         assertTrue {

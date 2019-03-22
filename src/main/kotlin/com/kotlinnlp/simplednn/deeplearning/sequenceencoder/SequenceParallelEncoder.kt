@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.deeplearning.sequenceencoder
 
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -29,8 +30,7 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   List<InputNDArrayType>, // InputType
   List<List<DenseNDArray>>, // OutputType
   List<List<DenseNDArray>>, // ErrorsType
-  List<DenseNDArray>, // InputErrorsType
-  ParallelEncoderParameters // ParamsType
+  List<DenseNDArray> // InputErrorsType
   > {
 
   /**
@@ -67,8 +67,7 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return the parameters errors of the sub-networks
    */
-  override fun getParamsErrors(copy: Boolean) =
-    ParallelEncoderParameters(this.encoders.map { it.getParamsErrors(copy = copy) })
+  override fun getParamsErrors(copy: Boolean) = this.encoders.flatMap { it.getParamsErrors(copy = copy) }
 
   /**
    * The Forward.

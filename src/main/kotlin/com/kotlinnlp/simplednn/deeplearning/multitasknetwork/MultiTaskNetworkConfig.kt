@@ -15,12 +15,10 @@ import java.io.Serializable
  *
  * @property outputSize the size of the output layer
  * @property outputActivation the activation function of the output layer
- * @property outputMeProp whether to use the 'meProp' errors propagation algorithm for the output layer (default false)
  */
 class MultiTaskNetworkConfig(
   val outputSize: Int,
-  val outputActivation: ActivationFunction?,
-  val outputMeProp: Boolean = false
+  val outputActivation: ActivationFunction?
 ) : Serializable {
 
   companion object {

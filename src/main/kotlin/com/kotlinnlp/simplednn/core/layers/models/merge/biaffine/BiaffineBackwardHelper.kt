@@ -7,9 +7,9 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.merge.biaffine
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -22,22 +22,21 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
  */
 class BiaffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: BiaffineLayer<InputNDArrayType>
-) : BackwardHelper<InputNDArrayType> {
+) : BackwardHelper<InputNDArrayType>(layer) {
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
-   * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
+  override fun execBackward(propagateToInput: Boolean) {
 
     this.layer.applyOutputActivationDeriv()
 
     val gwx1: List<DenseNDArray> = this.getWX1ArraysGradients()
 
-    this.assignParamsGradients(paramsErrors = paramsErrors as BiaffineLayerParameters, wx1Errors = gwx1)
+    this.assignParamsGradients(wx1Errors = gwx1)
 
     if (propagateToInput) {
       this.assignLayerGradients(wx1Errors = gwx1)
@@ -90,7 +89,7 @@ class BiaffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  private fun assignParamsGradients(paramsErrors: BiaffineLayerParameters, wx1Errors: List<DenseNDArray>) {
+  private fun assignParamsGradients(wx1Errors: List<DenseNDArray>) {
     // TODO: actually the wx errors are Sparse if the input is SparseBinary: calculations should be optimized
 
     val x1: InputNDArrayType = this.layer.inputArray1.values
@@ -98,10 +97,10 @@ class BiaffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val x2: InputNDArrayType = this.layer.inputArray2.values
 
     val gy: DenseNDArray = this.layer.outputArray.errors
-    val gwArrays: List<UpdatableArray<*>> = paramsErrors.w
-    val gw1: NDArray<*> = paramsErrors.w1.values
-    val gw2: NDArray<*> = paramsErrors.w2.values
-    val gb: NDArray<*> = paramsErrors.b.values
+    val gwArrays: ParamsErrorsList = this.layer.params.w.map { it.errors }
+    val gw1: NDArray<*> = this.layer.params.w1.errors.values
+    val gw2: NDArray<*> = this.layer.params.w2.errors.values
+    val gb: NDArray<*> = this.layer.params.b.errors.values
 
     gwArrays.forEachIndexed { i, gwArray ->
       val gwi: DenseNDArray = gwArray.values as DenseNDArray
@@ -120,9 +119,9 @@ class BiaffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun assignLayerGradients(wx1Errors: List<DenseNDArray>) {
     // TODO: actually the wx errors are Sparse if the input is SparseBinary: calculations should be optimized
 
-    val w1: DenseNDArray = this.layer.params.w1.values as DenseNDArray
-    val w2: DenseNDArray = this.layer.params.w2.values as DenseNDArray
-    val wArrays: List<UpdatableArray<*>> = this.layer.params.w
+    val w1: DenseNDArray = this.layer.params.w1.values
+    val w2: DenseNDArray = this.layer.params.w2.values
+    val wArrays: List<ParamsArray> = this.layer.params.w
 
     val gy: DenseNDArray = this.layer.outputArray.errors
     val gyT: DenseNDArray = gy.t
@@ -131,7 +130,7 @@ class BiaffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.inputArray2.assignErrorsByDotT(gyT, w2)
 
     wx1Errors.forEachIndexed { i, wx1Error ->
-      val wi: DenseNDArray = wArrays[i].values as DenseNDArray
+      val wi: DenseNDArray = wArrays[i].values
       val wx1i: DenseNDArray = this.layer.wx1Arrays[i]
 
       this.layer.inputArray1.errors.assignSum(wx1Error.t.dot(wi))

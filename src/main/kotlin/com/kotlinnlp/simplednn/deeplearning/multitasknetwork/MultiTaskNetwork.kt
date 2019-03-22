@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.multitasknetwork
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -31,8 +32,7 @@ class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
   InputNDArrayType, // InputType
   List<DenseNDArray>, // OutputType
   List<DenseNDArray>, // ErrorsType
-  DenseNDArray, // InputErrorsType
-  MultiTaskNetworkParameters // ParamsType
+  DenseNDArray // InputErrorsType
   > {
 
   /**
@@ -58,10 +58,8 @@ class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the errors of the neural parameters
    */
-  override fun getParamsErrors(copy: Boolean) = MultiTaskNetworkParameters(
-    inputParams = this.inputProcessor.getParamsErrors(copy = copy),
-    outputParamsList = this.outputProcessors.map { it.getParamsErrors(copy = copy) }
-  )
+  override fun getParamsErrors(copy: Boolean): ParamsErrorsList =
+    this.inputProcessor.getParamsErrors(copy = copy) + this.outputProcessors.flatMap { it.getParamsErrors(copy = copy) }
 
   /**
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference

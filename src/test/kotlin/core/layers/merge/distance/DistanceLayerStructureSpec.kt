@@ -7,7 +7,6 @@
 
 package core.layers.merge.distance
 
-import com.kotlinnlp.simplednn.core.layers.models.merge.distance.DistanceLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
@@ -40,12 +39,11 @@ class DistanceLayerStructureSpec: Spek({
     on("backward") {
 
       val layer = DistanceLayerUtils.buildLayer()
-      val paramsErrors = DistanceLayerParameters(inputSize = 4)
 
       layer.forward()
 
       layer.outputArray.assignErrors(DistanceLayerUtils.getOutputErrors())
-      layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+      layer.backward(propagateToInput = true)
 
       it("should match the expected errors of the inputArray1") {
         assertTrue {

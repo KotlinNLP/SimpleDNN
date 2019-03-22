@@ -9,6 +9,7 @@ package core.layers.recurrent.cfn
 
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
+import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -109,7 +110,6 @@ class CFNLayerStructureSpec : Spek({
       on("without previous and next state") {
 
         val layer = CFNLayerStructureUtils.buildLayer(CFNLayerContextWindow.Empty())
-        val paramsErrors = CFNLayerParameters(inputSize = 4, outputSize = 5)
 
         layer.forward()
 
@@ -118,7 +118,9 @@ class CFNLayerStructureSpec : Spek({
           outputGold = CFNLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as CFNLayerParameters
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -154,7 +156,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate biases") {
           assertTrue {
-            paramsErrors.inputGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.049, 0.015, 0.101, -0.186, 0.162)),
               tolerance = 0.0005)
           }
@@ -162,7 +164,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate biases") {
           assertTrue {
-            paramsErrors.forgetGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
               tolerance = 0.0005)
           }
@@ -170,7 +172,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate weights") {
           assertTrue {
-            (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.inputGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.039, 0.044, 0.044, -0.049),
                 doubleArrayOf(-0.012, -0.013, -0.013, 0.015),
@@ -184,7 +186,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate weights") {
           assertTrue {
-            (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.forgetGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0),
@@ -198,7 +200,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertTrue {
-            (paramsErrors.candidateWeights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.candidateWeights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.052, 0.059, 0.059, -0.065),
                 doubleArrayOf(0.154, 0.174, 0.174, -0.193),
@@ -212,7 +214,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate recurrent weights") {
           assertTrue {
-            paramsErrors.inputGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -226,7 +228,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate recurrent weights") {
           assertTrue {
-            paramsErrors.forgetGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -250,7 +252,6 @@ class CFNLayerStructureSpec : Spek({
       on("with previous state only") {
 
         val layer = CFNLayerStructureUtils.buildLayer(CFNLayerContextWindow.Back())
-        val paramsErrors = CFNLayerParameters(inputSize = 4, outputSize = 5)
 
         layer.forward()
 
@@ -259,7 +260,9 @@ class CFNLayerStructureSpec : Spek({
           outputGold = CFNLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as CFNLayerParameters
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -295,7 +298,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate biases") {
           assertTrue {
-            paramsErrors.inputGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.035, 0.014, 0.105, -0.18, 0.228)),
               tolerance = 0.0005)
           }
@@ -303,7 +306,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate biases") {
           assertTrue {
-            paramsErrors.forgetGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.004, -0.022, -0.007, 0.222, 0.18)),
               tolerance = 0.0005)
           }
@@ -311,7 +314,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate weights") {
           assertTrue {
-            (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.inputGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.028, 0.032, 0.032, -0.035),
                 doubleArrayOf(-0.011, -0.012, -0.012, 0.014),
@@ -325,7 +328,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate weights") {
           assertTrue {
-            (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.forgetGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.003, -0.004, -0.004, 0.004),
                 doubleArrayOf(0.017, 0.019, 0.019, -0.022),
@@ -339,7 +342,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertTrue {
-            (paramsErrors.candidateWeights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.candidateWeights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.082, 0.093, 0.093, -0.103),
                 doubleArrayOf(0.146, 0.164, 0.164, -0.183),
@@ -353,7 +356,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate recurrent weights") {
           assertTrue {
-            paramsErrors.inputGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.007, -0.007, 0.011, 0.032, 0.028),
                 doubleArrayOf(-0.003, 0.003, -0.004, -0.012, -0.011),
@@ -367,7 +370,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate recurrent weights") {
           assertTrue {
-            paramsErrors.forgetGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.001, 0.001, -0.001, -0.004, -0.003),
                 doubleArrayOf(0.004, -0.004, 0.006, 0.019, 0.017),
@@ -392,7 +395,6 @@ class CFNLayerStructureSpec : Spek({
 
         val layer = CFNLayerStructureUtils.buildLayer(CFNLayerContextWindow.Front(
           currentLayerOutput = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.261, -0.025, 0.363, 0.546, -0.349))))
-        val paramsErrors = CFNLayerParameters(inputSize = 4, outputSize = 5)
 
         layer.forward()
 
@@ -401,7 +403,9 @@ class CFNLayerStructureSpec : Spek({
           outputGold = CFNLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as CFNLayerParameters
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -437,7 +441,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate biases") {
           assertTrue {
-            paramsErrors.inputGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.073, 0.008, 0.185, -0.309, 0.202)),
               tolerance = 0.0005)
           }
@@ -445,7 +449,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate biases") {
           assertTrue {
-            paramsErrors.forgetGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
               tolerance = 0.0005)
           }
@@ -453,7 +457,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate weights") {
           assertTrue {
-            (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.inputGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.058, 0.066, 0.066, -0.073),
                 doubleArrayOf(-0.006, -0.007, -0.007, 0.008),
@@ -467,7 +471,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate weights") {
           assertTrue {
-            (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.forgetGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0),
@@ -481,7 +485,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertTrue {
-            (paramsErrors.candidateWeights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.candidateWeights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.078, 0.088, 0.088, -0.097),
                 doubleArrayOf(0.085, 0.095, 0.095, -0.106),
@@ -495,7 +499,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate recurrent weights") {
           assertTrue {
-            paramsErrors.inputGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -509,7 +513,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate recurrent weights") {
           assertTrue {
-            paramsErrors.forgetGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
                 doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
@@ -534,7 +538,6 @@ class CFNLayerStructureSpec : Spek({
 
         val layer = CFNLayerStructureUtils.buildLayer(CFNLayerContextWindow.Bilateral(
           currentLayerOutput = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.299, 0.0108, 0.384, 0.226, -0.597))))
-        val paramsErrors = CFNLayerParameters(inputSize = 4, outputSize = 5)
 
         layer.forward()
 
@@ -543,7 +546,9 @@ class CFNLayerStructureSpec : Spek({
           outputGold = CFNLayerStructureUtils.getOutputGold())
 
         layer.outputArray.assignErrors(errors)
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as CFNLayerParameters
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -579,7 +584,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate biases") {
           assertTrue {
-            paramsErrors.inputGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.055, 0.007, 0.188, -0.286, 0.273)),
               tolerance = 0.0005)
           }
@@ -587,7 +592,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate biases") {
           assertTrue {
-            paramsErrors.forgetGate.biases.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.007, -0.011, -0.013, 0.351, 0.215)),
               tolerance = 0.0005)
           }
@@ -595,7 +600,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate weights") {
           assertTrue {
-            (paramsErrors.inputGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.inputGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.044, 0.05, 0.05, -0.055),
                 doubleArrayOf(-0.006, -0.007, -0.007, 0.007),
@@ -609,7 +614,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate weights") {
           assertTrue {
-            (paramsErrors.forgetGate.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.forgetGate.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.005, -0.006, -0.006, 0.007),
                 doubleArrayOf(0.009, 0.01, 0.01, -0.011),
@@ -623,7 +628,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate weights") {
           assertTrue {
-            (paramsErrors.candidateWeights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.candidateWeights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.129, 0.145, 0.145, -0.161),
                 doubleArrayOf(0.077, 0.087, 0.087, -0.096),
@@ -637,7 +642,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the input gate recurrent weights") {
           assertTrue {
-            paramsErrors.inputGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.inputGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.011, -0.011, 0.017, 0.05, 0.044),
                 doubleArrayOf(-0.001, 0.001, -0.002, -0.007, -0.006),
@@ -651,7 +656,7 @@ class CFNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the forget gate recurrent weights") {
           assertTrue {
-            paramsErrors.forgetGate.recurrentWeights.values.equals(
+            paramsErrors.getErrorsOf(params.forgetGate.recurrentWeights)!!.values.equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.001, 0.001, -0.002, -0.006, -0.005),
                 doubleArrayOf(0.002, -0.002, 0.003, 0.01, 0.009),

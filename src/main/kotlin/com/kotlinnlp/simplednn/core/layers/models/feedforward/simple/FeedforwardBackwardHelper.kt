@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers.models.feedforward.simple
 
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.assignParamsGradients
 import com.kotlinnlp.simplednn.core.layers.getInputErrors
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -20,20 +19,19 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  */
 class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: FeedforwardLayer<InputNDArrayType>
-) : BackwardHelper<InputNDArrayType> {
+) : BackwardHelper<InputNDArrayType>(layer) {
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
-   * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
+  override fun execBackward(propagateToInput: Boolean) {
 
     this.layer.applyOutputActivationDeriv()
 
-    this.assignParamsGradients(paramsErrors as FeedforwardLayerParameters)
+    this.assignParamsGradients()
 
     if (propagateToInput) {
       this.assignLayerGradients()
@@ -43,23 +41,19 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * gb = gy * 1
    * gw = gy (dot) x
-   *
-   * @param paramsErrors the errors of the parameters which will be filled
    */
-  private fun assignParamsGradients(paramsErrors: FeedforwardLayerParameters) {
+  private fun assignParamsGradients() { this.layer.params as FeedforwardLayerParameters
 
     this.layer.outputArray.assignParamsGradients(
-      gw = paramsErrors.unit.weights.values,
-      gb = paramsErrors.unit.biases.values,
+      gw = this.layer.params.unit.weights.errors.values,
+      gb = this.layer.params.unit.biases.errors.values,
       x = this.layer.inputArray.values)
   }
 
   /**
    * gx = gy (dot) w
    */
-  private fun assignLayerGradients() {
-
-    this.layer.params as FeedforwardLayerParameters
+  private fun assignLayerGradients() { this.layer.params as FeedforwardLayerParameters
 
     this.layer.inputArray.assignErrors(
       errors = this.layer.outputArray.getInputErrors(w = this.layer.params.unit.weights.values)

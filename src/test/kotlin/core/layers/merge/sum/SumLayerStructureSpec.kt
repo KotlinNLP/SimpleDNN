@@ -7,7 +7,6 @@
 
 package core.layers.merge.sum
 
-import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
@@ -39,12 +38,11 @@ class SumLayerStructureSpec : Spek({
     on("backward") {
 
       val layer = SumLayerUtils.buildLayer()
-      val paramsErrors = SumLayerParameters(inputSize = 3, nInputs = 4)
 
       layer.forward()
 
       layer.outputArray.assignErrors(SumLayerUtils.getOutputErrors())
-      layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+      layer.backward(propagateToInput = true)
 
       it("should match the expected errors of the inputArray at index 0") {
         assertTrue {

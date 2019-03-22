@@ -7,7 +7,7 @@
 
 package core.layers.merge.biaffine
 
-import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerParameters
+import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
@@ -41,12 +41,13 @@ class BiaffineLayerStructureSpec : Spek({
     on("backward") {
 
       val layer = BiaffineLayerUtils.buildLayer()
-      val paramsErrors = BiaffineLayerParameters(inputSize1 = 2, inputSize2 = 3, outputSize = 2)
 
       layer.forward()
 
       layer.outputArray.assignErrors(layer.outputArray.values.sub(BiaffineLayerUtils.getOutputGold()))
-      layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+      val paramsErrors = layer.backward(propagateToInput = true)
+
+      val params = layer.params
 
       it("should match the expected errors of the outputArray") {
         assertTrue {
@@ -58,7 +59,7 @@ class BiaffineLayerStructureSpec : Spek({
 
       it("should match the expected errors of the biases") {
         assertTrue {
-          paramsErrors.b.values.equals(
+          paramsErrors.getErrorsOf(params.b)!!.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.398794, 0.134815)),
             tolerance = 1.0e-06)
         }
@@ -66,7 +67,7 @@ class BiaffineLayerStructureSpec : Spek({
 
       it("should match the expected errors of w1") {
         assertTrue {
-          (paramsErrors.w1.values as DenseNDArray).equals(
+          (paramsErrors.getErrorsOf(params.w1)!!.values as DenseNDArray).equals(
             DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.319035, 0.358915),
               doubleArrayOf(-0.107852, -0.121333)
@@ -77,7 +78,7 @@ class BiaffineLayerStructureSpec : Spek({
 
       it("should match the expected errors of w2") {
         assertTrue {
-          (paramsErrors.w2.values as DenseNDArray).equals(
+          (paramsErrors.getErrorsOf(params.w2)!!.values as DenseNDArray).equals(
             DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.199397, 0.079759, -0.239276),
               doubleArrayOf(0.067407, -0.026963, 0.080889)
@@ -88,7 +89,7 @@ class BiaffineLayerStructureSpec : Spek({
 
       it("should match the expected errors of the first w array") {
         assertTrue {
-          (paramsErrors.w[0].values as DenseNDArray).equals(
+          (paramsErrors.getErrorsOf(params.w[0])!!.values as DenseNDArray).equals(
             DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.159518, 0.179457),
               doubleArrayOf(-0.063807, -0.071783),
@@ -100,7 +101,7 @@ class BiaffineLayerStructureSpec : Spek({
 
       it("should match the expected errors of the second w array") {
         assertTrue {
-          (paramsErrors.w[1].values as DenseNDArray).equals(
+          (paramsErrors.getErrorsOf(params.w[1])!!.values as DenseNDArray).equals(
             DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(-0.053926, -0.060667),
               doubleArrayOf(0.021570, 0.024267),

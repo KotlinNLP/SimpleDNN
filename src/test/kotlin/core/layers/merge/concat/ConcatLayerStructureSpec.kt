@@ -7,7 +7,6 @@
 
 package core.layers.merge.concat
 
-import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
@@ -39,12 +38,11 @@ class ConcatLayerStructureSpec : Spek({
     on("backward") {
 
       val layer = ConcatLayerUtils.buildLayer()
-      val paramsErrors = ConcatLayerParameters(inputsSize = listOf(4, 2, 3))
 
       layer.forward()
 
       layer.outputArray.assignErrors(ConcatLayerUtils.getOutputErrors())
-      layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+      layer.backward(propagateToInput = true)
 
       it("should match the expected errors of the inputArray at index 0") {
         assertTrue {

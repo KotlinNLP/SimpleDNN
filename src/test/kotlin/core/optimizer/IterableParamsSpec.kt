@@ -39,8 +39,8 @@ class IterableParamsSpec : Spek({
 
         it("should assign the expected values to the first parameters") {
           assertTrue {
-            (params2.unit.weights.values as DenseNDArray)
-              .equals(params1.unit.weights.values as DenseNDArray, tolerance = 1.0e-06)
+            (params2.unit.weights.values)
+              .equals(params1.unit.weights.values, tolerance = 1.0e-06)
           }
         }
 
@@ -63,14 +63,14 @@ class IterableParamsSpec : Spek({
             DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.5, 0.3, 0.5),
               doubleArrayOf(-0.8, 0.3, 1.5)
-            )).equals(params1.unit.weights.values as DenseNDArray, tolerance = 1.0e-06)
+            )).equals(params1.unit.weights.values, tolerance = 1.0e-06)
           }
         }
 
         it("should assign the expected values to the second parameters") {
           assertTrue {
-           DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.0))
-             .equals(params1.unit.biases.values, tolerance = 1.0e-06)
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.0))
+              .equals(params1.unit.biases.values, tolerance = 1.0e-06)
           }
         }
       }
@@ -86,92 +86,14 @@ class IterableParamsSpec : Spek({
             DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.1, 0.2, 0.05),
               doubleArrayOf(0.025, 0.075, 0.225)
-            )).equals(params1.unit.weights.values as DenseNDArray, tolerance = 1.0e-06)
+            )).equals(params1.unit.weights.values, tolerance = 1.0e-06)
           }
         }
 
         it("should assign the expected values to the second parameters") {
           assertTrue {
-           DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.125, 0.025))
-             .equals(params1.unit.biases.values, tolerance = 1.0e-06)
-          }
-        }
-      }
-    }
-
-    context("Sparse params") {
-
-      on("assignValues") {
-
-        val params1 = IterableParamsUtils.buildSparseParams1()
-        val params2 = IterableParamsUtils.buildSparseParams2()
-
-        params1.assignValues(params2)
-
-        it("should assign the expected values to the first parameters") {
-          assertTrue {
-            (params2.unit.weights.values as SparseNDArray)
-              .equals(params1.unit.weights.values as SparseNDArray, tolerance = 1.0e-06)
-          }
-        }
-
-        it("should assign the expected values to the second parameters") {
-          assertTrue {
-            params2.unit.biases.values.equals(params1.unit.biases.values, tolerance = 1.0e-06)
-          }
-        }
-      }
-
-      on("assignSum") {
-
-        val params1 = IterableParamsUtils.buildSparseParams1()
-        val params2 = IterableParamsUtils.buildSparseParams2()
-
-        params1.assignSum(params2)
-
-        it("should assign the expected values to the first parameters") {
-          assertTrue {
-            SparseNDArrayFactory.arrayOf(
-              activeIndicesValues = arrayOf(
-                SparseEntry(Indices(0, 0), 0.4),
-                SparseEntry(Indices(1, 1), -0.2),
-                SparseEntry(Indices(1, 2), 0.6)
-              ),
-              shape = Shape(2, 3)
-            ).equals(params1.unit.weights.values as SparseNDArray, tolerance = 1.0e-06)
-          }
-        }
-
-        it("should assign the expected values to the second parameters") {
-          assertTrue {
-           DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.0))
-             .equals(params1.unit.biases.values, tolerance = 1.0e-06)
-          }
-        }
-      }
-
-      on("assignDiv") {
-
-        val params1 = IterableParamsUtils.buildSparseParams1()
-
-        params1.assignDiv(4)
-
-        it("should assign the expected values to the first parameters") {
-          assertTrue {
-            SparseNDArrayFactory.arrayOf(
-              activeIndicesValues = arrayOf(
-                SparseEntry(Indices(0, 0), 0.1),
-                SparseEntry(Indices(1, 1), 0.075)
-              ),
-              shape = Shape(2, 3)
-            ).equals(params1.unit.weights.values as SparseNDArray, tolerance = 1.0e-06)
-          }
-        }
-
-        it("should assign the expected values to the second parameters") {
-          assertTrue {
-           DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.125, 0.025))
-             .equals(params1.unit.biases.values, tolerance = 1.0e-06)
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.125, 0.025))
+              .equals(params1.unit.biases.values, tolerance = 1.0e-06)
           }
         }
       }

@@ -9,7 +9,6 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.simple
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.getInputErrors
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -21,16 +20,15 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: SimpleRecurrentLayer<InputNDArrayType>
-) : BackwardHelper<InputNDArrayType> {
+) : BackwardHelper<InputNDArrayType>(layer) {
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
-   * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
+  override fun execBackward(propagateToInput: Boolean) {
 
     val prevStateLayer = this.layer.layerContextWindow.getPrevState()
     val nextStateLayer = this.layer.layerContextWindow.getNextState()
@@ -41,9 +39,7 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
 
     this.layer.applyOutputActivationDeriv() // must be applied AFTER having added the recurrent contribution
 
-    this.assignParamsGradients(
-      paramsErrors = paramsErrors as SimpleRecurrentLayerParameters,
-      prevStateOutput = prevStateLayer?.outputArray)
+    this.assignParamsGradients(prevStateLayer?.outputArray)
 
     if (propagateToInput) {
       this.assignLayerGradients()
@@ -55,14 +51,16 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
    * gw = gb (dot) x
    * gwRec = gy (dot) yPrev
    *
-   * @param paramsErrors the errors of the parameters which will be filled
    * @param prevStateOutput the output array in the previous state
    */
-  private fun assignParamsGradients(paramsErrors: SimpleRecurrentLayerParameters,
-                                    prevStateOutput: AugmentedArray<DenseNDArray>?) {
+  private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
+
+    this.layer.params as SimpleRecurrentLayerParameters
 
     this.layer.outputArray.assignParamsGradients(
-      paramsErrors = paramsErrors.unit,
+      gw = this.layer.params.unit.weights.errors.values,
+      gb = this.layer.params.unit.biases.errors.values,
+      gwRec = this.layer.params.unit.recurrentWeights.errors.values,
       x = this.layer.inputArray.values,
       yPrev = prevStateOutput?.values)
   }

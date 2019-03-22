@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.gru
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.assignParamsGradients
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -20,16 +20,15 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: GRULayer<InputNDArrayType>
-) : BackwardHelper<InputNDArrayType> {
+) : BackwardHelper<InputNDArrayType>(layer) {
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
-   * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  override fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
+  override fun execBackward(propagateToInput: Boolean) {
 
     val prevStateOutput = this.layer.layerContextWindow.getPrevState()?.outputArray
     val nextStateLayer = this.layer.layerContextWindow.getNextState()
@@ -38,9 +37,7 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.assignGatesGradients(prevStateOutput)
 
-    this.assignParamsGradients(
-      paramsErrors = paramsErrors as GRULayerParameters,
-      prevStateOutput = prevStateOutput)
+    this.assignParamsGradients(prevStateOutput = prevStateOutput)
 
     if (propagateToInput) {
       this.assignLayerGradients()
@@ -76,7 +73,7 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     } else { // recurrent contribution
       val gc: DenseNDArray = this.layer.candidate.errors
       val yPrev: DenseNDArray = prevStateOutput.values
-      val wcr: DenseNDArray = this.layer.params.candidate.recurrentWeights.values as DenseNDArray
+      val wcr: DenseNDArray = this.layer.params.candidate.recurrentWeights.values
 
       this.layer.resetGate.assignErrorsByDotT(gc.t, wcr).assignProd(rDeriv).assignProd(yPrev)
       this.layer.partitionGate.assignErrorsByProd(c.sub(yPrev), pDeriv).assignProd(gy)
@@ -84,21 +81,37 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * @param paramsErrors the errors of the parameters which will be filled
    * @param prevStateOutput the outputArray in the previous state
    */
-  private fun assignParamsGradients(paramsErrors: GRULayerParameters, prevStateOutput: AugmentedArray<DenseNDArray>?) {
+  private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
+
+    this.layer.params as GRULayerParameters
 
     val x: InputNDArrayType = this.layer.inputArray.values
     val yPrev: DenseNDArray? = prevStateOutput?.values
 
-    this.layer.resetGate.assignParamsGradients(paramsErrors = paramsErrors.resetGate, x = x, yPrev = yPrev)
-    this.layer.partitionGate.assignParamsGradients(paramsErrors = paramsErrors.partitionGate, x = x, yPrev = yPrev)
-    this.layer.candidate.assignParamsGradients(paramsErrors = paramsErrors.candidate, x = x)
+    this.layer.resetGate.assignParamsGradients(
+      gw = this.layer.params.resetGate.weights.errors.values,
+      gb = this.layer.params.resetGate.biases.errors.values,
+      gwRec = this.layer.params.resetGate.recurrentWeights.errors.values,
+      x = x,
+      yPrev = yPrev)
+
+    this.layer.partitionGate.assignParamsGradients(
+      gw = this.layer.params.partitionGate.weights.errors.values,
+      gb = this.layer.params.partitionGate.biases.errors.values,
+      gwRec = this.layer.params.partitionGate.recurrentWeights.errors.values,
+      x = x,
+      yPrev = yPrev)
+
+    this.layer.candidate.assignParamsGradients(
+      gw = this.layer.params.candidate.weights.errors.values,
+      gb = this.layer.params.candidate.biases.errors.values,
+      x = x)
 
     if (yPrev != null) { // add recurrent contribution to the recurrent weights of the candidate
       val r: DenseNDArray = this.layer.resetGate.values
-      val gwcr: DenseNDArray = paramsErrors.candidate.recurrentWeights.values as DenseNDArray
+      val gwcr: DenseNDArray = this.layer.params.candidate.recurrentWeights.errors.values as DenseNDArray
       val gc: DenseNDArray = this.layer.candidate.errors
       gwcr.assignDot(gc, r.prod(yPrev).t)
     }
@@ -111,9 +124,9 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.layer.params as GRULayerParameters
 
-    val wp: DenseNDArray = this.layer.params.partitionGate.weights.values as DenseNDArray
-    val wc: DenseNDArray = this.layer.params.candidate.weights.values as DenseNDArray
-    val wr: DenseNDArray = this.layer.params.resetGate.weights.values as DenseNDArray
+    val wp: DenseNDArray = this.layer.params.partitionGate.weights.values
+    val wc: DenseNDArray = this.layer.params.candidate.weights.values
+    val wr: DenseNDArray = this.layer.params.resetGate.weights.values
 
     val gp: DenseNDArray = this.layer.partitionGate.errors
     val gc: DenseNDArray = this.layer.candidate.errors
@@ -158,9 +171,9 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gp: DenseNDArray = partitionGate.errors
     val gc: DenseNDArray = candidate.errors
 
-    val wrr: DenseNDArray = this.layer.params.resetGate.recurrentWeights.values as DenseNDArray
-    val wpr: DenseNDArray = this.layer.params.partitionGate.recurrentWeights.values as DenseNDArray
-    val wcr: DenseNDArray = this.layer.params.candidate.recurrentWeights.values as DenseNDArray
+    val wrr: DenseNDArray = this.layer.params.resetGate.recurrentWeights.values
+    val wpr: DenseNDArray = this.layer.params.partitionGate.recurrentWeights.values
+    val wcr: DenseNDArray = this.layer.params.candidate.recurrentWeights.values
 
     val gRec1: DenseNDArray = gr.t.dot(wrr)
     val gRec2: DenseNDArray = gp.t.dot(wpr)

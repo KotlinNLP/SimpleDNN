@@ -10,13 +10,9 @@ package core.layers.feedforward.simple
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.Indices
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-import com.kotlinnlp.simplednn.simplemath.ndarray.SparseEntry
+import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -98,7 +94,7 @@ class FeedforwardLayerStructureSpec : Spek({
         }
 
         it("should match the expected contributions") {
-          val wContr: DenseNDArray = contributions.unit.weights.values as DenseNDArray
+          val wContr: DenseNDArray = contributions.unit.weights.values
           assertTrue {
             wContr.equals(
               DenseNDArrayFactory.arrayOf(listOf(
@@ -127,48 +123,7 @@ class FeedforwardLayerStructureSpec : Spek({
         }
       }
 
-      on("sparse input") {
-
-        val layer = FeedforwardLayerStructureUtils.buildLayer53SparseBinary()
-        val contributions = FeedforwardLayerParameters(
-          inputSize = 5,
-          outputSize = 3,
-          sparseInput = true,
-          weightsInitializer = null,
-          biasesInitializer = null)
-
-        layer.forward(layerContributions = contributions)
-
-        it("should match the expected output values") {
-          assertTrue {
-            layer.outputArray.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1769, 0.53144, 0.29166)),
-              tolerance = 1.0e-05)
-          }
-        }
-
-        layer.setOutputRelevance(DistributionArray.uniform(length = 3))
-        layer.setInputRelevance(layerContributions = contributions)
-
-        it("should set a Sparse input relevance") {
-          assertTrue { layer.inputArray.relevance is SparseNDArray }
-        }
-
-        it("should match the expected input relevance") {
-          val relevance: SparseNDArray = layer.inputArray.relevance as SparseNDArray
-          assertTrue {
-            relevance.equals(
-              SparseNDArrayFactory.arrayOf(
-                activeIndicesValues = arrayOf(
-                  SparseEntry(Indices(2, 0), 1.04945),
-                  SparseEntry(Indices(4, 0), -0.04945)
-                ),
-                shape = Shape(5)
-              ),
-              tolerance = 1.0e-05)
-          }
-        }
-      }
+      // TODO: reintroduce tests for sparse input
     }
 
     context("backward") {
@@ -177,12 +132,13 @@ class FeedforwardLayerStructureSpec : Spek({
 
         val layer = FeedforwardLayerStructureUtils.buildLayer45()
         val outputGold = FeedforwardLayerStructureUtils.getOutputGold5()
-        val paramsErrors = FeedforwardLayerParameters(inputSize = 4, outputSize = 5)
 
         layer.forward()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as FeedforwardLayerParameters
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -194,7 +150,7 @@ class FeedforwardLayerStructureSpec : Spek({
 
         it("should match the expected errors of the biases") {
           assertTrue {
-            paramsErrors.unit.biases.values.equals(
+            paramsErrors.getErrorsOf(params.unit.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.33439, -0.47334, 0.4, 0.81362, -1.0494)),
               tolerance = 1.0e-05)
           }
@@ -202,7 +158,7 @@ class FeedforwardLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertTrue {
-            (paramsErrors.unit.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.unit.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.26751, 0.30095, 0.30095, -0.33439),
                 doubleArrayOf(0.37867, 0.42601, 0.42601, -0.47334),
@@ -228,14 +184,15 @@ class FeedforwardLayerStructureSpec : Spek({
 
         val layer = FeedforwardLayerStructureUtils.buildLayer53()
         val outputGold = FeedforwardLayerStructureUtils.getOutputGold3()
-        val paramsErrors = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
 
         layer.inputArray.setActivation(Tanh())
         layer.inputArray.activate()
         layer.forward()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as FeedforwardLayerParameters
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -247,7 +204,7 @@ class FeedforwardLayerStructureSpec : Spek({
 
         it("should match the expected errors of the biases") {
           assertTrue {
-            paramsErrors.unit.biases.values.equals(
+            paramsErrors.getErrorsOf(params.unit.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.81496, 0.29346, 0.5215)),
               tolerance = 1.0e-05)
           }
@@ -255,7 +212,7 @@ class FeedforwardLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertTrue {
-            (paramsErrors.unit.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.unit.weights)!!.values).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.30964, 0.54116, 0.0, -0.49254, 0.16085),
                 doubleArrayOf(-0.1115, -0.19487, 0.0, 0.17736, -0.05792),
@@ -279,12 +236,13 @@ class FeedforwardLayerStructureSpec : Spek({
 
         val layer = FeedforwardLayerStructureUtils.buildLayer53()
         val outputGold = FeedforwardLayerStructureUtils.getOutputGold3()
-        val paramsErrors = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
 
         layer.forward()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as FeedforwardLayerParameters
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -296,7 +254,7 @@ class FeedforwardLayerStructureSpec : Spek({
 
         it("should match the expected errors of the biases") {
           assertTrue {
-            paramsErrors.unit.biases.values.equals(
+            paramsErrors.getErrorsOf(params.unit.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.81313, 0.28442, 0.52871)),
               tolerance = 1.0e-05)
           }
@@ -304,7 +262,7 @@ class FeedforwardLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertTrue {
-            (paramsErrors.unit.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.unit.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.32525, 0.6505, 0.0, -0.56919, 0.16263),
                 doubleArrayOf(-0.11377, -0.22753, 0.0, 0.19909, -0.05688),

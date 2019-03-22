@@ -8,7 +8,6 @@
 package core.arrays
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape

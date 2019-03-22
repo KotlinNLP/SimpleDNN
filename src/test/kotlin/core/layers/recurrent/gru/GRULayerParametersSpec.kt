@@ -11,7 +11,6 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitial
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.gru.GRULayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.jetbrains.spek.api.Spek
@@ -97,42 +96,7 @@ class GRULayerParametersSpec : Spek({
         }
       }
 
-      on("sparse input") {
-
-        val params = GRULayerParameters(
-          inputSize = 3,
-          outputSize = 2,
-          sparseInput = true,
-          weightsInitializer = null,
-          biasesInitializer = null)
-
-        val wr = params.resetGate.weights.values
-        val wp = params.partitionGate.weights.values
-        val wc = params.candidate.weights.values
-
-        it("should contain sparse weights of the reset gate") {
-          assertTrue { wr is SparseNDArray }
-        }
-
-        it("should contain sparse weights of the partition gate") {
-          assertTrue { wp is SparseNDArray }
-        }
-
-        it("should contain sparse weights of the candidate") {
-          assertTrue { wc is SparseNDArray }
-        }
-
-        it("should throw an Exception when trying to initialize") {
-          assertFails {
-            GRULayerParameters(
-              inputSize = 3,
-              outputSize = 2,
-              sparseInput = true,
-              weightsInitializer = ConstantInitializer(0.1),
-              biasesInitializer = ConstantInitializer(0.1))
-          }
-        }
-      }
+      // TODO: reintegrate tests for sparse input
     }
 
     context("iteration") {

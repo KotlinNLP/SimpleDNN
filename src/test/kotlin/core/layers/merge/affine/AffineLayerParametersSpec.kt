@@ -11,16 +11,12 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitial
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.models.merge.affine.AffineLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.*
 import kotlin.test.assertEquals
-import kotlin.test.assertFails
 import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 /**
  *
@@ -48,14 +44,6 @@ class AffineLayerParametersSpec : Spek({
         val w2 = params.w[1].values
         val b = params.b.values
 
-        it("should contain a dense w1") {
-          assertTrue { w1 is DenseNDArray }
-        }
-
-        it("should contain a dense w2") {
-          assertTrue { w2 is DenseNDArray }
-        }
-
         it("should contain the expected initialized w1") {
           (0 until w1.length).forEach { i -> assertEquals(initValues[i], w1[i]) }
         }
@@ -69,37 +57,7 @@ class AffineLayerParametersSpec : Spek({
         }
       }
 
-      on("sparse input") {
-
-        val params = AffineLayerParameters(
-          inputsSize = listOf(2, 3),
-          outputSize = 2,
-          sparseInput = true,
-          weightsInitializer = null,
-          biasesInitializer = null)
-
-        val w1 = params.w[0].values
-        val w2 = params.w[1].values
-
-        it("should contain a sparse w1") {
-          assertTrue { w1 is SparseNDArray }
-        }
-
-        it("should contain a sparse w2") {
-          assertTrue { w2 is SparseNDArray }
-        }
-
-        it("should throw an Exception when trying to initialize them") {
-          assertFails {
-            AffineLayerParameters(
-              inputsSize = listOf(2, 3),
-              outputSize = 2,
-              sparseInput = true,
-              weightsInitializer = ConstantInitializer(0.1),
-              biasesInitializer = ConstantInitializer(0.1))
-          }
-        }
-      }
+      // TODO: reintegrate tests for sparse input
     }
 
     context("iteration") {

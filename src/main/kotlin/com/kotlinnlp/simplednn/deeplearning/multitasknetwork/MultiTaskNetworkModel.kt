@@ -98,14 +98,6 @@ class MultiTaskNetworkModel(
   }
 
   /**
-   * The neural parameters of this model.
-   */
-  val params = MultiTaskNetworkParameters(
-    inputParams = this.inputNetwork,
-    outputParamsList = this.outputNetworks
-  )
-
-  /**
    * Serialize this [MultiTaskNetworkModel] and write it to an output stream.
    *
    * @param outputStream the [OutputStream] in which to write this serialized [MultiTaskNetworkModel]

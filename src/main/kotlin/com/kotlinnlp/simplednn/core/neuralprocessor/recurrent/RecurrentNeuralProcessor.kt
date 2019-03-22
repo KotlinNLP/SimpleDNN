@@ -18,7 +18,8 @@ import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.layers.RecurrentStackedLayers
 import com.kotlinnlp.simplednn.core.layers.StructureContextWindow
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
-import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.optimizer.GenericParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -42,8 +43,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     List<InputNDArrayType>, // InputType
     List<DenseNDArray>, // OutputType
     List<DenseNDArray>, // ErrorsType
-    List<DenseNDArray>, // InputErrorsType
-    StackedLayersParameters // ParamsType
+    List<DenseNDArray> // InputErrorsType
     > {
 
   /**
@@ -73,21 +73,9 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   private val ranImportanceHelper: RANImportanceHelper by lazy { RANImportanceHelper() }
 
   /**
-   * The errors of the network model parameters calculated during a single backward
-   */
-  private val backwardParamsErrors: StackedLayersParameters by lazy {
-
-    StackedLayersParameters(
-      layersConfiguration = this.model.layersConfiguration,
-      weightsInitializer = null,
-      biasesInitializer = null,
-      forceDense = false)
-  }
-
-  /**
    * The params errors accumulator.
    */
-  private val paramsErrorsAccumulator by lazy { ParamsErrorsAccumulator<StackedLayersParameters>() }
+  private val paramsErrorsAccumulator by lazy { GenericParamsErrorsAccumulator() }
 
   /**
    * An array of the size equal to the output layer size filled by zeroes.
@@ -128,7 +116,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the accumulated errors of the network parameters
    */
-  override fun getParamsErrors(copy: Boolean): StackedLayersParameters =
+  override fun getParamsErrors(copy: Boolean): ParamsErrorsList =
     this.paramsErrorsAccumulator.getParamsErrors(copy = copy)
 
   /**
@@ -454,10 +442,10 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.sequence.getStateStructure(this.curStateIndex).backward(
       outputErrors = outputErrors,
-      paramsErrors = this.backwardParamsErrors,
-      propagateToInput = this.propagateToInput)
+      propagateToInput = this.propagateToInput).let { paramsErrors ->
 
-    this.paramsErrorsAccumulator.accumulate(this.backwardParamsErrors)
+      this.paramsErrorsAccumulator.accumulate(paramsErrors)
+    }
 
     if (this.curStateIndex == 0) this.paramsErrorsAccumulator.averageErrors()
 
@@ -631,6 +619,6 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun reset() {
     this.lastStateIndex = -1
-    this.paramsErrorsAccumulator.reset()
+    this.paramsErrorsAccumulator.clear()
   }
 }

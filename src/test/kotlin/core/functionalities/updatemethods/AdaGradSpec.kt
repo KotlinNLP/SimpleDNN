@@ -7,7 +7,7 @@
 
 package core.functionalities.updatemethods
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGradMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -29,7 +29,7 @@ class AdaGradSpec: Spek({
       on("update") {
 
         val updateHelper = AdaGradMethod(learningRate = 0.001, epsilon = 1.0e-8)
-        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
+        val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.secondOrderMoments.assignValues(UpdateMethodsUtils.supportArray2())
@@ -51,7 +51,7 @@ class AdaGradSpec: Spek({
       on("update") {
 
         val updateHelper = AdaGradMethod(learningRate = 0.001, epsilon = 1.0e-8)
-        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
+        val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.secondOrderMoments.assignValues(UpdateMethodsUtils.supportArray2())

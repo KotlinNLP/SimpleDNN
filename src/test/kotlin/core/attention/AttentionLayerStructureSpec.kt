@@ -8,7 +8,6 @@
 package core.attention
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.attention.AttentionParameters
 import com.kotlinnlp.simplednn.core.attention.AttentionLayerStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -163,17 +162,6 @@ class AttentionLayerStructureSpec : Spek({
       structure.forward()
 
       structure.outputArray.assignErrors(AttentionLayerUtils.buildOutputErrors())
-
-      val errors = AttentionParameters(attentionSize = 2)
-      structure.backward(paramsErrors = errors, propagateToInput = true)
-
-      it("should match the expected errors of the context vector") {
-        assertTrue {
-          errors.contextVector.values.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.02985, 0.006539)),
-            tolerance = 1.0e-06)
-        }
-      }
 
       val attentionErrors: List<DenseNDArray> = structure.getAttentionErrors()
 

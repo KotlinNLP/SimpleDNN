@@ -9,6 +9,7 @@ package core.neuralprocessor.batchfeedforward
 
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
+import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -25,9 +26,9 @@ class BatchFeedforwardProcessorSpec : Spek({
   describe("a BatchFeedforwardProcessor") {
 
     val inputSequence = BatchFeedforwardUtils.buildInputBatch()
-    val network = BatchFeedforwardUtils.buildNetwork()
+    val model = BatchFeedforwardUtils.buildParams()
     val processor = BatchFeedforwardProcessor<DenseNDArray>(
-      model = network,
+      model = model,
       useDropout = false,
       propagateToInput = true)
 
@@ -62,11 +63,13 @@ class BatchFeedforwardProcessorSpec : Spek({
 
     processor.backward(outputErrors = BatchFeedforwardUtils.buildOutputErrors())
 
-    val paramsErrors = processor.getParamsErrors().paramsPerLayer[0] as FeedforwardLayerParameters
+    val paramsErrors = processor.getParamsErrors()
+
+    val params = model.paramsPerLayer[0] as FeedforwardLayerParameters
 
     it("should match the expected errors of the biases") {
       assertTrue {
-        paramsErrors.unit.biases.values.equals(
+        paramsErrors.getErrorsOf(params.unit.biases)!!.values.equals(
           DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.096723, -0.219754)),
           tolerance = 1.0e-06
         )
@@ -75,7 +78,7 @@ class BatchFeedforwardProcessorSpec : Spek({
 
     it("should match the expected errors of the weights") {
       assertTrue {
-        (paramsErrors.unit.weights.values as DenseNDArray).equals(
+        (paramsErrors.getErrorsOf(params.unit.weights)!!.values).equals(
           DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(-0.086611, 0.097745, -0.094472),
             doubleArrayOf(-0.165914, -0.065926, 0.136797)

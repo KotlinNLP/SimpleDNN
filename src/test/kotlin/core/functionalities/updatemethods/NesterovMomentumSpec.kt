@@ -7,7 +7,7 @@
 
 package core.functionalities.updatemethods
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.nesterovmomentum.NesterovMomentumMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -29,7 +29,7 @@ class NesterovMomentumSpec: Spek({
       on("update") {
 
         val updateHelper = NesterovMomentumMethod(learningRate = 0.001, momentum = 0.9)
-        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
+        val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.v.assignValues(UpdateMethodsUtils.supportArray1())
@@ -51,7 +51,7 @@ class NesterovMomentumSpec: Spek({
       on("update") {
 
         val updateHelper = NesterovMomentumMethod(learningRate = 0.001, momentum = 0.9)
-        val updatableArray: UpdatableDenseArray = UpdateMethodsUtils.buildUpdateableArray()
+        val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
         val supportStructure = updateHelper.getSupportStructure(updatableArray)
 
         supportStructure.v.assignValues(UpdateMethodsUtils.supportArray1())

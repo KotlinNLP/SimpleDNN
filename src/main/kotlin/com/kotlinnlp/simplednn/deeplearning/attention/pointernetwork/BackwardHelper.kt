@@ -7,11 +7,9 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
-import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
-import com.kotlinnlp.simplednn.core.attention.AttentionParameters
-import com.kotlinnlp.simplednn.core.attention.AttentionMechanism
-import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
+import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayer
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
+import com.kotlinnlp.simplednn.core.optimizer.GenericParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -43,27 +41,12 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
   /**
    * The params errors accumulator of the merge network.
    */
-  private var mergeErrorsAccumulator = ParamsErrorsAccumulator<StackedLayersParameters>()
+  private var mergeErrorsAccumulator = GenericParamsErrorsAccumulator()
 
   /**
    * The params errors accumulator of the attention structure
    */
-  private var attentionErrorsAccumulator = ParamsErrorsAccumulator<AttentionParameters>()
-
-  /**
-   * The structure used to store the params errors of the attention during the backward.
-   */
-  private lateinit var attentionParamsErrors: AttentionParameters
-
-  /**
-   * The merge network parameters object in which to temporary save the errors during the backward.
-   */
-  private val paramsErrors = StackedLayersParameters(
-    layersConfiguration = this.networkProcessor.model.mergeNetwork.layersConfiguration,
-    weightsInitializer = null,
-    biasesInitializer = null,
-    forceDense = false
-  )
+  private var attentionErrorsAccumulator = GenericParamsErrorsAccumulator()
 
   /**
    * Perform the back-propagation from the output errors.
@@ -90,9 +73,9 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
    *
    * @return the params errors of the [networkProcessor]
    */
-  fun getParamsErrors(copy: Boolean = true) = PointerNetworkParameters(
-    mergeParams = this.mergeErrorsAccumulator.getParamsErrors(copy = copy),
-    attentionParams = this.attentionErrorsAccumulator.getParamsErrors(copy = copy))
+  fun getParamsErrors(copy: Boolean = true) =
+    this.mergeErrorsAccumulator.getParamsErrors(copy = copy) +
+      this.attentionErrorsAccumulator.getParamsErrors(copy = copy)
 
   /**
    * A single step of backward.
@@ -114,15 +97,13 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
    */
   private fun backwardAttentionScores(outputErrors: DenseNDArray): List<DenseNDArray> {
 
-    val attentionMechanism: AttentionMechanism = this.networkProcessor.usedAttentionMechanisms[this.stateIndex]
+    val attentionMechanism: AttentionMechanismLayer = this.networkProcessor.usedAttentionMechanisms[this.stateIndex]
 
-    attentionMechanism.backward(
-      paramsErrors = this.getAttentionParamsErrors(),
-      outputErrors = outputErrors)
+    attentionMechanism.setErrors(outputErrors)
 
-    this.attentionErrorsAccumulator.accumulate(this.attentionParamsErrors)
+    this.attentionErrorsAccumulator.accumulate(attentionMechanism.backward(propagateToInput = true))
 
-    return attentionMechanism.getInputErrors()
+    return attentionMechanism.inputArrays.map { it.errors }
   }
 
   /**
@@ -161,9 +142,9 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
   private fun backwardMergeProcessor(processor: FeedforwardNeuralProcessor<DenseNDArray>,
                                      outputErrors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
 
-    processor.backward(outputErrors = outputErrors, paramsErrors = this.paramsErrors)
+    processor.backward(outputErrors = outputErrors)
 
-    this.mergeErrorsAccumulator.accumulate(this.paramsErrors)
+    this.mergeErrorsAccumulator.accumulate(processor.getParamsErrors(copy = false))
 
     return processor.getInputsErrors(copy = true).let{ Pair(it[0], it[1]) }
   }
@@ -176,8 +157,8 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
     this.initInputSequenceErrors()
     this.initVectorsErrors()
 
-    this.mergeErrorsAccumulator.reset()
-    this.attentionErrorsAccumulator.reset()
+    this.mergeErrorsAccumulator.clear()
+    this.attentionErrorsAccumulator.clear()
   }
 
   /**
@@ -198,17 +179,5 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
     this.vectorsErrors = List(
       size = this.networkProcessor.forwardCount,
       init = { DenseNDArrayFactory.zeros(Shape(this.networkProcessor.model.vectorSize)) })
-  }
-
-  /**
-   * @return the attention params errors
-   */
-  private fun getAttentionParamsErrors(): AttentionParameters {
-
-    if (!this::attentionParamsErrors.isInitialized) {
-      this.attentionParamsErrors = this.networkProcessor.usedAttentionMechanisms.last().params.copy()
-    }
-
-    return this.attentionParamsErrors
   }
 }

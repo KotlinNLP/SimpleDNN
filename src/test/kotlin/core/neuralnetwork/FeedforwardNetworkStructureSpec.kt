@@ -113,7 +113,6 @@ class FeedforwardNetworkStructureSpec : Spek({
 
         structure.backward(
           outputErrors = structure.outputLayer.outputArray.values.sub(outputGold),
-          paramsErrors = StackedLayersParameters(layersConfiguration),
           propagateToInput = true)
 
         val inputErrors = structure.inputLayer.inputArray.errors

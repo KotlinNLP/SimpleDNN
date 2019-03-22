@@ -10,6 +10,7 @@ package core.layers.recurrent.deltarnn
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayerParameters
+import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.nhaarman.mockito_kotlin.mock
@@ -20,6 +21,7 @@ import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
@@ -130,7 +132,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected contributions of the input") {
-          val inputContrib: DenseNDArray = contributions.feedforwardUnit.weights.values as DenseNDArray
+          val inputContrib: DenseNDArray = contributions.feedforwardUnit.weights.values
           assertTrue {
             inputContrib.equals(
               DenseNDArrayFactory.arrayOf(listOf(
@@ -145,7 +147,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected recurrent contributions") {
-          val recContrib: DenseNDArray = contributions.recurrentUnit.weights.values as DenseNDArray
+          val recContrib: DenseNDArray = contributions.recurrentUnit.weights.values
           assertTrue {
             recContrib.equals(
               DenseNDArrayFactory.arrayOf(listOf(
@@ -246,7 +248,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected contributions of the input") {
-          val inputContrib: DenseNDArray = contributions.feedforwardUnit.weights.values as DenseNDArray
+          val inputContrib: DenseNDArray = contributions.feedforwardUnit.weights.values
           assertTrue {
             inputContrib.equals(
               DenseNDArrayFactory.arrayOf(listOf(
@@ -261,7 +263,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected recurrent contributions") {
-          val recContrib: DenseNDArray = contributions.recurrentUnit.weights.values as DenseNDArray
+          val recContrib: DenseNDArray = contributions.recurrentUnit.weights.values
           assertTrue {
             recContrib.equals(
               DenseNDArrayFactory.arrayOf(listOf(
@@ -354,16 +356,13 @@ class DeltaRNNLayerStructureSpec : Spek({
       on("without previous and next state") {
 
         val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Empty())
-        val paramsErrors = DeltaRNNLayerParameters(
-          inputSize = 4,
-          outputSize = 5,
-          weightsInitializer = null,
-          biasesInitializer = null)
 
         layer.forward()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(DeltaRNNLayerStructureUtils.getOutputGold()))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as DeltaRNNLayerParameters
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -391,7 +390,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate biases") {
           assertTrue {
-            paramsErrors.feedforwardUnit.biases.values.equals(
+            paramsErrors.getErrorsOf(params.feedforwardUnit.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.091124, -0.095413, -0.057328, -0.258489, -0.318553)),
               tolerance = 1.0e-06)
           }
@@ -399,7 +398,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the partition biases") {
           assertTrue {
-            paramsErrors.recurrentUnit.biases.values.equals(
+            paramsErrors.getErrorsOf(params.recurrentUnit.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.0368, -0.039102, 0.008963, -0.194915, 0.071569)),
               tolerance = 1.0e-06)
           }
@@ -407,7 +406,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the alpha array") {
           assertTrue {
-            paramsErrors.alpha.values.equals(
+            paramsErrors.getErrorsOf(params.alpha)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
               tolerance = 1.0e-06)
           }
@@ -415,7 +414,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the beta1 array") {
           assertTrue {
-            paramsErrors.beta1.values.equals(
+            paramsErrors.getErrorsOf(params.beta1)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.074722, 0.104, -0.017198, -0.018094, -0.066896)),
               tolerance = 1.0e-06)
           }
@@ -423,7 +422,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the beta2 array") {
           assertTrue {
-            paramsErrors.beta2.values.equals(
+            paramsErrors.getErrorsOf(params.beta2)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
               tolerance = 1.0e-06)
           }
@@ -431,7 +430,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertTrue {
-            (paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.feedforwardUnit.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.007571, 0.008517, 0.008517, -0.009463),
                 doubleArrayOf(0.00075, 0.000843, 0.000843, -0.000937),
@@ -444,18 +443,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected errors of the recurrent weights") {
-          val wRec: DenseNDArray = paramsErrors.recurrentUnit.weights.values as DenseNDArray
-          assertTrue {
-            wRec.equals(
-              DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)
-              )),
-              tolerance = 1.0e-06)
-          }
+          assertNull(paramsErrors.getErrorsOf(params.recurrentUnit.weights))
         }
 
         it("should match the expected errors of the inputArray") {
@@ -470,12 +458,13 @@ class DeltaRNNLayerStructureSpec : Spek({
       on("with previous state only") {
 
         val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Back())
-        val paramsErrors = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5)
 
         layer.forward()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(DeltaRNNLayerStructureUtils.getOutputGold()))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as DeltaRNNLayerParameters
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -503,7 +492,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate biases") {
           assertTrue {
-            paramsErrors.feedforwardUnit.biases.values.equals(
+            paramsErrors.getErrorsOf(params.feedforwardUnit.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.122505, -0.06991, -0.054249, -0.493489, -0.353592)),
               tolerance = 1.0e-06)
           }
@@ -511,7 +500,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the partition biases") {
           assertTrue {
-            paramsErrors.recurrentUnit.biases.values.equals(
+            paramsErrors.getErrorsOf(params.recurrentUnit.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.06814, -0.0145, -0.001299, -0.413104, -0.041468)),
               tolerance = 1.0e-06)
           }
@@ -519,7 +508,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the alpha array") {
           assertTrue {
-            paramsErrors.alpha.values.equals(
+            paramsErrors.getErrorsOf(params.alpha)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1111, -0.003156, -0.002889, -0.017586, -0.020393)),
               tolerance = 1.0e-06)
           }
@@ -527,7 +516,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the beta1 array") {
           assertTrue {
-            paramsErrors.beta1.values.equals(
+            paramsErrors.getErrorsOf(params.beta1)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.100454, 0.076202, -0.016275, -0.034544, -0.074254)),
               tolerance = 1.0e-06)
           }
@@ -535,7 +524,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the beta2 array") {
           assertTrue {
-            paramsErrors.beta2.values.equals(
+            paramsErrors.getErrorsOf(params.beta2)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.135487, 0.002895, -0.009628, -0.251233, -0.097111)),
               tolerance = 1.0e-06)
           }
@@ -543,7 +532,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertTrue {
-            (paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.feedforwardUnit.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.029084, -0.03272, -0.03272, 0.036355),
                 doubleArrayOf(-0.010076, -0.011335, -0.011335, 0.012595),
@@ -556,7 +545,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected errors of the recurrent weights") {
-          val wRec: DenseNDArray = paramsErrors.recurrentUnit.weights.values as DenseNDArray
+          val wRec: DenseNDArray = paramsErrors.getErrorsOf(params.recurrentUnit.weights)!!.values as DenseNDArray
           assertTrue {
             wRec.equals(
               DenseNDArrayFactory.arrayOf(listOf(
@@ -582,16 +571,13 @@ class DeltaRNNLayerStructureSpec : Spek({
       on("with next state only") {
 
         val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Front())
-        val paramsErrors = DeltaRNNLayerParameters(
-          inputSize = 4,
-          outputSize = 5,
-          weightsInitializer = null,
-          biasesInitializer = null)
 
         layer.forward()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(DeltaRNNLayerStructureUtils.getOutputGold()))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as DeltaRNNLayerParameters
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -619,7 +605,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate biases") {
           assertTrue {
-            paramsErrors.feedforwardUnit.biases.values.equals(
+            paramsErrors.getErrorsOf(params.feedforwardUnit.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.026478, -0.056861, -0.108053, -0.072316, -0.335333)),
               tolerance = 1.0e-06)
           }
@@ -627,7 +613,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the partition biases") {
           assertTrue {
-            paramsErrors.recurrentUnit.biases.values.equals(
+            paramsErrors.getErrorsOf(params.recurrentUnit.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.010693, -0.023303, 0.016893, -0.05453, 0.07534)),
               tolerance = 1.0e-06)
           }
@@ -635,7 +621,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the alpha array") {
           assertTrue {
-            paramsErrors.alpha.values.equals(
+            paramsErrors.getErrorsOf(params.alpha)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
               tolerance = 1.0e-06)
           }
@@ -643,7 +629,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the beta1 array") {
           assertTrue {
-            paramsErrors.beta1.values.equals(
+            paramsErrors.getErrorsOf(params.beta1)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.021712, 0.061979, -0.032416, -0.005062, -0.07042)),
               tolerance = 1.0e-06)
           }
@@ -651,7 +637,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the beta2 array") {
           assertTrue {
-            paramsErrors.beta2.values.equals(
+            paramsErrors.getErrorsOf(params.beta2)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)),
               tolerance = 1.0e-06)
           }
@@ -659,7 +645,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertTrue {
-            (paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.feedforwardUnit.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(0.0022, 0.002475, 0.002475, -0.00275),
                 doubleArrayOf(0.000447, 0.000503, 0.000503, -0.000558),
@@ -672,18 +658,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected errors of the recurrent weights") {
-          val wRec: DenseNDArray = paramsErrors.recurrentUnit.weights.values as DenseNDArray
-          assertTrue {
-            wRec.equals(
-              DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0),
-                doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0)
-              )),
-              tolerance = 1.0e-06)
-          }
+          assertNull(paramsErrors.getErrorsOf(params.recurrentUnit.weights))
         }
 
         it("should match the expected errors of the inputArray") {
@@ -698,12 +673,13 @@ class DeltaRNNLayerStructureSpec : Spek({
       on("with previous and next state") {
 
         val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Bilateral())
-        val paramsErrors = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5)
 
         layer.forward()
 
         layer.outputArray.assignErrors(layer.outputArray.values.sub(DeltaRNNLayerStructureUtils.getOutputGold()))
-        layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as DeltaRNNLayerParameters
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -731,7 +707,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the candidate biases") {
           assertTrue {
-            paramsErrors.feedforwardUnit.biases.values.equals(
+            paramsErrors.getErrorsOf(params.feedforwardUnit.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.055764, -0.033038, -0.11204, -0.237697, -0.367937)),
               tolerance = 1.0e-06)
           }
@@ -739,7 +715,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the partition biases") {
           assertTrue {
-            paramsErrors.recurrentUnit.biases.values.equals(
+            paramsErrors.getErrorsOf(params.recurrentUnit.biases)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.031017, -0.006853, -0.002682, -0.198978, -0.043151)),
               tolerance = 1.0e-06)
           }
@@ -747,7 +723,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the alpha array") {
           assertTrue {
-            paramsErrors.alpha.values.equals(
+            paramsErrors.getErrorsOf(params.alpha)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.050573, -0.001492, -0.005966, -0.008471, -0.021221)),
               tolerance = 1.0e-06)
           }
@@ -755,7 +731,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the beta1 array") {
           assertTrue {
-            paramsErrors.beta1.values.equals(
+            paramsErrors.getErrorsOf(params.beta1)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.045727, 0.036012, -0.033612, -0.016639, -0.077267)),
               tolerance = 1.0e-06)
           }
@@ -763,7 +739,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the beta2 array") {
           assertTrue {
-            paramsErrors.beta2.values.equals(
+            paramsErrors.getErrorsOf(params.beta2)!!.values.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.061674, 0.001368, -0.019886, -0.121011, -0.10105)),
               tolerance = 1.0e-06)
           }
@@ -771,7 +747,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should match the expected errors of the weights") {
           assertTrue {
-            (paramsErrors.feedforwardUnit.weights.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.feedforwardUnit.weights)!!.values).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                 doubleArrayOf(-0.013239, -0.014894, -0.014894, 0.016549),
                 doubleArrayOf(-0.004762, -0.005357, -0.005357, 0.005952),
@@ -784,7 +760,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected errors of the recurrent weights") {
-          val wRec: DenseNDArray = paramsErrors.recurrentUnit.weights.values as DenseNDArray
+          val wRec: DenseNDArray = paramsErrors.getErrorsOf(params.recurrentUnit.weights)!!.values as DenseNDArray
           assertTrue {
             wRec.equals(
               DenseNDArrayFactory.arrayOf(listOf(

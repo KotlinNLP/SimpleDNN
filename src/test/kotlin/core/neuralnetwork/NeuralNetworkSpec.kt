@@ -80,11 +80,11 @@ class NeuralNetworkSpec: Spek({
       val b = params.unit.biases.values
 
       it("should contain the expected initialized weights") {
-        (0 until w.length).forEach({ i -> assertEquals(initValues[i], w[i]) })
+        (0 until w.length).forEach { i -> assertEquals(initValues[i], w[i]) }
       }
 
       it("should contain the expected initialized biases") {
-        (0 until b.length).forEach({ i -> assertEquals(0.9, b[i]) })
+        (0 until b.length).forEach { i -> assertEquals(0.9, b[i]) }
       }
     }
   }

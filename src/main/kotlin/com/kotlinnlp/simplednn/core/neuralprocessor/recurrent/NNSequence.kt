@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 
 import com.kotlinnlp.simplednn.core.layers.RecurrentStackedLayers
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
-import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
@@ -31,11 +30,6 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val model: Stacke
    * Sequence of RNNStates
    */
   private val states = mutableListOf<NNState>()
-
-  /**
-   *
-   */
-  private val paramsErrorsAccumulator = ParamsErrorsAccumulator<StackedLayersParameters>()
 
   /**
    * The number of states.
@@ -94,6 +88,5 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val model: Stacke
    */
   fun reset() {
     this.states.clear()
-    this.paramsErrorsAccumulator.reset()
   }
 }

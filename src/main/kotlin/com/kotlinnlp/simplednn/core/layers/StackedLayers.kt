@@ -8,9 +8,11 @@
 package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
@@ -151,21 +153,26 @@ open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Propagate the output error using the gradient descent algorithm
    *
    * @param outputErrors the errors to propagate from the output
-   * @param paramsErrors the structure in which to save the errors of the parameters
    * @param propagateToInput whether to propagate the errors to the input
+   *
+   * @return the params errors
    */
   fun backward(outputErrors: DenseNDArray,
-               paramsErrors: StackedLayersParameters,
-               propagateToInput: Boolean = false) {
+               propagateToInput: Boolean = false): ParamsErrorsList {
 
     this.outputLayer.setErrors(outputErrors)
 
+    val paramsErrorsPerLayer = mutableListOf<List<ParamsArray.Errors<*>>>()
+
     for ((i, layer) in this.layers.withIndex().reversed()) {
+
       this.curLayerIndex = i
-      layer.backward(
-        paramsErrors = paramsErrors.paramsPerLayer[i],
-        propagateToInput = (i > 0 || propagateToInput))
+
+      paramsErrorsPerLayer.add(
+        layer.backward(propagateToInput = (i > 0 || propagateToInput)))
     }
+
+    return paramsErrorsPerLayer.flatten()
   }
 
   /**

@@ -11,7 +11,6 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitial
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ran.RANLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.jetbrains.spek.api.Spek
@@ -92,42 +91,7 @@ class RANLayerParametersSpec : Spek({
         }
       }
 
-      on("sparse input") {
-
-        val params = RANLayerParameters(
-          inputSize = 3,
-          outputSize = 2,
-          sparseInput = true,
-          weightsInitializer = null,
-          biasesInitializer = null)
-
-        val wIn = params.inputGate.weights.values
-        val wFor = params.forgetGate.weights.values
-        val wC = params.candidate.weights.values
-
-        it("should contain sparse weights of the input gate") {
-          assertTrue { wIn is SparseNDArray }
-        }
-
-        it("should contain sparse weights of the forget gate") {
-          assertTrue { wFor is SparseNDArray }
-        }
-
-        it("should contain sparse weights of the candidate") {
-          assertTrue { wC is SparseNDArray }
-        }
-
-        it("should throw an Exception when trying to initialize") {
-          assertFails {
-            RANLayerParameters(
-              inputSize = 3,
-              outputSize = 2,
-              sparseInput = true,
-              weightsInitializer = ConstantInitializer(0.1),
-              biasesInitializer = ConstantInitializer(0.1))
-          }
-        }
-      }
+      // TODO: reintroduce tests for sparse input
     }
 
     context("iteration") {
