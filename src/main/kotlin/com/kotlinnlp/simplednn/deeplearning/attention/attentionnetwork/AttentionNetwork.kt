@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.Feedforward
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayersPool
 import com.kotlinnlp.simplednn.core.attention.AttentionLayerStructure
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.optimizer.GenericParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -39,7 +39,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * The accumulator of errors of the transform layer parameters.
    */
-  private val transformParamsErrorsAccumulator = GenericParamsErrorsAccumulator()
+  private val transformParamsErrorsAccumulator = ParamsErrorsAccumulator()
 
   /**
    * The transform layer which creates an attention array from each array of an input sequence.

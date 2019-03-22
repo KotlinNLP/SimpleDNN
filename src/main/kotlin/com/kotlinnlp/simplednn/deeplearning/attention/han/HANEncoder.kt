@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
-import com.kotlinnlp.simplednn.core.optimizer.GenericParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetwork
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworksPool
@@ -97,18 +97,18 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * An array containing params errors accumulator for each BiRNN encoder.
    */
-  private val encodersParamsErrorsAccumulators: List<GenericParamsErrorsAccumulator> = List(
+  private val encodersParamsErrorsAccumulators: List<ParamsErrorsAccumulator> = List(
     size = this.model.hierarchySize,
-    init = { GenericParamsErrorsAccumulator() }
+    init = { ParamsErrorsAccumulator() }
   )
 
   /**
    * An array containing params errors accumulator for each [AttentionNetwork].
    */
-  private val attentionNetworksParamsErrorsAccumulators: List<GenericParamsErrorsAccumulator> =
+  private val attentionNetworksParamsErrorsAccumulators: List<ParamsErrorsAccumulator> =
     List(
       size = this.model.hierarchySize,
-      init = { GenericParamsErrorsAccumulator() }
+      init = { ParamsErrorsAccumulator() }
     )
 
   /**

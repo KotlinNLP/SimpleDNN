@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
-import com.kotlinnlp.simplednn.core.optimizer.GenericParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -47,7 +47,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * Contains the errors accumulated from the processors during the forward.
    */
-  private val errorsAccumulator = GenericParamsErrorsAccumulator()
+  private val errorsAccumulator = ParamsErrorsAccumulator()
 
   /**
    * The amount of processors used at a given time.

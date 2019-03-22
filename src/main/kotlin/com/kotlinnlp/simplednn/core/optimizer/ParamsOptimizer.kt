@@ -25,7 +25,7 @@ class ParamsOptimizer(private val updateMethod: UpdateMethod<*>) : ScheduledUpda
   /**
    * The accumulator of parameters errors.
    */
-  private val paramsErrorsAccumulator = GenericParamsErrorsAccumulator()
+  private val paramsErrorsAccumulator = ParamsErrorsAccumulator()
 
   /**
    * Calculate the errors average, update the parameters.

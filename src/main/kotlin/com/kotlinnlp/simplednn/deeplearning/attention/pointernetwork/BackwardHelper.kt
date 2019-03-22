@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayer
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
-import com.kotlinnlp.simplednn.core.optimizer.GenericParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -41,12 +41,12 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
   /**
    * The params errors accumulator of the merge network.
    */
-  private var mergeErrorsAccumulator = GenericParamsErrorsAccumulator()
+  private var mergeErrorsAccumulator = ParamsErrorsAccumulator()
 
   /**
    * The params errors accumulator of the attention structure
    */
-  private var attentionErrorsAccumulator = GenericParamsErrorsAccumulator()
+  private var attentionErrorsAccumulator = ParamsErrorsAccumulator()
 
   /**
    * Perform the back-propagation from the output errors.

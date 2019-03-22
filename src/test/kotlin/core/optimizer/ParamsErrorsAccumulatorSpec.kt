@@ -7,7 +7,7 @@
 
 package core.optimizer
 
-import com.kotlinnlp.simplednn.core.optimizer.GenericParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -19,13 +19,13 @@ import kotlin.test.assertTrue
 /**
  *
  */
-class GenericParamsErrorsAccumulatorSpec : Spek({
+class ParamsErrorsAccumulatorSpec : Spek({
 
   describe("a ParamsErrorsAccumulator") {
 
     on("initialization") {
 
-      val accumulator = GenericParamsErrorsAccumulator()
+      val accumulator = ParamsErrorsAccumulator()
 
       it("should return an empty list before accumulation") {
         assertTrue { accumulator.getParamsErrors().isEmpty() }
@@ -34,7 +34,7 @@ class GenericParamsErrorsAccumulatorSpec : Spek({
 
     on("accumulation") {
 
-      val accumulator = GenericParamsErrorsAccumulator()
+      val accumulator = ParamsErrorsAccumulator()
 
       val params = GenericParamsErrorsAccumulatorUtils.buildEmptyParams()
 
@@ -79,7 +79,7 @@ class GenericParamsErrorsAccumulatorSpec : Spek({
 
     on("average") {
 
-      val accumulator = GenericParamsErrorsAccumulator()
+      val accumulator = ParamsErrorsAccumulator()
 
       val params = GenericParamsErrorsAccumulatorUtils.buildEmptyParams()
 

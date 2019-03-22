@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.layers.RecurrentStackedLayers
 import com.kotlinnlp.simplednn.core.layers.StructureContextWindow
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
-import com.kotlinnlp.simplednn.core.optimizer.GenericParamsErrorsAccumulator
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -75,7 +75,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The params errors accumulator.
    */
-  private val paramsErrorsAccumulator by lazy { GenericParamsErrorsAccumulator() }
+  private val paramsErrorsAccumulator by lazy { ParamsErrorsAccumulator() }
 
   /**
    * An array of the size equal to the output layer size filled by zeroes.

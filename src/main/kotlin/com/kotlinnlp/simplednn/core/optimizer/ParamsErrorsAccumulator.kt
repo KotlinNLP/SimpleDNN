@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 /**
  * Generic params errors accumulator.
  */
-class GenericParamsErrorsAccumulator {
+class ParamsErrorsAccumulator {
 
   /**
    * Handle the accumulation of a single ParamsErrors.
