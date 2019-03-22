@@ -62,7 +62,7 @@ class AttentionMechanismBackwardHelper(
   private fun assignLayerGradients() {
 
     this.layer.inputArrays.forEachIndexed { i, inputArray ->
-      inputArray.errors.assignValues(this.layer.attentionMatrix.errors.getRow(i).t)
+      inputArray.assignErrors(this.layer.attentionMatrix.errors.getRow(i).t)
     }
   }
 }
