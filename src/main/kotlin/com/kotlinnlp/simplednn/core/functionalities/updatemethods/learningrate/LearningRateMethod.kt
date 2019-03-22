@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
@@ -34,7 +34,7 @@ class LearningRateMethod(
    *
    * @return the [UpdaterSupportStructure] extracted from the given [array]
    */
-  override fun getSupportStructure(array: UpdatableDenseArray): LearningRateStructure = array.getOrSetSupportStructure()
+  override fun getSupportStructure(array: ParamsArray): LearningRateStructure = array.getOrSetSupportStructure()
 
   /**
    * The 'alpha' coefficient.

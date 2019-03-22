@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
@@ -36,7 +36,7 @@ class AdaGradMethod(
    *
    * @return the [UpdaterSupportStructure] extracted from the given [array]
    */
-  override fun getSupportStructure(array: UpdatableDenseArray): AdaGradStructure = array.getOrSetSupportStructure()
+  override fun getSupportStructure(array: ParamsArray): AdaGradStructure = array.getOrSetSupportStructure()
 
   /**
    * Optimize sparse errors.

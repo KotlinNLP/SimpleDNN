@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
@@ -36,7 +36,7 @@ open class MomentumMethod(
    *
    * @return the [UpdaterSupportStructure] extracted from the given [array]
    */
-  override fun getSupportStructure(array: UpdatableDenseArray): MomentumStructure = array.getOrSetSupportStructure()
+  override fun getSupportStructure(array: ParamsArray): MomentumStructure = array.getOrSetSupportStructure()
 
   /**
    * The 'alpha' coefficient.

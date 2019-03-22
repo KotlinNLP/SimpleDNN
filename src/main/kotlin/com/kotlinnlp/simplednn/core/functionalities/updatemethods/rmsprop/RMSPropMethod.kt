@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
@@ -40,7 +40,7 @@ class RMSPropMethod(
    *
    * @return the [UpdaterSupportStructure] extracted from the given [array]
    */
-  override fun getSupportStructure(array: UpdatableDenseArray): RMSPropStructure = array.getOrSetSupportStructure()
+  override fun getSupportStructure(array: ParamsArray): RMSPropStructure = array.getOrSetSupportStructure()
 
   /**
    * Optimize sparse errors.

@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -28,7 +28,7 @@ abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(
    * @param array the inputArray to update
    * @param errors errors to subtract to the inputArray, after being optimized
    */
-  fun update(array: UpdatableDenseArray, errors: NDArray<*>) {
+  fun <NDArrayType: NDArray<NDArrayType>> update(array: ParamsArray, errors: NDArrayType) {
 
     val optimizedErrors: NDArray<*> = this.optimize(errors, array)
 
@@ -42,17 +42,20 @@ abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(
    *
    * @return the [UpdaterSupportStructure] extracted from the given [array]
    */
-  internal abstract fun getSupportStructure(array: UpdatableDenseArray): SupportStructureType
+  abstract fun getSupportStructure(array: ParamsArray): SupportStructureType
 
   /**
    * Optimize the errors.
    *
    * @param errors the errors to optimize (sparse or dense)
-   * @param array an [UpdatableDenseArray]
+   * @param array the [ParamsArray]
    *
    * @return optimized errors
    */
-  private fun optimize(errors: NDArray<*>, array: UpdatableDenseArray): NDArray<*> = when (errors) {
+  private fun <NDArrayType: NDArray<NDArrayType>> optimizeErrors(
+    errors: NDArrayType,
+    array: ParamsArray
+  ): NDArrayType = when (errors) {
 
     // errors are Sparse when the input is SparseBinary
     is SparseNDArray -> this.optimizeSparseErrors(errors, this.getSupportStructure(array))
