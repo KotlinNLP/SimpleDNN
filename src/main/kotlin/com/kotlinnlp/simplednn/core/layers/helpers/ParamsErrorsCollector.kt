@@ -5,9 +5,10 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.optimizer
+package com.kotlinnlp.simplednn.core.layers.helpers
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 
 /**
  * Generic params errors collector.

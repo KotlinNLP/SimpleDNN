@@ -9,7 +9,6 @@ package com.kotlinnlp.simplednn.core.layers.helpers
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.Layer
-import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsCollector
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
