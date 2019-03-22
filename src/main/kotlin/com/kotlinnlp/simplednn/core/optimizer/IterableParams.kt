@@ -7,15 +7,14 @@
 
 package com.kotlinnlp.simplednn.core.optimizer
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import java.io.Serializable
 
 /**
- * A container of iterable parameters as [UpdatableArray]s, with some utilities methods to assign and copy them.
+ * A container of iterable parameters as [ParamsArray]s, with some utilities methods to assign and copy them.
  */
 abstract class IterableParams<SelfType: IterableParams<SelfType>>
-  : Serializable, Iterable<UpdatableArray<*>> {
+  : Serializable, Iterable<ParamsArray> {
 
   companion object {
 
@@ -29,7 +28,7 @@ abstract class IterableParams<SelfType: IterableParams<SelfType>>
   /**
    * The iterator inner class which iterates over all the parameters of all the layers
    */
-  private inner class ParamsIterator: Iterator<UpdatableArray<*>> {
+  private inner class ParamsIterator: Iterator<ParamsArray> {
 
     /**
      * The index of the next parameter.
@@ -44,13 +43,13 @@ abstract class IterableParams<SelfType: IterableParams<SelfType>>
     /**
      * The next() method of the Iterator.
      */
-    override fun next(): UpdatableArray<*> = this@IterableParams.paramsList[this.nextParamIndex++]
+    override fun next(): ParamsArray = this@IterableParams.paramsList[this.nextParamIndex++]
   }
 
   /**
    * The list of all parameters.
    */
-  abstract val paramsList: List<UpdatableArray<*>>
+  abstract val paramsList: List<ParamsArray>
 
   /**
    * The amount of parameters into this [IterableParams].
@@ -62,14 +61,14 @@ abstract class IterableParams<SelfType: IterableParams<SelfType>>
    *
    * @return the parameter at the given index
    */
-  operator fun get(i: Int): UpdatableArray<*> = this.paramsList[i]
+  operator fun get(i: Int): ParamsArray = this.paramsList[i]
 
   /**
    * The iterator to use to iterate over all the parameters of all the layers
    *
    * @return the iterator of all the parameters
    */
-  override fun iterator(): Iterator<UpdatableArray<*>> = this.ParamsIterator()
+  override fun iterator(): Iterator<ParamsArray> = this.ParamsIterator()
 
   /**
    * Assign the values of each parameter of [x] to the parameters of this [IterableParams].
@@ -95,11 +94,7 @@ abstract class IterableParams<SelfType: IterableParams<SelfType>>
       val first = it.first.values
       val second = it.second.values
 
-      if (first is SparseNDArray && second is SparseNDArray) {
-        first.assignSumMerging(second)
-      } else {
-        first.assignSum(second)
-      }
+      first.assignSum(second)
     }
   }
 
