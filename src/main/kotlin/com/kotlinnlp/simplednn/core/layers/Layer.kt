@@ -13,6 +13,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.utils.ItemsPool
@@ -129,15 +130,12 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * @param paramsErrors the structure in which to save the errors of the parameters
    * @param propagateToInput whether to propagate the errors to the input
+   *
+   * @return the params errors
    */
-  fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean) {
-
-    this.backwardHelper.backward(
-      paramsErrors = paramsErrors,
-      propagateToInput = propagateToInput)
-  }
+  fun backward(propagateToInput: Boolean): ParamsErrorsList =
+    this.backwardHelper.backward(propagateToInput = propagateToInput)
 
   /**
    * Perform the multiplication of the output array by the derivative of its activated values.
@@ -145,7 +143,16 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun applyOutputActivationDeriv() {
 
     if (this.outputArray.hasActivation) {
-      this.outputArray.errors.assignProd(this.outputArray.calculateActivationDeriv())
+
+      val gY: DenseNDArray = this.outputArray.errors
+
+      this.outputArray.calculateActivationDeriv().let { deriv ->
+
+        if (deriv.isMatrix) // e.g., Jacobian matrix
+          this.outputArray.assignErrorsByDot(deriv, gY)
+        else
+          this.outputArray.assignErrorsByProd(deriv, gY)
+      }
     }
   }
 
