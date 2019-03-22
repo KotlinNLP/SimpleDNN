@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.optimizer
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -47,7 +47,7 @@ class GenericParamsOptimizer(private val updateMethod: UpdateMethod<*>) : Schedu
    * @param copy a Boolean indicating if the [paramsErrors] can be used as reference or must be copied. Set copy = false
    *             to optimize the accumulation when the amount of the errors to accumulate is 1. (default = true)
    */
-  fun accumulate(paramsErrors: ParamsErrorsList, copy: Boolean = true) {
+  fun accumulate(paramsErrors: ParamsArray.Errors<*>, copy: Boolean = true) {
 
     this.paramsErrorsAccumulator.accumulate(paramsErrors = paramsErrors, copy = copy)
   }
@@ -96,8 +96,8 @@ class GenericParamsOptimizer(private val updateMethod: UpdateMethod<*>) : Schedu
       val errors = it.values
 
       when (errors) {
-        is DenseNDArray -> this.updateMethod.update(array = params as UpdatableDenseArray, errors = errors)
-        is SparseNDArray -> this.updateMethod.update(array = params as UpdatableDenseArray, errors = errors)
+        is DenseNDArray -> this.updateMethod.update(array = params, errors = errors)
+        is SparseNDArray -> this.updateMethod.update(array = params, errors = errors)
         else -> throw RuntimeException("Invalid errors type")
       }
     }
