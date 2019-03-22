@@ -6,9 +6,9 @@
  * ------------------------------------------------------------------*/
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayer
+import com.kotlinnlp.simplednn.core.optimizer.GenericParamsOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.utils.ExamplesIndices
@@ -50,13 +50,7 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
   /**
    *
    */
-  private val paramsErrors = this.biaffineLayer.params.copy()
-
-  /**
-   *
-   */
-  private val optimizer = ParamsOptimizer(
-    params = this.biaffineLayer.params,
+  private val optimizer = GenericParamsOptimizer(
     updateMethod = ADAMMethod(stepSize = 0.001, beta1 = 0.99, beta2 = 0.99999))
 
   /**
@@ -147,9 +141,7 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
 
     this.biaffineLayer.setErrors(errors = this.predict(example).sub(example.third))
 
-    this.biaffineLayer.backward(this.paramsErrors, propagateToInput = false)
-
-    this.optimizer.accumulate(this.paramsErrors)
+    this.optimizer.accumulate(this.biaffineLayer.backward(propagateToInput = false))
     this.optimizer.update()
   }
 

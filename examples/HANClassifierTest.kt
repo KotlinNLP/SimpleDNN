@@ -9,14 +9,13 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.deeplearning.attention.han.HAN
 import com.kotlinnlp.simplednn.deeplearning.attention.han.HANEncoder
-import com.kotlinnlp.simplednn.deeplearning.attention.han.HANParameters
 import com.kotlinnlp.simplednn.deeplearning.attention.han.toHierarchySequence
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
+import com.kotlinnlp.simplednn.core.optimizer.GenericParamsOptimizer
 import com.kotlinnlp.utils.ExamplesIndices
 import com.kotlinnlp.utils.Shuffler
 import utils.Corpus
@@ -109,7 +108,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
    */
   private fun train() {
 
-    val optimizer = ParamsOptimizer(params = this.classifier.model.params, updateMethod = ADAMMethod(stepSize = 0.005))
+    val optimizer = GenericParamsOptimizer(updateMethod = ADAMMethod(stepSize = 0.005))
     val shuffler = Shuffler(enablePseudoRandom = true, seed = 743)
     val trainingSize = Math.round(this.dataset.training.size * this.trainingSetPartition).toInt()
     val trainingSet = ArrayList(this.dataset.training.subList(0, trainingSize))
@@ -135,7 +134,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
    * @param trainingSet the training set
    * @param shuffler the [Shuffler] to shuffle examples before training
    */
-  private fun trainEpoch(optimizer: ParamsOptimizer<HANParameters>,
+  private fun trainEpoch(optimizer: GenericParamsOptimizer,
                          trainingSet: ArrayList<SimpleExample<DenseNDArray>>,
                          shuffler: Shuffler) {
 
@@ -214,7 +213,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
       size = example.features.length,
       init = { i ->
         val wordIndex = example.features[i].toInt()
-        this.embeddings.getOrSet(wordIndex).array.values
+        this.embeddings.getOrSet(wordIndex).values
       }
     )
   }

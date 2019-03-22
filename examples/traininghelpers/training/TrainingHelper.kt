@@ -7,9 +7,9 @@
 
 package traininghelpers.training
 
+import com.kotlinnlp.simplednn.core.optimizer.GenericParamsOptimizer
 import traininghelpers.validation.ValidationHelper
 import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
-import com.kotlinnlp.simplednn.core.optimizer.Optimizer
 import com.kotlinnlp.utils.*
 import utils.Example
 
@@ -21,7 +21,7 @@ import utils.Example
  * @property verbose whether to print training details
  */
 abstract class TrainingHelper<ExampleType: Example>(
-  open val optimizer: Optimizer<*>?,
+  open val optimizer: GenericParamsOptimizer?,
   val verbose: Boolean = false) {
 
   /**

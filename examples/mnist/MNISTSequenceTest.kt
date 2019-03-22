@@ -11,12 +11,12 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.GRUNeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
 import traininghelpers.training.SequenceWithFinalOutputTrainingHelper
 import traininghelpers.validation.SequenceWithFinalOutputValidationHelper
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
+import com.kotlinnlp.simplednn.core.optimizer.GenericParamsOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.Shuffler
 import utils.Corpus
@@ -68,7 +68,7 @@ class MNISTSequenceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<Dense
 
     println("\n-- TRAINING")
 
-    val optimizer = ParamsOptimizer(params = this.neuralNetwork, updateMethod = ADAMMethod(stepSize = 0.001))
+    val optimizer = GenericParamsOptimizer(updateMethod = ADAMMethod(stepSize = 0.001))
 
     val neuralProcessor = RecurrentNeuralProcessor<DenseNDArray>(
       model = this.neuralNetwork,

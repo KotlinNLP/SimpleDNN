@@ -13,7 +13,7 @@ import traininghelpers.training.SequenceTrainingHelper
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.CFN
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
+import com.kotlinnlp.simplednn.core.optimizer.GenericParamsOptimizer
 import traininghelpers.validation.SequenceValidationHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.Shuffler
@@ -83,8 +83,7 @@ class ProgressiveSumTest(val dataset: Corpus<SequenceExample<DenseNDArray>>) {
 
     println("\n-- TRAINING\n")
 
-    val optimizer = ParamsOptimizer(
-      params = this.neuralNetwork,
+    val optimizer = GenericParamsOptimizer(
       updateMethod = LearningRateMethod(learningRate = 0.1))
 
     val trainingHelper = SequenceTrainingHelper<DenseNDArray>(

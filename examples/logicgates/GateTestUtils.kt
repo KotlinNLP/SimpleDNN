@@ -8,7 +8,6 @@
 package logicgates
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import traininghelpers.training.FeedforwardTrainingHelper
@@ -24,6 +23,7 @@ import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.Classificat
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.MulticlassEvaluation
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvaluationFunction
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
+import com.kotlinnlp.simplednn.core.optimizer.GenericParamsOptimizer
 import traininghelpers.validation.FeedforwardValidationHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.Shuffler
@@ -80,9 +80,7 @@ object GateTestUtils {
       learningRate = 0.01,
       decayMethod = HyperbolicDecay(decay = 0.0, initLearningRate = 0.01))
 
-    val optimizer = ParamsOptimizer(
-      params = neuralNetwork,
-      updateMethod = updateMethod)
+    val optimizer = GenericParamsOptimizer(updateMethod = updateMethod)
 
     val neuralProcessor = FeedforwardNeuralProcessor<DenseNDArray>(
       model = neuralNetwork,

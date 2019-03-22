@@ -7,7 +7,6 @@
 
 package mnist
 
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
@@ -20,6 +19,7 @@ import traininghelpers.validation.FeedforwardValidationHelper
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.optimizer.GenericParamsOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -76,8 +76,7 @@ class MNISTSparseBinaryTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArra
 
     println("\n-- TRAINING\n")
 
-    val optimizer = ParamsOptimizer(
-      params = this.neuralNetwork,
+    val optimizer = GenericParamsOptimizer(
       updateMethod = LearningRateMethod(
         learningRate = 0.01,
         decayMethod = HyperbolicDecay(decay = 0.5, initLearningRate = 0.01)))

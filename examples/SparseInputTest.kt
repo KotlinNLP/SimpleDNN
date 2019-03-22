@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGra
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
+import com.kotlinnlp.simplednn.core.optimizer.GenericParamsOptimizer
 import utils.Corpus
 import utils.SimpleExample
 import traininghelpers.training.FeedforwardTrainingHelper
@@ -67,10 +67,7 @@ class SparseInputTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArray>>) {
 
     println("\n-- TRAINING")
 
-    val optimizer = ParamsOptimizer(
-      params = this.neuralNetwork,
-      updateMethod = AdaGradMethod(learningRate = 0.1)
-    )
+    val optimizer = GenericParamsOptimizer(updateMethod = AdaGradMethod(learningRate = 0.1))
 
     val trainingHelper = FeedforwardTrainingHelper<SparseBinaryNDArray>(
       neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork, useDropout = false, propagateToInput = false),
