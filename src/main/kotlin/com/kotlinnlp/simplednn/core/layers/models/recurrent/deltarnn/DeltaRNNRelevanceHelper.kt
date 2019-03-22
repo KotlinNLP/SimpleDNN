@@ -65,8 +65,8 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val relevanceSupport: DeltaRNNRelevanceSupport = this.layer.relevanceSupport
     val previousStateExists: Boolean = this.layer.layerContextWindow.getPrevState() != null
 
-    val bp: DenseNDArray = this.layer.params.recurrentUnit.biases.values as DenseNDArray
-    val bc: DenseNDArray = this.layer.params.feedforwardUnit.biases.values as DenseNDArray
+    val bp: DenseNDArray = this.layer.params.recurrentUnit.biases.values
+    val bc: DenseNDArray = this.layer.params.feedforwardUnit.biases.values
     val beta1: DenseNDArray = this.layer.params.beta1.values
     val d1Bc: DenseNDArray = if (previousStateExists) bc.div(2.0) else bc
     // if there is a recurrent contribution bc is divided equally among d1Input and d1Rec, otherwise it is all assigned
@@ -117,9 +117,9 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val prevStateOutput: AugmentedArray<DenseNDArray> = this.layer.layerContextWindow.getPrevState()!!.outputArray
     val yPrev: DenseNDArray = prevStateOutput.values
 
-    val wyRecContrib: DenseNDArray = layerContributions.recurrentUnit.weights.values as DenseNDArray
+    val wyRecContrib: DenseNDArray = layerContributions.recurrentUnit.weights.values
 
-    val halfBc: DenseNDArray = this.layer.params.feedforwardUnit.biases.values.div(2.0) as DenseNDArray
+    val halfBc: DenseNDArray = this.layer.params.feedforwardUnit.biases.values.div(2.0)
     val beta2: DenseNDArray = this.layer.params.beta2.values
 
     val relevanceSupport: DeltaRNNRelevanceSupport = this.layer.relevanceSupport
@@ -154,7 +154,7 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun getInputPartition(contributions: DeltaRNNLayerParameters): DenseNDArray {
 
     val y: DenseNDArray = this.layer.outputArray.valuesNotActivated
-    val yRec: DenseNDArray = contributions.recurrentUnit.biases.values as DenseNDArray
+    val yRec: DenseNDArray = contributions.recurrentUnit.biases.values
     val yInput: DenseNDArray = y.sub(yRec)
 
     return RelevanceUtils.getRelevancePartition1(
@@ -176,7 +176,7 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     return RelevanceUtils.getRelevancePartition2(
       yRelevance = this.layer.outputArray.relevance as DenseNDArray,
       y = this.layer.outputArray.valuesNotActivated,
-      yContribute2 = contributions.recurrentUnit.biases.values as DenseNDArray)
+      yContribute2 = contributions.recurrentUnit.biases.values)
   }
 
   /**

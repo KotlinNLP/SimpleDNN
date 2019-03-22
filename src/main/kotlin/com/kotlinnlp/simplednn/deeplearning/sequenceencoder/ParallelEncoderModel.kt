@@ -41,7 +41,7 @@ class ParallelEncoderModel(val networks: List<StackedLayersParameters>) : Serial
   /**
    * The parameters of all networks.
    */
-  val params = ParallelEncoderParameters(this.networks)
+  val params = this.networks.flatMap { it.paramsList }
 
   /**
    * Serialize this [ParallelEncoderModel] and write it to an output stream.

@@ -78,7 +78,7 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     // y += forG * yPrev
     if (prevStateLayer != null) {
       val yPrev: DenseNDArray = prevStateLayer.outputArray.valuesNotActivated
-      val yRec: DenseNDArray = layerContributions.candidate.biases.values as DenseNDArray
+      val yRec: DenseNDArray = layerContributions.candidate.biases.values
       // a tricky way to save the contributions coming from recursion (b.size == y.size)
 
       yRec.assignProd(yPrev, forG) // save contribution coming from recursion
@@ -147,8 +147,8 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val splitBiases: Boolean = prevStateLayer != null
     val inGParams: RecurrentLinearParams = this.layer.params.inputGate
     val forGParams: RecurrentLinearParams = this.layer.params.forgetGate
-    val bInGBase: DenseNDArray = inGParams.biases.values as DenseNDArray
-    val bForGBase: DenseNDArray = forGParams.biases.values as DenseNDArray
+    val bInGBase: DenseNDArray = inGParams.biases.values
+    val bForGBase: DenseNDArray = forGParams.biases.values
     val bInG: DenseNDArray = if (splitBiases) bInGBase.div(2.0) else bInGBase
     val bForG: DenseNDArray = if (splitBiases) bForGBase.div(2.0) else bForGBase
 
@@ -185,21 +185,21 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       contributions = layerContributions.candidate.weights.values,
       x = x,
       y = this.layer.candidate.values,
-      w = candidateParams.weights.values as DenseNDArray,
-      b = candidateParams.biases.values as DenseNDArray)
+      w = candidateParams.weights.values,
+      b = candidateParams.biases.values)
 
     this.forwardArray(
       contributions = layerContributions.inputGate.weights.values,
       x = x,
       y = this.layer.inputGate.values,
-      w = this.layer.params.inputGate.weights.values as DenseNDArray,
+      w = this.layer.params.inputGate.weights.values,
       b = bInG)
 
     this.forwardArray(
       contributions = layerContributions.forgetGate.weights.values,
       x = x,
       y = this.layer.forgetGate.values,
-      w = this.layer.params.forgetGate.weights.values as DenseNDArray,
+      w = this.layer.params.forgetGate.weights.values,
       b = bForG)
   }
 
@@ -225,20 +225,20 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.addRecurrentContribution(
       yPrev = yPrev,
-      yRec = layerContributions.inputGate.biases.values as DenseNDArray, // a tricky way to save the contribution coming
-      y = this.layer.inputGate.values,                                   // from recursion (b.size == y.size)
-      wRec = inGParams.recurrentWeights.values as DenseNDArray,
+      yRec = layerContributions.inputGate.biases.values, // a tricky way to save the contribution coming
+      y = this.layer.inputGate.values,                   // from recursion (b.size == y.size)
+      wRec = inGParams.recurrentWeights.values,
       b = bInG,
-      contributions = layerContributions.inputGate.recurrentWeights.values as DenseNDArray
+      contributions = layerContributions.inputGate.recurrentWeights.values
     )
 
     this.addRecurrentContribution(
       yPrev = yPrev,
-      yRec = layerContributions.forgetGate.biases.values as DenseNDArray, // a tricky way to save the contribution
-      y = this.layer.forgetGate.values,                                   // coming from recursion (b.size == y.size)
-      wRec = forGParams.recurrentWeights.values as DenseNDArray,
+      yRec = layerContributions.forgetGate.biases.values, // a tricky way to save the contribution
+      y = this.layer.forgetGate.values,                   // coming from recursion (b.size == y.size)
+      wRec = forGParams.recurrentWeights.values,
       b = bForG,
-      contributions = layerContributions.forgetGate.recurrentWeights.values as DenseNDArray
+      contributions = layerContributions.forgetGate.recurrentWeights.values
     )
   }
 }

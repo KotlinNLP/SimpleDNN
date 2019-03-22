@@ -75,7 +75,7 @@ class CFNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     val x: InputNDArrayType = this.layer.inputArray.values
     val c: DenseNDArray = this.layer.candidate.values
-    val wc: DenseNDArray = this.layer.params.candidateWeights.values as DenseNDArray
+    val wc: DenseNDArray = this.layer.params.candidateWeights.values
 
     this.layer.inputGate.forward(
       w = this.layer.params.inputGate.weights.values,

@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.merge.biaffine
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -35,14 +35,14 @@ class BiaffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val x1: InputNDArrayType = this.layer.inputArray1.values
     val x2: InputNDArrayType = this.layer.inputArray2.values
 
-    val wArrays: List<UpdatableArray<*>> = this.layer.params.w
+    val wArrays: List<ParamsArray> = this.layer.params.w
     val wx: DenseNDArray = DenseNDArrayFactory.emptyArray(Shape(this.layer.params.outputSize))
-    val w1: DenseNDArray = this.layer.params.w1.values as DenseNDArray
-    val w2: DenseNDArray = this.layer.params.w2.values as DenseNDArray
+    val w1: DenseNDArray = this.layer.params.w1.values
+    val w2: DenseNDArray = this.layer.params.w2.values
     val b: DenseNDArray = this.layer.params.b.values
 
     wArrays.forEachIndexed { i, wArray ->
-      val wi: DenseNDArray = wArray.values as DenseNDArray
+      val wi: DenseNDArray = wArray.values
       val wx1i: DenseNDArray = this.layer.wx1Arrays[i]
 
       wx1i.assignDot(wi, x1)

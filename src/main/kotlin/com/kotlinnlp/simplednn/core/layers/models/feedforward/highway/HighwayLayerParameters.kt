@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.feedforward.highway
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
@@ -72,7 +72,7 @@ class HighwayLayerParameters(
   /**
    * The list of weights parameters.
    */
-  override val weightsList: List<UpdatableArray<*>> = listOf(
+  override val weightsList: List<ParamsArray> = listOf(
     this.input.weights,
     this.transformGate.weights
   )
@@ -80,7 +80,7 @@ class HighwayLayerParameters(
   /**
    * The list of biases parameters.
    */
-  override val biasesList: List<UpdatableArray<*>> = listOf(
+  override val biasesList: List<ParamsArray> = listOf(
     this.input.biases,
     this.transformGate.biases
   )

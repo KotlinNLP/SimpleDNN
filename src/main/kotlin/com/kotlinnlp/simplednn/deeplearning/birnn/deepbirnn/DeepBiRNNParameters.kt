@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.birnn.deepbirnn
 
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNParameters
 
@@ -31,7 +31,7 @@ class DeepBiRNNParameters(val paramsPerBiRNN: List<BiRNNParameters>) : IterableP
   /**
    * The list of all parameters.
    */
-  override val paramsList: List<UpdatableArray<*>> = this.paramsPerBiRNN.flatMap { it.paramsList }
+  override val paramsList: List<ParamsArray> = this.paramsPerBiRNN.flatMap { it.paramsList }
 
   /**
    * @return a new [BiRNNParameters] containing a copy of all values of this

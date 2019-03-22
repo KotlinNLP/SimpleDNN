@@ -7,8 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.merge.biaffine
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
@@ -50,40 +49,40 @@ class BiaffineLayerParameters(
   /**
    * The weights connected to the first input array.
    */
-  val w1: UpdatableArray<*> = UpdatableArray(this.outputSize, this.inputSize1, sparse = this.sparseInput)
+  val w1 = ParamsArray(this.outputSize, this.inputSize1)
 
   /**
    * The parameters connected to the second input array.
    */
-  val w2: UpdatableArray<*> = UpdatableArray(this.outputSize, this.inputSize2, sparse = this.sparseInput)
+  val w2 = ParamsArray(this.outputSize, this.inputSize2)
 
   /**
    * The bias array.
    */
-  val b: UpdatableDenseArray = UpdatableDenseArray(this.outputSize)
+  val b = ParamsArray(this.outputSize)
 
   /**
    * The weights connected to each the first and the second input arrays.
    */
-  val w: List<UpdatableArray<*>> = List(
+  val w: List<ParamsArray> = List(
     size = this.outputSize,
-    init = { UpdatableArray(this.inputSize2, this.inputSize1, sparse = this.sparseInput) }
+    init = { ParamsArray(this.inputSize2, this.inputSize1) }
   )
 
   /**
    * Initialize the parameters list.
    */
-  override val paramsList: List<UpdatableArray<*>> = listOf(this.w1, this.w2, this.b) + this.w
+  override val paramsList: List<ParamsArray> = listOf(this.w1, this.w2, this.b) + this.w
 
   /**
    * The list of weights parameters.
    */
-  override val weightsList: List<UpdatableArray<*>> = listOf(this.w1, this.w2) + this.w
+  override val weightsList: List<ParamsArray> = listOf(this.w1, this.w2) + this.w
 
   /**
    * The list of biases parameters.
    */
-  override val biasesList: List<UpdatableArray<*>> = listOf(
+  override val biasesList: List<ParamsArray> = listOf(
     this.b
   )
 

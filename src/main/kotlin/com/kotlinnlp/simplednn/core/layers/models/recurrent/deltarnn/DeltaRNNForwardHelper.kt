@@ -30,7 +30,7 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override fun forward() { this.layer.params as DeltaRNNLayerParameters
 
     val x: InputNDArrayType = this.layer.inputArray.values
-    val w: DenseNDArray = this.layer.params.feedforwardUnit.weights.values as DenseNDArray
+    val w: DenseNDArray = this.layer.params.feedforwardUnit.weights.values
     val wx: DenseNDArray = this.layer.wx.values
     val prevStateLayer: Layer<*>? = this.layer.layerContextWindow.getPrevState()
     val yPrev: DenseNDArray? = prevStateLayer?.outputArray?.values
@@ -71,7 +71,7 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       contributions = layerContributions.feedforwardUnit.weights.values,
       x = this.layer.inputArray.values,
       y = wx,
-      w = this.layer.params.feedforwardUnit.weights.values as DenseNDArray)
+      w = this.layer.params.feedforwardUnit.weights.values)
 
     // wRec (dot) yPrev
     if (yPrev != null) {
@@ -80,7 +80,7 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
         contributions = layerContributions.recurrentUnit.weights.values,
         x =  yPrev,
         y = wyRec,
-        w = this.layer.params.recurrentUnit.weights.values as DenseNDArray)
+        w = this.layer.params.recurrentUnit.weights.values)
     }
 
     val c: DenseNDArray = this.calculateCandidateSavingContributions(wyRec = wyRec)
@@ -90,7 +90,7 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     y.assignProd(p, c)
 
     if (yPrev != null) {
-      val yRec: DenseNDArray = layerContributions.recurrentUnit.biases.values as DenseNDArray
+      val yRec: DenseNDArray = layerContributions.recurrentUnit.biases.values
 
       yRec.assignValues(p.reverseSub(1.0).assignProd(yPrev))
       y.assignSum(yRec)
@@ -110,7 +110,7 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun calculateRecurrentContribution(yPrev: DenseNDArray): DenseNDArray? {
     this.layer.params as DeltaRNNLayerParameters
 
-    val wRec: DenseNDArray = this.layer.params.recurrentUnit.weights.values as DenseNDArray
+    val wRec: DenseNDArray = this.layer.params.recurrentUnit.weights.values
     val wyRec: DenseNDArray = this.layer.wyRec.values
 
     return wyRec.assignDot(wRec, yPrev)
@@ -131,7 +131,7 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.params as DeltaRNNLayerParameters
 
     val c: DenseNDArray = this.layer.candidate.values
-    val bc: DenseNDArray = this.layer.params.feedforwardUnit.biases.values as DenseNDArray
+    val bc: DenseNDArray = this.layer.params.feedforwardUnit.biases.values
     val beta1: DenseNDArray = this.layer.params.beta1.values
     val wx: DenseNDArray = this.layer.wx.values
 
@@ -172,7 +172,7 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val relevanceSupport = this.layer.relevanceSupport
 
     val c: DenseNDArray = this.layer.candidate.values
-    val bc: DenseNDArray = this.layer.params.feedforwardUnit.biases.values as DenseNDArray
+    val bc: DenseNDArray = this.layer.params.feedforwardUnit.biases.values
     val beta1: DenseNDArray = this.layer.params.beta1.values
     val wx: DenseNDArray = this.layer.wx.values
     val d1Input: DenseNDArray = relevanceSupport.d1Input.values
@@ -216,7 +216,7 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun calculatePartition(): DenseNDArray { this.layer.params as DeltaRNNLayerParameters
 
     val wx: DenseNDArray = this.layer.wx.values
-    val bp: DenseNDArray = this.layer.params.recurrentUnit.biases.values as DenseNDArray
+    val bp: DenseNDArray = this.layer.params.recurrentUnit.biases.values
     val p: DenseNDArray = this.layer.partition.values
 
     p.assignSum(wx, bp)

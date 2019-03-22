@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.models
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import java.io.Serializable
 
 /**
@@ -35,14 +35,13 @@ open class LinearParams(
   /**
    *
    */
-  val biases: UpdatableArray<*> = UpdatableArray(this.outputSize)
+  val biases = ParamsArray(this.outputSize)
 
   /**
    *
    */
-  val weights: UpdatableArray<*> = UpdatableArray(
+  val weights = ParamsArray(
     dim1 = this.outputSize,
-    dim2 = this.inputSize,
-    sparse = this.sparseInput
+    dim2 = this.inputSize
   )
 }

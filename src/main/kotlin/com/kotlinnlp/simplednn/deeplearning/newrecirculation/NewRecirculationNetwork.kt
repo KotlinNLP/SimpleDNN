@@ -133,8 +133,8 @@ class NewRecirculationNetwork(
   private fun calcImaginaryInput() {
 
     val r: Double = this.model.lambda
-    val w: DenseNDArray = this.model.params.unit.weights.values as DenseNDArray
-    val b: DenseNDArray = this.model.params.unit.biases.values as DenseNDArray
+    val w: DenseNDArray = this.model.params.unit.weights.values
+    val b: DenseNDArray = this.model.params.unit.biases.values
     val xR: DenseNDArray = this.realInput.values
     val yR: DenseNDArray = this.realOutput.values
     val xI: DenseNDArray = this.imaginaryInput.values
@@ -171,8 +171,8 @@ class NewRecirculationNetwork(
   private fun backward() {
 
     val r: Double = this.model.lambda
-    val w: DenseNDArray = this.model.params.unit.weights.values as DenseNDArray
-    val b: DenseNDArray = this.model.params.unit.biases.values as DenseNDArray
+    val w: DenseNDArray = this.model.params.unit.weights.values
+    val b: DenseNDArray = this.model.params.unit.biases.values
     val yR: DenseNDArray = this.realOutput.values
     val xI: DenseNDArray = this.imaginaryInput.values
     val yI: DenseNDArray = this.imaginaryOutput.values
@@ -199,8 +199,8 @@ class NewRecirculationNetwork(
     val xI: DenseNDArray = this.imaginaryInput.values
     val yI: DenseNDArray = this.imaginaryOutput.values
 
-    val gw: DenseNDArray = this.paramsErrors.unit.weights.values as DenseNDArray
-    val gb: DenseNDArray = this.paramsErrors.unit.biases.values as DenseNDArray
+    val gw: DenseNDArray = this.paramsErrors.unit.weights.values
+    val gb: DenseNDArray = this.paramsErrors.unit.biases.values
 
     val gx: DenseNDArray = xI.sub(xR)
     val gy: DenseNDArray = yI.sub(yR)
@@ -216,11 +216,11 @@ class NewRecirculationNetwork(
 
     val lr: Double = this.trainingLearningRate
 
-    val w: DenseNDArray = this.model.params.unit.weights.values as DenseNDArray
-    val b: DenseNDArray = this.model.params.unit.biases.values as DenseNDArray
+    val w: DenseNDArray = this.model.params.unit.weights.values
+    val b: DenseNDArray = this.model.params.unit.biases.values
 
-    val gw: DenseNDArray = this.paramsErrors.unit.weights.values as DenseNDArray
-    val gb: DenseNDArray = this.paramsErrors.unit.biases.values as DenseNDArray
+    val gw: DenseNDArray = this.paramsErrors.unit.weights.values
+    val gb: DenseNDArray = this.paramsErrors.unit.biases.values
 
     w.assignSub(gw.assignProd(lr))
     b.assignSub(gb.assignProd(lr))

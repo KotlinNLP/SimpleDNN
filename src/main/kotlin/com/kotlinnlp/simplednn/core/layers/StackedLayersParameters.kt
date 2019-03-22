@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
@@ -107,7 +107,7 @@ class StackedLayersParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: List<UpdatableArray<*>> = this.paramsPerLayer.toUpdatableArrays()
+  override val paramsList: List<ParamsArray> = this.paramsPerLayer.toParamsArrays()
 
   /**
    * @return a new [StackedLayersParameters] containing a copy of all parameters of this

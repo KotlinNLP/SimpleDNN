@@ -7,8 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.merge.affine
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
@@ -48,14 +47,12 @@ open class AffineLayerParameters(
   /**
    * The weights arrays.
    */
-  val w: List<UpdatableArray<*>> = inputsSize.map {
-    UpdatableArray(dim1 = this.outputSize, dim2 = it, sparse = this.sparseInput)
-  }
+  val w: List<ParamsArray> = inputsSize.map { ParamsArray(dim1 = this.outputSize, dim2 = it) }
 
   /**
    * The bias array.
    */
-  val b: UpdatableDenseArray = UpdatableDenseArray(this.outputSize)
+  val b = ParamsArray(this.outputSize)
 
   /**
    * The list of all parameters.
@@ -65,12 +62,12 @@ open class AffineLayerParameters(
   /**
    * The list of weights parameters.
    */
-  override val weightsList: List<UpdatableArray<*>> = this.w
+  override val weightsList: List<ParamsArray> = this.w
 
   /**
    * The list of biases parameters.
    */
-  override val biasesList: List<UpdatableArray<*>> = listOf(this.b)
+  override val biasesList: List<ParamsArray> = listOf(this.b)
 
   /**
    * Initialize all parameters values.

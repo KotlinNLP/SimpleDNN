@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.deeplearning.birnn
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 
@@ -36,7 +36,7 @@ class BiRNNParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: List<UpdatableArray<*>> =
+  override val paramsList: List<ParamsArray> =
     this.leftToRight.paramsList + this.rightToLeft.paramsList + this.merge.paramsList
 
   /**

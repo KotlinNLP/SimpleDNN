@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
@@ -54,7 +54,7 @@ class IndRNNLayerParameters(
   /**
    * The recurrent weights.
    */
-  val recurrentWeights: UpdatableArray<*> = UpdatableArray(dim1 = this.outputSize, sparse = false)
+  val recurrentWeights = ParamsArray(this.outputSize)
 
   /**
    * The list of all parameters.
@@ -68,7 +68,7 @@ class IndRNNLayerParameters(
   /**
    * The list of weights parameters.
    */
-  override val weightsList: List<UpdatableArray<*>> = listOf(
+  override val weightsList: List<ParamsArray> = listOf(
     this.feedforwardUnit.weights,
     this.recurrentWeights
   )
@@ -76,7 +76,7 @@ class IndRNNLayerParameters(
   /**
    * The list of biases parameters.
    */
-  override val biasesList: List<UpdatableArray<*>> = listOf(
+  override val biasesList: List<ParamsArray> = listOf(
     this.feedforwardUnit.biases
   )
 

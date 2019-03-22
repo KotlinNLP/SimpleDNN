@@ -52,8 +52,8 @@ class FeedforwardForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       contributions = layerContributions.unit.weights.values,
       x = this.layer.inputArray.values,
       y = this.layer.outputArray.values,
-      w = this.layer.params.unit.weights.values as DenseNDArray,
-      b = this.layer.params.unit.biases.values as DenseNDArray
+      w = this.layer.params.unit.weights.values,
+      b = this.layer.params.unit.biases.values
     )
 
     this.layer.outputArray.activate()

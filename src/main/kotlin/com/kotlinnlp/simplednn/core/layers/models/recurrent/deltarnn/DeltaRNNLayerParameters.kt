@@ -7,8 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
@@ -61,17 +60,17 @@ class DeltaRNNLayerParameters(
   /**
    *
    */
-  val alpha = UpdatableDenseArray(shape = Shape(this.outputSize))
+  val alpha = ParamsArray(Shape(this.outputSize))
 
   /**
    *
    */
-  val beta1 = UpdatableDenseArray(shape = Shape(this.outputSize))
+  val beta1 = ParamsArray(Shape(this.outputSize))
 
   /**
    *
    */
-  val beta2 = UpdatableDenseArray(shape = Shape(this.outputSize))
+  val beta2 = ParamsArray(Shape(this.outputSize))
 
   /**
    * The list of all parameters.
@@ -89,7 +88,7 @@ class DeltaRNNLayerParameters(
   /**
    * The list of weights parameters.
    */
-  override val weightsList: List<UpdatableArray<*>> = listOf(
+  override val weightsList: List<ParamsArray> = listOf(
     this.feedforwardUnit.weights,
     this.recurrentUnit.weights,
     this.alpha,
@@ -100,7 +99,7 @@ class DeltaRNNLayerParameters(
   /**
    * The list of biases parameters.
    */
-  override val biasesList: List<UpdatableArray<*>> = listOf(
+  override val biasesList: List<ParamsArray> = listOf(
     this.feedforwardUnit.biases,
     this.recurrentUnit.biases
   )

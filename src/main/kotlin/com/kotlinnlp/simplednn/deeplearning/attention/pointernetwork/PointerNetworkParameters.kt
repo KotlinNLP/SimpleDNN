@@ -7,10 +7,10 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
-import com.kotlinnlp.simplednn.core.attention.AttentionParameters
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
+import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayerParameters
 
 /**
  * The parameters of the [PointerNetworkProcessor].
@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
  */
 class PointerNetworkParameters(
   val mergeParams: StackedLayersParameters,
-  val attentionParams: AttentionParameters
+  val attentionParams: AttentionMechanismLayerParameters
 ) : IterableParams<PointerNetworkParameters>() {
 
   companion object {
@@ -34,7 +34,7 @@ class PointerNetworkParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: List<UpdatableArray<*>> = this.mergeParams.paramsList + this.attentionParams.paramsList
+  override val paramsList: List<ParamsArray> = this.mergeParams.paramsList + this.attentionParams.paramsList
 
   /**
    * @return a new [PointerNetworkParameters] containing a copy of all values of this

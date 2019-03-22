@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.merge.avg
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
 
 /**
@@ -46,17 +46,17 @@ class AvgLayerParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList = emptyList<UpdatableArray<*>>()
+  override val paramsList = emptyList<ParamsArray>()
 
   /**
    * The list of weights parameters.
    */
-  override val weightsList = emptyList<UpdatableArray<*>>()
+  override val weightsList = emptyList<ParamsArray>()
 
   /**
    * The list of biases parameters.
    */
-  override val biasesList = emptyList<UpdatableArray<*>>()
+  override val biasesList = emptyList<ParamsArray>()
 
   /**
    * @return a new [AvgLayerParameters] containing a copy of all parameters of this

@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.recurrent
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.models.LinearParams
 
 /**
@@ -16,13 +16,11 @@ import com.kotlinnlp.simplednn.core.layers.models.LinearParams
  * @property inputSize input size
  * @property outputSize output size
  * @param sparseInput whether the weights connected to the input are sparse or not (default false)
- * @param meProp whether to use the 'meProp' errors propagation algorithm (params are sparse) (default false)
  */
 class RecurrentLinearParams(
   inputSize: Int,
   outputSize: Int,
-  sparseInput: Boolean = false,
-  meProp: Boolean = false
+  sparseInput: Boolean = false
 ) : LinearParams(
   inputSize = inputSize,
   outputSize = outputSize,
@@ -31,8 +29,5 @@ class RecurrentLinearParams(
   /**
    *
    */
-  val recurrentWeights: UpdatableArray<*> = UpdatableArray(
-    dim1 = this.outputSize,
-    dim2 = this.outputSize,
-    sparse = meProp)
+  val recurrentWeights = ParamsArray(dim1 = this.outputSize, dim2 = this.outputSize)
 }

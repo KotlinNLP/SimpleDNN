@@ -7,13 +7,9 @@
 
 package com.kotlinnlp.simplednn.core.layers
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
-import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
-import com.kotlinnlp.simplednn.core.arrays.UpdatableSparseArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The parameters of a layer
@@ -42,12 +38,12 @@ abstract class LayerParameters<SelfType: LayerParameters<SelfType>>(
   /**
    * The list of weights parameters.
    */
-  protected abstract val weightsList: List<UpdatableArray<*>>
+  protected abstract val weightsList: List<ParamsArray>
 
   /**
    * The list of biases parameters.
    */
-  protected abstract val biasesList: List<UpdatableArray<*>>
+  protected abstract val biasesList: List<ParamsArray>
 
   /**
    * Initialize the values of the parameters with the given [weightsInitializer] and [biasesInitializer].
@@ -57,14 +53,12 @@ abstract class LayerParameters<SelfType: LayerParameters<SelfType>>(
    */
   protected fun initialize() {
 
-    if (this.weightsInitializer != null) {
-      require(this.weightsList.all { it is UpdatableDenseArray }) { "Cannot initialize weights not dense" }
-      this.weightsList.forEach { this.weightsInitializer.initialize(it.values as DenseNDArray) }
+    this.weightsInitializer?.let { initializer ->
+      this.weightsList.forEach { weight -> initializer.initialize(weight.values) }
     }
 
-    if (this.biasesInitializer != null) {
-      require(this.biasesList.all { it is UpdatableDenseArray }) { "Cannot initialize biases not dense" }
-      this.biasesList.forEach { this.biasesInitializer.initialize(it.values as DenseNDArray) }
+    this.biasesInitializer?.let { initializer ->
+      this.biasesList.forEach { weight -> initializer.initialize(weight.values) }
     }
   }
 }

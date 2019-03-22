@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.gru
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLinearParams
@@ -88,7 +88,7 @@ class GRULayerParameters(
   /**
    * The list of weights parameters.
    */
-  override val weightsList: List<UpdatableArray<*>> = listOf(
+  override val weightsList: List<ParamsArray> = listOf(
 
     this.candidate.weights,
     this.resetGate.weights,
@@ -102,7 +102,7 @@ class GRULayerParameters(
   /**
    * The list of biases parameters.
    */
-  override val biasesList: List<UpdatableArray<*>> = listOf(
+  override val biasesList: List<ParamsArray> = listOf(
     this.candidate.biases,
     this.resetGate.biases,
     this.partitionGate.biases

@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
@@ -100,7 +100,7 @@ class LSTMLayerParameters(
   /**
    * The list of weights parameters.
    */
-  override val weightsList: List<UpdatableArray<*>> = listOf(
+  override val weightsList: List<ParamsArray> = listOf(
 
     this.inputGate.weights,
     this.outputGate.weights,
@@ -116,7 +116,7 @@ class LSTMLayerParameters(
   /**
    * The list of biases parameters.
    */
-  override val biasesList: List<UpdatableArray<*>> = listOf(
+  override val biasesList: List<ParamsArray> = listOf(
     this.inputGate.biases,
     this.outputGate.biases,
     this.forgetGate.biases,
@@ -151,5 +151,5 @@ class LSTMLayerParameters(
    * Adding a bias of size 1 to the forget gate improves the general performance of the LSTM.
    * (Greff et al., 2015 and Jozefowicz et al., 2015)
    */
-  fun initForgetGateBiasToOne() = ConstantInitializer(1.0).initialize(this.forgetGate.biases.values as DenseNDArray)
+  fun initForgetGateBiasToOne() = ConstantInitializer(1.0).initialize(this.forgetGate.biases.values)
 }

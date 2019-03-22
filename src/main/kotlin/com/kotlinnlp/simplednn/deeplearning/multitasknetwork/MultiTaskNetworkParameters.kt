@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.deeplearning.multitasknetwork
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import java.io.Serializable
@@ -32,7 +32,7 @@ class MultiTaskNetworkParameters(
   /**
    * The list of all parameters.
    */
-  override val paramsList: List<UpdatableArray<*>> = this.outputParamsList.flatMap { it.paramsList }
+  override val paramsList: List<ParamsArray> = this.outputParamsList.flatMap { it.paramsList }
 
   /**
    * @return a new [MultiTaskNetworkParameters] containing a copy of all parameters of this

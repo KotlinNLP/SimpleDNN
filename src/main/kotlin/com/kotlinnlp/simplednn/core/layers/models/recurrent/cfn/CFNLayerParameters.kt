@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLinearParams
@@ -62,10 +62,7 @@ class CFNLayerParameters(
   /**
    *
    */
-  val candidateWeights: UpdatableArray<*> = UpdatableArray(
-    dim1 = this.outputSize,
-    dim2 = this.inputSize,
-    sparse = this.sparseInput)
+  val candidateWeights = ParamsArray(dim1 = this.outputSize, dim2 = this.inputSize)
 
   /**
    * The list of all parameters.
@@ -86,7 +83,7 @@ class CFNLayerParameters(
   /**
    * The list of weights parameters.
    */
-  override val weightsList: List<UpdatableArray<*>> = listOf(
+  override val weightsList: List<ParamsArray> = listOf(
 
     this.inputGate.weights,
     this.forgetGate.weights,
@@ -99,7 +96,7 @@ class CFNLayerParameters(
   /**
    * The list of biases parameters.
    */
-  override val biasesList: List<UpdatableArray<*>> = listOf(
+  override val biasesList: List<ParamsArray> = listOf(
     this.inputGate.biases,
     this.forgetGate.biases
   )

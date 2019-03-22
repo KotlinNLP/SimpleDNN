@@ -98,7 +98,7 @@ class DeltaRNNLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The support structure used to save temporary results during a forward and using them to calculate the relevance
    * later.
    */
-  lateinit private var _relevanceSupport: DeltaRNNRelevanceSupport
+  private lateinit var _relevanceSupport: DeltaRNNRelevanceSupport
 
   /**
    * Initialization: set the activation functions.

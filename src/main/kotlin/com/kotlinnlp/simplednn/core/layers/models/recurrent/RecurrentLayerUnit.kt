@@ -47,21 +47,19 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    * gw = errors (dot) x
    * gwRec = errors (dot) yPrev
    *
-   * @param paramsErrors the parameters errors associated to this unit
+   * @param gw the gradient of the weights to be assigned
+   * @param gb the gradients of the biases to be assigned
+   * @param gwRec the gradients of the recurrent weights to be assigned
    * @param x the input of the unit
    * @param yPrev the output array as contribution from the previous state
    */
-  fun assignParamsGradients(paramsErrors: RecurrentLinearParams,
+  fun assignParamsGradients(gw: NDArray<*>,
+                            gb: NDArray<*>,
+                            gwRec: NDArray<*>,
                             x: InputNDArrayType,
                             yPrev: DenseNDArray? = null) {
 
-    this.assignParamsGradients(
-      gw = paramsErrors.weights.values,
-      gb = paramsErrors.biases.values,
-      x = x
-    )
-
-    val gwRec: NDArray<*> = paramsErrors.recurrentWeights.values
+    this.assignParamsGradients(gw = gw, gb = gb, x = x)
 
     if (yPrev != null)
       gwRec.assignDot(this.errors, yPrev.t)
@@ -79,7 +77,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    */
   fun getRecurrentErrors(parameters: RecurrentLinearParams): DenseNDArray {
 
-    val wRec: DenseNDArray = parameters.recurrentWeights.values as DenseNDArray
+    val wRec: DenseNDArray = parameters.recurrentWeights.values
 
     return this.errors.t.dot(wRec)
   }
@@ -111,7 +109,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
   private fun getInputRelevancePartitioned(x: InputNDArrayType, contributions: RecurrentLinearParams): NDArray<*> {
 
     val y: DenseNDArray = this.valuesNotActivated
-    val yRec: DenseNDArray = contributions.biases.values as DenseNDArray
+    val yRec: DenseNDArray = contributions.biases.values
     val yInput: DenseNDArray = y.sub(yRec)
     val yInputRelevance: DenseNDArray = RelevanceUtils.getRelevancePartition1(
       yRelevance = this.relevance as DenseNDArray,
@@ -138,7 +136,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
    */
   fun getRecurrentRelevance(contributions: RecurrentLinearParams, yPrev: DenseNDArray): DenseNDArray {
 
-    val yRec: DenseNDArray = contributions.biases.values as DenseNDArray
+    val yRec: DenseNDArray = contributions.biases.values
     val yRecRelevance: DenseNDArray = RelevanceUtils.getRelevancePartition2(
       yRelevance = this.relevance as DenseNDArray,
       y = this.valuesNotActivated,
@@ -148,7 +146,7 @@ class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int
       x = yPrev,
       y = yRec,
       yRelevance = yRecRelevance,
-      contributions = contributions.recurrentWeights.values as DenseNDArray
+      contributions = contributions.recurrentWeights.values
     )
   }
 }
