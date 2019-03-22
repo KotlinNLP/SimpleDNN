@@ -36,12 +36,12 @@ class ParamsErrorsAccumulatorSpec : Spek({
 
       val accumulator = ParamsErrorsAccumulator()
 
-      val params = GenericParamsErrorsAccumulatorUtils.buildEmptyParams()
+      val params = ParamsErrorsAccumulatorUtils.buildEmptyParams()
 
-      val gw1 = params[0].buildDenseErrors(GenericParamsErrorsAccumulatorUtils.buildWeightsErrorsValues1())
-      val gb1 = params[1].buildDenseErrors(GenericParamsErrorsAccumulatorUtils.buildBiasesErrorsValues1())
-      val gw2 = params[0].buildDenseErrors(GenericParamsErrorsAccumulatorUtils.buildWeightsErrorsValues2())
-      val gb2 = params[1].buildDenseErrors(GenericParamsErrorsAccumulatorUtils.buildBiasesErrorsValues2())
+      val gw1 = params[0].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildWeightsErrorsValues1())
+      val gb1 = params[1].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildBiasesErrorsValues1())
+      val gw2 = params[0].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildWeightsErrorsValues2())
+      val gb2 = params[1].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildBiasesErrorsValues2())
 
       accumulator.accumulate(listOf(gw1, gb1, gw2, gb2))
 
@@ -81,12 +81,12 @@ class ParamsErrorsAccumulatorSpec : Spek({
 
       val accumulator = ParamsErrorsAccumulator()
 
-      val params = GenericParamsErrorsAccumulatorUtils.buildEmptyParams()
+      val params = ParamsErrorsAccumulatorUtils.buildEmptyParams()
 
-      val gw1 = params[0].buildDenseErrors(GenericParamsErrorsAccumulatorUtils.buildWeightsErrorsValues1())
-      val gb1 = params[1].buildDenseErrors(GenericParamsErrorsAccumulatorUtils.buildBiasesErrorsValues1())
-      val gw2 = params[0].buildDenseErrors(GenericParamsErrorsAccumulatorUtils.buildWeightsErrorsValues2())
-      val gb2 = params[1].buildDenseErrors(GenericParamsErrorsAccumulatorUtils.buildBiasesErrorsValues2())
+      val gw1 = params[0].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildWeightsErrorsValues1())
+      val gb1 = params[1].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildBiasesErrorsValues1())
+      val gw2 = params[0].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildWeightsErrorsValues2())
+      val gb2 = params[1].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildBiasesErrorsValues2())
 
       accumulator.accumulate(listOf(gw1, gb1, gw2, gb2))
       accumulator.averageErrors()

@@ -14,22 +14,22 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 /**
  *
  */
-object GenericParamsOptimizerUtils {
+object ParamsErrorsAccumulatorUtils {
 
   /**
    *
    */
-  fun buildParams(): List<ParamsArray> {
+  fun buildEmptyParams(): List<ParamsArray> {
 
     val params = FeedforwardLayerParameters(inputSize = 4, outputSize = 2)
 
     params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
-      doubleArrayOf(0.3, 0.4, 0.2, -0.2),
-      doubleArrayOf(0.2, -0.1, 0.1, 0.6)
+      doubleArrayOf(0.0, 0.0, 0.0, 0.0),
+      doubleArrayOf(0.0, 0.0, 0.0, 0.0)
     )))
 
     params.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(
-      doubleArrayOf(0.3, -0.4)
+      doubleArrayOf(0.0, 0.0)
     ))
 
     return params.paramsList.map { ParamsArray(it.values) }

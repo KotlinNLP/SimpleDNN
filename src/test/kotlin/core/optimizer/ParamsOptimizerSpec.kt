@@ -30,12 +30,12 @@ class ParamsOptimizerSpec : Spek({
 
       val optimizer = ParamsOptimizer(learningRateMethod)
 
-      val params = GenericParamsOptimizerUtils.buildParams()
+      val params = ParamsOptimizerUtils.buildParams()
 
-      val gw1 = params[0].buildDenseErrors(GenericParamsOptimizerUtils.buildWeightsErrorsValues1())
-      val gb1 = params[1].buildDenseErrors(GenericParamsOptimizerUtils.buildBiasesErrorsValues1())
-      val gw2 = params[0].buildDenseErrors(GenericParamsOptimizerUtils.buildWeightsErrorsValues2())
-      val gb2 = params[1].buildDenseErrors(GenericParamsOptimizerUtils.buildBiasesErrorsValues2())
+      val gw1 = params[0].buildDenseErrors(ParamsOptimizerUtils.buildWeightsErrorsValues1())
+      val gb1 = params[1].buildDenseErrors(ParamsOptimizerUtils.buildBiasesErrorsValues1())
+      val gw2 = params[0].buildDenseErrors(ParamsOptimizerUtils.buildWeightsErrorsValues2())
+      val gb2 = params[1].buildDenseErrors(ParamsOptimizerUtils.buildBiasesErrorsValues2())
 
       optimizer.accumulate(listOf(gw1, gb1, gw2, gb2))
       optimizer.update()
