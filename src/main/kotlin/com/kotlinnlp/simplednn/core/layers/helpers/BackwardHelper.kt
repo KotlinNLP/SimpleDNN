@@ -7,26 +7,49 @@
 
 package com.kotlinnlp.simplednn.core.layers.helpers
 
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.Layer
+import com.kotlinnlp.simplednn.core.optimizer.GenericParamsErrorsCollector
+import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * The helper which executes the backward on a [layer].
+ *
+ * @param layer the layer in which the backward is executed
  */
-interface BackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>> {
+abstract class BackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+  protected open val layer: Layer<InputNDArrayType>
+) {
 
   /**
-   * The [Layer] in which the backward is executed.
+   * The errors of the parameters which will be filled at each [backward].
    */
-  val layer: Layer<InputNDArrayType>
+  private val paramsErrorsCollector = GenericParamsErrorsCollector()
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
-   * @param paramsErrors the errors of the parameters which will be filled
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  fun backward(paramsErrors: LayerParameters<*>, propagateToInput: Boolean = false)
+  fun backward(propagateToInput: Boolean = false): ParamsErrorsList {
+
+    this.execBackward(propagateToInput)
+
+    return this.paramsErrorsCollector.getAll()
+  }
+
+  /**
+   * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
+   * algorithm, starting from the preset errors of the output array.
+   *
+   * @param propagateToInput whether to propagate the errors to the input array
+   */
+  abstract fun execBackward(propagateToInput: Boolean = false)
+
+  /**
+   *
+   */
+  val ParamsArray.errors: ParamsArray.Errors<*> get() = paramsErrorsCollector.getErrors(this)
 }
