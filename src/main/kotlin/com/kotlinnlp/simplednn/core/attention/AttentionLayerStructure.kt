@@ -129,7 +129,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * @return the errors of the attention arrays
    */
-  fun getAttentionErrors(): List<DenseNDArray> = this.attentionMechanism.inputArrays.map { it.values }
+  fun getAttentionErrors(): List<DenseNDArray> = this.attentionMechanism.inputArrays.map { it.errors }
 
   /**
    * Calculate the values of the output array.
