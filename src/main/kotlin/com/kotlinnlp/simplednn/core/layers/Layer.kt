@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.core.arrays.Norm1Array
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
+import com.kotlinnlp.simplednn.core.layers.helpers.ParamsErrorsCollector
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -78,6 +79,13 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param relevance the relevance to set into the outputArray
    */
   fun setOutputRelevance(relevance: Norm1Array<*>) = this.outputArray.assignRelevance(relevance.values)
+
+  /**
+   * Set a params errors collector.
+   *
+   * @param c a collector of params errors
+   */
+  fun setParamsErrorsCollector(c: ParamsErrorsCollector) { this.backwardHelper.setParamsErrorsCollector(c) }
 
   /**
    * Forward the input to the output combining it with the parameters.

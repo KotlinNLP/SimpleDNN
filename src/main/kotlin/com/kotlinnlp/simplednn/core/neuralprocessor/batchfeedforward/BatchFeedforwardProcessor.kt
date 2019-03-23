@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward
 
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
+import com.kotlinnlp.simplednn.core.layers.helpers.ParamsErrorsCollector
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
@@ -22,6 +23,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property model the stacked-layers parameters
  * @property useDropout whether to apply the dropout during the [forward]
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
+ * @property paramsErrorsCollector where to collect the local params errors during the [backward] (optional)
  * @property id an identification number useful to track a specific processor
  */
 class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
@@ -37,17 +39,23 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
   > {
 
   /**
-   * A list of processors, one for each element of the batch.
+   * The errors of the parameters which will be filled at each [backward].
    */
-  private val processorsPool = FeedforwardNeuralProcessorsPool<InputNDArrayType>(
-    model = this.model,
-    useDropout = this.useDropout,
-    propagateToInput = this.propagateToInput)
+  private val paramsErrorsCollector: ParamsErrorsCollector = ParamsErrorsCollector()
 
   /**
    * Contains the errors accumulated from the processors during the forward.
    */
   private val errorsAccumulator = ParamsErrorsAccumulator()
+
+  /**
+   * A list of processors, one for each element of the batch.
+   */
+  private val processorsPool = FeedforwardNeuralProcessorsPool<InputNDArrayType>(
+    model = this.model,
+    useDropout = this.useDropout,
+    propagateToInput = this.propagateToInput,
+    paramsErrorsCollector = this.paramsErrorsCollector)
 
   /**
    * The amount of processors used at a given time.

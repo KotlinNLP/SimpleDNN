@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
+import com.kotlinnlp.simplednn.core.layers.helpers.ParamsErrorsCollector
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.utils.ItemsPool
@@ -19,11 +20,13 @@ import com.kotlinnlp.utils.ItemsPool
  * @property model the stacked-layers parameters
  * @param useDropout whether to apply the dropout during the forward
  * @param propagateToInput whether to propagate the errors to the input during the backward
+ * @property paramsErrorsCollector where to collect the local params errors during the [backward] (optional)
  */
 class RecurrentNeuralProcessorsPool<InputNDArrayType : NDArray<InputNDArrayType>>(
   val model: StackedLayersParameters,
   private val useDropout: Boolean,
-  private val propagateToInput: Boolean
+  private val propagateToInput: Boolean,
+  private val paramsErrorsCollector: ParamsErrorsCollector = ParamsErrorsCollector()
 ) : ItemsPool<RecurrentNeuralProcessor<InputNDArrayType>>() {
 
   /**
@@ -37,6 +40,7 @@ class RecurrentNeuralProcessorsPool<InputNDArrayType : NDArray<InputNDArrayType>
     model = this.model,
     useDropout = this.useDropout,
     propagateToInput = this.propagateToInput,
+    paramsErrorsCollector = this.paramsErrorsCollector,
     id = id
   )
 }

@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
+import com.kotlinnlp.simplednn.core.layers.helpers.ParamsErrorsCollector
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
@@ -206,6 +207,13 @@ open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return the current layer in next state
    */
   override fun getNextState(): Layer<*>? = null
+
+  /**
+   * Set the given params errors collector [c] to all [layers].
+   *
+   * @param c a collector of params errors
+   */
+  fun setParamsErrorsCollector(c: ParamsErrorsCollector) { this.layers.forEach { it.setParamsErrorsCollector(c) } }
 
   /**
    * @return the list of layers generated from the [layersConfiguration]

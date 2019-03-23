@@ -17,6 +17,7 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.layers.RecurrentStackedLayers
 import com.kotlinnlp.simplednn.core.layers.StructureContextWindow
+import com.kotlinnlp.simplednn.core.layers.helpers.ParamsErrorsCollector
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
@@ -31,12 +32,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  * @property model the stacked-layers parameters
  * @property useDropout whether to apply the dropout during the [forward]
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
+ * @property paramsErrorsCollector where to collect the local params errors during the [backward] (optional)
  * @property id an identification number useful to track a specific processor
  */
 class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   val model: StackedLayersParameters,
   override val useDropout: Boolean,
   override val propagateToInput: Boolean,
+  private val paramsErrorsCollector: ParamsErrorsCollector = ParamsErrorsCollector(),
   override val id: Int = 0
 ) : StructureContextWindow<InputNDArrayType>,
   NeuralProcessor<
@@ -467,7 +470,10 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
       val structure = RecurrentStackedLayers(
         layersConfiguration = this.model.layersConfiguration,
         paramsPerLayer = this.model.paramsPerLayer,
-        structureContextWindow = this)
+        structureContextWindow = this).apply {
+
+        setParamsErrorsCollector(paramsErrorsCollector)
+      }
 
       this.sequence.add(structure = structure, saveContributions = saveContributions)
     }

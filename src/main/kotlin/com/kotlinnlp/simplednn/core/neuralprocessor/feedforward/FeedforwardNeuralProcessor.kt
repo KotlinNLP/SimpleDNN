@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.StackedLayers
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
+import com.kotlinnlp.simplednn.core.layers.helpers.ParamsErrorsCollector
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -22,12 +23,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * @property model the stacked-layers parameters
  * @property useDropout whether to apply the dropout during the [forward]
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
+ * @property paramsErrorsCollector where to collect the local params errors during the [backward] (optional)
  * @property id an identification number useful to track a specific processor
  */
 class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   val model: StackedLayersParameters,
   override val useDropout: Boolean,
   override val propagateToInput: Boolean,
+  private val paramsErrorsCollector: ParamsErrorsCollector = ParamsErrorsCollector(),
   override val id: Int = 0
 ) :  NeuralProcessor<
   InputNDArrayType, // InputType
@@ -41,7 +44,10 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   var structure = StackedLayers<InputNDArrayType>(
     layersConfiguration = this.model.layersConfiguration,
-    paramsPerLayer = this.model.paramsPerLayer)
+    paramsPerLayer = this.model.paramsPerLayer).apply {
+
+    setParamsErrorsCollector(paramsErrorsCollector)
+  }
 
   /**
    * The structure in which to save the contributions of the calculations during the forward (needed to calculate the
