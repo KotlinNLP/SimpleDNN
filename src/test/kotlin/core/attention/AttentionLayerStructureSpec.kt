@@ -162,6 +162,7 @@ class AttentionLayerStructureSpec : Spek({
       structure.forward()
 
       structure.outputArray.assignErrors(AttentionLayerUtils.buildOutputErrors())
+      structure.backward(propagateToInput = true)
 
       val attentionErrors: List<DenseNDArray> = structure.getAttentionErrors()
 
