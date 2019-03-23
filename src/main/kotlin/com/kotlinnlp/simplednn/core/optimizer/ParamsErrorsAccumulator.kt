@@ -8,6 +8,8 @@
 package com.kotlinnlp.simplednn.core.optimizer
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 
 /**
  * Generic params errors accumulator.
@@ -122,6 +124,22 @@ class ParamsErrorsAccumulator {
 
     paramsErrors.map { this.accumulate(it, copy = copy) }
   }
+
+  /**
+   * Accumulate the given params [errors] into the accumulator.
+   *
+   * @param params the parameters
+   * @param errors the errors of the given [params] to accumulate
+   */
+  fun accumulate(params: ParamsArray, errors: DenseNDArray) = this.accumulate(params.buildDenseErrors(errors))
+
+  /**
+   * Accumulate the given params [errors] into the accumulator.
+   *
+   * @param params the parameters
+   * @param errors the errors of the given [params] to accumulate
+   */
+  fun accumulate(params: ParamsArray, errors: SparseNDArray) = this.accumulate(params.buildSparseErrors(errors))
 
   /**
    * Divide the accumulated errors by the number of accumulations.
