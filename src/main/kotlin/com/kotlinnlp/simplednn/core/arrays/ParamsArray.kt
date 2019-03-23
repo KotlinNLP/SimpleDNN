@@ -19,12 +19,12 @@ import java.io.Serializable
 import java.util.UUID
 
 /**
- * The [ParamsArray] is a wrapper of an [UpdatableArray] extending it with an unique identifier [uuid],
+ * The [ParamsArray] is a wrapper of a [DenseNDArray] extending it with an unique identifier [uuid],
  * with an [updaterSupportStructure] methods to build the params [Errors].
  *
  * @property values the values of the parameters
  */
-class ParamsArray(val values: DenseNDArray) {
+class ParamsArray(val values: DenseNDArray) : Serializable {
 
   companion object {
 
