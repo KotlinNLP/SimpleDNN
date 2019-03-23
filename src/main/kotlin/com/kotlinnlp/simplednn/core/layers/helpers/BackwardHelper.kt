@@ -45,7 +45,7 @@ abstract class BackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  abstract fun execBackward(propagateToInput: Boolean = false)
+  protected abstract fun execBackward(propagateToInput: Boolean = false)
 
   /**
    *
