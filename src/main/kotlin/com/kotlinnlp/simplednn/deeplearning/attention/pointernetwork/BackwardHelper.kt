@@ -7,8 +7,8 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
+import com.kotlinnlp.simplednn.core.layers.helpers.ParamsErrorsCollector
 import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayer
-import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -39,9 +39,9 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
   private var stateIndex: Int = 0
 
   /**
-   * The params errors accumulator of the merge network.
+   * The errors of the attention parameters which will be filled at each backward.
    */
-  private var mergeErrorsAccumulator = ParamsErrorsAccumulator()
+  private var attentionParamsErrorsCollector = ParamsErrorsCollector()
 
   /**
    * The params errors accumulator of the attention structure
@@ -64,7 +64,6 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
       this.backwardStep(outputErrors[stateIndex])
     }
 
-    this.mergeErrorsAccumulator.averageErrors()
     this.attentionErrorsAccumulator.averageErrors()
   }
 
@@ -74,7 +73,7 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
    * @return the params errors of the [networkProcessor]
    */
   fun getParamsErrors(copy: Boolean = true) =
-    this.mergeErrorsAccumulator.getParamsErrors(copy = copy) +
+    this.networkProcessor.mergeProcessor.getParamsErrors(copy = copy) +
       this.attentionErrorsAccumulator.getParamsErrors(copy = copy)
 
   /**
@@ -100,6 +99,7 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
     val attentionMechanism: AttentionMechanismLayer = this.networkProcessor.usedAttentionMechanisms[this.stateIndex]
 
     attentionMechanism.setErrors(outputErrors)
+    attentionMechanism.setParamsErrorsCollector(this.attentionParamsErrorsCollector)
 
     this.attentionErrorsAccumulator.accumulate(attentionMechanism.backward(propagateToInput = true))
 
@@ -113,40 +113,20 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
    */
   private fun backwardAttentionArrays(outputErrors: List<DenseNDArray>): DenseNDArray {
 
-    val vectorErrorsSum: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.networkProcessor.model.inputSize))
+    val contextVectorErrorsSum = DenseNDArrayFactory.zeros(Shape(this.networkProcessor.model.inputSize))
 
-    val mergeProcessors: List<FeedforwardNeuralProcessor<DenseNDArray>>
-      = this.networkProcessor.usedMergeProcessors[this.stateIndex]
+    this.networkProcessor.mergeProcessor.backward(outputErrors)
 
-    mergeProcessors.zip(outputErrors).forEachIndexed { index, (mergeProcessor, attentionErrors) ->
+    this.networkProcessor.mergeProcessor.getInputsErrors(copy = true).forEachIndexed { i, errors ->
 
-      val (inputSequenceElementError: DenseNDArray, vectorErrors: DenseNDArray) =
-        this.backwardMergeProcessor(processor = mergeProcessor, outputErrors = attentionErrors)
+      val inputErrors = errors[0]
+      val contextVectorErrors = errors[1]
 
-      vectorErrorsSum.assignSum(vectorErrors)
-
-      this.inputSequenceErrors[index].assignSum(inputSequenceElementError)
+      contextVectorErrorsSum.assignSum(contextVectorErrors)
+      this.inputSequenceErrors[i].assignSum(inputErrors)
     }
 
-    return vectorErrorsSum
-  }
-
-  /**
-   * A single merge processor backward.
-   *
-   * @param processor a merge processor
-   * @param outputErrors the errors of the output
-   *
-   * @return the errors of the input
-   */
-  private fun backwardMergeProcessor(processor: FeedforwardNeuralProcessor<DenseNDArray>,
-                                     outputErrors: DenseNDArray): Pair<DenseNDArray, DenseNDArray> {
-
-    processor.backward(outputErrors = outputErrors)
-
-    this.mergeErrorsAccumulator.accumulate(processor.getParamsErrors(copy = false))
-
-    return processor.getInputsErrors(copy = true).let{ Pair(it[0], it[1]) }
+    return contextVectorErrorsSum
   }
 
   /**
@@ -157,7 +137,6 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
     this.initInputSequenceErrors()
     this.initVectorsErrors()
 
-    this.mergeErrorsAccumulator.clear()
     this.attentionErrorsAccumulator.clear()
   }
 

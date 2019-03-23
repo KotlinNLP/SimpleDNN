@@ -10,8 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayer
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
-import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
-import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
+import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 
 /**
@@ -64,17 +63,12 @@ class PointerNetworkProcessor(
   internal val firstState: Boolean get() = this.forwardCount == 0
 
   /**
-   * A pool of processors for the merge network.
+   * Batch processor for the merge network.
    */
-  internal val mergeProcessorsPool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
+  internal val mergeProcessor = BatchFeedforwardProcessor<DenseNDArray>(
     model = this.model.mergeNetwork,
     useDropout = false,
     propagateToInput = true)
-
-  /**
-   * The list of merge processors used during the last forward.
-   */
-  internal val usedMergeProcessors = mutableListOf<List<FeedforwardNeuralProcessor<DenseNDArray>>>()
 
   /**
    * The list of attention mechanisms used during the last forward.

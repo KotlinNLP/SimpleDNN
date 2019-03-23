@@ -9,7 +9,6 @@ package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayer
-import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -47,7 +46,8 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
       AttentionMechanismLayer(
         inputArrays = attentionArrays.map { AugmentedArray(it) },
         params = this.networkProcessor.model.attentionParams,
-        activation = this.networkProcessor.model.activation))
+        activation = this.networkProcessor.model.activation)
+    )
 
   /**
    * @param context the vector that modulates a content-based attention mechanism over the input sequence
@@ -56,32 +56,16 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
    */
   private fun buildAttentionSequence(context: DenseNDArray): List<DenseNDArray> {
 
-    val mergeProcessors = this.getMergeProcessors(size = this.networkProcessor.inputSequence.size)
-
-    return mergeProcessors.zip(this.networkProcessor.inputSequence).map { (processor, inputArray) ->
-      processor.forward(featuresList = listOf(inputArray, context))
-    }
+    return this.networkProcessor.mergeProcessor.forward(
+      ArrayList(this.networkProcessor.inputSequence.map { inputArray -> listOf(inputArray, context) } )
+    )
   }
-
-  /**
-   * Add a new list of available merge processors into the usedMergeProcessors list and return it.
-   *
-   * @param size the number of merge processors to build
-   *
-   * @return a list of available merge processors
-   */
-  private fun getMergeProcessors(size: Int): List<FeedforwardNeuralProcessor<DenseNDArray>> =
-    this.networkProcessor.usedMergeProcessors.addAndReturn(List(size = size, init = {
-      this.networkProcessor.mergeProcessorsPool.getItem()
-    }))
 
   /**
    * Initialize the structures used during the forward.
    */
   private fun initForward() {
 
-    this.networkProcessor.mergeProcessorsPool.releaseAll()
-    this.networkProcessor.usedMergeProcessors.clear()
     this.networkProcessor.usedAttentionMechanisms.clear()
   }
 
