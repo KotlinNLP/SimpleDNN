@@ -100,26 +100,6 @@ class AttentionLayerStructureSpec : Spek({
         doubleArrayOf(0.3, 0.4),
         doubleArrayOf(0.5, 0.6)
       )))
-
-      val attentionErrors = structure.getAttentionErrors()
-
-      it("should match the expected errors of the first attention array") {
-        assertTrue {
-          attentionErrors[0].equals(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2)), tolerance = 1.0e-06)
-        }
-      }
-
-      it("should match the expected errors of the second attention array") {
-        assertTrue {
-          attentionErrors[1].equals(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.4)), tolerance = 1.0e-06)
-        }
-      }
-
-      it("should match the expected errors of the third attention array") {
-        assertTrue {
-          attentionErrors[2].equals(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, 0.6)), tolerance = 1.0e-06)
-        }
-      }
     }
 
     on("forward") {
