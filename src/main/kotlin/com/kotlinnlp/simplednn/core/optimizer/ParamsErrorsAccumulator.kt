@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 /**
  * Generic params errors accumulator.
  */
-class ParamsErrorsAccumulator {
+open class ParamsErrorsAccumulator {
 
   /**
    * Handle the accumulation of a single ParamsErrors.

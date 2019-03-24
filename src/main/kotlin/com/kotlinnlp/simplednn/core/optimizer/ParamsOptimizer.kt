@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.core.optimizer
 
-import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -20,48 +19,19 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  *
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  */
-class ParamsOptimizer(private val updateMethod: UpdateMethod<*>) : ScheduledUpdater {
-
-  /**
-   * The accumulator of parameters errors.
-   */
-  private val paramsErrorsAccumulator = ParamsErrorsAccumulator()
+class ParamsOptimizer(private val updateMethod: UpdateMethod<*>) : ParamsErrorsAccumulator(), ScheduledUpdater {
 
   /**
    * Calculate the errors average, update the parameters.
    */
   override fun update() {
 
-    if (this.paramsErrorsAccumulator.isNotEmpty) {
+    if (this.isNotEmpty) {
       
-      this.paramsErrorsAccumulator.averageErrors()
+      this.averageErrors()
       this.updateParams()
-      this.paramsErrorsAccumulator.clear()
+      this.clear()
     }
-  }
-
-  /**
-   * Accumulate the given [paramsErrors] into the accumulator.
-   *
-   * @param paramsErrors the parameters errors to accumulate
-   * @param copy a Boolean indicating if the [paramsErrors] can be used as reference or must be copied. Set copy = false
-   *             to optimize the accumulation when the amount of the errors to accumulate is 1. (default = true)
-   */
-  fun accumulate(paramsErrors: ParamsErrorsList, copy: Boolean = true) {
-
-    this.paramsErrorsAccumulator.accumulate(paramsErrors = paramsErrors, copy = copy)
-  }
-
-  /**
-   * Accumulate the given [paramsErrors] into the accumulator.
-   *
-   * @param paramsErrors the parameters errors to accumulate
-   * @param copy a Boolean indicating if the [paramsErrors] can be used as reference or must be copied. Set copy = false
-   *             to optimize the accumulation when the amount of the errors to accumulate is 1. (default = true)
-   */
-  fun accumulate(paramsErrors: ParamsArray.Errors<*>, copy: Boolean = true) {
-
-    this.paramsErrorsAccumulator.accumulate(paramsErrors = paramsErrors, copy = copy)
   }
 
   /**
@@ -102,7 +72,7 @@ class ParamsOptimizer(private val updateMethod: UpdateMethod<*>) : ScheduledUpda
    */
   private fun updateParams() {
 
-    this.paramsErrorsAccumulator.getParamsErrors(copy = false).forEach {
+    this.getParamsErrors(copy = false).forEach {
 
       val params = it.refParams
       val errors = it.values
