@@ -1,6 +1,12 @@
+/* Copyright 2016-present The KotlinNLP Authors. All Rights Reserved.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ * ------------------------------------------------------------------*/
+
 package core.layers.merge.cosinesimilarity
 
-import com.kotlinnlp.simplednn.core.layers.models.merge.cosinesimilarity.CosineLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
@@ -33,12 +39,11 @@ class CosineLayerStructureSpec: Spek({
     on("backward") {
 
       val layer = CosineLayerUtils.buildLayer()
-      val paramsErrors = CosineLayerParameters(inputSize = 4)
 
       layer.forward()
 
       layer.outputArray.assignErrors(CosineLayerUtils.getOutputErrors())
-      layer.backward(paramsErrors = paramsErrors, propagateToInput = true)
+      layer.backward(propagateToInput = true)
 
       it("should match the expected errors of the inputArray1") {
         assertTrue {

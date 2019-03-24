@@ -20,7 +20,6 @@ import kotlin.math.sqrt
  */
 class CosineForwardHelper (override val layer: CosineLayer) : ForwardHelper<DenseNDArray>(layer) {
 
-
   /**
    * Forward the input to the output calculating a score value d ∈ [-1, 1]. d = cosine_similarity(input1-input2)
    * cosine_similarity(input1, input2) = (input1 dot input2) / (||input1||2 * ||input2||2)
@@ -45,7 +44,6 @@ class CosineForwardHelper (override val layer: CosineLayer) : ForwardHelper<Dens
     this.layer.input1Norm = input1Norm
     this.layer.input2Norm = input2Norm
     this.layer.outputArray.assignValues(DenseNDArrayFactory.arrayOf(outputScore))
-
   }
 
   /**
@@ -55,7 +53,6 @@ class CosineForwardHelper (override val layer: CosineLayer) : ForwardHelper<Dens
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
   override fun forward(layerContributions: LayerParameters<*>) {
-    throw NotImplementedError("Forward with contributions not available for the Distance layer.")
+    throw NotImplementedError("Forward with contributions not available for the Cosine layer.")
   }
-
 }

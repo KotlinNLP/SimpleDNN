@@ -21,20 +21,21 @@ import com.kotlinnlp.utils.ItemsPool
  * @property id an identification number useful to track a specific [CosineLayer]
  */
 class CosineLayer(
-    internal val inputArray1: AugmentedArray<DenseNDArray>,
-    internal val inputArray2: AugmentedArray<DenseNDArray>,
-    override val params: CosineLayerParameters,
-    id: Int = 0
+  internal val inputArray1: AugmentedArray<DenseNDArray>,
+  internal val inputArray2: AugmentedArray<DenseNDArray>,
+  override val params: CosineLayerParameters,
+  id: Int = 0
 ) :
-    ItemsPool.IDItem,
-    MergeLayer<DenseNDArray>(
-        inputArrays = listOf(inputArray1, inputArray2),
-        outputArray = AugmentedArray(1),
-        params = params,
-        activationFunction = null,
-        dropout = 0.0,
-        id = id
-    ) {
+  ItemsPool.IDItem,
+  MergeLayer<DenseNDArray>(
+    inputArrays = listOf(inputArray1, inputArray2),
+    outputArray = AugmentedArray(1),
+    params = params,
+    activationFunction = null,
+    dropout = 0.0,
+    id = id
+  ) {
+
   init { this.checkInputSize() }
 
   /**
@@ -66,5 +67,4 @@ class CosineLayer(
    * @return the [CosineLayerParameters] used to store errors
    */
   override fun parametersErrorsFactory() = CosineLayerParameters(inputSize = this.params.inputSize)
-
 }

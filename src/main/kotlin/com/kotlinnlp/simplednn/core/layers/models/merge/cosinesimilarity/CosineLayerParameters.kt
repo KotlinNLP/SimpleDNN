@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.merge.cosinesimilarity
 
-import com.kotlinnlp.simplednn.core.arrays.UpdatableArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
 
 /**
@@ -16,13 +16,13 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
  * @property inputSize the size of each input
  */
 class CosineLayerParameters (
-    inputSize: Int
+  inputSize: Int
 ) : MergeLayerParameters<CosineLayerParameters>(
-    inputsSize = List(size = 2, init = { inputSize }),
-    outputSize = 1,
-    weightsInitializer = null,
-    biasesInitializer = null,
-    sparseInput = false // actually not used because there are no parameters
+  inputsSize = List(size = 2, init = { inputSize }),
+  outputSize = 1,
+  weightsInitializer = null,
+  biasesInitializer = null,
+  sparseInput = false // actually not used because there are no parameters
 ){
   companion object {
 
@@ -36,21 +36,20 @@ class CosineLayerParameters (
   /**
    * The list of all parameters.
    */
-  override val paramsList = emptyList<UpdatableArray<*>>()
+  override val paramsList = emptyList<ParamsArray>()
 
   /**
    * The list of weights parameters.
    */
-  override val weightsList = emptyList<UpdatableArray<*>>()
+  override val weightsList = emptyList<ParamsArray>()
 
   /**
    * The list of biases parameters.
    */
-  override val biasesList = emptyList<UpdatableArray<*>>()
+  override val biasesList = emptyList<ParamsArray>()
 
   /**
    * @return a new [CosineLayerParameters] containing a copy of all parameters of this
    */
   override fun copy() = CosineLayerParameters(inputSize = this.inputSize)
-
 }

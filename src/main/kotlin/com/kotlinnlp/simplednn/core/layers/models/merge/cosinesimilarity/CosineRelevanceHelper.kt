@@ -18,6 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property layer the layer in which to calculate the input relevance
  */
 class CosineRelevanceHelper(override val layer: CosineLayer) : RelevanceHelper<DenseNDArray>(layer){
+
   /**
    * Not available for the Cosine Similarity layer.
    *
@@ -26,6 +27,6 @@ class CosineRelevanceHelper(override val layer: CosineLayer) : RelevanceHelper<D
    * @return the relevance of the input respect of the output
    */
   override fun getInputRelevance(layerContributions: LayerParameters<*>): NDArray<*> {
-    throw NotImplementedError("Relevance not available for the Distance layer.")
+    throw NotImplementedError("Relevance not available for the Cosine layer.")
   }
 }
