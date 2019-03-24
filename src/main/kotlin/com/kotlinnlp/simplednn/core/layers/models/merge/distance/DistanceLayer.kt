@@ -52,9 +52,4 @@ class DistanceLayer(
    * The helper which calculates the relevance.
    */
   override val relevanceHelper = DistanceRelevanceHelper(layer = this)
-
-  /**
-   * @return the [DistanceLayerParameters] used to store errors
-   */
-  override fun parametersErrorsFactory() = DistanceLayerParameters(inputSize = this.params.inputSize)
 }

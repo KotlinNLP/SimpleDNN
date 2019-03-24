@@ -48,11 +48,4 @@ class ProductLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The helper which calculates the relevance.
    */
   override val relevanceHelper = ProductRelevanceHelper(layer = this)
-
-  /**
-   * @return the [ProductLayerParameters] used to store errors
-   */
-  override fun parametersErrorsFactory() = ProductLayerParameters(
-    inputSize = this.params.inputSize,
-    nInputs = this.params.nInputs)
 }

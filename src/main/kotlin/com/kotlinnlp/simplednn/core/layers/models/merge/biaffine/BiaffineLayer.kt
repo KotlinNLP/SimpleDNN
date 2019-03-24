@@ -101,16 +101,4 @@ class BiaffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
       outputArray.setActivation(activationFunction)
     }
   }
-
-  /**
-   * @return the [BiaffineLayerParameters] used to store errors
-   */
-  override fun parametersErrorsFactory() = BiaffineLayerParameters(
-    inputSize1 = this.params.inputSize1,
-    inputSize2 = this.params.inputSize2,
-    outputSize = this.params.outputSize,
-    sparseInput = this.params.sparseInput,
-    weightsInitializer = null,
-    biasesInitializer = null
-  )
 }

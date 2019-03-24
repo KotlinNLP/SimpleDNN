@@ -62,9 +62,4 @@ class CosineLayer(
    * The helper which calculates the relevance.
    */
   override val relevanceHelper = CosineRelevanceHelper(layer = this)
-
-  /**
-   * @return the [CosineLayerParameters] used to store errors
-   */
-  override fun parametersErrorsFactory() = CosineLayerParameters(inputSize = this.params.inputSize)
 }

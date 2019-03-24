@@ -58,11 +58,6 @@ abstract class MergeLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * @return the [MergeLayerParameters] used to store errors, compatible with this type of [MergeLayer]
-   */
-  abstract fun parametersErrorsFactory(): MergeLayerParameters<*>
-
-  /**
    * Ensure that the input arrays are compatible with the parameters.
    */
   protected fun checkInputSize() {

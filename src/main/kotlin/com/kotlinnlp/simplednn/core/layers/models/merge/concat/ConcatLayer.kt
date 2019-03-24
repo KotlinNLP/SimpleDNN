@@ -49,9 +49,4 @@ class ConcatLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The helper which calculates the relevance.
    */
   override val relevanceHelper = ConcatRelevanceHelper(layer = this)
-
-  /**
-   * @return the [ConcatLayerParameters] used to store errors
-   */
-  override fun parametersErrorsFactory() = ConcatLayerParameters(inputsSize = this.params.inputsSize)
 }

@@ -48,11 +48,4 @@ class SumLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The helper which calculates the relevance.
    */
   override val relevanceHelper = SumRelevanceHelper(layer = this)
-
-  /**
-   * @return the [SumLayerParameters] used to store errors
-   */
-  override fun parametersErrorsFactory() = SumLayerParameters(
-    inputSize = this.params.inputSize,
-    nInputs = this.params.nInputs)
 }

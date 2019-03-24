@@ -48,11 +48,4 @@ class AvgLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The helper which calculates the relevance.
    */
   override val relevanceHelper = AvgRelevanceHelper(layer = this)
-
-  /**
-   * @return the [AvgLayerParameters] used to store errors
-   */
-  override fun parametersErrorsFactory() = AvgLayerParameters(
-    inputSize = this.params.inputSize,
-    nInputs = this.params.nInputs)
 }

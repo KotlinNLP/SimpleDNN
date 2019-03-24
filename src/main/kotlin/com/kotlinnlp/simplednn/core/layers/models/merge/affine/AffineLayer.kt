@@ -64,15 +64,4 @@ class AffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
       outputArray.setActivation(activationFunction)
     }
   }
-
-  /**
-   * @return the [AffineLayerParameters] used to store errors
-   */
-  override fun parametersErrorsFactory() = AffineLayerParameters(
-    inputsSize = this.params.inputsSize,
-    outputSize = this.params.outputSize,
-    sparseInput = this.params.sparseInput,
-    weightsInitializer = null,
-    biasesInitializer = null
-  )
 }
