@@ -9,4 +9,5 @@ package com.kotlinnlp.simplednn.core.optimizer
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 
+typealias ParamsList = List<ParamsArray>
 typealias ParamsErrorsList = List<ParamsArray.Errors<*>>

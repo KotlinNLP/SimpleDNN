@@ -49,7 +49,7 @@ abstract class IterableParams<SelfType: IterableParams<SelfType>>
   /**
    * The list of all parameters.
    */
-  abstract val paramsList: List<ParamsArray>
+  abstract val paramsList: ParamsList
 
   /**
    * The amount of parameters into this [IterableParams].
