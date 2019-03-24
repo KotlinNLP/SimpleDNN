@@ -83,35 +83,6 @@ abstract class IterableParams<SelfType: IterableParams<SelfType>>
   }
 
   /**
-   * Sum the values of each parameter of [x] to the parameters of this [IterableParams].
-   *
-   * @param x the [IterableParams] to add to this
-   */
-  fun assignSum(x: SelfType) {
-
-    this.zip(x).forEach {
-
-      val first = it.first.values
-      val second = it.second.values
-
-      first.assignSum(second)
-    }
-  }
-
-  /**
-   * Divide the values of each parameter by [n].
-   *
-   * @param n an integer number
-   */
-  fun assignDiv(n: Int) {
-
-    if (n > 1) {
-      val nDouble = n.toDouble()
-      this.forEach { it.values.assignDiv(nDouble) }
-    }
-  }
-
-  /**
    * @return a new [IterableParams] containing a copy of all parameters of this
    */
   abstract fun copy(): SelfType
