@@ -20,7 +20,7 @@ import java.util.UUID
 
 /**
  * The [ParamsArray] is a wrapper of a [DenseNDArray] extending it with an unique identifier [uuid],
- * with an [updaterSupportStructure] methods to build the params [Errors].
+ * with an [updaterSupportStructure] and with methods to build the params [Errors].
  *
  * @property values the values of the parameters
  */
@@ -33,32 +33,6 @@ class ParamsArray(val values: DenseNDArray) : Serializable {
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
-  }
-
-  /**
-   * The updater support structure used by [com.kotlinnlp.simplednn.core.functionalities.updatemethods].
-   */
-  var updaterSupportStructure: UpdaterSupportStructure? = null
-
-  /**
-   * Return the [updaterSupportStructure].
-   *
-   * If the [updaterSupportStructure] is null, set it with a new [StructureType].
-   * If the [updaterSupportStructure] has already been initialized, it must be compatible with the required
-   * [StructureType].
-   *
-   * @return the [updaterSupportStructure]
-   */
-  inline fun <reified StructureType: UpdaterSupportStructure>getOrSetSupportStructure(): StructureType {
-
-    if (this.updaterSupportStructure == null) {
-      this.updaterSupportStructure = StructureType::class.constructors.first().call(this.values.shape)
-    }
-
-    require(this.updaterSupportStructure is StructureType) { "Incompatible support structure" }
-
-    @Suppress("UNCHECKED_CAST")
-    return this.updaterSupportStructure as StructureType
   }
 
   /**
@@ -80,7 +54,7 @@ class ParamsArray(val values: DenseNDArray) : Serializable {
   constructor(values: List<DoubleArray>) : this(DenseNDArrayFactory.arrayOf(values))
 
   /**
-   * Build a new [ParamsArray] with the given [shape].
+   * Build a new [ParamsArray] with the given dimensions.
    *
    * @param dim1 the first dimension of the array
    * @param dim2 the second dimension of the array
@@ -117,11 +91,6 @@ class ParamsArray(val values: DenseNDArray) : Serializable {
   )
 
   /**
-   * The unique identifier of this [ParamsArray].
-   */
-  val uuid = UUID.randomUUID().toString()
-
-  /**
    * ParamsErrors.
    *
    * @property values the error of the parameters
@@ -139,6 +108,37 @@ class ParamsArray(val values: DenseNDArray) : Serializable {
      * @return a copy of this params errors (the copy share the same [refParams])
      */
     fun copy() = Errors(this.values.copy())
+  }
+
+  /**
+   * The unique identifier of this [ParamsArray].
+   */
+  val uuid = UUID.randomUUID().toString()
+
+  /**
+   * The updater support structure used by [com.kotlinnlp.simplednn.core.functionalities.updatemethods].
+   */
+  var updaterSupportStructure: UpdaterSupportStructure? = null
+
+  /**
+   * Return the [updaterSupportStructure].
+   *
+   * If the [updaterSupportStructure] is null, set it with a new [StructureType].
+   * If the [updaterSupportStructure] has already been initialized, it must be compatible with the required
+   * [StructureType].
+   *
+   * @return the [updaterSupportStructure]
+   */
+  inline fun <reified StructureType: UpdaterSupportStructure>getOrSetSupportStructure(): StructureType {
+
+    if (this.updaterSupportStructure == null) {
+      this.updaterSupportStructure = StructureType::class.constructors.first().call(this.values.shape)
+    }
+
+    require(this.updaterSupportStructure is StructureType) { "Incompatible support structure" }
+
+    @Suppress("UNCHECKED_CAST")
+    return this.updaterSupportStructure as StructureType
   }
 
   /**
