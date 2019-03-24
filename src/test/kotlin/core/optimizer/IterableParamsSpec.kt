@@ -50,53 +50,6 @@ class IterableParamsSpec : Spek({
           }
         }
       }
-
-      on("assignSum") {
-
-        val params1 = IterableParamsUtils.buildDenseParams1()
-        val params2 = IterableParamsUtils.buildDenseParams2()
-
-        params1.assignSum(params2)
-
-        it("should assign the expected values to the first parameters") {
-          assertTrue {
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.5, 0.3, 0.5),
-              doubleArrayOf(-0.8, 0.3, 1.5)
-            )).equals(params1.unit.weights.values, tolerance = 1.0e-06)
-          }
-        }
-
-        it("should assign the expected values to the second parameters") {
-          assertTrue {
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.0))
-              .equals(params1.unit.biases.values, tolerance = 1.0e-06)
-          }
-        }
-      }
-
-      on("assignDiv") {
-
-        val params1 = IterableParamsUtils.buildDenseParams1()
-
-        params1.assignDiv(4)
-
-        it("should assign the expected values to the first parameters") {
-          assertTrue {
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.1, 0.2, 0.05),
-              doubleArrayOf(0.025, 0.075, 0.225)
-            )).equals(params1.unit.weights.values, tolerance = 1.0e-06)
-          }
-        }
-
-        it("should assign the expected values to the second parameters") {
-          assertTrue {
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.125, 0.025))
-              .equals(params1.unit.biases.values, tolerance = 1.0e-06)
-          }
-        }
-      }
     }
   }
 })
