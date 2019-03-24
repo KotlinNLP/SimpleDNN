@@ -22,13 +22,11 @@ import java.io.OutputStream
  * @property layersConfiguration a list of configurations, one per layer
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
- * @param forceDense force all parameters to be dense (false by default)
  */
 class StackedLayersParameters(
   val layersConfiguration: List<LayerInterface>,
   weightsInitializer: Initializer? = GlorotInitializer(),
-  biasesInitializer: Initializer? = GlorotInitializer(),
-  private val forceDense: Boolean = false
+  biasesInitializer: Initializer? = GlorotInitializer()
 ) : IterableParams<StackedLayersParameters>() {
 
   /**
@@ -43,13 +41,11 @@ class StackedLayersParameters(
   constructor(
     vararg layersConfiguration: LayerInterface,
     weightsInitializer: Initializer? = GlorotInitializer(),
-    biasesInitializer: Initializer? = GlorotInitializer(),
-    forceDense: Boolean = false
+    biasesInitializer: Initializer? = GlorotInitializer()
   ): this(
     layersConfiguration = layersConfiguration.toList(),
     weightsInitializer = weightsInitializer,
-    biasesInitializer = biasesInitializer,
-    forceDense = forceDense
+    biasesInitializer = biasesInitializer
   )
 
   companion object {
@@ -100,9 +96,7 @@ class StackedLayersParameters(
    */
   val paramsPerLayer: List<LayerParameters<*>> = this.layersConfiguration.toLayerParameters(
     weightsInitializer = weightsInitializer,
-    biasesInitializer = biasesInitializer,
-    forceDenseInput = this.forceDense
-  )
+    biasesInitializer = biasesInitializer)
 
   /**
    * The list of all parameters.
@@ -116,7 +110,6 @@ class StackedLayersParameters(
 
     val clonedParams = StackedLayersParameters(
       layersConfiguration = this.layersConfiguration,
-      forceDense = this.forceDense,
       weightsInitializer = null,
       biasesInitializer = null)
 

@@ -72,8 +72,7 @@ object HighwayNeuralNetwork {
     return StackedLayersParameters(
       layersConfiguration = *layersConfiguration.toTypedArray(),
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer,
-      forceDense = false
+      biasesInitializer = biasesInitializer
     )
   }
 }

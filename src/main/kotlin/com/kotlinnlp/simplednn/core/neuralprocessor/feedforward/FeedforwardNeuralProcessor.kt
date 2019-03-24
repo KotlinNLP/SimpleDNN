@@ -57,8 +57,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     StackedLayersParameters(
       layersConfiguration = this.model.layersConfiguration,
       weightsInitializer = null,
-      biasesInitializer = null,
-      forceDense = false)
+      biasesInitializer = null)
   }
 
   /**

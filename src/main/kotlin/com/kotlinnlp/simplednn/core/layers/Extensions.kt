@@ -17,12 +17,10 @@ import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
  *
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
- * @param forceDenseInput force all parameters to be dense (false by default)
  */
 fun List<LayerInterface>.toLayerParameters(
   weightsInitializer: Initializer? = GlorotInitializer(),
-  biasesInitializer: Initializer? = GlorotInitializer(),
-  forceDenseInput: Boolean = false
+  biasesInitializer: Initializer? = GlorotInitializer()
 ): List<LayerParameters<*>> = List(size = this.size - 1, init = { i ->
   LayerParametersFactory(
     inputsSize = this[i].sizes,
@@ -30,7 +28,7 @@ fun List<LayerInterface>.toLayerParameters(
     connectionType = this[i + 1].connectionType!!,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer,
-    sparseInput = !forceDenseInput && this[i].type == LayerType.Input.SparseBinary
+    sparseInput = this[i].type == LayerType.Input.SparseBinary
   )
 })
 
