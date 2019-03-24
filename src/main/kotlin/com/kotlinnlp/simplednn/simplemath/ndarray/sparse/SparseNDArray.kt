@@ -383,20 +383,6 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
-   *
-   */
-  private fun assignSum(a: SparseNDArray): SparseNDArray {
-    require(a.shape == this.shape) { "Arrays with different size" }
-    require(a.values.size == this.values.size) { "Arrays with a different amount of active values" }
-
-    for (index in 0 until this.values.size) {
-      this.values[index] += a.values[index]
-    }
-
-    return this
-  }
-
-  /**
    * Sum the values of [a] to this [SparseNDArray], updating the arrays [values], [rowIndices] and [colIndices] with all
    * the entries which are in [a] and not in this [SparseNDArray] and adding the values of [a] at indices already active
    * in this.
@@ -406,7 +392,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    * @return this [SparseNDArray]
    */
   @Suppress("UNCHECKED_CAST")
-  fun assignSumMerging(a: SparseNDArray): SparseNDArray {
+  private fun assignSum(a: SparseNDArray): SparseNDArray {
     require(a.shape == this.shape) { "Arrays with different size" }
 
     fun SparseNDArray.getLinearIndex(arrayIndex: Int): Int =

@@ -19,10 +19,7 @@ import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
 import org.jetbrains.spek.api.dsl.on
-import kotlin.test.assertEquals
-import kotlin.test.assertFails
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 /**
  *
@@ -128,10 +125,10 @@ class SparseNDArraySpec : Spek({
           ),
           shape = Shape(4, 3))
 
-        val res = array1.assignSumMerging(array2)
+        val res = array1.assignSum(array2)
 
         it("should return the same array") {
-          assertTrue(array1 === res)
+          assertSame(array1, res)
         }
 
         it("should contain the expected values") {
