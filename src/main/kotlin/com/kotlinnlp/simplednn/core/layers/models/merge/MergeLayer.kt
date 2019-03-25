@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.layers.models.merge
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.Layer
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -18,6 +19,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * It is a [Layer] with two inputs instead of one.
  *
  * @property inputArrays the input arrays of the layer
+ * @property inputType the input array type (default Dense)
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
  * @property activationFunction the activation function of the layer
@@ -27,6 +29,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 abstract class MergeLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArrays: List<AugmentedArray<InputNDArrayType>>,
+  inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: MergeLayerParameters<*>,
   activationFunction: ActivationFunction? = null,
@@ -34,6 +37,7 @@ abstract class MergeLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   id: Int = 0
 ) : Layer<InputNDArrayType>(
   inputArray = inputArrays[0],
+  inputType = inputType,
   outputArray = outputArray,
   params = params,
   activationFunction = activationFunction,

@@ -9,6 +9,8 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.biaffine
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
@@ -33,6 +35,7 @@ import com.kotlinnlp.utils.ItemsPool
 class BiaffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   internal val inputArray1: AugmentedArray<InputNDArrayType>,
   internal val inputArray2: AugmentedArray<InputNDArrayType>,
+  inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: BiaffineLayerParameters,
   activationFunction: ActivationFunction? = null,
@@ -42,6 +45,7 @@ class BiaffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   ItemsPool.IDItem,
   MergeLayer<InputNDArrayType>(
     inputArrays = listOf(inputArray1, inputArray2),
+    inputType = inputType,
     outputArray = outputArray,
     params = params,
     activationFunction = activationFunction,
@@ -63,6 +67,7 @@ class BiaffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
               id: Int = 0): this(
     inputArray1 = AugmentedArray<InputNDArrayType>(size = params.inputSize1),
     inputArray2 = AugmentedArray<InputNDArrayType>(size = params.inputSize2),
+    inputType = if (params.sparseInput) LayerType.Input.SparseBinary else LayerType.Input.Dense,
     outputArray = AugmentedArray.zeros(size = params.outputSize),
     params = params,
     activationFunction = activationFunction,
@@ -89,9 +94,9 @@ class BiaffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val backwardHelper = BiaffineBackwardHelper(layer = this)
 
   /**
-   * The helper which calculates the relevance.
+   * The helper which calculates the relevance
    */
-  override val relevanceHelper = BiaffineRelevanceHelper(layer = this)
+  override val relevanceHelper: RelevanceHelper? = null
 
   /**
    * Initialization: set the activation function of the outputArray.

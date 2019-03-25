@@ -8,16 +8,14 @@
 package com.kotlinnlp.simplednn.core.layers.models.recurrent
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which calculates the relevance of the input of a gated recurrent [layer] respect of its output.
  *
  * @property layer the [RecurrentLayer] in which to calculate the input relevance
  */
-abstract class GatedRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  layer: RecurrentLayer<InputNDArrayType>
-) : RecurrentRelevanceHelper<InputNDArrayType>(layer) {
+abstract class GatedRecurrentRelevanceHelper(layer: RecurrentLayer<DenseNDArray>) : RecurrentRelevanceHelper(layer) {
 
   /**
    * Propagate the relevance from the output to the gated units of the layer.

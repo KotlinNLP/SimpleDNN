@@ -10,6 +10,7 @@ package core.layers.feedforward.simple
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -30,6 +31,7 @@ object FeedforwardLayerStructureUtils {
 
     return FeedforwardLayer(
       inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
+      inputType = LayerType.Input.Dense,
       outputArray = AugmentedArray.zeros(5),
       params = getParams45(),
       activationFunction = Tanh())
@@ -72,6 +74,7 @@ object FeedforwardLayerStructureUtils {
 
     return FeedforwardLayer(
       inputArray = inputArray,
+      inputType = LayerType.Input.Dense,
       outputArray = AugmentedArray.zeros(3),
       params = getParams53(),
       activationFunction = Softmax())
@@ -89,6 +92,7 @@ object FeedforwardLayerStructureUtils {
 
     return FeedforwardLayer(
       inputArray = inputArray,
+      inputType = LayerType.Input.SparseBinary,
       outputArray = AugmentedArray.zeros(3),
       params = getParams53(),
       activationFunction = Softmax())

@@ -64,6 +64,7 @@ object LayerFactory {
 
       LayerType.Input.Dense -> LayerFactory(
         inputArrays = inputConfiguration.sizes.map { AugmentedArray<DenseNDArray>(size = it) },
+        inputType = inputConfiguration.type,
         outputSize = outputConfiguration.size,
         params = params,
         activationFunction = outputConfiguration.activationFunction,
@@ -73,6 +74,7 @@ object LayerFactory {
 
       LayerType.Input.Sparse -> LayerFactory(
         inputArrays = inputConfiguration.sizes.map { AugmentedArray<SparseNDArray>(size = it) },
+        inputType = inputConfiguration.type,
         outputSize = outputConfiguration.size,
         params = params,
         activationFunction = outputConfiguration.activationFunction,
@@ -82,6 +84,7 @@ object LayerFactory {
 
       LayerType.Input.SparseBinary -> LayerFactory(
         inputArrays = inputConfiguration.sizes.map { AugmentedArray<SparseBinaryNDArray>(size = it) },
+        inputType = inputConfiguration.type,
         outputSize = outputConfiguration.size,
         params = params,
         activationFunction = outputConfiguration.activationFunction,
@@ -96,6 +99,7 @@ object LayerFactory {
    * the previous layer) and the output layersConfiguration.
    *
    * @param inputArrays a list of AugmentedArrays used as referenced input (to concatenate two layers)
+   * @param inputType the input type
    * @param outputConfiguration the layersConfiguration of the output array
    * @param params the parameters of the layer
    * @param dropout the probability of dropout
@@ -104,12 +108,14 @@ object LayerFactory {
    */
   operator fun <InputNDArrayType : NDArray<InputNDArrayType>> invoke(
     inputArrays: List<AugmentedArray<InputNDArrayType>>,
+    inputType: LayerType.Input,
     outputConfiguration: LayerInterface,
     params: LayerParameters<*>,
     dropout: Double,
     contextWindow: LayerContextWindow? = null
   ) : Layer<InputNDArrayType> = LayerFactory(
     inputArrays = inputArrays,
+    inputType = inputType,
     outputSize = outputConfiguration.size,
     params = params,
     activationFunction = outputConfiguration.activationFunction,
@@ -133,6 +139,7 @@ object LayerFactory {
    */
   operator fun <InputNDArrayType : NDArray<InputNDArrayType>> invoke(
     inputArrays: List<AugmentedArray<InputNDArrayType>>,
+    inputType: LayerType.Input,
     outputSize: Int,
     params: LayerParameters<*>,
     connectionType: LayerType.Connection,
@@ -143,6 +150,7 @@ object LayerFactory {
 
     LayerType.Connection.Feedforward -> FeedforwardLayer(
       inputArray = inputArrays.first(),
+      inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params,
       activationFunction = activationFunction,
@@ -150,6 +158,7 @@ object LayerFactory {
 
     LayerType.Connection.Highway -> HighwayLayer(
       inputArray = inputArrays.first(),
+      inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params,
       activationFunction = activationFunction,
@@ -157,6 +166,7 @@ object LayerFactory {
 
     LayerType.Connection.Affine -> AffineLayer(
       inputArrays = inputArrays,
+      inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params as AffineLayerParameters,
       activationFunction = activationFunction,
@@ -165,6 +175,7 @@ object LayerFactory {
     LayerType.Connection.Biaffine -> BiaffineLayer(
       inputArray1 = inputArrays[0],
       inputArray2 = inputArrays[1],
+      inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params as BiaffineLayerParameters,
       activationFunction = activationFunction,
@@ -172,26 +183,31 @@ object LayerFactory {
 
     LayerType.Connection.Concat -> ConcatLayer(
       inputArrays = inputArrays,
+      inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params as ConcatLayerParameters)
 
     LayerType.Connection.Sum -> SumLayer(
       inputArrays = inputArrays,
+      inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params as SumLayerParameters)
 
     LayerType.Connection.Avg -> AvgLayer(
       inputArrays = inputArrays,
+      inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params as AvgLayerParameters)
 
     LayerType.Connection.Product -> ProductLayer(
       inputArrays = inputArrays,
+      inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params as ProductLayerParameters)
 
     LayerType.Connection.SimpleRecurrent -> SimpleRecurrentLayer(
       inputArray = inputArrays.first(),
+      inputType = inputType,
       outputArray = RecurrentLayerUnit(outputSize),
       params = params,
       activationFunction = activationFunction,
@@ -200,6 +216,7 @@ object LayerFactory {
 
     LayerType.Connection.GRU -> GRULayer(
       inputArray = inputArrays.first(),
+      inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params,
       activationFunction = activationFunction,
@@ -208,6 +225,7 @@ object LayerFactory {
 
     LayerType.Connection.LSTM -> LSTMLayer(
       inputArray = inputArrays.first(),
+      inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params,
       activationFunction = activationFunction,
@@ -216,6 +234,7 @@ object LayerFactory {
 
     LayerType.Connection.CFN -> CFNLayer(
       inputArray = inputArrays.first(),
+      inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params,
       activationFunction = activationFunction,
@@ -224,6 +243,7 @@ object LayerFactory {
 
     LayerType.Connection.RAN -> RANLayer(
       inputArray = inputArrays.first(),
+      inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params,
       activationFunction = activationFunction,
@@ -232,6 +252,7 @@ object LayerFactory {
 
     LayerType.Connection.DeltaRNN -> DeltaRNNLayer(
       inputArray = inputArrays.first(),
+      inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params,
       activationFunction = activationFunction,
@@ -240,6 +261,7 @@ object LayerFactory {
 
     LayerType.Connection.IndRNN -> IndRNNLayer(
       inputArray = inputArrays.first(),
+      inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params,
       activationFunction = activationFunction,

@@ -9,6 +9,7 @@ package core.layers.recurrent.cfn
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayer
@@ -27,6 +28,7 @@ object CFNLayerStructureUtils {
    */
   fun buildLayer(layerContextWindow: LayerContextWindow): CFNLayer<DenseNDArray> = CFNLayer(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
+    inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))),
     params = buildParams(),
     activationFunction = Tanh(),

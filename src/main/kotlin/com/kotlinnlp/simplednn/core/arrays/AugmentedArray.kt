@@ -61,12 +61,12 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Contains the relevance of the current values
    */
-  val relevance: NDArray<*> get() = this._relevance
+  val relevance: DenseNDArray get() = this._relevance
 
   /**
    * Contains the relevance of the current values
    */
-  private lateinit var _relevance: NDArray<*>
+  private lateinit var _relevance: DenseNDArray
 
   /**
    * Contains the relevance of the current values when involved in recurrent calculations
@@ -76,7 +76,7 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Contains the relevance of the current values when involved in recurrent calculations
    */
-  private lateinit var _recurrentRelevance: NDArray<*>
+  private lateinit var _recurrentRelevance: DenseNDArray
 
   /**
    * Assign errors to the array.
@@ -209,10 +209,10 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Assign the relevance to the array.
    *
-   * @param relevance the [NDArray] to assign to this [AugmentedArray] as relevance.
+   * @param relevance the [DenseNDArray] to assign to this [AugmentedArray] as relevance.
    *                  It must have the same size of the values of this [AugmentedArray].
    */
-  fun assignRelevance(relevance: NDArray<*>) {
+  fun assignRelevance(relevance: DenseNDArray) {
 
     require(relevance.length == this.size) { "Relevance must have the same size of the values" }
 
@@ -225,10 +225,10 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   /**
    * Assign the recurrent relevance to the array.
    *
-   * @param relevance the [NDArray] to assign to this [AugmentedArray] as recurrent relevance.
+   * @param relevance the [DenseNDArray] to assign to this [AugmentedArray] as recurrent relevance.
    *                  It must have the same size of the values of this [AugmentedArray].
    */
-  fun assignRecurrentRelevance(relevance: NDArray<*>) {
+  fun assignRecurrentRelevance(relevance: DenseNDArray) {
 
     require(relevance.length == this.size) { "Relevance must have the same size of the values" }
 

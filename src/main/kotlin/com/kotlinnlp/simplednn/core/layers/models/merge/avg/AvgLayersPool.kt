@@ -50,6 +50,7 @@ class AvgLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     return AvgLayer(
       inputArrays = inputArrays,
+      inputType = this.inputType,
       outputArray = AugmentedArray.zeros(this.params.outputSize),
       params = this.params,
       id = id

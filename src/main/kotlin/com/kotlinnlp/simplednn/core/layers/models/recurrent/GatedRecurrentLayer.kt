@@ -12,11 +12,13 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import java.lang.RuntimeException
 
 /**
  * The Recurrent Layer Structure.
  *
  * @property inputArray the input array of the layer
+ * @property inputType the input array type (default Dense)
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
  * @property layerContextWindow the context window used for the forward and the backward
@@ -26,6 +28,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  */
 abstract class GatedRecurrentLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
+  inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters<*>,
   layerContextWindow: LayerContextWindow,
@@ -33,6 +36,7 @@ abstract class GatedRecurrentLayer<InputNDArrayType : NDArray<InputNDArrayType>>
   dropout: Double = 0.0
 ) : RecurrentLayer<InputNDArrayType>(
   inputArray = inputArray,
+  inputType = inputType,
   outputArray = outputArray,
   params = params,
   layerContextWindow = layerContextWindow,
@@ -42,12 +46,13 @@ abstract class GatedRecurrentLayer<InputNDArrayType : NDArray<InputNDArrayType>>
   /**
    * The helper which calculates the relevance
    */
-  abstract override val relevanceHelper: GatedRecurrentRelevanceHelper<InputNDArrayType>
+  abstract override val relevanceHelper: GatedRecurrentRelevanceHelper?
 
   /**
    * @param layerContributions the contributions saved during the last forward
    */
   fun propagateRelevanceToGates(layerContributions: LayerParameters<*>) {
-    this.relevanceHelper.propagateRelevanceToGates(layerContributions)
+    this.relevanceHelper?.propagateRelevanceToGates(layerContributions) ?:
+      throw RuntimeException("Relevance propagation not available.")
   }
 }

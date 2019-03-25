@@ -9,6 +9,7 @@ package core.attention
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.attention.AttentionLayerStructure
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -36,6 +37,7 @@ class AttentionLayerStructureSpec : Spek({
         assertFails {
           AttentionLayerStructure(
             inputSequence = mutableListOf<AugmentedArray<DenseNDArray>>(),
+            inputType = LayerType.Input.Dense,
             attentionSequence = attentionSequence,
             params = params)
         }
@@ -45,6 +47,7 @@ class AttentionLayerStructureSpec : Spek({
         assertFails {
           AttentionLayerStructure(
             inputSequence = inputSequence,
+            inputType = LayerType.Input.Dense,
             attentionSequence = mutableListOf(),
             params = params)
         }
@@ -54,6 +57,7 @@ class AttentionLayerStructureSpec : Spek({
         assertFails {
           AttentionLayerStructure(
             inputSequence = inputSequence,
+            inputType = LayerType.Input.Dense,
             attentionSequence = attentionSequence.mapIndexed { i, elm ->
               if (i == 1) DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.1, 0.3)) else elm
             },
@@ -65,6 +69,7 @@ class AttentionLayerStructureSpec : Spek({
         assertFails {
           AttentionLayerStructure(
             inputSequence = inputSequence,
+            inputType = LayerType.Input.Dense,
             attentionSequence = attentionSequence.mapIndexed { i, elm ->
               if (i == 1) DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.1, 0.3)) else elm
             },
@@ -79,6 +84,7 @@ class AttentionLayerStructureSpec : Spek({
       val attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence)
       val structure = AttentionLayerStructure(
         inputSequence = inputSequence,
+        inputType = LayerType.Input.Dense,
         attentionSequence = attentionSequence,
         params = AttentionLayerUtils.buildAttentionParams())
 
@@ -107,6 +113,7 @@ class AttentionLayerStructureSpec : Spek({
       val inputSequence = AttentionLayerUtils.buildInputSequence()
       val structure = AttentionLayerStructure(
         inputSequence = inputSequence,
+        inputType = LayerType.Input.Dense,
         attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence),
         params = AttentionLayerUtils.buildAttentionParams()
       )
@@ -135,6 +142,7 @@ class AttentionLayerStructureSpec : Spek({
       val inputSequence = AttentionLayerUtils.buildInputSequence()
       val structure = AttentionLayerStructure(
         inputSequence = inputSequence,
+        inputType = LayerType.Input.Dense,
         attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence),
         params = AttentionLayerUtils.buildAttentionParams()
       )

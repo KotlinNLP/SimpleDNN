@@ -9,6 +9,7 @@ package core.layers.merge.biaffine
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -25,6 +26,7 @@ object BiaffineLayerUtils {
   fun buildLayer(): BiaffineLayer<DenseNDArray> = BiaffineLayer(
     inputArray1 = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9))),
     inputArray2 = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.2, 0.6))),
+    inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray(size = 2),
     params = buildParams(),
     activationFunction = Tanh()

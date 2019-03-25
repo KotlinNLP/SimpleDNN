@@ -9,6 +9,7 @@ package core.layers.recurrent.simple
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerParameters
@@ -75,6 +76,7 @@ private fun buildPrevStateLayer(): SimpleRecurrentLayer<DenseNDArray> {
   return SimpleRecurrentLayer(
     inputArray = AugmentedArray(size = 4),
     outputArray = outputArray,
+    inputType = LayerType.Input.Dense,
     params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),
     layerContextWindow = SimpleRecurrentLayerContextWindow.Empty())
@@ -90,6 +92,7 @@ private fun buildNextStateLayer(): SimpleRecurrentLayer<DenseNDArray> {
 
   val layer = SimpleRecurrentLayer(
     inputArray = AugmentedArray(size = 4),
+    inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),

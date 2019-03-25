@@ -8,6 +8,8 @@
 package com.kotlinnlp.simplednn.core.layers.models.merge.product
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -16,16 +18,19 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * The Product Layer Structure.
  *
  * @property inputArrays the input arrays of the layer
+ * @property inputType the input array type (default Dense)
  * @property params the parameters which connect the input to the output
  * @property id an identification number useful to track a specific [ProductLayer]
  */
 class ProductLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArrays: List<AugmentedArray<InputNDArrayType>>,
+  inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: ProductLayerParameters,
   id: Int = 0
 ) : MergeLayer<InputNDArrayType>(
   inputArrays = inputArrays,
+  inputType = inputType,
   outputArray = outputArray,
   params = params,
   activationFunction = null,
@@ -45,7 +50,7 @@ class ProductLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val backwardHelper = ProductBackwardHelper(layer = this)
 
   /**
-   * The helper which calculates the relevance.
+   * The helper which calculates the relevance
    */
-  override val relevanceHelper = ProductRelevanceHelper(layer = this)
+  override val relevanceHelper: RelevanceHelper? = null
 }

@@ -176,9 +176,14 @@ class RANForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param bForG the biases array of the forget gate
    */
   private fun forwardGates(layerContributions: RANLayerParameters, bInG: DenseNDArray, bForG: DenseNDArray) {
+
+    assert (this.layer.inputArray.values is DenseNDArray) {
+      "Forwarding with contributions requires the input to be dense."
+    }
+
     this.layer.params as RANLayerParameters
 
-    val x: InputNDArrayType = this.layer.inputArray.values
+    val x = this.layer.inputArray.values as DenseNDArray
     val candidateParams: LinearParams = this.layer.params.candidate
 
     this.forwardArray(

@@ -12,11 +12,13 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import java.lang.RuntimeException
 
 /**
  * The Recurrent Layer Structure.
  *
  * @property inputArray the input array of the layer
+ * @property inputType the input array type (default Dense)
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
  * @property layerContextWindow the context window used for the forward and the backward
@@ -26,6 +28,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  */
 abstract class RecurrentLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
+  inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters<*>,
   val layerContextWindow: LayerContextWindow,
@@ -33,6 +36,7 @@ abstract class RecurrentLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   dropout: Double = 0.0
 ) : Layer<InputNDArrayType>(
   inputArray = inputArray,
+  inputType = inputType,
   outputArray = outputArray,
   params = params,
   activationFunction = activationFunction,
@@ -41,7 +45,7 @@ abstract class RecurrentLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The helper which calculates the relevance
    */
-  abstract override val relevanceHelper: RecurrentRelevanceHelper<InputNDArrayType>
+  abstract override val relevanceHelper: RecurrentRelevanceHelper?
 
   /**
    * Calculate the relevance of the output in the previous state respect of the current one and assign it to the output
@@ -50,7 +54,8 @@ abstract class RecurrentLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param layerContributions the contributions saved during the last forward
    */
   fun setRecurrentRelevance(layerContributions: LayerParameters<*>) {
-    this.relevanceHelper.setRecurrentRelevance(layerContributions = layerContributions)
+    this.relevanceHelper?.setRecurrentRelevance(layerContributions = layerContributions) ?:
+      throw RuntimeException("Relevance propagation not available.")
   }
 
   /**

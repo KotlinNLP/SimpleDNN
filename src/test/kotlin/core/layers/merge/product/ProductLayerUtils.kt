@@ -8,6 +8,7 @@
 package core.layers.merge.product
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.merge.product.ProductLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.product.ProductLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -29,6 +30,7 @@ object ProductLayerUtils {
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.4, -0.8))),
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.9, -0.5)))
     ),
+    inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray(size = 3),
     params = ProductLayerParameters(inputSize = 3, nInputs = 5)
   )

@@ -9,6 +9,7 @@ package core.layers.recurrent.simple
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerParameters
@@ -25,6 +26,7 @@ object SimpleRecurrentLayerStructureUtils {
    */
   fun buildLayer(layerContextWindow: LayerContextWindow) = SimpleRecurrentLayer(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
+    inputType = LayerType.Input.Dense,
     outputArray = RecurrentLayerUnit(5),
     params = buildParams(),
     activationFunction = Tanh(),

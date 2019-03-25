@@ -11,18 +11,15 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceUtils
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentRelevanceHelper
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 
 /**
  * The helper which calculates the relevance of the input of a [layer] respect of its output.
  *
  * @property layer the [DeltaRNNLayer] in which to calculate the input relevance
  */
-class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: DeltaRNNLayer<InputNDArrayType>
-) : GatedRecurrentRelevanceHelper<InputNDArrayType>(layer) {
+class DeltaRNNRelevanceHelper(override val layer: DeltaRNNLayer<DenseNDArray>)
+  : GatedRecurrentRelevanceHelper(layer) {
 
   /**
    * Propagate the relevance from the output to the array units of the layer.
@@ -34,7 +31,7 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     val previousStateExists: Boolean = this.layer.layerContextWindow.getPrevState() != null
 
-    val halfOutputRelevance: DenseNDArray = (this.layer.outputArray.relevance as DenseNDArray).div(2.0)
+    val halfOutputRelevance: DenseNDArray = this.layer.outputArray.relevance.div(2.0)
 
     val candidateRelevance: DenseNDArray = if (previousStateExists)
       this.getInputPartition(layerContributions).div(2.0)
@@ -54,13 +51,14 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the relevance of the input respect of the output
    */
-  override fun getInputRelevance(layerContributions: LayerParameters<*>): NDArray<*> {
+  override fun getInputRelevance(layerContributions: LayerParameters<*>): DenseNDArray {
+
     this.layer.params as DeltaRNNLayerParameters
     layerContributions as DeltaRNNLayerParameters
 
-    val x: InputNDArrayType = this.layer.inputArray.values
+    val x = this.layer.inputArray.values
 
-    val wxContrib: NDArray<*> = layerContributions.feedforwardUnit.weights.values
+    val wxContrib: DenseNDArray = layerContributions.feedforwardUnit.weights.values
 
     val relevanceSupport: DeltaRNNRelevanceSupport = this.layer.relevanceSupport
     val previousStateExists: Boolean = this.layer.layerContextWindow.getPrevState() != null
@@ -75,25 +73,25 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val pInputRelevance = RelevanceUtils.calculateRelevanceOfArray(
       x = x,
       y = this.layer.partition.valuesNotActivated,
-      yRelevance = this.layer.partition.relevance as DenseNDArray,
-      contributions = this.assignSum(wxContrib.copy(), bp) // w (dot) x + bp
+      yRelevance = this.layer.partition.relevance,
+      contributions = wxContrib.copy().partialAssignSum(bp) // w (dot) x + bp
     )
 
     val d1InputRelevance = RelevanceUtils.calculateRelevanceOfArray(
       x = x,
       y = relevanceSupport.d1Input.values,
-      yRelevance = relevanceSupport.d1Input.relevance as DenseNDArray,
-      contributions = this.assignSum(wxContrib.prod(beta1), d1Bc) // (w (dot) x) * beta1 + (bc | bc / 2)
+      yRelevance = relevanceSupport.d1Input.relevance,
+      contributions = wxContrib.prod(beta1).partialAssignSum(d1Bc) // (w (dot) x) * beta1 + (bc | bc / 2)
     )
 
-    val inputRelevance: NDArray<*> = pInputRelevance.assignSum(d1InputRelevance)
+    val inputRelevance: DenseNDArray = pInputRelevance.assignSum(d1InputRelevance)
 
     if (previousStateExists) {
       val d2InputRelevance = RelevanceUtils.calculateRelevanceOfArray(
         x = x,
         y = this.layer.wx.values, // the product by 'alpha' is not included during the calculation of the relevance
                                   // ('alpha' doesn't depend on variables of interest)
-        yRelevance = (relevanceSupport.d2.relevance as DenseNDArray).div(2.0),
+        yRelevance = relevanceSupport.d2.relevance.div(2.0),
         contributions = wxContrib // w (dot) x
       )
 
@@ -127,15 +125,15 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val d1RecRelevance = RelevanceUtils.calculateRelevanceOfArray(
       x = yPrev,
       y = relevanceSupport.d1Rec.values,
-      yRelevance = relevanceSupport.d1Rec.relevance as DenseNDArray,
-      contributions = this.assignSum(wyRecContrib.prod(beta2), halfBc) // (wyRec (dot) yPrev) * beta2 + bc / 2
+      yRelevance = relevanceSupport.d1Rec.relevance,
+      contributions = wyRecContrib.prod(beta2).partialAssignSum(halfBc) // (wyRec (dot) yPrev) * beta2 + bc / 2
     )
 
     val d2RecRelevance = RelevanceUtils.calculateRelevanceOfArray(
       x = yPrev,
       y = this.layer.wyRec.values, // the product by 'alpha' is not included during the calculation of the relevance
                                    // ('alpha' doesn't depend on variables of interest)
-      yRelevance = (relevanceSupport.d2.relevance as DenseNDArray).div(2.0),
+      yRelevance = relevanceSupport.d2.relevance.div(2.0),
       contributions = wyRecContrib // wyRec (dot) yPrev
     )
 
@@ -158,7 +156,7 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val yInput: DenseNDArray = y.sub(yRec)
 
     return RelevanceUtils.getRelevancePartition1(
-      yRelevance = this.layer.outputArray.relevance as DenseNDArray,
+      yRelevance = this.layer.outputArray.relevance,
       y = y,
       yContribute1 = yInput,
       yContribute2 = yRec)
@@ -174,7 +172,7 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun getRecurrentPartition(contributions: DeltaRNNLayerParameters): DenseNDArray {
 
     return RelevanceUtils.getRelevancePartition2(
-      yRelevance = this.layer.outputArray.relevance as DenseNDArray,
+      yRelevance = this.layer.outputArray.relevance,
       y = this.layer.outputArray.valuesNotActivated,
       yContribute2 = contributions.recurrentUnit.biases.values)
   }
@@ -186,7 +184,7 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun setCandidateRelevancePartitions(previousStateExists: Boolean) {
 
-    val cRelevance: DenseNDArray = this.layer.candidate.relevance as DenseNDArray
+    val cRelevance: DenseNDArray = this.layer.candidate.relevance
     val relevanceSupport: DeltaRNNRelevanceSupport = this.layer.relevanceSupport
 
     if (previousStateExists) {
@@ -236,25 +234,6 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Special assignSum method which dispatches the call of the partialAssignSum method checking the type of [a].
-   *
-   * @param a the generic [NDArray] to which to add [b]
-   * @param b the [DenseNDArray] to add to [a]
-   *
-   * @return [a] after the addition of [b]
-   */
-  private fun assignSum(a: NDArray<*>, b: DenseNDArray): NDArray<*> {
-    require(a.rows == b.rows) { "b must be a column vector with the same number of rows of a" }
-    require(b.columns == 1) { "b must be a column vector" }
-
-    return when (a) {
-      is DenseNDArray -> a.partialAssignSum(b)
-      is SparseNDArray -> a.partialAssignSum(b)
-      else -> throw RuntimeException("Invalid NDArray type")
-    }
-  }
-
-  /**
    * If n is the number of columns of this [DenseNDArray], [a] / n is added to each column of this.
    *
    * @param a the [DenseNDArray] column vector to add to this
@@ -271,28 +250,6 @@ class DeltaRNNRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       for (j in 0 until this.columns) {
         this[i, j] += aPartI
       }
-    }
-
-    return this
-  }
-
-  /**
-   * This method should be called if this [SparseNDArray] contains sparse columns.
-   * If n is the number of sparse columns, [a] / n is added to each active column of this.
-   *
-   * @param a the [DenseNDArray] column vector to add to this
-   *
-   * @return this [SparseNDArray]
-   */
-  private fun SparseNDArray.partialAssignSum(a: DenseNDArray): SparseNDArray {
-
-    val activeColumns: Int = this.colIndices.toSet().size
-
-    val aPart: DenseNDArray = a.div(activeColumns.toDouble())
-
-    for (k in 0 until this.values.size) {
-      val i: Int = this.rowIndices[k]
-      this.values[k] += aPart[i]
     }
 
     return this

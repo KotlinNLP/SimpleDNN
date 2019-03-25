@@ -9,6 +9,7 @@ package core.layers.recurrent.gru
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.gru.GRULayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.gru.GRULayer
@@ -71,7 +72,8 @@ private fun buildPrevStateLayer(): GRULayer<DenseNDArray> {
   outputArray.activate()
 
   return GRULayer(
-    inputArray = AugmentedArray<DenseNDArray>(size = 4),
+    inputArray = AugmentedArray(size = 4),
+    inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = GRULayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),
@@ -89,6 +91,7 @@ private fun buildNextStateLayer(): GRULayer<DenseNDArray> {
 
   val layer = GRULayer(
     inputArray = AugmentedArray<DenseNDArray>(size = 4),
+    inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = GRULayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),

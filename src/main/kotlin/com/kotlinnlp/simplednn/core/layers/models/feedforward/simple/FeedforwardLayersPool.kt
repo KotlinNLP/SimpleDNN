@@ -51,6 +51,7 @@ class FeedforwardLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     return FeedforwardLayer(
       inputArray = inputArray,
+      inputType = inputType,
       outputArray = AugmentedArray.zeros(this.params.outputSize),
       params = this.params,
       activationFunction = this.activationFunction,

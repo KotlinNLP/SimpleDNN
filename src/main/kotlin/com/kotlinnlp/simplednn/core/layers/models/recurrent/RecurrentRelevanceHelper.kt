@@ -9,16 +9,14 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which calculates the relevance of the input of a recurrent [layer] respect of its output.
  *
  * @property layer the [RecurrentLayer] in which to calculate the input relevance
  */
-abstract class RecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: RecurrentLayer<InputNDArrayType>
-) : RelevanceHelper<InputNDArrayType>(layer) {
+abstract class RecurrentRelevanceHelper(override val layer: RecurrentLayer<DenseNDArray>) : RelevanceHelper(layer) {
 
   /**
    * Calculate the relevance of the output in the previous state respect of the current one and assign it to the output

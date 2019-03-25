@@ -8,6 +8,7 @@
 package core.layers.merge.avg
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.merge.avg.AvgLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.avg.AvgLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -28,6 +29,7 @@ object AvgLayerUtils {
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.7, -0.7, 0.8))),
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.4, -0.8)))
     ),
+    inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray(size = 3),
     params = AvgLayerParameters(inputSize = 3, nInputs = 4)
   )

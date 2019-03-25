@@ -10,6 +10,8 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentRelevanceHelper
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -19,6 +21,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * The IndRNN Layer Structure.
  *
  * @property inputArray the input array of the layer
+ * @property inputType the input array type (default Dense)
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
  * @property layerContextWindow the context window used for the forward and the backward
@@ -28,6 +31,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class IndRNNLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
+  inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters<*>,
   layerContextWindow: LayerContextWindow,
@@ -35,6 +39,7 @@ class IndRNNLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   dropout: Double = 0.0
 ) : RecurrentLayer<InputNDArrayType>(
   inputArray = inputArray,
+  inputType = inputType,
   outputArray = outputArray,
   params = params,
   layerContextWindow = layerContextWindow,
@@ -54,7 +59,7 @@ class IndRNNLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The helper which calculates the relevance
    */
-  override val relevanceHelper = IndRNNRelevanceHelper(layer = this)
+  override val relevanceHelper: GatedRecurrentRelevanceHelper? = null
 
   /**
    * Initialization: set the activation function of the output array.

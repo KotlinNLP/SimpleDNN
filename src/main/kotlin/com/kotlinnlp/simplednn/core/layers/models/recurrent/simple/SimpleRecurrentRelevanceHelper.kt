@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.simple
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentRelevanceHelper
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -18,16 +17,15 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [SimpleRecurrentLayer] in which to calculate the input relevance
  */
-class SimpleRecurrentRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: SimpleRecurrentLayer<InputNDArrayType>
-) : RecurrentRelevanceHelper<InputNDArrayType>(layer) {
+class SimpleRecurrentRelevanceHelper(override val layer: SimpleRecurrentLayer<DenseNDArray>) :
+  RecurrentRelevanceHelper(layer) {
 
   /**
    * @param layerContributions the contributions saved during the last forward
    *
    * @return the relevance of the input respect of the output
    */
-  override fun getInputRelevance(layerContributions: LayerParameters<*>): NDArray<*> {
+  override fun getInputRelevance(layerContributions: LayerParameters<*>): DenseNDArray {
     layerContributions as SimpleRecurrentLayerParameters
 
     return this.layer.outputArray.getInputRelevance(

@@ -9,6 +9,8 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.affine
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -17,6 +19,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * The Affine Layer Structure.
  *
  * @property inputArrays the input arrays of the layer
+ * @property inputType the input array type (default Dense)
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
  * @property activationFunction the activation function of the layer
@@ -26,6 +29,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class AffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArrays: List<AugmentedArray<InputNDArrayType>>,
+  inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: AffineLayerParameters,
   activationFunction: ActivationFunction? = null,
@@ -33,6 +37,7 @@ class AffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   id: Int = 0
 ) : MergeLayer<InputNDArrayType>(
   inputArrays = inputArrays,
+  inputType = inputType,
   outputArray = outputArray,
   params = params,
   activationFunction = activationFunction,
@@ -52,9 +57,9 @@ class AffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val backwardHelper = AffineBackwardHelper(layer = this)
 
   /**
-   * The helper which calculates the relevance.
+   * The helper which calculates the relevance
    */
-  override val relevanceHelper = AffineRelevanceHelper(layer = this)
+  override val relevanceHelper: RelevanceHelper? = null
 
   /**
    * Initialization: set the activation function of the outputArray.

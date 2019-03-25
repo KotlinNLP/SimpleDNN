@@ -8,6 +8,8 @@
 package com.kotlinnlp.simplednn.core.layers.models.merge.concat
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -16,16 +18,19 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * The Concat Layer Structure.
  *
  * @property inputArrays the input arrays of the layer
+ * @property inputType the input array type (default Dense)
  * @property params the parameters which connect the input to the output
  * @property id an identification number useful to track a specific [ConcatLayer]
  */
 class ConcatLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArrays: List<AugmentedArray<InputNDArrayType>>,
+  inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: ConcatLayerParameters,
   id: Int = 0
 ) : MergeLayer<InputNDArrayType>(
   inputArrays = inputArrays,
+  inputType = inputType,
   outputArray = outputArray,
   params = params,
   activationFunction = null,
@@ -46,7 +51,7 @@ class ConcatLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val backwardHelper = ConcatBackwardHelper(layer = this)
 
   /**
-   * The helper which calculates the relevance.
+   * The helper which calculates the relevance
    */
-  override val relevanceHelper = ConcatRelevanceHelper(layer = this)
+  override val relevanceHelper: RelevanceHelper? = null
 }

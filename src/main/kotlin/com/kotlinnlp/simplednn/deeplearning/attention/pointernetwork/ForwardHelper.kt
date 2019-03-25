@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -45,6 +46,7 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
     this.networkProcessor.usedAttentionMechanisms.addAndReturn(
       AttentionMechanismLayer(
         inputArrays = attentionArrays.map { AugmentedArray(it) },
+        inputType = LayerType.Input.Dense,
         params = this.networkProcessor.model.attentionParams,
         activation = this.networkProcessor.model.activation)
     )

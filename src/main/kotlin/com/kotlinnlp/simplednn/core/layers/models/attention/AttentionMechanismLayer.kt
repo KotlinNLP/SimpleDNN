@@ -12,6 +12,8 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.functionalities.activations.SoftmaxBase
 import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.utils.ItemsPool
@@ -19,7 +21,8 @@ import com.kotlinnlp.utils.ItemsPool
 /**
  * The Attention Layer Structure.
  *
- * @property inputArray the input array of the layer
+ * @property inputArrays the input arrays of the layer
+ * @param inputType the input array type (default Dense)
  * @param params the parameters which connect the input to the output
  * @param activation the activation function of the layer (default SoftmaxBase)
  * @param dropout the probability of dropout (default 0.0).
@@ -28,6 +31,7 @@ import com.kotlinnlp.utils.ItemsPool
  */
 class AttentionMechanismLayer(
   val inputArrays: List<AugmentedArray<DenseNDArray>>,
+  inputType: LayerType.Input,
   params: LayerParameters<*>,
   activation: ActivationFunction? = SoftmaxBase(),
   dropout: Double = 0.0,
@@ -35,6 +39,7 @@ class AttentionMechanismLayer(
 ) : ItemsPool.IDItem,
   Layer<DenseNDArray>(
     inputArray = inputArrays[0],
+    inputType = inputType,
     outputArray = AugmentedArray(inputArrays.size),
     params = params,
     activationFunction = activation,
@@ -61,7 +66,7 @@ class AttentionMechanismLayer(
   /**
    * The helper which calculates the relevance
    */
-  override val relevanceHelper = AttentionMechanismRelevanceHelper(layer = this)
+  override val relevanceHelper: RelevanceHelper? = null
 
   /**
    * Initialization: set the activation function of the outputArray

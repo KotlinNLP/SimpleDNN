@@ -11,9 +11,8 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayer
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -23,6 +22,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  * The CFN Layer Structure.
  *
  * @property inputArray the input array of the layer
+ * @property inputType the input array type (default Dense)
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
  * @property layerContextWindow the context window used for the forward and the backward
@@ -32,6 +32,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  */
 class CFNLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
+  inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters<*>,
   layerContextWindow: LayerContextWindow,
@@ -39,6 +40,7 @@ class CFNLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   dropout: Double = 0.0
 ) : GatedRecurrentLayer<InputNDArrayType>(
   inputArray = inputArray,
+  inputType = inputType,
   outputArray = outputArray,
   params = params,
   layerContextWindow = layerContextWindow,
@@ -78,7 +80,7 @@ class CFNLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The helper which calculates the relevance
    */
-  override val relevanceHelper = CFNRelevanceHelper(layer = this)
+  override val relevanceHelper: GatedRecurrentRelevanceHelper? = null
 
   /**
    * Initialization: set the activation function of the gates

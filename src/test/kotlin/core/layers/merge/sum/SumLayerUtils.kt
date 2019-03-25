@@ -8,6 +8,7 @@
 package core.layers.merge.sum
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -28,6 +29,7 @@ object SumLayerUtils {
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.7, -0.7, 0.8))),
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.4, -0.8)))
     ),
+    inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray(size = 3),
     params = SumLayerParameters(inputSize = 3, nInputs = 4)
   )

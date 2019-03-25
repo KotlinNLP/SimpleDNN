@@ -9,6 +9,7 @@ package core.layers.recurrent.lstm
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMLayer
@@ -88,6 +89,7 @@ private fun buildPrevStateLayer(): LSTMLayer<DenseNDArray> {
 
   val layer = LSTMLayer(
     inputArray = AugmentedArray<DenseNDArray>(size = 4),
+    inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = LSTMLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),
@@ -108,6 +110,7 @@ private fun buildInitHiddenLayer(refLayer: LSTMLayer<DenseNDArray>): LSTMLayer<D
 
   return LSTMLayer(
     inputArray = AugmentedArray(size = 4),
+    inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = refLayer.params,
     activationFunction = Tanh(),
@@ -124,6 +127,7 @@ private fun buildNextStateLayer(): LSTMLayer<DenseNDArray> {
 
   val layer = LSTMLayer(
     inputArray = AugmentedArray<DenseNDArray>(size = 4),
+    inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = LSTMLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),

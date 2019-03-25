@@ -60,6 +60,7 @@ class BiaffineLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
     return BiaffineLayer(
       inputArray1 = inputArray1 as AugmentedArray<InputNDArrayType>,
       inputArray2 = inputArray2 as AugmentedArray<InputNDArrayType>,
+      inputType = this.inputType,
       outputArray = AugmentedArray.zeros(this.params.outputSize),
       params = this.params,
       activationFunction = this.activationFunction,

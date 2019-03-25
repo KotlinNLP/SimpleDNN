@@ -18,6 +18,7 @@ import com.kotlinnlp.utils.ItemsPool
  * The Feedforward Layer Structure.
  *
  * @property inputArray the input array of the layer
+ * @property inputType the input array type (default Dense)
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
  * @property activationFunction the activation function of the layer
@@ -27,6 +28,7 @@ import com.kotlinnlp.utils.ItemsPool
  */
 class FeedforwardLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
+  inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
   params: LayerParameters<*>,
   activationFunction: ActivationFunction? = null,
@@ -35,6 +37,7 @@ class FeedforwardLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) : ItemsPool.IDItem,
   Layer<InputNDArrayType>(
     inputArray = inputArray,
+    inputType = inputType,
     outputArray = outputArray,
     params = params,
     activationFunction = activationFunction,
@@ -54,7 +57,11 @@ class FeedforwardLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The helper which calculates the relevance
    */
-  override val relevanceHelper = FeedforwardRelevanceHelper(layer = this)
+  @Suppress("UNCHECKED_CAST")
+  override val relevanceHelper: FeedforwardRelevanceHelper? = if (this.denseInput)
+    FeedforwardRelevanceHelper(layer = this as FeedforwardLayer<DenseNDArray>)
+  else
+    null
 
   /**
    * Initialization: set the activation function of the outputArray

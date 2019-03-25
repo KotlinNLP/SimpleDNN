@@ -9,16 +9,14 @@ package com.kotlinnlp.simplednn.core.layers.helpers
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.Layer
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which calculates the relevance of the input of a [layer] respect of its output.
  *
  * @property layer the [Layer] in which to calculate the input relevance
  */
-abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  protected open val layer: Layer<InputNDArrayType>
-) {
+abstract class RelevanceHelper(protected open val layer: Layer<DenseNDArray>) {
 
   /**
    * Calculate the relevance of the input respect of the output and assign it to the input array.
@@ -46,5 +44,5 @@ abstract class RelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the relevance of the input in respect of the output
    */
-  protected abstract fun getInputRelevance(layerContributions: LayerParameters<*>): NDArray<*>
+  protected abstract fun getInputRelevance(layerContributions: LayerParameters<*>): DenseNDArray
 }

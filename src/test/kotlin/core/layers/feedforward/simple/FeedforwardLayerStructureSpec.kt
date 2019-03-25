@@ -109,12 +109,8 @@ class FeedforwardLayerStructureSpec : Spek({
         layer.setOutputRelevance(DistributionArray.uniform(length = 3))
         layer.setInputRelevance(layerContributions = contributions)
 
-        it("should set a Dense input relevance") {
-          assertTrue { layer.inputArray.relevance is DenseNDArray }
-        }
-
         it("should match the expected input relevance") {
-          val relevance: DenseNDArray = layer.inputArray.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.inputArray.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.55888, 0.20978, 0.09943, 0.05652, 0.07539)),

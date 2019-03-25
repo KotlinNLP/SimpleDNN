@@ -9,6 +9,7 @@ package core.layers.recurrent.lstm
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMLayer
@@ -26,6 +27,7 @@ object LSTMLayerStructureUtils {
    */
   fun buildLayer(layerContextWindow: LayerContextWindow): LSTMLayer<DenseNDArray> = LSTMLayer(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
+    inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))),
     params = buildParams(),
     activationFunction = Tanh(),

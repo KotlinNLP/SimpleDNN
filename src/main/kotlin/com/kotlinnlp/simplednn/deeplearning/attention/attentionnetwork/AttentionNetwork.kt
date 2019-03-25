@@ -101,6 +101,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     this.attentionLayer = AttentionLayerStructure(
       inputSequence = inputSequence,
+      inputType = this.inputType,
       attentionSequence = attentionSequence,
       params = this.model.attentionParams)
 
@@ -182,6 +183,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     this.attentionLayer = AttentionLayerStructure(
       inputSequence = inputSequence,
+      inputType = this.inputType,
       attentionSequence = this.buildAttentionSequence(inputSequence = inputSequence, useDropout = useDropout),
       params = this.model.attentionParams
     )
@@ -217,7 +219,6 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
    * Attention Layer backward.
    *
    * @param outputErrors the errors to propagate from the output
-   * @param paramsErrors the structure in which to save the errors of the parameters
    * @param propagateToInput whether to propagate the errors to the input
    */
   private fun backwardAttentionLayer(outputErrors: DenseNDArray,

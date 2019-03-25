@@ -10,6 +10,7 @@ package core.attention
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworkParameters
@@ -143,6 +144,7 @@ object AttentionLayerUtils {
    */
   private fun buildTransformLayer(): FeedforwardLayer<DenseNDArray> = FeedforwardLayer(
     inputArray = AugmentedArray(size = 4),
+    inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray.zeros(2),
     params = buildTransformLayerParams1(),
     activationFunction = Tanh()

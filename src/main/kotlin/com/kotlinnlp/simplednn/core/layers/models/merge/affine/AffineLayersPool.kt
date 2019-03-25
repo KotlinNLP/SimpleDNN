@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.affine
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.utils.ItemsPool
 
@@ -17,11 +18,13 @@ import com.kotlinnlp.utils.ItemsPool
  * a new one every time.
  *
  * @property params the parameters which connect the input to the output
+ * @property inputType the type of the input array
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default: 0.0 - if applying it, the usual value is 0.25)
  */
 class AffineLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
   val params: AffineLayerParameters,
+  val inputType: LayerType.Input,
   val activationFunction: ActivationFunction?,
   val dropout: Double = 0.0
 ) : ItemsPool<AffineLayer<InputNDArrayType>>() {
@@ -42,6 +45,7 @@ class AffineLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     return AffineLayer(
       inputArrays = inputArrays,
+      inputType = this.inputType,
       outputArray = AugmentedArray.zeros(this.params.outputSize),
       params = this.params,
       activationFunction = this.activationFunction,

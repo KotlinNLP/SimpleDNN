@@ -9,6 +9,7 @@ package core.layers.recurrent.deltarnn
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayer
@@ -25,6 +26,7 @@ object DeltaRNNLayerStructureUtils {
    */
   fun buildLayer(layerContextWindow: LayerContextWindow) = DeltaRNNLayer(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
+    inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))),
     params = buildParams(),
     activationFunction = Tanh(),

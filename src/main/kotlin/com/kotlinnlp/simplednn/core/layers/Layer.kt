@@ -18,11 +18,13 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.utils.ItemsPool
+import java.lang.RuntimeException
 
 /**
  * The Layer Structure.
  *
  * @property inputArray the input array of the layer
+ * @property inputType the input array type (default Dense)
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
  * @property activationFunction the activation function of the layer
@@ -32,6 +34,7 @@ import com.kotlinnlp.utils.ItemsPool
  */
 abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArray: AugmentedArray<InputNDArrayType>,
+  val inputType: LayerType.Input, // = LayerType.Input.Dense,
   open val outputArray: AugmentedArray<DenseNDArray>,
   open val params: LayerParameters<*>,
   val activationFunction: ActivationFunction? = null,
@@ -57,7 +60,17 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The helper which calculates the relevance
    */
-  protected abstract val relevanceHelper: RelevanceHelper<InputNDArrayType>
+  protected abstract val relevanceHelper: RelevanceHelper?
+
+  /**
+   * Whether the input is dense.
+   */
+  val denseInput: Boolean get() = this.inputType == LayerType.Input.Dense
+
+  /**
+   * Whether the input is sparse or binary sparse.
+   */
+  val sparseInput: Boolean get() = !this.denseInput
 
   /**
    * Set the values of the inputArray
@@ -78,7 +91,7 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param relevance the relevance to set into the outputArray
    */
-  fun setOutputRelevance(relevance: Norm1Array<*>) = this.outputArray.assignRelevance(relevance.values)
+  fun setOutputRelevance(relevance: Norm1Array<DenseNDArray>) = this.outputArray.assignRelevance(relevance.values)
 
   /**
    * Set a params errors collector.
@@ -124,7 +137,8 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param layerContributions the contributions saved during the last forward
    */
   fun setInputRelevance(layerContributions: LayerParameters<*>) {
-    this.relevanceHelper.setInputRelevance(layerContributions = layerContributions)
+    this.relevanceHelper?.setInputRelevance(layerContributions = layerContributions) ?:
+    throw RuntimeException("Relevance propagation not available.")
   }
 
   /**
@@ -134,7 +148,8 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param layerContributions the contributions saved during the last forward
    */
   fun addInputRelevance(layerContributions: LayerParameters<*>) {
-    this.relevanceHelper.addInputRelevance(layerContributions = layerContributions)
+    this.relevanceHelper?.addInputRelevance(layerContributions = layerContributions) ?:
+    throw RuntimeException("Relevance propagation not available.")
   }
 
   /**
@@ -181,3 +196,4 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
     }
   }
 }
+

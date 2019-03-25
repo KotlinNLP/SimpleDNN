@@ -8,6 +8,8 @@
 package com.kotlinnlp.simplednn.core.layers.models.merge.distance
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.ItemsPool
@@ -29,6 +31,7 @@ class DistanceLayer(
   ItemsPool.IDItem,
   MergeLayer<DenseNDArray>(
     inputArrays = listOf(inputArray1, inputArray2),
+    inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray(1),
     params = params,
     activationFunction = null,
@@ -49,7 +52,7 @@ class DistanceLayer(
   override val backwardHelper = DistanceBackwardHelper(layer = this)
 
   /**
-   * The helper which calculates the relevance.
+   * The helper which calculates the relevance
    */
-  override val relevanceHelper = DistanceRelevanceHelper(layer = this)
+  override val relevanceHelper: RelevanceHelper? = null
 }

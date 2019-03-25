@@ -50,6 +50,7 @@ class SumLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     return SumLayer(
       inputArrays = inputArrays,
+      inputType = this.inputType,
       outputArray = AugmentedArray.zeros(this.params.outputSize),
       params = this.params,
       id = id

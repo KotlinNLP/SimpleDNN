@@ -47,6 +47,7 @@ class ConcatLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     return ConcatLayer(
       inputArrays = inputArrays,
+      inputType = this.inputType,
       outputArray = AugmentedArray.zeros(this.params.outputSize),
       params = this.params,
       id = id

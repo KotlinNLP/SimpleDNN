@@ -10,23 +10,21 @@ package com.kotlinnlp.simplednn.core.layers.models.feedforward.simple
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.getInputRelevance
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
-import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which calculates the relevance of the input of a [layer] respect of its output.
  *
  * @property layer the [FeedforwardLayer] in which to calculate the input relevance
  */
-class FeedforwardRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: FeedforwardLayer<InputNDArrayType>
-) : RelevanceHelper<InputNDArrayType>(layer) {
+class FeedforwardRelevanceHelper(override val layer: FeedforwardLayer<DenseNDArray>) : RelevanceHelper(layer) {
 
   /**
    * @param layerContributions the contributions saved during the last forward
    *
    * @return the relevance of the input respect of the output
    */
-  override fun getInputRelevance(layerContributions: LayerParameters<*>): NDArray<*> {
+  override fun getInputRelevance(layerContributions: LayerParameters<*>): DenseNDArray {
     layerContributions as FeedforwardLayerParameters
 
     return this.layer.outputArray.getInputRelevance(

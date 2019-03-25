@@ -19,9 +19,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [RANLayer] in which to calculate the input relevance
  */
-class RANRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: RANLayer<InputNDArrayType>
-) : GatedRecurrentRelevanceHelper<InputNDArrayType>(layer) {
+class RANRelevanceHelper(override val layer: RANLayer<DenseNDArray>)
+  : GatedRecurrentRelevanceHelper(layer) {
 
   /**
    * Propagate the relevance from the output to the gate units of the layer.
@@ -46,26 +45,26 @@ class RANRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the relevance of the input in respect of the output
    */
-  override fun getInputRelevance(layerContributions: LayerParameters<*>): NDArray<*> {
+  override fun getInputRelevance(layerContributions: LayerParameters<*>): DenseNDArray {
     layerContributions as RANLayerParameters
 
-    val x: InputNDArrayType = this.layer.inputArray.values
+    val x = this.layer.inputArray.values
     val prevStateExists: Boolean = this.layer.layerContextWindow.getPrevState() != null
 
-    val inputGateRelevance: NDArray<*> = this.layer.inputGate.getInputRelevance(
+    val inputGateRelevance: DenseNDArray = this.layer.inputGate.getInputRelevance(
       x = x,
       contributions = layerContributions.inputGate,
       prevStateExists = prevStateExists)
 
-    val candidateRelevance: NDArray<*> = this.layer.candidate.getInputRelevance(
+    val candidateRelevance: DenseNDArray = this.layer.candidate.getInputRelevance(
       x = x,
       cw = layerContributions.candidate.weights.values)
 
-    val inputRelevance: NDArray<*> = inputGateRelevance.assignSum(candidateRelevance)
+    val inputRelevance: DenseNDArray = inputGateRelevance.assignSum(candidateRelevance)
 
     if (prevStateExists) {
 
-      val forgetGateRelevance: NDArray<*> = this.layer.forgetGate.getInputRelevance(
+      val forgetGateRelevance: DenseNDArray = this.layer.forgetGate.getInputRelevance(
         x = x,
         contributions = layerContributions.forgetGate,
         prevStateExists = true)
@@ -113,7 +112,7 @@ class RANRelevanceHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun getRelevancePartitions(contributions: RANLayerParameters): Pair<DenseNDArray, DenseNDArray?> {
 
-    val yRelevance: DenseNDArray = this.layer.outputArray.relevance as DenseNDArray
+    val yRelevance: DenseNDArray = this.layer.outputArray.relevance
 
     return if (this.layer.layerContextWindow.getPrevState() != null) {
       this.splitRelevancePartitions(yRelevance = yRelevance, contributions = contributions)

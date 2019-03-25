@@ -8,6 +8,7 @@
 package core.layers.merge.concat
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -27,6 +28,7 @@ object ConcatLayerUtils {
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.5))),
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.7, -0.7, 0.8)))
     ),
+    inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray(size = 9),
     params = ConcatLayerParameters(inputsSize = listOf(4, 2, 3))
   )

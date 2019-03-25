@@ -58,6 +58,11 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
   override fun forward(layerContributions: LayerParameters<*>) {
+
+    assert (this.layer.inputArray.values is DenseNDArray) {
+      "Forwarding with contributions requires the input to be dense."
+    }
+
     this.layer.params as DeltaRNNLayerParameters
     layerContributions as DeltaRNNLayerParameters
 
@@ -69,7 +74,7 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     // w (dot) x
     this.forwardArray(
       contributions = layerContributions.feedforwardUnit.weights.values,
-      x = this.layer.inputArray.values,
+      x = this.layer.inputArray.values as DenseNDArray,
       y = wx,
       w = this.layer.params.feedforwardUnit.weights.values)
 

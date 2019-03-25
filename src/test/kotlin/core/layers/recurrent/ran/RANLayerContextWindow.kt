@@ -9,6 +9,7 @@ package core.layers.recurrent.ran
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ran.RANLayer
@@ -72,7 +73,8 @@ private fun buildPrevStateLayer(): RANLayer<DenseNDArray> {
   outputArray.activate()
 
   return RANLayer(
-    inputArray = AugmentedArray<DenseNDArray>(size = 4),
+    inputArray = AugmentedArray(size = 4),
+    inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = RANLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),
@@ -90,6 +92,7 @@ private fun buildNextStateLayer(): RANLayer<DenseNDArray> {
 
   val layer = RANLayer(
     inputArray = AugmentedArray<DenseNDArray>(size = 4),
+    inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = RANLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),

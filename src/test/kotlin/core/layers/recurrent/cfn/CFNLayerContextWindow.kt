@@ -9,6 +9,7 @@ package core.layers.recurrent.cfn
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayer
@@ -72,6 +73,7 @@ private fun buildPrevStateLayer(): CFNLayer<DenseNDArray> {
 
   return CFNLayer(
     inputArray = AugmentedArray(size = 4),
+    inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = CFNLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),
@@ -89,6 +91,7 @@ private fun buildNextStateLayer(currentLayerOutput: DenseNDArray): CFNLayer<Dens
 
   val layer = CFNLayer(
     inputArray = AugmentedArray<DenseNDArray>(size = 4),
+    inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = CFNLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh(),

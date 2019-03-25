@@ -50,6 +50,7 @@ class ProductLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     return ProductLayer(
       inputArrays = inputArrays,
+      inputType = this.inputType,
       outputArray = AugmentedArray.zeros(this.params.outputSize),
       params = this.params,
       id = id

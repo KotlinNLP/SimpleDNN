@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.attention
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.SoftmaxBase
+import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayer
 import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
@@ -22,12 +23,14 @@ import com.kotlinnlp.utils.ItemsPool
  * The structure of the Attention Layer.
  *
  * @property inputSequence the sequence of input arrays
+ * @param inputType the input array type (default Dense)
  * @param attentionSequence the sequence of attention arrays
  * @param params the parameters of the Attention Layer
  * @property id an identification number useful to track a specific [AttentionLayerStructure]
  */
 class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
   val inputSequence: List<AugmentedArray<InputNDArrayType>>,
+  inputType: LayerType.Input,
   attentionSequence: List<DenseNDArray>,
   params: AttentionMechanismLayerParameters,
   override val id: Int = 0
@@ -58,6 +61,7 @@ class AttentionLayerStructure<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   private val attentionMechanism = AttentionMechanismLayer(
     inputArrays = attentionSequence.map { AugmentedArray(it) },
+    inputType = inputType,
     params = params,
     activation = SoftmaxBase())
 

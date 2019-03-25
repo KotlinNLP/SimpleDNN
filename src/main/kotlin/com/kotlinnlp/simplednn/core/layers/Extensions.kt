@@ -70,6 +70,7 @@ fun List<LayerInterface>.toLayers(paramsPerLayer: List<LayerParameters<*>>,
       else
         LayerFactory(
           inputArrays = listOf(prevLayer!!.outputArray),
+          inputType = LayerType.Input.Dense,
           outputConfiguration = this[i + 1],
           params = paramsPerLayer[i],
           dropout = this[i].dropout,

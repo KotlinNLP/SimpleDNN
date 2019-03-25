@@ -11,6 +11,8 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.layers.Layer
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -39,6 +41,7 @@ class NewRecirculationLayer(
 ) : ItemsPool.IDItem,
   Layer<DenseNDArray>(
     inputArray = inputArray,
+    inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = params,
     activationFunction = activationFunction,
@@ -79,7 +82,7 @@ class NewRecirculationLayer(
   /**
    * The helper which calculates the relevance
    */
-  override val relevanceHelper = NewRecirculationRelevanceHelper(this)
+  override val relevanceHelper: RelevanceHelper? = null
 
   /**
    * Initialization: set the activation function of the outputArray
