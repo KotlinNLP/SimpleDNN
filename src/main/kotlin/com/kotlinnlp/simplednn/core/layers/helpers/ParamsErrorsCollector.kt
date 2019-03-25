@@ -21,12 +21,15 @@ class ParamsErrorsCollector {
   private val paramsErrorsMap = mutableMapOf<String, ParamsArray.Errors<*>>()
 
   /**
-   * @param params a parameters
+   * Return the errors associated to the given [params].
+   * If the [params] has no errors yet, these are built using the [params] default errors type (sparse vs. dense).
+   *
+   * @param params the parameters
    *
    * @return the current errors of the given parameters
    */
   fun getErrors(params: ParamsArray) =
-    this.paramsErrorsMap.getOrPut(params.uuid, defaultValue = { params.buildDenseErrors() } )
+    this.paramsErrorsMap.getOrPut(params.uuid, defaultValue = { params.buildDefaultErrors() } )
 
   /**
    * @return all the collected params errors
