@@ -33,15 +33,19 @@ open class LinearParams(
   }
 
   /**
-   *
+   * The biases initialized to zero.
    */
   val biases = ParamsArray(this.outputSize)
 
   /**
-   *
+   * The weights initialized to zero.
    */
   val weights = ParamsArray(
     dim1 = this.outputSize,
-    dim2 = this.inputSize
+    dim2 = this.inputSize,
+    defaultErrorsType = if (sparseInput)
+      ParamsArray.ErrorsType.Sparse
+    else
+      ParamsArray.ErrorsType.Dense
   )
 }
