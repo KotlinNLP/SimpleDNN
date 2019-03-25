@@ -11,7 +11,9 @@ import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.context
 import org.jetbrains.spek.api.dsl.describe
@@ -137,6 +139,43 @@ class ParamsArraySpec : Spek({
         it("should create its copy with the same reference to the paramsArray"){
           assertSame(paramsErrors.copy().refParams, paramsArray)
         }
+      }
+
+      on("build with default sparse errors") {
+
+        val paramsArray = ParamsArray(
+          values = DenseNDArrayFactory.zeros(Shape(3, 7)),
+          defaultErrorsType = ParamsArray.ErrorsType.Sparse)
+
+        val paramsErrors = paramsArray.buildDefaultErrors()
+
+        it("should create sparse errors"){
+          assertTrue { paramsErrors.values is SparseNDArray }
+        }
+      }
+    }
+
+    on("build with default dense errors") {
+
+      val paramsArray = ParamsArray(
+        values = DenseNDArrayFactory.zeros(Shape(3, 7)),
+        defaultErrorsType = ParamsArray.ErrorsType.Dense)
+
+      val paramsErrors = paramsArray.buildDefaultErrors()
+
+      it("should create dense errors"){
+        assertTrue { paramsErrors.values is DenseNDArray }
+      }
+    }
+
+    on("build with default errors") {
+
+      val paramsArray = ParamsArray(DenseNDArrayFactory.zeros(Shape(3, 7)))
+
+      val paramsErrors = paramsArray.buildDefaultErrors()
+
+      it("should create dense errors"){
+        assertTrue { paramsErrors.values is DenseNDArray }
       }
     }
   }
