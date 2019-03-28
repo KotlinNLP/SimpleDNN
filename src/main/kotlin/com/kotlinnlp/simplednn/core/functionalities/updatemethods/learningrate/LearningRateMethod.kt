@@ -27,8 +27,7 @@ class LearningRateMethod(
   val learningRate: Double,
   val decayMethod: DecayMethod? = null,
   regularization: WeightsRegularization? = null
-) : EpochScheduling,
-    UpdateMethod<LearningRateStructure>(regularization) {
+) : EpochScheduling, UpdateMethod<LearningRateStructure>(regularization) {
 
   /**
    * @param array the array from which to extract the support structure
@@ -80,10 +79,6 @@ class LearningRateMethod(
    *
    * @return optimized dense errors
    */
-  override fun optimizeDenseErrors(errors: DenseNDArray, supportStructure: LearningRateStructure): DenseNDArray {
-
+  override fun optimizeDenseErrors(errors: DenseNDArray, supportStructure: LearningRateStructure): DenseNDArray =
     supportStructure.denseErrors.assignProd(errors, this.alpha)
-
-    return supportStructure.denseErrors
-  }
 }
