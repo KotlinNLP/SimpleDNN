@@ -61,7 +61,7 @@ class NesterovMomentumSpec: Spek({
         it("should match the expected updated array") {
           assertTrue {
             updatableArray.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, -0.24933, 0.5, 1.0, 0.63743)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.167, -0.24933, 0.095, 0.757, 0.63743)),
               tolerance = 1.0e-6)
           }
         }

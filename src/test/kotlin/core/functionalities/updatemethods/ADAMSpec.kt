@@ -64,7 +64,7 @@ class ADAMSpec : Spek({
         it("should match the expected updated array") {
           assertTrue {
             updatableArray.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.398751, 0.5, 1.0, 0.79953)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39937, 0.398751, 0.499462, -26999.0, 0.79953)),
               tolerance = 1.0e-6)
           }
         }

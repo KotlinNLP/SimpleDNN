@@ -67,7 +67,7 @@ class MomentumSpec: Spek({
         it("should match the expected updated array") {
           assertTrue {
             updatableArray.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, -0.3207, 0.5, 1.0, 0.6197)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.23, -0.3207, 0.05, 0.73, 0.6197)),
               tolerance = 1.0e-5)
           }
         }
