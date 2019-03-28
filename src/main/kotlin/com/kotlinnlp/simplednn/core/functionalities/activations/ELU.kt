@@ -29,6 +29,13 @@ class ELU(val alpha: Double = 1.0) : ScalarActivationFunction() {
   }
 
   /**
+   * Assert requirements.
+   */
+  init {
+    require(this.alpha > 0.0)
+  }
+
+  /**
    * Calculate the ELU function in [x].
    * [alternative form: max(0, x) + min(0, alpha * (exp(x) - 1)))]
    *
