@@ -13,6 +13,7 @@ import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
@@ -40,13 +41,13 @@ class NesterovMomentumMethod(
     array.getOrSetSupportStructure()
 
   /**
-   *
+   * The 'alpha' coefficient.
    */
   var alpha: Double = this.learningRate
     private set
 
   /**
-   *
+   * The number of epochs seen.
    */
   private var epochCount: Int = 0
 
@@ -64,43 +65,21 @@ class NesterovMomentumMethod(
   }
 
   /**
-   * Optimize sparse errors.
+   * Optimize errors.
    *
-   * @param errors the [SparseNDArray] errors to optimize
+   * @param errors the errors to optimize
    * @param supportStructure the support structure of the [UpdateMethod]
    *
-   * @return optimized sparse errors
+   * @return the optimized errors
    */
-  override fun optimizeSparseErrors(errors: SparseNDArray, supportStructure: NesterovMomentumStructure): SparseNDArray {
-
-    val v = supportStructure.v
-    val vPrev = supportStructure.vPrev
-
-    val mask = errors.mask
-
-    vPrev.assignValues(v, mask = mask) // backup previous velocity
-
-    v.assignValues(errors.prod(this.alpha).assignSum(v.prod(this.momentum, mask = mask)))
-
-    return vPrev.prod(-this.momentum, mask = mask).assignSum(v.prod(1.0 + this.momentum, mask = mask))
-  }
-
-  /**
-   * Optimize dense errors.
-   *
-   * @param errors the [DenseNDArray] errors to optimize
-   * @param supportStructure the support structure of the [UpdateMethod]
-   *
-   * @return optimized dense errors
-   */
-  override fun optimizeDenseErrors(errors: DenseNDArray, supportStructure: NesterovMomentumStructure): DenseNDArray {
+  override fun optimizeGenericErrors(errors: NDArray<*>, supportStructure: NesterovMomentumStructure): DenseNDArray {
 
     val v = supportStructure.v
     val vPrev = supportStructure.vPrev
 
     vPrev.assignValues(v) // backup previous velocity
 
-    v.assignSum(errors.prod(this.alpha), v.prod(this.momentum))
+    v.assignProd(this.momentum).assignSum(errors.prod((this.alpha)))
 
     return vPrev.prod(-this.momentum).assignSum(v.prod(1.0 + this.momentum))
   }

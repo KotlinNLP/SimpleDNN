@@ -11,8 +11,8 @@ import com.kotlinnlp.simplednn.core.arrays.UpdatableDenseArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
 
 /**
@@ -59,34 +59,14 @@ class ADAMMethod(
   }
 
   /**
-   * Optimize sparse errors.
+   * Optimize errors.
    *
-   * @param errors the [SparseNDArray] errors to optimize
+   * @param errors the errors to optimize
    * @param supportStructure the support structure of the [UpdateMethod]
    *
-   * @return optimized sparse errors
+   * @return the optimized errors
    */
-  override fun optimizeSparseErrors(errors: SparseNDArray, supportStructure: ADAMStructure): SparseNDArray {
-
-    val v = supportStructure.firstOrderMoments
-    val m = supportStructure.secondOrderMoments
-    val mask = errors.mask
-
-    v.assignProd(this.beta1, mask = mask).assignSum(errors.prod(1.0 - this.beta1))
-    m.assignProd(this.beta2, mask = mask).assignSum(errors.prod(errors).assignProd(1.0 - this.beta2))
-
-    return v.div(m.sqrt(mask = mask).assignSum(this.epsilon)).assignProd(this.alpha)
-  }
-
-  /**
-   * Optimize dense errors.
-   *
-   * @param errors the [DenseNDArray] errors to optimize
-   * @param supportStructure the support structure of the [UpdateMethod]
-   *
-   * @return optimized dense errors
-   */
-  override fun optimizeDenseErrors(errors: DenseNDArray, supportStructure: ADAMStructure): DenseNDArray {
+  override fun optimizeGenericErrors(errors: NDArray<*>, supportStructure: ADAMStructure): DenseNDArray {
 
     val v = supportStructure.firstOrderMoments
     val m = supportStructure.secondOrderMoments
@@ -98,7 +78,7 @@ class ADAMMethod(
   }
 
   /**
-   *
+   * Update the 'alpha' coefficient.
    */
   private fun updateAlpha() {
     this.alpha = this.stepSize *

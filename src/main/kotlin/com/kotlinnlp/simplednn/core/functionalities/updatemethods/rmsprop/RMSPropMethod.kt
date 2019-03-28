@@ -53,12 +53,9 @@ class RMSPropMethod(
   override fun optimizeSparseErrors(errors: SparseNDArray, supportStructure: RMSPropStructure): SparseNDArray {
 
     val m = supportStructure.secondOrderMoments
-
     val mask: NDArrayMask = errors.mask
-    val mUpdate: SparseNDArray =
-      m.prod(this.decay, mask = mask).assignSum(errors.prod(errors).assignProd(1.0 - this.decay))
 
-    m.assignValues(mUpdate)
+    m.assignProd(this.decay).assignSum(errors.prod(errors).assignProd(1.0 - this.decay))
 
     return errors.div(m.sqrt(mask = mask).assignSum(this.epsilon)).assignProd(this.learningRate)
   }
@@ -75,7 +72,7 @@ class RMSPropMethod(
 
     val m = supportStructure.secondOrderMoments
 
-    m.assignSum(m.prod(this.decay), errors.prod(errors).assignProd(1.0 - this.decay))
+    m.assignProd(this.decay).assignSum(errors.prod(errors).assignProd(1.0 - this.decay))
 
     return errors.div(m.sqrt().assignSum(this.epsilon)).assignProd(this.learningRate)
   }

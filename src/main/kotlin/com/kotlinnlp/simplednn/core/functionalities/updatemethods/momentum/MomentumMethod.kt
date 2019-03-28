@@ -13,8 +13,8 @@ import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 
 /**
@@ -63,39 +63,13 @@ open class MomentumMethod(
   }
 
   /**
-   * Optimize sparse errors.
-   * Update velocity with adapted learning rate.
+   * Optimize errors.
    *
-   * @param errors the [SparseNDArray] errors to optimize
+   * @param errors the errors to optimize
    * @param supportStructure the support structure of the [UpdateMethod]
    *
-   * @return optimized sparse errors
+   * @return the optimized errors
    */
-  override fun optimizeSparseErrors(errors: SparseNDArray, supportStructure: MomentumStructure): SparseNDArray {
-
-    val v = supportStructure.v
-    val mask = errors.mask
-
-    v.assignValues(errors.prod(this.alpha).assignSum(v.prod(this.momentum, mask = mask)), mask = mask)
-
-    return v.maskBy(mask)
-  }
-
-  /**
-   * Optimize dense errors.
-   * Update velocity with adapted learning rate.
-   *
-   * @param errors the [DenseNDArray] errors to optimize
-   * @param supportStructure the support structure of the [UpdateMethod]
-   *
-   * @return optimized dense errors
-   */
-  override fun optimizeDenseErrors(errors: DenseNDArray, supportStructure: MomentumStructure): DenseNDArray {
-
-    val v = supportStructure.v
-
-    v.assignSum(errors.prod(this.alpha), v.prod(this.momentum))
-
-    return v
-  }
+  override fun optimizeGenericErrors(errors: NDArray<*>, supportStructure: MomentumStructure): DenseNDArray =
+    supportStructure.v.assignProd(this.momentum).assignSum(errors.prod(this.alpha))
 }
