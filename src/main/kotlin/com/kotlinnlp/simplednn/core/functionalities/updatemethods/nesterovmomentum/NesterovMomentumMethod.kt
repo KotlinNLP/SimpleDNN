@@ -15,7 +15,6 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 
 /**
@@ -29,16 +28,14 @@ class NesterovMomentumMethod(
   val momentum: Double = 0.9,
   val decayMethod: DecayMethod? = null,
   regularization: WeightsRegularization? = null
-) : EpochScheduling,
-  UpdateMethod<NesterovMomentumStructure>(regularization) {
+) : EpochScheduling, UpdateMethod<NesterovMomentumStructure>(regularization) {
 
   /**
    * @param array the array from which to extract the support structure
    *
    * @return the [UpdaterSupportStructure] extracted from the given [array]
    */
-  override fun getSupportStructure(array: UpdatableDenseArray): NesterovMomentumStructure =
-    array.getOrSetSupportStructure()
+  override fun getSupportStructure(array: UpdatableDenseArray): NesterovMomentumStructure = array.getOrSetSupportStructure()
 
   /**
    * The 'alpha' coefficient.
@@ -75,12 +72,12 @@ class NesterovMomentumMethod(
   override fun optimizeGenericErrors(errors: NDArray<*>, supportStructure: NesterovMomentumStructure): DenseNDArray {
 
     val v = supportStructure.v
-    val vPrev = supportStructure.vPrev
+    val vTmp = supportStructure.vTmp
 
-    vPrev.assignValues(v) // backup previous velocity
+    vTmp.assignProd(v, this.momentum)
 
-    v.assignProd(this.momentum).assignSum(errors.prod((this.alpha)))
+    v.assignValues(vTmp).assignSum(errors.prod((this.alpha)))
 
-    return vPrev.prod(-this.momentum).assignSum(v.prod(1.0 + this.momentum))
+    return v.prod(1.0 + this.momentum).assignSub(vTmp)
   }
 }
