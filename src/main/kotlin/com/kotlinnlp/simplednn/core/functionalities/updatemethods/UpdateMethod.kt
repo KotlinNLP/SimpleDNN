@@ -28,9 +28,9 @@ abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(
    * @param array the inputArray to update
    * @param errors errors to subtract to the inputArray, after being optimized
    */
-  fun <NDArrayType: NDArray<NDArrayType>> update(array: ParamsArray, errors: NDArrayType) {
+  fun update(array: ParamsArray, errors: NDArray<*>) {
 
-    val optimizedErrors: NDArray<*> = this.optimize(errors, array)
+    val optimizedErrors: NDArray<*> = this.optimizeErrors(errors, array)
 
     this.regularization?.apply(array)
 
@@ -42,26 +42,23 @@ abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(
    *
    * @return the [UpdaterSupportStructure] extracted from the given [array]
    */
-  abstract fun getSupportStructure(array: ParamsArray): SupportStructureType
+  internal abstract fun getSupportStructure(array: ParamsArray): SupportStructureType
 
   /**
    * Optimize the errors.
    *
    * @param errors the errors to optimize (sparse or dense)
-   * @param array the [ParamsArray]
+   * @param array a [ParamsArray]
    *
    * @return optimized errors
    */
-  private fun <NDArrayType: NDArray<NDArrayType>> optimizeErrors(
-    errors: NDArrayType,
-    array: ParamsArray
-  ): NDArrayType = when (errors) {
+  private fun optimizeErrors(errors: NDArray<*>, array: ParamsArray): NDArray<*> = when (errors) {
 
-    // errors are Sparse when the input is SparseBinary
-    is SparseNDArray -> this.optimizeSparseErrors(errors, this.getSupportStructure(array))
+    is SparseNDArray -> // errors are Sparse when the input is SparseBinary
+      this.optimizeSparseErrors(errors, this.getSupportStructure(array))
 
-    // errors are Dense when the input is Dense
-    is DenseNDArray -> this.optimizeDenseErrors(errors, this.getSupportStructure(array))
+    is DenseNDArray -> // errors are Dense when the input is Dense
+      this.optimizeDenseErrors(errors, this.getSupportStructure(array))
 
     else -> throw RuntimeException("Invalid errors type")
   }
