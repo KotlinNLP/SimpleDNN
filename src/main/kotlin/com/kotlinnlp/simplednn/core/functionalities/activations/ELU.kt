@@ -15,7 +15,7 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
  * References
  * [Djork-Arné Clevert, Thomas Unterthiner, Sepp Hochreiter (2015): Fast and Accurate Deep Network Learning by Exponential Linear Units (ELUs)](http://arxiv.org/abs/1511.07289)
  *
- * @property alpha defines the decreasing exponential rate for the negative values. Defaults to 1.
+ * @property alpha defines the decreasing exponential rate for the negative values. It must be positive.
  */
 class ELU(val alpha: Double = 1.0) : ScalarActivationFunction() {
 
