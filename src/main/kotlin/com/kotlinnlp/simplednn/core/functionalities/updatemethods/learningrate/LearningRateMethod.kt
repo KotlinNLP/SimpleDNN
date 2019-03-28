@@ -82,8 +82,8 @@ class LearningRateMethod(
    */
   override fun optimizeDenseErrors(errors: DenseNDArray, supportStructure: LearningRateStructure): DenseNDArray {
 
-    supportStructure.errors.assignProd(errors, this.alpha)
+    supportStructure.denseErrors.assignProd(errors, this.alpha)
 
-    return supportStructure.errors
+    return supportStructure.denseErrors
   }
 }

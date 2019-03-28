@@ -23,5 +23,5 @@ class LearningRateStructure(shape: Shape) : UpdaterSupportStructure(shape) {
    * Support array for dense errors.
    * Its values are overridden to avoid the creation of new objects.
    */
-  val errors: DenseNDArray = DenseNDArrayFactory.zeros(shape)
+  val denseErrors: DenseNDArray = DenseNDArrayFactory.zeros(shape)
 }
