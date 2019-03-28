@@ -13,12 +13,15 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
- * @param shape shape
+ * Support structure for the [NesterovMomentumMethod].
+ *
+ * @param shape the shape of the related parameter
  */
 class NesterovMomentumStructure(shape: Shape) : MomentumStructure(shape) {
 
   /**
-   * Used with Nesterov Momentum
+   * Support array for the previous 'v' parameter.
+   * Its values are overridden to avoid the creation of new objects.
    */
   val vPrev: DenseNDArray by lazy { DenseNDArrayFactory.zeros(shape) }
 }

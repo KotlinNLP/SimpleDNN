@@ -13,13 +13,15 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
+ * Support structure for the [LearningRateMethod].
  *
- * @param shape shape
+ * @param shape the shape of the related parameter
  */
 class LearningRateStructure(shape: Shape) : UpdaterSupportStructure(shape) {
 
   /**
-   *
+   * Support array for dense errors.
+   * Its values are overridden to avoid the creation of new objects.
    */
   val errors: DenseNDArray = DenseNDArrayFactory.zeros(shape)
 }

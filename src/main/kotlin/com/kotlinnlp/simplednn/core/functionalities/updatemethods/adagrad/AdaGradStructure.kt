@@ -13,13 +13,15 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
+ * Support structure for the [AdaGradMethod].
  *
- * @param shape shape
+ * @param shape the shape of the related parameter
  */
 class AdaGradStructure(shape: Shape) : UpdaterSupportStructure(shape) {
 
   /**
-   *
+   * Support array for the second order moments.
+   * Its values are overridden to avoid the creation of new objects.
    */
   val secondOrderMoments: DenseNDArray = DenseNDArrayFactory.zeros(shape)
 }

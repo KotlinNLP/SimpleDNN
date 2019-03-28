@@ -40,13 +40,13 @@ class ADAMMethod(
   override fun getSupportStructure(array: UpdatableDenseArray): ADAMStructure = array.getOrSetSupportStructure()
 
   /**
-   *
+   * The 'alpha' coefficient.
    */
   var alpha: Double = this.stepSize
     private set
 
   /**
-   *
+   * The number of examples seen.
    */
   private var exampleCount: Double = 0.0
 

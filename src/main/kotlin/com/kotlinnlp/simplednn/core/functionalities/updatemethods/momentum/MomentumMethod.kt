@@ -39,13 +39,13 @@ open class MomentumMethod(
   override fun getSupportStructure(array: UpdatableDenseArray): MomentumStructure = array.getOrSetSupportStructure()
 
   /**
-   *
+   * The 'alpha' coefficient.
    */
   var alpha: Double = this.learningRate
     private set
 
   /**
-   *
+   * The number of epochs seen.
    */
   private var epochCount: Int = 0
 
