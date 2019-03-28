@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 open class MomentumStructure(shape: Shape) : UpdaterSupportStructure(shape) {
 
   /**
-   * Support array for the 'v' parameter.
+   * Support array for the 'velocity' parameter.
    * Its values are overridden to avoid the creation of new objects.
    */
   val v: DenseNDArray = DenseNDArrayFactory.zeros(shape)

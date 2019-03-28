@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 class NesterovMomentumStructure(shape: Shape) : MomentumStructure(shape) {
 
   /**
-   * Support array for the previous 'v' parameter.
+   * Support array for the previous 'velocity' parameter.
    * Its values are overridden to avoid the creation of new objects.
    */
   val vPrev: DenseNDArray by lazy { DenseNDArrayFactory.zeros(shape) }
