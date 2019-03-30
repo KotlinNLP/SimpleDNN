@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
 /**
  *
  * The ELU activation function acts like a [ReLU] if x is positive,
- * but for negative values it is a function bounded by a fixed value -1, for alpha=1.0
+ * but for negative values it is a function bounded by a fixed value -1, for alpha = 1.0
  *
  * References
  * [Djork-Arné Clevert, Thomas Unterthiner, Sepp Hochreiter (2015): Fast and Accurate Deep Network Learning by Exponential Linear Units (ELUs)](http://arxiv.org/abs/1511.07289)

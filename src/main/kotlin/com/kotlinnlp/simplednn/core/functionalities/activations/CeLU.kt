@@ -14,7 +14,7 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
  * [Jonathan T. Barron, 2017, Continuously Differentiable Exponential Linear Units](https://arxiv.org/abs/1704.07483)
  *
  * @property alpha defines the decreasing exponential rate for the negative values. Defaults to 1.0
- * Using default value, the function is identical to ELU.
+ *           Using default value, the function is identical to ELU.
  *
  */
 class CeLU (val alpha: Double = 1.0) : ScalarActivationFunction() {
