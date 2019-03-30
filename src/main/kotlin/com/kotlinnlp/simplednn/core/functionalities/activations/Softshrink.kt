@@ -40,7 +40,11 @@ class Softshrink(val lambda: Double = 0.5) : ScalarActivationFunction() {
    *
    * @return f([x])
    */
-  override fun f(x: Double): Double = if (x > this.lambda) x - this.lambda else if (x < -this.lambda) x + this.lambda else 0.0
+  override fun f(x: Double): Double = when {
+    x > this.lambda -> x - this.lambda
+    x < -this.lambda -> x + this.lambda
+    else -> 0.0
+  }
 
   /**
    * Optimized derivative of the Softplus function, calculated respect to the input already activated.
@@ -49,6 +53,9 @@ class Softshrink(val lambda: Double = 0.5) : ScalarActivationFunction() {
    *
    * @return the Softplus derivative calculated in x
    */
-  override fun dfOptimized(fx: Double): Double = if (fx + this.lambda > this.lambda) 1.0 else if (fx - this.lambda < -this.lambda) 1.0 else 0.0
-
+  override fun dfOptimized(fx: Double): Double = when {
+    fx + this.lambda > this.lambda -> 1.0
+    fx - this.lambda < -this.lambda -> 1.0
+    else -> 0.0
+  }
 }

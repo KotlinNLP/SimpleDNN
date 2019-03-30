@@ -44,7 +44,10 @@ class SeLU(val scale: Double = 1.05070099, val alpha: Double = 1.67326324) : Sca
    *
    * @return f([x])
    */
-  override fun f(x: Double): Double = if (x > 0.0) this.scale * x else this.scale * this.alpha * (Math.exp(x) - 1.0)
+  override fun f(x: Double): Double = when {
+    x > 0.0 -> this.scale * x
+    else -> this.scale * this.alpha * (Math.exp(x) - 1.0)
+  }
 
   /**
    * Optimized derivative of the SeLU function, calculated respect to the input already activated.
@@ -53,6 +56,8 @@ class SeLU(val scale: Double = 1.05070099, val alpha: Double = 1.67326324) : Sca
    *
    * @return the SeLU derivative calculated in x
    */
-  override fun dfOptimized(fx: Double): Double = if (fx > 0.0) this.scale else fx + (this.scale * this.alpha)
-
+  override fun dfOptimized(fx: Double): Double = when {
+    fx > 0.0 -> this.scale
+    else -> fx + (this.scale * this.alpha)
+  }
 }

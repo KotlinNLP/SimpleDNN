@@ -38,8 +38,10 @@ class Softplus(val beta: Double = 1.0, val threshold: Double = 20.0) : ScalarAct
    *
    * @return f([x])
    */
-  override fun f(x: Double): Double = if (x < this.threshold) 1.0 / this.beta * Math.log(1.0 + Math.exp(x * this.beta))
-  else x
+  override fun f(x: Double): Double = when {
+    x < this.threshold -> 1.0 / this.beta * Math.log(1.0 + Math.exp(x * this.beta))
+    else -> x
+  }
 
   /**
    * Optimized derivative of the Softplus function, calculated respect to the input already activated.
@@ -48,7 +50,8 @@ class Softplus(val beta: Double = 1.0, val threshold: Double = 20.0) : ScalarAct
    *
    * @return the Softplus derivative calculated in x
    */
-  override fun dfOptimized(fx: Double): Double = if (fx < this.threshold) (Math.exp(this.beta * fx) - 1.0) /
-      (Math.exp(this.beta * fx)) else 1.0
-
+  override fun dfOptimized(fx: Double): Double = when {
+    fx < this.threshold -> (Math.exp(this.beta * fx) - 1.0) / (Math.exp(this.beta * fx))
+    else -> 1.0
+  }
 }
