@@ -48,5 +48,4 @@ class LeakyRELU(val slope: Double = 0.01) : ScalarActivationFunction() {
    * @return the LeakyReLU derivative calculated in x
    */
   override fun dfOptimized(fx: Double): Double = if (fx > 0.0) 1.0 else this.slope
-
 }

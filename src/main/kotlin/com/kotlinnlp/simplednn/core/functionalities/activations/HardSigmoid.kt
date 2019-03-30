@@ -33,5 +33,4 @@ class HardSigmoid: ScalarActivationFunction() {
    * @return the HardSigmoid derivative calculated in x
    */
   override fun dfOptimized(fx: Double): Double = if ((fx - 0.5) / 0.2 < 2.5 && (fx - 0.5) / 0.2 > -2.5) 0.2 else 0.0
-
 }

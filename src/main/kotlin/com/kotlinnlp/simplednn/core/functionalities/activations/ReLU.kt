@@ -42,5 +42,4 @@ class ReLU : ScalarActivationFunction() {
    * @return the ReLU derivative calculated in x
    */
   override fun dfOptimized(fx: Double): Double = if (fx > 0.0) 1.0 else 0.0
-
 }
