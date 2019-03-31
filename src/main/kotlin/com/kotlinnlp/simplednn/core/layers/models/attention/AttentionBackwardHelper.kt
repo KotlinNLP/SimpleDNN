@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers.models.attention
 
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
-import com.kotlinnlp.simplednn.core.layers.models.attention.attentionmechanism.AttentionMechanismLayer
 import com.kotlinnlp.simplednn.core.layers.models.attention.attentionmechanism.AttentionMechanismLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -82,10 +81,10 @@ class AttentionBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun assignLayerGradients() {
 
     val outputErrors: DenseNDArray = this.layer.outputArray.errors
-    val attention: DenseNDArray = this.layer.attentionMechanism.outputArray.values
+    val attentionScores: DenseNDArray = this.layer.attentionMechanism.outputArray.values
 
     for (i in 0 until this.layer.inputArrays.size) {
-      this.layer.inputArrays[i].assignErrorsByProd(outputErrors, attention[i])
+      this.layer.inputArrays[i].assignErrorsByProd(outputErrors, attentionScores[i])
     }
   }
 }
