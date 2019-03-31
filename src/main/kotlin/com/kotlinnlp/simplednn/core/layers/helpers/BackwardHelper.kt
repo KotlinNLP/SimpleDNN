@@ -42,6 +42,11 @@ abstract class BackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun setParamsErrorsCollector(c: ParamsErrorsCollector) { this.paramsErrorsCollector = c }
 
   /**
+   * @return the [paramsErrorsCollector]
+   */
+  fun getParamsErrorsCollector(): ParamsErrorsCollector = this.paramsErrorsCollector
+
+  /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
    * algorithm, starting from the preset errors of the output array.
    *
