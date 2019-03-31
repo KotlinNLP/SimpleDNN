@@ -89,7 +89,7 @@ class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val attentionMatrix: AugmentedArray<DenseNDArray> get() = this.attentionMechanism.attentionMatrix
 
   /**
-   *
+   * Essential requirements.
    */
   init {
 

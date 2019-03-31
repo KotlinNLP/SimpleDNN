@@ -19,7 +19,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.utils.ItemsPool
 
 /**
- * The Attention Layer Structure.
+ * The Attention Mechanism Layer Structure.
  *
  * @property inputArrays the input arrays of the layer
  * @param inputType the input array type (default Dense)

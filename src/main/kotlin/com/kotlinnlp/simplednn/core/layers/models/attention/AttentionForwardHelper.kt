@@ -9,14 +9,13 @@ package com.kotlinnlp.simplednn.core.layers.models.attention
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
-import com.kotlinnlp.simplednn.core.layers.models.attention.attentionmechanism.AttentionMechanismLayer
 import com.kotlinnlp.simplednn.core.layers.models.attention.attentionmechanism.AttentionMechanismLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * The helper which executes the forward on a [layer].
  *
- * @property layer the [AttentionMechanismLayer] in which the forward is executed
+ * @property layer the [AttentionLayer] in which the forward is executed
  */
 class AttentionForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: AttentionLayer<InputNDArrayType>
