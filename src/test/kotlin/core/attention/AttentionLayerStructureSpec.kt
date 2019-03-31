@@ -8,8 +8,8 @@
 package core.attention
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.attention.AttentionLayerStructure
 import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.jetbrains.spek.api.Spek
@@ -35,31 +35,31 @@ class AttentionLayerStructureSpec : Spek({
 
       it("should raise an Exception with an empty input sequence") {
         assertFails {
-          AttentionLayerStructure(
-            inputSequence = mutableListOf<AugmentedArray<DenseNDArray>>(),
+          AttentionLayer(
+            inputArrays = mutableListOf<AugmentedArray<DenseNDArray>>(),
             inputType = LayerType.Input.Dense,
-            attentionSequence = attentionSequence,
+            attentionArrays = attentionSequence,
             params = params)
         }
       }
 
       it("should raise an Exception with an empty attention sequence") {
         assertFails {
-          AttentionLayerStructure(
-            inputSequence = inputSequence,
+          AttentionLayer(
+            inputArrays = inputSequence,
             inputType = LayerType.Input.Dense,
-            attentionSequence = mutableListOf(),
+            attentionArrays = mutableListOf(),
             params = params)
         }
       }
 
       it("should raise an Exception with input and attention sequences not compatible") {
         assertFails {
-          AttentionLayerStructure(
-            inputSequence = inputSequence,
+          AttentionLayer(
+            inputArrays = inputSequence,
             inputType = LayerType.Input.Dense,
-            attentionSequence = attentionSequence.mapIndexed { i, elm ->
-              if (i == 1) DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.1, 0.3)) else elm
+            attentionArrays = attentionSequence.mapIndexed { i, elm ->
+              if (i == 1) AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.1, 0.3))) else elm
             },
             params = params)
         }
@@ -67,11 +67,11 @@ class AttentionLayerStructureSpec : Spek({
 
       it("should raise an Exception with a attention arrays with a not expected size") {
         assertFails {
-          AttentionLayerStructure(
-            inputSequence = inputSequence,
+          AttentionLayer(
+            inputArrays = inputSequence,
             inputType = LayerType.Input.Dense,
-            attentionSequence = attentionSequence.mapIndexed { i, elm ->
-              if (i == 1) DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.1, 0.3)) else elm
+            attentionArrays = attentionSequence.mapIndexed { i, elm ->
+              if (i == 1) AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.1, 0.3))) else elm
             },
             params = params)
         }
@@ -82,19 +82,19 @@ class AttentionLayerStructureSpec : Spek({
 
       val inputSequence = AttentionLayerUtils.buildInputSequence()
       val attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence)
-      val structure = AttentionLayerStructure(
-        inputSequence = inputSequence,
+      val structure = AttentionLayer(
+        inputArrays = inputSequence,
         inputType = LayerType.Input.Dense,
-        attentionSequence = attentionSequence,
+        attentionArrays = attentionSequence,
         params = AttentionLayerUtils.buildAttentionParams())
 
       it("should initialize the attention matrix correctly") {
         assertTrue {
           structure.attentionMatrix.values.equals(
             DenseNDArrayFactory.arrayOf(listOf(
-              attentionSequence[0].toDoubleArray(),
-              attentionSequence[1].toDoubleArray(),
-              attentionSequence[2].toDoubleArray()
+              attentionSequence[0].values.toDoubleArray(),
+              attentionSequence[1].values.toDoubleArray(),
+              attentionSequence[2].values.toDoubleArray()
             )),
             tolerance = 1.0e-06
           )
@@ -111,18 +111,18 @@ class AttentionLayerStructureSpec : Spek({
     on("forward") {
 
       val inputSequence = AttentionLayerUtils.buildInputSequence()
-      val structure = AttentionLayerStructure(
-        inputSequence = inputSequence,
+      val structure = AttentionLayer(
+        inputArrays = inputSequence,
         inputType = LayerType.Input.Dense,
-        attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence),
+        attentionArrays = AttentionLayerUtils.buildAttentionSequence(inputSequence),
         params = AttentionLayerUtils.buildAttentionParams()
       )
 
       structure.forward()
 
-      it("should match the expected importance score") {
+      it("should match the expected attention scores") {
         assertTrue {
-          structure.importanceScore.values.equals(
+          structure.attentionScores.values.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(0.304352, 0.348001, 0.347647)),
             tolerance = 1.0e-06)
         }
@@ -140,10 +140,10 @@ class AttentionLayerStructureSpec : Spek({
     on("backward") {
 
       val inputSequence = AttentionLayerUtils.buildInputSequence()
-      val structure = AttentionLayerStructure(
-        inputSequence = inputSequence,
+      val structure = AttentionLayer(
+        inputArrays = inputSequence,
         inputType = LayerType.Input.Dense,
-        attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence),
+        attentionArrays = AttentionLayerUtils.buildAttentionSequence(inputSequence),
         params = AttentionLayerUtils.buildAttentionParams()
       )
 
@@ -152,7 +152,7 @@ class AttentionLayerStructureSpec : Spek({
       structure.outputArray.assignErrors(AttentionLayerUtils.buildOutputErrors())
       structure.backward(propagateToInput = true)
 
-      val attentionErrors: List<DenseNDArray> = structure.getAttentionErrors()
+      val attentionErrors: List<DenseNDArray> = structure.attentionArrays.map { it.errors }
 
       it("should match the expected errors of the first attention array") {
         assertTrue {
@@ -180,7 +180,7 @@ class AttentionLayerStructureSpec : Spek({
 
       it("should match the expected errors of the first input") {
         assertTrue {
-          structure.inputSequence[0].errors.equals(
+          structure.inputArrays[0].errors.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.06087, 0.152176, 0.030435, -0.152176)),
             tolerance = 1.0e-06)
         }
@@ -188,7 +188,7 @@ class AttentionLayerStructureSpec : Spek({
 
       it("should match the expected errors of the second input") {
         assertTrue {
-          structure.inputSequence[1].errors.equals(
+          structure.inputArrays[1].errors.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.0696, 0.174, 0.0348, -0.174)),
             tolerance = 1.0e-06)
         }
@@ -196,7 +196,7 @@ class AttentionLayerStructureSpec : Spek({
 
       it("should match the expected errors of the third input") {
         assertTrue {
-          structure.inputSequence[2].errors.equals(
+          structure.inputArrays[2].errors.equals(
             DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.069529, 0.173823, 0.034765, -0.173823)),
             tolerance = 1.0e-06)
         }

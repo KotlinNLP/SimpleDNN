@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworkParameters
-import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.attention.attentionmechanism.AttentionMechanismLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
@@ -47,7 +47,7 @@ object AttentionLayerUtils {
   /**
    *
    */
-  fun buildAttentionSequence(inputSequence: List<AugmentedArray<DenseNDArray>>): List<DenseNDArray> {
+  fun buildAttentionSequence(inputSequence: List<AugmentedArray<DenseNDArray>>): List<AugmentedArray<DenseNDArray>> {
 
     val transformLayer: FeedforwardLayer<DenseNDArray> = buildTransformLayer()
 
@@ -56,7 +56,7 @@ object AttentionLayerUtils {
       init = { i ->
         transformLayer.setInput(inputSequence[i].values)
         transformLayer.forward()
-        transformLayer.outputArray.values.copy()
+        AugmentedArray(transformLayer.outputArray.values.copy())
       }
     ))
   }

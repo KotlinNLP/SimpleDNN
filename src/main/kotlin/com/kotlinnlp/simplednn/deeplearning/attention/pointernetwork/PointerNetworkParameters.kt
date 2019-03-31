@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.attention.pointernetwork
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
-import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionMechanismLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.attention.attentionmechanism.AttentionMechanismLayerParameters
 
 /**
  * The parameters of the [PointerNetworkProcessor].
