@@ -9,7 +9,6 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
-import com.kotlinnlp.simplednn.core.layers.assignParamsGradients
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
