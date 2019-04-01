@@ -72,16 +72,9 @@ class ParamsOptimizer(private val updateMethod: UpdateMethod<*>) : ParamsErrorsA
    */
   private fun updateParams() {
 
-    this.getParamsErrors(copy = false).forEach {
+    this.getParamsErrors(copy = false).forEach { errors ->
 
-      val params = it.refParams
-      val errors = it.values
-
-      when (errors) {
-        is DenseNDArray -> this.updateMethod.update(array = params, errors = errors)
-        is SparseNDArray -> this.updateMethod.update(array = params, errors = errors)
-        else -> throw RuntimeException("Invalid errors type")
-      }
+      this.updateMethod.update(array = errors.refParams, errors = errors.values)
     }
   }
 }
