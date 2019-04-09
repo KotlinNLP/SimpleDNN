@@ -94,14 +94,35 @@ class StackedLayersParameters(
   /**
    * A list containing a [LayerParameters] for each layer.
    */
-  val paramsPerLayer: List<LayerParameters<*>> = this.layersConfiguration.toLayerParameters(
-    weightsInitializer = weightsInitializer,
-    biasesInitializer = biasesInitializer)
+  val paramsPerLayer = List(size = this.layersConfiguration.size - 1, init = { i ->
+    LayerParametersFactory(
+      inputsSize = this.layersConfiguration[i].sizes,
+      outputSize = this.layersConfiguration[i + 1].size,
+      connectionType = this.layersConfiguration[i + 1].connectionType!!,
+      weightsInitializer = weightsInitializer,
+      biasesInitializer = biasesInitializer,
+      sparseInput = this.layersConfiguration[i].type == LayerType.Input.SparseBinary)
+  } )
 
   /**
    * The list of all parameters.
    */
-  override val paramsList: ParamsList = this.paramsPerLayer.toParamsArrays()
+  override val paramsList: ParamsList by lazy {
+
+    var layerIndex = 0
+    var paramIndex = 0
+
+    List(size = this.paramsPerLayer.sumBy { it.size }, init = {
+
+      if (paramIndex == this.paramsPerLayer[layerIndex].size) {
+        layerIndex++
+        paramIndex = 0
+      }
+
+      this.paramsPerLayer[layerIndex][paramIndex++]
+
+    } )
+  }
 
   /**
    * @return a new [StackedLayersParameters] containing a copy of all parameters of this

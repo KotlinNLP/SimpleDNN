@@ -42,13 +42,13 @@ open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The first layer
    */
   @Suppress("UNCHECKED_CAST")
-  val inputLayer: Layer<InputNDArrayType> get() = layers.first() as Layer<InputNDArrayType>
+  val inputLayer: Layer<InputNDArrayType> get() = this.layers.first() as Layer<InputNDArrayType>
 
   /**
    * The last layer
    */
   @Suppress("UNCHECKED_CAST")
-  val outputLayer: Layer<DenseNDArray> get() = layers.last() as Layer<DenseNDArray>
+  val outputLayer: Layer<DenseNDArray> get() = this.layers.last() as Layer<DenseNDArray>
 
   /**
    * Forward features.
@@ -216,10 +216,50 @@ open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun setParamsErrorsCollector(c: ParamsErrorsCollector) { this.layers.forEach { it.setParamsErrorsCollector(c) } }
 
   /**
-   * @return the list of layers generated from the [layersConfiguration]
+   * Build a new list of layer.
+   *
+   * Layers are defined as a list [x, y, z] of [LayerInterface].
+   * The resulting list of [Layer] consist in input-output pairs [x-y, y-z].
+   *
+   * @return list of layers where the output of a layer is the reference of the input of the next one
    */
-  protected fun buildLayers(): List<Layer<*>> = this.layersConfiguration.toLayers(
-    paramsPerLayer = this.paramsPerLayer,
-    contextWindow = this
-  )
+  protected fun buildLayers(): List<Layer<*>> = this.layersConfiguration.let { config ->
+
+    require(config.subList(1, config.size).all { it.type == LayerType.Input.Dense }) {
+      "The last layers must be dense."
+    }
+
+    require(config.subList(2, config.size).all { it.connectionType!!.property != LayerType.Property.Merge }) {
+      "Only the first layer can be a Merge layer."
+    }
+
+    var prevLayer: Layer<*>? = null
+
+    return List(
+      size = config.size - 1,
+      init = { i ->
+
+        val layer: Layer<*> = if (i == 0)
+          LayerFactory(
+            inputConfiguration = config[0],
+            outputConfiguration = config[1],
+            params = this.paramsPerLayer[0],
+            contextWindow = this
+          )
+        else
+          LayerFactory(
+            inputArrays = listOf(prevLayer!!.outputArray),
+            inputType = LayerType.Input.Dense,
+            outputConfiguration = config[i + 1],
+            params = this. paramsPerLayer[i],
+            dropout = config[i].dropout,
+            contextWindow = this
+          )
+
+        prevLayer = layer
+
+        layer
+      }
+    )
+  }
 }
