@@ -70,5 +70,4 @@ class ReshapeLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The output array
    */
   override val outputArray = AugmentedArray(DenseNDArrayFactory.zeros(outputSize))
-
 }

@@ -31,6 +31,7 @@ class ConvolutionForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param outChannelIndex the index of the output channel
    */
   private fun convolution(outChannelIndex: Int, outRowIndex: Int, outColIndex: Int) : Double {
+
     var sum = 0.0
     val startingIndex: Int = outChannelIndex * this.layer.params.inputChannels
 
@@ -55,7 +56,6 @@ class ConvolutionForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param outputArray the  outputChannel at the index of [outChannelIndex]
    */
   private fun forwardChannel(outChannelIndex: Int, outputArray: AugmentedArray<DenseNDArray>){
-
 
     val nWeights: Int = this.layer.params.outputChannels * this.layer.params.inputChannels
 

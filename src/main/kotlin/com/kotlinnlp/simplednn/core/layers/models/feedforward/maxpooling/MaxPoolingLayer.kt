@@ -91,5 +91,4 @@ class MaxPoolingLayer <InputNDArrayType : NDArray<InputNDArrayType>>(
    * The matrix containing the argmax column index of output array.
    */
   val argMaxj = Array(getOutputShape().dim1) {IntArray(getOutputShape().dim2)}
-
 }

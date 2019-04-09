@@ -26,6 +26,7 @@ class ReshapeForwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    */
   override fun forward() {
+
     var i = 0
     val outputArray = DoubleArray(this.layer.outputArray.size)
     for (r in 0 until layer.inputArray.values.rows)

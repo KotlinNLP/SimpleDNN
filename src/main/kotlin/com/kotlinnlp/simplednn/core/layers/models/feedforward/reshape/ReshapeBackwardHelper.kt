@@ -23,6 +23,7 @@ class ReshapeBackwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    */
   override fun execBackward(propagateToInput: Boolean) {
+
     require(this.layer.outputArray.values.shape ==this.layer.outputArray.errors.shape)
     if (propagateToInput) {
       var i = 0
@@ -43,7 +44,6 @@ class ReshapeBackwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
           i++
 
         }
-
     }
   }
 

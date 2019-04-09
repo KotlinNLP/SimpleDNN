@@ -28,6 +28,7 @@ class MaxPoolingForwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param col the column of the output matrix
    */
   private fun maxPooling(row: Int, col: Int) {
+
     var max : Double = Double.MIN_VALUE
 
     for (i in (row * this.layer.poolSize.dim1) until (row * this.layer.poolSize.dim1)
@@ -50,12 +51,12 @@ class MaxPoolingForwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    */
   override fun forward() {
+
     for (r in 0 until layer.outputArray.values.rows)
       for (c in 0 until layer.outputArray.values.columns)
         maxPooling(r, c)
 
     layer.outputArray.activate()
-
   }
 
   /**

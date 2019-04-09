@@ -27,6 +27,7 @@ class ConvolutionBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Initialize input errors
    */
   private fun initializeInputErrors() {
+
     this.layer.inputArrays.forEach{
       it.assignErrors(DenseNDArrayFactory.zeros(this.layer.inputSize))
     }
@@ -37,6 +38,7 @@ class ConvolutionBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param paramsErrors the parameters to initialize
    */
   private fun initializeParametersErrors(paramsErrors: ConvolutionLayerParameters) {
+
     paramsErrors.paramsList.forEach{
       it.errors.values.assignValues(n = 0.0)
     }
@@ -52,6 +54,7 @@ class ConvolutionBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun calculateKernelsErrors(outChannelIndex: Int, outRowIndex: Int, outColIndex: Int,
                                      params: ConvolutionLayerParameters) {
+
     val startingIndex: Int = outChannelIndex * this.layer.params.inputChannels
 
     for (k in startingIndex until startingIndex + params.inputChannels) {
@@ -112,7 +115,6 @@ class ConvolutionBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun backwardChannel(outChannelIndex: Int, outputArray: AugmentedArray<DenseNDArray>,
                               params: ConvolutionLayerParameters, propagateToInput: Boolean){
 
-
     val nWeights: Int = this.layer.params.outputChannels * this.layer.params.inputChannels
 
     for (r in 0 until outputArray.values.rows)
@@ -136,6 +138,7 @@ class ConvolutionBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param propagateToInput whether to propagate the errors to the input array
    */
   override fun execBackward(propagateToInput: Boolean) {
+
     this.layer.applyOutputActivationDerivs()
     this.initializeParametersErrors(this.layer.params)
     if (propagateToInput)

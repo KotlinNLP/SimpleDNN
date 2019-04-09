@@ -60,6 +60,7 @@ class ConvolutionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Return the [Shape] of output layers
    */
   private fun getOutputShape(): Shape {
+
     val x: Int = (inputArray.values.rows - params.kernelSize.dim1) / xStride + 1
     val y: Int = (inputArray.values.columns - params.kernelSize.dim2) / yStride + 1
     return Shape(x, y)
@@ -116,6 +117,7 @@ class ConvolutionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Perform the multiplication of the output arrays by the derivative of its activated values.
    */
   fun applyOutputActivationDerivs() {
+
     for (array in this.outputArrays)
       if (array.hasActivation) {
         array.errors.assignProd(array.calculateActivationDeriv())
@@ -126,6 +128,7 @@ class ConvolutionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Check if [arrayList] contains arrays of the same size and shape
    */
   private fun isAllEqualSize(arrayList: List<AugmentedArray<InputNDArrayType>>): Boolean {
+
     val columns = arrayList.first().values.columns
     val rows = arrayList.first().values.rows
 
