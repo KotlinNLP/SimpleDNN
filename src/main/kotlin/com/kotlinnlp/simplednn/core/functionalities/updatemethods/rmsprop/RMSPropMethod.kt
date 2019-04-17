@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethodConfig
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -34,6 +35,14 @@ class RMSPropMethod(
   val decay: Double = 0.95,
   regularization: WeightsRegularization? = null
 ) : UpdateMethod<RMSPropStructure>(regularization) {
+
+  /**
+   * @param config the configuration
+   */
+  constructor(config: UpdateMethodConfig.RMSPropConfig) : this(
+    learningRate = config.learningRate,
+    epsilon = config.epsilon
+  )
 
   /**
    * @param array the array from which to extract the support structure

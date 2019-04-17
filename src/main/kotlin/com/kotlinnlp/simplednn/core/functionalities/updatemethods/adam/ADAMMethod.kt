@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethodConfig
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -32,6 +33,15 @@ class ADAMMethod(
 ) : ExampleScheduling,
     UpdateMethod<ADAMStructure>(regularization) {
 
+  /**
+   * @param config the configuration
+   */
+  constructor(config: UpdateMethodConfig.ADAMConfig) : this(
+    stepSize = config.stepSize,
+    beta1 = config.beta1,
+    beta2 = config.beta2,
+    epsilon = config.epsilon
+  )
   /**
    * @param array the array from which to extract the support structure
    *

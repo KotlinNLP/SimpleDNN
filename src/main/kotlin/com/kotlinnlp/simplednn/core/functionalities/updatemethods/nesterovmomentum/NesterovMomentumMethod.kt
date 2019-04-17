@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethodConfig
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -29,6 +30,14 @@ class NesterovMomentumMethod(
   val decayMethod: DecayMethod? = null,
   regularization: WeightsRegularization? = null
 ) : EpochScheduling, UpdateMethod<NesterovMomentumStructure>(regularization) {
+
+  /**
+   * @param config the configuration
+   */
+  constructor(config: UpdateMethodConfig.NesterovMomentumConfig) : this(
+    learningRate = config.learningRate,
+    momentum = config.momentum
+  )
 
   /**
    * @param array the array from which to extract the support structure

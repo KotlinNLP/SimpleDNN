@@ -9,6 +9,12 @@ package com.kotlinnlp.simplednn.core.functionalities.updatemethods
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGradMethod
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum.MomentumMethod
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.nesterovmomentum.NesterovMomentumMethod
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop.RMSPropMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -21,6 +27,23 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(
   val regularization: WeightsRegularization?
 ) {
+
+  companion object {
+
+    /**
+     * @param config the configuration
+     *
+     * @return the [UpdateMethod] of the given [config]
+     */
+    operator fun invoke(config: UpdateMethodConfig) = when(config) {
+      is UpdateMethodConfig.AdaGradConfig -> AdaGradMethod(config)
+      is UpdateMethodConfig.ADAMConfig -> ADAMMethod(config)
+      is UpdateMethodConfig.LearningRateConfig -> LearningRateMethod(config)
+      is UpdateMethodConfig.MomentumConfig -> MomentumMethod(config)
+      is UpdateMethodConfig.NesterovMomentumConfig -> NesterovMomentumMethod(config)
+      is UpdateMethodConfig.RMSPropConfig -> RMSPropMethod(config)
+    }
+  }
 
   /**
    * Update the given [array] with the given [errors].

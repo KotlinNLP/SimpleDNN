@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethodConfig
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -30,6 +31,14 @@ class AdaGradMethod(
   val epsilon: Double = 1.0E-8,
   regularization: WeightsRegularization? = null
 ) : UpdateMethod<AdaGradStructure>(regularization) {
+
+  /**
+   * @param config the configuration
+   */
+  constructor(config: UpdateMethodConfig.AdaGradConfig) : this(
+    learningRate = config.learningRate,
+    epsilon = config.epsilon
+  )
 
   /**
    * @param array the array from which to extract the support structure
