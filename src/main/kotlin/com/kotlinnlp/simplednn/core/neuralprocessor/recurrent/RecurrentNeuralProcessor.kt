@@ -225,7 +225,11 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return the output sequence
    */
   override fun forward(input: List<InputNDArrayType>): List<DenseNDArray> {
+
+    require(input.isNotEmpty()) { "The input cannot be empty." }
+
     this.forward(input = input, initHiddenArrays = null, saveContributions = false)
+
     return this.getOutputSequence(copy = true) // TODO: check copy
   }
 
@@ -245,6 +249,8 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun forward(input: List<InputNDArrayType>,
               initHiddenArrays: List<DenseNDArray?>? = null,
               saveContributions: Boolean = false): DenseNDArray {
+
+    require(input.isNotEmpty()) { "The input cannot be empty." }
 
     input.forEachIndexed { i, values ->
       this.forward(
@@ -306,6 +312,8 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
               initHiddenArrays: List<DenseNDArray?>? = null,
               saveContributions: Boolean = false): DenseNDArray {
 
+    require(input.isNotEmpty()) { "The input cannot be empty." }
+
     input.forEachIndexed { i, values ->
       this.forward(
         input = values,
@@ -334,6 +342,8 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
               firstState: Boolean,
               initHiddenArrays: List<DenseNDArray?>? = null,
               saveContributions: Boolean = false): DenseNDArray {
+
+    require(input.isNotEmpty()) { "The input cannot be empty." }
 
     if (firstState) {
       this.reset()
