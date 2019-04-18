@@ -128,6 +128,16 @@ fun exp(a: DenseNDArray): DenseNDArray {
 }
 
 /**
+ * Simple work-around that make the Math.log() safe for zero or negative values
+ *
+ * @param value the value
+ * @param eps the number to use when the given [value] is less than this
+ *
+ * @return the logarithm
+ */
+fun safeLog(value: Double, eps: Double = 1.0e-08): Double = Math.log(if (value >= eps) value else eps)
+
+/**
  * Calculate the SED complexity exponent component of two vectors of the i-th dimension if [a] and [b] are the values of
  * the vectors of the i-th dimension.
  *
