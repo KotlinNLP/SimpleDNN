@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.optimizer
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 
@@ -140,6 +141,20 @@ open class ParamsErrorsAccumulator {
    * @param errors the errors of the given [params] to accumulate
    */
   fun accumulate(params: ParamsArray, errors: SparseNDArray) = this.accumulate(params.buildSparseErrors(errors))
+
+  /**
+   * Accumulate the given params [errors] into the accumulator.
+   *
+   * @param params the parameters
+   * @param errors the list of errors of the given [params] to accumulate
+   */
+  fun accumulate(params: ParamsArray, errors: List<NDArray<*>>) = errors.forEach {
+    when(it) {
+      is DenseNDArray -> this.accumulate(params, it)
+      is SparseNDArray -> this.accumulate(params, it)
+      else -> throw RuntimeException("Invalid errors type")
+    }
+  }
 
   /**
    * Divide the accumulated errors by the number of accumulations.
