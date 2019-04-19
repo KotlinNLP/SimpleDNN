@@ -16,10 +16,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * The NeuralProcessor that acts on an embeddings map.
  *
- * @param embeddingsMap the embeddings map.
+ * @param embeddingsMap the embeddings map
  * @param useDropout whether to apply the dropout during the forward
  */
-class EmbeddingsProcessor<T>(
+open class EmbeddingsProcessor<T>(
   private val embeddingsMap: EmbeddingsMap<T>,
   override val useDropout: Boolean
 ) : NeuralProcessor<
