@@ -62,7 +62,7 @@ class EmbeddingsProcessorWithContext<T>(
   private val concatLayers = mutableListOf<ConcatLayer<DenseNDArray>>()
 
   /**
-   *
+   * Accumulator of the errors of the [contextVector].
    */
   private val contextErrorsAccumulator by lazy { ParamsErrorsAccumulator() }
 
@@ -98,9 +98,9 @@ class EmbeddingsProcessorWithContext<T>(
 
     this.backwardConcatLayers(outputErrors)
 
-    super.backward(this.concatLayers.map { it.inputArrays[cntxIndex].errors })
+    super.backward(this.concatLayers.map { it.inputArrays[embdIndex].errors })
 
-    this.accumulateContextVectorErrors(this.concatLayers.map { it.inputArrays[embdIndex].errors })
+    this.accumulateContextVectorErrors(this.concatLayers.map { it.inputArrays[cntxIndex].errors })
   }
 
   /**
