@@ -26,11 +26,11 @@ class ChainProcessor<
   out OutputType : Any,
   in ErrorsType : Any,
   out InputErrorsType : Any,
-  in HiddenIOType: Any
+  HiddenIOType: Any
   > (
-  private val inputProcessor: NeuralProcessor<InputType, HiddenIOType, HiddenIOType, InputErrorsType>,
-  private val hiddenProcessors: List<NeuralProcessor<HiddenIOType, HiddenIOType, HiddenIOType, HiddenIOType>>,
-  private val outputProcessor: NeuralProcessor<HiddenIOType, OutputType, ErrorsType, HiddenIOType>,
+  val inputProcessor: NeuralProcessor<InputType, HiddenIOType, HiddenIOType, InputErrorsType>,
+  val hiddenProcessors: List<NeuralProcessor<HiddenIOType, HiddenIOType, HiddenIOType, HiddenIOType>>,
+  val outputProcessor: NeuralProcessor<HiddenIOType, OutputType, ErrorsType, HiddenIOType>,
   override val id: Int = 0
 ) : NeuralProcessor<
   InputType, // InputType
