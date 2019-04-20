@@ -120,6 +120,7 @@ class EmbeddingsProcessorWithContext<T>(
    */
   private fun initConcatLayers(size: Int) {
 
+    this.concatLayers.clear()
     this.concatLayersPool.releaseAll()
     this.concatLayers.addAll((0 until size).map { this.concatLayersPool.getItem() } )
   }
