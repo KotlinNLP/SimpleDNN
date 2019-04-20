@@ -77,4 +77,24 @@ open class SoftmaxCrossEntropyCalculator : LossCalculator {
 
     return errors
   }
+
+  /**
+   * Calculate the errors of a sequence.
+   *
+   * TODO: the [outputGoldSequence] should be a List<Int>
+   *
+   * @param outputSequence a list containing the output of the network for each example of a sequence
+   * @param outputGoldSequence a list containing the indexes of the gold sequence
+   *
+   * @return an array containing the errors for each example of the sequence
+   */
+  fun calculateErrors(outputSequence: List<DenseNDArray>,
+                      outputGoldSequence: ArrayList<Int>): List<DenseNDArray> {
+
+    require(outputSequence.size == outputGoldSequence.size)
+
+    return outputSequence.zip(outputGoldSequence).map {
+      this.calculateErrors(output = it.first, goldIndex = it.second)
+    }
+  }
 }
