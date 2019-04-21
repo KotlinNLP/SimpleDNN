@@ -17,10 +17,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * The NeuralProcessor that acts on an embeddings map.
  *
  * @param embeddingsMap the embeddings map
+ * @param dropout the dropout to mask items of the [embeddingsMap]
  * @param useDropout whether to apply the dropout during the forward
  */
 open class EmbeddingsProcessor<T>(
   private val embeddingsMap: EmbeddingsMap<T>,
+  private val dropout: Double = 0.0,
   override val useDropout: Boolean
 ) : NeuralProcessor<
   List<T>, // InputType
@@ -58,7 +60,9 @@ open class EmbeddingsProcessor<T>(
    */
   override fun forward(input: List<T>): List<DenseNDArray> {
 
-    this.usedEmbeddings = input.map { this.embeddingsMap[it] }
+    val dropoutValue: Double = if (this.useDropout) this.dropout else 0.0
+
+    this.usedEmbeddings = input.map { this.embeddingsMap.get(it, dropoutValue) }
 
     return this.usedEmbeddings.map { it.values } // TODO: copy?
   }
