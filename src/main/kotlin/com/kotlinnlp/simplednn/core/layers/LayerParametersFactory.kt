@@ -23,6 +23,7 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerPa
 import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.product.ProductLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.ltm.LTMLayerParameters
 
 /**
  * Helper that builds generic [LayerParameters].
@@ -128,6 +129,13 @@ object LayerParametersFactory {
       biasesInitializer = biasesInitializer)
 
     LayerType.Connection.IndRNN -> IndRNNLayerParameters(
+      inputSize = inputsSize.first(),
+      outputSize = outputSize!!,
+      sparseInput = sparseInput,
+      weightsInitializer = weightsInitializer,
+      biasesInitializer = biasesInitializer)
+
+    LayerType.Connection.LTM -> LTMLayerParameters(
       inputSize = inputsSize.first(),
       outputSize = outputSize!!,
       sparseInput = sparseInput,

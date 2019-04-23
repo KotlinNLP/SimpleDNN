@@ -32,6 +32,7 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.product.ProductLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.ltm.LTMLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -265,6 +266,14 @@ object LayerFactory {
       outputArray = AugmentedArray.zeros(outputSize),
       params = params,
       activationFunction = activationFunction,
+      dropout = dropout,
+      layerContextWindow = contextWindow!!)
+
+    LayerType.Connection.LTM -> LTMLayer(
+      inputArray = inputArrays.first(),
+      inputType = inputType,
+      outputArray = AugmentedArray.zeros(outputSize),
+      params = params,
       dropout = dropout,
       layerContextWindow = contextWindow!!)
   }
