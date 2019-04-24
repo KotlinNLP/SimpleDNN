@@ -17,9 +17,7 @@ import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentReleva
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  * The LSTM Layer Structure.
@@ -73,7 +71,7 @@ class LSTMLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  val cell = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(outputArray.size)))
+  val cell = AugmentedArray.zeros(outputArray.size)
 
   /**
    * The helper which executes the forward
