@@ -9,7 +9,6 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.forward
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**

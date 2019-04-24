@@ -8,8 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers.models.recurrent
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.assignParamsGradients
-import com.kotlinnlp.simplednn.core.layers.getInputRelevance
+import com.kotlinnlp.simplednn.core.arrays.getInputRelevance
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceUtils
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory

@@ -8,8 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers.models.feedforward.simple
 
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
-import com.kotlinnlp.simplednn.core.layers.assignParamsGradients
-import com.kotlinnlp.simplednn.core.layers.getInputErrors
+import com.kotlinnlp.simplednn.core.arrays.getInputErrors
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**

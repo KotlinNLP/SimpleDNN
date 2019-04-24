@@ -79,6 +79,34 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
   private lateinit var _recurrentRelevance: DenseNDArray
 
   /**
+   * Execute a linear transformation of this array with the given parameters.
+   *
+   * g = w (dot) x + b
+   *
+   * @param w the weights
+   * @param b the biases
+   * @param x the input array of the current layer
+   *
+   * @return this array
+   */
+  fun forward(w: DenseNDArray, b: DenseNDArray, x: NDArray<*>) = this.values.assignDot(w, x).assignSum(b)
+
+  /**
+   * Assign errors to the parameters associated to this array. The errors of the output must be already set.
+   *
+   * gb = errors * 1
+   * gw = errors (dot) x
+   *
+   * @param gw the gradients of the weights
+   * @param gb the gradients of the biases
+   * @param x the input of the unit
+   */
+  fun assignParamsGradients(gw: NDArray<*>, gb: NDArray<*>, x: NDArray<*>) {
+    gb.assignValues(this.errors)
+    gw.assignDot(this.errors, x.t)
+  }
+
+  /**
    * Assign errors to the array.
    *
    * @param errors the [DenseNDArray] to assign as errors to this [AugmentedArray]. It must have the same size

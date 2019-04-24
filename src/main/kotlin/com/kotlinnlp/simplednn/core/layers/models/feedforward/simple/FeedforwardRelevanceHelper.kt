@@ -8,7 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers.models.feedforward.simple
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.getInputRelevance
+import com.kotlinnlp.simplednn.core.arrays.getInputRelevance
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 

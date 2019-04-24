@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.Layer
-import com.kotlinnlp.simplednn.core.layers.forward
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
