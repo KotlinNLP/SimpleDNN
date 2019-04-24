@@ -17,20 +17,18 @@ import com.kotlinnlp.simplednn.core.layers.models.LinearParams
  * The parameters of the Highway layer.
  *
  * @property inputSize input size
- * @property outputSize output size
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  * @param sparseInput whether the weights connected to the input are sparse or not
  */
 class HighwayLayerParameters(
   inputSize: Int,
-  outputSize: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   private val sparseInput: Boolean = false
 ) : LayerParameters<HighwayLayerParameters>(
   inputSize = inputSize,
-  outputSize = outputSize,
+  outputSize = inputSize,
   weightsInitializer = weightsInitializer,
   biasesInitializer = biasesInitializer) {
 
@@ -99,7 +97,6 @@ class HighwayLayerParameters(
 
     val clonedParams = HighwayLayerParameters(
       inputSize = this.inputSize,
-      outputSize = this.outputSize,
       sparseInput = this.sparseInput,
       weightsInitializer = null,
       biasesInitializer = null)

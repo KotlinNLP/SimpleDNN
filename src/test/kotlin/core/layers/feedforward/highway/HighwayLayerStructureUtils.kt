@@ -35,7 +35,7 @@ object HighwayLayerStructureUtils {
    */
   fun buildParams(): HighwayLayerParameters {
 
-    val params = HighwayLayerParameters(inputSize = 4, outputSize = 4)
+    val params = HighwayLayerParameters(inputSize = 4)
 
     params.input.weights.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
