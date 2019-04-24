@@ -34,7 +34,7 @@ object LayerParametersFactory {
    * Build new generic [LayerParameters].
    *
    * @param inputsSize the list of input sizes (more then one only for Merge layers)
-   * @param outputSize the size of the output (null for Merge layers with fixed output)
+   * @param outputSize the size of the output (null for layers with fixed output)
    * @param connectionType the type of connection from the input to the output
    * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
    * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
@@ -56,12 +56,18 @@ object LayerParametersFactory {
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer)
 
-    LayerType.Connection.Highway -> HighwayLayerParameters(
-      inputSize = inputsSize.first(),
-      outputSize = outputSize!!,
-      sparseInput = sparseInput,
-      weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer)
+    LayerType.Connection.Highway -> {
+
+      require(outputSize == null || outputSize == inputsSize.first()) {
+        "The Highway layer requires that the output size must be equal to the input size."
+      }
+
+      HighwayLayerParameters(
+        inputSize = inputsSize.first(),
+        sparseInput = sparseInput,
+        weightsInitializer = weightsInitializer,
+        biasesInitializer = biasesInitializer)
+    }
 
     LayerType.Connection.Affine -> AffineLayerParameters(
       inputsSize = inputsSize,
@@ -78,13 +84,41 @@ object LayerParametersFactory {
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer)
 
-    LayerType.Connection.Concat -> ConcatLayerParameters(inputsSize = inputsSize)
+    LayerType.Connection.Concat -> {
 
-    LayerType.Connection.Sum -> SumLayerParameters(inputSize = inputsSize.first(), nInputs = inputsSize.size)
+      require(outputSize == null || outputSize == 2 * inputsSize.first()) {
+        "The Concat merge layer requires that the output size must double the input size."
+      }
 
-    LayerType.Connection.Avg -> AvgLayerParameters(inputSize = inputsSize.first(), nInputs = inputsSize.size)
+      ConcatLayerParameters(inputsSize = inputsSize)
+    }
 
-    LayerType.Connection.Product -> ProductLayerParameters(inputSize = inputsSize.first(), nInputs = inputsSize.size)
+    LayerType.Connection.Sum -> {
+
+      require(outputSize == null || outputSize == inputsSize.first()) {
+        "The Sum merge layer requires that the output size must be equal to the input size."
+      }
+
+      SumLayerParameters(inputSize = inputsSize.first(), nInputs = inputsSize.size)
+    }
+
+    LayerType.Connection.Avg -> {
+
+      require(outputSize == null || outputSize == inputsSize.first()) {
+        "The Avg merge layer requires that the output size must be equal to the input size."
+      }
+
+      AvgLayerParameters(inputSize = inputsSize.first(), nInputs = inputsSize.size)
+    }
+
+    LayerType.Connection.Product -> {
+
+      require(outputSize == null || outputSize == inputsSize.first()) {
+        "The Product merge layer requires that the output size must be equal to the input size."
+      }
+
+      ProductLayerParameters(inputSize = inputsSize.first(), nInputs = inputsSize.size)
+    }
 
     LayerType.Connection.SimpleRecurrent -> SimpleRecurrentLayerParameters(
       inputSize = inputsSize.first(),
@@ -135,11 +169,17 @@ object LayerParametersFactory {
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer)
 
-    LayerType.Connection.LTM -> LTMLayerParameters(
-      inputSize = inputsSize.first(),
-      outputSize = outputSize!!,
-      sparseInput = sparseInput,
-      weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer)
+    LayerType.Connection.LTM -> {
+
+      require(outputSize == null || outputSize == inputsSize.first()) {
+        "The LTM layer requires that the output size must be equal to the input size."
+      }
+
+      LTMLayerParameters(
+        inputSize = inputsSize.first(),
+        sparseInput = sparseInput,
+        weightsInitializer = weightsInitializer,
+        biasesInitializer = biasesInitializer)
+    }
   }
 }
