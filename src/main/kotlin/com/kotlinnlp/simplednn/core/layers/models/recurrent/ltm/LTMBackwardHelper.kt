@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.ltm
 
-import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.arrays.getInputErrors
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -32,176 +32,114 @@ class LTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val prevStateLayer = this.layer.layerContextWindow.getPrevState() as? LTMLayer
     val nextStateLayer = this.layer.layerContextWindow.getNextState() as? LTMLayer
 
-    if (nextStateLayer != null) {
-      this.addOutputRecurrentGradients(nextStateLayer)
-    }
+    if (nextStateLayer != null) this.addOutputRecurrentGradients(nextStateLayer)
 
-    this.assignGatesGradients(prevStateLayer = prevStateLayer, nextStateLayer = nextStateLayer)
+    this.assignCellGradients(nextStateLayer)
+    this.assignGatesGradients()
 
-    this.assignParamsGradients(prevStateOutput = prevStateLayer?.outputArray)
+    this.assignParamsGradients()
 
-    if (propagateToInput) {
-      this.assignLayerGradients()
+    // Note: the previous layer will use the input gradients of this layer because they are equal to the recurrent
+    // error of the output.
+    if (propagateToInput || prevStateLayer != null) {
+      this.assignInputGradients()
     }
   }
 
   /**
    *
-   * @param nextStateLayer the layer structure in the next state
-   */
-  fun getLayerRecurrentContribution(nextStateLayer: LTMLayer<*>): DenseNDArray {
-
-    this.layer.params as LTMLayerParameters
-
-    val gInGNext: DenseNDArray = nextStateLayer.inputGate.errors
-    val gOutGNext: DenseNDArray = nextStateLayer.outputGate.errors
-    val gForGNext: DenseNDArray = nextStateLayer.forgetGate.errors
-    val gCandNext: DenseNDArray = nextStateLayer.candidate.errors
-
-    val wInGRec: DenseNDArray = this.layer.params.inputGate.recurrentWeights.values
-    val wOutGRec: DenseNDArray = this.layer.params.outputGate.recurrentWeights.values
-    val wForGRec: DenseNDArray = this.layer.params.forgetGate.recurrentWeights.values
-    val wCandRec: DenseNDArray = this.layer.params.candidate.recurrentWeights.values
-
-    val gRec1: DenseNDArray = gInGNext.t.dot(wInGRec)
-    val gRec2: DenseNDArray = gOutGNext.t.dot(wOutGRec)
-    val gRec3: DenseNDArray = gForGNext.t.dot(wForGRec)
-    val gRec4: DenseNDArray = gCandNext.t.dot(wCandRec)
-
-    return gRec1.assignSum(gRec2).assignSum(gRec3).assignSum(gRec4)
-  }
-
-  /**
-   *
-   * @param prevStateLayer the layer in the previous state
    * @param nextStateLayer the layer in the next state
    */
-  private fun assignGatesGradients(prevStateLayer: LTMLayer<*>?, nextStateLayer: LTMLayer<*>?) {
-
-    val gy: DenseNDArray = this.layer.outputArray.errors
-
-    val inG: DenseNDArray = this.layer.inputGate.values
-    val outG: DenseNDArray = this.layer.outputGate.values
-    val cand: DenseNDArray = this.layer.candidate.values
-    val cell: DenseNDArray = this.layer.cell.values
-
-    val inGDeriv: DenseNDArray = this.layer.inputGate.calculateActivationDeriv()
-    val outGDeriv: DenseNDArray = this.layer.outputGate.calculateActivationDeriv()
-
-    // WARNING: gCell must be calculated before others
-    val gCell: DenseNDArray = this.layer.cell.assignErrorsByProd(outG, gy)
-
-    if (this.layer.cell.hasActivation) {
-      val cellDeriv: DenseNDArray = this.layer.cell.calculateActivationDeriv()
-      this.layer.cell.errors.assignProd(cellDeriv)
-    }
-
-    if (nextStateLayer != null) { // add recurrent contribution
-      gCell.assignSum(this.getCellRecurrentContribution(nextStateLayer))
-    }
-
-    this.layer.outputGate.assignErrorsByProd(cell, outGDeriv).assignProd(gy)
-    this.layer.inputGate.assignErrorsByProd(gCell, cand).assignProd(inGDeriv)
-
-    if (prevStateLayer != null) {
-      val cellPrev: DenseNDArray = prevStateLayer.cell.valuesNotActivated
-      val forGDeriv: DenseNDArray = this.layer.forgetGate.calculateActivationDeriv()
-      this.layer.forgetGate.assignErrorsByProd(gCell, cellPrev).assignProd(forGDeriv)
-
-    } else {
-      this.layer.forgetGate.assignZeroErrors()
-    }
-
-    this.layer.candidate.assignErrorsByProd(gCell, inG)
-
-    if (this.layer.candidate.hasActivation) {
-      val candDeriv: DenseNDArray = this.layer.candidate.calculateActivationDeriv()
-      this.layer.candidate.errors.assignProd(candDeriv)
-    }
-  }
-
-  /**
-   * @param prevStateOutput the outputArray in the previous state
-   */
-  private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
+  private fun assignCellGradients(nextStateLayer: LTMLayer<*>?) {
 
     this.layer.params as LTMLayerParameters
 
-    val x: InputNDArrayType = this.layer.inputArray.values
-    val yPrev: DenseNDArray? = prevStateOutput?.values
+    val gy: DenseNDArray = this.layer.outputArray.errors
+    val gCell: DenseNDArray = gy
+    val cellDeriv: DenseNDArray = this.layer.cell.calculateActivationDeriv()
+    if (nextStateLayer != null) gCell.assignSum(nextStateLayer.c.errors)
 
-    this.layer.inputGate.assignParamsGradients(
-      gw = this.layer.params.inputGate.weights.errors.values,
-      gb = this.layer.params.inputGate.biases.errors.values,
-      gwRec = this.layer.params.inputGate.recurrentWeights.errors.values,
-      x = x,
-      yPrev = yPrev)
+    this.layer.cell.assignErrorsByProd(gCell, cellDeriv)
 
-    this.layer.outputGate.assignParamsGradients(
-      gw = this.layer.params.outputGate.weights.errors.values,
-      gb = this.layer.params.outputGate.biases.errors.values,
-      gwRec = this.layer.params.outputGate.recurrentWeights.errors.values,
-      x = x,
-      yPrev = yPrev)
-
-    this.layer.forgetGate.assignParamsGradients(
-      gw = this.layer.params.forgetGate.weights.errors.values,
-      gb = this.layer.params.forgetGate.biases.errors.values,
-      gwRec = this.layer.params.forgetGate.recurrentWeights.errors.values,
-      x = x,
-      yPrev = yPrev)
-
-    this.layer.candidate.assignParamsGradients(
-      gw = this.layer.params.candidate.weights.errors.values,
-      gb = this.layer.params.candidate.biases.errors.values,
-      gwRec = this.layer.params.candidate.recurrentWeights.errors.values,
-      x = x,
-      yPrev = yPrev)
+    val wCell: DenseNDArray = this.layer.params.cell.weights.values
+    this.layer.c.assignErrors(this.layer.cell.getInputErrors(wCell))
   }
 
   /**
-   *
+   * Assign the gradients of the gates.
    */
-  private fun assignLayerGradients() { this.layer.params as LTMLayerParameters
+  private fun assignGatesGradients() {
 
-    val wInG: DenseNDArray = this.layer.params.inputGate.weights.values
-    val wOutG: DenseNDArray = this.layer.params.outputGate.weights.values
-    val wForG: DenseNDArray = this.layer.params.forgetGate.weights.values
-    val wCand: DenseNDArray = this.layer.params.candidate.weights.values
+    val gy: DenseNDArray = this.layer.outputArray.errors
+    val gC: DenseNDArray = this.layer.c.errors
 
-    val gInG: DenseNDArray = this.layer.inputGate.errors
-    val gOutG: DenseNDArray = this.layer.outputGate.errors
-    val gForG: DenseNDArray = this.layer.forgetGate.errors
-    val gCand: DenseNDArray = this.layer.candidate.errors
+    val l1Deriv: DenseNDArray = this.layer.inputGate1.calculateActivationDeriv()
+    val l2Deriv: DenseNDArray = this.layer.inputGate2.calculateActivationDeriv()
+    val l3Deriv: DenseNDArray = this.layer.inputGate3.calculateActivationDeriv()
 
-    this.layer.inputArray
-      .assignErrorsByDotT(gInG.t, wInG)
-      .assignSum(gOutG.t.dot(wOutG))
-      .assignSum(gForG.t.dot(wForG))
-      .assignSum(gCand.t.dot(wCand))
+    this.layer.inputGate1.assignErrorsByProd(gC, l1Deriv)
+    this.layer.inputGate2.assignErrorsByProd(gC, l2Deriv)
+    this.layer.inputGate3.assignErrorsByProd(gy, l3Deriv)
   }
 
   /**
+   * Assign the gradients of the parameters.
+   */
+  private fun assignParamsGradients() {
+
+    this.layer.params as LTMLayerParameters
+
+    this.layer.inputGate1.assignParamsGradients(
+      gw = this.layer.params.inputGate1.weights.errors.values,
+      gb = this.layer.params.inputGate1.biases.errors.values,
+      x = this.layer.x)
+
+    this.layer.inputGate2.assignParamsGradients(
+      gw = this.layer.params.inputGate2.weights.errors.values,
+      gb = this.layer.params.inputGate2.biases.errors.values,
+      x = this.layer.x)
+
+    this.layer.inputGate3.assignParamsGradients(
+      gw = this.layer.params.inputGate3.weights.errors.values,
+      gb = this.layer.params.inputGate3.biases.errors.values,
+      x = this.layer.x)
+
+    this.layer.cell.assignParamsGradients(
+      gw = this.layer.params.cell.weights.errors.values,
+      gb = this.layer.params.cell.biases.errors.values,
+      x = this.layer.c.values)
+  }
+
+  /**
+   * Add output gradients coming from the next state.
    *
    * @param nextStateLayer the layer structure in the next state
    */
   private fun addOutputRecurrentGradients(nextStateLayer: LTMLayer<*>) {
 
+    this.layer.params as LTMLayerParameters
+
     val gy: DenseNDArray = this.layer.outputArray.errors
-    val gyRec: DenseNDArray = this.getLayerRecurrentContribution(nextStateLayer)
+    val gyRec: DenseNDArray = nextStateLayer.inputArray.errors
 
     gy.assignSum(gyRec)
   }
 
   /**
-   *
-   * @param nextStateLayer the layer structure in the next state
+   * Assign the gradients of the input.
    */
-  private fun getCellRecurrentContribution(nextStateLayer: LTMLayer<*>): DenseNDArray {
+  private fun assignInputGradients() {
 
-    val gCellNext: DenseNDArray = nextStateLayer.cell.errors
-    val forGNext: DenseNDArray = nextStateLayer.forgetGate.values
+    this.layer.params as LTMLayerParameters
 
-    return gCellNext.prod(forGNext)
+    val w1: DenseNDArray = this.layer.params.inputGate1.weights.values
+    val w2: DenseNDArray = this.layer.params.inputGate2.weights.values
+    val w3: DenseNDArray = this.layer.params.inputGate3.weights.values
+
+    val gL1: DenseNDArray = this.layer.inputGate1.getInputErrors(w1)
+    val gL2: DenseNDArray = this.layer.inputGate2.getInputErrors(w2)
+    val gL3: DenseNDArray = this.layer.inputGate3.getInputErrors(w3)
+
+    this.layer.inputArray.assignErrors(gL1.assignSum(gL2).assignSum(gL3))
   }
 }

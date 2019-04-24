@@ -8,18 +8,14 @@
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.ltm
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentRelevanceHelper
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
  * The LTM Layer Structure.
@@ -45,32 +41,40 @@ class LTMLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   outputArray = outputArray,
   params = params,
   layerContextWindow = layerContextWindow,
+  activationFunction = null,
   dropout = dropout) {
 
   /**
-   *
+   * The input of the gates L1, L2, L3.
+   * It is a support variable used during the calculations.
    */
-  val inputGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+  lateinit var x: NDArray<*>
 
   /**
-   *
+   * The input of the cell.
+   * It is a support variable used during the calculations.
    */
-  val outputGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+  val c: AugmentedArray<DenseNDArray> = AugmentedArray.zeros(this.inputArray.size)
 
   /**
-   *
+   * The L1 input gate.
    */
-  val forgetGate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+  val inputGate1: AugmentedArray<DenseNDArray> = AugmentedArray.zeros(this.inputArray.size)
 
   /**
-   *
+   * The L2 input gate.
    */
-  val candidate = RecurrentLayerUnit<InputNDArrayType>(outputArray.size)
+  val inputGate2: AugmentedArray<DenseNDArray> = AugmentedArray.zeros(this.inputArray.size)
 
   /**
-   *
+   * The L3 input gate.
    */
-  val cell = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(outputArray.size)))
+  val inputGate3: AugmentedArray<DenseNDArray> = AugmentedArray.zeros(this.inputArray.size)
+
+  /**
+   * The cell.
+   */
+  val cell: AugmentedArray<DenseNDArray> = AugmentedArray.zeros(this.inputArray.size)
 
   /**
    * The helper which executes the forward
@@ -88,18 +92,13 @@ class LTMLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val relevanceHelper: GatedRecurrentRelevanceHelper? = null
 
   /**
-   * Initialization: set the activation function of the gates
+   * Initialization: set the activation function of the gates.
    */
   init {
-
-    this.inputGate.setActivation(Sigmoid())
-    this.outputGate.setActivation(Sigmoid())
-    this.forgetGate.setActivation(Sigmoid())
-
-    if (activationFunction != null) {
-      this.candidate.setActivation(activationFunction)
-      this.cell.setActivation(activationFunction)
-    }
+    this.inputGate1.setActivation(Sigmoid())
+    this.inputGate2.setActivation(Sigmoid())
+    this.inputGate3.setActivation(Sigmoid())
+    this.cell.setActivation(Sigmoid())
   }
 
   /**
@@ -120,6 +119,5 @@ class LTMLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return the errors of the initial hidden array
    */
   override fun getInitHiddenErrors(): DenseNDArray =
-    this.backwardHelper.getLayerRecurrentContribution(
-      nextStateLayer = this.layerContextWindow.getNextState() as LTMLayer<*>).t
+    (this.layerContextWindow.getNextState() as LTMLayer<*>).inputArray.errors
 }
