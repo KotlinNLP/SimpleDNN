@@ -43,9 +43,6 @@ open class LinearParams(
   val weights = ParamsArray(
     dim1 = this.outputSize,
     dim2 = this.inputSize,
-    defaultErrorsType = if (sparseInput)
-      ParamsArray.ErrorsType.Sparse
-    else
-      ParamsArray.ErrorsType.Dense
+    defaultErrorsType = if (sparseInput) ParamsArray.ErrorsType.Sparse else ParamsArray.ErrorsType.Dense
   )
 }
