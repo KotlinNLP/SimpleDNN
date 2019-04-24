@@ -290,6 +290,16 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
+  fun sum(a: NDArray<*>): DenseNDArray = when (a) {
+    is DenseNDArray -> this.sum(a)
+    is SparseNDArray -> this.copy().assignSum(a)
+    is SparseBinaryNDArray -> TODO("not implemented")
+    else -> throw RuntimeException("Invalid NDArray type")
+  }
+
+  /**
+   *
+   */
   override fun sum(a: DenseNDArray): DenseNDArray = DenseNDArray(this.storage.add(a.storage))
 
   /**
