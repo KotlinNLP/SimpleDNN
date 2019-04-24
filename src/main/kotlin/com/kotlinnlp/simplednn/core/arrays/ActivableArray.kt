@@ -83,6 +83,28 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
   }
 
   /**
+   * Assign values as product of [a] and [b].
+   * This method optimizes the calculation avoiding the creation of a new [NDArray] when [values] are already set.
+   * If [values] are still not initialized a new [NDArray] is created.
+   *
+   * @param a the first factor
+   * @param b the second factor
+   *
+   * @return the values assigned
+   */
+  fun assignValuesByProd(a: NDArrayType, b: NDArrayType): NDArrayType {
+
+    require(a.length == this.size && b.length == this.size) { "Invalid arrays size" }
+
+    if (::_values.isInitialized)
+      this._values.assignProd(a, b)
+    else
+      this._values = a.prod(b)
+
+    return this._values
+  }
+
+  /**
    * @param activationFunction the activation function (can be set as null)
    *
    * @return set the activation function of this [ActivableArray]
