@@ -55,9 +55,9 @@ class LTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.params as LTMLayerParameters
 
     val gy: DenseNDArray = this.layer.outputArray.errors
-    val gCell: DenseNDArray = gy
     val cellDeriv: DenseNDArray = this.layer.cell.calculateActivationDeriv()
-    if (nextStateLayer != null) gCell.assignSum(nextStateLayer.c.errors)
+    // Note: gy is assigned by reference because gCell is used no more.
+    val gCell: DenseNDArray = if (nextStateLayer != null) gy.sum(nextStateLayer.c.errors) else gy
 
     this.layer.cell.assignErrorsByProd(gCell, cellDeriv)
 
