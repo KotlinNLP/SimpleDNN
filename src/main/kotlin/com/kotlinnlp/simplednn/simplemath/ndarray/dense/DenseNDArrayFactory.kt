@@ -152,4 +152,13 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
 
     else -> throw RuntimeException("Invalid NDArray type.")
   }
+
+  /**
+   * Creates an array with a single element.
+   *
+   * @param value the value
+   *
+   * @return a new [DenseNDArray] filled with the given value
+   */
+  fun scalarOf(value: Double) = DenseNDArrayFactory.arrayOf(doubleArrayOf(value))
 }
