@@ -946,6 +946,11 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   * Computes the additive inverse of this nd-array.
+   */
+  operator fun unaryMinus() = this.prod(-1.0)
+
+  /**
    * Returns the value if this nd-array is a scalar (or 1-element vector/matrix/...).
    */
   fun toScalar(): Double? = if (this.length == 1) this[0] else null
