@@ -152,6 +152,25 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   * Returns a list containing the results of applying the given [transform] function
+   * to each element in the original collection.
+   */
+  inline fun map(transform: (Double) -> Double): DenseNDArray {
+    return this.mapTo(DenseNDArrayFactory.zeros(this.shape), transform)
+  }
+
+  /**
+   * Applies the given [transform] function to each element of the original collection
+   * and appends the results to the given [destination].
+   */
+  inline fun mapTo(destination: DenseNDArray, transform: (Double) -> Double): DenseNDArray {
+
+    (0 until destination.length).forEach { i -> destination[i] = transform(this[i]) }
+
+    return destination
+  }
+
+  /**
    *
    */
   override fun zeros(): DenseNDArray {
