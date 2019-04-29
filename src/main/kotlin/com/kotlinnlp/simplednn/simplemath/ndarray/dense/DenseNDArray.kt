@@ -946,6 +946,16 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   * Returns the value if this nd-array is a scalar (or 1-element vector/matrix/...).
+   */
+  fun toScalar(): Double? = if (this.length == 1) this[0] else null
+
+  /**
+   * Returns the value if this nd-array is a scalar (or 1-element vector/matrix/...), otherwise throws an exception.
+   */
+  fun expectScalar(): Double = this.toScalar() ?: throw IllegalStateException("${toString()} is not a scalar")
+
+  /**
    *
    */
   override fun randomize(randomGenerator: RandomGenerator): DenseNDArray {
