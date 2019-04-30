@@ -84,12 +84,19 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    * g = w (dot) x + b
    *
    * @param w the weights
-   * @param b the biases
+   * @param b the biases (can be null)
    * @param x the input array of the current layer
    *
    * @return this array
    */
-  fun forward(w: DenseNDArray, b: DenseNDArray, x: NDArray<*>) = this.values.assignDot(w, x).assignSum(b)
+  fun forward(w: DenseNDArray, b: DenseNDArray?, x: NDArray<*>): NDArrayType {
+
+    val res: NDArrayType = this.values.assignDot(w, x)
+
+    if (b != null) res.assignSum(b)
+
+    return res
+  }
 
   /**
    * Assign errors to the parameters associated to this array. The errors of the output must be already set.
@@ -98,11 +105,11 @@ open class AugmentedArray<NDArrayType : NDArray<NDArrayType>>(size: Int) : Activ
    * gw = errors (dot) x
    *
    * @param gw the gradients of the weights
-   * @param gb the gradients of the biases
+   * @param gb the gradients of the biases (can be null)
    * @param x the input of the unit
    */
-  fun assignParamsGradients(gw: NDArray<*>, gb: NDArray<*>, x: NDArray<*>) {
-    gb.assignValues(this.errors)
+  fun assignParamsGradients(gw: NDArray<*>, gb: NDArray<*>?, x: NDArray<*>) {
+    gb?.assignValues(this.errors)
     gw.assignDot(this.errors, x.t)
   }
 
