@@ -87,27 +87,12 @@ class LTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignParamsGradients() {
 
-    this.layer.params as LTMLayerParameters
+    val p: LTMLayerParameters = this.layer.params as LTMLayerParameters
 
-    this.layer.inputGate1.assignParamsGradients(
-      gw = this.layer.params.inputGate1.weights.errors.values,
-      gb = this.layer.params.inputGate1.biases.errors.values,
-      x = this.layer.x)
-
-    this.layer.inputGate2.assignParamsGradients(
-      gw = this.layer.params.inputGate2.weights.errors.values,
-      gb = this.layer.params.inputGate2.biases.errors.values,
-      x = this.layer.x)
-
-    this.layer.inputGate3.assignParamsGradients(
-      gw = this.layer.params.inputGate3.weights.errors.values,
-      gb = this.layer.params.inputGate3.biases.errors.values,
-      x = this.layer.x)
-
-    this.layer.cell.assignParamsGradients(
-      gw = this.layer.params.cell.weights.errors.values,
-      gb = this.layer.params.cell.biases.errors.values,
-      x = this.layer.c.values)
+    this.layer.inputGate1.assignParamsGradients(gw = p.inputGate1.weights.errors.values, gb = null, x = this.layer.x)
+    this.layer.inputGate2.assignParamsGradients(gw = p.inputGate2.weights.errors.values, gb = null, x = this.layer.x)
+    this.layer.inputGate3.assignParamsGradients(gw = p.inputGate3.weights.errors.values, gb = null, x = this.layer.x)
+    this.layer.cell.assignParamsGradients(gw = p.cell.weights.errors.values, gb = null, x = this.layer.c.values)
   }
 
   /**

@@ -66,20 +66,9 @@ class LTMForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val yPrev: DenseNDArray? = prevStateLayer?.outputArray?.values
     this.layer.x = yPrev?.sum(this.layer.inputArray.values) ?: this.layer.inputArray.values
 
-    this.layer.inputGate1.forward(
-      w = this.layer.params.inputGate1.weights.values,
-      b = this.layer.params.inputGate1.biases.values,
-      x = this.layer.x)
-
-    this.layer.inputGate2.forward(
-      w = this.layer.params.inputGate2.weights.values,
-      b = this.layer.params.inputGate2.biases.values,
-      x = this.layer.x)
-
-    this.layer.inputGate3.forward(
-      w = this.layer.params.inputGate3.weights.values,
-      b = this.layer.params.inputGate3.biases.values,
-      x = this.layer.x)
+    this.layer.inputGate1.forward(w = this.layer.params.inputGate1.weights.values, b = null, x = this.layer.x)
+    this.layer.inputGate2.forward(w = this.layer.params.inputGate2.weights.values, b = null, x = this.layer.x)
+    this.layer.inputGate3.forward(w = this.layer.params.inputGate3.weights.values, b = null, x = this.layer.x)
 
     this.layer.inputGate1.activate()
     this.layer.inputGate2.activate()
@@ -105,11 +94,7 @@ class LTMForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.c.assignValuesByProd(l1, l2)
     if (cellPrev != null) this.layer.c.values.assignSum(cellPrev)
 
-    this.layer.cell.forward(
-      w = this.layer.params.cell.weights.values,
-      b = this.layer.params.cell.biases.values,
-      x = this.layer.c.values)
-
+    this.layer.cell.forward(w = this.layer.params.cell.weights.values, b = null, x = this.layer.c.values)
     this.layer.cell.activate()
   }
 }
