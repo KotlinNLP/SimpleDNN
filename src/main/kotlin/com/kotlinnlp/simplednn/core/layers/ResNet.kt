@@ -8,15 +8,11 @@
 package com.kotlinnlp.simplednn.core.layers
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
-import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
-import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.helpers.ParamsErrorsCollector
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -36,6 +32,9 @@ class ResNet<InputNDArrayType : NDArray<InputNDArrayType>>(
     val outputActivation: ActivationFunction? = null
 ) : LayerContextWindow {
 
+  /**
+   * The feedforward layer to reduce input dimension, if the stacked layers output is different.
+   */
   private val sumLayer: FeedforwardLayer<InputNDArrayType> = FeedforwardLayer(
       inputArray = AugmentedArray(this.layersConfiguration.first().size),
       outputArray = AugmentedArray.zeros(this.layersConfiguration.last().size),
@@ -72,7 +71,6 @@ class ResNet<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return the output [NDArray]
    */
   private fun getOutput(input: InputNDArrayType): DenseNDArray {
-
 
     return if (this.layersConfiguration.last().size != this.layersConfiguration.first().size){
 
@@ -174,7 +172,7 @@ class ResNet<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * @return the list of layers generated from the [layersConfiguration]
    */
-  protected fun buildLayers(): List<Layer<*>> = this.layersConfiguration.toLayers(
+  private fun buildLayers(): List<Layer<*>> = this.layersConfiguration.toLayers(
       paramsPerLayer = this.paramsPerLayer,
       contextWindow = this
   )
