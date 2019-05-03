@@ -91,5 +91,72 @@ class ResNetStructureSpec : Spek({
           }
         }
       }
+
+      context("sumLayer has the same size of input") {
+
+        val layersConfiguration = arrayOf(
+            LayerInterface(size = 4),
+            LayerInterface(size = 5, activationFunction = ReLU(), connectionType = LayerType.Connection.Feedforward),
+            LayerInterface(size = 4, activationFunction = null, connectionType = LayerType.Connection.Feedforward)
+        ).toList()
+
+        val structure = ResNet<DenseNDArray>(
+            layersConfiguration = layersConfiguration,
+            paramsPerLayer = ResNetStructureUtils.buildParams2(layersConfiguration).paramsPerLayer,
+            sumFeedForwardParams = null,
+            outputActivation = ReLU())
+
+        on("architecture") {
+
+          it("should have the expected number of layers") {
+            assertEquals(2, structure.layers.size)
+          }
+
+          it("should have interconnected layers") {
+            for (i in 0 until structure.layers.size - 1) {
+              assertEquals(structure.layers[i].outputArray, structure.layers[i + 1].inputArray)
+            }
+          }
+
+          it("should contain the expected input layer") {
+            assertEquals(structure.inputLayer, structure.layers[0])
+          }
+
+          it("should contain the expected output layer") {
+            assertEquals(structure.outputLayer, structure.layers[1])
+          }
+        }
+
+        on("layers factory") {
+
+          it("should contain layers of the expected type") {
+            structure.layers.forEach { assertTrue { it is FeedforwardLayer } }
+          }
+        }
+
+        on("methods usage") {
+
+          val features = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))
+          val output = structure.forward(features)
+          val expectedOutput = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.0, 0.0, 2.235))
+
+          it("should return the expected output after a call of the forward method") {
+            assertTrue { output.equals(expectedOutput, tolerance = 0.005) }
+          }
+
+          val outputGold = ResNetStructureUtils.getOutputGold4()
+
+          structure.backward(
+              outputErrors = structure.outputLayer.outputArray.values.sub(outputGold),
+              propagateToInput = true)
+
+          val inputErrors = structure.inputLayer.inputArray.errors
+          val expectedInputErrors = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.28405, 0.2223, -0.33345, 0.6175))
+
+          it("should contain the expected input error after a call of the backward method") {
+            assertTrue { inputErrors.equals(expectedInputErrors, tolerance = 0.005) }
+          }
+        }
+      }
     }
   })

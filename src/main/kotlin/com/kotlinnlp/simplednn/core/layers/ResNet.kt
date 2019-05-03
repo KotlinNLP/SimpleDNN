@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.core.layers
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
-import com.kotlinnlp.simplednn.core.layers.helpers.ParamsErrorsCollector
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
@@ -24,22 +23,28 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  *
  * @property layersConfiguration the layers configurations
  * @property paramsPerLayer the parameters per layer
+ * @property sumFeedForwardParams a feed forward layer, the purpose of which is reduce the input to the output size.
+ * @property outputActivation the activation function on resNet output (after the sum)
  */
 class ResNet<InputNDArrayType : NDArray<InputNDArrayType>>(
     val layersConfiguration: List<LayerInterface>,
     val paramsPerLayer: List<LayerParameters<*>>,
-    val sumFeedForwardParams: FeedforwardLayerParameters,
-    val outputActivation: ActivationFunction? = null
+    val sumFeedForwardParams: FeedforwardLayerParameters?,
+    val outputActivation: ActivationFunction
 ) : LayerContextWindow {
 
   /**
-   * The feedforward layer to reduce input dimension, if the stacked layers output is different.
+   * The feed forward layer to reduce input dimension, if the stacked layers output is different.
    */
-  private val sumLayer: FeedforwardLayer<InputNDArrayType> = FeedforwardLayer(
-      inputArray = AugmentedArray(this.layersConfiguration.first().size),
-      outputArray = AugmentedArray.zeros(this.layersConfiguration.last().size),
-      params = this.sumFeedForwardParams,
-      inputType = LayerType.Input.Dense)
+  private val sumLayer: FeedforwardLayer<InputNDArrayType>? =
+      if (sumFeedForwardParams != null)
+        FeedforwardLayer(
+            inputArray = AugmentedArray(this.layersConfiguration.first().size),
+            outputArray = AugmentedArray.zeros(this.layersConfiguration.last().size),
+            params = this.sumFeedForwardParams,
+            inputType = LayerType.Input.Dense)
+      else
+        null
 
   /**
    * The list of layers generate from the [layersConfiguration].
@@ -72,19 +77,18 @@ class ResNet<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun getOutput(input: InputNDArrayType): DenseNDArray {
 
-    return if (this.layersConfiguration.last().size != this.layersConfiguration.first().size){
+    if (this.layersConfiguration.last().size != this.layersConfiguration.first().size){
 
-      this.sumLayer.setInput(input)
+      this.sumLayer!!.setInput(input)
       this.sumLayer.forward()
       this.outputLayer.outputArray.valuesNotActivated.assignSum(this.sumLayer.outputArray.values)
-      this.outputActivation!!.f(this.outputLayer.outputArray.valuesNotActivated)
 
     }else{
 
       this.outputLayer.outputArray.valuesNotActivated.assignSum(this.inputLayer.inputArray.values as DenseNDArray)
-      this.outputActivation!!.f(this.outputLayer.outputArray.valuesNotActivated)
-
     }
+
+    return this.outputActivation.f(this.outputLayer.outputArray.valuesNotActivated)
   }
 
   /**
@@ -109,6 +113,27 @@ class ResNet<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * Propagate the output error using the gradient descent algorithm on stacked layers and on input,
+   * trough [sumLayer].
+   *
+   * @param outputErrors the errors to propagate from the output
+   *
+   */
+  private fun setOutputError(outputErrors: DenseNDArray) {
+
+    if (this.layersConfiguration.last().size != this.layersConfiguration.first().size) {
+
+      this.outputLayer.setErrors(outputErrors)
+      this.sumLayer!!.setErrors(outputErrors)
+
+    } else {
+
+      this.outputLayer.setErrors(outputErrors)
+    }
+
+  }
+
+  /**
    * Propagate the output error using the gradient descent algorithm
    *
    * @param outputErrors the errors to propagate from the output
@@ -119,19 +144,14 @@ class ResNet<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun backward(outputErrors: DenseNDArray,
                propagateToInput: Boolean = false): ParamsErrorsList {
 
-    val outErrors: DenseNDArray
-    if (outputActivation == null) {
-      this.outputLayer.setErrors(outputErrors)
-    } else {
-      outErrors = outputErrors.assignProd(this.outputActivation.df(outputErrors))
-      this.outputLayer.setErrors(outErrors)
-      this.sumLayer.setErrors(outErrors)
-    }
+    val outErrorsActDerivative: DenseNDArray = this.outputActivation.df(outputErrors)
+
+    this.setOutputError(outputErrors.assignProd(outErrorsActDerivative))
 
     val paramsErrorsPerLayer = mutableListOf<List<ParamsArray.Errors<*>>>()
 
     if (this.layersConfiguration.last().size != this.layersConfiguration.first().size) {
-      paramsErrorsPerLayer.add(this.sumLayer.backward(propagateToInput = true))
+      paramsErrorsPerLayer.add(this.sumLayer!!.backward(propagateToInput = true))
     }
 
     for ((i, layer) in this.layers.withIndex().reversed()) {
@@ -142,10 +162,10 @@ class ResNet<InputNDArrayType : NDArray<InputNDArrayType>>(
           layer.backward(propagateToInput = (i > 0 || propagateToInput)))
 
       if (i == 0)
-        if (outputActivation == null)
-          layer.inputArray.errors.assignSum(outputErrors)
+        if (this.layersConfiguration.last().size != this.layersConfiguration.first().size)
+          layer.inputArray.errors.assignSum(this.sumLayer!!.inputArray.errors)
         else
-          layer.inputArray.errors.assignSum(this.sumLayer.inputArray.errors)
+          layer.inputArray.errors.assignSum(outputErrors)
 
     }
 
@@ -161,13 +181,6 @@ class ResNet<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return the current layer in next state
    */
   override fun getNextState(): Layer<*>? = null
-
-  /**
-   * Set the given params errors collector [c] to all [layers].
-   *
-   * @param c a collector of params errors
-   */
-  fun setParamsErrorsCollector(c: ParamsErrorsCollector) { this.layers.forEach { it.setParamsErrorsCollector(c) } }
 
   /**
    * @return the list of layers generated from the [layersConfiguration]

@@ -10,6 +10,7 @@ package core.layers
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import core.layers.feedforward.simple.FeedforwardLayerStructureUtils
 
@@ -58,6 +59,27 @@ object ResNetStructureUtils {
   /**
    *
    */
+  fun getParams54(): FeedforwardLayerParameters {
+
+    val params = FeedforwardLayerParameters(inputSize = 5, outputSize = 4)
+
+    params.unit.weights.values.assignValues(
+        DenseNDArrayFactory.arrayOf(listOf(
+            doubleArrayOf(0.8, -0.8, 0.9, -1.0, -0.1),
+            doubleArrayOf(0.9, 0.6, 0.7, 0.6, 0.6),
+            doubleArrayOf(-0.1, 0.3, 0.3, 0.7, 0.3),
+            doubleArrayOf(-0.8, 0.1, -0.9, 0.5, 0.4)
+        )))
+
+    params.unit.biases.values.assignValues(
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.5, 0.1, 0.2, 0.8)))
+
+    return params
+  }
+
+  /**
+   *
+   */
   fun buildParams(layersConfiguration: List<LayerInterface>): StackedLayersParameters {
 
     val params = StackedLayersParameters(layersConfiguration)
@@ -71,4 +93,25 @@ object ResNetStructureUtils {
 
     return params
   }
+
+  /**
+   *
+   */
+  fun buildParams2(layersConfiguration: List<LayerInterface>): StackedLayersParameters {
+
+    val params = StackedLayersParameters(layersConfiguration)
+    val inputParams = (params.paramsPerLayer[0] as FeedforwardLayerParameters)
+    val outputParams = (params.paramsPerLayer[1] as FeedforwardLayerParameters)
+
+    inputParams.unit.weights.values.assignValues(FeedforwardLayerStructureUtils.getParams45().unit.weights.values)
+    inputParams.unit.biases.values.assignValues(FeedforwardLayerStructureUtils.getParams45().unit.biases.values)
+    outputParams.unit.weights.values.assignValues(this.getParams54().unit.weights.values)
+    outputParams.unit.biases.values.assignValues(this.getParams54().unit.biases.values)
+
+    return params
+  }
+  /**
+   *
+   */
+  fun getOutputGold4(): DenseNDArray =  DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.0, 0.0, 1.0))
 }
