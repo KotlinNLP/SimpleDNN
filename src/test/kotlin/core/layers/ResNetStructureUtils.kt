@@ -14,6 +14,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import core.layers.feedforward.simple.FeedforwardLayerStructureUtils
 
 object ResNetStructureUtils {
+
   /**
    *
    */

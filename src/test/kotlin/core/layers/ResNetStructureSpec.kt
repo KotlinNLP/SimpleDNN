@@ -8,10 +8,8 @@
 package core.layers
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
-import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import core.layers.feedforward.simple.FeedforwardLayerStructureUtils
