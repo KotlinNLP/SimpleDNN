@@ -13,22 +13,24 @@ object SquaredDistanceLayerUtils {
    */
   fun buildLayer(): SquaredDistanceLayer = SquaredDistanceLayer(
       inputArray = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.5, -0.4))),
-      params = SquaredDistanceLayerParameters(inputSize = 3, outputSize = 5),
+      params = this.getParams35(),
       inputType =  LayerType.Input.Dense,
       id = 0)
 
   /**
    *
    */
-  fun getParams53(): SquaredDistanceLayerParameters {
+  fun getParams35(): SquaredDistanceLayerParameters {
 
-    val params = SquaredDistanceLayerParameters(inputSize = 5, outputSize = 3)
+    val params = SquaredDistanceLayerParameters(inputSize = 3, outputSize = 5)
 
     params.B.values.assignValues(
         DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.4, -0.5, 0.5, 0.5, -0.3),
-            doubleArrayOf(0.6, 0.4, 0.4, 0.2, 0.4),
-            doubleArrayOf(-0.5, 0.2, 0.1, -0.2, 0.4)
+            doubleArrayOf(0.4, 0.6, -0.5),
+            doubleArrayOf(-0.5, 0.4, 0.2),
+            doubleArrayOf(0.5, 0.4, 0.1),
+            doubleArrayOf(0.5, 0.2, -0.2),
+            doubleArrayOf(-0.3, 0.4, 0.4)
         )))
 
     return params
