@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.models.feedforward.squaredistance
+package com.kotlinnlp.simplednn.core.layers.models.merge.squareddistance
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
@@ -19,7 +19,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 class SquaredDistanceForwardHelper(override val layer: SquaredDistanceLayer) : ForwardHelper<DenseNDArray>(layer){
 
   /**
-   * Forward the input to the output calculating a score value d >= 0
+   * Forward the input to the output calculating a score value d >= 0.
+   * output is BhT Bh where B is the parameter matrix, and h is the input
    */
   override fun forward() {
 

@@ -5,30 +5,33 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.models.feedforward.squaredistance
+package com.kotlinnlp.simplednn.core.layers.models.merge.squareddistance
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
 
 /**
  * The parameters of the layer of type Squared Distance.
+ * See Hewitt, Manning, A structural probe for finding Syntax in word representation paragraph 2.1
+ * The matrix B  k x m where m is [inputSize]. k is [outputSize], the size of the transformed vector whose norm is the
+ * layer output.
  *
  * @property inputSize input size
- * @property outputSize output size
+ * @property outputSize transformed vector size
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
- * @param sparseInput whether the weights connected to the input are sparse or not
  */
 class SquaredDistanceLayerParameters(
     inputSize: Int,
-    weightsInitializer: Initializer? = GlorotInitializer(),
-    private val sparseInput: Boolean = false
-) : LayerParameters<SquaredDistanceLayerParameters>(
-    inputSize = inputSize,
-    outputSize = inputSize,
+    outputSize: Int,
+    weightsInitializer: Initializer? = GlorotInitializer()
+) : MergeLayerParameters<SquaredDistanceLayerParameters>(
+    inputsSize = List(size = 1, init = { inputSize }),
+    outputSize = outputSize,
     weightsInitializer = weightsInitializer,
-    biasesInitializer = null) {
+    biasesInitializer = null,
+    sparseInput = false) {
 
   companion object {
 
@@ -72,8 +75,8 @@ class SquaredDistanceLayerParameters(
   override fun copy(): SquaredDistanceLayerParameters {
 
     val clonedParams = SquaredDistanceLayerParameters(
+        outputSize = this.outputSize,
         inputSize = this.inputSize,
-        sparseInput = this.sparseInput,
         weightsInitializer = null)
 
     clonedParams.assignValues(this)

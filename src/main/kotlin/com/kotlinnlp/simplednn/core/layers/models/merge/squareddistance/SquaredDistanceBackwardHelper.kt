@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.models.feedforward.squaredistance
+package com.kotlinnlp.simplednn.core.layers.models.merge.squareddistance
 
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
