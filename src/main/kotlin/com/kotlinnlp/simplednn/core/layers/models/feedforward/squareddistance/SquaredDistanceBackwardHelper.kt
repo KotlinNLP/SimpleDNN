@@ -25,9 +25,25 @@ class SquaredDistanceBackwardHelper (override val layer: SquaredDistanceLayer) :
    */
   override fun execBackward(propagateToInput: Boolean) {
 
+    val gy: DenseNDArray = this.layer.outputArray.errors
+
+    this.layer.bhOut.assignErrors(this.layer.bhOut.valuesNotActivated.assignProd(gy[0] * 2.0))
+
+    this.assignParamsGradients()
+
     if (propagateToInput) {
       this.assignLayerGradients()
     }
+  }
+
+  /**
+   * Assign the the parameters (the B matrix) gradients.
+   */
+  private fun assignParamsGradients() {
+
+    val gB = this.layer.params.weightsList[0].errors.values
+
+    gB.assignDot(this.layer.bhOut.errors, this.layer.inputArray.values.t)
   }
 
   /**
@@ -35,6 +51,8 @@ class SquaredDistanceBackwardHelper (override val layer: SquaredDistanceLayer) :
    */
   private fun assignLayerGradients() {
 
+    val B = this.layer.params.weightsList[0].values
 
+    this.layer.inputArray.assignErrors(this.layer.bhOut.errors.t.dot(B))
   }
 }

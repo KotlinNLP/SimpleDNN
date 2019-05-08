@@ -10,10 +10,10 @@ package com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.Layer
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.utils.ItemsPool
 
 /**
@@ -26,7 +26,7 @@ import com.kotlinnlp.utils.ItemsPool
 class SquaredDistanceLayer(
     inputArray: AugmentedArray<DenseNDArray>,
     inputType: LayerType.Input,
-    params: LayerParameters<*>,
+    params: SquaredDistanceLayerParameters,
     activationFunction: ActivationFunction? = null,
     dropout: Double = 0.0,
     override val id: Int = 0
@@ -39,6 +39,9 @@ class SquaredDistanceLayer(
         activationFunction = activationFunction,
         dropout = dropout
     ) {
+
+  val bhOut: AugmentedArray<DenseNDArray> = AugmentedArray(this.params.outputSize)
+
   /**
    * The helper which executes the forward
    */

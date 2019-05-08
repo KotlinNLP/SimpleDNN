@@ -9,7 +9,9 @@ package com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * The helper which executes the forward on a [SquaredDistanceLayer].
@@ -24,6 +26,11 @@ class SquaredDistanceForwardHelper(override val layer: SquaredDistanceLayer) : F
    */
   override fun forward() {
 
+    this.layer.bhOut.assignValues(layer.params.paramsList[0].values.dot(layer.inputArray.values))
+
+    val bhOut: DenseNDArray = this.layer.bhOut.values
+
+    this.layer.outputArray.assignValues(bhOut.t.dot(bhOut))
 
   }
 
