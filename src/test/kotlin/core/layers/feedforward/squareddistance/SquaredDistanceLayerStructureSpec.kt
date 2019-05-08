@@ -21,7 +21,7 @@ class SquaredDistanceLayerStructureSpec : Spek({
       it("should match the expected outputArray") {
         assertTrue {
           layer.outputArray.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.06081)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5928)),
               tolerance = 1.0e-05)
         }
       }
