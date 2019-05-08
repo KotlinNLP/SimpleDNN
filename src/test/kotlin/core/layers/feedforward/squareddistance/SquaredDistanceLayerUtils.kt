@@ -24,7 +24,7 @@ object SquaredDistanceLayerUtils {
 
     val params = SquaredDistanceLayerParameters(inputSize = 3, outputSize = 5)
 
-    params.B.values.assignValues(
+    params.wB.values.assignValues(
         DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(0.4, 0.6, -0.5),
             doubleArrayOf(-0.5, 0.4, 0.2),

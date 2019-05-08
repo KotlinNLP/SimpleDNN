@@ -51,8 +51,8 @@ class SquaredDistanceBackwardHelper (override val layer: SquaredDistanceLayer) :
    */
   private fun assignLayerGradients() {
 
-    val B = this.layer.params.weightsList[0].values
+    val b = this.layer.params.weightsList[0].values
 
-    this.layer.inputArray.assignErrors(this.layer.bhOut.errors.t.dot(B))
+    this.layer.inputArray.assignErrors(this.layer.bhOut.errors.t.dot(b))
   }
 }

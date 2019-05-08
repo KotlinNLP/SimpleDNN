@@ -44,17 +44,17 @@ class SquaredDistanceLayerParameters(
   /**
    * The weights connected to the first input array.
    */
-  val B = ParamsArray(this.outputSize, this.inputSize)
+  val wB = ParamsArray(this.outputSize, this.inputSize)
 
   /**
    * The list of all parameters.
    */
-  override val paramsList = listOf(this.B)
+  override val paramsList = listOf(this.wB)
 
   /**
    * The list of weights parameters.
    */
-  override val weightsList: List<ParamsArray> = listOf(this.B)
+  override val weightsList: List<ParamsArray> = listOf(this.wB)
 
   /**
    * The list of biases parameters.

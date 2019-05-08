@@ -51,7 +51,7 @@ class SquaredDistanceLayerStructureSpec : Spek({
 
       it("should match the expected errors of the weights") {
         assertTrue {
-          (paramsErrors.getErrorsOf(params.B)!!.values as DenseNDArray).equals(
+          (paramsErrors.getErrorsOf(params.wB)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
                   doubleArrayOf(-0.2976, -0.496, 0.3968),
                   doubleArrayOf(0.0144, 0.024, -0.0192),
