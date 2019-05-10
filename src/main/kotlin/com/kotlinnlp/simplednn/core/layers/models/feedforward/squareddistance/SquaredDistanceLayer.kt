@@ -39,6 +39,9 @@ class SquaredDistanceLayer(
     dropout = dropout
   ) {
 
+  /**
+   * It is a support variable used during the calculations.
+   */
   val bhOut: AugmentedArray<DenseNDArray> = AugmentedArray(this.params.outputSize)
 
   /**
