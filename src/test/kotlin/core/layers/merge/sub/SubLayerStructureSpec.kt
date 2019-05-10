@@ -16,8 +16,7 @@ import kotlin.test.assertTrue
 
 class SubLayerStructureSpec : Spek({
 
-  describe("a Subtract Layer")
-  {
+  describe("a Subtract Layer") {
 
     on("forward") {
 
@@ -27,8 +26,8 @@ class SubLayerStructureSpec : Spek({
       it("should match the expected outputArray") {
         assertTrue {
           layer.outputArray.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.2, 0.3, -0.7)),
-              tolerance = 1.0e-05)
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.2, 0.3, -0.7)),
+            tolerance = 1.0e-05)
         }
       }
     }
@@ -45,16 +44,16 @@ class SubLayerStructureSpec : Spek({
       it("should match the expected errors of the inputArray1") {
         assertTrue {
           layer.inputArrays[0].errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, -0.2, 0.4, 0.0)),
-              tolerance = 1.0e-05)
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, -0.2, 0.4, 0.0)),
+            tolerance = 1.0e-05)
         }
       }
 
       it("should match the expected errors of the inputArray2") {
         assertTrue {
           layer.inputArrays[1].errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.2, -0.4, 0.0)),
-              tolerance = 1.0e-05)
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.2, -0.4, 0.0)),
+            tolerance = 1.0e-05)
         }
       }
     }

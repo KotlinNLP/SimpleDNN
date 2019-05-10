@@ -41,7 +41,9 @@ class SquaredDistanceBackwardHelper (override val layer: SquaredDistanceLayer) :
    */
   private fun assignParamsGradients() {
 
-    val gB = this.layer.params.weightsList[0].errors.values
+    this.layer.params as SquaredDistanceLayerParameters
+
+    val gB = this.layer.params.wB.errors.values
 
     gB.assignDot(this.layer.bhOut.errors, this.layer.inputArray.values.t)
   }
@@ -51,7 +53,9 @@ class SquaredDistanceBackwardHelper (override val layer: SquaredDistanceLayer) :
    */
   private fun assignLayerGradients() {
 
-    val b = this.layer.params.weightsList[0].values
+    this.layer.params as SquaredDistanceLayerParameters
+
+    val b = this.layer.params.wB.values
 
     this.layer.inputArray.assignErrors(this.layer.bhOut.errors.t.dot(b))
   }

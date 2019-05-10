@@ -23,14 +23,14 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  */
 class SquaredDistanceLayerParameters(
-    inputSize: Int,
-    outputSize: Int,
-    weightsInitializer: Initializer? = GlorotInitializer()
+  inputSize: Int,
+  outputSize: Int,
+  weightsInitializer: Initializer? = GlorotInitializer()
 ) : LayerParameters<SquaredDistanceLayerParameters>(
-    inputSize = inputSize,
-    outputSize = outputSize,
-    weightsInitializer = weightsInitializer,
-    biasesInitializer = null) {
+  inputSize = inputSize,
+  outputSize = outputSize,
+  weightsInitializer = weightsInitializer,
+  biasesInitializer = null) {
 
   companion object {
 
@@ -74,9 +74,9 @@ class SquaredDistanceLayerParameters(
   override fun copy(): SquaredDistanceLayerParameters {
 
     val clonedParams = SquaredDistanceLayerParameters(
-        outputSize = this.outputSize,
-        inputSize = this.inputSize,
-        weightsInitializer = null)
+      outputSize = this.outputSize,
+      inputSize = this.inputSize,
+      weightsInitializer = null)
 
     clonedParams.assignValues(this)
 

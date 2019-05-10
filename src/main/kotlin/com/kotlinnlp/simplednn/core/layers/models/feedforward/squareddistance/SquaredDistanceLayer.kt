@@ -23,21 +23,21 @@ import com.kotlinnlp.utils.ItemsPool
  * @property id an identification number useful to track a specific [SquaredDistanceLayer]
  */
 class SquaredDistanceLayer(
-    inputArray: AugmentedArray<DenseNDArray>,
-    inputType: LayerType.Input,
-    params: SquaredDistanceLayerParameters,
-    activationFunction: ActivationFunction? = null,
-    dropout: Double = 0.0,
-    override val id: Int = 0
+  inputArray: AugmentedArray<DenseNDArray>,
+  inputType: LayerType.Input,
+  params: SquaredDistanceLayerParameters,
+  activationFunction: ActivationFunction? = null,
+  dropout: Double = 0.0,
+  override val id: Int = 0
 ) : ItemsPool.IDItem,
-    Layer<DenseNDArray>(
-        inputArray = inputArray,
-        inputType = inputType,
-        outputArray = AugmentedArray(1),
-        params = params,
-        activationFunction = activationFunction,
-        dropout = dropout
-    ) {
+  Layer<DenseNDArray>(
+    inputArray = inputArray,
+    inputType = inputType,
+    outputArray = AugmentedArray(1),
+    params = params,
+    activationFunction = activationFunction,
+    dropout = dropout
+  ) {
 
   val bhOut: AugmentedArray<DenseNDArray> = AugmentedArray(this.params.outputSize)
 
@@ -55,5 +55,4 @@ class SquaredDistanceLayer(
    * The helper which calculates the relevance
    */
   override val relevanceHelper: RelevanceHelper? = null
-
 }

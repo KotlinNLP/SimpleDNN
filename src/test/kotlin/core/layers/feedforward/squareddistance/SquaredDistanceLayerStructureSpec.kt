@@ -24,8 +24,8 @@ class SquaredDistanceLayerStructureSpec : Spek({
       it("should match the expected outputArray") {
         assertTrue {
           layer.outputArray.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5928)),
-              tolerance = 1.0e-05)
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5928)),
+            tolerance = 1.0e-05)
         }
       }
     }
@@ -44,22 +44,22 @@ class SquaredDistanceLayerStructureSpec : Spek({
       it("should match the expected errors of the inputArray") {
         assertTrue {
           layer.inputArray.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9568, -0.848, 0.5936)),
-              tolerance = 1.0e-05)
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.9568, -0.848, 0.5936)),
+            tolerance = 1.0e-05)
         }
       }
 
       it("should match the expected errors of the weights") {
         assertTrue {
           (paramsErrors.getErrorsOf(params.wB)!!.values as DenseNDArray).equals(
-              DenseNDArrayFactory.arrayOf(listOf(
-                  doubleArrayOf(-0.2976, -0.496, 0.3968),
-                  doubleArrayOf(0.0144, 0.024, -0.0192),
-                  doubleArrayOf(-0.1488, -0.248, 0.1984),
-                  doubleArrayOf(-0.1584, -0.264, 0.2112),
-                  doubleArrayOf(0.024, 0.04, -0.032)
-              )),
-              tolerance = 1.0e-05)
+            DenseNDArrayFactory.arrayOf(listOf(
+              doubleArrayOf(-0.2976, -0.496, 0.3968),
+              doubleArrayOf(0.0144, 0.024, -0.0192),
+              doubleArrayOf(-0.1488, -0.248, 0.1984),
+              doubleArrayOf(-0.1584, -0.264, 0.2112),
+              doubleArrayOf(0.024, 0.04, -0.032)
+            )),
+            tolerance = 1.0e-05)
         }
       }
     }

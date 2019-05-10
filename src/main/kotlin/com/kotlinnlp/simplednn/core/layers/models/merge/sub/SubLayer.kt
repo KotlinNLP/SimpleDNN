@@ -23,23 +23,23 @@ import com.kotlinnlp.utils.ItemsPool
  * @property params the parameters which connect the input to the output
  * @property id an identification number useful to track a specific [SubLayer]
  */
-class SubLayer<InputNDArrayType : NDArray<InputNDArrayType>>
-(internal val inputArray1: AugmentedArray<InputNDArrayType>,
- internal val inputArray2: AugmentedArray<InputNDArrayType>,
- inputType: LayerType.Input,
- outputArray: AugmentedArray<DenseNDArray>,
- override val params: SubLayerParameters,
- id: Int = 0
+class SubLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
+  internal val inputArray1: AugmentedArray<InputNDArrayType>,
+  internal val inputArray2: AugmentedArray<InputNDArrayType>,
+  inputType: LayerType.Input,
+  outputArray: AugmentedArray<DenseNDArray>,
+  override val params: SubLayerParameters,
+  id: Int = 0
 ) :
   ItemsPool.IDItem,
   MergeLayer<InputNDArrayType>(
-      inputArrays = listOf(inputArray1, inputArray2),
-      inputType = inputType,
-      outputArray = outputArray,
-      params = params,
-      activationFunction = null,
-      dropout = 0.0,
-      id = id
+    inputArrays = listOf(inputArray1, inputArray2),
+    inputType = inputType,
+    outputArray = outputArray,
+    params = params,
+    activationFunction = null,
+    dropout = 0.0,
+    id = id
   ) {
 
   init { this.checkInputSize() }

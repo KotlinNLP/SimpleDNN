@@ -19,11 +19,11 @@ object SubLayerUtils {
    *
    */
   fun buildLayer(): SubLayer<DenseNDArray> = SubLayer(
-      inputArray1 = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.4, -0.3, 0.2))),
-      inputArray2 = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 0.2, -0.6, 0.9))),
-      inputType = LayerType.Input.Dense,
-      outputArray = AugmentedArray(size = 4),
-      params = SubLayerParameters(inputSize = 4))
+    inputArray1 = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.4, -0.3, 0.2))),
+    inputArray2 = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 0.2, -0.6, 0.9))),
+    inputType = LayerType.Input.Dense,
+    outputArray = AugmentedArray(size = 4),
+    params = SubLayerParameters(inputSize = 4))
 
   /**
    *

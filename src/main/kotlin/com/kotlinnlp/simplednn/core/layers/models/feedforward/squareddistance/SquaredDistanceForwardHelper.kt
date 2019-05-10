@@ -24,12 +24,13 @@ class SquaredDistanceForwardHelper(override val layer: SquaredDistanceLayer) : F
    */
   override fun forward() {
 
-    this.layer.bhOut.assignValues(layer.params.paramsList[0].values.dot(layer.inputArray.values))
+    this.layer.params as SquaredDistanceLayerParameters
 
-    val bhOut: DenseNDArray = this.layer.bhOut.values
+    this.layer.bhOut.assignValues(layer.params.wB.values.dot(layer.inputArray.values))
 
-    this.layer.outputArray.assignValues(bhOut.t.dot(bhOut))
-
+    this.layer.bhOut.values.let { bhOut ->
+      this.layer.outputArray.assignValues(bhOut.t.dot(bhOut))
+    }
   }
 
   /**
