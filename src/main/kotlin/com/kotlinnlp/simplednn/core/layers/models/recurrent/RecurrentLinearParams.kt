@@ -26,8 +26,17 @@ class RecurrentLinearParams(
   outputSize = outputSize,
   sparseInput = sparseInput) {
 
+  companion object {
+
+    /**
+     * Private val used to serialize the class (needed by Serializable).
+     */
+    @Suppress("unused")
+    private const val serialVersionUID: Long = 1L
+  }
+
   /**
-   *
+   * The recurrent weights initialized to zero.
    */
   val recurrentWeights = ParamsArray(dim1 = this.outputSize, dim2 = this.outputSize)
 }
