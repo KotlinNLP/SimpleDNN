@@ -20,7 +20,7 @@ class SquaredDistanceForwardHelper(override val layer: SquaredDistanceLayer) : F
 
   /**
    * Forward the input to the output calculating a score value d >= 0.
-   * output is BhT Bh where B is the parameter matrix, and h is the input
+   * The output is `BhT dot Bh`, where `B` is the parameter matrix, and `h` is the input.
    */
   override fun forward() {
 

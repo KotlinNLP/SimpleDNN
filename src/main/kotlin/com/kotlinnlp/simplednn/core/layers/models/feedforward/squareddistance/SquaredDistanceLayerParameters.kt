@@ -14,9 +14,11 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
 
 /**
  * The parameters of the layer of type Squared Distance.
- * See Hewitt, Manning, A structural probe for finding Syntax in word representation paragraph 2.1
- * The matrix B  k x m where m is [inputSize]. k is [outputSize], the size of the transformed vector whose norm is the
- * layer output.
+ *
+ * See Hewitt, Manning: A Structural Probe for Finding Syntax in Word Representation (paragraph 2.1)
+ *
+ * The matrix `B` k x m, where m is [inputSize] and k is [outputSize], the size of the transformed vector
+ * whose norm is the layer output.
  *
  * @property inputSize input size
  * @property outputSize transformed vector size
