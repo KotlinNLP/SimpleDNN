@@ -185,12 +185,8 @@ class RANLayerStructureSpec : Spek({
         layer.propagateRelevanceToGates(layerContributions = contributions)
         layer.setInputRelevance(layerContributions = contributions)
 
-        it("should set a Dense input relevance") {
-          assertTrue { layer.inputArray.relevance is DenseNDArray }
-        }
-
         it("should match the expected input relevance") {
-          val relevance: DenseNDArray = layer.inputArray.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.inputArray.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-6.80494, 7.20431, -4.37039, 4.97103)),
@@ -328,12 +324,8 @@ class RANLayerStructureSpec : Spek({
         layer.setInputRelevance(layerContributions = contributions)
         layer.setRecurrentRelevance(layerContributions = contributions)
 
-        it("should set a Dense input relevance") {
-          assertTrue { layer.inputArray.relevance is DenseNDArray }
-        }
-
         it("should match the expected relevance of the input gate") {
-          val relevance: DenseNDArray = layer.inputGate.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.inputGate.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.13434, -0.09416, 0.16398, 0.15841, 0.07058)),
@@ -342,7 +334,7 @@ class RANLayerStructureSpec : Spek({
         }
 
         it("should match the expected relevance of the forget gate") {
-          val relevance: DenseNDArray = layer.forgetGate.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.forgetGate.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03434, 0.19416, -0.06398, -0.05841, 0.02942)),
@@ -351,7 +343,7 @@ class RANLayerStructureSpec : Spek({
         }
 
         it("should match the expected relevance of the candidate") {
-          val relevance: DenseNDArray = layer.candidate.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.candidate.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.13434, -0.09416, 0.16398, 0.15841, 0.07058)),
@@ -360,7 +352,7 @@ class RANLayerStructureSpec : Spek({
         }
 
         it("should match the expected input relevance") {
-          val relevance: DenseNDArray = layer.inputArray.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.inputArray.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.73699, 0.21761, -0.13861, 1.13203)),
@@ -369,7 +361,7 @@ class RANLayerStructureSpec : Spek({
         }
 
         it("should match the expected recurrent relevance") {
-          val relevance: DenseNDArray = prevStateLayer.outputArray.relevance as DenseNDArray
+          val relevance: DenseNDArray = prevStateLayer.outputArray.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.15578, 0.3737, -0.40348, 0.45246, -0.05248)),

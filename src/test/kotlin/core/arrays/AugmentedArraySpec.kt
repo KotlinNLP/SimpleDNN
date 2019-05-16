@@ -146,7 +146,7 @@ class AugmentedArraySpec : Spek({
 
         augmentedArray.assignRelevance(relevance)
 
-        val arrayRelevance: DenseNDArray = augmentedArray.relevance as DenseNDArray
+        val arrayRelevance: DenseNDArray = augmentedArray.relevance
 
         it("should have the expected assigned relevance") {
           assertTrue { arrayRelevance.equals(relevance, tolerance = 1.0e-08) }
@@ -158,7 +158,7 @@ class AugmentedArraySpec : Spek({
         val augmentedArray = AugmentedArray<DenseNDArray>(size = 9)
         augmentedArray.assignRelevance(relevance)
 
-        val arrayRelevance: DenseNDArray = augmentedArray.relevance as DenseNDArray
+        val arrayRelevance: DenseNDArray = augmentedArray.relevance
 
         it("should have the expected assigned recurrent relevance") {
           assertTrue { arrayRelevance.equals(relevance, tolerance = 1.0e-08) }
@@ -250,7 +250,7 @@ class AugmentedArraySpec : Spek({
         augmentedArray.assignRelevance(relevance)
         augmentedArray.assignRecurrentRelevance(recurrentRelevance)
 
-        val arrayRelevance: DenseNDArray = augmentedArray.relevance as DenseNDArray
+        val arrayRelevance: DenseNDArray = augmentedArray.relevance
         val arrayRecRelevance: DenseNDArray = augmentedArray.recurrentRelevance as DenseNDArray
 
         val cloneArray = augmentedArray.clone()
@@ -268,7 +268,7 @@ class AugmentedArraySpec : Spek({
         }
 
         it("should have the expected relevance") {
-          val cloneRelevance = cloneArray.relevance as DenseNDArray
+          val cloneRelevance = cloneArray.relevance
           assertTrue { arrayRelevance.equals(cloneRelevance, tolerance = 1.0e-08) }
         }
 

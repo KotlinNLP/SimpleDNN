@@ -90,12 +90,8 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         layer.setOutputRelevance(DistributionArray.uniform(length = 5))
         layer.setInputRelevance(layerContributions = contributions)
 
-        it("should set a Dense input relevance") {
-          assertTrue { layer.inputArray.relevance is DenseNDArray }
-        }
-
         it("should match the expected input relevance") {
-          val relevance: DenseNDArray = layer.inputArray.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.inputArray.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-12.08396, 12.52343, -7.69489, 8.25543)),
@@ -161,12 +157,8 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         layer.setInputRelevance(layerContributions = contributions)
         layer.setRecurrentRelevance(layerContributions = contributions)
 
-        it("should set a Dense input relevance") {
-          assertTrue { layer.inputArray.relevance is DenseNDArray }
-        }
-
         it("should match the expected input relevance") {
-          val relevance: DenseNDArray = layer.inputArray.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.inputArray.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.27469, -0.95735, 0.85408, 1.65854)),
@@ -175,7 +167,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         }
 
         it("should match the expected recurrent relevance") {
-          val relevance: DenseNDArray = prevStateLayer.outputArray.relevance as DenseNDArray
+          val relevance: DenseNDArray = prevStateLayer.outputArray.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.30048, 0.38969, -0.80763, 0.54242, 0.29448)),

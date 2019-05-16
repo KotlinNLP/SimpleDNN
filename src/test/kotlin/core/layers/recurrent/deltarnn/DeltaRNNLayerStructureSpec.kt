@@ -165,12 +165,8 @@ class DeltaRNNLayerStructureSpec : Spek({
         layer.propagateRelevanceToGates(layerContributions = contributions)
         layer.setInputRelevance(layerContributions = contributions)
 
-        it("should set a Dense input relevance") {
-          assertTrue { layer.inputArray.relevance is DenseNDArray }
-        }
-
         it("should match the expected relevance of the partition array") {
-          val relevance: DenseNDArray = layer.partition.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.partition.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, 0.1, 0.1, 0.1)),
@@ -179,7 +175,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected relevance of the candidate") {
-          val relevance: DenseNDArray = layer.candidate.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.candidate.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, 0.1, 0.1, 0.1)),
@@ -188,7 +184,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected relevance of the d1 input array") {
-          val relevance: DenseNDArray = layer.relevanceSupport.d1Input.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.relevanceSupport.d1Input.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, 0.1, 0.1, 0.1)),
@@ -197,7 +193,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected input relevance") {
-          val relevance: DenseNDArray = layer.inputArray.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.inputArray.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.058871, -0.524906, 1.314539, 0.269238)),
@@ -282,12 +278,8 @@ class DeltaRNNLayerStructureSpec : Spek({
         layer.setInputRelevance(layerContributions = contributions)
         layer.setRecurrentRelevance(layerContributions = contributions)
 
-        it("should set a Dense input relevance") {
-          assertTrue { layer.inputArray.relevance is DenseNDArray }
-        }
-
         it("should match the expected relevance of the partition array") {
-          val relevance: DenseNDArray = layer.partition.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.partition.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, 0.1, 0.1, 0.1)),
@@ -296,7 +288,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected relevance of the candidate") {
-          val relevance: DenseNDArray = layer.candidate.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.candidate.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.151155, 0.030391, 0.06021, -0.029987, 0.048968)),
@@ -305,7 +297,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected relevance of the d1 input array") {
-          val relevance: DenseNDArray = layer.relevanceSupport.d1Input.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.relevanceSupport.d1Input.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.101818, 0.031252, 0.074148, -0.028935, 0.031181)),
@@ -314,7 +306,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected relevance of the d1 recurrent array") {
-          val relevance: DenseNDArray = layer.relevanceSupport.d1Rec.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.relevanceSupport.d1Rec.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.05417, 0.000358, -0.00857, 0.000304, 0.018798)),
@@ -323,7 +315,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected relevance of the d2 array") {
-          val relevance: DenseNDArray = layer.relevanceSupport.d2.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.relevanceSupport.d2.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(0.103506, -0.001219, -0.005368, -0.001356, -0.001011)),
@@ -332,7 +324,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected input relevance") {
-          val relevance: DenseNDArray = layer.inputArray.relevance as DenseNDArray
+          val relevance: DenseNDArray = layer.inputArray.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.156729, -0.419269, 1.161411, 0.171329)),
@@ -341,7 +333,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         it("should match the expected recurrent relevance") {
-          val relevance: DenseNDArray = prevStateLayer.outputArray.relevance as DenseNDArray
+          val relevance: DenseNDArray = prevStateLayer.outputArray.relevance
           assertTrue {
             relevance.equals(
               DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.077057, 0.03487, 0.116601, 0.037238, 0.131607)),
