@@ -22,6 +22,7 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.avg.AvgLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.product.ProductLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.merge.sub.SubLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ltm.LTMLayerParameters
 
@@ -100,6 +101,15 @@ object LayerParametersFactory {
       }
 
       SumLayerParameters(inputSize = inputsSize.first(), nInputs = inputsSize.size)
+    }
+
+    LayerType.Connection.Sub -> {
+
+      require(outputSize == null || outputSize == inputsSize.first()) {
+        "The Sub merge layer requires that the output size must be equal to the input size."
+      }
+
+      SubLayerParameters(inputSize = inputsSize.first())
     }
 
     LayerType.Connection.Avg -> {

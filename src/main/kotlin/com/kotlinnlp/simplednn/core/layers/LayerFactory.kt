@@ -29,6 +29,8 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayerParame
 import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.product.ProductLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.product.ProductLayer
+import com.kotlinnlp.simplednn.core.layers.models.merge.sub.SubLayer
+import com.kotlinnlp.simplednn.core.layers.models.merge.sub.SubLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
@@ -193,6 +195,13 @@ object LayerFactory {
       inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params as SumLayerParameters)
+
+    LayerType.Connection.Sub -> SubLayer(
+      inputArray1 = inputArrays[0],
+      inputArray2 = inputArrays[1],
+      inputType = inputType,
+      outputArray = AugmentedArray.zeros(outputSize),
+      params = params as SubLayerParameters)
 
     LayerType.Connection.Avg -> AvgLayer(
       inputArrays = inputArrays,
