@@ -11,6 +11,8 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayer
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance.SquaredDistanceLayer
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance.SquaredDistanceLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayer
@@ -165,6 +167,13 @@ object LayerFactory {
       outputArray = AugmentedArray.zeros(outputSize),
       params = params,
       activationFunction = activationFunction,
+      dropout = dropout)
+
+    LayerType.Connection.SquaredDistance -> SquaredDistanceLayer(
+      inputArray = inputArrays.first(),
+      inputType = inputType,
+      outputArray = AugmentedArray.zeros(outputSize),
+      params = params as SquaredDistanceLayerParameters,
       dropout = dropout)
 
     LayerType.Connection.Affine -> AffineLayer(

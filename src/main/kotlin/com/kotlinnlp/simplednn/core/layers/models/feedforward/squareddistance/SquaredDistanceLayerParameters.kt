@@ -21,16 +21,16 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
  * whose norm is the layer output.
  *
  * @property inputSize input size
- * @property outputSize transformed vector size
+ * @property rank the rank of the transformation
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  */
 class SquaredDistanceLayerParameters(
   inputSize: Int,
-  outputSize: Int,
+  val rank: Int,
   weightsInitializer: Initializer? = GlorotInitializer()
 ) : LayerParameters<SquaredDistanceLayerParameters>(
   inputSize = inputSize,
-  outputSize = outputSize,
+  outputSize = 1,
   weightsInitializer = weightsInitializer,
   biasesInitializer = null) {
 
@@ -46,7 +46,7 @@ class SquaredDistanceLayerParameters(
   /**
    * The weights connected to the first input array.
    */
-  val wB = ParamsArray(this.outputSize, this.inputSize)
+  val wB = ParamsArray(this.rank, this.inputSize)
 
   /**
    * The list of all parameters.
@@ -76,8 +76,8 @@ class SquaredDistanceLayerParameters(
   override fun copy(): SquaredDistanceLayerParameters {
 
     val clonedParams = SquaredDistanceLayerParameters(
-      outputSize = this.outputSize,
       inputSize = this.inputSize,
+      rank = this.rank,
       weightsInitializer = null)
 
     clonedParams.assignValues(this)

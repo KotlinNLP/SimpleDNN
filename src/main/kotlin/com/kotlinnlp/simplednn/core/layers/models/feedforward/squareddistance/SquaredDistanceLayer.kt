@@ -8,10 +8,10 @@
 package com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.ItemsPool
 
@@ -22,27 +22,27 @@ import com.kotlinnlp.utils.ItemsPool
  * @property params the parameters which connect the input to the output
  * @property id an identification number useful to track a specific [SquaredDistanceLayer]
  */
-class SquaredDistanceLayer(
-  inputArray: AugmentedArray<DenseNDArray>,
+class SquaredDistanceLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
+  inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
+  outputArray: AugmentedArray<DenseNDArray>,
   params: SquaredDistanceLayerParameters,
-  activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0,
   override val id: Int = 0
 ) : ItemsPool.IDItem,
-  Layer<DenseNDArray>(
+  Layer<InputNDArrayType>(
     inputArray = inputArray,
     inputType = inputType,
-    outputArray = AugmentedArray(1),
+    outputArray = outputArray,
     params = params,
-    activationFunction = activationFunction,
+    activationFunction = null,
     dropout = dropout
   ) {
 
   /**
    * It is a support variable used during the calculations.
    */
-  val bhOut: AugmentedArray<DenseNDArray> = AugmentedArray(this.params.outputSize)
+  val bhOut: AugmentedArray<DenseNDArray> = AugmentedArray((this.params as SquaredDistanceLayerParameters).rank)
 
   /**
    * The helper which executes the forward

@@ -9,14 +9,16 @@ package com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance
 
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
  * The helper which executes the forward on a [SquaredDistanceLayer].
  *
  * @property layer the layer in which the forward is executed
  */
-class SquaredDistanceForwardHelper(override val layer: SquaredDistanceLayer) : ForwardHelper<DenseNDArray>(layer){
+class SquaredDistanceForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val layer: SquaredDistanceLayer<InputNDArrayType>
+) : ForwardHelper<InputNDArrayType>(layer){
 
   /**
    * Forward the input to the output calculating a score value d >= 0.

@@ -4,6 +4,7 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance.SquaredDistanceLayer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance.SquaredDistanceLayerParameters
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 object SquaredDistanceLayerUtils {
@@ -11,8 +12,9 @@ object SquaredDistanceLayerUtils {
   /**
    *
    */
-  fun buildLayer(): SquaredDistanceLayer = SquaredDistanceLayer(
+  fun buildLayer(): SquaredDistanceLayer<DenseNDArray> = SquaredDistanceLayer(
     inputArray = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.5, -0.4))),
+    outputArray = AugmentedArray(1),
     params = this.getParams35(),
     inputType =  LayerType.Input.Dense,
     id = 0)
@@ -22,7 +24,7 @@ object SquaredDistanceLayerUtils {
    */
   fun getParams35(): SquaredDistanceLayerParameters {
 
-    val params = SquaredDistanceLayerParameters(inputSize = 3, outputSize = 5)
+    val params = SquaredDistanceLayerParameters(inputSize = 3, rank = 5)
 
     params.wB.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(

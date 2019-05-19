@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance
 
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
@@ -15,7 +16,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the layer in which the forward is executed
  */
-class SquaredDistanceBackwardHelper (override val layer: SquaredDistanceLayer) : BackwardHelper<DenseNDArray>(layer) {
+class SquaredDistanceBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val layer: SquaredDistanceLayer<InputNDArrayType>
+) : BackwardHelper<InputNDArrayType>(layer) {
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD

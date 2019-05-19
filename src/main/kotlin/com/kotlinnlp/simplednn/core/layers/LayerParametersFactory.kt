@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.layers
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance.SquaredDistanceLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.gru.GRULayerParameters
@@ -68,6 +69,18 @@ object LayerParametersFactory {
         sparseInput = sparseInput,
         weightsInitializer = weightsInitializer,
         biasesInitializer = biasesInitializer)
+    }
+
+    LayerType.Connection.SquaredDistance -> {
+
+      require(outputSize == null || outputSize == 1) {
+        "The SquaredDistance layer requires that the output must be a scalar (size 1)."
+      }
+
+      SquaredDistanceLayerParameters(
+        inputSize = inputsSize.first(),
+        rank = inputsSize.first(), // by default the linear transformation if full-rank. TODO: set arbitrary rank
+        weightsInitializer = weightsInitializer)
     }
 
     LayerType.Connection.Affine -> AffineLayerParameters(
