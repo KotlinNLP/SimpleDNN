@@ -8,9 +8,9 @@
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import java.io.File
 import java.io.FileNotFoundException
-import java.nio.file.Files
-import java.nio.file.Paths
+import java.io.InputStream
 
 /**
  *
@@ -43,24 +43,20 @@ data class Configuration(val mnist: ExampleConfiguration,
     /**
      *
      */
-    private val defaultConfigurationFilename: String = try {
-      Configuration::class.java.classLoader.getResource("configuration.yaml").file
-    } catch (e: NullPointerException) {
-      throw FileNotFoundException("configuration.yaml")
-    }
+    private val defaultConfigurationStream: InputStream =
+      Charsets.javaClass.getResourceAsStream(File.separator + "configuration.yaml")
+        ?: throw FileNotFoundException(File.separator + "configuration.yaml")
 
     /**
      *
      */
-    fun loadFromFile(filename: String = defaultConfigurationFilename): Configuration {
+    fun loadFromFile(inputStream: InputStream = defaultConfigurationStream): Configuration {
 
       val mapper = ObjectMapper(YAMLFactory()) // Enable YAML parsing
 
       mapper.registerModule(KotlinModule()) // Enable Kotlin support
 
-      return Files.newBufferedReader(Paths.get(filename)).use {
-        mapper.readValue(it, Configuration::class.java)
-      }
+      return mapper.readValue(inputStream, Configuration::class.java)
     }
   }
 }
