@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
  *
  */
 fun JsonArray<*>.readDenseNDArray(): DenseNDArray =
-  DenseNDArrayFactory.arrayOf(DoubleArray(size = this.size, init = { i -> this[i] as Double }))
+  DenseNDArrayFactory.arrayOf(DoubleArray(size = this.size, init = { i -> (this[i] as Number).toDouble() }))
 
 /**
  *
