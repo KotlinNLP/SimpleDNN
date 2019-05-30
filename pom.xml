@@ -58,8 +58,8 @@
         <jblas.version>1.2.4</jblas.version>
         <slf4j.version>1.7.21</slf4j.version>
         <mockito.version>1.5.0</mockito.version>
-        <surfire.version>2.19.1</surfire.version>
-        <spek.version>1.1.5</spek.version>
+        <surfire.version>2.22.0</surfire.version>
+        <spek.version>2.0.5</spek.version>
         <dokka.version>0.9.17</dokka.version>
         <utils.version>2.1.2</utils.version>
     </properties>
@@ -240,18 +240,16 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jetbrains.spek</groupId>
-            <artifactId>spek-api</artifactId>
+            <groupId>org.spekframework.spek2</groupId>
+            <artifactId>spek-dsl-jvm</artifactId>
             <version>${spek.version}</version>
             <type>pom</type>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.jetbrains.spek</groupId>
-            <artifactId>spek-junit-platform-engine</artifactId>
+            <groupId>org.spekframework.spek2</groupId>
+            <artifactId>spek-runner-junit5</artifactId>
             <version>${spek.version}</version>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>

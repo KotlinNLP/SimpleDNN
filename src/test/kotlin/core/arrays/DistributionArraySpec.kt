@@ -9,11 +9,8 @@ package core.arrays
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.*
 
 /**
@@ -25,7 +22,7 @@ class DistributionArraySpec : Spek({
 
     context("factory") {
 
-      on("uniform distribution") {
+      context("uniform distribution") {
 
         val array = DistributionArray.uniform(length = 10)
 
@@ -38,7 +35,7 @@ class DistributionArraySpec : Spek({
         }
       }
 
-      on("one hot distribution") {
+      context("one hot distribution") {
 
         val array = DistributionArray.oneHot(length = 10, oneAt = 5)
 

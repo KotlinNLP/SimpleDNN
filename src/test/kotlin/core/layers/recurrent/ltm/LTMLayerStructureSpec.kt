@@ -12,11 +12,8 @@ import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -28,7 +25,7 @@ class LTMLayerStructureSpec : Spek({
 
     context("forward") {
 
-      on("without previous state context") {
+      context("without previous state context") {
 
         val layer = LTMLayerStructureUtils.buildLayer(LTMLayerContextWindow.Empty())
         layer.forward()
@@ -74,7 +71,7 @@ class LTMLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous state context") {
+      context("with previous state context") {
 
         val layer = LTMLayerStructureUtils.buildLayer(LTMLayerContextWindow.Back())
         layer.forward()
@@ -123,7 +120,7 @@ class LTMLayerStructureSpec : Spek({
 
     context("backward") {
 
-      on("without previous and next state") {
+      context("without previous and next state") {
 
         val layer = LTMLayerStructureUtils.buildLayer(LTMLayerContextWindow.Empty())
 
@@ -279,7 +276,7 @@ class LTMLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous state only") {
+      context("with previous state only") {
 
         val layer = LTMLayerStructureUtils.buildLayer(LTMLayerContextWindow.Back())
 
@@ -435,7 +432,7 @@ class LTMLayerStructureSpec : Spek({
         }
       }
 
-      on("with next state only") {
+      context("with next state only") {
 
         val layer = LTMLayerStructureUtils.buildLayer(LTMLayerContextWindow.Front())
 
@@ -591,7 +588,7 @@ class LTMLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous and next state") {
+      context("with previous and next state") {
 
         val layer = LTMLayerStructureUtils.buildLayer(LTMLayerContextWindow.Bilateral())
 

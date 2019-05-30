@@ -7,18 +7,8 @@
 
 package core.optimizer
 
-import com.kotlinnlp.simplednn.simplemath.ndarray.Indices
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-import com.kotlinnlp.simplednn.simplemath.ndarray.SparseEntry
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -30,7 +20,7 @@ class IterableParamsSpec : Spek({
 
     context("Dense params") {
 
-      on("assignValues") {
+      context("assignValues") {
 
         val params1 = IterableParamsUtils.buildDenseParams1()
         val params2 = IterableParamsUtils.buildDenseParams2()

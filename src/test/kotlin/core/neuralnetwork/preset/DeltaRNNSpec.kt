@@ -11,11 +11,8 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.DeltaRNN
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
@@ -38,7 +35,7 @@ class DeltaRNNSpec : Spek({
 
     context("initialization") {
 
-      on("input layer configuration") {
+      context("input layer configuration") {
 
         val inputLayerConfig = network.layersConfiguration[0]
 
@@ -59,7 +56,7 @@ class DeltaRNNSpec : Spek({
         }
       }
 
-      on("hidden layer configuration") {
+      context("hidden layer configuration") {
 
         val hiddenLayerConfig = network.layersConfiguration[1]
 
@@ -80,7 +77,7 @@ class DeltaRNNSpec : Spek({
         }
       }
 
-      on("output layer configuration") {
+      context("output layer configuration") {
 
         val outputLayerConfig = network.layersConfiguration[2]
 

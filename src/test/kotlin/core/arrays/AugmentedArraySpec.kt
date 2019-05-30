@@ -12,11 +12,8 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
@@ -38,7 +35,7 @@ class AugmentedArraySpec : Spek({
 
     context("initialization") {
 
-      on("with values not assigned") {
+      context("with values not assigned") {
 
         val activableArray = AugmentedArray<DenseNDArray>(size = 9)
 
@@ -67,7 +64,7 @@ class AugmentedArraySpec : Spek({
         }
       }
 
-      on("with an NDArray") {
+      context("with an NDArray") {
 
         val augmentedArray = AugmentedArray(initArray)
 
@@ -87,7 +84,7 @@ class AugmentedArraySpec : Spek({
 
     context("errors") {
 
-      on("before assignment") {
+      context("before assignment") {
 
         val augmentedArray = AugmentedArray<DenseNDArray>(size = 9)
 
@@ -98,7 +95,7 @@ class AugmentedArraySpec : Spek({
         }
       }
 
-      on("after assignment, with values initialized") {
+      context("after assignment, with values initialized") {
 
         val augmentedArray = AugmentedArray(initArray)
 
@@ -113,7 +110,7 @@ class AugmentedArraySpec : Spek({
         }
       }
 
-      on("with values not initialized") {
+      context("with values not initialized") {
 
         val augmentedArray = AugmentedArray<DenseNDArray>(size = 9)
 
@@ -125,7 +122,7 @@ class AugmentedArraySpec : Spek({
 
     context("relevance") {
 
-      on("before assignment") {
+      context("before assignment") {
 
         val augmentedArray = AugmentedArray<DenseNDArray>(size = 9)
 
@@ -136,7 +133,7 @@ class AugmentedArraySpec : Spek({
         }
       }
 
-      on("after assignment, with values initialized") {
+      context("after assignment, with values initialized") {
 
         val augmentedArray = AugmentedArray(initArray)
 
@@ -153,7 +150,7 @@ class AugmentedArraySpec : Spek({
         }
       }
 
-      on("after assignment, with values not initialized") {
+      context("after assignment, with values not initialized") {
 
         val augmentedArray = AugmentedArray<DenseNDArray>(size = 9)
         augmentedArray.assignRelevance(relevance)
@@ -168,7 +165,7 @@ class AugmentedArraySpec : Spek({
 
     context("recurrent relevance") {
 
-      on("before assignment") {
+      context("before assignment") {
 
         val augmentedArray = AugmentedArray<DenseNDArray>(size = 9)
 
@@ -179,7 +176,7 @@ class AugmentedArraySpec : Spek({
         }
       }
 
-      on("after assignment, with values initialized") {
+      context("after assignment, with values initialized") {
 
         val augmentedArray = AugmentedArray(initArray)
 
@@ -196,7 +193,7 @@ class AugmentedArraySpec : Spek({
         }
       }
 
-      on("after assignment, with values not initialized") {
+      context("after assignment, with values not initialized") {
 
         val augmentedArray = AugmentedArray<DenseNDArray>(size = 9)
         augmentedArray.assignRecurrentRelevance(recurrentRelevance)
@@ -211,7 +208,7 @@ class AugmentedArraySpec : Spek({
 
     context("cloning") {
 
-      on("values not initialized") {
+      context("values not initialized") {
 
         val activableArray = AugmentedArray<DenseNDArray>(size = 5)
         val cloneArray = activableArray.clone()
@@ -241,7 +238,7 @@ class AugmentedArraySpec : Spek({
         }
       }
 
-      on("values initialized") {
+      context("values initialized") {
 
         val augmentedArray = AugmentedArray(initArray)
         augmentedArray.setActivation(ELU())

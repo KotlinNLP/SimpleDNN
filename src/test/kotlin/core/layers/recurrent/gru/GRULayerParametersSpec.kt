@@ -13,11 +13,8 @@ import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGener
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.gru.GRULayerParameters
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.*
 
 /**
@@ -29,7 +26,7 @@ class GRULayerParametersSpec : Spek({
 
     context("initialization") {
 
-      on("dense input") {
+      context("dense input") {
 
         var k = 0
         val initValues = doubleArrayOf(
@@ -117,61 +114,61 @@ class GRULayerParametersSpec : Spek({
       val wrr = params.resetGate.recurrentWeights
       val wpr = params.partitionGate.recurrentWeights
 
-      on("iteration 1") {
+      context("iteration 1") {
         it("should return the weights of the candidate") {
           assertEquals(wc, iterator.next())
         }
       }
 
-      on("iteration 2") {
+      context("iteration 2") {
         it("should return the weights of the reset gate") {
           assertEquals(wr, iterator.next())
         }
       }
 
-      on("iteration 3") {
+      context("iteration 3") {
         it("should return the weights of the partition gate") {
           assertEquals(wp, iterator.next())
         }
       }
 
-      on("iteration 4") {
+      context("iteration 4") {
         it("should return the biases of the candidate") {
           assertEquals(bc, iterator.next())
         }
       }
 
-      on("iteration 5") {
+      context("iteration 5") {
         it("should return the biases of the reset gate") {
           assertEquals(br, iterator.next())
         }
       }
 
-      on("iteration 6") {
+      context("iteration 6") {
         it("should return the biases of the partition gate") {
           assertEquals(bp, iterator.next())
         }
       }
 
-      on("iteration 7") {
+      context("iteration 7") {
         it("should return the recurrent weights of the candidate") {
           assertEquals(wcr, iterator.next())
         }
       }
 
-      on("iteration 8") {
+      context("iteration 8") {
         it("should return the recurrent weights of the reset gate") {
           assertEquals(wrr, iterator.next())
         }
       }
 
-      on("iteration 9") {
+      context("iteration 9") {
         it("should return the recurrent weights of the partition gate") {
           assertEquals(wpr, iterator.next())
         }
       }
 
-      on("iteration 10") {
+      context("iteration 10") {
         it("should return true when calling hasNext()") {
           assertFalse(iterator.hasNext())
         }

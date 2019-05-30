@@ -12,11 +12,8 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.attention.AttentionLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFails
 import kotlin.test.assertTrue
 
@@ -108,7 +105,7 @@ class AttentionLayerStructureSpec : Spek({
       )))
     }
 
-    on("forward") {
+    context("forward") {
 
       val inputSequence = AttentionLayerUtils.buildInputSequence()
       val structure = AttentionLayer(
@@ -137,7 +134,7 @@ class AttentionLayerStructureSpec : Spek({
       }
     }
 
-    on("backward") {
+    context("backward") {
 
       val inputSequence = AttentionLayerUtils.buildInputSequence()
       val structure = AttentionLayer(

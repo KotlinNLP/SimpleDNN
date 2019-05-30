@@ -11,11 +11,8 @@ import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.simplemath.equals
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -33,7 +30,7 @@ class MSECalculatorSpec : Spek({
       val outputValues = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.2, 0.3))
       val goldValues = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.2, 0.1, 0.0))
 
-      on("calculateErrors") {
+      context("calculateErrors") {
         val errors = lossCalculator.calculateErrors(outputValues, goldValues)
 
         it("should calculate the expected errors") {
@@ -41,7 +38,7 @@ class MSECalculatorSpec : Spek({
         }
       }
 
-      on("calculateLoss") {
+      context("calculateLoss") {
         val loss = lossCalculator.calculateLoss(outputValues, goldValues)
 
         it("should calculate the expected loss") {
@@ -61,7 +58,7 @@ class MSECalculatorSpec : Spek({
         DenseNDArrayFactory.arrayOf(doubleArrayOf(0.6, 0.9, 0.1, 0.0))
       )
 
-      on("calculateErrors of a sequence of length 2") {
+      context("calculateErrors of a sequence of length 2") {
 
         val sequenceErrors: List<DenseNDArray> = lossCalculator.calculateErrors(outputValuesSequence, goldValuesSequence)
 
@@ -78,7 +75,7 @@ class MSECalculatorSpec : Spek({
         }
       }
 
-      on("calculateMeanLoss of a sequence of length 2") {
+      context("calculateMeanLoss of a sequence of length 2") {
         val meanLoss = lossCalculator.calculateMeanLoss(outputValuesSequence, goldValuesSequence)
 
         it("should calculate the expected mean loss") {

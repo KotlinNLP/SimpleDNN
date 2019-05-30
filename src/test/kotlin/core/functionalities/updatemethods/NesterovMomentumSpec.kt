@@ -10,11 +10,8 @@ package core.functionalities.updatemethods
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.nesterovmomentum.NesterovMomentumMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -26,7 +23,7 @@ class NesterovMomentumSpec: Spek({
 
     context("update with dense errors") {
 
-      on("update") {
+      context("update") {
 
         val updateHelper = NesterovMomentumMethod(learningRate = 0.001, momentum = 0.9)
         val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
@@ -48,7 +45,7 @@ class NesterovMomentumSpec: Spek({
 
     context("update with sparse errors") {
 
-      on("update") {
+      context("update") {
 
         val updateHelper = NesterovMomentumMethod(learningRate = 0.001, momentum = 0.9)
         val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()

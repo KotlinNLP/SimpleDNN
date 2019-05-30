@@ -15,11 +15,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import core.neuralnetwork.utils.RecurrentNetworkStructureUtils
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -47,13 +44,13 @@ class RecurrentNetworkStructureSpec : Spek({
 
     context("without previous and next contexts") {
 
-      val contextWindow = mock<StructureContextWindow<DenseNDArray>>()
-      val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+      context("focus on the first layer") {
 
-      whenever(contextWindow.getPrevState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
-      whenever(contextWindow.getNextState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
+        val contextWindow = mock<StructureContextWindow<DenseNDArray>>()
+        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
 
-      on("focus on the first layer") {
+        whenever(contextWindow.getPrevState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
+        whenever(contextWindow.getNextState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
 
         curStateStructure.curLayerIndex = 0
 
@@ -66,7 +63,13 @@ class RecurrentNetworkStructureSpec : Spek({
         }
       }
 
-      on("focus on the second layer") {
+      context("focus on the second layer") {
+
+        val contextWindow = mock<StructureContextWindow<DenseNDArray>>()
+        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+
+        whenever(contextWindow.getPrevState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
+        whenever(contextWindow.getNextState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
 
         curStateStructure.curLayerIndex = 1
 
@@ -82,14 +85,14 @@ class RecurrentNetworkStructureSpec : Spek({
 
     context("with previous context only") {
 
-      val contextWindow = mock<StructureContextWindow<DenseNDArray>>()
-      val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
-      val prevStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+      context("focus on the first layer") {
 
-      whenever(contextWindow.getPrevState()).thenReturn(prevStateStructure)
-      whenever(contextWindow.getNextState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
+        val contextWindow = mock<StructureContextWindow<DenseNDArray>>()
+        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val prevStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
 
-      on("focus on the first layer") {
+        whenever(contextWindow.getPrevState()).thenReturn(prevStateStructure)
+        whenever(contextWindow.getNextState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
 
         curStateStructure.curLayerIndex = 0
 
@@ -102,7 +105,14 @@ class RecurrentNetworkStructureSpec : Spek({
         }
       }
 
-      on("focus on the second layer") {
+      context("focus on the second layer") {
+
+        val contextWindow = mock<StructureContextWindow<DenseNDArray>>()
+        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val prevStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+
+        whenever(contextWindow.getPrevState()).thenReturn(prevStateStructure)
+        whenever(contextWindow.getNextState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
 
         curStateStructure.curLayerIndex = 1
 
@@ -118,14 +128,14 @@ class RecurrentNetworkStructureSpec : Spek({
 
     context("with next context only") {
 
-      val contextWindow = mock<StructureContextWindow<DenseNDArray>>()
-      val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
-      val nextStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+      context("focus on the first layer") {
 
-      whenever(contextWindow.getPrevState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
-      whenever(contextWindow.getNextState()).thenReturn(nextStateStructure)
+        val contextWindow = mock<StructureContextWindow<DenseNDArray>>()
+        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val nextStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
 
-      on("focus on the first layer") {
+        whenever(contextWindow.getPrevState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
+        whenever(contextWindow.getNextState()).thenReturn(nextStateStructure)
 
         curStateStructure.curLayerIndex = 0
 
@@ -138,7 +148,14 @@ class RecurrentNetworkStructureSpec : Spek({
         }
       }
 
-      on("focus on the second layer") {
+      context("focus on the second layer") {
+
+        val contextWindow = mock<StructureContextWindow<DenseNDArray>>()
+        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val nextStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+
+        whenever(contextWindow.getPrevState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
+        whenever(contextWindow.getNextState()).thenReturn(nextStateStructure)
 
         curStateStructure.curLayerIndex = 1
 
@@ -154,15 +171,15 @@ class RecurrentNetworkStructureSpec : Spek({
 
     context("with previous and next contexts") {
 
-      val contextWindow = mock<StructureContextWindow<DenseNDArray>>()
-      val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
-      val prevStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
-      val nextStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+      context("focus on the first layer") {
 
-      whenever(contextWindow.getPrevState()).thenReturn(prevStateStructure)
-      whenever(contextWindow.getNextState()).thenReturn(nextStateStructure)
+        val contextWindow = mock<StructureContextWindow<DenseNDArray>>()
+        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val prevStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val nextStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
 
-      on("focus on the first layer") {
+        whenever(contextWindow.getPrevState()).thenReturn(prevStateStructure)
+        whenever(contextWindow.getNextState()).thenReturn(nextStateStructure)
 
         curStateStructure.curLayerIndex = 0
 
@@ -175,7 +192,15 @@ class RecurrentNetworkStructureSpec : Spek({
         }
       }
 
-      on("focus on the second layer") {
+      context("focus on the second layer") {
+
+        val contextWindow = mock<StructureContextWindow<DenseNDArray>>()
+        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val prevStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val nextStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+
+        whenever(contextWindow.getPrevState()).thenReturn(prevStateStructure)
+        whenever(contextWindow.getNextState()).thenReturn(nextStateStructure)
 
         curStateStructure.curLayerIndex = 1
 

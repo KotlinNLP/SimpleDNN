@@ -8,10 +8,8 @@
 package core.layers.merge.product
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -21,7 +19,7 @@ class ProductLayerStructureSpec : Spek({
 
   describe("a ProductLayer") {
 
-    on("forward") {
+    context("forward") {
 
       val layer = ProductLayerUtils.buildLayer()
       layer.forward()
@@ -35,7 +33,7 @@ class ProductLayerStructureSpec : Spek({
       }
     }
 
-    on("backward") {
+    context("backward") {
 
       val layer = ProductLayerUtils.buildLayer()
 

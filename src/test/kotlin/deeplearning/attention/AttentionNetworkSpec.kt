@@ -9,14 +9,11 @@ package deeplearning.attention
 
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetwork
-import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import core.attention.AttentionLayerUtils
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -26,7 +23,7 @@ class AttentionNetworkSpec : Spek({
 
   describe("an AttentionNetwork") {
 
-    on("forward") {
+    context("forward") {
 
       val network = AttentionNetwork<DenseNDArray>(
         inputType = LayerType.Input.Dense,
@@ -43,7 +40,7 @@ class AttentionNetworkSpec : Spek({
       }
     }
 
-    on("forward with external attention arrays") {
+    context("forward with external attention arrays") {
 
       val network = AttentionNetwork<DenseNDArray>(
         inputType = LayerType.Input.Dense,
@@ -64,7 +61,7 @@ class AttentionNetworkSpec : Spek({
       }
     }
 
-    on("backward") {
+    context("backward") {
 
       val network = AttentionNetwork<DenseNDArray>(
         inputType = LayerType.Input.Dense,

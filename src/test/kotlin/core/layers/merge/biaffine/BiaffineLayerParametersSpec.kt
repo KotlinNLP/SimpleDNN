@@ -2,7 +2,7 @@
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ * file, you can obtain contexte at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
 package core.layers.merge.biaffine
@@ -13,8 +13,8 @@ import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGener
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerParameters
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.*
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
@@ -27,7 +27,7 @@ class BiaffineLayerParametersSpec : Spek({
 
     context("initialization") {
 
-      on("dense input") {
+      context("dense input") {
 
         var k = 0
         val initValues = doubleArrayOf(
@@ -83,37 +83,37 @@ class BiaffineLayerParametersSpec : Spek({
       val b = params.b
       val w = params.w
 
-      on("iteration 1") {
+      context("iteration 1") {
         it("should return w1") {
           assertEquals(w1, iterator.next())
         }
       }
 
-      on("iteration 2") {
+      context("iteration 2") {
         it("should return w2") {
           assertEquals(w2, iterator.next())
         }
       }
 
-      on("iteration 3") {
+      context("iteration 3") {
         it("should return the biases") {
           assertEquals(b, iterator.next())
         }
       }
 
-      on("iteration 4") {
+      context("iteration 4") {
         it("should return the first w array") {
           assertEquals(w[0], iterator.next())
         }
       }
 
-      on("iteration 5") {
+      context("iteration 5") {
         it("should return the second w array") {
           assertEquals(w[1], iterator.next())
         }
       }
 
-      on("iteration 6") {
+      context("iteration 6") {
         it("should return true when calling hasNext()") {
           assertFalse(iterator.hasNext())
         }

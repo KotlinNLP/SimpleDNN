@@ -11,11 +11,8 @@ import com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn.IndRNNLayerPa
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -27,7 +24,7 @@ class IndRNNLayerStructureSpec : Spek({
 
     context("forward") {
 
-      on("without previous state context") {
+      context("without previous state context") {
 
         val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Empty())
         layer.forward()
@@ -39,7 +36,7 @@ class IndRNNLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous state context") {
+      context("with previous state context") {
 
         val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Back())
 
@@ -55,7 +52,7 @@ class IndRNNLayerStructureSpec : Spek({
 
     context("backward") {
 
-      on("without next and previous state") {
+      context("without next and previous state") {
 
         val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Empty())
 
@@ -103,7 +100,7 @@ class IndRNNLayerStructureSpec : Spek({
         }
       }
 
-      on("with prev state only") {
+      context("with prev state only") {
 
         val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Back())
 
@@ -151,7 +148,7 @@ class IndRNNLayerStructureSpec : Spek({
         }
       }
 
-      on("with next state only") {
+      context("with next state only") {
 
         val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Front())
 
@@ -199,7 +196,7 @@ class IndRNNLayerStructureSpec : Spek({
         }
       }
 
-      on("with next and previous state") {
+      context("with next and previous state") {
 
         val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Bilateral())
 

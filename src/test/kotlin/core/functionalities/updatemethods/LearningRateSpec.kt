@@ -15,11 +15,8 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -32,7 +29,7 @@ class LearningRateSpec: Spek({
 
     context("update with dense errors") {
 
-      on("update") {
+      context("update") {
 
         val updateHelper = LearningRateMethod(learningRate = 0.001)
         val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
@@ -51,7 +48,7 @@ class LearningRateSpec: Spek({
 
     context("update with sparse errors") {
 
-      on("update") {
+      context("update") {
 
         val updateHelper = LearningRateMethod(learningRate = 0.001)
         val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
@@ -74,7 +71,7 @@ class LearningRateSpec: Spek({
       whenever(decayMethod.update(learningRate = any(), timeStep = eq(1))).thenReturn(0.03)
       whenever(decayMethod.update(learningRate = any(), timeStep = eq(2))).thenReturn(0.05)
 
-      on("first epoch") {
+      context("first epoch") {
 
         val updateHelper = LearningRateMethod(learningRate = 0.001, decayMethod = decayMethod)
 
@@ -85,7 +82,7 @@ class LearningRateSpec: Spek({
         }
       }
 
-      on("second epoch") {
+      context("second epoch") {
 
         val updateHelper = LearningRateMethod(learningRate = 0.001, decayMethod = decayMethod)
 

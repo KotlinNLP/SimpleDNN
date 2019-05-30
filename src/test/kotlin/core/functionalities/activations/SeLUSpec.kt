@@ -9,11 +9,8 @@ package core.functionalities.activations
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.SeLU
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -31,7 +28,7 @@ class SeLUSpec: Spek({
       val activationFunction = SeLU()
       val activatedArray = activationFunction.f(array)
 
-      on("f") {
+      context("f") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(
             0.0, 0.10507009, 0.01050700, -0.16730527, -0.01749338, 1.0507009, 10.5070099, -1.11133072, -1.758019508
@@ -42,7 +39,7 @@ class SeLUSpec: Spek({
         }
       }
 
-      on("dfOptimized") {
+      context("dfOptimized") {
 
         val dfArray = activationFunction.dfOptimized(activatedArray)
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(

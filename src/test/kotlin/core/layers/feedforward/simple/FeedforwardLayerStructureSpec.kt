@@ -2,7 +2,7 @@
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ * file, you can obtain contexte at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
 package core.layers.feedforward.simple
@@ -13,11 +13,8 @@ import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.Feedforward
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -29,7 +26,7 @@ class FeedforwardLayerStructureSpec : Spek({
 
     context("forward") {
 
-      on("input size 4 and output size 5 (tanh)") {
+      context("input size 4 and output size 5 (tanh)") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer45()
         layer.forward()
@@ -43,7 +40,7 @@ class FeedforwardLayerStructureSpec : Spek({
         }
       }
 
-      on("input size 5 (activated with tanh) and output size 3 (softmax)") {
+      context("input size 5 (activated with tanh) and output size 3 (softmax)") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer53()
         layer.inputArray.setActivation(Tanh())
@@ -60,7 +57,7 @@ class FeedforwardLayerStructureSpec : Spek({
         }
       }
 
-      on("input size 5 and output size 3 (softmax)") {
+      context("input size 5 and output size 3 (softmax)") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer53()
         layer.forward()
@@ -78,7 +75,7 @@ class FeedforwardLayerStructureSpec : Spek({
 
     context("forward with relevance") {
 
-      on("dense input") {
+      context("dense input") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer53()
         val contributions = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
@@ -124,7 +121,7 @@ class FeedforwardLayerStructureSpec : Spek({
 
     context("backward") {
 
-      on("input size 4 and output size 5 (tanh)") {
+      context("input size 4 and output size 5 (tanh)") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer45()
         val outputGold = FeedforwardLayerStructureUtils.getOutputGold5()
@@ -176,7 +173,7 @@ class FeedforwardLayerStructureSpec : Spek({
         }
       }
 
-      on("input size 5 (activated with tanh) and output size 3 (softmax)") {
+      context("input size 5 (activated with tanh) and output size 3 (softmax)") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer53()
         val outputGold = FeedforwardLayerStructureUtils.getOutputGold3()
@@ -228,7 +225,7 @@ class FeedforwardLayerStructureSpec : Spek({
         }
       }
 
-      on("input size 5 and output size 3 (softmax)") {
+      context("input size 5 and output size 3 (softmax)") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer53()
         val outputGold = FeedforwardLayerStructureUtils.getOutputGold3()

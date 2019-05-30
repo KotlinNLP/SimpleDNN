@@ -11,11 +11,8 @@ import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.simplemath.equals
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -27,7 +24,7 @@ class ADAMSpec : Spek({
 
     context("update with dense errors") {
 
-      on("update") {
+      context("update") {
 
         val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
         val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
@@ -50,7 +47,7 @@ class ADAMSpec : Spek({
 
     context("update with sparse errors") {
 
-      on("update") {
+      context("update") {
 
         val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
         val updatableArray: ParamsArray = UpdateMethodsUtils.buildParamsArray()
@@ -71,7 +68,7 @@ class ADAMSpec : Spek({
       }
     }
 
-    on("newExample") {
+    context("newExample") {
 
       val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
 

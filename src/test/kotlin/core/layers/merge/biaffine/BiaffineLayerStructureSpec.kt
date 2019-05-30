@@ -2,7 +2,7 @@
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ * file, you can obtain contexte at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
 package core.layers.merge.biaffine
@@ -10,11 +10,8 @@ package core.layers.merge.biaffine
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -24,7 +21,7 @@ class BiaffineLayerStructureSpec : Spek({
 
   describe("a BiaffineLayer") {
 
-    on("forward") {
+    context("forward") {
 
       val layer = BiaffineLayerUtils.buildLayer()
       layer.forward()
@@ -38,7 +35,7 @@ class BiaffineLayerStructureSpec : Spek({
       }
     }
 
-    on("backward") {
+    context("backward") {
 
       val layer = BiaffineLayerUtils.buildLayer()
 

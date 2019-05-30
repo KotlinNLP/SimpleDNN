@@ -16,11 +16,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
@@ -33,7 +30,7 @@ class RANLayerStructureSpec : Spek({
 
     context("forward") {
 
-      on("without previous state context") {
+      context("without previous state context") {
 
         val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Empty())
         layer.forward()
@@ -71,7 +68,7 @@ class RANLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous state context") {
+      context("with previous state context") {
 
         val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Back())
         layer.forward()
@@ -112,7 +109,7 @@ class RANLayerStructureSpec : Spek({
 
     context("forward with relevance") {
 
-      on("without previous state context") {
+      context("without previous state context") {
 
         val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Empty())
         val contributions = RANLayerParameters(inputSize = 4, outputSize = 5)
@@ -201,7 +198,7 @@ class RANLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous state context") {
+      context("with previous state context") {
 
         val prevStateLayer = RANLayerContextWindow.Back().getPrevState()
         val contextWindow = mock<LayerContextWindow>()
@@ -373,7 +370,7 @@ class RANLayerStructureSpec : Spek({
 
     context("backward") {
 
-      on("without previous and next state") {
+      context("without previous and next state") {
 
         val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Empty())
 
@@ -523,7 +520,7 @@ class RANLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous state only") {
+      context("with previous state only") {
 
         val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Back())
 
@@ -673,7 +670,7 @@ class RANLayerStructureSpec : Spek({
         }
       }
 
-      on("with next state only") {
+      context("with next state only") {
 
         val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Front())
 
@@ -823,7 +820,7 @@ class RANLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous and next state") {
+      context("with previous and next state") {
 
         val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Bilateral())
 

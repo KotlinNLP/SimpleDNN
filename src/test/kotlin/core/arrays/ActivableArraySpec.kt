@@ -11,11 +11,8 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.*
 import com.kotlinnlp.simplednn.core.arrays.ActivableArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
@@ -40,7 +37,7 @@ class ActivableArraySpec : Spek({
 
     context("initialization") {
 
-      on("with values not assigned") {
+      context("with values not assigned") {
 
         val activableArray = ActivableArray<DenseNDArray>(size = 9)
 
@@ -51,7 +48,7 @@ class ActivableArraySpec : Spek({
         }
       }
 
-      on("with the size, assigning values after") {
+      context("with the size, assigning values after") {
 
         val activableArray = ActivableArray<DenseNDArray>(size = 9)
 
@@ -74,7 +71,7 @@ class ActivableArraySpec : Spek({
         }
       }
 
-      on("with an NDArray") {
+      context("with an NDArray") {
 
         val activableArray = ActivableArray(initArray)
         activableArray.setActivation(activationFunction)
@@ -85,7 +82,7 @@ class ActivableArraySpec : Spek({
       }
     }
 
-    on("before activation") {
+    context("before activation") {
 
       val activableArray = ActivableArray(initArray)
       activableArray.setActivation(activationFunction)
@@ -105,7 +102,7 @@ class ActivableArraySpec : Spek({
       }
     }
 
-    on("after activation") {
+    context("after activation") {
 
       val activableArray = ActivableArray(initArray)
       activableArray.setActivation(activationFunction)
@@ -131,7 +128,7 @@ class ActivableArraySpec : Spek({
       }
     }
 
-    on("after activated twice") {
+    context("after activated twice") {
 
       val activableArray = ActivableArray(initArray)
       activableArray.setActivation(activationFunction)
@@ -160,7 +157,7 @@ class ActivableArraySpec : Spek({
 
     context("cloning") {
 
-      on("values not initialized") {
+      context("values not initialized") {
 
         val activableArray = ActivableArray<DenseNDArray>(size = 5)
 
@@ -173,7 +170,7 @@ class ActivableArraySpec : Spek({
         }
       }
 
-      on("values initialized") {
+      context("values initialized") {
 
         val activableArray = ActivableArray(initArray)
         activableArray.setActivation(activationFunction)

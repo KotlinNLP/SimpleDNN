@@ -10,10 +10,8 @@ package core.optimizer
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -23,7 +21,7 @@ class ParamsErrorsAccumulatorSpec : Spek({
 
   describe("a ParamsErrorsAccumulator") {
 
-    on("initialization") {
+    context("initialization") {
 
       val accumulator = ParamsErrorsAccumulator()
 
@@ -32,7 +30,7 @@ class ParamsErrorsAccumulatorSpec : Spek({
       }
     }
 
-    on("accumulation") {
+    context("accumulation") {
 
       val accumulator = ParamsErrorsAccumulator()
 
@@ -77,7 +75,7 @@ class ParamsErrorsAccumulatorSpec : Spek({
       }
     }
 
-    on("average") {
+    context("average") {
 
       val accumulator = ParamsErrorsAccumulator()
 

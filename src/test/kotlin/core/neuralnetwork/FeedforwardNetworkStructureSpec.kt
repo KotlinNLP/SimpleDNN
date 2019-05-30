@@ -15,13 +15,10 @@ import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.Feedforward
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
 import core.layers.feedforward.simple.FeedforwardLayerStructureUtils
 import core.neuralnetwork.utils.FeedforwardNetworkStructureUtils
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
@@ -35,7 +32,7 @@ class FeedforwardNetworkStructureSpec : Spek({
 
     context("invalid configurations") {
 
-      on("initialization with null output connection types") {
+      context("initialization with null output connection types") {
 
         val correctLayersConfiguration = arrayOf(
           LayerInterface(size = 4),
@@ -71,7 +68,7 @@ class FeedforwardNetworkStructureSpec : Spek({
         layersConfiguration = layersConfiguration,
         paramsPerLayer = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration).paramsPerLayer)
 
-      on("architecture") {
+      context("architecture") {
 
         it("should have the expected number of layers") {
           assertEquals(2, structure.layers.size)
@@ -92,14 +89,14 @@ class FeedforwardNetworkStructureSpec : Spek({
         }
       }
 
-      on("layers factory") {
+      context("layers factory") {
 
         it("should contain layers of the expected type") {
           structure.layers.forEach { assertTrue { it is FeedforwardLayer } }
         }
       }
 
-      on("methods usage") {
+      context("methods usage") {
 
         val features = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))
         val output = structure.forward(features)

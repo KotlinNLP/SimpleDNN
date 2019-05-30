@@ -2,18 +2,14 @@
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ * file, you can obtain contexte at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
 package core.layers.merge.avg
 
-import com.kotlinnlp.simplednn.core.layers.models.merge.avg.AvgLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -23,7 +19,7 @@ class AvgLayerStructureSpec : Spek({
 
   describe("a AvgLayer") {
 
-    on("forward") {
+    context("forward") {
 
       val layer = AvgLayerUtils.buildLayer()
       layer.forward()
@@ -37,7 +33,7 @@ class AvgLayerStructureSpec : Spek({
       }
     }
 
-    on("backward") {
+    context("backward") {
 
       val layer = AvgLayerUtils.buildLayer()
 

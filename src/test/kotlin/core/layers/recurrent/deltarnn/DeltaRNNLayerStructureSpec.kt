@@ -15,11 +15,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -33,7 +30,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
     context("forward") {
 
-      on("without previous state context") {
+      context("without previous state context") {
 
         val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Empty())
         layer.forward()
@@ -63,7 +60,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous state context") {
+      context("with previous state context") {
 
         val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Back())
         layer.forward()
@@ -96,7 +93,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
     context("forward with relevance") {
 
-      on("without previous state context") {
+      context("without previous state context") {
 
         val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Empty())
         val contributions = DeltaRNNLayerParameters(
@@ -208,7 +205,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous state context") {
+      context("with previous state context") {
 
         val prevStateLayer = DeltaLayerContextWindow.Back().getPrevState()
         val contextWindow = mock<LayerContextWindow>()
@@ -345,7 +342,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
     context("backward") {
 
-      on("without previous and next state") {
+      context("without previous and next state") {
 
         val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Empty())
 
@@ -447,7 +444,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous state only") {
+      context("with previous state only") {
 
         val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Back())
 
@@ -560,7 +557,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
       }
 
-      on("with next state only") {
+      context("with next state only") {
 
         val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Front())
 
@@ -662,7 +659,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous and next state") {
+      context("with previous and next state") {
 
         val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Bilateral())
 

@@ -12,11 +12,8 @@ import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -28,7 +25,7 @@ class CFNLayerStructureSpec : Spek({
 
     context("forward") {
 
-      on("without previous state context") {
+      context("without previous state context") {
 
         val layer = CFNLayerStructureUtils.buildLayer(CFNLayerContextWindow.Empty())
         layer.forward()
@@ -66,7 +63,7 @@ class CFNLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous state context") {
+      context("with previous state context") {
 
         val layer = CFNLayerStructureUtils.buildLayer(CFNLayerContextWindow.Back())
         layer.forward()
@@ -107,7 +104,7 @@ class CFNLayerStructureSpec : Spek({
 
     context("backward") {
 
-      on("without previous and next state") {
+      context("without previous and next state") {
 
         val layer = CFNLayerStructureUtils.buildLayer(CFNLayerContextWindow.Empty())
 
@@ -249,7 +246,7 @@ class CFNLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous state only") {
+      context("with previous state only") {
 
         val layer = CFNLayerStructureUtils.buildLayer(CFNLayerContextWindow.Back())
 
@@ -391,7 +388,7 @@ class CFNLayerStructureSpec : Spek({
         }
       }
 
-      on("with next state only") {
+      context("with next state only") {
 
         val layer = CFNLayerStructureUtils.buildLayer(CFNLayerContextWindow.Front(
           currentLayerOutput = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.261, -0.025, 0.363, 0.546, -0.349))))
@@ -534,7 +531,7 @@ class CFNLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous and next state") {
+      context("with previous and next state") {
 
         val layer = CFNLayerStructureUtils.buildLayer(CFNLayerContextWindow.Bilateral(
           currentLayerOutput = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.299, 0.0108, 0.384, 0.226, -0.597))))

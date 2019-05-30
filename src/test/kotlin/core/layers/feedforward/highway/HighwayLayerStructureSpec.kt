@@ -2,7 +2,7 @@
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, you can obtain one at http://mozilla.org/MPL/2.0/.
+ * file, you can obtain contexte at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
 package core.layers.feedforward.highway
@@ -10,10 +10,8 @@ package core.layers.feedforward.highway
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -23,7 +21,7 @@ class HighwayLayerStructureSpec : Spek({
 
   describe("a HighwayLayer") {
 
-    on("forward") {
+    context("forward") {
 
       val layer = HighwayLayerStructureUtils.buildLayer()
       layer.forward()
@@ -53,7 +51,7 @@ class HighwayLayerStructureSpec : Spek({
       }
     }
 
-    on("backward") {
+    context("backward") {
 
       val layer = HighwayLayerStructureUtils.buildLayer()
 

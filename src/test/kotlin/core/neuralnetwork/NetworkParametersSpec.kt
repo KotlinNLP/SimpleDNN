@@ -10,11 +10,8 @@ package core.neuralnetwork
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
@@ -33,7 +30,7 @@ class NetworkParametersSpec: Spek({
         LayerInterface(size = 2, connectionType = LayerType.Connection.Feedforward)
       ))
 
-      on("iteration 1") {
+      context("iteration 1") {
 
         val iterator = params.iterator()
         val firstLayerIterator = params.paramsPerLayer[0].iterator()
@@ -43,7 +40,7 @@ class NetworkParametersSpec: Spek({
         }
       }
 
-      on("iteration 2") {
+      context("iteration 2") {
 
         val iterator = params.iterator()
         val firstLayerIterator = params.paramsPerLayer[0].iterator()
@@ -56,37 +53,37 @@ class NetworkParametersSpec: Spek({
         }
       }
 
-      on("iteration 3") {
+      context("iteration 3") {
 
         val iterator = params.iterator()
         val firstLayerIterator = params.paramsPerLayer[0].iterator()
 
-        (0 until 2).forEach { iterator.next() }
-        (0 until 2).forEach { firstLayerIterator.next() }
+        repeat(2) { iterator.next() }
+        repeat(2) { firstLayerIterator.next() }
 
         it("should return the params of the third iteration of the first layer") {
           assertEquals(iterator.next(), firstLayerIterator.next())
         }
       }
 
-      on("iteration 4") {
+      context("iteration 4") {
 
         val iterator = params.iterator()
         val secondLayerIterator = params.paramsPerLayer[1].iterator()
 
-        (0 until 3).forEach { iterator.next() }
+        repeat(3) { iterator.next() }
 
         it("should return the params of the first iteration of the second layer") {
           assertEquals(iterator.next(), secondLayerIterator.next())
         }
       }
 
-      on("iteration 5") {
+      context("iteration 5") {
 
         val iterator = params.iterator()
         val secondLayerIterator = params.paramsPerLayer[1].iterator()
 
-        (0 until 4).forEach { iterator.next() }
+        repeat(4) { iterator.next() }
         secondLayerIterator.next()
 
         it("should return the params of the second iteration of the second layer") {
@@ -94,11 +91,11 @@ class NetworkParametersSpec: Spek({
         }
       }
 
-      on("iteration 6") {
+      context("iteration 6") {
 
         val iterator = params.iterator()
 
-        (0 until 5).forEach { iterator.next() }
+        repeat(5) { iterator.next() }
 
         it("should return false when calling hasNext()") {
           assertFalse { iterator.hasNext() }

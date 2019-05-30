@@ -9,11 +9,8 @@ package core.functionalities.activations
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -46,7 +43,7 @@ class SoftmaxSpec : Spek({
 
     context("dfOptimized") {
 
-      on("returning a new NDArray as output") {
+      context("returning a new NDArray as output") {
 
         val dfArray = activationFunction.dfOptimized(activatedArray)
 
@@ -55,7 +52,7 @@ class SoftmaxSpec : Spek({
         }
       }
 
-      on("assigning the results to an output array") {
+      context("assigning the results to an output array") {
 
         val outDfArray = DenseNDArrayFactory.emptyArray(array.shape)
         activationFunction.dfOptimized(activatedArray, outDfArray)

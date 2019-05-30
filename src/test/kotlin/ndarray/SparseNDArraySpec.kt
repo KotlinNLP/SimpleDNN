@@ -14,11 +14,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.SparseEntry
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.*
 
 /**
@@ -30,7 +27,7 @@ class SparseNDArraySpec : Spek({
 
     context("initialization") {
 
-      on("indices out of bounds") {
+      context("indices out of bounds") {
 
         it("should raise an Exception") {
 
@@ -51,7 +48,7 @@ class SparseNDArraySpec : Spek({
 
     context("iteration") {
 
-      on("2-dim array") {
+      context("2-dim array") {
 
         val array = SparseNDArrayFactory.arrayOf(
           activeIndicesValues = arrayOf(
@@ -92,7 +89,7 @@ class SparseNDArraySpec : Spek({
 
     context("assignSumMerging()") {
 
-      on("2-dim arrays") {
+      context("2-dim arrays") {
 
         val array1 = SparseNDArrayFactory.arrayOf(
           activeIndicesValues = arrayOf(
@@ -139,7 +136,7 @@ class SparseNDArraySpec : Spek({
 
     context("math methods returning a new NDArray") {
 
-      on("dot(denseArray) method") {
+      context("dot(denseArray) method") {
 
         val a1 = SparseNDArrayFactory.arrayOf(
           activeIndicesValues = arrayOf(
@@ -179,7 +176,7 @@ class SparseNDArraySpec : Spek({
 
     context("math methods in-place") {
 
-      on ("assignValues(denseArray, mask) method") {
+      context("assignValues(denseArray, mask) method") {
 
         val aS = SparseNDArrayFactory.arrayOf(activeIndicesValues = arrayOf(), shape = Shape(4, 3))
         val aD = DenseNDArrayFactory.arrayOf(listOf(
@@ -218,7 +215,7 @@ class SparseNDArraySpec : Spek({
         }
       }
 
-      on ("assignDot(sparseArray, denseArray) method") {
+      context("assignDot(sparseArray, denseArray) method") {
 
         val a = SparseNDArrayFactory.arrayOf(activeIndicesValues = arrayOf(), shape = Shape(4, 3))
 
@@ -288,14 +285,14 @@ class SparseNDArraySpec : Spek({
         ),
         shape = Shape(4, 3))
 
-      on("sum() method") {
+      context("sum() method") {
 
         it("should give the expected sum of its elements") {
           assertTrue { equals(1.2, array.sum(), tolerance = 1.0e-10) }
         }
       }
 
-      on("max() method") {
+      context("max() method") {
 
         it("should have the expected max value") {
           assertEquals(0.5, array.max())

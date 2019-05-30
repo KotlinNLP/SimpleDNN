@@ -15,11 +15,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
@@ -32,7 +29,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
     context("forward") {
 
-      on("without previous state context") {
+      context("without previous state context") {
 
         val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Empty())
         layer.forward()
@@ -44,7 +41,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous state context") {
+      context("with previous state context") {
 
         val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Back())
         layer.forward()
@@ -59,7 +56,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
     context("forward with relevance") {
 
-      on("without previous state context") {
+      context("without previous state context") {
 
         val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Empty())
         val contributions = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5)
@@ -106,7 +103,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         }
       }
 
-      on("with previous state context") {
+      context("with previous state context") {
 
         val prevStateLayer = SimpleRecurrentLayerContextWindow.Back().getPrevState()
         val contextWindow = mock<LayerContextWindow>()
@@ -179,7 +176,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
     context("backward") {
 
-      on("without next and previous state") {
+      context("without next and previous state") {
 
         val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Empty())
 
@@ -235,7 +232,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         }
       }
 
-      on("with prev state only") {
+      context("with prev state only") {
 
         val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Back())
 
@@ -292,7 +289,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         }
       }
 
-      on("with next state only") {
+      context("with next state only") {
 
         val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Front())
 
@@ -348,7 +345,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         }
       }
 
-      on("with next and previous state") {
+      context("with next and previous state") {
 
         val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Bilateral())
 

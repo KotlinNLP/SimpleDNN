@@ -11,10 +11,8 @@ import com.kotlinnlp.simplednn.deeplearning.birnn.BiRNNUtils
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -39,7 +37,7 @@ class BiRNNUtilsSpec : Spek({
       DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, 0.2, 0.3, -0.4, -0.6)),
       DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.5, -0.2, -0.9, 0.4)))
 
-    on("sumBidirectionalErrors") {
+    context("sumBidirectionalErrors") {
 
       val result: List<DenseNDArray> = BiRNNUtils.sumBidirectionalErrors(array1, array2)
 
@@ -68,7 +66,7 @@ class BiRNNUtilsSpec : Spek({
       }
     }
 
-    on("splitErrors") {
+    context("splitErrors") {
 
       val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7, 0.1, -0.6, -1.0, -0.1, -0.4))
 

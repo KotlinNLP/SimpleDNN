@@ -8,11 +8,8 @@
 package ndarray
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
@@ -28,7 +25,7 @@ class ShapeSpec : Spek({
       val shape = Shape(1, 1)
       val inverted = shape.inverse
 
-      on("equals") {
+      context("equals") {
 
         it("should return true if called passing a Shape with same dimensions") {
           assertEquals(Shape(1, 1), shape)
@@ -47,7 +44,7 @@ class ShapeSpec : Spek({
         }
       }
 
-      on("inverted") {
+      context("inverted") {
 
         it("should have the expected dim 1") {
           assertEquals(inverted.dim1, 1)
@@ -64,7 +61,7 @@ class ShapeSpec : Spek({
       val shape = Shape(4)
       val inverted = shape.inverse
 
-      on("equals") {
+      context("equals") {
 
         it("should return true if called passing a Shape with same dimensions") {
           assertEquals(Shape(4), shape)
@@ -83,7 +80,7 @@ class ShapeSpec : Spek({
         }
       }
 
-      on("inverted") {
+      context("inverted") {
 
         it("should return a horizontal shape") {
           assertEquals(inverted.dim1, 1)
@@ -100,7 +97,7 @@ class ShapeSpec : Spek({
       val shape = Shape(1, 4)
       val inverted = shape.inverse
 
-      on("equals") {
+      context("equals") {
 
         it("should return true if called passing a Shape with same dimensions") {
           assertEquals(Shape(1, 4), shape)
@@ -119,7 +116,7 @@ class ShapeSpec : Spek({
         }
       }
 
-      on("inverted") {
+      context("inverted") {
 
         it("should return a vertical shape") {
           assertEquals(inverted.dim2, 1)
@@ -136,7 +133,7 @@ class ShapeSpec : Spek({
       val shape = Shape(3, 4)
       val inverted = shape.inverse
 
-      on("equals") {
+      context("equals") {
 
         it("should return true if called passing a Shape with same dimensions") {
           assertEquals(Shape(3, 4), shape)
@@ -155,7 +152,7 @@ class ShapeSpec : Spek({
         }
       }
 
-      on("inverted") {
+      context("inverted") {
 
         it("should have the expected dim 1") {
           assertEquals(inverted.dim1, 4)

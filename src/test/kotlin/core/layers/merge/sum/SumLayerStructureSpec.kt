@@ -8,10 +8,8 @@
 package core.layers.merge.sum
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -21,7 +19,7 @@ class SumLayerStructureSpec : Spek({
 
   describe("a SumLayer") {
 
-    on("forward") {
+    context("forward") {
 
       val layer = SumLayerUtils.buildLayer()
       layer.forward()
@@ -35,7 +33,7 @@ class SumLayerStructureSpec : Spek({
       }
     }
 
-    on("backward") {
+    context("backward") {
 
       val layer = SumLayerUtils.buildLayer()
 

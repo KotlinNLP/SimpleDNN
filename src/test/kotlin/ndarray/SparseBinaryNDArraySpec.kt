@@ -10,11 +10,8 @@ package ndarray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Indices
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
@@ -27,7 +24,7 @@ class SparseBinaryNDArraySpec : Spek({
 
     context("iteration") {
 
-      on("row vector") {
+      context("row vector") {
 
         val array = SparseBinaryNDArrayFactory.arrayOf(activeIndices = listOf(1, 3, 19), shape = Shape(1, 20))
         val iterator = array.iterator()
@@ -49,7 +46,7 @@ class SparseBinaryNDArraySpec : Spek({
         }
       }
 
-      on("column vector") {
+      context("column vector") {
 
         val array = SparseBinaryNDArrayFactory.arrayOf(activeIndices = listOf(1, 3, 19), shape = Shape(20))
         val iterator = array.iterator()
@@ -71,7 +68,7 @@ class SparseBinaryNDArraySpec : Spek({
         }
       }
 
-      on("a 2-dim array") {
+      context("a 2-dim array") {
 
         val array = SparseBinaryNDArrayFactory.arrayOf(
           activeIndices = arrayOf(Indices(1, 0), Indices(5, 19), Indices(12, 6)),

@@ -17,10 +17,8 @@ import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.Feedforward
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import core.neuralnetwork.utils.SerializedNetwork
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import java.io.*
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -32,14 +30,14 @@ class NeuralNetworkSpec: Spek({
 
   describe("a NeuralNetwork") {
 
-    on("loading from a byte array input stream") {
+    context("loading from a byte array input stream") {
 
       it("should load a NeuralNetwork without failing") {
         StackedLayersParameters.load(inputStream = ByteArrayInputStream(SerializedNetwork.byteArray))
       }
     }
 
-    on("dumping to a byte array output stream") {
+    context("dumping to a byte array output stream") {
 
       val network = StackedLayersParameters(
         LayerInterface(size = 3),
@@ -61,7 +59,7 @@ class NeuralNetworkSpec: Spek({
       }
     }
 
-    on("initialization") {
+    context("initialization") {
 
       var k = 0
       val initValues = doubleArrayOf(0.1, 0.2, 0.3, 0.4, 0.5, 0.6)

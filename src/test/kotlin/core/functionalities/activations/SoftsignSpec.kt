@@ -9,10 +9,8 @@ package core.functionalities.activations
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softsign
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -27,7 +25,7 @@ class SoftsignSpec : Spek({
     val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
     val activatedArray = activationFunction.f(array)
 
-    on("f") {
+    context("f") {
 
       val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(
         0.0, 0.09090909, 0.00990099, -0.09090909, -0.00990099, 0.5, 0.90909090, -0.5, -0.9090909
@@ -38,7 +36,7 @@ class SoftsignSpec : Spek({
       }
     }
 
-    on("dfOptimized") {
+    context("dfOptimized") {
 
       val dfArray = activationFunction.dfOptimized(activatedArray)
       val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(

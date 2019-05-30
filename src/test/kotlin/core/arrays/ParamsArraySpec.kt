@@ -14,11 +14,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.*
 
 /**
@@ -30,7 +27,7 @@ class ParamsArraySpec : Spek({
 
     context("initialization") {
 
-      on("with an NDArray") {
+      context("with an NDArray") {
 
         val paramsArray = ParamsArray(DenseNDArrayFactory.zeros(Shape(3, 7)))
         val paramsArray2 = ParamsArray(DenseNDArrayFactory.zeros(Shape(3, 7)))
@@ -52,7 +49,7 @@ class ParamsArraySpec : Spek({
         }
       }
 
-      on("with a DoubleArray") {
+      context("with a DoubleArray") {
 
         val paramsArray = ParamsArray(doubleArrayOf(0.3, 0.4, 0.2, -0.2))
 
@@ -61,7 +58,7 @@ class ParamsArraySpec : Spek({
         }
       }
 
-      on("with a list of DoubleArray") {
+      context("with a list of DoubleArray") {
 
         val paramsArray = ParamsArray(listOf(
           doubleArrayOf(0.3, 0.4, 0.2, -0.2),
@@ -76,7 +73,7 @@ class ParamsArraySpec : Spek({
         }
       }
 
-      on("with a matrix shape and initialized values") {
+      context("with a matrix shape and initialized values") {
 
         val paramsArray = ParamsArray(Shape(2, 4), initializer = ConstantInitializer(0.42))
 
@@ -88,7 +85,7 @@ class ParamsArraySpec : Spek({
         }
       }
 
-      on("with a vector shape and initialized values") {
+      context("with a vector shape and initialized values") {
 
         val paramsArray = ParamsArray(size = 4, initializer = ConstantInitializer(0.42))
 
@@ -100,7 +97,7 @@ class ParamsArraySpec : Spek({
       }
     }
 
-    on("support structure") {
+    context("support structure") {
 
       val paramsArray = ParamsArray(DenseNDArrayFactory.zeros(Shape(3, 7))).apply {
         getOrSetSupportStructure<LearningRateStructure>()
@@ -113,7 +110,7 @@ class ParamsArraySpec : Spek({
 
     context("params errors") {
 
-      on("build a dense errors without values") {
+      context("build a dense errors without values") {
 
         val paramsArray = ParamsArray(DenseNDArrayFactory.zeros(Shape(3, 7)))
         val paramsArray2 = ParamsArray(DenseNDArrayFactory.zeros(Shape(3, 7)))
@@ -141,7 +138,7 @@ class ParamsArraySpec : Spek({
         }
       }
 
-      on("build with default sparse errors") {
+      context("build with default sparse errors") {
 
         val paramsArray = ParamsArray(
           values = DenseNDArrayFactory.zeros(Shape(3, 7)),
@@ -155,7 +152,7 @@ class ParamsArraySpec : Spek({
       }
     }
 
-    on("build with default dense errors") {
+    context("build with default dense errors") {
 
       val paramsArray = ParamsArray(
         values = DenseNDArrayFactory.zeros(Shape(3, 7)),
@@ -168,7 +165,7 @@ class ParamsArraySpec : Spek({
       }
     }
 
-    on("build with default errors") {
+    context("build with default errors") {
 
       val paramsArray = ParamsArray(DenseNDArrayFactory.zeros(Shape(3, 7)))
 

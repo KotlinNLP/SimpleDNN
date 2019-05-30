@@ -20,11 +20,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.SparseEntry
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArrayFactory
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.*
 
 /**
@@ -36,7 +33,7 @@ class DenseNDArraySpec : Spek({
 
     context("class factory methods") {
 
-      on("arrayOf()") {
+      context("arrayOf()") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
 
@@ -73,7 +70,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("zeros()") {
+      context("zeros()") {
 
         val array = DenseNDArrayFactory.zeros(Shape(2, 3))
 
@@ -98,7 +95,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("ones()") {
+      context("ones()") {
 
         val array = DenseNDArrayFactory.ones(Shape(2, 3))
 
@@ -123,7 +120,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("fill()") {
+      context("fill()") {
 
         val array = DenseNDArrayFactory.fill(shape = Shape(2, 3), value = 0.35)
 
@@ -148,7 +145,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("emptyArray()") {
+      context("emptyArray()") {
 
         val array = DenseNDArrayFactory.emptyArray(Shape(3, 2))
 
@@ -169,7 +166,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("oneHotEncoder()") {
+      context("oneHotEncoder()") {
 
         val array = DenseNDArrayFactory.oneHotEncoder(length = 4, oneAt = 2)
 
@@ -194,7 +191,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("random()") {
+      context("random()") {
 
         val array = DenseNDArrayFactory.random(shape = Shape(216, 648), from = 0.5, to = 0.89)
 
@@ -222,7 +219,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("exp()") {
+      context("exp()") {
 
         val power = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.1, 0.2),
@@ -268,7 +265,7 @@ class DenseNDArraySpec : Spek({
 
       val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.123, 0.234, 0.345, 0.012))
 
-      on("comparison with different types") {
+      context("comparison with different types") {
 
         val arrayToCompare = SparseNDArrayFactory.arrayOf(
           activeIndicesValues = arrayOf(
@@ -284,7 +281,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("comparison within the tolerance") {
+      context("comparison within the tolerance") {
 
         val arrayToCompare = DenseNDArrayFactory.arrayOf(
           doubleArrayOf(0.123000001, 0.234000001, 0.345000001, 0.012000001))
@@ -298,7 +295,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("comparison out of tolerance") {
+      context("comparison out of tolerance") {
 
         val arrayToCompare = DenseNDArrayFactory.arrayOf(
           doubleArrayOf(0.12303, 0.23403, 0.34503, 0.01203))
@@ -313,7 +310,7 @@ class DenseNDArraySpec : Spek({
 
       val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
 
-      on("properties") {
+      context("properties") {
 
         it("should be a vector") {
           assertTrue { array.isVector }
@@ -340,7 +337,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("generic methods") {
+      context("generic methods") {
 
         it("should be equal to itself") {
           assertTrue { array.equals(array) }
@@ -351,7 +348,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("getRange() method") {
+      context("getRange() method") {
 
         val a = array.getRange(0, 3)
         val b = array.getRange(2, 4)
@@ -379,7 +376,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("transpose") {
+      context("transpose") {
 
         val transposedArray = array.t
 
@@ -431,7 +428,7 @@ class DenseNDArraySpec : Spek({
       val a = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.3, 0.5, 0.7))
       val n = 0.9
 
-      on("sum(number) method") {
+      context("sum(number) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 1.1, 1.2, 0.9))
         val res = array.sum(n)
@@ -445,7 +442,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("sum(array) method") {
+      context("sum(array) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, 0.5, 0.8, 0.7))
         val res = array.sum(a)
@@ -459,7 +456,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("sub(number) method") {
+      context("sub(number) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.7, -0.6, -0.9))
         val res = array.sub(n)
@@ -473,7 +470,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("reverseSub(number) method") {
+      context("reverseSub(number) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 0.7, 0.6, 0.9))
         val res = array.reverseSub(n)
@@ -487,7 +484,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("dot(array) method") {
+      context("dot(array) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.04, 0.03, 0.05, 0.07),
@@ -510,7 +507,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("prod(number) method") {
+      context("prod(number) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.09, 0.18, 0.27, 0.0))
         val res = array.prod(n)
@@ -524,7 +521,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("prod(array) method") {
+      context("prod(array) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.04, 0.06, 0.15, 0.0))
         val res = array.prod(a)
@@ -538,7 +535,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("matrix.prod(colVector) method") {
+      context("matrix.prod(colVector) method") {
 
         val matrix = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.1, 0.2, 0.3, 0.0),
@@ -560,7 +557,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("div(number) method") {
+      context("div(number) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1111, 0.2222, 0.3333, 0.0))
         val res = array.div(n)
@@ -574,7 +571,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("div(array) method") {
+      context("div(array) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.25, 0.6667, 0.6, 0.0))
         val res = array.div(a)
@@ -588,7 +585,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("roundInt(threshold) method") {
+      context("roundInt(threshold) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 1.0, 1.0, 0.0))
         val res = array.roundInt(threshold = 0.2)
@@ -602,14 +599,14 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("avg() method") {
+      context("avg() method") {
 
         it("should return the expected average") {
           assertTrue { equals(0.15, array.avg(), tolerance = 1.0e-08) }
         }
       }
 
-      on("sign() method") {
+      context("sign() method") {
 
         val signedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.1, 0.0, 0.7, -0.6))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, 0.0, 1.0, -1.0))
@@ -624,7 +621,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("nonZeroSign() method") {
+      context("nonZeroSign() method") {
 
         val signedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.1, 0.0, 0.7, -0.6))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, 1.0, 1.0, -1.0))
@@ -639,7 +636,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("sqrt() method") {
+      context("sqrt() method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3162, 0.4472, 0.5478, 0.0))
         val res = array.sqrt()
@@ -653,7 +650,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("pow(number) method") {
+      context("pow(number) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2399, 0.3687, 0.4740, 0.0))
         val res = array.pow(0.62)
@@ -667,7 +664,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("log10() method") {
+      context("log10() method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.397940, -0.522879, -0.301030, -0.154902))
         val res = a.log10()
@@ -685,7 +682,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("ln() method") {
+      context("ln() method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.916291, -1.203973, -0.693147, -0.356675))
         val res = a.ln()
@@ -710,7 +707,7 @@ class DenseNDArraySpec : Spek({
       val b = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, 0.8, 0.1, 0.4))
       val n = 0.9
 
-      on("assignSum(number) method") {
+      context("assignSum(number) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 1.1, 1.2, 0.9))
@@ -725,7 +722,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignSum(array, number) method") {
+      context("assignSum(array, number) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(1.3, 1.2, 1.4, 1.6))
@@ -740,7 +737,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignSum(array, array) method") {
+      context("assignSum(array, array) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(1.1, 1.1, 0.6, 1.1))
@@ -755,7 +752,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignSum(array) method") {
+      context("assignSum(array) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, 0.5, 0.8, 0.7))
@@ -770,7 +767,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignSub(number) method") {
+      context("assignSub(number) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.7, -0.6, -0.9))
@@ -785,7 +782,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignSub(array) method") {
+      context("assignSub(array) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, -0.1, -0.2, -0.7))
@@ -800,7 +797,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignDot(array, array[1-d]) method") {
+      context("assignDot(array, array[1-d]) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val a1 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.28))
@@ -825,7 +822,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignDot(array, array[2-d]) method") {
+      context("assignDot(array, array[2-d]) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val v = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.8))
@@ -862,7 +859,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignDot(array[1-d], array[2-d], mask) method") {
+      context("assignDot(array[1-d], array[2-d], mask) method") {
 
         val array = DenseNDArrayFactory.emptyArray(Shape(1, 2))
         val a1 = DenseNDArrayFactory.arrayOf(listOf(
@@ -897,7 +894,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignDot(array[2-d], array[2-d], mask) method") {
+      context("assignDot(array[2-d], array[2-d], mask) method") {
 
         val array = DenseNDArrayFactory.emptyArray(Shape(3, 2))
         val m1 = DenseNDArrayFactory.arrayOf(listOf(
@@ -935,7 +932,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignProd(number) method") {
+      context("assignProd(number) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.09, 0.18, 0.27, 0.0))
@@ -950,7 +947,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignProd(array, number) method") {
+      context("assignProd(array, number) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.36, 0.27, 0.45, 0.63))
@@ -965,7 +962,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignProd(array, array) method") {
+      context("assignProd(array, array) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.28, 0.24, 0.05, 0.28))
@@ -980,7 +977,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignProd(array) method") {
+      context("assignProd(array) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.04, 0.06, 0.15, 0.0))
@@ -995,7 +992,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignDiv(number) method") {
+      context("assignDiv(number) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1111, 0.2222, 0.3333, 0.0))
@@ -1010,7 +1007,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignDiv(array) method") {
+      context("assignDiv(array) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.25, 0.6667, 0.6, 0.0))
@@ -1025,7 +1022,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignPow(number) method") {
+      context("assignPow(number) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2399, 0.3687, 0.4740, 0.0))
@@ -1040,7 +1037,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignLog10() method") {
+      context("assignLog10() method") {
 
         val array1 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val array2 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.3, 0.5, 0.7))
@@ -1060,7 +1057,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignLn() method") {
+      context("assignLn() method") {
 
         val array1 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val array2 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.3, 0.5, 0.7))
@@ -1080,7 +1077,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignRoundInt(threshold) method") {
+      context("assignRoundInt(threshold) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 1.0, 1.0, 0.0))
@@ -1095,7 +1092,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("randomize(randomGenerator) method") {
+      context("randomize(randomGenerator) method") {
 
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
         val randomGeneratorMock = mock<RandomGenerator>()
@@ -1119,28 +1116,28 @@ class DenseNDArraySpec : Spek({
 
       val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
 
-      on("sum() method") {
+      context("sum() method") {
 
         it("should give the expected sum of its elements") {
           assertTrue { equals(0.6, array.sum(), tolerance = 1.0e-10) }
         }
       }
 
-      on("norm() method") {
+      context("norm() method") {
 
         it("should return the expected norm") {
           assertTrue { equals(0.6, array.norm(), tolerance = 1.0e-05) }
         }
       }
 
-      on("norm2() method") {
+      context("norm2() method") {
 
         it("should return the expected euclidean norm") {
           assertTrue { equals(0.37417, array.norm2(), tolerance = 1.0e-05) }
         }
       }
 
-      on("argMaxIndex() method") {
+      context("argMaxIndex() method") {
 
         it("should have the expected argmax index") {
           assertEquals(2, array.argMaxIndex())
@@ -1155,7 +1152,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("max() method") {
+      context("max() method") {
 
         it("should have the expected max value") {
           assertEquals(0.3, array.max())
@@ -1170,7 +1167,7 @@ class DenseNDArraySpec : Spek({
         doubleArrayOf(0.5, 0.6, 0.7, 0.8)
       ))
 
-      on("properties") {
+      context("properties") {
 
         it("should not be a vector") {
           assertFalse { array.isVector }
@@ -1197,7 +1194,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("generic methods") {
+      context("generic methods") {
 
         it("should be equal to itself") {
           assertTrue { array.equals(array) }
@@ -1208,7 +1205,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("getRange() method") {
+      context("getRange() method") {
 
         it("should fail the vertical vector require") {
           assertFailsWith<Throwable> {
@@ -1217,7 +1214,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("getRow() method") {
+      context("getRow() method") {
 
         val row = array.getRow(1)
 
@@ -1230,7 +1227,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("getColumn() method") {
+      context("getColumn() method") {
 
         val column = array.getColumn(1)
 
@@ -1243,7 +1240,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("transpose") {
+      context("transpose") {
 
         val transposedArray = array.t
 
@@ -1292,7 +1289,7 @@ class DenseNDArraySpec : Spek({
         doubleArrayOf(0.5, 0.6, 0.7, 0.8)
       ))
 
-      on("zeros() method call") {
+      context("zeros() method call") {
 
         array.zeros()
 
@@ -1309,7 +1306,7 @@ class DenseNDArraySpec : Spek({
         doubleArrayOf(0.5, 0.6, 0.7, 0.8)
       ))
 
-      on("ones() method call") {
+      context("ones() method call") {
 
         array.ones()
 
@@ -1321,7 +1318,7 @@ class DenseNDArraySpec : Spek({
 
     context("values assignment") {
 
-      on("assignment through another DenseNDArray") {
+      context("assignment through another DenseNDArray") {
 
         val array = DenseNDArrayFactory.emptyArray(Shape(3, 2))
         val arrayToAssign = DenseNDArrayFactory.arrayOf(listOf(
@@ -1337,7 +1334,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("assignment through a number") {
+      context("assignment through a number") {
 
         val array = DenseNDArrayFactory.emptyArray(Shape(3, 2))
 
@@ -1351,7 +1348,7 @@ class DenseNDArraySpec : Spek({
 
     context("getters") {
 
-      on("a vertical vector") {
+      context("a vertical vector") {
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
 
         it("should get the correct item") {
@@ -1359,7 +1356,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("a horizontal vector") {
+      context("a horizontal vector") {
         val array = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.1),
           doubleArrayOf(0.2),
@@ -1372,7 +1369,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("a matrix") {
+      context("a matrix") {
         val array = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.1, 0.2, 0.3),
           doubleArrayOf(0.4, 0.5, 0.6)
@@ -1386,7 +1383,7 @@ class DenseNDArraySpec : Spek({
 
     context("setters") {
 
-      on("a vertical vector") {
+      context("a vertical vector") {
         val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
 
         array[2] = 0.7
@@ -1396,7 +1393,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("a horizontal vector") {
+      context("a horizontal vector") {
         val array = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.1),
           doubleArrayOf(0.2),
@@ -1411,7 +1408,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      on("a matrix") {
+      context("a matrix") {
         val array = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.1, 0.2, 0.3),
           doubleArrayOf(0.4, 0.5, 0.6)

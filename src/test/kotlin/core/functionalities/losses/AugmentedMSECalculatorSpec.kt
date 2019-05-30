@@ -9,11 +9,8 @@ package core.functionalities.losses
 
 import com.kotlinnlp.simplednn.core.functionalities.losses.AugmentedMSECalculator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 /**
@@ -30,7 +27,7 @@ class AugmentedMSECalculatorSpec : Spek({
 
       val lossCalculator = AugmentedMSECalculator(pi = 0.0)
 
-      on("calculateLoss") {
+      context("calculateLoss") {
 
         val loss = lossCalculator.calculateLoss(outputValues, goldValues)
 
@@ -39,7 +36,7 @@ class AugmentedMSECalculatorSpec : Spek({
         }
       }
 
-      on("calculateErrors") {
+      context("calculateErrors") {
 
         val errors = lossCalculator.calculateErrors(outputValues, goldValues)
 
@@ -53,7 +50,7 @@ class AugmentedMSECalculatorSpec : Spek({
 
       val lossCalculator = AugmentedMSECalculator()
 
-      on("calculateLoss") {
+      context("calculateLoss") {
 
         val loss = lossCalculator.calculateLoss(outputValues, goldValues)
 
@@ -62,7 +59,7 @@ class AugmentedMSECalculatorSpec : Spek({
         }
       }
 
-      on("calculateErrors") {
+      context("calculateErrors") {
 
         val errors = lossCalculator.calculateErrors(outputValues, goldValues)
 
@@ -77,7 +74,7 @@ class AugmentedMSECalculatorSpec : Spek({
       val lossCalculator = AugmentedMSECalculator(pi = 0.9, c = 15.0)
       lossCalculator.injectedErrorStrength = AugmentedMSECalculator.InjectedErrorStrength.HARD
 
-      on("calculateLoss") {
+      context("calculateLoss") {
 
         val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
         val expectedLoss = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0045, 0.005, 0.01849999, 0.04499998))
@@ -87,7 +84,7 @@ class AugmentedMSECalculatorSpec : Spek({
         }
       }
 
-      on("calculateErrors") {
+      context("calculateErrors") {
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
         val expectedErrors = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03, 0.07999997, 0.18999995, 0.29999992))
@@ -103,7 +100,7 @@ class AugmentedMSECalculatorSpec : Spek({
       val lossCalculator = AugmentedMSECalculator(pi = 0.9, c = 15.0)
       lossCalculator.injectedErrorStrength = AugmentedMSECalculator.InjectedErrorStrength.MEDIUM
 
-      on("calculateLoss") {
+      context("calculateLoss") {
 
         val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
         val expectedLoss = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0045, 0.00321587, 0.01136348, 0.02894283))
@@ -113,7 +110,7 @@ class AugmentedMSECalculatorSpec : Spek({
         }
       }
 
-      on("calculateErrors") {
+      context("calculateErrors") {
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
         val expectedErrors = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03, 0.05991829, 0.14983657, 0.23975486))
@@ -129,7 +126,7 @@ class AugmentedMSECalculatorSpec : Spek({
       val lossCalculator = AugmentedMSECalculator(pi = 0.9, c = 15.0)
       lossCalculator.injectedErrorStrength = AugmentedMSECalculator.InjectedErrorStrength.SOFT
 
-      on("calculateLoss") {
+      context("calculateLoss") {
 
         val outputLoss = lossCalculator.calculateLoss(outputValues, goldValues)
         val expectedLoss = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0045, 0.00058731, 0.00084924, 0.00528579))
@@ -139,7 +136,7 @@ class AugmentedMSECalculatorSpec : Spek({
         }
       }
 
-      on("calculateErrors") {
+      context("calculateErrors") {
 
         val outputErrors = lossCalculator.calculateErrors(outputValues, goldValues)
         val expectedErrors = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03, 0.00253628, 0.03507256, 0.06760885))

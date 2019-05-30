@@ -10,10 +10,8 @@ package core.neuralprocessor.feedforward
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -24,7 +22,7 @@ class NeuralProcessorsPoolSpec : Spek({
 
   describe("a NeuralProcessorsPool") {
 
-    on("getItem") {
+    context("getItem") {
 
       val pool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
         model = FeedforwardNeuralNetwork(
@@ -56,7 +54,7 @@ class NeuralProcessorsPoolSpec : Spek({
       }
     }
 
-    on("releaseItem") {
+    context("releaseItem") {
 
       val pool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
         model = FeedforwardNeuralNetwork(
@@ -82,7 +80,7 @@ class NeuralProcessorsPoolSpec : Spek({
       }
     }
 
-    on("releaseAll") {
+    context("releaseAll") {
 
       val pool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
         model = FeedforwardNeuralNetwork(
@@ -108,7 +106,7 @@ class NeuralProcessorsPoolSpec : Spek({
       }
     }
 
-    on("getItem after releaseAll") {
+    context("getItem after releaseAll") {
 
       val pool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
         model = FeedforwardNeuralNetwork(
