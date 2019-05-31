@@ -61,7 +61,7 @@
         <surfire.version>2.22.0</surfire.version>
         <spek.version>2.0.5</spek.version>
         <dokka.version>0.9.17</dokka.version>
-        <utils.version>2.1.2</utils.version>
+        <utils.version>2.1.3</utils.version>
     </properties>
 
     <repositories>
