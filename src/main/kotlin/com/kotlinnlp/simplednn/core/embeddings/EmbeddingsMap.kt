@@ -189,6 +189,11 @@ open class EmbeddingsMap<T>(
   val count: Int get() = this.embeddings.size
 
   /**
+   * The set of keys.
+   */
+  val keys: Set<T> get() = this.embeddings.keys.toSet()
+
+  /**
    * The Unknown Embedding.
    */
   val unknownEmbedding: ParamsArray = this.buildEmbedding()
