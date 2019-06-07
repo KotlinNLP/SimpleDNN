@@ -68,6 +68,7 @@ class DeepBiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
     return output
   }
 
+
   /**
    * Propagate the errors of the entire sequence.
    *
@@ -97,4 +98,22 @@ class DeepBiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * @return the errors of the DeepBiRNN parameters
    */
   override fun getParamsErrors(copy: Boolean) = this.encoders.flatMap { it.getParamsErrors(copy = copy) }
+
+  /**
+   * @param copy whether to return a copy of the arrays
+   *
+   * @return a pair containing the last output of the two RNNs (left-to-right, right-to-left).
+   */
+  fun getLastOutput(copy: Boolean): Pair<DenseNDArray, DenseNDArray> = this.encoders.last().getLastOutput(copy)
+
+  /**
+   * Propagate the errors of the last output of the two RNNs (left-to-right, right-to-left).
+   *
+   * @param leftToRightErrors the last output errors of the left-to-right network
+   * @param rightToLeftErrors the last output errors of the right-to-left network
+   */
+  fun backwardLastOutput(leftToRightErrors: DenseNDArray, rightToLeftErrors: DenseNDArray) =
+    this.encoders.last().backwardLastOutput(
+      leftToRightErrors = leftToRightErrors,
+      rightToLeftErrors = rightToLeftErrors)
 }
