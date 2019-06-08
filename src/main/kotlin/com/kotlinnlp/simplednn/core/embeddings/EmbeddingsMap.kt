@@ -206,7 +206,7 @@ open class EmbeddingsMap<T>(
   /**
    * The map of keys to embeddings.
    */
-  private val embeddings: MutableMap<T, ParamsArray> = mutableMapOf()
+  protected open val embeddings: MutableMap<T, ParamsArray> = mutableMapOf()
 
   /**
    * The random generator used to decide if an embedding must be dropped out.
