@@ -14,15 +14,18 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
 
 class TPRLayerParameters(
     inputSize: Int,
-    outputSize: Int,
+    val nSymbols: Int,
+    val dSymbols: Int,
+    val nRoles: Int,
+    val dRoles: Int,
     weightsInitializer: Initializer? = GlorotInitializer(),
     biasesInitializer: Initializer? = GlorotInitializer(),
     private val sparseInput: Boolean = false
 ) : LayerParameters<TPRLayerParameters>(
-inputSize = inputSize,
-outputSize = outputSize,
-weightsInitializer = weightsInitializer,
-biasesInitializer = biasesInitializer) {
+    inputSize = inputSize,
+    outputSize = dSymbols * dRoles,
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer) {
 
   companion object {
 
@@ -34,19 +37,78 @@ biasesInitializer = biasesInitializer) {
   }
 
   /**
+   * The weights connecting input to the Symbol attention vector
+   */
+  val wInS = ParamsArray(this.nSymbols, this.inputSize)
+
+  /**
+   * The weights connecting input to the Role attention vector
+   */
+  val wInR = ParamsArray(this.nRoles, this.inputSize)
+
+  /**
+   * The weights connecting previous output to the Symbol attention vector
+   */
+  val wRecS = ParamsArray(this.nSymbols, this.inputSize)
+
+  /**
+   * The weights connecting previous output to the Role attention vector
+   */
+  val wRecR = ParamsArray(this.nRoles, this.inputSize)
+
+  /**
+   * The Symbol attention vector bias.
+   */
+  val bS = ParamsArray(this.nSymbols)
+
+  /**
+   * The Role attention vector bias.
+   */
+  val bR = ParamsArray(this.nRoles)
+
+  /**
+   * The Symbol attention embeddings.
+   */
+  val S = ParamsArray(this.dSymbols, this.nSymbols)
+
+  /**
+   * The Role attention embeddings.
+   */
+  val R = ParamsArray(this.dRoles, this.nRoles)
+
+  /**
    * The list of all parameters.
    */
-  override val paramsList: List<ParamsArray> = emptyList()
+  override val paramsList: List<ParamsArray> = listOf(
+      this.wRecS,
+      this.wRecR,
+      this.wInS,
+      this.wInR,
+      this.S,
+      this.R,
+      this.bS,
+      this.bR
+  )
 
   /**
    * The list of weights parameters.
    */
-  override val weightsList: List<ParamsArray> = emptyList()
+  override val weightsList: List<ParamsArray> = listOf(
+      this.wRecS,
+      this.wRecR,
+      this.wInS,
+      this.wInR,
+      this.S,
+      this.R
+  )
 
   /**
    * The list of biases parameters.
    */
-  override val biasesList: List<ParamsArray> = emptyList()
+  override val biasesList: List<ParamsArray> = listOf(
+      this.bS,
+      this.bR
+  )
 
   /**
    * Initialize all parameters values.
@@ -62,7 +124,10 @@ biasesInitializer = biasesInitializer) {
 
     val clonedParams = TPRLayerParameters(
         inputSize = this.inputSize,
-        outputSize = this.outputSize,
+        nSymbols = this.nSymbols,
+        dSymbols = this.dSymbols,
+        nRoles = this.nRoles,
+        dRoles = this.dRoles,
         sparseInput = this.sparseInput,
         weightsInitializer = null,
         biasesInitializer = null)
@@ -71,5 +136,4 @@ biasesInitializer = biasesInitializer) {
 
     return clonedParams
   }
-
 }

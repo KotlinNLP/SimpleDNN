@@ -34,7 +34,8 @@ override val layer: TPRLayer<InputNDArrayType>
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
   override fun forward(layerContributions: LayerParameters<*>) {
-    TODO("not implemented")
+      throw NotImplementedError("Forward with contributions not available for the TPR layer.")
+
   }
 
 }

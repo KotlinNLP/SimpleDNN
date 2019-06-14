@@ -15,14 +15,14 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentRelevanceHelper
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayer
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMBackwardHelper
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMForwardHelper
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
- * The TPR Layer Structure.
+ * The TPR Layer Structure as in
+ * Palangi, Smolensky, He, Deng, 2017. Question Answering with Grammatically-Interpretable Representation.
  *
  * @property inputArray the input array of the layer
  * @property inputType the input array type (default Dense)
@@ -51,6 +51,33 @@ class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
     dropout = dropout) {
 
   /**
+   * Return the [Shape] of the Binding Matrix B = as *arT.
+   * Output = vect(B)
+   */
+  private fun getOutputShape(): Shape {
+    val p = this.params as TPRLayerParameters
+
+    val x: Int = p.dSymbols
+    val y: Int = p.dRoles
+    return Shape(x, y)
+  }
+
+  /**
+   * The attention Symbol vector
+   */
+  val aS: AugmentedArray<DenseNDArray> = AugmentedArray((this.params as TPRLayerParameters).nSymbols)
+
+  /**
+   * The attention Role vector
+   */
+  val aR: AugmentedArray<DenseNDArray> = AugmentedArray((this.params as TPRLayerParameters).nRoles)
+
+  /**
+   *
+   */
+  val bindingMatrix = AugmentedArray(DenseNDArrayFactory.zeros(getOutputShape()))
+
+  /**
    * The helper which executes the forward
    */
   override val forwardHelper = TPRForwardHelper(layer = this)
@@ -69,7 +96,8 @@ class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Initialization: set the activation function of the gates
    */
   init {
-
+    this.aS.setActivation(Sigmoid())
+    this.aR.setActivation(Sigmoid())
   }
 
   /**
@@ -79,7 +107,7 @@ class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param array the initial hidden array
    */
   override fun setInitHidden(array: DenseNDArray) {
-
+    TODO("not implemented")
   }
 
   /**
@@ -88,8 +116,7 @@ class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the errors of the initial hidden array
    */
-  override fun getInitHiddenErrors(): DenseNDArray =
-      this.backwardHelper.getLayerRecurrentContribution(
-          nextStateLayer = this.layerContextWindow.getNextState() as TPRLayer<*>).t
-
+  override fun getInitHiddenErrors(): DenseNDArray {
+    TODO("not implemented")
+  }
 }
