@@ -27,17 +27,96 @@ class TPRLayerStructureSpec: Spek({
 
       on("without previous state context") {
 
+        val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Empty())
+        layer.forward()
 
+        it("should match the expected Symbol Attention Vector") {
+          assertTrue {
+            layer.aS.values.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.569546, 0.748381, 0.509998, 0.345246)),
+                tolerance = 0.005)
+          }
+        }
+
+        it("should match the expected Role Attention Vector") {
+          assertTrue {
+            layer.aR.values.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.291109, 0.391740, 0.394126)),
+                tolerance = 0.005)
+          }
+        }
+
+        it("should match the expected Symbol Vector") {
+          assertTrue {
+            layer.s.values.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.142810, 0.913446, 0.425346)),
+                tolerance = 0.005)
+          }
+        }
+
+        it("should match the expected Role Vector") {
+          assertTrue {
+            layer.r.values.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.352204, 0.205093)),
+                tolerance = 0.005)
+          }
+        }
+
+        it("should match the expected Output vector") {
+          assertTrue {
+            layer.outputArray.values.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.050298, 0.029289, 0.321719, 0.187342, 0.149808, 0.087235)),
+                tolerance = 0.005)
+          }
+        }
       }
 
       on("with previous state context") {
 
+        val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Back())
+        layer.forward()
 
+        it("should match the expected Symbol Attention Vector") {
+          assertTrue {
+            layer.aS.values.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.310421, 0.880352, 0.356117, 0.575599)),
+                tolerance = 0.005)
+          }
+        }
+
+        it("should match the expected Role Attention Vector") {
+          assertTrue {
+            layer.aR.values.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.075481, 0.619886, 0.357379)),
+                tolerance = 0.005)
+          }
+        }
+
+        it("should match the expected Symbol Vector") {
+          assertTrue {
+            layer.s.values.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.169241, 0.635193, 0.132934)),
+                tolerance = 0.005)
+          }
+        }
+
+        it("should match the expected Role Vector") {
+          assertTrue {
+            layer.r.values.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.323372, 0.182359)),
+                tolerance = 0.005)
+          }
+        }
+
+        it("should match the expected Output vector") {
+          assertTrue {
+            layer.outputArray.values.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.054727, 0.030862, 0.205404, 0.115833, 0.042987, 0.024241)),
+                tolerance = 0.005)
+          }
+        }
       }
 
-      on("with init hidden layer") {
-
-      }
     }
 
     context("backward") {

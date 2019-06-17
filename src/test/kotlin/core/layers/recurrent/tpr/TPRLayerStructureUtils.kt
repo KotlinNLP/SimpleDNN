@@ -11,9 +11,8 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMLayer
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayer
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
@@ -26,105 +25,68 @@ object TPRLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow): LSTMLayer<DenseNDArray> = LSTMLayer(
-      inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
+  fun buildLayer(layerContextWindow: LayerContextWindow): TPRLayer<DenseNDArray> = TPRLayer(
+      inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, 0.9, 0.1))),
       inputType = LayerType.Input.Dense,
-      outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))),
       params = buildParams(),
-      activationFunction = Tanh(),
       layerContextWindow = layerContextWindow)
 
   /**
    *
    */
-  fun buildParams(): LSTMLayerParameters {
+  fun buildParams(): TPRLayerParameters {
 
-    val params = LSTMLayerParameters(inputSize = 4, outputSize = 5)
+    val params = TPRLayerParameters(inputSize = 4, dRoles = 2, dSymbols = 3, nRoles = 3, nSymbols = 4)
 
-    params.inputGate.weights.values.assignValues(
+    params.wInS.values.assignValues(
         DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.5, 0.6, -0.8, -0.6),
-            doubleArrayOf(0.7, -0.4, 0.1, -0.8),
-            doubleArrayOf(0.7, -0.7, 0.3, 0.5),
-            doubleArrayOf(0.8, -0.9, 0.0, -0.1),
-            doubleArrayOf(0.4, 1.0, -0.7, 0.8)
+            doubleArrayOf(0.2, 0.1, 0.3, -0.4),
+            doubleArrayOf(0.3, -0.1, 0.9, 0.3),
+            doubleArrayOf(0.4, 0.2, -0.3, 0.1),
+            doubleArrayOf(0.6, 0.5, -0.4, 0.5)
         )))
 
-    params.outputGate.weights.values.assignValues(
+    params.wInR.values.assignValues(
         DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.1, 0.4, -1.0, 0.4),
-            doubleArrayOf(0.7, -0.2, 0.1, 0.0),
-            doubleArrayOf(0.7, 0.8, -0.5, -0.3),
-            doubleArrayOf(-0.9, 0.9, -0.3, -0.3),
-            doubleArrayOf(-0.7, 0.6, -0.6, -0.8)
+            doubleArrayOf(0.3, 0.5, -0.5, -0.5),
+            doubleArrayOf(0.5, 0.4, 0.1, 0.3),
+            doubleArrayOf(0.6, 0.7, 0.8, 0.6)
         )))
 
-    params.forgetGate.weights.values.assignValues(
+    params.wRecS.values.assignValues(
         DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(-1.0, 0.2, 0.0, 0.2),
-            doubleArrayOf(-0.7, 0.7, -0.3, -0.3),
-            doubleArrayOf(0.3, -0.6, 0.0, 0.7),
-            doubleArrayOf(-1.0, -0.6, 0.9, 0.8),
-            doubleArrayOf(0.5, 0.8, -0.9, -0.8)
+            doubleArrayOf(0.4, 0.2, -0.4, 0.5, 0.2, -0.5),
+            doubleArrayOf(-0.2, 0.7, 0.8, -0.5, 0.5, 0.7),
+            doubleArrayOf(0.4, -0.1, 0.1, 0.7, -0.1, 0.3),
+            doubleArrayOf(0.3, 0.2, -0.7, -0.8, -0.3, 0.6)
         )))
 
-    params.candidate.weights.values.assignValues(
+    params.wRecR.values.assignValues(
         DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.2, 0.6, 0.0, 0.1),
-            doubleArrayOf(0.1, -0.3, -0.8, -0.5),
-            doubleArrayOf(-0.1, 0.0, 0.4, -0.4),
-            doubleArrayOf(-0.8, -0.3, -0.7, 0.3),
-            doubleArrayOf(-0.4, 0.9, 0.8, -0.3)
+            doubleArrayOf(0.4, 0.8, -0.4, 0.7, 0.2, -0.5),
+            doubleArrayOf(-0.2, 0.7, 0.8, -0.5, 0.3, 0.7),
+            doubleArrayOf(0.3, -0.1, 0.1, 0.3, -0.1, 0.2)
         )))
 
-    params.inputGate.biases.values.assignValues(
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
+    params.bS.values.assignValues(
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.4, 0.8, 0.6))
     )
 
-    params.outputGate.biases.values.assignValues(
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.9, 0.2, -0.9, 0.2, -0.9))
+    params.bR.values.assignValues(
+        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.2, -0.1))
     )
 
-    params.forgetGate.biases.values.assignValues(
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.5, 1.0, 0.4, 0.9)))
-
-    params.candidate.biases.values.assignValues(
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, -0.9, -0.9, 0.5, 0.1)))
-
-    params.inputGate.recurrentWeights.values.assignValues(
+    params.S.values.assignValues(
         DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7),
-            doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7),
-            doubleArrayOf(-0.9, 0.9, 0.7, -0.5, 0.5),
-            doubleArrayOf(0.0, -0.1, 0.5, -0.2, -0.8),
-            doubleArrayOf(-0.6, 0.6, 0.8, -0.1, -0.3)
+            doubleArrayOf(0.3, -0.2, -0.1, 0.5),
+            doubleArrayOf(0.6, 0.7, 0.5, -0.6),
+            doubleArrayOf(0.4, 0.2, 0.5, -0.6)
         )))
 
-    params.outputGate.recurrentWeights.values.assignValues(
+    params.R.values.assignValues(
         DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.1, -0.6, -1.0, -0.1, -0.4),
-            doubleArrayOf(0.5, -0.9, 0.0, 0.8, 0.3),
-            doubleArrayOf(-0.3, -0.9, 0.3, 1.0, -0.2),
-            doubleArrayOf(0.7, 0.2, 0.3, -0.4, -0.6),
-            doubleArrayOf(-0.2, 0.5, -0.2, -0.9, 0.4)
-        )))
-
-    params.forgetGate.recurrentWeights.values.assignValues(
-        DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.2, -0.3, -0.3, -0.5, -0.7),
-            doubleArrayOf(0.4, -0.1, -0.6, -0.4, -0.8),
-            doubleArrayOf(0.6, 0.6, 0.1, 0.7, -0.4),
-            doubleArrayOf(-0.8, 0.9, 0.1, -0.1, -0.2),
-            doubleArrayOf(-0.5, -0.3, -0.6, -0.6, 0.1)
-        )))
-
-    params.candidate.recurrentWeights.values.assignValues(
-        DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(-0.3, 0.3, -0.1, 0.6, -0.7),
-            doubleArrayOf(-0.2, -0.8, -0.6, -0.5, -0.4),
-            doubleArrayOf(-0.4, 0.8, -0.5, -0.1, 0.9),
-            doubleArrayOf(0.3, 0.7, 0.3, 0.0, -0.4),
-            doubleArrayOf(-0.3, 0.3, -0.7, 0.0, 0.7)
+            doubleArrayOf(0.4, 0.3, 0.3),
+            doubleArrayOf(0.3, 0.2, 0.1)
         )))
 
     return params
