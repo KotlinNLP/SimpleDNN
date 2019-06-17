@@ -49,12 +49,12 @@ class TPRLayerParameters(
   /**
    * The weights connecting previous output to the Symbol attention vector
    */
-  val wRecS = ParamsArray(this.nSymbols, this.inputSize)
+  val wRecS = ParamsArray(this.nSymbols, this.dRoles * this.dSymbols)
 
   /**
    * The weights connecting previous output to the Role attention vector
    */
-  val wRecR = ParamsArray(this.nRoles, this.inputSize)
+  val wRecR = ParamsArray(this.nRoles, this.dRoles * this.dSymbols)
 
   /**
    * The Symbol attention vector bias.

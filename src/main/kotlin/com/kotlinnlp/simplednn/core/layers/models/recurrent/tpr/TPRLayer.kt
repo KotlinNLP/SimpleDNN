@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
+import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentRelevanceHelper
@@ -36,22 +37,20 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
     inputArray: AugmentedArray<InputNDArrayType>,
     inputType: LayerType.Input,
-    outputArray: AugmentedArray<DenseNDArray>,
     params: LayerParameters<*>,
     layerContextWindow: LayerContextWindow,
-    activationFunction: ActivationFunction? = null,
     dropout: Double = 0.0
 ) : RecurrentLayer<InputNDArrayType>(
     inputArray = inputArray,
     inputType = inputType,
-    outputArray = outputArray,
+    outputArray = AugmentedArray(size = 1),
     params = params,
     layerContextWindow = layerContextWindow,
-    activationFunction = activationFunction,
+    activationFunction = null,
     dropout = dropout) {
 
   /**
-   * Return the [Shape] of the Binding Matrix B = as *arT.
+   * Return the [Shape] of the Binding Matrix B = as * arT.
    * Output = vect(B)
    */
   private fun getOutputShape(): Shape {
@@ -65,17 +64,32 @@ class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The attention Symbol vector
    */
-  val aS: AugmentedArray<DenseNDArray> = AugmentedArray((this.params as TPRLayerParameters).nSymbols)
+  val aS: AugmentedArray<DenseNDArray> = AugmentedArray.zeros((this.params as TPRLayerParameters).nSymbols)
 
   /**
    * The attention Role vector
    */
-  val aR: AugmentedArray<DenseNDArray> = AugmentedArray((this.params as TPRLayerParameters).nRoles)
+  val aR: AugmentedArray<DenseNDArray> = AugmentedArray.zeros((this.params as TPRLayerParameters).nRoles)
+
+  /**
+   * The Symbol vector
+   */
+  val s: AugmentedArray<DenseNDArray> = AugmentedArray.zeros((this.params as TPRLayerParameters).dSymbols)
+
+  /**
+   * The Role vector
+   */
+  val r: AugmentedArray<DenseNDArray> = AugmentedArray.zeros((this.params as TPRLayerParameters).dRoles)
 
   /**
    *
    */
   val bindingMatrix = AugmentedArray(DenseNDArrayFactory.zeros(getOutputShape()))
+
+  /**
+   *
+   */
+  override val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray.zeros(size = bindingMatrix.size)
 
   /**
    * The helper which executes the forward
