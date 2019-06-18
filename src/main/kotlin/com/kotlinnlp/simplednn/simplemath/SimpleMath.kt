@@ -87,6 +87,16 @@ fun List<DenseNDArray>.toMatrix(): DenseNDArray {
 }
 
 /**
+ * Transform a matrix into a list of vectors.
+ */
+fun DenseNDArray.toVectors(): List<DenseNDArray> {
+
+  require(this.isMatrix)
+
+  return (0 until this.rows).map { this.getRow(it).t }
+}
+
+/**
  * Compute the cosine similarity of two arrays (already normalized with the normalize2 function).
  * The cosine similarity value is limited in the range [0.0, 1.0] applying a ReLU function.
  *
