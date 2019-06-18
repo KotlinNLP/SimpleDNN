@@ -80,10 +80,10 @@ class TPRLayerParameters(
    * The list of all parameters.
    */
   override val paramsList: List<ParamsArray> = listOf(
-      this.wRecS,
-      this.wRecR,
       this.wInS,
       this.wInR,
+      this.wRecS,
+      this.wRecR,
       this.S,
       this.R,
       this.bS,
@@ -94,10 +94,10 @@ class TPRLayerParameters(
    * The list of weights parameters.
    */
   override val weightsList: List<ParamsArray> = listOf(
-      this.wRecS,
-      this.wRecR,
       this.wInS,
       this.wInR,
+      this.wRecS,
+      this.wRecR,
       this.S,
       this.R
   )
