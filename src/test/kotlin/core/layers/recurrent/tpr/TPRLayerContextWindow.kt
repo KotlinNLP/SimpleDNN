@@ -46,22 +46,6 @@ sealed class TPRLayerContextWindow: LayerContextWindow {
   /**
    *
    */
-  class BackHidden: TPRLayerContextWindow() {
-
-    private lateinit var initHidden: TPRLayer<DenseNDArray>
-
-    fun setRefLayer(refLayer: TPRLayer<DenseNDArray>) {
-      this.initHidden = buildInitHiddenLayer(refLayer)
-    }
-
-    override fun getPrevState(): TPRLayer<DenseNDArray> = this.initHidden
-
-    override fun getNextState() = null
-  }
-
-  /**
-   *
-   */
   class Front(private val refLayer: TPRLayer<DenseNDArray>? = null): TPRLayerContextWindow() {
 
     override fun getPrevState() = null
@@ -94,20 +78,6 @@ private fun buildPrevStateLayer(): TPRLayer<DenseNDArray> {
   layer.outputArray.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.211, -0.451, 0.499, -1.333, -0.11645, 0.366)))
 
   return layer
-}
-
-/**
- *
- */
-private fun buildInitHiddenLayer(refLayer: TPRLayer<DenseNDArray>): TPRLayer<DenseNDArray> {
-
-  val outputArray = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
-
-  return TPRLayer(
-      inputArray = AugmentedArray(size = 4),
-      inputType = LayerType.Input.Dense,
-      params = refLayer.params,
-      layerContextWindow = TPRLayerContextWindow.Front(refLayer))
 }
 
 /**

@@ -95,5 +95,5 @@ object TPRLayerStructureUtils {
   /**
    *
    */
-  fun getOutputGold() = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.57, 0.75, -0.15, 1.64, 0.45))
+  fun getOutputGold() = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.57, 0.75, -0.15, 1.64, 0.45, 0.11))
 }
