@@ -1061,6 +1061,23 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   * @param destination where to store the results of the vectorization
+   */
+  fun vectorize(destination: DenseNDArray) {
+
+    require(destination.isVector) { "The destination must be a vector." }
+    require(destination.length == this.rows * this.columns)
+
+    var i = 0
+
+    for (r in 0 until this.rows) {
+      for (c in 0 until this.columns) {
+        destination[i++] = this[r, c]
+      }
+    }
+  }
+
+  /**
    * @param a a DenseNDArray
    * @param tolerance a must be in the range [a - tolerance, a + tolerance] to return True
    *
