@@ -13,6 +13,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.toMatrix
+import com.kotlinnlp.simplednn.simplemath.toVectors
 import kotlin.math.pow
 
 /**
@@ -85,9 +86,7 @@ class FOFE(
 
     this.matrix = buildMatrix(this.alpha, input.size)
 
-    return this.matrix.dot(input.toMatrix()).let { out ->
-      (0 until out.rows).map { out.getRow(it).t }
-    }
+    return this.matrix.dot(input.toMatrix()).toVectors()
   }
 
   /**
@@ -97,9 +96,7 @@ class FOFE(
    */
   override fun backward(outputErrors: List<DenseNDArray>) {
 
-    this.inputErrors = outputErrors.toMatrix().dot(this.matrix.t).let { out ->
-      (0 until out.rows).map { out.getRow(it).t }
-    }
+    this.inputErrors = outputErrors.toMatrix().dot(this.matrix.t).toVectors()
   }
 
   /**
