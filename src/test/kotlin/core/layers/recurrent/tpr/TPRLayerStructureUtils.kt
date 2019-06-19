@@ -29,7 +29,8 @@ object TPRLayerStructureUtils {
       inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, 0.9, 0.1))),
       inputType = LayerType.Input.Dense,
       params = buildParams(),
-      layerContextWindow = layerContextWindow)
+      layerContextWindow = layerContextWindow,
+      quantizationRegularizer = 0.001)
 
   /**
    *

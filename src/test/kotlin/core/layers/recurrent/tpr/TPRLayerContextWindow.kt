@@ -73,7 +73,8 @@ private fun buildPrevStateLayer(): TPRLayer<DenseNDArray> {
       inputArray = AugmentedArray<DenseNDArray>(size = 4),
       inputType = LayerType.Input.Dense,
       params = TPRLayerParameters(inputSize = 4, dRoles = 3, dSymbols = 2, nRoles = 3, nSymbols = 4),
-      layerContextWindow = TPRLayerContextWindow.Empty())
+      layerContextWindow = TPRLayerContextWindow.Empty(),
+      quantizationRegularizer = 0.001)
 
   layer.outputArray.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.211, -0.451, 0.499, -1.333, -0.11645, 0.366)))
 
@@ -92,7 +93,8 @@ private fun buildNextStateLayer(): TPRLayer<DenseNDArray> {
       inputArray = AugmentedArray<DenseNDArray>(size = 4),
       inputType = LayerType.Input.Dense,
       params = TPRLayerParameters(inputSize = 4, dRoles = 3, dSymbols = 2, nRoles = 3, nSymbols = 4),
-      layerContextWindow = TPRLayerContextWindow.Empty())
+      layerContextWindow = TPRLayerContextWindow.Empty(),
+      quantizationRegularizer = 0.001)
 
   return layer
 }
