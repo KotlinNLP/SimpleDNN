@@ -8,7 +8,6 @@
 package core.layers.recurrent.tpr
 
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
