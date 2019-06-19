@@ -39,7 +39,8 @@ class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
     inputType: LayerType.Input,
     params: LayerParameters<*>,
     layerContextWindow: LayerContextWindow,
-    dropout: Double = 0.0
+    dropout: Double = 0.0,
+    val quantizationRegularizer: Double
 ) : RecurrentLayer<InputNDArrayType>(
     inputArray = inputArray,
     inputType = inputType,
