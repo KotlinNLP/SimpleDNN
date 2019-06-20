@@ -52,18 +52,16 @@ override val layer: TPRLayer<InputNDArrayType>
 
     this.layer.params as TPRLayerParameters
 
-    val gy: DenseNDArray = nextStateLayer.outputArray.errors
-
     val gs: DenseNDArray = nextStateLayer.aS.errors
     val gr: DenseNDArray = nextStateLayer.aR.errors
 
-    val wRecS: DenseNDArray = this.layer.params.wInS.values
-    val wRecR: DenseNDArray = this.layer.params.wInR.values
+    val wRecS: DenseNDArray = this.layer.params.wRecS.values
+    val wRecR: DenseNDArray = this.layer.params.wRecR.values
 
     val gRecS: DenseNDArray = gs.t.dot(wRecS)
     val gRecR: DenseNDArray = gr.t.dot(wRecR)
 
-    return gRecS.assignSum(gRecR).assignSum(gy)
+    return gRecS.assignSum(gRecR)
   }
 
   /**
