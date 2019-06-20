@@ -65,22 +65,6 @@ override val layer: TPRLayer<InputNDArrayType>
   }
 
   /**
-   * Reshape binding Matrix
-   */
-  private fun vectorizeOutputErrors() {
-
-    this.layer.bindingMatrix.assignErrors(DenseNDArrayFactory.zeros(this.layer.bindingMatrix.values.shape))
-    var i = 0
-
-    for (r in 0 until layer.bindingMatrix.values.rows)
-      for (c in 0 until layer.bindingMatrix.values.columns){
-
-        this.layer.bindingMatrix.errors[r, c] = this.layer.outputArray.errors[i]
-        i++
-      }
-  }
-
-  /**
    * Calculate errors of roles and symbols wrt quantization errors
    *
    * @property a The quantization function argument
@@ -110,7 +94,9 @@ override val layer: TPRLayer<InputNDArrayType>
     val q = this.layer.quantizationRegularizer
     this.layer.params as TPRLayerParameters
 
-    this.vectorizeOutputErrors()
+    // TODO: assign zeros only if not initialized
+    this.layer.bindingMatrix.assignErrors(DenseNDArrayFactory.zeros(this.layer.bindingMatrix.values.shape))
+    this.layer.bindingMatrix.errors.fromVector(this.layer.outputArray.errors)
 
     val gs: DenseNDArray = this.layer.r.values.t.dot(this.layer.bindingMatrix.errors.t)
     val gr: DenseNDArray = this.layer.s.values.t.dot(this.layer.bindingMatrix.errors)
