@@ -80,9 +80,15 @@ override val layer: TPRLayer<InputNDArrayType>
       }
   }
 
+  /**
+   * Calculate errors of roles and symbols wrt quantization errors
+   *
+   * @property a The quantization function argument
+   * @property q The weight of the quantization in the loss function
+   */
   private fun getQuantizationGradients(a: DenseNDArray, q: Double): DenseNDArray {
 
-    var s: Double = 0.0
+    var s = 0.0
     val out = DenseNDArrayFactory.fromNDArray(a)
 
     for (i in 0 until out.length){
@@ -97,7 +103,7 @@ override val layer: TPRLayer<InputNDArrayType>
   }
 
   /**
-   *
+   * Assign structure gradients
    */
   private fun assignGradients() {
 
@@ -124,6 +130,8 @@ override val layer: TPRLayer<InputNDArrayType>
   }
 
   /**
+   * Assign parameters gradients
+   *
    * @param prevStateOutput the outputArray in the previous state
    */
   private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
@@ -159,7 +167,7 @@ override val layer: TPRLayer<InputNDArrayType>
   }
 
   /**
-   *
+   * Assign layer gradients to input array
    */
   private fun assignLayerGradients() {
     this.layer.params as TPRLayerParameters

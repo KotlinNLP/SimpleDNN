@@ -8,9 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
-import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentRelevanceHelper
@@ -33,6 +31,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
+ * @property quantizationRegularizer the weight of the quantization function.
  */
 class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
     inputArray: AugmentedArray<InputNDArrayType>,
