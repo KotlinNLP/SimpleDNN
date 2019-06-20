@@ -1078,6 +1078,23 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   *
+   */
+  fun fromVector(origin: DenseNDArray) {
+
+    require(origin.isVector) { "The origin must be a vector." }
+    require(origin.length == this.rows * this.columns)
+
+    var i = 0
+
+    for (r in 0 until this.rows) {
+      for (c in 0 until this.columns) {
+        this[r, c] = origin[i++]
+      }
+    }
+  }
+
+  /**
    * @param a a DenseNDArray
    * @param tolerance a must be in the range [a - tolerance, a + tolerance] to return True
    *
