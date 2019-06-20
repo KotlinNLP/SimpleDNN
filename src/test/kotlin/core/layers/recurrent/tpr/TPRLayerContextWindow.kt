@@ -86,15 +86,20 @@ private fun buildPrevStateLayer(): TPRLayer<DenseNDArray> {
  */
 private fun buildNextStateLayer(): TPRLayer<DenseNDArray> {
 
-  val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(5)))
-  outputArray.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
-
   val layer = TPRLayer(
       inputArray = AugmentedArray<DenseNDArray>(size = 4),
       inputType = LayerType.Input.Dense,
       params = TPRLayerParameters(inputSize = 4, dRoles = 3, dSymbols = 2, nRoles = 3, nSymbols = 4),
       layerContextWindow = TPRLayerContextWindow.Empty(),
       quantizationRegularizer = 0.001)
+
+  layer.outputArray.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.711, -0.099, 0.459, -1.235, -0.9845, 0.9292)))
+
+  layer.aS.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0)))
+  layer.aS.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, 0.3, 0.2, 0.3)))
+  layer.aR.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, -0.1, 0.6)))
+  layer.aR.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2)))
+
 
   return layer
 }

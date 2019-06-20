@@ -304,7 +304,6 @@ class TPRLayerStructureSpec: Spek({
 
         val params = layer.params as TPRLayerParameters
 
-
         it("should match the expected errors of the outputArray") {
           assertTrue {
             layer.outputArray.errors.equals(
@@ -328,8 +327,7 @@ class TPRLayerStructureSpec: Spek({
         it("should match the expected errors of the Symbol Vector") {
           assertTrue {
             layer.s.errors.equals(
-                DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2977662253368, -0.163018516728468, -0.147255383603993
-                )),
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2977662253368, -0.163018516728468, -0.147255383603993)),
                 tolerance = 0.000001)
           }
         }
@@ -458,13 +456,333 @@ class TPRLayerStructureSpec: Spek({
       }
 
       on("with next state only") {
+        val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Front())
 
+        layer.forward()
 
+        val errors = MSECalculator().calculateErrors(
+            output = layer.outputArray.values,
+            outputGold = TPRLayerStructureUtils.getOutputGold())
+
+        layer.outputArray.assignErrors(errors)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as TPRLayerParameters
+
+        it("should match the expected errors of the outputArray") {
+          assertTrue {
+            layer.outputArray.errors.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.249701403353614,  0.279289631931703, 0.98171956873416, -1.74265783974657, 0.129808699976926, 0.747235866903782)),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Binding Matrix") {
+          assertTrue {
+            layer.bindingMatrix.errors.equals(
+                DenseNDArrayFactory.arrayOf(listOf(
+                    doubleArrayOf(-0.249701403353614, 0.279289631931703),
+                    doubleArrayOf(0.98171956873416, -1.74265783974657),
+                    doubleArrayOf(0.129808699976926, 0.747235866903782)
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Symbol Vector") {
+          assertTrue {
+            layer.s.errors.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.030665298337961, -0.011642597310612, 0.198972584038394)),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Role Vector") {
+          assertTrue {
+            layer.r.errors.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.916301710420099, -1.23410486171411)),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Symbol attention Vector") {
+          assertTrue {
+            layer.aS.errors.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.01567489964703, 0.007227245531985, 0.024305171892554, -0.028759718415032)),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Role attention Vector") {
+          assertTrue {
+            layer.aR.errors.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.000875921596484, 0.006486559192793, 0.035967875534)),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Symbols embeddings") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.S)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(listOf(
+                    doubleArrayOf(-0.017465304874356, -0.022949348763758, -0.015639261271837, -0.010587088130656),
+                    doubleArrayOf(-0.006630997335104, -0.008713107019294, -0.005937709107433, -0.004019566431043),
+                    doubleArrayOf(0.113324083906498, 0.148907444995259, 0.101475752605243, 0.068694596073474)
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Roles embeddings") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.R)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(listOf(
+                    doubleArrayOf(0.266744432797764, 0.358952920168596, 0.361138631737577),
+                    doubleArrayOf(-0.359260053328906, -0.483449434688323, -0.48639322191791)
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the input -> Symbols matrix") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.wInS)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(listOf(
+                    doubleArrayOf( -0.012539919717624, -0.014107409682327, 0.014107409682327, 0.001567489964703),
+                    doubleArrayOf(-0.005781796425588, -0.006504520978787, 0.006504520978787, 0.000722724553199),
+                    doubleArrayOf(-0.019444137514043,-0.021874654703299, 0.021874654703299, 0.002430517189255),
+                    doubleArrayOf(0.023007774732025, 0.025883746573529, -0.025883746573529, -0.002875971841503)
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the input -> Roles matrix") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.wInR)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(listOf(
+                    doubleArrayOf(0.000700737277188,  0.000788329436836, -0.000788329436836, -8.75921596484405E-05),
+                    doubleArrayOf(-0.005189247354234, -0.005837903273514, 0.005837903273514, 0.000648655919279),
+                    doubleArrayOf(-0.0287743004272, -0.0323710879806, 0.0323710879806, 0.0035967875534)
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the recurrent -> Symbols matrix") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.wRecS)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(listOf(
+                    doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                    doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                    doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                    doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the recurrent -> Roles matrix") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.wRecR)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(listOf(
+                    doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                    doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+                    doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Roles bias") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.bR)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.000875921596484, 0.006486559192793, 0.035967875534)),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Symbols bias") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.bS)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.01567489964703, 0.007227245531985, 0.024305171892554, -0.028759718415032)),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the inputArray") {
+          assertTrue {
+            layer.inputArray.errors.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.022330619734855, 0.018660116335174, 0.045280243815864, 0.007913525659003)),
+                tolerance = 0.000001)
+          }
+        }
       }
 
       on("with previous and next state") {
+        val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Bilateral())
 
+        layer.forward()
 
+        val errors = MSECalculator().calculateErrors(
+            output = layer.outputArray.values,
+            outputGold = TPRLayerStructureUtils.getOutputGold())
+
+        layer.outputArray.assignErrors(errors)
+        val paramsErrors = layer.backward(propagateToInput = true)
+
+        val params = layer.params as TPRLayerParameters
+
+        it("should match the expected errors of the outputArray") {
+          assertTrue {
+            layer.outputArray.errors.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.245272047635161, 0.280862776562346, 0.865404003016226, -1.8141663614995, 0.022987400062821, 0.684241917809945)),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Binding Matrix") {
+          assertTrue {
+            layer.bindingMatrix.errors.equals(
+                DenseNDArrayFactory.arrayOf(listOf(
+                    doubleArrayOf(-0.245272047635161, 0.280862776562346),
+                    doubleArrayOf(0.865404003016226, -1.8141663614995),
+                    doubleArrayOf(0.022987400062821, 0.684241917809945)
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Symbol Vector") {
+          assertTrue {
+            layer.s.errors.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.028096160020637, -0.050982944923792, 0.13221154193128)),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Role Vector") {
+          assertTrue {
+            layer.r.errors.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.511244800638788, -1.01385389080985)),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Symbol attention Vector") {
+          assertTrue {
+            layer.aS.errors.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.003090437287801, -0.000276646266682, 0.010094898398993, -0.01517018773497)),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Role attention Vector") {
+          assertTrue {
+            layer.aR.errors.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.006956421695052, -0.011947783124287, 0.011811289135905)),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Symbols embeddings") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.S)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(listOf(
+                    doubleArrayOf(-0.008721408501861, -0.02473453218537, -0.010005537638523, -0.016172138944096),
+                    doubleArrayOf(-0.015825760138811, -0.044882976577447, -0.018155925008366, -0.029345763566306),
+                    doubleArrayOf(0.041040158690606, 0.11639279662326, 0.047082859653024, 0.076100912884723)
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Roles embeddings") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.R)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(listOf(
+                    doubleArrayOf(0.038589362744448, 0.316913568882586, 0.182708541022483),
+                    doubleArrayOf(-0.076526891840165, -0.628473980489548, -0.362330853963468)
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the input -> Symbols matrix") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.wInS)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(listOf(
+                    doubleArrayOf( -0.00247234983024, -0.002781393559021, 0.002781393559021, 0.00030904372878),
+                    doubleArrayOf(0.000221317013345	, 0.000248981640013, -0.000248981640013, -2.7664626668165E-05),
+                    doubleArrayOf(-0.008075918719194, -0.009085408559093, 0.009085408559093, 0.001009489839899),
+                    doubleArrayOf(0.012136150187976, 0.013653168961473, -0.013653168961473, -0.001517018773497)
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the input -> Roles matrix") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.wInR)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(listOf(
+                    doubleArrayOf(0.005565137356041,  0.006260779525546, -0.006260779525546, -0.000695642169505),
+                    doubleArrayOf(0.00955822649943, 0.010753004811858, -0.010753004811858, -0.001194778312429),
+                    doubleArrayOf(-0.009449031308724, -0.010630160222314, 0.010630160222314, 0.00118112891359)
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the recurrent -> Symbols matrix") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.wRecS)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(listOf(
+                    doubleArrayOf(0.000652082267726,-0.001393787216798, 0.001542128206612, -0.004119552904638, -0.000359881422164, 0.001131100047335),
+                    doubleArrayOf(-5.83723622698282E-05, 0.000124767466273, -0.000138046487074, 0.000368769473487, 3.22154577550782E-05, -0.000101252533605),
+                    doubleArrayOf(0.002130023562187, -0.004552799177946, 0.005037354301097, -0.013456499565857, -0.001175550918563, 0.003694732814031),
+                    doubleArrayOf(-0.003200909612079, 0.006841754668471, -0.00756992367975, 0.020221860250715, 0.001766568361737, -0.005552288710999)
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the recurrent -> Roles matrix") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.wRecR)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(listOf(
+                    doubleArrayOf(-0.001467804977656, 0.003137346184468, -0.003471254425831, 0.009272910119504, 0.000810075306389, -0.002546050340389),
+                    doubleArrayOf(-0.002520982239225, 0.005388450189053, -0.005961943779019, 0.015926394904675, 0.001391319344823, -0.004372888623489),
+                    doubleArrayOf(0.002492182007676, -0.005326891400293, 0.005893833278816, -0.015744448418161, -0.001375424619876, 0.004322931823741)
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Roles bias") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.bR)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.006956421695052, -0.011947783124287, 0.011811289135905
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the Symbols bias") {
+          assertTrue {
+            (paramsErrors.getErrorsOf(params.bS)!!.values as DenseNDArray).equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(0.003090437287801, -0.000276646266682, 0.010094898398993, -0.01517018773497
+                )),
+                tolerance = 0.000001)
+          }
+        }
+
+        it("should match the expected errors of the inputArray") {
+          assertTrue {
+            layer.inputArray.errors.equals(
+                DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.005503104292945, -0.005218827534345, 0.015450218964438, -0.000914123430928)),
+                tolerance = 0.000001)
+          }
+        }
       }
     }
   }
