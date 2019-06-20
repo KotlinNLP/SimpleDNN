@@ -26,6 +26,7 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.product.ProductLayerPara
 import com.kotlinnlp.simplednn.core.layers.models.merge.sub.SubLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ltm.LTMLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayerParameters
 
 /**
  * Helper that builds generic [LayerParameters].
@@ -204,5 +205,15 @@ object LayerParametersFactory {
         weightsInitializer = weightsInitializer,
         biasesInitializer = biasesInitializer)
     }
+
+    LayerType.Connection.TPR -> TPRLayerParameters(
+      inputSize = inputsSize.first(),
+      nSymbols = 100, // TODO
+      dSymbols = 10, // TODO
+      nRoles = 20, // TODO
+      dRoles = 10, // TODO
+      sparseInput = sparseInput,
+      weightsInitializer = weightsInitializer,
+      biasesInitializer = biasesInitializer)
   }
 }
