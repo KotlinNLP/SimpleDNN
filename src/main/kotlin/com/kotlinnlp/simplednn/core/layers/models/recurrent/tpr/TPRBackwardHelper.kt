@@ -19,8 +19,34 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @property layer the [TPRLayer] in which the backward is executed
  */
 class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-override val layer: TPRLayer<InputNDArrayType>
+  override val layer: TPRLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType>(layer) {
+
+  companion object {
+
+    /**
+     * Calculate errors of roles and symbols wrt quantization errors.
+     * The quantization pushes towards attention vectors that are 1-hot.
+     *
+     * @property a The quantization function argument
+     * @property q The weight of the quantization in the loss function
+     */
+    private fun getQuantizationGradients(a: DenseNDArray, q: Double): DenseNDArray {
+
+      var s = 0.0
+      val out = a.copy()
+
+      for (i in 0 until out.length) {
+        s += 2.0 * out[i] * out[i]
+      }
+
+      for (i in 0 until out.length) {
+        out[i] = 2.0 * out[i] * q * (4 * out[i] * out[i] - 3 * out[i] + s - 2.0 * out[i] * out[i] - 1.0)
+      }
+
+      return out
+    }
+  }
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
@@ -65,28 +91,6 @@ override val layer: TPRLayer<InputNDArrayType>
   }
 
   /**
-   * Calculate errors of roles and symbols wrt quantization errors
-   *
-   * @property a The quantization function argument
-   * @property q The weight of the quantization in the loss function
-   */
-  private fun getQuantizationGradients(a: DenseNDArray, q: Double): DenseNDArray {
-
-    var s = 0.0
-    val out = DenseNDArrayFactory.fromNDArray(a)
-
-    for (i in 0 until out.length){
-      s += 2.0 * out[i] * out[i]
-    }
-
-    for (i in 0 until out.length){
-      out[i] = 2.0 * out[i] * q * (4 * out[i] * out[i] - 3 * out[i] + s - 2.0 * out[i] * out[i] - 1.0)
-    }
-
-    return out
-  }
-
-  /**
    * Assign structure gradients
    */
   private fun assignGradients() {
@@ -110,8 +114,15 @@ override val layer: TPRLayer<InputNDArrayType>
     val wS: DenseNDArray = this.layer.params.S.values
     val wR: DenseNDArray = this.layer.params.R.values
 
-    this.layer.aS.assignErrorsByDotT(gs, wS).assignSum(getQuantizationGradients(this.layer.aS.values, q)).assignProd(aSactDeriv)
-    this.layer.aR.assignErrorsByDotT(gr, wR).assignSum(getQuantizationGradients(this.layer.aR.values, q)).assignProd(aRactDeriv)
+    this.layer.aS
+      .assignErrorsByDotT(gs, wS)
+      .assignSum(getQuantizationGradients(this.layer.aS.values, q))
+      .assignProd(aSactDeriv)
+
+    this.layer.aR
+      .assignErrorsByDotT(gr, wR)
+      .assignSum(getQuantizationGradients(this.layer.aR.values, q))
+      .assignProd(aRactDeriv)
 
   }
 

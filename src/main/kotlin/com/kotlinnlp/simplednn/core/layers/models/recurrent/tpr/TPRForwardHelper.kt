@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property layer the [TPRLayer] in which the forward is executed
  */
 class TPRForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-override val layer: TPRLayer<InputNDArrayType>
+  override val layer: TPRLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
@@ -50,7 +50,7 @@ override val layer: TPRLayer<InputNDArrayType>
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
   override fun forward(layerContributions: LayerParameters<*>) {
-      throw NotImplementedError("Forward with contributions not available for the TPR layer.")
+    throw NotImplementedError("Forward with contributions not available for the TPR layer.")
   }
 
   /**

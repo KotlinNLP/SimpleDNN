@@ -34,20 +34,20 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @property quantizationRegularizer the weight of the quantization function.
  */
 class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
-    inputArray: AugmentedArray<InputNDArrayType>,
-    inputType: LayerType.Input,
-    params: LayerParameters<*>,
-    layerContextWindow: LayerContextWindow,
-    dropout: Double = 0.0,
-    val quantizationRegularizer: Double
+  inputArray: AugmentedArray<InputNDArrayType>,
+  inputType: LayerType.Input,
+  params: LayerParameters<*>,
+  layerContextWindow: LayerContextWindow,
+  dropout: Double = 0.0,
+  val quantizationRegularizer: Double
 ) : RecurrentLayer<InputNDArrayType>(
-    inputArray = inputArray,
-    inputType = inputType,
-    outputArray = AugmentedArray(size = 1),
-    params = params,
-    layerContextWindow = layerContextWindow,
-    activationFunction = null,
-    dropout = dropout) {
+  inputArray = inputArray,
+  inputType = inputType,
+  outputArray = AugmentedArray(size = 1),
+  params = params,
+  layerContextWindow = layerContextWindow,
+  activationFunction = null,
+  dropout = dropout) {
 
   /**
    * Return the [Shape] of the Binding Matrix B = as * arT.
