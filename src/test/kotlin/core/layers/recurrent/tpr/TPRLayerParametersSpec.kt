@@ -13,11 +13,8 @@ import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGener
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayerParameters
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
@@ -28,7 +25,7 @@ class TPRLayerParametersSpec: Spek({
 
     context("initialization") {
 
-      on("dense input") {
+      context("dense input") {
 
         var k = 0
         val initValues = doubleArrayOf(
@@ -117,49 +114,49 @@ class TPRLayerParametersSpec: Spek({
       val S = params.S
       val R = params.R
 
-      on("iteration 1") {
+      context("iteration 1") {
         it("should return the weights of the input -> Symbols matrix") {
           assertEquals(wInS, iterator.next())
         }
       }
 
-      on("iteration 2") {
+      context("iteration 2") {
         it("should return the weights of the input -> Roles matrix") {
           assertEquals(wInR, iterator.next())
         }
       }
 
-      on("iteration 3") {
+      context("iteration 3") {
         it("should return the weights of the recurrent -> Symbols matrix") {
           assertEquals(wRecS, iterator.next())
         }
       }
 
-      on("iteration 4") {
+      context("iteration 4") {
         it("should return the weights of the recurrent -> Roles matrix") {
           assertEquals(wRecR, iterator.next())
         }
       }
 
-      on("iteration 5") {
+      context("iteration 5") {
         it("should return the weights of the Symbols embeddings matrix") {
           assertEquals(S, iterator.next())
         }
       }
 
-      on("iteration 6") {
+      context("iteration 6") {
         it("should return the weights of the Role embeddings matrix") {
           assertEquals(R, iterator.next())
         }
       }
 
-      on("iteration 7") {
+      context("iteration 7") {
         it("should return the biases of the input gate") {
           assertEquals(bS, iterator.next())
         }
       }
 
-      on("iteration 8") {
+      context("iteration 8") {
         it("should return the biases of the output gate") {
           assertEquals(bR, iterator.next())
         }

@@ -12,11 +12,8 @@ import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayerParamete
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.jetbrains.spek.api.dsl.on
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
 class TPRLayerStructureSpec: Spek({
@@ -25,7 +22,7 @@ class TPRLayerStructureSpec: Spek({
 
     context("forward") {
 
-      on("without previous state context") {
+      context("without previous state context") {
 
         val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Empty())
         layer.forward()
@@ -71,7 +68,7 @@ class TPRLayerStructureSpec: Spek({
         }
       }
 
-      on("with previous state context") {
+      context("with previous state context") {
 
         val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Back())
         layer.forward()
@@ -121,7 +118,7 @@ class TPRLayerStructureSpec: Spek({
 
     context("backward") {
 
-      on("without previous and next state") {
+      context("without previous and next state") {
 
         val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Empty())
 
@@ -289,7 +286,7 @@ class TPRLayerStructureSpec: Spek({
 
       }
 
-      on("with previous state only") {
+      context("with previous state only") {
 
         val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Back())
 
@@ -455,7 +452,7 @@ class TPRLayerStructureSpec: Spek({
 
       }
 
-      on("with next state only") {
+      context("with next state only") {
         val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Front())
 
         layer.forward()
@@ -619,7 +616,7 @@ class TPRLayerStructureSpec: Spek({
         }
       }
 
-      on("with previous and next state") {
+      context("with previous and next state") {
         val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Bilateral())
 
         layer.forward()
