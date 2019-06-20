@@ -195,7 +195,6 @@ override val layer: TPRLayer<InputNDArrayType>
       gy.assignSum(gyRec)
     }
   }
-
 }
 
 

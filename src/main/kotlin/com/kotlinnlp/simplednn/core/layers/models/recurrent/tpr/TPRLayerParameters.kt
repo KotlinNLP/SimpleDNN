@@ -12,6 +12,17 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializ
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 
+/**
+ * The parameters of the layer of type TPR.
+ *
+ * @property inputSize the input size
+ * @property nSymbols the number of symbols
+ * @property dSymbols the embeddings size of the symbols
+ * @property nRoles the number of roles
+ * @property dRoles the embeddings size of the roles
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
+ */
 class TPRLayerParameters(
     inputSize: Int,
     val nSymbols: Int,
