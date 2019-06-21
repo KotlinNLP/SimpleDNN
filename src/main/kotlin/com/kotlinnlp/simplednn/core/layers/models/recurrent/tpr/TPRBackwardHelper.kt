@@ -37,11 +37,13 @@ class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       val out = a.copy()
 
       for (i in 0 until out.length) {
-        s += 2.0 * out[i] * out[i]
+        s += out[i] * out[i]
       }
 
+      s *= 2.0
+
       for (i in 0 until out.length) {
-        out[i] = 2.0 * out[i] * q * (4 * out[i] * out[i] - 3 * out[i] + s - 2.0 * out[i] * out[i] - 1.0)
+        out[i] = 2.0 * out[i] * q * (2 * out[i] * out[i] - 3 * out[i] + s - 1.0)
       }
 
       return out
