@@ -48,15 +48,6 @@ class GRUForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward the input to the output combining it with the parameters, saving the contributions.
-   *
-   * @param layerContributions the structure in which to save the contributions during the calculations
-   */
-  override fun forward(layerContributions: LayerParameters<*>) {
-    TODO("not implemented")
-  }
-
-  /**
    * Set gates values
    *
    * r = sigmoid(wr (dot) x + br + wrRec (dot) yPrev)

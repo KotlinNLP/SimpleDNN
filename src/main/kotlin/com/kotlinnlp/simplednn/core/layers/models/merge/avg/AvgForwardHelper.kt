@@ -40,14 +40,4 @@ class AvgForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       this.layer.outputArray.values.assignDiv(arrays.size.toDouble())
     }
   }
-
-  /**
-   * Forward the input to the output saving the contributions.
-   * Not available for the Avg layer.
-   *
-   * @param layerContributions the structure in which to save the contributions during the calculations
-   */
-  override fun forward(layerContributions: LayerParameters<*>) {
-    throw NotImplementedError("Forward with contributions not available for the Avg layer.")
-  }
 }

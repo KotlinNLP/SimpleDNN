@@ -29,9 +29,13 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward the input to the output combining it with the parameters, saving the contributions.
    *
+   * Override this function for layers that support the relevance calculation.
+   *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  abstract fun forward(layerContributions: LayerParameters<*>)
+  open fun forward(layerContributions: LayerParameters<*>) {
+    throw NotImplementedError("Forward with contributions not available for this layer.")
+  }
 
   /**
    * Forward [x] to [y] combining it with [w] and [b], saving the contributions in [contributions].
@@ -90,5 +94,4 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     y.assignSum(yRec)
   }
-
 }

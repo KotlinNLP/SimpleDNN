@@ -43,13 +43,4 @@ class IndRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.layer.outputArray.activate()
   }
-
-  /**
-   * Forward the input to the output combining it with the parameters, saving the contributions.
-   *
-   * @param layerContributions the structure in which to save the contributions during the calculations
-   */
-  override fun forward(layerContributions: LayerParameters<*>) {
-    TODO("not implemented")
-  }
 }

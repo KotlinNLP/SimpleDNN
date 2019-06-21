@@ -53,18 +53,4 @@ class BiaffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.layer.outputArray.activate()
   }
-
-  /**
-   * Forward the input to the output combining it with the parameters, saving the contributions.
-   *
-   *   w[ i ] = (wi (dot) x1)' (dot) x2
-   *   y = f(w + w1 (dot) x1 + w2 (dot) x2 + b
-   *
-   * @param layerContributions the structure in which to save the contributions during the calculations
-   */
-  override fun forward(layerContributions: LayerParameters<*>) {
-    layerContributions as BiaffineLayerParameters
-
-    TODO("not implemented")
-  }
 }

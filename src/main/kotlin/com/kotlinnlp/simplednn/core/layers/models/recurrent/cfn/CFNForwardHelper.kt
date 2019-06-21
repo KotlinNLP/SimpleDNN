@@ -55,15 +55,6 @@ class CFNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward the input to the output combining it with the parameters, saving the contributions.
-   *
-   * @param layerContributions the structure in which to save the contributions during the calculations
-   */
-  override fun forward(layerContributions: LayerParameters<*>) {
-    TODO("not implemented")
-  }
-
-  /**
    * Set gates values
    *
    * inG = sigmoid(wIn (dot) x + bIn + wrIn (dot) yPrev)

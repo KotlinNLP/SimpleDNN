@@ -37,14 +37,4 @@ class DistanceForwardHelper(override val layer: DistanceLayer) : ForwardHelper<D
 
     this.layer.outputArray.assignValues(DenseNDArrayFactory.arrayOf(outputScore))
   }
-
-  /**
-   * Forward the input to the output saving the contributions.
-   * Not available for the Sum layer.
-   *
-   * @param layerContributions the structure in which to save the contributions during the calculations
-   */
-  override fun forward(layerContributions: LayerParameters<*>) {
-    throw NotImplementedError("Forward with contributions not available for the Distance layer.")
-  }
 }

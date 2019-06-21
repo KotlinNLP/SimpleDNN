@@ -39,17 +39,4 @@ class AffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.layer.outputArray.activate()
   }
-
-  /**
-   * Forward the input to the output combining it with the parameters, saving the contributions.
-   *
-   * y = f(w1 (dot) x1 + w2 (dot) x2 (+ ... + wn (dot) xn) + b)
-   *
-   * @param layerContributions the structure in which to save the contributions during the calculations
-   */
-  override fun forward(layerContributions: LayerParameters<*>) {
-    layerContributions as AffineLayerParameters
-
-    TODO("not implemented")
-  }
 }

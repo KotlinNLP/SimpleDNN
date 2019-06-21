@@ -32,14 +32,4 @@ class ConcatForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       concatVectorsV(*this.layer.inputArrays.map { it.values as DenseNDArray }.toTypedArray())
     )
   }
-
-  /**
-   * Forward the input to the output saving the contributions.
-   * Not available for the Concat layer.
-   *
-   * @param layerContributions the structure in which to save the contributions during the calculations
-   */
-  override fun forward(layerContributions: LayerParameters<*>) {
-    throw NotImplementedError("Forward with contributions not available for the Concat layer.")
-  }
 }
