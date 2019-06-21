@@ -125,7 +125,6 @@ class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       .assignErrorsByDotT(gr, wR)
       .assignSum(getQuantizationGradients(this.layer.aR.values, q))
       .assignProd(aRactDeriv)
-
   }
 
   /**
