@@ -43,7 +43,7 @@ class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       s *= 2.0
 
       for (i in 0 until out.length) {
-        out[i] = 2.0 * out[i] * q * (2 * out[i] * out[i] - 3 * out[i] + s - 1.0)
+        out[i] = q * 2.0 * out[i] * (2 * out[i] * out[i] - 3 * out[i] + s - 1.0)
       }
 
       return out
