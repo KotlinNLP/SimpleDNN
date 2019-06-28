@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr
 
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -42,15 +41,6 @@ class TPRForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.layer.bindingMatrix.values.assignValues(a = this.layer.s.values.dot(this.layer.r.values.t))
     this.layer.bindingMatrix.values.vectorize(this.layer.outputArray.values)
-  }
-
-  /**
-   * Forward the input to the output combining it with the parameters, saving the contributions.
-   *
-   * @param layerContributions the structure in which to save the contributions during the calculations
-   */
-  override fun forward(layerContributions: LayerParameters<*>) {
-    throw NotImplementedError("Forward with contributions not available for the TPR layer.")
   }
 
   /**
