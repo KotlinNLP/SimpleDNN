@@ -34,3 +34,28 @@ fun getErrorsByHingeLoss(prediction: DenseNDArray, goldIndex: Int, marginThresho
 
   return errors
 }
+
+/**
+ * Calculate errors of the quantization.
+ * The quantization pushes towards attention vectors that are 1-hot.
+ * TODO: rename method
+ *
+ * @property a The quantization function argument
+ */
+fun getQuantizationGradients(a: DenseNDArray): DenseNDArray {
+
+  var s = 0.0
+  val out = a.copy()
+
+  for (i in 0 until out.length) {
+    s += out[i] * out[i]
+  }
+
+  s *= 2.0
+
+  for (i in 0 until out.length) {
+    out[i] = 2.0 * out[i] * (2 * out[i] * out[i] - 3 * out[i] + s - 1.0)
+  }
+
+  return out
+}

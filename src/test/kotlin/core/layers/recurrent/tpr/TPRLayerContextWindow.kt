@@ -8,13 +8,10 @@
 package core.layers.recurrent.tpr
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
@@ -74,7 +71,7 @@ private fun buildPrevStateLayer(): TPRLayer<DenseNDArray> {
       inputType = LayerType.Input.Dense,
       params = TPRLayerParameters(inputSize = 4, dRoles = 3, dSymbols = 2, nRoles = 3, nSymbols = 4),
       layerContextWindow = TPRLayerContextWindow.Empty(),
-      quantizationRegularizer = 0.001)
+      q = 0.001)
 
   layer.outputArray.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.211, -0.451, 0.499, -1.333, -0.11645, 0.366)))
 
@@ -91,7 +88,7 @@ private fun buildNextStateLayer(): TPRLayer<DenseNDArray> {
       inputType = LayerType.Input.Dense,
       params = TPRLayerParameters(inputSize = 4, dRoles = 3, dSymbols = 2, nRoles = 3, nSymbols = 4),
       layerContextWindow = TPRLayerContextWindow.Empty(),
-      quantizationRegularizer = 0.001)
+      q = 0.001)
 
   layer.outputArray.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.711, -0.099, 0.459, -1.235, -0.9845, 0.9292)))
 

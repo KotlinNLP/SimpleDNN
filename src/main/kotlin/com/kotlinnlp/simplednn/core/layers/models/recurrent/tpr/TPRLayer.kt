@@ -31,7 +31,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
- * @property quantizationRegularizer the weight of the quantization function.
+ * @property q The weight of the quantization in the loss function
  */
 class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
@@ -39,7 +39,7 @@ class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   params: LayerParameters<*>,
   layerContextWindow: LayerContextWindow,
   dropout: Double = 0.0,
-  val quantizationRegularizer: Double
+  val q: Double
 ) : RecurrentLayer<InputNDArrayType>(
   inputArray = inputArray,
   inputType = inputType,

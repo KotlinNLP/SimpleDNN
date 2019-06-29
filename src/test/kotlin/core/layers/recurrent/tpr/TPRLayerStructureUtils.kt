@@ -8,7 +8,6 @@
 package core.layers.recurrent.tpr
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayer
@@ -30,7 +29,7 @@ object TPRLayerStructureUtils {
       inputType = LayerType.Input.Dense,
       params = buildParams(),
       layerContextWindow = layerContextWindow,
-      quantizationRegularizer = 0.001)
+      q = 0.001)
 
   /**
    *

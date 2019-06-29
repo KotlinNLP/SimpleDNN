@@ -302,6 +302,6 @@ object LayerFactory {
       params = params,
       dropout = dropout,
       layerContextWindow = contextWindow!!,
-      quantizationRegularizer = 0.00001) // TODO
+      q = 0.00001) // TODO
   }
 }

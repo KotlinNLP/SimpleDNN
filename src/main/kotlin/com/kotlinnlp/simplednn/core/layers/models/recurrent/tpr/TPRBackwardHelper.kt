@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.functionalities.losses.getQuantizationGradients
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -21,34 +22,6 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: TPRLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType>(layer) {
-
-  companion object {
-
-    /**
-     * Calculate errors of roles and symbols wrt quantization errors.
-     * The quantization pushes towards attention vectors that are 1-hot.
-     *
-     * @property a The quantization function argument
-     * @property q The weight of the quantization in the loss function
-     */
-    private fun getQuantizationGradients(a: DenseNDArray, q: Double): DenseNDArray {
-
-      var s = 0.0
-      val out = a.copy()
-
-      for (i in 0 until out.length) {
-        s += out[i] * out[i]
-      }
-
-      s *= 2.0
-
-      for (i in 0 until out.length) {
-        out[i] = q * 2.0 * out[i] * (2 * out[i] * out[i] - 3 * out[i] + s - 1.0)
-      }
-
-      return out
-    }
-  }
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
@@ -97,7 +70,7 @@ class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignGradients() {
 
-    val q = this.layer.quantizationRegularizer
+    val q = this.layer.q
     this.layer.params as TPRLayerParameters
 
     // TODO: assign zeros only if not initialized
@@ -118,12 +91,12 @@ class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.layer.aS
       .assignErrorsByDotT(gs, wS)
-      .assignSum(getQuantizationGradients(this.layer.aS.values, q))
+      .assignSum(getQuantizationGradients(this.layer.aS.values).prod(q))
       .assignProd(aSactDeriv)
 
     this.layer.aR
       .assignErrorsByDotT(gr, wR)
-      .assignSum(getQuantizationGradients(this.layer.aR.values, q))
+      .assignSum(getQuantizationGradients(this.layer.aR.values).prod(q))
       .assignProd(aRactDeriv)
   }
 
