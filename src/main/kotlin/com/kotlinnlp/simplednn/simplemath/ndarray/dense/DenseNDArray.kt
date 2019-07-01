@@ -17,6 +17,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import org.jblas.MatrixFunctions.abs
+import kotlin.math.exp
 
 /**
  * [NDArray] with dense values (implemented using JBlas)
@@ -865,6 +866,11 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   override fun norm2(): Double =
     this.storage.distance2(DoubleMatrix.zeros(this.shape.dim1, shape.dim2))
+
+  /**
+   * @return the sum of the exponentials
+   */
+  fun sumExp(): Double = this.map { exp(it) }.sum()
 
   /**
    * @return the maximum value of this NDArray
