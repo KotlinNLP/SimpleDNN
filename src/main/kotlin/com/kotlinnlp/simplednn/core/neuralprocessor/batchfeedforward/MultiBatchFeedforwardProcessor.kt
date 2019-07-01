@@ -5,24 +5,23 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.deeplearning.sequenceencoder
+package com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward
 
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
-import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
-import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * A Feedforward Encoder with multiple parallel outputs for each input.
+ * A Feed-forward processor with multiple parallel outputs for each input.
  * It encodes a sequence of arrays into another sequence of n parallel arrays using more networks.
  *
- * @property model the model of the sequence parallel encoder
+ * @property model list of feed-forward network models
  * @property useDropout whether to apply the dropout during the forward
  * @property propagateToInput whether to propagate the errors to the input during the backward
  */
-class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
-  val model: ParallelEncoderModel,
+class MultiBatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
+  val model: List<StackedLayersParameters>,
   override val useDropout: Boolean,
   override val propagateToInput: Boolean,
   override val id: Int = 0
@@ -37,7 +36,7 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    * A list of processors which encode each input array into multiple vectors.
    */
   private val encoders: List<BatchFeedforwardProcessor<InputNDArrayType>> =
-    this.model.networks.map { BatchFeedforwardProcessor<InputNDArrayType>(
+    this.model.map { BatchFeedforwardProcessor<InputNDArrayType>(
       model = it,
       useDropout = this.useDropout,
       propagateToInput = this.propagateToInput
@@ -53,7 +52,7 @@ class SequenceParallelEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     val inputErrors: List<DenseNDArray> = this.encoders[0].getInputErrors(copy = true)
 
-    for (encoderIndex in 1 until (this.model.networks.size - 1)) {
+    for (encoderIndex in 1 until (this.model.size - 1)) {
       inputErrors.zip(this.encoders[encoderIndex].getInputErrors(copy = false)).forEach {
         (baseErrors, errors) -> baseErrors.assignSum(errors)
       }
