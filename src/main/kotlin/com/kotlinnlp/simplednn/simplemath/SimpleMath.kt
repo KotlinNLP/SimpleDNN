@@ -97,6 +97,11 @@ fun DenseNDArray.toVectors(): List<DenseNDArray> {
 }
 
 /**
+ * Return a new list of DenseNDArray where each item is a copy
+ */
+fun List<DenseNDArray>.copy(): List<DenseNDArray> = this.map { it.copy() }
+
+/**
  * Compute the cosine similarity of two arrays (already normalized with the normalize2 function).
  * The cosine similarity value is limited in the range [0.0, 1.0] applying a ReLU function.
  *
