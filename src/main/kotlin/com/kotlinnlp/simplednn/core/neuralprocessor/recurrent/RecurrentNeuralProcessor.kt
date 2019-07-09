@@ -18,6 +18,7 @@ import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.layers.RecurrentStackedLayers
 import com.kotlinnlp.simplednn.core.layers.StructureContextWindow
 import com.kotlinnlp.simplednn.core.layers.helpers.ParamsErrorsCollector
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayer
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
@@ -74,6 +75,12 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * network.
    */
   private val ranImportanceHelper: RANImportanceHelper by lazy { RANImportanceHelper() }
+
+  /**
+   * The helper which calculates the scores of all the previous states of a given one, in a RAN neural
+   * network.
+   */
+  private val tprScoresHelper: TPRScoresHelper by lazy { TPRScoresHelper() }
 
   /**
    * The params errors accumulator.
@@ -412,6 +419,44 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     return this.ranImportanceHelper.getImportanceScores(
       states = (0 .. stateIndex).map { this.sequence.getStateStructure(it) })
+  }
+
+  /**
+   * Get the role score embedding (the normalized r vector)
+   *
+   * This method should be called only after a [forward] call.
+   * It is required that the network structures contain only a TPR layer.
+   *
+   * @param stateIndex the index of a state
+   *
+   * @return the array containing the normalized role vector
+   */
+  fun getTPRRolesScores(stateIndex: Int): DenseNDArray {
+
+    require(this.model.layersConfiguration.count { it.connectionType == LayerType.Connection.TPR } == 1) {
+      "It is required that only one layer must be a TPR layer to get the TPR role score."
+    }
+    val layer: TPRLayer<DenseNDArray> = this.tprScoresHelper.getTprLayer(this.sequence.getStateStructure(stateIndex).layers)
+    return this.tprScoresHelper.getRolesScores(layer)
+  }
+
+  /**
+   * Get the symbol score embedding (the s vector)
+   *
+   * This method should be called only after a [forward] call.
+   * It is required that the network structures contain only a TPR layer.
+   *
+   * @param stateIndex the index of a state
+   *
+   * @return the array containing the symbols scores
+   */
+  fun getTPRSymbolsEmbeddings(stateIndex: Int): DenseNDArray {
+
+    require(this.model.layersConfiguration.count { it.connectionType == LayerType.Connection.TPR } == 1) {
+      "It is required that only one layer must be a TPR layer to get the TPR symbol score."
+    }
+    val layer: TPRLayer<DenseNDArray> = this.tprScoresHelper.getTprLayer(this.sequence.getStateStructure(stateIndex).layers)
+    return this.tprScoresHelper.getSymbolEmbedding(layer)
   }
 
   /**
