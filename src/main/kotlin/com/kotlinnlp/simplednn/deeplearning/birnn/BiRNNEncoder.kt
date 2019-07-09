@@ -115,6 +115,26 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   }
 
   /**
+  * This method should be called only after a [forward] call.
+  * It is required that the networks structures contain only a TPR layer.
+  *
+  * @return the list of roles and symbols scores pairs of the input elements
+  */
+  fun getTPRImportanceScores(): List<Pair<DenseNDArray?, DenseNDArray?>> {
+
+    val statesSize: Int = this.sequence.size
+
+    return (0 until statesSize).map { stateIndex ->
+      val leftStateIndex: Int = stateIndex
+
+      Pair(
+          this.leftToRightProcessor.getTPRRolesScores(leftStateIndex),
+        this.leftToRightProcessor.getTPRSymbolsEmbeddings(leftStateIndex)
+      )
+    }
+  }
+
+  /**
    * @param copy whether to return a copy of the arrays
    *
    * @return a pair containing the last output of the two RNNs (left-to-right, right-to-left).
