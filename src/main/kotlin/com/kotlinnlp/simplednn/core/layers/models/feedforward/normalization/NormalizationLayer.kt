@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 class NormalizationLayer <InputNDArrayType : NDArray<InputNDArrayType>>(
     val inputArrays: List<AugmentedArray<InputNDArrayType>>,
     inputType: LayerType.Input,
-    val inputSize: Shape,
+    val inputSize: Int,
     override val params: NormalizationLayerParameters,
     activationFunction: ActivationFunction? = null,
     dropout: Double = 0.0,
@@ -38,7 +38,7 @@ class NormalizationLayer <InputNDArrayType : NDArray<InputNDArrayType>>(
    * The list containing the layer output
    */
   val outputArrays: List<AugmentedArray<DenseNDArray>> = List(this.inputArrays.size) {
-    AugmentedArray(DenseNDArrayFactory.zeros(inputSize))
+    AugmentedArray(DenseNDArrayFactory.zeros(Shape(inputSize)))
   }
 
   /**
