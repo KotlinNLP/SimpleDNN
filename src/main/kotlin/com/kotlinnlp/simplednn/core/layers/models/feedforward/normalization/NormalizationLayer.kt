@@ -42,6 +42,16 @@ class NormalizationLayer <InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * The vector containing the mean of the input layers
+   */
+  val meanArray: DenseNDArray = DenseNDArrayFactory.zeros(Shape(inputSize))
+
+  /**
+   * The vector containing the standard deviation of the input layers
+   */
+  val devStdArray: DenseNDArray = DenseNDArrayFactory.zeros(Shape(inputSize))
+
+  /**
    * The helper which executes the forward
    */
   override val forwardHelper = NormalizationForwardHelper(layer = this)
