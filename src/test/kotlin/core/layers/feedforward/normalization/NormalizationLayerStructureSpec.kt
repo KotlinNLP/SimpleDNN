@@ -27,23 +27,23 @@ class NormalizationLayerStructureSpec : Spek({
       it("should match the expected output at position 0") {
         assertTrue {
           layer.outputArrays[0].values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.39693, -0.796878, 0.0, 0.701374)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(1.1828427, 0.2, 0.0, 0.0)),
               tolerance = 1.0e-06)
         }
       }
 
       it("should match the expected output at position 1") {
         assertTrue {
-          layer.outputArrays[0].values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.39693, -0.796878, 0.0, 0.701374)),
+          layer.outputArrays[1].values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.334314, 0.2, 0.0, 0.0)),
               tolerance = 1.0e-06)
         }
       }
 
       it("should match the expected output at position 2") {
         assertTrue {
-          layer.outputArrays[0].values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.39693, -0.796878, 0.0, 0.701374)),
+          layer.outputArrays[2].values.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(1.1828427, 0.2, 0.0, 1.302356)),
               tolerance = 1.0e-06)
         }
       }
@@ -62,42 +62,35 @@ class NormalizationLayerStructureSpec : Spek({
       val paramsErrors = layer.backward(propagateToInput = true)
       val params = layer.params
 
-      it("should match the expected errors of the outputArray") {
-        assertTrue {
-          layer.outputArray.errors.equals(
-              HighwayLayerStructureUtils.getOutputErrors(),
-              tolerance = 1.0e-06)
-        }
-      }
-
       it("should match the expected errors of the input 1") {
         assertTrue {
           layer.inputArrays[0].errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.409706, 0.118504, -0.017413, 0.433277)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.06066017177982,	0.0,	0.0,	0.0)),
               tolerance = 1.0e-06)
         }
       }
 
       it("should match the expected errors of the input 2") {
         assertTrue {
-          layer.inputArrays[0].errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.409706, 0.118504, -0.017413, 0.433277)),
+          layer.inputArrays[1].errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.318198,	0.0,	0.0,	0.0)),
               tolerance = 1.0e-06)
         }
       }
 
       it("should match the expected errors of the input 3") {
         assertTrue {
-          layer.inputArrays[0].errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.409706, 0.118504, -0.017413, 0.433277)),
+          layer.inputArrays[2].errors.equals(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.318198,	0.0,	0.0,	-0.881885)),
               tolerance = 1.0e-06)
+
         }
       }
 
       it("should match the expected errors of the bias b") {
         assertTrue {
           paramsErrors.getErrorsOf(params.b)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.409706, 0.118504, -0.017413, 0.433277)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, -0.5, 0.0, -0.8)),
               tolerance = 1.0e-06)
         }
       }
@@ -105,7 +98,7 @@ class NormalizationLayerStructureSpec : Spek({
       it("should match the expected errors of the weights g") {
         assertTrue {
           paramsErrors.getErrorsOf(params.g)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.028775, 0.018987, -0.013853, -0.122241)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.070710, -0.475556, 0.0, -1.102356)),
               tolerance = 1.0e-06)
         }
       }

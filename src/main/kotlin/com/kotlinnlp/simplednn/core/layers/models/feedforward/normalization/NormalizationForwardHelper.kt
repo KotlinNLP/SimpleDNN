@@ -28,10 +28,11 @@ class NormalizationForwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun calculateStdDev(meanVector: DenseNDArray, arrays: List<AugmentedArray<InputNDArrayType>>): DenseNDArray{
 
-    val devVector: DenseNDArray = DenseNDArrayFactory.fromNDArray(this.layer.inputArrays[0].values)
+    val devVector: DenseNDArray = DenseNDArrayFactory.zeros(this.layer.inputArrays[0].values.shape)
     var n = 0.0
+    val e = 0.00000000001
 
-    (1 until arrays.size).forEach {
+    (0 until arrays.size).forEach {
       i ->
       val diffVector: DenseNDArray = DenseNDArrayFactory.fromNDArray(meanVector)
       diffVector.assignSub(this.layer.inputArrays[i].values)
@@ -40,8 +41,7 @@ class NormalizationForwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
       n += 1
     }
 
-    devVector.assignDiv(n)
-    (0 until devVector.length).forEach { i -> devVector[i] = sqrt(devVector[i]) }
+    (0 until devVector.length).forEach { i -> devVector[i] = sqrt(devVector[i] / n + e) }
 
     return devVector
   }
@@ -50,10 +50,10 @@ class NormalizationForwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward the input to the output combining it with the parameters
    */
   private fun calculateMean(arrays: List<AugmentedArray<InputNDArrayType>>): DenseNDArray{
-    val meanVector: DenseNDArray = DenseNDArrayFactory.fromNDArray(this.layer.inputArrays[0].values)
+    val meanVector: DenseNDArray = DenseNDArrayFactory.zeros(this.layer.inputArrays[0].values.shape)
     var n = 0.0
 
-    (1 until arrays.size).forEach { i -> meanVector.assignSum(arrays[i].values)
+    (0 until arrays.size).forEach { i -> meanVector.assignSum(arrays[i].values)
       n += 1
     }
 
@@ -68,12 +68,15 @@ class NormalizationForwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
     val meanVector: DenseNDArray = calculateMean(this.layer.inputArrays)
 
     val devVector: DenseNDArray = calculateStdDev(meanVector, this.layer.inputArrays)
+    this.layer.devStdArray.assignValues(devVector)
+    devVector.assignValues(this.layer.params.g.values.div(devVector))
 
+    this.layer.meanArray.assignValues(meanVector)
     for ((index, outputArray) in this.layer.outputArrays.withIndex()){
-      devVector.assignDiv(this.layer.params.g.values)
-      outputArray.values.assignValues(this.layer.inputArrays[index].values as DenseNDArray)
-      outputArray.values.assignSub(meanVector)
-      outputArray.values.assignProd(devVector).assignSub(this.layer.params.b.values)
+      outputArray.valuesNotActivated.assignValues(this.layer.inputArrays[index].values as DenseNDArray)
+      outputArray.valuesNotActivated.assignSub(meanVector)
+      outputArray.valuesNotActivated.assignProd(devVector).assignSum(this.layer.params.b.values)
+      outputArray.activate()
     }
   }
 }

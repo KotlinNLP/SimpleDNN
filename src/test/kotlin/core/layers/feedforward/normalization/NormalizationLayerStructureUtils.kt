@@ -8,6 +8,7 @@
 package core.layers.feedforward.normalization
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization.NormalizationLayer
@@ -15,6 +16,7 @@ import com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization.Norm
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import com.sun.xml.internal.ws.spi.db.RepeatedElementBridge
 
 object NormalizationLayerStructureUtils {
 
@@ -29,7 +31,7 @@ object NormalizationLayerStructureUtils {
       inputSize = 4,
       inputType = LayerType.Input.Dense,
       params = buildParams(),
-      activationFunction = Tanh())
+      activationFunction = ReLU())
 
   /**
    *
@@ -74,16 +76,16 @@ object NormalizationLayerStructureUtils {
   /**
    *
    */
-  fun getOutputErrors1() = DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, -0.2, 0.4, 0.0))
+  fun getOutputErrors1() = DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, -0.2, 0.4, 0.6))
 
   /**
    *
    */
-  fun getOutputErrors2() = DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, -0.2, 0.4, 0.0))
+  fun getOutputErrors2() = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, 0.1, 0.7, 0.9))
 
   /**
    *
    */
-  fun getOutputErrors3() = DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, -0.2, 0.4, 0.0))
+  fun getOutputErrors3() = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, -0.4, 0.7, -0.8))
 
 }
