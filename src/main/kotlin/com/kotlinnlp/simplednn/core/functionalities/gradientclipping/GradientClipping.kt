@@ -10,6 +10,9 @@ package com.kotlinnlp.simplednn.core.functionalities.gradientclipping
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import kotlin.math.pow
 
+/**
+ * The class that performs the calculation of the gradients clipping.
+ */
 class GradientClipping {
 
   private fun findMax(paramsErrors: ParamsErrorsList): Double {
