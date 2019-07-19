@@ -573,6 +573,20 @@ class SparseBinaryNDArray(
   /**
    *
    */
+  override fun max(): Double {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun min(): Double {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
   override fun abs(): SparseBinaryNDArray {
     TODO("not implemented")
   }

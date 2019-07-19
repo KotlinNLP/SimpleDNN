@@ -298,6 +298,16 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun avg(): Double
 
   /**
+   *
+   */
+  fun max(): Double
+
+  /**
+   *
+   */
+  fun min(): Double
+
+  /**
    * Sign function
    *
    * @return a new NDArray containing the results of the function sign() applied element-wise

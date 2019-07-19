@@ -896,7 +896,12 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    * @return the maximum value of this NDArray
    **/
-  fun max(): Double = this.values.max()!!
+  override fun max(): Double = this.values.max()!!
+
+  /**
+   * @return the minimum value of this NDArray
+   **/
+  override fun min(): Double = this.values.min()!!
 
   /**
    * Get the index of the highest value eventually skipping the element at the given [exceptIndex] when it is >= 0.

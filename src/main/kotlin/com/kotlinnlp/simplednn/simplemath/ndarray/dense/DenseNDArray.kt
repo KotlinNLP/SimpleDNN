@@ -741,6 +741,16 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   override fun avg(): Double = this.storage.mean()
 
   /**
+   * @return the maximum value of this NDArray
+   **/
+  override fun max(): Double = this.storage.max()
+
+  /**
+   * @return the minimum value of this NDArray
+   **/
+  override fun min(): Double = this.storage.min()
+
+  /**
    *
    */
   override fun abs() = DenseNDArray(storage = abs(this.storage))
@@ -871,11 +881,6 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    * @return the sum of the exponentials
    */
   fun sumExp(): Double = this.map { exp(it) }.sum()
-
-  /**
-   * @return the maximum value of this NDArray
-   **/
-  fun max(): Double = this.storage.max()
 
   /**
    * Get the index of the highest value eventually skipping the element at the given [exceptIndex] when it is >= 0.
