@@ -15,46 +15,29 @@ import kotlin.math.pow
  */
 class GradientClipping {
 
-  private fun findMax(paramsErrors: ParamsErrorsList): Double {
-
-    var max = Double.MIN_VALUE
-    paramsErrors.map {
-      for (i in 0 until it.values.rows)
-        for (j in 0 until it.values.columns)
-          if (it.values[i, j].toDouble() > max)
-            max = it.values[i, j].toDouble()
-
-    }
-    return max
-  }
+  /**
+   * Clip [paramsErrors] norm, multiplying each parameter by a coefficient.
+   * Coefficient is maxNorm divided by n-norm of parameters
+   */
+  fun clipByNorm (paramsErrors: ParamsErrorsList, maxNorm: Double, normType: Int = 2) =
+    this.clipByNorm(paramsErrors, maxNorm, normType.toDouble())
 
   /**
    * Clip [paramsErrors] norm, multiplying each parameter by a coefficient.
    * Coefficient is maxNorm divided by n-norm of parameters
    */
-  fun clipByNorm (paramsErrors: ParamsErrorsList, maxNorm: Double, normType: String = "2") {
+  fun clipByNorm (paramsErrors: ParamsErrorsList, maxNorm: Double, normType: Double = 2.0) {
 
-    var totalNorm = 0.0
-    if (normType == "inf")
-      totalNorm = findMax(paramsErrors)
+    val totalNorm: Double = if (normType == Double.POSITIVE_INFINITY)
+      paramsErrors.map { it.values.abs().max() }.max()!!
     else {
-      paramsErrors.map {
-        for (i in 0 until it.values.rows)
-          for (j in 0 until it.values.columns)
-
-            totalNorm += it.values[i, j].toDouble().pow(normType.toDouble())
-
-      }
-      totalNorm = totalNorm.pow(1.0 / normType.toDouble())
+      paramsErrors.map { it.values.abs().pow(normType).sum() }.sum().pow(1.0 / normType)
     }
+
     val clipCoefficient = maxNorm / (totalNorm + 0.0000001)
-    if (clipCoefficient < 1.0)
-      paramsErrors.map {
-        for (i in 0 until it.values.rows)
-          for (j in 0 until it.values.columns)
 
-            it.values[i, j] = it.values[i, j].toDouble() * clipCoefficient
-
+    if (clipCoefficient < 1.0) {
+      paramsErrors.forEach { it.values.assignProd(clipCoefficient) }
     }
   }
 
@@ -66,12 +49,15 @@ class GradientClipping {
   fun clipByValue (paramsErrors: ParamsErrorsList, clipValue: Double) {
 
     paramsErrors.map {
-      for (i in 0 until it.values.rows)
-        for (j in 0 until it.values.columns)
-          if (it.values[i, j].toDouble() < -clipValue)
-            it.values[i, j] = -clipValue
-          else if (it.values[i, j].toDouble() > clipValue)
-            it.values[i, j] = clipValue
+      for (i in 0 until it.values.rows) {
+        for (j in 0 until it.values.columns) {
+          val value = it.values[i, j].toDouble()
+          when {
+            value < -clipValue -> it.values[i, j] = -clipValue
+            value > clipValue -> it.values[i, j] = clipValue
+          }
+        }
+      }
     }
   }
 }

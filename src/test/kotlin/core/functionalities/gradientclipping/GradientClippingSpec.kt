@@ -52,7 +52,7 @@ class GradientClippingSpec: Spek({
     context("clip at 2-norm") {
       val paramsErrors: ParamsErrorsList = GradientClippingUtils.buildErrors()
       val gradientClipping = GradientClipping()
-      gradientClipping.clipByNorm(paramsErrors, 2.0, "2")
+      gradientClipping.clipByNorm(paramsErrors, 2.0, 2)
 
       it("should match the expected parameters at index 0") {
         assertTrue {
@@ -80,7 +80,7 @@ class GradientClippingSpec: Spek({
     context("clip at inf-norm") {
       val paramsErrors: ParamsErrorsList = GradientClippingUtils.buildErrors()
       val gradientClipping = GradientClipping()
-      gradientClipping.clipByNorm(paramsErrors, 0.5, "inf")
+      gradientClipping.clipByNorm(paramsErrors, 0.5, Double.POSITIVE_INFINITY)
 
       it("should match the expected parameters at index 0") {
         assertTrue {
