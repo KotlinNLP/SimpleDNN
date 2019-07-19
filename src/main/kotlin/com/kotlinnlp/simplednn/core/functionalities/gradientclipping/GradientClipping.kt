@@ -48,7 +48,7 @@ sealed class GradientClipping {
      */
     constructor(maxNorm: Double, normType: Int = 2) : this(maxNorm, normType.toDouble())
 
-    init { require(normType < 1) { "Norm type required to be > 1."} }
+    init { require(this.normType < 1) { "Norm type required to be > 1."} }
 
     /**
      * Clip the gradients in place.
