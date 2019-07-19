@@ -31,6 +31,14 @@ sealed class GradientClipping {
    */
   class byNorm(private val maxNorm: Double, private val normType: Double = 2.0) : GradientClipping() {
 
+    companion object {
+
+      /**
+       * Avoid division by zero.
+       */
+      const val eps = 0.0000001
+    }
+
     /**
      * Clip the gradients, multiplying each parameter by a coefficient.
      * Coefficient is maxNorm divided by n-norm of parameters
@@ -39,6 +47,8 @@ sealed class GradientClipping {
      * @param normType type of the used p-norm (default 2)
      */
     constructor(maxNorm: Double, normType: Int = 2) : this(maxNorm, normType.toDouble())
+
+    init { require(normType < 1) { "Norm type required to be > 1."} }
 
     /**
      * Clip the gradients in place.
@@ -53,13 +63,12 @@ sealed class GradientClipping {
         paramsErrors.map { it.values.abs().pow(this.normType).sum() }.sum().pow(1.0 / this.normType)
       }
 
-      val clipCoefficient = this.maxNorm / (totalNorm + 0.0000001)
+      val clipCoefficient = this.maxNorm / (totalNorm + eps)
 
       if (clipCoefficient < 1.0) {
         paramsErrors.forEach { it.values.assignProd(clipCoefficient) }
       }
     }
-
   }
 
   /**
