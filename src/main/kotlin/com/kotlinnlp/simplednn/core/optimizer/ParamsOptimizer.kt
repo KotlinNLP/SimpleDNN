@@ -7,9 +7,8 @@
 
 package com.kotlinnlp.simplednn.core.optimizer
 
+import com.kotlinnlp.simplednn.core.functionalities.gradientclipping.GradientClipping
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
@@ -18,8 +17,12 @@ import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
  * The optimizer of neural parameters.
  *
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
+ * @param gradientClipping the gradient clipper (default null)
  */
-class ParamsOptimizer(private val updateMethod: UpdateMethod<*>) : ParamsErrorsAccumulator(), ScheduledUpdater {
+class ParamsOptimizer(
+  private val updateMethod: UpdateMethod<*>,
+  private val gradientClipping: GradientClipping? = null
+) : ParamsErrorsAccumulator(), ScheduledUpdater {
 
   /**
    * Calculate the errors average, update the parameters.
@@ -29,6 +32,7 @@ class ParamsOptimizer(private val updateMethod: UpdateMethod<*>) : ParamsErrorsA
     if (this.isNotEmpty) {
       
       this.averageErrors()
+      this.clipGradients()
       this.updateParams()
       this.clear()
     }
@@ -76,5 +80,13 @@ class ParamsOptimizer(private val updateMethod: UpdateMethod<*>) : ParamsErrorsA
 
       this.updateMethod.update(array = errors.refParams, errors = errors.values)
     }
+  }
+
+  /**
+   * Perform the gradient clipping.
+   */
+  private fun clipGradients() {
+
+    this.gradientClipping?.clip(this.getParamsErrors(copy = false))
   }
 }
