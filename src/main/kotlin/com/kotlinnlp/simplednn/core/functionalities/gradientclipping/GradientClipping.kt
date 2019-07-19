@@ -41,14 +41,14 @@ sealed class GradientClipping {
 
     /**
      * Clip the gradients, multiplying each parameter by a coefficient.
-     * Coefficient is maxNorm divided by n-norm of parameters
+     * Coefficient is maxNorm divided by n-norm of the overall gradients.
      *
      * @param maxNorm max norm of the gradients
      * @param normType type of the used p-norm (default 2)
      */
     constructor(maxNorm: Double, normType: Int = 2) : this(maxNorm, normType.toDouble())
 
-    init { require(this.normType < 1) { "Norm type required to be > 1."} }
+    init { require(this.normType > 1) { "Norm type required to be > 1."} }
 
     /**
      * Clip the gradients in place.
@@ -72,7 +72,7 @@ sealed class GradientClipping {
   }
 
   /**
-   * Clip gradients at specified [clipValue]
+   * Clip gradients at specified [clipValue].
    *
    * @param clipValue the gradients will be clipped at this value
    */
