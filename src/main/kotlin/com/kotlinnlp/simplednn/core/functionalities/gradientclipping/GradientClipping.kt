@@ -24,7 +24,7 @@ sealed class GradientClipping {
 
   /**
    * Clip the gradients, multiplying each parameter by a coefficient.
-   * Coefficient is maxNorm divided by n-norm of parameters
+   * Coefficient is maxNorm divided by n-norm of the overall gradients.
    *
    * @param maxNorm max norm of the gradients
    * @param normType type of the used p-norm. Can be ``Double.POSITIVE_INFINITY`` for infinity norm (default 2)
