@@ -174,7 +174,7 @@ open class EmbeddingsMap<T>(
 
         out.println("%d %d".format(this.count, this.size))
 
-        this.embeddings.forEach { key, value ->
+        this.embeddings.forEach { (key, value) ->
           out.print(key)
           out.println(value.toString(digits = digits))
           out.flush()
