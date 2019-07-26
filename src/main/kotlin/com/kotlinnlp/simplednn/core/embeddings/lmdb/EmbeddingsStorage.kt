@@ -97,7 +97,7 @@ class EmbeddingsStorage(
   }
 
   /**
-   * Load an the embeddings from file.
+   * Load the embeddings from file.
    *
    * The file must contain one header line and N following data lines:
    *   - The header line must contain the number N of data lines and the size S of the vectors (the same for all),
