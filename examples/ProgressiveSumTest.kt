@@ -9,14 +9,12 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
-import traininghelpers.training.SequenceTrainingHelper
-import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
+import traininghelpers.training.SequenceTrainer
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.CFN
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
-import traininghelpers.validation.SequenceValidationHelper
+import com.kotlinnlp.simplednn.helpers.Statistics
+import traininghelpers.validation.SequenceEvaluator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.utils.Shuffler
 import utils.Corpus
 import utils.SequenceExample
 import utils.CorpusReader
@@ -67,13 +65,14 @@ class ProgressiveSumTest(val dataset: Corpus<SequenceExample<DenseNDArray>>) {
 
     println("\n-- VALIDATION BEFORE TRAINING\n")
 
-    val validationHelper = SequenceValidationHelper<DenseNDArray>(
-      neuralProcessor = RecurrentNeuralProcessor(this.neuralNetwork, useDropout = false, propagateToInput = false),
-      outputEvaluationFunction = ClassificationEvaluation())
+    val evaluator = SequenceEvaluator(
+        model = this.neuralNetwork,
+        examples = this.dataset.validation,
+        outputEvaluationFunction = ClassificationEvaluation())
 
-    val accuracy: Double = validationHelper.validate(this.dataset.validation)
+    val stats: Statistics = evaluator.evaluate()
 
-    println("Accuracy: %.2f%%".format(100.0 * accuracy))
+    println("Accuracy: %.2f%%".format(100.0 * stats.accuracy))
   }
 
   /**
@@ -83,25 +82,17 @@ class ProgressiveSumTest(val dataset: Corpus<SequenceExample<DenseNDArray>>) {
 
     println("\n-- TRAINING\n")
 
-    val optimizer = ParamsOptimizer(
-      updateMethod = LearningRateMethod(learningRate = 0.1))
-
-    val trainingHelper = SequenceTrainingHelper<DenseNDArray>(
-      neuralProcessor = RecurrentNeuralProcessor(this.neuralNetwork, useDropout = false, propagateToInput = false),
-      optimizer = optimizer,
+    SequenceTrainer(
+      model = this.neuralNetwork,
+      updateMethod = LearningRateMethod(learningRate = 0.1),
       lossCalculator = SoftmaxCrossEntropyCalculator(),
-      verbose = true)
-
-    val validationHelper = SequenceValidationHelper<DenseNDArray>(
-      neuralProcessor = RecurrentNeuralProcessor(this.neuralNetwork, useDropout = false, propagateToInput = false),
-      outputEvaluationFunction = ClassificationEvaluation())
-
-    trainingHelper.train(
-      trainingExamples = this.dataset.training,
-      validationExamples = this.dataset.validation,
+      examples = this.dataset.training,
       epochs = 4,
-      shuffler = Shuffler(enablePseudoRandom = true, seed = 1),
       batchSize = 1,
-      validationHelper = validationHelper)
+      evaluator = SequenceEvaluator(
+        model = this.neuralNetwork,
+        examples = this.dataset.validation,
+        outputEvaluationFunction = ClassificationEvaluation())
+    ).train()
   }
 }

@@ -12,14 +12,11 @@ import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.Classificat
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGradMethod
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
-import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import utils.Corpus
 import utils.SimpleExample
-import traininghelpers.training.FeedforwardTrainingHelper
-import traininghelpers.validation.FeedforwardValidationHelper
+import traininghelpers.training.FeedforwardTrainer
+import traininghelpers.validation.FeedforwardEvaluator
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
-import com.kotlinnlp.utils.Shuffler
 import utils.CorpusReader
 import utils.exampleextractor.ClassificationSparseExampleExtractor
 
@@ -67,24 +64,17 @@ class SparseInputTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArray>>) {
 
     println("\n-- TRAINING")
 
-    val optimizer = ParamsOptimizer(updateMethod = AdaGradMethod(learningRate = 0.1))
-
-    val trainingHelper = FeedforwardTrainingHelper<SparseBinaryNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork, useDropout = false, propagateToInput = false),
-      optimizer = optimizer,
+    FeedforwardTrainer(
+      model = this.neuralNetwork,
+      updateMethod = AdaGradMethod(learningRate = 0.1),
       lossCalculator = SoftmaxCrossEntropyCalculator(),
-      verbose = true)
-
-    val validationHelper = FeedforwardValidationHelper<SparseBinaryNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor(this.neuralNetwork, useDropout = false, propagateToInput = false),
-      outputEvaluationFunction = ClassificationEvaluation())
-
-    trainingHelper.train(
-      trainingExamples = this.dataset.training,
-      validationExamples = this.dataset.validation,
+      examples = this.dataset.training,
       epochs = 3,
       batchSize = 1,
-      shuffler = Shuffler(enablePseudoRandom = true, seed = 1),
-      validationHelper = validationHelper)
+      evaluator = FeedforwardEvaluator(
+        model = this.neuralNetwork,
+        examples = this.dataset.validation,
+        outputEvaluationFunction = ClassificationEvaluation())
+    ).train()
   }
 }

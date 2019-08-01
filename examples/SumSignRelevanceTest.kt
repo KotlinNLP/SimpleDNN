@@ -14,11 +14,9 @@ import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCa
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.SimpleRecurrentNeuralNetwork
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
-import traininghelpers.training.SequenceWithFinalOutputTrainingHelper
-import traininghelpers.validation.SequenceWithFinalOutputValidationHelper
+import traininghelpers.training.SequenceWithFinalOutputTrainer
+import traininghelpers.validation.SequenceWithFinalOutputEvaluator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.utils.Shuffler
 import utils.Corpus
 import utils.SequenceExampleWithFinalOutput
 
@@ -106,32 +104,20 @@ class SumSignRelevanceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<De
 
     println("\n-- TRAINING\n")
 
-    val optimizer = ParamsOptimizer(
-      updateMethod = LearningRateMethod(learningRate = 0.01))
-
-    val trainingHelper = SequenceWithFinalOutputTrainingHelper<DenseNDArray>(
-      neuralProcessor = RecurrentNeuralProcessor(
-        model = this.neuralNetwork,
-        useDropout = false,
-        propagateToInput = false),
-      optimizer = optimizer,
+    SequenceWithFinalOutputTrainer(
+      model = this.neuralNetwork,
+      updateMethod = LearningRateMethod(learningRate = 0.01),
       lossCalculator = SoftmaxCrossEntropyCalculator(),
-      verbose = true)
-
-    val validationHelper = SequenceWithFinalOutputValidationHelper(
-      neuralProcessor = RecurrentNeuralProcessor<DenseNDArray>(
-        model = this.neuralNetwork,
-        useDropout = false,
-        propagateToInput = false),
-      outputEvaluationFunction = ClassificationEvaluation())
-
-    trainingHelper.train(
-      trainingExamples = this.dataset.training,
-      validationExamples = this.dataset.validation,
+      examples = this.dataset.training,
       epochs = 3,
-      shuffler = Shuffler(enablePseudoRandom = true, seed = 1),
       batchSize = 1,
-      validationHelper = validationHelper)
+      evaluator = SequenceWithFinalOutputEvaluator(
+        model = this.neuralNetwork,
+        examples = this.dataset.validation,
+        outputEvaluationFunction = ClassificationEvaluation(),
+        verbose = false),
+      verbose = false
+    ).train()
   }
 
   /**
@@ -141,28 +127,20 @@ class SumSignRelevanceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<De
 
     println("\n-- PRINT RELEVANCE OF %d EXAMPLES\n".format(this.examplesToPrint))
 
-    val validationProcessor = RecurrentNeuralProcessor<DenseNDArray>(
-      model = neuralNetwork,
-      useDropout = false,
-      propagateToInput = false)
-
-    val validationHelper = SequenceWithFinalOutputValidationHelper(
-      neuralProcessor = validationProcessor,
-      outputEvaluationFunction = ClassificationEvaluation())
-
     var exampleIndex = 0
 
-    validationHelper.validate(
+    SequenceWithFinalOutputEvaluator(
+      model = this.neuralNetwork,
       examples = this.dataset.test,
+      outputEvaluationFunction = ClassificationEvaluation(),
       saveContributions = true,
-      onPrediction = { example, isCorrect ->
+      afterEachEvaluation = { example, isCorrect, processor ->
         if (isCorrect && exampleIndex < this.examplesToPrint) {
-          this.printSequenceRelevance(
-            neuralProcessor = validationProcessor,
-            example = example,
-            exampleIndex = exampleIndex++)
+          this.printSequenceRelevance(neuralProcessor = processor, example = example, exampleIndex = exampleIndex++)
         }
-      })
+      },
+      verbose = false
+    ).evaluate()
   }
 
   /**

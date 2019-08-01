@@ -10,23 +10,19 @@ package logicgates
 import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
-import traininghelpers.training.FeedforwardTrainingHelper
+import traininghelpers.training.FeedforwardTrainer
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
-import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
-
 import utils.SimpleExample
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.MulticlassEvaluation
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.OutputEvaluationFunction
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
-import traininghelpers.validation.FeedforwardValidationHelper
+import traininghelpers.validation.FeedforwardEvaluator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.utils.Shuffler
 
 object GateTestUtils {
 
@@ -76,37 +72,27 @@ object GateTestUtils {
                            evaluationFunction: OutputEvaluationFunction,
                            epochs: Int): Double {
 
-    val updateMethod = LearningRateMethod(
-      learningRate = 0.01,
-      decayMethod = HyperbolicDecay(decay = 0.0, initLearningRate = 0.01))
-
-    val optimizer = ParamsOptimizer(updateMethod = updateMethod)
-
-    val neuralProcessor = FeedforwardNeuralProcessor<DenseNDArray>(
+    val trainer = FeedforwardTrainer(
       model = neuralNetwork,
-      useDropout = false,
-      propagateToInput = false)
-
-    val trainingHelper = FeedforwardTrainingHelper(
-      neuralProcessor = neuralProcessor,
-      optimizer = optimizer,
+      updateMethod = LearningRateMethod(
+        learningRate = 0.01,
+        decayMethod = HyperbolicDecay(decay = 0.0, initLearningRate = 0.01)),
       lossCalculator = if (evaluationFunction is ClassificationEvaluation)
         SoftmaxCrossEntropyCalculator()
       else
-        MSECalculator())
-
-    val validationHelper = FeedforwardValidationHelper(
-      neuralProcessor = neuralProcessor,
-      outputEvaluationFunction = evaluationFunction)
-
-    trainingHelper.train(
-      trainingExamples = examples,
-      validationExamples = examples,
+        MSECalculator(),
+      examples = examples,
       epochs = epochs,
       batchSize = 1,
-      shuffler = Shuffler(enablePseudoRandom = true, seed = 1),
-      validationHelper = validationHelper)
+      evaluator = FeedforwardEvaluator(
+        model = neuralNetwork,
+        examples = examples,
+        outputEvaluationFunction = evaluationFunction,
+        verbose = false),
+      verbose = false)
 
-    return trainingHelper.statistics.lastAccuracy
+    trainer.train()
+
+    return trainer.bestAccuracy
   }
 }

@@ -7,24 +7,21 @@
 
 package mnist
 
+import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ELU
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
-import traininghelpers.training.FeedforwardTrainingHelper
-import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
+import traininghelpers.training.FeedforwardTrainer
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
-import traininghelpers.validation.FeedforwardValidationHelper
-import com.kotlinnlp.simplednn.core.arrays.DistributionArray
+import traininghelpers.validation.FeedforwardEvaluator
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
-import com.kotlinnlp.simplednn.simplemath.ndarray.*
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
-import com.kotlinnlp.utils.Shuffler
 import utils.Corpus
 import utils.SimpleExample
 import mnist.helpers.MNISTSparseExampleExtractor
@@ -47,7 +44,7 @@ fun main() {
 /**
  *
  */
-class MNISTSparseBinaryTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArray>>) {
+private class MNISTSparseBinaryTest(private val dataset: Corpus<SimpleExample<SparseBinaryNDArray>>) {
 
   /**
    *
@@ -66,7 +63,9 @@ class MNISTSparseBinaryTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArra
   fun start() {
 
     this.train()
-    this.printImages(examples = ArrayList(this.dataset.validation.subList(0, 20))) // reduced sublist
+
+    // TODO: Implement forward with contributions also for sparse binary inputs
+    // this.printImages(examples = ArrayList(this.dataset.validation.subList(0, 20))) // reduced sublist
   }
 
   /**
@@ -76,34 +75,20 @@ class MNISTSparseBinaryTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArra
 
     println("\n-- TRAINING\n")
 
-    val optimizer = ParamsOptimizer(
+    FeedforwardTrainer(
+      model = this.neuralNetwork,
       updateMethod = LearningRateMethod(
         learningRate = 0.01,
-        decayMethod = HyperbolicDecay(decay = 0.5, initLearningRate = 0.01)))
-
-    val trainingHelper = FeedforwardTrainingHelper<SparseBinaryNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor(
-        model = this.neuralNetwork,
-        useDropout = false,
-        propagateToInput = false),
-      optimizer = optimizer,
+        decayMethod = HyperbolicDecay(decay = 0.5, initLearningRate = 0.01)),
       lossCalculator = SoftmaxCrossEntropyCalculator(),
-      verbose = true)
-
-    val validationHelper = FeedforwardValidationHelper<SparseBinaryNDArray>(
-      neuralProcessor = FeedforwardNeuralProcessor(
-        model = this.neuralNetwork,
-        useDropout = false,
-        propagateToInput = false),
-      outputEvaluationFunction = ClassificationEvaluation())
-
-    trainingHelper.train(
-      trainingExamples = this.dataset.training,
-      validationExamples = this.dataset.validation,
+      examples = this.dataset.training,
       epochs = 3,
       batchSize = 1,
-      shuffler = Shuffler(enablePseudoRandom = true, seed = 1),
-      validationHelper = validationHelper)
+      evaluator = FeedforwardEvaluator(
+        model = this.neuralNetwork,
+        examples = this.dataset.validation,
+        outputEvaluationFunction = ClassificationEvaluation())
+    ).train()
   }
 
   /**
@@ -113,25 +98,19 @@ class MNISTSparseBinaryTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArra
 
     println("\n-- PRINT IMAGES RELEVANCE\n")
 
-    val neuralProcessor = FeedforwardNeuralProcessor<SparseBinaryNDArray>(
+    FeedforwardEvaluator(
       model = this.neuralNetwork,
-      useDropout = false,
-      propagateToInput = false)
-
-    val validationHelper = FeedforwardValidationHelper(
-      neuralProcessor = neuralProcessor,
-      outputEvaluationFunction = ClassificationEvaluation())
-
-    validationHelper.validate(
       examples = examples,
+      outputEvaluationFunction = ClassificationEvaluation(),
       saveContributions = true,
-      onPrediction = { example, _ ->
-        val sparseRelevance = neuralProcessor.calculateInputRelevance(DistributionArray.uniform(length = 10))
+      afterEachEvaluation = { example, _, processor ->
+
+        val sparseRelevance = processor.calculateInputRelevance(DistributionArray.uniform(length = 10))
         val denseRelevance: DenseNDArray = DenseNDArrayFactory.zeros(Shape(784)).assignValues(sparseRelevance)
 
         this.printImage(image = denseRelevance, value = example.outputGold.argMaxIndex())
       }
-    )
+    ).evaluate()
   }
 
   /**

@@ -10,15 +10,12 @@ package mnist
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.GRUNeuralNetwork
-import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
-import traininghelpers.training.SequenceWithFinalOutputTrainingHelper
-import traininghelpers.validation.SequenceWithFinalOutputValidationHelper
+import traininghelpers.training.SequenceWithFinalOutputTrainer
+import traininghelpers.validation.SequenceWithFinalOutputEvaluator
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
-import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.utils.Shuffler
 import utils.Corpus
 import utils.SequenceExampleWithFinalOutput
 import mnist.helpers.MNISTSequenceExampleExtractor
@@ -41,12 +38,12 @@ fun main() {
 /**
  *
  */
-class MNISTSequenceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<DenseNDArray>>) {
+private class MNISTSequenceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<DenseNDArray>>) {
 
   /**
    *
    */
-  val neuralNetwork = GRUNeuralNetwork(
+  private val neuralNetwork = GRUNeuralNetwork(
     inputSize = 2,
     hiddenSize = 200,
     hiddenActivation = Tanh(),
@@ -58,39 +55,19 @@ class MNISTSequenceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<Dense
    */
   fun start() {
 
-    this.train()
-  }
-
-  /**
-   *
-   */
-  fun train() {
-
     println("\n-- TRAINING")
 
-    val optimizer = ParamsOptimizer(updateMethod = ADAMMethod(stepSize = 0.001))
-
-    val neuralProcessor = RecurrentNeuralProcessor<DenseNDArray>(
+    SequenceWithFinalOutputTrainer(
       model = this.neuralNetwork,
-      useDropout = false,
-      propagateToInput = false)
-
-    val trainingHelper = SequenceWithFinalOutputTrainingHelper(
-      neuralProcessor = neuralProcessor,
-      optimizer = optimizer,
+      updateMethod = ADAMMethod(stepSize = 0.001),
       lossCalculator = SoftmaxCrossEntropyCalculator(),
-      verbose = true)
-
-    val validationHelper = SequenceWithFinalOutputValidationHelper(
-      neuralProcessor = neuralProcessor,
-      outputEvaluationFunction = ClassificationEvaluation())
-
-    trainingHelper.train(
-      trainingExamples = this.dataset.training,
-      validationExamples = this.dataset.validation,
+      examples = this.dataset.training,
       epochs = 3,
       batchSize = 1,
-      shuffler = Shuffler(enablePseudoRandom = true, seed = 1),
-      validationHelper = validationHelper)
+      evaluator = SequenceWithFinalOutputEvaluator(
+        model = this.neuralNetwork,
+        examples = this.dataset.validation,
+        outputEvaluationFunction = ClassificationEvaluation())
+    ).train()
   }
 }
