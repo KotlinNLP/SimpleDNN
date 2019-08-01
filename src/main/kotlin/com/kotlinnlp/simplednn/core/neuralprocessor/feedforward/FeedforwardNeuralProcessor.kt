@@ -32,7 +32,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val propagateToInput: Boolean,
   private val paramsErrorsCollector: ParamsErrorsCollector = ParamsErrorsCollector(),
   override val id: Int = 0
-) :  NeuralProcessor<
+) : NeuralProcessor<
   InputNDArrayType, // InputType
   DenseNDArray, // OutputType
   DenseNDArray, // ErrorsType
