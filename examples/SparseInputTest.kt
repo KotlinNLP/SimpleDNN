@@ -34,7 +34,7 @@ fun main() {
 
   SparseInputTest(dataset).start()
 
-  println("End.")
+  println("\nEnd.")
 }
 
 /**

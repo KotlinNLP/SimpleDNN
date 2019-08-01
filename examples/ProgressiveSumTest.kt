@@ -33,7 +33,7 @@ fun main() {
 
   ProgressiveSumTest(dataset).start()
 
-  println("End.")
+  println("\nEnd.")
 }
 
 /**

@@ -41,7 +41,7 @@ fun main() {
 
   MNISTSparseBinaryTest(dataset).start()
 
-  println("End.")
+  println("\nEnd.")
 }
 
 /**

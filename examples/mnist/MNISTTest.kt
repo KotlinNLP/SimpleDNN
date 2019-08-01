@@ -36,7 +36,7 @@ fun main() {
 
   MNISTTest(dataset).start()
 
-  println("End.")
+  println("\nEnd.")
 }
 
 /**

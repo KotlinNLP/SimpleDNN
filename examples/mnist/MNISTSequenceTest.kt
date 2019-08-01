@@ -35,7 +35,7 @@ fun main() {
 
   MNISTSequenceTest(dataset).start()
 
-  println("End.")
+  println("\nEnd.")
 }
 
 /**

@@ -28,7 +28,7 @@ fun main() {
 
   SumSignRelevanceTest(dataset = DatasetBuilder.build()).start()
 
-  println("End.")
+  println("\nEnd.")
 }
 
 /**
