@@ -13,8 +13,7 @@ import java.io.Serializable
 /**
  * A container of iterable parameters as [ParamsArray]s, with some utilities methods to assign and copy them.
  */
-abstract class IterableParams<SelfType: IterableParams<SelfType>>
-  : Serializable, Iterable<ParamsArray> {
+abstract class IterableParams<SelfType: IterableParams<SelfType>> : Serializable, Iterable<ParamsArray> {
 
   companion object {
 
