@@ -11,6 +11,7 @@ import utils.exampleextractor.ExampleExtractor
 import java.io.FileInputStream
 import CorpusPaths
 import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonBase
 import com.beust.klaxon.Parser
 
 /**
@@ -83,7 +84,7 @@ class CorpusReader<ExampleType : Example> {
     val jsonParser = Parser()
 
     file.reader().forEachLine {
-      examples.add(exampleExtractor.extract(jsonParser.parse(StringBuilder(it)) as JsonArray<*>))
+      examples.add(exampleExtractor.extract(jsonParser.parse(StringBuilder(it)) as JsonBase))
     }
 
     return examples
@@ -103,7 +104,7 @@ class CorpusReader<ExampleType : Example> {
     val examples = ArrayList<ExampleType>()
 
     (Parser().parse(filename) as JsonArray<*>).forEach {
-      examples.add(exampleExtractor.extract(it as JsonArray<*>))
+      examples.add(exampleExtractor.extract(it as JsonBase))
     }
 
     return examples
