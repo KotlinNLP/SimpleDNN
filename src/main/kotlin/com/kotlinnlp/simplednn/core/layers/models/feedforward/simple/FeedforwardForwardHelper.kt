@@ -47,7 +47,7 @@ class FeedforwardForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.params as FeedforwardLayerParameters
     layerContributions as FeedforwardLayerParameters
 
-    assert (this.layer.inputArray.values is DenseNDArray) {
+    require(this.layer.inputArray.values is DenseNDArray) {
       "Forwarding with contributions requires the input to be dense."
     }
 
