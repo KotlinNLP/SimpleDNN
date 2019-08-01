@@ -43,7 +43,7 @@ class CorpusReader<ExampleType : Example> {
       test = this.readDataset(corpusPath.test, exampleExtractor, perLine = perLine))
 
     println("Elapsed time: %s s".format(System.currentTimeMillis() - startTime))
-    println("Train: %d examples".format(dataset.training.size))
+    println("Training: %d examples".format(dataset.training.size))
     println("Validation: %d examples".format(dataset.validation.size))
     println("Test: %d examples".format(dataset.test.size))
 
