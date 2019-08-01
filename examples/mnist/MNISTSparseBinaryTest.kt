@@ -30,7 +30,7 @@ import utils.SimpleExample
 import mnist.helpers.MNISTSparseExampleExtractor
 import utils.CorpusReader
 
-fun main(args: Array<String>) {
+fun main() {
 
   println("Start 'MNIST Sparse Binary Test'")
 

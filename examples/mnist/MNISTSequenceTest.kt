@@ -24,7 +24,7 @@ import utils.SequenceExampleWithFinalOutput
 import mnist.helpers.MNISTSequenceExampleExtractor
 import utils.CorpusReader
 
-fun main(args: Array<String>) {
+fun main() {
 
   println("Start 'MNIST Sequence Test'")
 

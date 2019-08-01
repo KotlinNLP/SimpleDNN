@@ -10,7 +10,7 @@ package logicgates
 import utils.SimpleExample
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
-fun main(args: Array<String>) {
+fun main() {
   println("Start 'NOT Gate Test'")
   println("Accuracy (softmax): %.1f%%".format(100.0 * NOTGate.testAccuracyWithSoftmax()))
   println("Accuracy (sigmoid): %.1f%%".format(100.0 * NOTGate.testAccuracyWithSigmoid()))

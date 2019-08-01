@@ -23,7 +23,7 @@ import com.kotlinnlp.utils.Shuffler
 import utils.CorpusReader
 import utils.exampleextractor.ClassificationSparseExampleExtractor
 
-fun main(args: Array<String>) {
+fun main() {
 
   println("Start 'Sparse Input Test'")
 

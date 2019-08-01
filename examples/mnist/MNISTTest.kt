@@ -25,7 +25,7 @@ import com.kotlinnlp.utils.Shuffler
 import utils.Corpus
 import utils.SimpleExample
 
-fun main(args: Array<String>) {
+fun main() {
 
   println("Start 'MNIST Test'")
 

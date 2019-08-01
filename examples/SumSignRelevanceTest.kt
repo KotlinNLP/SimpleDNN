@@ -22,7 +22,7 @@ import com.kotlinnlp.utils.Shuffler
 import utils.Corpus
 import utils.SequenceExampleWithFinalOutput
 
-fun main(args: Array<String>) {
+fun main() {
 
   println("Start 'Sum Sign Relevance Test'")
 

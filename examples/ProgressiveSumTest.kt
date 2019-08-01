@@ -22,7 +22,7 @@ import utils.SequenceExample
 import utils.CorpusReader
 import utils.exampleextractor.ClassificationSequenceExampleExtractor
 
-fun main(args: Array<String>) {
+fun main() {
 
   println("Start 'Progressive Sum Test'")
 
