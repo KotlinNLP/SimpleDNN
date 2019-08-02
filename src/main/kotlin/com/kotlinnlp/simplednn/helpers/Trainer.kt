@@ -133,7 +133,7 @@ abstract class Trainer<ExampleType : Any>(
   }
 
   /**
-   * Validate the [params] and save it to file if a new best accuracy has been reached.
+   * Validate the model and save it to file if a new best accuracy has been reached.
    * If the [evaluator] is null then the model is saved automatically.
    */
   private fun validateAndSaveModel() {
