@@ -87,8 +87,6 @@ class RANLayerParametersSpec : Spek({
           (0 until wForr.length).forEach { i -> assertEquals(initValues[i + 22], wForr[i]) }
         }
       }
-
-      // TODO: reintroduce tests for sparse input
     }
   }
 })

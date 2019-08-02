@@ -55,8 +55,6 @@ class SimpleRecurrentLayerParametersSpec : Spek({
           (0 until wr.length).forEach { i -> assertEquals(initValues[i + 6], wr[i]) }
         }
       }
-
-      // TODO: resinsert tests for sparse input
     }
   }
 })

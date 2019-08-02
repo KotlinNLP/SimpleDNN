@@ -55,8 +55,6 @@ class AffineLayerParametersSpec : Spek({
           (0 until b.length).forEach { i -> assertEquals(0.9, b[i]) }
         }
       }
-
-      // TODO: reintegrate tests for sparse input
     }
   }
 })

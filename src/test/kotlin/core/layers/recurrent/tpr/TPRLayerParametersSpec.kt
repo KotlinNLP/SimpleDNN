@@ -88,8 +88,6 @@ class TPRLayerParametersSpec: Spek({
           (0 until r.length).forEach { i -> assertEquals(initValues[i + 41], r[i]) }
         }
       }
-
-      // TODO: reintroduce tests for sparse input
     }
   }
 })

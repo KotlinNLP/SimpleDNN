@@ -68,8 +68,6 @@ class BiaffineLayerParametersSpec : Spek({
           (0 until w[1].values.length).forEach { i -> assertEquals(initValues[16 + i], w[1].values[i]) }
         }
       }
-
-      // TODO: reintegrate tests for sparse input
     }
   }
 })

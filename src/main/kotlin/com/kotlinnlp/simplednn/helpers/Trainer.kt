@@ -209,7 +209,7 @@ abstract class Trainer<ExampleType : Any>(
    */
   private fun logTrainingEnd() {
 
-    if (this.verbose) { // TODO: replace lastLoss with another more valuable value
+    if (this.verbose) {
       println("Elapsed time: %s".format(this.timer.formatElapsedTime()))
     }
   }

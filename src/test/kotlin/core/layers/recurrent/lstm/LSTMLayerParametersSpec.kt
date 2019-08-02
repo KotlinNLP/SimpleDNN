@@ -109,8 +109,6 @@ class LSTMLayerParametersSpec : Spek({
           (0 until wCr.length).forEach { i -> assertEquals(initValues[i + 36], wCr[i]) }
         }
       }
-
-      // TODO: reintroduce tests for sparse input
     }
   }
 })

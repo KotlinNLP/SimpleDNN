@@ -115,8 +115,6 @@ class FeedforwardLayerStructureSpec : Spek({
           }
         }
       }
-
-      // TODO: reintroduce tests for sparse input
     }
 
     context("backward") {

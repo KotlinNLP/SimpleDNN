@@ -92,8 +92,6 @@ class GRULayerParametersSpec : Spek({
           (0 until wpr.length).forEach { i -> assertEquals(initValues[i + 26], wpr[i]) }
         }
       }
-
-      // TODO: reintegrate tests for sparse input
     }
   }
 })
