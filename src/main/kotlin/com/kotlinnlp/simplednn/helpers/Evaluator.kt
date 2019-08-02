@@ -7,19 +7,16 @@
 
 package com.kotlinnlp.simplednn.helpers
 
-import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
 
 /**
  * A helper which evaluates a neural model with a list of examples.
  *
  * @param examples a list of examples to validate
- * @param params the parameters of the neural model to evaluate
  * @param verbose whether to print info about the validation progress (default = true)
  */
 abstract class Evaluator<ExampleType : Any>(
   internal val examples: List<ExampleType>,
-  internal val params: IterableParams<*>,
   private val verbose: Boolean = true
 ) {
 

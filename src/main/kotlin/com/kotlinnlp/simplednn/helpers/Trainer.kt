@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.helpers
 
-import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
 import com.kotlinnlp.utils.*
@@ -15,7 +14,6 @@ import com.kotlinnlp.utils.*
 /**
  * The trainer of a neural model.
  *
- * @param params the neural parameters to train
  * @param modelFilename the name of the file in which to save the serialized model
  * @param optimizers the parameters optimizers
  * @param examples the training examples
@@ -26,7 +24,6 @@ import com.kotlinnlp.utils.*
  * @param verbose whether to print info about the training progress and timing (default = true)
  */
 abstract class Trainer<ExampleType : Any>(
-  protected val params: IterableParams<*>,
   protected val modelFilename: String,
   protected val optimizers: List<ParamsOptimizer>,
   private val examples: List<ExampleType>,
@@ -56,11 +53,6 @@ abstract class Trainer<ExampleType : Any>(
    * Check requirements.
    */
   init {
-
-    require(this.evaluator == null || this.params === this.evaluator.params) {
-      "The model of the trainer must be the same of the evaluator."
-    }
-
     require(this.epochs > 0)
     require(this.batchSize > 0)
   }
@@ -96,7 +88,7 @@ abstract class Trainer<ExampleType : Any>(
   protected abstract fun accumulateErrors()
 
   /**
-   * Dump the [params] to file.
+   * Dump the model to file.
    */
   protected abstract fun dumpModel()
 

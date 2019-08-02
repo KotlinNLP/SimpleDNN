@@ -45,7 +45,6 @@ class SequenceWithFinalOutputTrainer<NDArrayType: NDArray<NDArrayType>>(
   shuffler: Shuffler = Shuffler(),
   verbose: Boolean = true
 ) : Trainer<SequenceExampleWithFinalOutput<NDArrayType>>(
-  params = model,
   modelFilename = "",
   optimizers = listOf(ParamsOptimizer(updateMethod)),
   examples = examples,
@@ -103,7 +102,7 @@ class SequenceWithFinalOutputTrainer<NDArrayType: NDArray<NDArrayType>>(
   }
 
   /**
-   * Dump the [params] to file.
+   * Dump the model to file.
    */
   override fun dumpModel() {}
 }

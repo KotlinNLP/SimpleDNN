@@ -36,7 +36,10 @@ class SequenceWithFinalOutputEvaluator<NDArrayType: NDArray<NDArrayType>>(
                                     isCorrect: Boolean,
                                     processor: RecurrentNeuralProcessor<NDArrayType>) -> Unit = { _, _, _ -> },
   verbose: Boolean = true
-) : Evaluator<SequenceExampleWithFinalOutput<NDArrayType>>(examples = examples, params = model, verbose = verbose) {
+) : Evaluator<SequenceExampleWithFinalOutput<NDArrayType>>(
+  examples = examples,
+  verbose = verbose
+) {
 
   /**
    * The validation statistics.

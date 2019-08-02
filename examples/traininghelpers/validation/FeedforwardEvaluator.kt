@@ -36,7 +36,10 @@ class FeedforwardEvaluator<NDArrayType: NDArray<NDArrayType>>(
                                     isCorrect: Boolean,
                                     processor: FeedforwardNeuralProcessor<NDArrayType>) -> Unit = { _, _, _ -> },
   verbose: Boolean = true
-) : Evaluator<SimpleExample<NDArrayType>>(examples = examples, params = model, verbose = verbose) {
+) : Evaluator<SimpleExample<NDArrayType>>(
+  examples = examples,
+  verbose = verbose
+) {
 
   /**
    * The validation statistics.

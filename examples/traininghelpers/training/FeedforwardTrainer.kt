@@ -45,7 +45,6 @@ internal class FeedforwardTrainer<NDArrayType: NDArray<NDArrayType>>(
   shuffler: Shuffler = Shuffler(),
   verbose: Boolean = true
 ) : Trainer<SimpleExample<NDArrayType>>(
-  params = model,
   modelFilename = "",
   optimizers = listOf(ParamsOptimizer(updateMethod)),
   examples = examples,
@@ -101,7 +100,7 @@ internal class FeedforwardTrainer<NDArrayType: NDArray<NDArrayType>>(
   }
 
   /**
-   * Dump the [params] to file.
+   * Dump the model to file.
    */
   override fun dumpModel() {}
 }
