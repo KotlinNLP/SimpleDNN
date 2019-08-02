@@ -50,7 +50,7 @@ object LayerParametersFactory {
                       connectionType: LayerType.Connection,
                       weightsInitializer: Initializer?,
                       biasesInitializer: Initializer?,
-                      sparseInput: Boolean = false): LayerParameters<*> = when (connectionType) {
+                      sparseInput: Boolean = false): LayerParameters = when (connectionType) {
 
     LayerType.Connection.Feedforward -> FeedforwardLayerParameters(
       inputSize = inputsSize.first(),
@@ -212,7 +212,6 @@ object LayerParametersFactory {
       dSymbols = 10, // TODO
       nRoles = 20, // TODO
       dRoles = 10, // TODO
-      sparseInput = sparseInput,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer)
   }
