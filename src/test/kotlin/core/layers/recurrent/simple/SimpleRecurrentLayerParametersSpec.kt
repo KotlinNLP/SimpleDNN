@@ -58,56 +58,5 @@ class SimpleRecurrentLayerParametersSpec : Spek({
 
       // TODO: resinsert tests for sparse input
     }
-
-    context("iteration") {
-
-      val params = SimpleRecurrentLayerParameters(inputSize = 3, outputSize = 2)
-
-      val iterator = params.iterator()
-
-      val w = params.unit.weights
-      val b = params.unit.biases
-      val wr = params.unit.recurrentWeights
-
-      context("iteration 1") {
-        it("should return the weights") {
-          assertEquals(w, iterator.next())
-        }
-      }
-
-      context("iteration 2") {
-        it("should return the biases") {
-          assertEquals(b, iterator.next())
-        }
-      }
-
-      context("iteration 3") {
-        it("should return the recurrent weights") {
-          assertEquals(wr, iterator.next())
-        }
-      }
-
-      context("iteration 4") {
-        it("should return true when calling hasNext()") {
-          assertFalse(iterator.hasNext())
-        }
-      }
-    }
-
-    context("copy") {
-
-      val params = SimpleRecurrentLayerParameters(inputSize = 3, outputSize = 2)
-      val clonedParams = params.copy()
-
-      it("should return a new element") {
-        assertNotEquals(params, clonedParams)
-      }
-
-      it("should return params with same values") {
-        assertTrue {
-          params.zip(clonedParams).all { it.first.values.equals(it.second.values, tolerance = 1.0e-06) }
-        }
-      }
-    }
   }
 })

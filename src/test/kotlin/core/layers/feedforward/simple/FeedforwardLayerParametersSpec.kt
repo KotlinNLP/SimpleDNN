@@ -42,18 +42,6 @@ class FeedforwardLayerParametersSpec : Spek({
         val w = params.unit.weights.values
         val b = params.unit.biases.values
 
-        it("should have the expected size") {
-          assertEquals(2, params.size)
-        }
-
-        it("should get the expected param at index 0") {
-          assertTrue { w === params[0].values }
-        }
-
-        it("should get the expected param at index 1") {
-          assertTrue { b === params[1].values  }
-        }
-
         it("should contain the expected initialized weights") {
           (0 until w.length).forEach { i -> assertEquals(initValues[i], w[i]) }
         }
@@ -64,50 +52,6 @@ class FeedforwardLayerParametersSpec : Spek({
       }
 
       // TODO: reintegrate tests for sparse input
-    }
-
-    context("iteration") {
-
-      val params = FeedforwardLayerParameters(inputSize = 3, outputSize = 2)
-
-      val iterator = params.iterator()
-
-      val w = params.unit.weights
-      val b = params.unit.biases
-
-      context("iteration 1") {
-        it("should return the weights") {
-          assertEquals(w, iterator.next())
-        }
-      }
-
-      context("iteration 2") {
-        it("should return the biases") {
-          assertEquals(b, iterator.next())
-        }
-      }
-
-      context("iteration 3") {
-        it("should return true when calling hasNext()") {
-          assertFalse(iterator.hasNext())
-        }
-      }
-    }
-
-    context("copy") {
-
-      val params = FeedforwardLayerParameters(inputSize = 3, outputSize = 2)
-      val clonedParams = params.copy()
-
-      it("should return a new element") {
-        assertNotEquals(params, clonedParams)
-      }
-
-      it("should return params with same values") {
-        assertTrue {
-          params.zip(clonedParams).all { it.first.values.equals(it.second.values, tolerance = 1.0e-06) }
-        }
-      }
     }
   }
 })

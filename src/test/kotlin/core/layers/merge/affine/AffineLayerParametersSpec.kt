@@ -16,7 +16,6 @@ import com.nhaarman.mockito_kotlin.whenever
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 
 /**
  *
@@ -58,41 +57,6 @@ class AffineLayerParametersSpec : Spek({
       }
 
       // TODO: reintegrate tests for sparse input
-    }
-
-    context("iteration") {
-
-      val params = AffineLayerParameters(inputsSize = listOf(2, 3), outputSize = 2)
-
-      val iterator = params.iterator()
-
-      val w1 = params.w[0]
-      val w2 = params.w[1]
-      val b = params.b
-
-      context("iteration 1") {
-        it("should return w1") {
-          assertEquals(w1, iterator.next())
-        }
-      }
-
-      context("iteration 2") {
-        it("should return w2") {
-          assertEquals(w2, iterator.next())
-        }
-      }
-
-      context("iteration 3") {
-        it("should return the biases") {
-          assertEquals(b, iterator.next())
-        }
-      }
-
-      context("iteration 4") {
-        it("should return true when calling hasNext()") {
-          assertFalse(iterator.hasNext())
-        }
-      }
     }
   }
 })

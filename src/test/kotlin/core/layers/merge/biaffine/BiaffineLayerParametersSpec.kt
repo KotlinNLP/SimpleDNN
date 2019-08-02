@@ -71,53 +71,5 @@ class BiaffineLayerParametersSpec : Spek({
 
       // TODO: reintegrate tests for sparse input
     }
-
-    context("iteration") {
-
-      val params = BiaffineLayerParameters(inputSize1 = 2, inputSize2 = 3, outputSize = 2)
-
-      val iterator = params.iterator()
-
-      val w1 = params.w1
-      val w2 = params.w2
-      val b = params.b
-      val w = params.w
-
-      context("iteration 1") {
-        it("should return w1") {
-          assertEquals(w1, iterator.next())
-        }
-      }
-
-      context("iteration 2") {
-        it("should return w2") {
-          assertEquals(w2, iterator.next())
-        }
-      }
-
-      context("iteration 3") {
-        it("should return the biases") {
-          assertEquals(b, iterator.next())
-        }
-      }
-
-      context("iteration 4") {
-        it("should return the first w array") {
-          assertEquals(w[0], iterator.next())
-        }
-      }
-
-      context("iteration 5") {
-        it("should return the second w array") {
-          assertEquals(w[1], iterator.next())
-        }
-      }
-
-      context("iteration 6") {
-        it("should return true when calling hasNext()") {
-          assertFalse(iterator.hasNext())
-        }
-      }
-    }
   }
 })

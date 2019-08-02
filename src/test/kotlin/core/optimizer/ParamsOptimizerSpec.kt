@@ -39,8 +39,8 @@ class ParamsOptimizerSpec : Spek({
       optimizer.accumulate(listOf(gw1, gb1, gw2, gb2))
       optimizer.update()
 
-      val w: DenseNDArray = params[0].values
-      val b: DenseNDArray = params[1].values
+      val w: DenseNDArray = params.unit.weights.values
+      val b: DenseNDArray = params.unit.biases.values
 
       it("should match the expected updated weights") {
         assertTrue {
