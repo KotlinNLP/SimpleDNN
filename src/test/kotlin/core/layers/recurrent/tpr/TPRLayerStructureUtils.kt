@@ -76,14 +76,14 @@ object TPRLayerStructureUtils {
         DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.2, -0.1))
     )
 
-    params.S.values.assignValues(
+    params.s.values.assignValues(
         DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(0.3, -0.2, -0.1, 0.5),
             doubleArrayOf(0.6, 0.7, 0.5, -0.6),
             doubleArrayOf(0.4, 0.2, 0.5, -0.6)
         )))
 
-    params.R.values.assignValues(
+    params.r.values.assignValues(
         DenseNDArrayFactory.arrayOf(listOf(
             doubleArrayOf(0.4, 0.3, 0.3),
             doubleArrayOf(0.3, 0.2, 0.1)

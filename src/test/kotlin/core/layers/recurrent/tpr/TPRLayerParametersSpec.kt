@@ -16,8 +16,6 @@ import com.nhaarman.mockito_kotlin.whenever
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
-import kotlin.test.assertTrue
 
 class TPRLayerParametersSpec: Spek({
 
@@ -55,8 +53,8 @@ class TPRLayerParametersSpec: Spek({
         val wRecR = params.wRecR.values
         val bS = params.bS.values
         val bR = params.bR.values
-        val S = params.S.values
-        val R = params.R.values
+        val s = params.s.values
+        val r = params.r.values
 
         it("should contain the expected initialized weights of the input -> Symbols matrix") {
           (0 until wInS.length).forEach { i -> assertEquals(initValues[i], wInS[i]) }
@@ -83,11 +81,11 @@ class TPRLayerParametersSpec: Spek({
         }
 
         it("should contain the expected initialized weights of the Symbols embeddings matrix") {
-          (0 until S.length).forEach { i -> assertEquals(initValues[i + 35], S[i]) }
+          (0 until s.length).forEach { i -> assertEquals(initValues[i + 35], s[i]) }
         }
 
         it("should contain the expected initialized weights of the Role embeddings matrix") {
-          (0 until R.length).forEach { i -> assertEquals(initValues[i + 41], R[i]) }
+          (0 until r.length).forEach { i -> assertEquals(initValues[i + 41], r[i]) }
         }
       }
 

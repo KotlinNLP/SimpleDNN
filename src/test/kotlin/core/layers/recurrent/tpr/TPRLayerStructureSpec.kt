@@ -187,7 +187,7 @@ class TPRLayerStructureSpec: Spek({
 
         it("should match the expected errors of the Symbols embeddings") {
           assertTrue {
-            (paramsErrors.getErrorsOf(params.S)!!.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.s)!!.values as DenseNDArray).equals(
                 DenseNDArrayFactory.arrayOf(listOf(
                     doubleArrayOf(-0.188436752484536, -0.247605225547889, -0.168735193947239, -0.114226262865736),
                     doubleArrayOf(-0.075060214536815, -0.098628856128193, -0.06721247150887, -0.045499870292789),
@@ -199,7 +199,7 @@ class TPRLayerStructureSpec: Spek({
 
         it("should match the expected errors of the Roles embeddings") {
           assertTrue {
-            (paramsErrors.getErrorsOf(params.R)!!.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.r)!!.values as DenseNDArray).equals(
                 DenseNDArrayFactory.arrayOf(listOf(
                     doubleArrayOf(0.06666014408481, 0.089703290625912, 0.090249505767454),
                     doubleArrayOf(-0.419062189806341, -0.563924034648095, -0.567357842307266)
@@ -355,7 +355,7 @@ class TPRLayerStructureSpec: Spek({
 
         it("should match the expected errors of the Symbols embeddings") {
           assertTrue {
-            (paramsErrors.getErrorsOf(params.S)!!.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.s)!!.values as DenseNDArray).equals(
                 DenseNDArrayFactory.arrayOf(listOf(
                     doubleArrayOf(-0.092430456237147, -0.262139320067201, -0.106039799492167, -0.171394125228089),
                     doubleArrayOf(-0.050603038874782, -0.143513802095011, -0.058053766198113, -0.093833395775674),
@@ -367,7 +367,7 @@ class TPRLayerStructureSpec: Spek({
 
         it("should match the expected errors of the Roles embeddings") {
           assertTrue {
-            (paramsErrors.getErrorsOf(params.R)!!.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.r)!!.values as DenseNDArray).equals(
                 DenseNDArrayFactory.arrayOf(listOf(
                     doubleArrayOf(0.0063735506599, 0.052342525049174, 0.03017676528931),
                     doubleArrayOf(-0.083123563437144, -0.682648877141492, -0.393564026977236)
@@ -520,7 +520,7 @@ class TPRLayerStructureSpec: Spek({
 
         it("should match the expected errors of the Symbols embeddings") {
           assertTrue {
-            (paramsErrors.getErrorsOf(params.S)!!.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.s)!!.values as DenseNDArray).equals(
                 DenseNDArrayFactory.arrayOf(listOf(
                     doubleArrayOf(-0.017465304874356, -0.022949348763758, -0.015639261271837, -0.010587088130656),
                     doubleArrayOf(-0.006630997335104, -0.008713107019294, -0.005937709107433, -0.004019566431043),
@@ -532,7 +532,7 @@ class TPRLayerStructureSpec: Spek({
 
         it("should match the expected errors of the Roles embeddings") {
           assertTrue {
-            (paramsErrors.getErrorsOf(params.R)!!.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.r)!!.values as DenseNDArray).equals(
                 DenseNDArrayFactory.arrayOf(listOf(
                     doubleArrayOf(0.266744432797764, 0.358952920168596, 0.361138631737577),
                     doubleArrayOf(-0.359260053328906, -0.483449434688323, -0.48639322191791)
@@ -684,7 +684,7 @@ class TPRLayerStructureSpec: Spek({
 
         it("should match the expected errors of the Symbols embeddings") {
           assertTrue {
-            (paramsErrors.getErrorsOf(params.S)!!.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.s)!!.values as DenseNDArray).equals(
                 DenseNDArrayFactory.arrayOf(listOf(
                     doubleArrayOf(-0.008721408501861, -0.02473453218537, -0.010005537638523, -0.016172138944096),
                     doubleArrayOf(-0.015825760138811, -0.044882976577447, -0.018155925008366, -0.029345763566306),
@@ -696,7 +696,7 @@ class TPRLayerStructureSpec: Spek({
 
         it("should match the expected errors of the Roles embeddings") {
           assertTrue {
-            (paramsErrors.getErrorsOf(params.R)!!.values as DenseNDArray).equals(
+            (paramsErrors.getErrorsOf(params.r)!!.values as DenseNDArray).equals(
                 DenseNDArrayFactory.arrayOf(listOf(
                     doubleArrayOf(0.038589362744448, 0.316913568882586, 0.182708541022483),
                     doubleArrayOf(-0.076526891840165, -0.628473980489548, -0.362330853963468)
