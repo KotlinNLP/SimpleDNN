@@ -68,7 +68,10 @@ abstract class Trainer<ExampleType : Any>(
     (0 until this.epochs).forEach { i ->
 
       this.logTrainingStart(epochIndex = i)
+
+      this.newEpoch()
       this.trainEpoch()
+
       this.logTrainingEnd()
 
       this.validateAndSaveModel()
@@ -93,18 +96,20 @@ abstract class Trainer<ExampleType : Any>(
   protected abstract fun dumpModel()
 
   /**
-   * Train the model over an epoch, grouping examples in batches, eventually shuffling them before with a given
-   * shuffler.
+   * Train the model over an epoch, grouping examples in batches, shuffling them before with the given shuffler.
    */
-  private fun trainEpoch() {
-
-    this.newEpoch()
+  protected open fun trainEpoch() {
 
     val progress = ProgressIndicatorBar(this.examples.size)
 
     for (exampleIndex in ExamplesIndices(this.examples.size, shuffler = this.shuffler)) {
 
       if (this.verbose) progress.tick()
+
+      if (this.counter.exampleCount % this.batchSize == 0) // A new batch starts
+        this.newBatch()
+
+      this.newExample() // !! must be called after newBatch() !!
 
       this.trainExample(example = this.examples[exampleIndex])
     }
@@ -116,12 +121,6 @@ abstract class Trainer<ExampleType : Any>(
    * @param example an example to train the model with
    */
   private fun trainExample(example: ExampleType) {
-
-    if (this.counter.exampleCount % this.batchSize == 0) { // A new batch starts
-      this.newBatch()
-    }
-
-    this.newExample() // !! must be called after this.newBatch() !!
 
     this.learnFromExample(example)
 
@@ -167,7 +166,7 @@ abstract class Trainer<ExampleType : Any>(
    * Method to call every new epoch.
    * In turn it calls the same method of the [optimizers].
    */
-  private fun newEpoch() {
+  protected fun newEpoch() {
     this.counter.newEpoch()
     this.optimizers.forEach { it.newEpoch() }
   }
@@ -176,7 +175,7 @@ abstract class Trainer<ExampleType : Any>(
    * Method to call every new batch.
    * In turn it calls the same method of the [optimizers].
    */
-  private fun newBatch() {
+  protected fun newBatch() {
     this.counter.newBatch()
     this.optimizers.forEach { it.newBatch() }
   }
@@ -185,7 +184,7 @@ abstract class Trainer<ExampleType : Any>(
    * Method to call every new example.
    * In turn it calls the same method of the [optimizers].
    */
-  private fun newExample() {
+  protected fun newExample() {
     this.counter.newExample()
     this.optimizers.forEach { it.newExample() }
   }
