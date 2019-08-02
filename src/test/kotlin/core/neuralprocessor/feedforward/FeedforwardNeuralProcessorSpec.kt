@@ -23,7 +23,7 @@ class FeedforwardNeuralProcessorSpec : Spek({
 
   describe("a FeedForwardLayerStructure") {
 
-    val MLP = FeedforwardNeuralNetwork(
+    val network = FeedforwardNeuralNetwork(
       inputSize = 4,
       hiddenSize = 5,
       hiddenActivation = Tanh(),
@@ -32,7 +32,7 @@ class FeedforwardNeuralProcessorSpec : Spek({
 
     // TODO: set fixed params
 
-    val processor = FeedforwardNeuralProcessor<DenseNDArray>(MLP, useDropout = false, propagateToInput = false)
+    val processor = FeedforwardNeuralProcessor<DenseNDArray>(network, useDropout = false, propagateToInput = false)
 
     val features = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))
 
