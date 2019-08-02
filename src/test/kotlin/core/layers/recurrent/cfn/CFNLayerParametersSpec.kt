@@ -11,7 +11,6 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitial
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.spekframework.spek2.Spek
