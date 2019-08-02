@@ -28,11 +28,12 @@ class IndRNNLayerParameters(
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   private val sparseInput: Boolean = false
-) : LayerParameters<IndRNNLayerParameters>(
+) : LayerParameters(
   inputSize = inputSize,
   outputSize = outputSize,
   weightsInitializer = weightsInitializer,
-  biasesInitializer = biasesInitializer) {
+  biasesInitializer = biasesInitializer
+) {
 
   companion object {
 
@@ -57,15 +58,6 @@ class IndRNNLayerParameters(
   val recurrentWeights = ParamsArray(this.outputSize)
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList = listOf(
-    this.feedforwardUnit.weights,
-    this.feedforwardUnit.biases,
-    this.recurrentWeights
-  )
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList: List<ParamsArray> = listOf(
@@ -85,22 +77,5 @@ class IndRNNLayerParameters(
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [IndRNNLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): IndRNNLayerParameters {
-
-    val clonedParams = IndRNNLayerParameters(
-      inputSize = this.inputSize,
-      outputSize = this.outputSize,
-      sparseInput = this.sparseInput,
-      weightsInitializer = null,
-      biasesInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 }

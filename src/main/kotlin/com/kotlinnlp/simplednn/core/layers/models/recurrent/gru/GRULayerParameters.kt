@@ -28,7 +28,7 @@ class GRULayerParameters(
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   private val sparseInput: Boolean = false
-) : LayerParameters<GRULayerParameters>(
+) : LayerParameters(
   inputSize = inputSize,
   outputSize = outputSize,
   weightsInitializer = weightsInitializer,
@@ -68,24 +68,6 @@ class GRULayerParameters(
     sparseInput = this.sparseInput)
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList = listOf(
-
-    this.candidate.weights,
-    this.resetGate.weights,
-    this.partitionGate.weights,
-
-    this.candidate.biases,
-    this.resetGate.biases,
-    this.partitionGate.biases,
-
-    this.candidate.recurrentWeights,
-    this.resetGate.recurrentWeights,
-    this.partitionGate.recurrentWeights
-  )
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList: List<ParamsArray> = listOf(
@@ -113,22 +95,5 @@ class GRULayerParameters(
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [GRULayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): GRULayerParameters {
-
-    val clonedParams = GRULayerParameters(
-      inputSize = this.inputSize,
-      outputSize = this.outputSize,
-      sparseInput = this.sparseInput,
-      weightsInitializer = null,
-      biasesInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 }

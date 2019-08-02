@@ -17,7 +17,7 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
  */
 class ConcatLayerParameters(
   inputsSize: List<Int>
-) : MergeLayerParameters<ConcatLayerParameters>(
+) : MergeLayerParameters(
   inputsSize = inputsSize,
   outputSize = inputsSize.sum(),
   weightsInitializer = null,
@@ -35,11 +35,6 @@ class ConcatLayerParameters(
   }
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList = emptyList<ParamsArray>()
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList = emptyList<ParamsArray>()
@@ -48,9 +43,4 @@ class ConcatLayerParameters(
    * The list of biases parameters.
    */
   override val biasesList = emptyList<ParamsArray>()
-
-  /**
-   * @return a new [ConcatLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy() = ConcatLayerParameters(inputsSize = this.inputsSize)
 }

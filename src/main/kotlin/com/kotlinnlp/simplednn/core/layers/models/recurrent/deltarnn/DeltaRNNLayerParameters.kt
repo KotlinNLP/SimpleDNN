@@ -29,11 +29,12 @@ class DeltaRNNLayerParameters(
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   private val sparseInput: Boolean = false
-) : LayerParameters<DeltaRNNLayerParameters>(
+) : LayerParameters(
   inputSize = inputSize,
   outputSize = outputSize,
   weightsInitializer = weightsInitializer,
-  biasesInitializer = biasesInitializer) {
+  biasesInitializer = biasesInitializer
+) {
 
   companion object {
 
@@ -73,19 +74,6 @@ class DeltaRNNLayerParameters(
   val beta2 = ParamsArray(Shape(this.outputSize))
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList = listOf(
-    this.feedforwardUnit.weights,
-    this.feedforwardUnit.biases,
-    this.recurrentUnit.weights,
-    this.recurrentUnit.biases,
-    this.alpha,
-    this.beta1,
-    this.beta2
-  )
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList: List<ParamsArray> = listOf(
@@ -109,22 +97,5 @@ class DeltaRNNLayerParameters(
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [DeltaRNNLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): DeltaRNNLayerParameters {
-
-    val clonedParams = DeltaRNNLayerParameters(
-      inputSize = this.inputSize,
-      outputSize = this.outputSize,
-      sparseInput = this.sparseInput,
-      weightsInitializer = null,
-      biasesInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 }

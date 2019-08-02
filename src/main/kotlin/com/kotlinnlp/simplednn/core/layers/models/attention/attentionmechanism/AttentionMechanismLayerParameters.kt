@@ -23,11 +23,12 @@ class AttentionMechanismLayerParameters(
   inputSize: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
   private val sparseInput: Boolean = false
-) : LayerParameters<AttentionMechanismLayerParameters>(
+) : LayerParameters(
   inputSize = inputSize,
   outputSize = -1, // depends on the number of element in the input sequence
   weightsInitializer = weightsInitializer,
-  biasesInitializer = null) {
+  biasesInitializer = null
+) {
 
   companion object {
 
@@ -44,11 +45,6 @@ class AttentionMechanismLayerParameters(
   val contextVector = ParamsArray(inputSize)
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList: List<ParamsArray> = listOf(this.contextVector)
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList: List<ParamsArray> = listOf(this.contextVector)
@@ -63,20 +59,5 @@ class AttentionMechanismLayerParameters(
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [AttentionMechanismLayerParameters] containing a copy of all values of this
-   */
-  override fun copy(): AttentionMechanismLayerParameters {
-
-    val clonedParams = AttentionMechanismLayerParameters(
-      inputSize = this.inputSize,
-      sparseInput = this.sparseInput,
-      weightsInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 }

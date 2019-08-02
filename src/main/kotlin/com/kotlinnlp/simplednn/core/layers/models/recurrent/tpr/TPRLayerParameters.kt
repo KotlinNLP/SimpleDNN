@@ -30,13 +30,13 @@ class TPRLayerParameters(
   val nRoles: Int,
   val dRoles: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
-  biasesInitializer: Initializer? = GlorotInitializer(),
-  private val sparseInput: Boolean = false
-) : LayerParameters<TPRLayerParameters>(
+  biasesInitializer: Initializer? = GlorotInitializer()
+) : LayerParameters(
   inputSize = inputSize,
   outputSize = dSymbols * dRoles,
   weightsInitializer = weightsInitializer,
-  biasesInitializer = biasesInitializer) {
+  biasesInitializer = biasesInitializer
+) {
 
   companion object {
 
@@ -88,20 +88,6 @@ class TPRLayerParameters(
   val R = ParamsArray(this.dRoles, this.nRoles)
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList: List<ParamsArray> = listOf(
-    this.wInS,
-    this.wInR,
-    this.wRecS,
-    this.wRecR,
-    this.S,
-    this.R,
-    this.bS,
-    this.bR
-  )
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList: List<ParamsArray> = listOf(
@@ -126,25 +112,5 @@ class TPRLayerParameters(
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [TPRLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): TPRLayerParameters {
-
-    val clonedParams = TPRLayerParameters(
-      inputSize = this.inputSize,
-      nSymbols = this.nSymbols,
-      dSymbols = this.dSymbols,
-      nRoles = this.nRoles,
-      dRoles = this.dRoles,
-      sparseInput = this.sparseInput,
-      weightsInitializer = null,
-      biasesInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 }

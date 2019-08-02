@@ -19,7 +19,7 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
 class SumLayerParameters(
   inputSize: Int,
   val nInputs: Int
-) : MergeLayerParameters<SumLayerParameters>(
+) : MergeLayerParameters(
   inputsSize = List(size = nInputs, init = { inputSize }),
   outputSize = inputSize,
   weightsInitializer = null,
@@ -44,11 +44,6 @@ class SumLayerParameters(
   }
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList = emptyList<ParamsArray>()
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList = emptyList<ParamsArray>()
@@ -57,9 +52,4 @@ class SumLayerParameters(
    * The list of biases parameters.
    */
   override val biasesList = emptyList<ParamsArray>()
-
-  /**
-   * @return a new [SumLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy() = SumLayerParameters(inputSize = this.inputSize, nInputs = this.nInputs)
 }

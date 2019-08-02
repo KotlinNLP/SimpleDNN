@@ -26,11 +26,12 @@ class NewRecirculationLayerParameters(
   val hiddenSize: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
-) : LayerParameters<NewRecirculationLayerParameters>(
+) : LayerParameters(
   inputSize = inputSize,
   outputSize = inputSize,
   weightsInitializer = weightsInitializer,
-  biasesInitializer = biasesInitializer) {
+  biasesInitializer = biasesInitializer
+) {
 
   companion object {
 
@@ -48,14 +49,6 @@ class NewRecirculationLayerParameters(
     inputSize = this.inputSize,
     outputSize = this.hiddenSize,
     sparseInput = false)
-
-  /**
-   * The list of all parameters.
-   */
-  override val paramsList = listOf(
-    this.unit.weights,
-    this.unit.biases
-  )
 
   /**
    * The list of weights parameters.
@@ -76,21 +69,5 @@ class NewRecirculationLayerParameters(
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [NewRecirculationLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): NewRecirculationLayerParameters {
-
-    val clonedParams = NewRecirculationLayerParameters(
-      inputSize = this.inputSize,
-      hiddenSize = this.hiddenSize,
-      weightsInitializer = null,
-      biasesInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 }

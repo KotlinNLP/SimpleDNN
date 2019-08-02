@@ -28,11 +28,12 @@ class SquaredDistanceLayerParameters(
   inputSize: Int,
   val rank: Int,
   weightsInitializer: Initializer? = GlorotInitializer()
-) : LayerParameters<SquaredDistanceLayerParameters>(
+) : LayerParameters(
   inputSize = inputSize,
   outputSize = 1,
   weightsInitializer = weightsInitializer,
-  biasesInitializer = null) {
+  biasesInitializer = null
+) {
 
   companion object {
 
@@ -49,11 +50,6 @@ class SquaredDistanceLayerParameters(
   val wB = ParamsArray(this.rank, this.inputSize)
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList = listOf(this.wB)
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList: List<ParamsArray> = listOf(this.wB)
@@ -68,20 +64,5 @@ class SquaredDistanceLayerParameters(
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [SquaredDistanceLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): SquaredDistanceLayerParameters {
-
-    val clonedParams = SquaredDistanceLayerParameters(
-      inputSize = this.inputSize,
-      rank = this.rank,
-      weightsInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 }

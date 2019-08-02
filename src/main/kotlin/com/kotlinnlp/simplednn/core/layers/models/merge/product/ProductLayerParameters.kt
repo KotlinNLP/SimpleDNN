@@ -19,7 +19,7 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
 class ProductLayerParameters(
   inputSize: Int,
   val nInputs: Int
-) : MergeLayerParameters<ProductLayerParameters>(
+) : MergeLayerParameters(
   inputsSize = List(size = nInputs, init = { inputSize }),
   outputSize = inputSize,
   weightsInitializer = null,
@@ -44,11 +44,6 @@ class ProductLayerParameters(
   }
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList = emptyList<ParamsArray>()
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList = emptyList<ParamsArray>()
@@ -57,9 +52,4 @@ class ProductLayerParameters(
    * The list of biases parameters.
    */
   override val biasesList = emptyList<ParamsArray>()
-
-  /**
-   * @return a new [ProductLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy() = ProductLayerParameters(inputSize = this.inputSize, nInputs = this.nInputs)
 }

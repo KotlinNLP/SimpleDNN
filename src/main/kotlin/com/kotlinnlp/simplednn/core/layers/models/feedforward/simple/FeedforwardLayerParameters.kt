@@ -28,11 +28,12 @@ class FeedforwardLayerParameters(
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   private val sparseInput: Boolean = false
-) : LayerParameters<FeedforwardLayerParameters>(
+) : LayerParameters(
   inputSize = inputSize,
   outputSize = outputSize,
   weightsInitializer = weightsInitializer,
-  biasesInitializer = biasesInitializer) {
+  biasesInitializer = biasesInitializer
+) {
 
   companion object {
 
@@ -50,14 +51,6 @@ class FeedforwardLayerParameters(
     inputSize = this.inputSize,
     outputSize = this.outputSize,
     sparseInput = this.sparseInput)
-
-  /**
-   * The list of all parameters.
-   */
-  override val paramsList = listOf(
-    this.unit.weights,
-    this.unit.biases
-  )
 
   /**
    * The list of weights parameters.
@@ -78,22 +71,5 @@ class FeedforwardLayerParameters(
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [FeedforwardLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): FeedforwardLayerParameters {
-
-    val clonedParams = FeedforwardLayerParameters(
-      inputSize = this.inputSize,
-      outputSize = this.outputSize,
-      sparseInput = this.sparseInput,
-      weightsInitializer = null,
-      biasesInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 }

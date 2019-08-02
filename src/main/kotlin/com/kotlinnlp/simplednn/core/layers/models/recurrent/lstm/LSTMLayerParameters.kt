@@ -13,7 +13,6 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializ
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLinearParams
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The parameters of the layer of type LSTM.
@@ -30,11 +29,12 @@ class LSTMLayerParameters(
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   private val sparseInput: Boolean = false
-) : LayerParameters<LSTMLayerParameters>(
+) : LayerParameters(
   inputSize = inputSize,
   outputSize = outputSize,
   weightsInitializer = weightsInitializer,
-  biasesInitializer = biasesInitializer) {
+  biasesInitializer = biasesInitializer
+) {
 
   companion object {
 
@@ -78,26 +78,6 @@ class LSTMLayerParameters(
     sparseInput = this.sparseInput)
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList = listOf(
-    this.inputGate.weights,
-    this.outputGate.weights,
-    this.forgetGate.weights,
-    this.candidate.weights,
-
-    this.inputGate.biases,
-    this.outputGate.biases,
-    this.forgetGate.biases,
-    this.candidate.biases,
-
-    this.inputGate.recurrentWeights,
-    this.outputGate.recurrentWeights,
-    this.forgetGate.recurrentWeights,
-    this.candidate.recurrentWeights
-  )
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList: List<ParamsArray> = listOf(
@@ -128,23 +108,6 @@ class LSTMLayerParameters(
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [LSTMLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): LSTMLayerParameters {
-
-    val clonedParams = LSTMLayerParameters(
-      inputSize = this.inputSize,
-      outputSize = this.outputSize,
-      sparseInput = this.sparseInput,
-      weightsInitializer = null,
-      biasesInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 
   /**

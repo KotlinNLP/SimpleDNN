@@ -28,11 +28,12 @@ class CFNLayerParameters(
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   private val sparseInput: Boolean = false
-) : LayerParameters<CFNLayerParameters>(
+) : LayerParameters(
   inputSize = inputSize,
   outputSize = outputSize,
   weightsInitializer = weightsInitializer,
-  biasesInitializer = biasesInitializer) {
+  biasesInitializer = biasesInitializer
+) {
 
   companion object {
 
@@ -65,22 +66,6 @@ class CFNLayerParameters(
   val candidateWeights = ParamsArray(dim1 = this.outputSize, dim2 = this.inputSize)
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList = listOf(
-
-    this.inputGate.weights,
-    this.forgetGate.weights,
-    this.candidateWeights,
-
-    this.inputGate.biases,
-    this.forgetGate.biases,
-
-    this.inputGate.recurrentWeights,
-    this.forgetGate.recurrentWeights
-  )
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList: List<ParamsArray> = listOf(
@@ -106,22 +91,5 @@ class CFNLayerParameters(
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [CFNLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): CFNLayerParameters {
-
-    val clonedParams = CFNLayerParameters(
-      inputSize = this.inputSize,
-      outputSize = this.outputSize,
-      sparseInput = this.sparseInput,
-      weightsInitializer = null,
-      biasesInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 }

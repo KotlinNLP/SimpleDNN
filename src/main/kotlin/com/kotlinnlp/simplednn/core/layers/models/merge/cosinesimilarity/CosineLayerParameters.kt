@@ -17,13 +17,14 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
  */
 class CosineLayerParameters (
   inputSize: Int
-) : MergeLayerParameters<CosineLayerParameters>(
+) : MergeLayerParameters(
   inputsSize = List(size = 2, init = { inputSize }),
   outputSize = 1,
   weightsInitializer = null,
   biasesInitializer = null,
   sparseInput = false // actually not used because there are no parameters
-){
+) {
+
   companion object {
 
     /**
@@ -34,11 +35,6 @@ class CosineLayerParameters (
   }
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList = emptyList<ParamsArray>()
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList = emptyList<ParamsArray>()
@@ -47,9 +43,4 @@ class CosineLayerParameters (
    * The list of biases parameters.
    */
   override val biasesList = emptyList<ParamsArray>()
-
-  /**
-   * @return a new [CosineLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy() = CosineLayerParameters(inputSize = this.inputSize)
 }

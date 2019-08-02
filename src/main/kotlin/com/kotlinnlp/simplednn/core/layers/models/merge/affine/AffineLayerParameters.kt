@@ -27,7 +27,7 @@ open class AffineLayerParameters(
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   sparseInput: Boolean = false
-) : MergeLayerParameters<AffineLayerParameters>(
+) : MergeLayerParameters(
   inputsSize = inputsSize,
   outputSize = outputSize,
   weightsInitializer = weightsInitializer,
@@ -55,11 +55,6 @@ open class AffineLayerParameters(
   val b = ParamsArray(this.outputSize)
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList = this.w + this.b
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList: List<ParamsArray> = this.w
@@ -74,22 +69,5 @@ open class AffineLayerParameters(
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [AffineLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): AffineLayerParameters {
-
-    val clonedParams = AffineLayerParameters(
-      inputsSize = this.inputsSize,
-      outputSize = this.outputSize,
-      sparseInput = this.sparseInput,
-      weightsInitializer = null,
-      biasesInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 }

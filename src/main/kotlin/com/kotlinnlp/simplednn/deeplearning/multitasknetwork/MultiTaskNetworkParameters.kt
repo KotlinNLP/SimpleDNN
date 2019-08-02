@@ -7,9 +7,7 @@
 
 package com.kotlinnlp.simplednn.deeplearning.multitasknetwork
 
-import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
-import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import java.io.Serializable
 
 /**
@@ -18,7 +16,7 @@ import java.io.Serializable
 class MultiTaskNetworkParameters(
   val inputParams: StackedLayersParameters,
   val outputParamsList: List<StackedLayersParameters>
-) : Serializable, IterableParams<MultiTaskNetworkParameters>() {
+) : Serializable {
 
   companion object {
 
@@ -28,18 +26,4 @@ class MultiTaskNetworkParameters(
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
   }
-
-  /**
-   * The list of all parameters.
-   */
-  override val paramsList: List<ParamsArray> = this.outputParamsList.flatMap { it.paramsList }
-
-  /**
-   * @return a new [MultiTaskNetworkParameters] containing a copy of all parameters of this
-   */
-  override fun copy() = MultiTaskNetworkParameters(
-    this.inputParams.copy(),
-    this.outputParamsList.map { it.copy() }
-  )
 }
-

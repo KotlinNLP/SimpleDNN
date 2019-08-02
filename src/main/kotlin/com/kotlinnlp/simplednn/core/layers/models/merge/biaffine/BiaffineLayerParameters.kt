@@ -29,7 +29,7 @@ class BiaffineLayerParameters(
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   sparseInput: Boolean = false
-) : MergeLayerParameters<BiaffineLayerParameters>(
+) : MergeLayerParameters(
   inputsSize = listOf(inputSize1, inputSize2),
   outputSize = outputSize,
   weightsInitializer = weightsInitializer,
@@ -70,11 +70,6 @@ class BiaffineLayerParameters(
   )
 
   /**
-   * Initialize the parameters list.
-   */
-  override val paramsList: List<ParamsArray> = listOf(this.w1, this.w2, this.b) + this.w
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList: List<ParamsArray> = listOf(this.w1, this.w2) + this.w
@@ -91,23 +86,5 @@ class BiaffineLayerParameters(
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [BiaffineLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): BiaffineLayerParameters {
-
-    val clonedParams = BiaffineLayerParameters(
-      inputSize1 = this.inputSize1,
-      inputSize2 = this.inputSize2,
-      outputSize = this.outputSize,
-      sparseInput = this.sparseInput,
-      weightsInitializer = null,
-      biasesInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 }

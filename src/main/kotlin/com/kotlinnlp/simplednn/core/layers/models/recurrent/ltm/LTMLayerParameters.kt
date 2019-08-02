@@ -26,11 +26,12 @@ class LTMLayerParameters(
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   private val sparseInput: Boolean = false
-) : LayerParameters<LTMLayerParameters>(
+) : LayerParameters(
   inputSize = inputSize,
   outputSize = inputSize,
   weightsInitializer = weightsInitializer,
-  biasesInitializer = biasesInitializer) {
+  biasesInitializer = biasesInitializer
+) {
 
   companion object {
 
@@ -62,11 +63,6 @@ class LTMLayerParameters(
   val cell: LinearParams = this.buildGateParams()
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList: ParamsList
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList: ParamsList
@@ -85,25 +81,8 @@ class LTMLayerParameters(
 
     this.weightsList = params.map { it.weights }
     this.biasesList = params.map { it.biases }
-    this.paramsList = this.weightsList + this.biasesList
 
     this.initialize()
-  }
-
-  /**
-   * @return a new [LTMLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): LTMLayerParameters {
-
-    val clonedParams = LTMLayerParameters(
-      inputSize = this.inputSize,
-      sparseInput = this.sparseInput,
-      weightsInitializer = null,
-      biasesInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 
   /**

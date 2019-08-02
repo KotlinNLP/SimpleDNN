@@ -7,13 +7,11 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork
 
-import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerParametersFactory
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
-import com.kotlinnlp.simplednn.core.optimizer.IterableParams
 import com.kotlinnlp.simplednn.core.layers.models.attention.attentionmechanism.AttentionMechanismLayerParameters
 
 /**
@@ -31,7 +29,7 @@ class AttentionNetworkParameters(
   val sparseInput: Boolean = false,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
-) : IterableParams<AttentionNetworkParameters>() {
+) {
 
   companion object {
 
@@ -56,7 +54,8 @@ class AttentionNetworkParameters(
     connectionType = LayerType.Connection.Feedforward,
     sparseInput = this.sparseInput,
     weightsInitializer = weightsInitializer,
-    biasesInitializer = biasesInitializer) as FeedforwardLayerParameters
+    biasesInitializer = biasesInitializer
+  ) as FeedforwardLayerParameters
 
   /**
    * The parameters of the attention layer.
@@ -64,30 +63,4 @@ class AttentionNetworkParameters(
   val attentionParams = AttentionMechanismLayerParameters(
     inputSize = this.attentionSize,
     weightsInitializer = weightsInitializer)
-
-  /**
-   * The list of all parameters.
-   */
-  override val paramsList: List<ParamsArray> = this.transformParams.paramsList + this.attentionParams.paramsList
-
-  /**
-   * @return a new [AttentionNetworkParameters] containing a copy of all values of this
-   */
-  override fun copy(): AttentionNetworkParameters {
-
-    val clonedParams = AttentionNetworkParameters(
-      inputSize = this.inputSize,
-      attentionSize = this.attentionSize,
-      sparseInput = this.sparseInput,
-      weightsInitializer = null,
-      biasesInitializer = null)
-
-    clonedParams.transformParams.zip(this.transformParams) { cloned, params ->
-      cloned.values.assignValues(params.values)
-    }
-
-    clonedParams.attentionParams.contextVector.values.assignValues(this.attentionParams.contextVector.values)
-
-    return clonedParams
-  }
 }

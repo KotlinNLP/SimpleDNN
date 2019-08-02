@@ -7,9 +7,8 @@
 
 package com.kotlinnlp.simplednn.deeplearning.birnn
 
-import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
-import com.kotlinnlp.simplednn.core.optimizer.IterableParams
+import java.io.Serializable
 
 /**
  * The BiRNNParameters contains the parameter of its sub-networks (leftToRightNetwork, rightToLeftNetwork).
@@ -22,7 +21,7 @@ class BiRNNParameters(
   val leftToRight: StackedLayersParameters,
   val rightToLeft: StackedLayersParameters,
   val merge: StackedLayersParameters
-) : IterableParams<BiRNNParameters>() {
+) : Serializable {
 
   companion object {
 
@@ -32,19 +31,4 @@ class BiRNNParameters(
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
   }
-
-  /**
-   * The list of all parameters.
-   */
-  override val paramsList: List<ParamsArray> =
-    this.leftToRight.paramsList + this.rightToLeft.paramsList + this.merge.paramsList
-
-  /**
-   * @return a new [BiRNNParameters] containing a copy of all values of this
-   */
-  override fun copy() = BiRNNParameters(
-    leftToRight = this.leftToRight.copy(),
-    rightToLeft = this.rightToLeft.copy(),
-    merge = this.merge.copy()
-  )
 }

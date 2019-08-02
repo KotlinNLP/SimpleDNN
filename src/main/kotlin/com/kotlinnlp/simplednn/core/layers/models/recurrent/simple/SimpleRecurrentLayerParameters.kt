@@ -28,11 +28,12 @@ class SimpleRecurrentLayerParameters(
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   private val sparseInput: Boolean = false
-) : LayerParameters<SimpleRecurrentLayerParameters>(
+) : LayerParameters(
   inputSize = inputSize,
   outputSize = outputSize,
   weightsInitializer = weightsInitializer,
-  biasesInitializer = biasesInitializer) {
+  biasesInitializer = biasesInitializer
+) {
 
   companion object {
 
@@ -50,15 +51,6 @@ class SimpleRecurrentLayerParameters(
     outputSize = this.outputSize,
     inputSize = this.inputSize,
     sparseInput = this.sparseInput)
-
-  /**
-   * The list of all parameters.
-   */
-  override val paramsList = listOf(
-    this.unit.weights,
-    this.unit.biases,
-    this.unit.recurrentWeights
-  )
 
   /**
    * The list of weights parameters.
@@ -80,22 +72,5 @@ class SimpleRecurrentLayerParameters(
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [SimpleRecurrentLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): SimpleRecurrentLayerParameters {
-
-    val clonedParams = SimpleRecurrentLayerParameters(
-      inputSize = this.inputSize,
-      outputSize = this.outputSize,
-      sparseInput = this.sparseInput,
-      weightsInitializer = null,
-      biasesInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 }

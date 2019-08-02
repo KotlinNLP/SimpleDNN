@@ -29,11 +29,12 @@ class RANLayerParameters(
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   private val sparseInput: Boolean = false
-) : LayerParameters<RANLayerParameters>(
+) : LayerParameters(
   inputSize = inputSize,
   outputSize = outputSize,
   weightsInitializer = weightsInitializer,
-  biasesInitializer = biasesInitializer) {
+  biasesInitializer = biasesInitializer
+) {
 
   companion object {
 
@@ -69,23 +70,6 @@ class RANLayerParameters(
     sparseInput = this.sparseInput)
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList = listOf(
-
-    this.inputGate.weights,
-    this.forgetGate.weights,
-    this.candidate.weights,
-
-    this.inputGate.biases,
-    this.forgetGate.biases,
-    this.candidate.biases,
-
-    this.inputGate.recurrentWeights,
-    this.forgetGate.recurrentWeights
-  )
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList: List<ParamsArray> = listOf(
@@ -112,22 +96,5 @@ class RANLayerParameters(
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [RANLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): RANLayerParameters {
-
-    val clonedParams = RANLayerParameters(
-      inputSize = this.inputSize,
-      outputSize = this.outputSize,
-      sparseInput = this.sparseInput,
-      weightsInitializer = null,
-      biasesInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 }

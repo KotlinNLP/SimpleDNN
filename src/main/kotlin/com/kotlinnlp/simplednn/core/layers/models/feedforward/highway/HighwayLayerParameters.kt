@@ -26,11 +26,12 @@ class HighwayLayerParameters(
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer(),
   private val sparseInput: Boolean = false
-) : LayerParameters<HighwayLayerParameters>(
+) : LayerParameters(
   inputSize = inputSize,
   outputSize = inputSize,
   weightsInitializer = weightsInitializer,
-  biasesInitializer = biasesInitializer) {
+  biasesInitializer = biasesInitializer
+) {
 
   companion object {
 
@@ -58,16 +59,6 @@ class HighwayLayerParameters(
     sparseInput = this.sparseInput)
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList = listOf(
-    this.input.weights,
-    this.input.biases,
-    this.transformGate.weights,
-    this.transformGate.biases
-  )
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList: List<ParamsArray> = listOf(
@@ -88,21 +79,5 @@ class HighwayLayerParameters(
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [HighwayLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): HighwayLayerParameters {
-
-    val clonedParams = HighwayLayerParameters(
-      inputSize = this.inputSize,
-      sparseInput = this.sparseInput,
-      weightsInitializer = null,
-      biasesInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 }
