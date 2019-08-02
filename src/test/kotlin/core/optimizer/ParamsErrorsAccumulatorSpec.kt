@@ -7,6 +7,7 @@
 
 package core.optimizer
 
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -34,12 +35,12 @@ class ParamsErrorsAccumulatorSpec : Spek({
 
       val accumulator = ParamsErrorsAccumulator()
 
-      val params = ParamsErrorsAccumulatorUtils.buildEmptyParams()
+      val params: FeedforwardLayerParameters = ParamsErrorsAccumulatorUtils.buildEmptyParams()
 
-      val gw1 = params[0].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildWeightsErrorsValues1())
-      val gb1 = params[1].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildBiasesErrorsValues1())
-      val gw2 = params[0].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildWeightsErrorsValues2())
-      val gb2 = params[1].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildBiasesErrorsValues2())
+      val gw1 = params.unit.weights.buildDenseErrors(ParamsErrorsAccumulatorUtils.buildWeightsErrorsValues1())
+      val gb1 = params.unit.biases.buildDenseErrors(ParamsErrorsAccumulatorUtils.buildBiasesErrorsValues1())
+      val gw2 = params.unit.weights.buildDenseErrors(ParamsErrorsAccumulatorUtils.buildWeightsErrorsValues2())
+      val gb2 = params.unit.biases.buildDenseErrors(ParamsErrorsAccumulatorUtils.buildBiasesErrorsValues2())
 
       accumulator.accumulate(listOf(gw1, gb1, gw2, gb2))
 
@@ -79,12 +80,12 @@ class ParamsErrorsAccumulatorSpec : Spek({
 
       val accumulator = ParamsErrorsAccumulator()
 
-      val params = ParamsErrorsAccumulatorUtils.buildEmptyParams()
+      val params: FeedforwardLayerParameters = ParamsErrorsAccumulatorUtils.buildEmptyParams()
 
-      val gw1 = params[0].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildWeightsErrorsValues1())
-      val gb1 = params[1].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildBiasesErrorsValues1())
-      val gw2 = params[0].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildWeightsErrorsValues2())
-      val gb2 = params[1].buildDenseErrors(ParamsErrorsAccumulatorUtils.buildBiasesErrorsValues2())
+      val gw1 = params.unit.weights.buildDenseErrors(ParamsErrorsAccumulatorUtils.buildWeightsErrorsValues1())
+      val gb1 = params.unit.biases.buildDenseErrors(ParamsErrorsAccumulatorUtils.buildBiasesErrorsValues1())
+      val gw2 = params.unit.weights.buildDenseErrors(ParamsErrorsAccumulatorUtils.buildWeightsErrorsValues2())
+      val gb2 = params.unit.biases.buildDenseErrors(ParamsErrorsAccumulatorUtils.buildBiasesErrorsValues2())
 
       accumulator.accumulate(listOf(gw1, gb1, gw2, gb2))
       accumulator.averageErrors()

@@ -8,6 +8,7 @@
 package core.optimizer
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -28,12 +29,12 @@ class ParamsOptimizerSpec : Spek({
 
       val optimizer = ParamsOptimizer(learningRateMethod)
 
-      val params = ParamsOptimizerUtils.buildParams()
+      val params: FeedforwardLayerParameters = ParamsOptimizerUtils.buildParams()
 
-      val gw1 = params[0].buildDenseErrors(ParamsOptimizerUtils.buildWeightsErrorsValues1())
-      val gb1 = params[1].buildDenseErrors(ParamsOptimizerUtils.buildBiasesErrorsValues1())
-      val gw2 = params[0].buildDenseErrors(ParamsOptimizerUtils.buildWeightsErrorsValues2())
-      val gb2 = params[1].buildDenseErrors(ParamsOptimizerUtils.buildBiasesErrorsValues2())
+      val gw1 = params.unit.weights.buildDenseErrors(ParamsOptimizerUtils.buildWeightsErrorsValues1())
+      val gb1 = params.unit.biases.buildDenseErrors(ParamsOptimizerUtils.buildBiasesErrorsValues1())
+      val gw2 = params.unit.weights.buildDenseErrors(ParamsOptimizerUtils.buildWeightsErrorsValues2())
+      val gb2 = params.unit.biases.buildDenseErrors(ParamsOptimizerUtils.buildBiasesErrorsValues2())
 
       optimizer.accumulate(listOf(gw1, gb1, gw2, gb2))
       optimizer.update()

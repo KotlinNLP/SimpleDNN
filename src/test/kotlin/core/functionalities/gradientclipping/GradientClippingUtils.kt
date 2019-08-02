@@ -1,26 +1,20 @@
 package core.functionalities.gradientclipping
 
-import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import core.optimizer.ParamsErrorsAccumulatorUtils
 
 object GradientClippingUtils {
 
   /**
    *
    */
-  fun buildParams(): List<ParamsArray> {
+  fun buildParams() = FeedforwardLayerParameters(inputSize = 4, outputSize = 5).also {
 
-    val params = FeedforwardLayerParameters(inputSize = 4, outputSize = 5)
+    it.unit.weights.values.assignValues(buildDenseParams3())
 
-    params.unit.weights.values.assignValues(buildDenseParams3())
-
-    params.unit.biases.values.assignValues(buildDenseParams1())
-
-    return params.paramsList.map { ParamsArray(it.values) }
+    it.unit.biases.values.assignValues(buildDenseParams1())
   }
 
   /**
@@ -31,8 +25,8 @@ object GradientClippingUtils {
     val accumulator = ParamsErrorsAccumulator()
     val params = buildParams()
 
-    val gw1 = params[0].buildDenseErrors(buildWeightsErrorsValues1())
-    val gb1 = params[1].buildDenseErrors(buildBiasesErrorsValues1())
+    val gw1 = params.unit.weights.buildDenseErrors(buildWeightsErrorsValues1())
+    val gb1 = params.unit.biases.buildDenseErrors(buildBiasesErrorsValues1())
     accumulator.accumulate(listOf(gw1, gb1))
 
     return accumulator.getParamsErrors()
