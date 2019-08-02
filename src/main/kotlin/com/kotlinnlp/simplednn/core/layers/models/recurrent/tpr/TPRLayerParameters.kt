@@ -80,12 +80,12 @@ class TPRLayerParameters(
   /**
    * The Symbol attention embeddings.
    */
-  val S = ParamsArray(this.dSymbols, this.nSymbols)
+  val s = ParamsArray(this.dSymbols, this.nSymbols)
 
   /**
    * The Role attention embeddings.
    */
-  val R = ParamsArray(this.dRoles, this.nRoles)
+  val r = ParamsArray(this.dRoles, this.nRoles)
 
   /**
    * The list of weights parameters.
@@ -95,8 +95,8 @@ class TPRLayerParameters(
     this.wInR,
     this.wRecS,
     this.wRecR,
-    this.S,
-    this.R
+    this.s,
+    this.r
   )
 
   /**

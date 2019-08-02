@@ -36,8 +36,8 @@ class TPRForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.aR.activate()
     this.layer.aS.activate()
 
-    this.layer.r.forward(w = params.R.values, b = null, x = this.layer.aR.values)
-    this.layer.s.forward(w = params.S.values, b = null, x = this.layer.aS.values)
+    this.layer.r.forward(w = params.r.values, b = null, x = this.layer.aR.values)
+    this.layer.s.forward(w = params.s.values, b = null, x = this.layer.aS.values)
 
     this.layer.bindingMatrix.values.assignValues(a = this.layer.s.values.dot(this.layer.r.values.t))
     this.layer.bindingMatrix.values.vectorize(this.layer.outputArray.values)

@@ -86,8 +86,8 @@ class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val aSactDeriv: DenseNDArray = this.layer.aS.calculateActivationDeriv()
     val aRactDeriv: DenseNDArray = this.layer.aR.calculateActivationDeriv()
 
-    val wS: DenseNDArray = this.layer.params.S.values
-    val wR: DenseNDArray = this.layer.params.R.values
+    val wS: DenseNDArray = this.layer.params.s.values
+    val wR: DenseNDArray = this.layer.params.r.values
 
     this.layer.aS
       .assignErrorsByDotT(gs, wS)
@@ -121,8 +121,8 @@ class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     this.layer.params.bS.errors.values.assignValues(gaS)
     this.layer.params.bR.errors.values.assignValues(gaR)
 
-    this.layer.params.S.errors.values.assignDot(gs, this.layer.aS.values.t)
-    this.layer.params.R.errors.values.assignDot(gr, this.layer.aR.values.t)
+    this.layer.params.s.errors.values.assignDot(gs, this.layer.aS.values.t)
+    this.layer.params.r.errors.values.assignDot(gr, this.layer.aR.values.t)
 
     if (yPrev != null) {
       this.layer.params.wRecS.errors.values.assignDot(gaS, yPrev.t)
