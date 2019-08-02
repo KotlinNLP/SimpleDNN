@@ -25,7 +25,7 @@ class SimpleRecurrentRelevanceHelper(override val layer: SimpleRecurrentLayer<De
    *
    * @return the relevance of the input respect of the output
    */
-  override fun getInputRelevance(layerContributions: LayerParameters<*>): DenseNDArray {
+  override fun getInputRelevance(layerContributions: LayerParameters): DenseNDArray {
     layerContributions as SimpleRecurrentLayerParameters
 
     return this.layer.outputArray.getInputRelevance(
@@ -41,7 +41,7 @@ class SimpleRecurrentRelevanceHelper(override val layer: SimpleRecurrentLayer<De
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  override fun setRecurrentRelevance(layerContributions: LayerParameters<*>) {
+  override fun setRecurrentRelevance(layerContributions: LayerParameters) {
     layerContributions as SimpleRecurrentLayerParameters
 
     val prevStateLayer: Layer<*> = this.layer.layerContextWindow.getPrevState()!!

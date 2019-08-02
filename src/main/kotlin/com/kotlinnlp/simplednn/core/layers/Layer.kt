@@ -36,7 +36,7 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArray: AugmentedArray<InputNDArrayType>,
   val inputType: LayerType.Input, // = LayerType.Input.Dense,
   open val outputArray: AugmentedArray<DenseNDArray>,
-  open val params: LayerParameters<*>,
+  open val params: LayerParameters,
   val activationFunction: ActivationFunction? = null,
   val dropout: Double = 0.0,
   override val id: Int = 0
@@ -127,7 +127,7 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param layerContributions the [LayerParameters] in which to save the contributions during calculations
    * @param useDropout whether to apply the dropout
    */
-  fun forward(layerContributions: LayerParameters<*>, useDropout: Boolean = false) {
+  fun forward(layerContributions: LayerParameters, useDropout: Boolean = false) {
 
     if (useDropout) {
       this.applyDropout()
@@ -141,7 +141,7 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  fun setInputRelevance(layerContributions: LayerParameters<*>) {
+  fun setInputRelevance(layerContributions: LayerParameters) {
     this.relevanceHelper?.setInputRelevance(layerContributions = layerContributions) ?:
     throw RuntimeException("Relevance propagation not available.")
   }
@@ -152,7 +152,7 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  fun addInputRelevance(layerContributions: LayerParameters<*>) {
+  fun addInputRelevance(layerContributions: LayerParameters) {
     this.relevanceHelper?.addInputRelevance(layerContributions = layerContributions) ?:
     throw RuntimeException("Relevance propagation not available.")
   }

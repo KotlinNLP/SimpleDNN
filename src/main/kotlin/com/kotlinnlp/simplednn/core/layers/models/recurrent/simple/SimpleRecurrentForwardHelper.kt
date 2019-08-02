@@ -53,7 +53,7 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  override fun forward(layerContributions: LayerParameters<*>) {
+  override fun forward(layerContributions: LayerParameters) {
 
     assert (this.layer.inputArray.values is DenseNDArray) {
       "Forwarding with contributions requires the input to be dense."

@@ -22,5 +22,5 @@ abstract class GatedRecurrentRelevanceHelper(layer: RecurrentLayer<DenseNDArray>
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  abstract fun propagateRelevanceToGates(layerContributions: LayerParameters<*>)
+  abstract fun propagateRelevanceToGates(layerContributions: LayerParameters)
 }

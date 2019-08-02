@@ -36,7 +36,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
-  params: LayerParameters<*>,
+  params: LayerParameters,
   layerContextWindow: LayerContextWindow,
   dropout: Double = 0.0,
   val q: Double

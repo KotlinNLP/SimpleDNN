@@ -23,7 +23,7 @@ abstract class RelevanceHelper(protected open val layer: Layer<DenseNDArray>) {
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  fun setInputRelevance(layerContributions: LayerParameters<*>) {
+  fun setInputRelevance(layerContributions: LayerParameters) {
     this.layer.inputArray.assignRelevance(relevance = this.getInputRelevance(layerContributions = layerContributions))
   }
 
@@ -33,7 +33,7 @@ abstract class RelevanceHelper(protected open val layer: Layer<DenseNDArray>) {
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  fun addInputRelevance(layerContributions: LayerParameters<*>) {
+  fun addInputRelevance(layerContributions: LayerParameters) {
     this.layer.inputArray.relevance.assignSum(this.getInputRelevance(layerContributions = layerContributions))
   }
 
@@ -44,5 +44,5 @@ abstract class RelevanceHelper(protected open val layer: Layer<DenseNDArray>) {
    *
    * @return the relevance of the input in respect of the output
    */
-  protected abstract fun getInputRelevance(layerContributions: LayerParameters<*>): DenseNDArray
+  protected abstract fun getInputRelevance(layerContributions: LayerParameters): DenseNDArray
 }

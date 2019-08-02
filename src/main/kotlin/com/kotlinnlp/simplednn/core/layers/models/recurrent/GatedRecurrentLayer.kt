@@ -30,7 +30,7 @@ abstract class GatedRecurrentLayer<InputNDArrayType : NDArray<InputNDArrayType>>
   inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
-  params: LayerParameters<*>,
+  params: LayerParameters,
   layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
@@ -51,7 +51,7 @@ abstract class GatedRecurrentLayer<InputNDArrayType : NDArray<InputNDArrayType>>
   /**
    * @param layerContributions the contributions saved during the last forward
    */
-  fun propagateRelevanceToGates(layerContributions: LayerParameters<*>) {
+  fun propagateRelevanceToGates(layerContributions: LayerParameters) {
     this.relevanceHelper?.propagateRelevanceToGates(layerContributions) ?:
       throw RuntimeException("Relevance propagation not available.")
   }

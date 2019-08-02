@@ -25,7 +25,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  */
 open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
   val layersConfiguration: List<LayerInterface>,
-  val paramsPerLayer: List<LayerParameters<*>>
+  val paramsPerLayer: List<LayerParameters>
 ) : LayerContextWindow {
 
   /**

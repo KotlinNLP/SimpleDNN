@@ -23,7 +23,7 @@ class HighwayRelevanceHelper(override val layer: HighwayLayer<DenseNDArray>) : R
    *
    * @return the relevance of the input respect of the output
    */
-  override fun getInputRelevance(layerContributions: LayerParameters<*>): DenseNDArray {
+  override fun getInputRelevance(layerContributions: LayerParameters): DenseNDArray {
       TODO("not implemented")
   }
 }

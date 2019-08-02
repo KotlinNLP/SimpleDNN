@@ -30,7 +30,7 @@ class FeedforwardLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
-  params: LayerParameters<*>,
+  params: LayerParameters,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0,
   override val id: Int = 0

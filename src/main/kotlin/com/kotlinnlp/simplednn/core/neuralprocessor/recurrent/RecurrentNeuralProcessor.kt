@@ -598,7 +598,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     require(propagateToInput || propagateToPrevState)
 
-    val contributions: LayerParameters<*>
+    val contributions: LayerParameters
       = this.sequence.getStateContributions(this.curStateIndex).paramsPerLayer[layerIndex]
 
     if (layer is GatedRecurrentLayer) {

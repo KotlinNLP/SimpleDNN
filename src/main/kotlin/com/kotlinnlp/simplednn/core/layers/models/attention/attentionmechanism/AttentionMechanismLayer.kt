@@ -32,7 +32,7 @@ import com.kotlinnlp.utils.ItemsPool
 class AttentionMechanismLayer(
   val inputArrays: List<AugmentedArray<DenseNDArray>>,
   inputType: LayerType.Input,
-  params: LayerParameters<*>,
+  params: LayerParameters,
   activation: ActivationFunction? = SoftmaxBase(),
   dropout: Double = 0.0,
   override val id: Int = 0

@@ -25,5 +25,5 @@ abstract class RecurrentRelevanceHelper(override val layer: RecurrentLayer<Dense
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  abstract fun setRecurrentRelevance(layerContributions: LayerParameters<*>)
+  abstract fun setRecurrentRelevance(layerContributions: LayerParameters)
 }

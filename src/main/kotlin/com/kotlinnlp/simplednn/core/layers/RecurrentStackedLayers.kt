@@ -21,7 +21,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class RecurrentStackedLayers <InputNDArrayType : NDArray<InputNDArrayType>>(
   layersConfiguration: List<LayerInterface>,
-  paramsPerLayer: List<LayerParameters<*>>,
+  paramsPerLayer: List<LayerParameters>,
   val structureContextWindow: StructureContextWindow<InputNDArrayType>
 ) : LayerContextWindow,
   StackedLayers<InputNDArrayType>(layersConfiguration = layersConfiguration, paramsPerLayer = paramsPerLayer) {

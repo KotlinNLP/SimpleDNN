@@ -32,7 +32,7 @@ class LTMLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
-  params: LayerParameters<*>,
+  params: LayerParameters,
   layerContextWindow: LayerContextWindow,
   dropout: Double = 0.0
 ) : GatedRecurrentLayer<InputNDArrayType>(

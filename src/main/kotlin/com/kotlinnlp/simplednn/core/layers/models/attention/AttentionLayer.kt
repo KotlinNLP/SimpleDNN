@@ -37,7 +37,7 @@ class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArrays: List<AugmentedArray<InputNDArrayType>>,
   inputType: LayerType.Input,
   val attentionArrays: List<AugmentedArray<DenseNDArray>>,
-  params: LayerParameters<*>,
+  params: LayerParameters,
   activation: ActivationFunction? = SoftmaxBase(),
   dropout: Double = 0.0,
   override val id: Int = 0

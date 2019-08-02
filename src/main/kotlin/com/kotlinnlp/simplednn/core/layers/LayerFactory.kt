@@ -59,7 +59,7 @@ object LayerFactory {
    */
   operator fun invoke(inputConfiguration: LayerInterface,
                       outputConfiguration: LayerInterface,
-                      params: LayerParameters<*>,
+                      params: LayerParameters,
                       contextWindow: LayerContextWindow? = null): Layer<*> {
 
     require(outputConfiguration.connectionType != null) {
@@ -116,7 +116,7 @@ object LayerFactory {
     inputArrays: List<AugmentedArray<InputNDArrayType>>,
     inputType: LayerType.Input,
     outputConfiguration: LayerInterface,
-    params: LayerParameters<*>,
+    params: LayerParameters,
     dropout: Double,
     contextWindow: LayerContextWindow? = null
   ) : Layer<InputNDArrayType> = LayerFactory(
@@ -147,7 +147,7 @@ object LayerFactory {
     inputArrays: List<AugmentedArray<InputNDArrayType>>,
     inputType: LayerType.Input,
     outputSize: Int,
-    params: LayerParameters<*>,
+    params: LayerParameters,
     connectionType: LayerType.Connection,
     activationFunction: ActivationFunction? = null,
     dropout: Double = 0.0,

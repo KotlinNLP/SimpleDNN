@@ -27,7 +27,7 @@ import com.kotlinnlp.utils.ItemsPool
  * @property dropout the probability of dropout (default: 0.0 - if applying it, the usual value is 0.25)
  */
 class FeedforwardLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
-  val params: LayerParameters<*>,
+  val params: LayerParameters,
   val inputType: LayerType.Input,
   val activationFunction: ActivationFunction?,
   val dropout: Double = 0.0

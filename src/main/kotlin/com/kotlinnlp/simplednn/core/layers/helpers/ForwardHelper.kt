@@ -33,7 +33,7 @@ abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  open fun forward(layerContributions: LayerParameters<*>) {
+  open fun forward(layerContributions: LayerParameters) {
     throw NotImplementedError("Forward with contributions not available for this layer.")
   }
 

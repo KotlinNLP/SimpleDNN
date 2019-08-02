@@ -34,7 +34,7 @@ class SimpleRecurrentLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   override val outputArray: RecurrentLayerUnit<InputNDArrayType>,
-  params: LayerParameters<*>,
+  params: LayerParameters,
   layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0

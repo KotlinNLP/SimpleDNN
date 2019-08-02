@@ -30,7 +30,7 @@ abstract class RecurrentLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
-  params: LayerParameters<*>,
+  params: LayerParameters,
   val layerContextWindow: LayerContextWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
@@ -53,7 +53,7 @@ abstract class RecurrentLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  fun setRecurrentRelevance(layerContributions: LayerParameters<*>) {
+  fun setRecurrentRelevance(layerContributions: LayerParameters) {
     this.relevanceHelper?.setRecurrentRelevance(layerContributions = layerContributions) ?:
       throw RuntimeException("Relevance propagation not available.")
   }

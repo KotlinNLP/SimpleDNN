@@ -26,7 +26,7 @@ class DeltaRNNRelevanceHelper(override val layer: DeltaRNNLayer<DenseNDArray>)
    *
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
-  override fun propagateRelevanceToGates(layerContributions: LayerParameters<*>) {
+  override fun propagateRelevanceToGates(layerContributions: LayerParameters) {
     layerContributions as DeltaRNNLayerParameters
 
     val previousStateExists: Boolean = this.layer.layerContextWindow.getPrevState() != null
@@ -51,7 +51,7 @@ class DeltaRNNRelevanceHelper(override val layer: DeltaRNNLayer<DenseNDArray>)
    *
    * @return the relevance of the input respect of the output
    */
-  override fun getInputRelevance(layerContributions: LayerParameters<*>): DenseNDArray {
+  override fun getInputRelevance(layerContributions: LayerParameters): DenseNDArray {
 
     this.layer.params as DeltaRNNLayerParameters
     layerContributions as DeltaRNNLayerParameters
@@ -108,7 +108,7 @@ class DeltaRNNRelevanceHelper(override val layer: DeltaRNNLayer<DenseNDArray>)
    *
    * @param layerContributions the contributions saved during the last forward
    */
-  override fun setRecurrentRelevance(layerContributions: LayerParameters<*>) {
+  override fun setRecurrentRelevance(layerContributions: LayerParameters) {
     this.layer.params as DeltaRNNLayerParameters
     layerContributions as DeltaRNNLayerParameters
 

@@ -24,7 +24,7 @@ class FeedforwardRelevanceHelper(override val layer: FeedforwardLayer<DenseNDArr
    *
    * @return the relevance of the input respect of the output
    */
-  override fun getInputRelevance(layerContributions: LayerParameters<*>): DenseNDArray {
+  override fun getInputRelevance(layerContributions: LayerParameters): DenseNDArray {
     layerContributions as FeedforwardLayerParameters
 
     return this.layer.outputArray.getInputRelevance(
