@@ -30,7 +30,7 @@ abstract class Evaluator<ExampleType : Any>(
    *
    * @return the validation statistics
    */
-  fun evaluate(): Statistics {
+  open fun evaluate(): Statistics {
 
     val progress = ProgressIndicatorBar(this.examples.size)
 
