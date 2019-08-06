@@ -72,15 +72,11 @@ class RecurrentStackedLayers <InputNDArrayType : NDArray<InputNDArrayType>>(
   override fun getPrevState(): Layer<*>? = if (this.useInitHidden[this.curLayerIndex]) {
     this.initHiddenLayers[this.curLayerIndex]
   } else {
-    val prevStateStructure = this.structureContextWindow.getPrevState()
-    prevStateStructure?.layers?.get(this.curLayerIndex)
+    this.structureContextWindow.getPrevState()?.layers?.get(this.curLayerIndex)
   }
 
   /**
    * @return the current layer in next state
    */
-  override fun getNextState(): Layer<*>? {
-    val nextStateStructure = this.structureContextWindow.getNextState()
-    return nextStateStructure?.layers?.get(this.curLayerIndex)
-  }
+  override fun getNextState(): Layer<*>? = this.structureContextWindow.getNextState()?.layers?.get(this.curLayerIndex)
 }
