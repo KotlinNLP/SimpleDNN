@@ -68,7 +68,7 @@ class HighwayBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *   gb = gy * 1
    *   gw = gy (dot) x
    */
-  private fun assignParamsGradients() { this.layer.params as HighwayLayerParameters
+  private fun assignParamsGradients() {
 
     this.layer.inputUnit.assignParamsGradients(
       gw = this.layer.params.input.weights.errors.values,
@@ -84,7 +84,7 @@ class HighwayBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * gx = (1 - T) * gy + gIn
    */
-  private fun assignLayerGradients() { this.layer.params as HighwayLayerParameters
+  private fun assignLayerGradients() {
 
     val tGate: DenseNDArray = this.layer.transformGate.values
     val gxIn: DenseNDArray = this.layer.inputUnit.getInputErrors(w = this.layer.params.input.weights.values)

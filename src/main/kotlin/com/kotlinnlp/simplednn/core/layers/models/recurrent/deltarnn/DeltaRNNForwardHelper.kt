@@ -27,7 +27,7 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    *   y = f(p * c + (1 - p) * yPrev)
    */
-  override fun forward() { this.layer.params as DeltaRNNLayerParameters
+  override fun forward() {
 
     val x: InputNDArrayType = this.layer.inputArray.values
     val w: DenseNDArray = this.layer.params.feedforwardUnit.weights.values
@@ -63,7 +63,6 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
       "Forwarding with contributions requires the input to be dense."
     }
 
-    this.layer.params as DeltaRNNLayerParameters
     layerContributions as DeltaRNNLayerParameters
 
     val wx: DenseNDArray = this.layer.wx.values
@@ -113,7 +112,6 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return the recurrent contribution
    */
   private fun calculateRecurrentContribution(yPrev: DenseNDArray): DenseNDArray? {
-    this.layer.params as DeltaRNNLayerParameters
 
     val wRec: DenseNDArray = this.layer.params.recurrentUnit.weights.values
     val wyRec: DenseNDArray = this.layer.wyRec.values
@@ -133,7 +131,6 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return the array of candidate
    */
   private fun calculateCandidate(wyRec: DenseNDArray?): DenseNDArray {
-    this.layer.params as DeltaRNNLayerParameters
 
     val c: DenseNDArray = this.layer.candidate.values
     val bc: DenseNDArray = this.layer.params.feedforwardUnit.biases.values
@@ -172,7 +169,6 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return the array of candidate
    */
   private fun calculateCandidateSavingContributions(wyRec: DenseNDArray?): DenseNDArray {
-    this.layer.params as DeltaRNNLayerParameters
 
     val relevanceSupport = this.layer.relevanceSupport
 
@@ -218,7 +214,7 @@ class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the array of partition
    */
-  private fun calculatePartition(): DenseNDArray { this.layer.params as DeltaRNNLayerParameters
+  private fun calculatePartition(): DenseNDArray {
 
     val wx: DenseNDArray = this.layer.wx.values
     val bp: DenseNDArray = this.layer.params.recurrentUnit.biases.values

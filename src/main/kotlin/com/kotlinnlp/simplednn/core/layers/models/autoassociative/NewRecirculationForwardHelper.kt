@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.autoassociative
 
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 

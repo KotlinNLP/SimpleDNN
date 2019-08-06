@@ -51,8 +51,6 @@ class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun getLayerRecurrentContribution(nextStateLayer: TPRLayer<*>): DenseNDArray {
 
-    this.layer.params as TPRLayerParameters
-
     val gs: DenseNDArray = nextStateLayer.aS.errors
     val gr: DenseNDArray = nextStateLayer.aR.errors
 
@@ -71,7 +69,6 @@ class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun assignGradients() {
 
     val q = this.layer.q
-    this.layer.params as TPRLayerParameters
 
     // TODO: assign zeros only if not initialized
     this.layer.bindingMatrix.assignErrors(DenseNDArrayFactory.zeros(this.layer.bindingMatrix.values.shape))
@@ -107,8 +104,6 @@ class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
 
-    this.layer.params as TPRLayerParameters
-
     val x: InputNDArrayType = this.layer.inputArray.values
     val yPrev: DenseNDArray? = prevStateOutput?.values
 
@@ -141,7 +136,6 @@ class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Assign layer gradients to input array
    */
   private fun assignLayerGradients() {
-    this.layer.params as TPRLayerParameters
 
     val wInS: DenseNDArray = this.layer.params.wInS.values
     val wInR: DenseNDArray = this.layer.params.wInR.values

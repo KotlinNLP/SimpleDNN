@@ -11,7 +11,6 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.SoftmaxBase
 import com.kotlinnlp.simplednn.core.layers.Layer
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -32,7 +31,7 @@ import com.kotlinnlp.utils.ItemsPool
 class AttentionMechanismLayer(
   val inputArrays: List<AugmentedArray<DenseNDArray>>,
   inputType: LayerType.Input,
-  params: LayerParameters,
+  override val params: AttentionMechanismLayerParameters,
   activation: ActivationFunction? = SoftmaxBase(),
   dropout: Double = 0.0,
   override val id: Int = 0
@@ -74,8 +73,8 @@ class AttentionMechanismLayer(
   init {
 
     require(this.inputArrays.isNotEmpty()) { "The attention sequence cannot be empty." }
-    require(this.inputArrays.all { it.values.length == (this.params as AttentionMechanismLayerParameters).inputSize }) {
-      "The input arrays must have the expected size (%d).".format((this.params as AttentionMechanismLayerParameters).inputSize)
+    require(this.inputArrays.all { it.values.length == this.params.inputSize }) {
+      "The input arrays must have the expected size (%d).".format(this.params.inputSize)
     }
 
     if (activationFunction != null) {

@@ -61,7 +61,7 @@ class IndRNNLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(IndRNNLayerStructureUtils.getOutputErrors())
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as IndRNNLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(
@@ -109,7 +109,7 @@ class IndRNNLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(IndRNNLayerStructureUtils.getOutputErrors())
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as IndRNNLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(
@@ -157,7 +157,7 @@ class IndRNNLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(IndRNNLayerStructureUtils.getOutputErrors())
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as IndRNNLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(
@@ -205,7 +205,7 @@ class IndRNNLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(IndRNNLayerStructureUtils.getOutputErrors())
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as IndRNNLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(

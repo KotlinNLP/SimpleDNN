@@ -60,7 +60,7 @@ class HighwayLayerStructureSpec : Spek({
       layer.outputArray.assignErrors(HighwayLayerStructureUtils.getOutputErrors())
 
       val paramsErrors = layer.backward(propagateToInput = true)
-      val params = layer.params as HighwayLayerParameters
+      val params = layer.params
 
       it("should match the expected errors of the outputArray") {
         assertTrue {

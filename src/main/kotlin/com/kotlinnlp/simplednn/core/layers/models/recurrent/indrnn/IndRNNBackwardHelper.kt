@@ -55,8 +55,6 @@ class IndRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
 
-    this.layer.params as IndRNNLayerParameters
-
     this.layer.outputArray.assignParamsGradients(
       gw = this.layer.params.feedforwardUnit.weights.errors.values,
       gb = this.layer.params.feedforwardUnit.biases.errors.values,
@@ -75,7 +73,7 @@ class IndRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * gx = gb (dot) w
    */
-  private fun assignLayerGradients() { this.layer.params as IndRNNLayerParameters
+  private fun assignLayerGradients() {
 
     this.layer.inputArray.assignErrors(
       this.layer.outputArray.getInputErrors(w = this.layer.params.feedforwardUnit.weights.values)
@@ -86,8 +84,6 @@ class IndRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * gy += gyNext * wRec
    */
   private fun addLayerRecurrentGradients(nextStateLayer: IndRNNLayer<*>) {
-
-    this.layer.params as IndRNNLayerParameters
 
     val gy: DenseNDArray = this.layer.outputArray.errors
     val wRec: DenseNDArray = this.layer.params.recurrentWeights.values

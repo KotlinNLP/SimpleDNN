@@ -72,7 +72,7 @@ class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   internal val attentionMechanism = AttentionMechanismLayer(
     inputArrays = this.attentionArrays,
     inputType = inputType,
-    params = params,
+    params = params as AttentionMechanismLayerParameters,
     activation = SoftmaxBase()).apply {
 
     setParamsErrorsCollector(this@AttentionLayer.getParamsErrorsCollector())

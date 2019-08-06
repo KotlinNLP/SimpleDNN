@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers.models.feedforward.highway
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -27,7 +26,7 @@ class HighwayForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * T = sigmoid(wT (dot) x + bT)
    * y = T * f(wIn (dot) x + bIn) + (1 - T) * x
    */
-  override fun forward() { this.layer.params as HighwayLayerParameters
+  override fun forward() {
 
     // TODO: extend for all input types
     require(this.layer.inputArray.values is DenseNDArray) { "Highway layer supports only dense input." }

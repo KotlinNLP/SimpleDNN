@@ -118,7 +118,7 @@ class GRULayerStructureSpec : Spek({
         layer.outputArray.assignErrors(errors)
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as GRULayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -273,7 +273,7 @@ class GRULayerStructureSpec : Spek({
         layer.outputArray.assignErrors(errors)
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as GRULayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -437,7 +437,7 @@ class GRULayerStructureSpec : Spek({
         layer.outputArray.assignErrors(errors)
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as GRULayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -591,7 +591,7 @@ class GRULayerStructureSpec : Spek({
         layer.outputArray.assignErrors(errors)
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as GRULayerParameters
+        val params = layer.params
         it("should match the expected errors of the outputArray") {
           assertTrue {
             layer.outputArray.errors.equals(

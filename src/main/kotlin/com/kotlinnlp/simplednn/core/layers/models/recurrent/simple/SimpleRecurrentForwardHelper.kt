@@ -27,7 +27,7 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
    *
    * y = f(w (dot) x + b + wRec (dot) yPrev)
    */
-  override fun forward() { this.layer.params as SimpleRecurrentLayerParameters
+  override fun forward() {
 
     // y = w (dot) x + b
     this.layer.outputArray.forward(
@@ -59,7 +59,6 @@ class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
       "Forwarding with contributions requires the input to be dense."
     }
 
-    this.layer.params as SimpleRecurrentLayerParameters
     layerContributions as SimpleRecurrentLayerParameters
 
     val prevStateLayer: Layer<*>? = this.layer.layerContextWindow.getPrevState()

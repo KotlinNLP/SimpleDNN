@@ -351,7 +351,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(layer.outputArray.values.sub(DeltaRNNLayerStructureUtils.getOutputGold()))
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as DeltaRNNLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -453,7 +453,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(layer.outputArray.values.sub(DeltaRNNLayerStructureUtils.getOutputGold()))
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as DeltaRNNLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -566,7 +566,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(layer.outputArray.values.sub(DeltaRNNLayerStructureUtils.getOutputGold()))
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as DeltaRNNLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -668,7 +668,7 @@ class DeltaRNNLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(layer.outputArray.values.sub(DeltaRNNLayerStructureUtils.getOutputGold()))
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as DeltaRNNLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the outputArray") {
           assertTrue {

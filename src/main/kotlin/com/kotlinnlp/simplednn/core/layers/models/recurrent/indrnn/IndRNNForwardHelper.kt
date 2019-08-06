@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
@@ -25,7 +24,7 @@ class IndRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * y = f(w (dot) x + wRec * yPrev + b)
    */
-  override fun forward() { this.layer.params as IndRNNLayerParameters
+  override fun forward() {
 
     // y = w (dot) x + b
     this.layer.outputArray.forward(

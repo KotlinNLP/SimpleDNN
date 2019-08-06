@@ -9,7 +9,6 @@ package com.kotlinnlp.simplednn.core.layers.models.feedforward.simple
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -27,7 +26,7 @@ import com.kotlinnlp.utils.ItemsPool
  * @property dropout the probability of dropout (default: 0.0 - if applying it, the usual value is 0.25)
  */
 class FeedforwardLayersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
-  val params: LayerParameters,
+  val params: FeedforwardLayerParameters,
   val inputType: LayerType.Input,
   val activationFunction: ActivationFunction?,
   val dropout: Double = 0.0

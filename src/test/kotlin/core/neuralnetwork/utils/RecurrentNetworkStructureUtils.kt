@@ -58,8 +58,7 @@ object RecurrentNetworkStructureUtils {
     ).toList()
 
     return RecurrentStackedLayers(
-      layersConfiguration = layersConfiguration,
-      paramsPerLayer = this.buildParams(layersConfiguration).paramsPerLayer,
+      params = this.buildParams(layersConfiguration),
       structureContextWindow = structureContextWindow)
   }
 }

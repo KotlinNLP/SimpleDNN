@@ -26,7 +26,7 @@ class FeedforwardForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * y = f(w (dot) x + b)
    */
-  override fun forward() { this.layer.params as FeedforwardLayerParameters
+  override fun forward() {
 
     this.layer.outputArray.forward(
       w = this.layer.params.unit.weights.values,
@@ -44,7 +44,7 @@ class FeedforwardForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param layerContributions the structure in which to save the contributions during the calculations
    */
   override fun forward(layerContributions: LayerParameters) {
-    this.layer.params as FeedforwardLayerParameters
+
     layerContributions as FeedforwardLayerParameters
 
     require(this.layer.inputArray.values is DenseNDArray) {

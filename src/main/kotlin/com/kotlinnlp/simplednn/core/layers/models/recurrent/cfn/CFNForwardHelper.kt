@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -61,7 +60,7 @@ class CFNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * forG = sigmoid(wForG (dot) x + bForG + wrForG (dot) yPrev)
    * c = f(wc (dot) x)
    */
-  private fun setGates(prevStateLayer: Layer<*>?) { this.layer.params as CFNLayerParameters
+  private fun setGates(prevStateLayer: Layer<*>?) {
 
     val x: InputNDArrayType = this.layer.inputArray.values
     val c: DenseNDArray = this.layer.candidate.values

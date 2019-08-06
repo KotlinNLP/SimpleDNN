@@ -187,7 +187,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as SimpleRecurrentLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(
@@ -243,8 +243,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as SimpleRecurrentLayerParameters
-
+        val params = layer.params
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(
@@ -300,7 +299,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as SimpleRecurrentLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(
@@ -356,7 +355,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(layer.outputArray.values.sub(outputGold))
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as SimpleRecurrentLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the output") {
           assertTrue(layer.outputArray.errors.equals(

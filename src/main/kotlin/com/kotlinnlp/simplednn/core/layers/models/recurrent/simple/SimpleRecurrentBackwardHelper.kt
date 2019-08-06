@@ -55,8 +55,6 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
    */
   private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
 
-    this.layer.params as SimpleRecurrentLayerParameters
-
     this.layer.outputArray.assignParamsGradients(
       gw = this.layer.params.unit.weights.errors.values,
       gb = this.layer.params.unit.biases.errors.values,
@@ -68,7 +66,7 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
   /**
    * gx = gb (dot) w
    */
-  private fun assignLayerGradients() { this.layer.params as SimpleRecurrentLayerParameters
+  private fun assignLayerGradients() {
 
     this.layer.inputArray.assignErrors(this.layer.outputArray.getInputErrors(w = this.layer.params.unit.weights.values))
   }
@@ -77,8 +75,6 @@ class SimpleRecurrentBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
    * gy += gyNext (dot) wRec
    */
   private fun addLayerRecurrentGradients(nextStateLayer: SimpleRecurrentLayer<*>) {
-
-    this.layer.params as SimpleRecurrentLayerParameters
 
     val gy: DenseNDArray = this.layer.outputArray.errors
     val gRec: DenseNDArray = nextStateLayer.outputArray.getRecurrentErrors(parameters = this.layer.params.unit)

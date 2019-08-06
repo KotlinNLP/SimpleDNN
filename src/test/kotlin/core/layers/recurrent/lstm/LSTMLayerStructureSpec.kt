@@ -207,7 +207,7 @@ class LSTMLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(errors)
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as LSTMLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -423,7 +423,7 @@ class LSTMLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(errors)
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as LSTMLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -680,7 +680,7 @@ class LSTMLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(errors)
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as LSTMLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -896,7 +896,7 @@ class LSTMLayerStructureSpec : Spek({
         layer.outputArray.assignErrors(errors)
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as LSTMLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the outputArray") {
           assertTrue {

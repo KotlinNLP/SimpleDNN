@@ -48,8 +48,6 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignGatesGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
 
-    this.layer.params as GRULayerParameters
-
     val gy: DenseNDArray = this.layer.outputArray.errors
 
     val p: DenseNDArray = this.layer.partitionGate.values
@@ -83,8 +81,6 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param prevStateOutput the outputArray in the previous state
    */
   private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
-
-    this.layer.params as GRULayerParameters
 
     val x: InputNDArrayType = this.layer.inputArray.values
     val yPrev: DenseNDArray? = prevStateOutput?.values
@@ -121,8 +117,6 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignLayerGradients() {
 
-    this.layer.params as GRULayerParameters
-
     val wp: DenseNDArray = this.layer.params.partitionGate.weights.values
     val wc: DenseNDArray = this.layer.params.candidate.weights.values
     val wr: DenseNDArray = this.layer.params.resetGate.weights.values
@@ -154,8 +148,6 @@ class GRUBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param nextStateLayer the layer structure in the next state
    */
   private fun getLayerRecurrentContribution(nextStateLayer: GRULayer<*>): DenseNDArray {
-
-    this.layer.params as GRULayerParameters
 
     val resetGate = nextStateLayer.resetGate
     val partitionGate = nextStateLayer.partitionGate

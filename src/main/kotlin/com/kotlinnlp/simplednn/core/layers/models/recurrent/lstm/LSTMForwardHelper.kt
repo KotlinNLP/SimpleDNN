@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -74,7 +73,7 @@ class LSTMForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    *
    */
-  private fun forwardGates() { this.layer.params as LSTMLayerParameters
+  private fun forwardGates() {
 
     val x: InputNDArrayType = this.layer.inputArray.values
 
@@ -107,7 +106,6 @@ class LSTMForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    */
   private fun addGatesRecurrentContribution(prevStateLayer: Layer<*>) {
-    this.layer.params as LSTMLayerParameters
 
     val yPrev: DenseNDArray = prevStateLayer.outputArray.values
 

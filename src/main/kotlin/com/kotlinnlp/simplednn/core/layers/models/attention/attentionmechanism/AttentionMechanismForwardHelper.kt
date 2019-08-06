@@ -28,7 +28,7 @@ class AttentionMechanismForwardHelper(
    *
    *    y = activation(am (dot) cv)
    */
-  override fun forward() { this.layer.params as AttentionMechanismLayerParameters
+  override fun forward() {
 
     this.layer.outputArray.assignValues(this.layer.attentionMatrix.values.dot(this.layer.params.contextVector.values))
     this.layer.outputArray.activate()

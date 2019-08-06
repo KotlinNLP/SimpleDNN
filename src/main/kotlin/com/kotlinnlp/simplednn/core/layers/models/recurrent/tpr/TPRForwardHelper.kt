@@ -25,19 +25,18 @@ class TPRForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun forward() {
 
-    val params = this.layer.params as TPRLayerParameters
     val x: InputNDArrayType = this.layer.inputArray.values
 
-    this.layer.aR.forward(w = params.wInR.values, b = params.bR.values, x = x)
-    this.layer.aS.forward(w = params.wInS.values, b = params.bS.values, x = x)
+    this.layer.aR.forward(w = this.layer.params.wInR.values, b = this.layer.params.bR.values, x = x)
+    this.layer.aS.forward(w = this.layer.params.wInS.values, b = this.layer.params.bS.values, x = x)
 
     this.addRecurrentContribution()
 
     this.layer.aR.activate()
     this.layer.aS.activate()
 
-    this.layer.r.forward(w = params.r.values, b = null, x = this.layer.aR.values)
-    this.layer.s.forward(w = params.s.values, b = null, x = this.layer.aS.values)
+    this.layer.r.forward(w = this.layer.params.r.values, b = null, x = this.layer.aR.values)
+    this.layer.s.forward(w = this.layer.params.s.values, b = null, x = this.layer.aS.values)
 
     this.layer.bindingMatrix.values.assignValues(a = this.layer.s.values.dot(this.layer.r.values.t))
     this.layer.bindingMatrix.values.vectorize(this.layer.outputArray.values)
@@ -48,14 +47,12 @@ class TPRForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun addRecurrentContribution() {
 
-    val params = this.layer.params as TPRLayerParameters
-
     this.layer.layerContextWindow.getPrevState()?.let { prevStateLayer ->
 
       val yPrev: DenseNDArray = prevStateLayer.outputArray.values
 
-      this.layer.aR.values.assignSum(params.wRecR.values.dot(yPrev))
-      this.layer.aS.values.assignSum(params.wRecS.values.dot(yPrev))
+      this.layer.aR.values.assignSum(this.layer.params.wRecR.values.dot(yPrev))
+      this.layer.aS.values.assignSum(this.layer.params.wRecS.values.dot(yPrev))
     }
   }
 }

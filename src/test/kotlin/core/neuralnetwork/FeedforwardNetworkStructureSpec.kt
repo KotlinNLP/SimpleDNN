@@ -48,9 +48,7 @@ class FeedforwardNetworkStructureSpec : Spek({
 
         it("should throw an exception") {
           assertFailsWith<IllegalArgumentException> {
-            StackedLayers<DenseNDArray>(
-              layersConfiguration = wrongLayersConfiguration,
-              paramsPerLayer = StackedLayersParameters(correctLayersConfiguration).paramsPerLayer)
+            StackedLayers<DenseNDArray>(params = StackedLayersParameters(wrongLayersConfiguration))
           }
         }
       }
@@ -65,8 +63,7 @@ class FeedforwardNetworkStructureSpec : Spek({
       ).toList()
 
       val structure = StackedLayers<DenseNDArray>(
-        layersConfiguration = layersConfiguration,
-        paramsPerLayer = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration).paramsPerLayer)
+        params = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration))
 
       context("architecture") {
 

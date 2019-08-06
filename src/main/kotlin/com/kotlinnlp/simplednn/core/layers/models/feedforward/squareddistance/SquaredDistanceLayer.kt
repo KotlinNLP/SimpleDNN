@@ -26,7 +26,7 @@ class SquaredDistanceLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
-  params: SquaredDistanceLayerParameters,
+  override val params: SquaredDistanceLayerParameters,
   dropout: Double = 0.0,
   override val id: Int = 0
 ) : ItemsPool.IDItem,
@@ -42,7 +42,7 @@ class SquaredDistanceLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * It is a support variable used during the calculations.
    */
-  val bhOut: AugmentedArray<DenseNDArray> = AugmentedArray((this.params as SquaredDistanceLayerParameters).rank)
+  val bhOut: AugmentedArray<DenseNDArray> = AugmentedArray(this.params.rank)
 
   /**
    * The helper which executes the forward

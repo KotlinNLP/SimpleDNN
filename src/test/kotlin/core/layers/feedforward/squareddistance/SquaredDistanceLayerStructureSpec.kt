@@ -36,7 +36,7 @@ class SquaredDistanceLayerStructureSpec : Spek({
       layer.outputArray.assignErrors(SquaredDistanceLayerUtils.getOutputErrors())
       val paramsErrors = layer.backward(propagateToInput = true)
 
-      val params = layer.params as SquaredDistanceLayerParameters
+      val params = layer.params
 
       it("should match the expected errors of the inputArray") {
         assertTrue {

@@ -11,6 +11,8 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayer
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance.SquaredDistanceLayer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance.SquaredDistanceLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
@@ -36,8 +38,17 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.sub.SubLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.gru.GRULayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn.IndRNNLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ltm.LTMLayer
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.ltm.LTMLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.ran.RANLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayer
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
@@ -158,7 +169,7 @@ object LayerFactory {
       inputArray = inputArrays.first(),
       inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
-      params = params,
+      params = params as FeedforwardLayerParameters,
       activationFunction = activationFunction,
       dropout = dropout)
 
@@ -166,7 +177,7 @@ object LayerFactory {
       inputArray = inputArrays.first(),
       inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
-      params = params,
+      params = params as HighwayLayerParameters,
       activationFunction = activationFunction,
       dropout = dropout)
 
@@ -229,7 +240,7 @@ object LayerFactory {
       inputArray = inputArrays.first(),
       inputType = inputType,
       outputArray = RecurrentLayerUnit(outputSize),
-      params = params,
+      params = params as SimpleRecurrentLayerParameters,
       activationFunction = activationFunction,
       dropout = dropout,
       layerContextWindow = contextWindow!!)
@@ -238,7 +249,7 @@ object LayerFactory {
       inputArray = inputArrays.first(),
       inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
-      params = params,
+      params = params as GRULayerParameters,
       activationFunction = activationFunction,
       dropout = dropout,
       layerContextWindow = contextWindow!!)
@@ -247,7 +258,7 @@ object LayerFactory {
       inputArray = inputArrays.first(),
       inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
-      params = params,
+      params = params as LSTMLayerParameters,
       activationFunction = activationFunction,
       dropout = dropout,
       layerContextWindow = contextWindow!!)
@@ -256,7 +267,7 @@ object LayerFactory {
       inputArray = inputArrays.first(),
       inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
-      params = params,
+      params = params as CFNLayerParameters,
       activationFunction = activationFunction,
       dropout = dropout,
       layerContextWindow = contextWindow!!)
@@ -265,7 +276,7 @@ object LayerFactory {
       inputArray = inputArrays.first(),
       inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
-      params = params,
+      params = params as RANLayerParameters,
       activationFunction = activationFunction,
       dropout = dropout,
       layerContextWindow = contextWindow!!)
@@ -274,7 +285,7 @@ object LayerFactory {
       inputArray = inputArrays.first(),
       inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
-      params = params,
+      params = params as DeltaRNNLayerParameters,
       activationFunction = activationFunction,
       dropout = dropout,
       layerContextWindow = contextWindow!!)
@@ -283,7 +294,7 @@ object LayerFactory {
       inputArray = inputArrays.first(),
       inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
-      params = params,
+      params = params as IndRNNLayerParameters,
       activationFunction = activationFunction,
       dropout = dropout,
       layerContextWindow = contextWindow!!)
@@ -292,14 +303,14 @@ object LayerFactory {
       inputArray = inputArrays.first(),
       inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
-      params = params,
+      params = params as LTMLayerParameters,
       dropout = dropout,
       layerContextWindow = contextWindow!!)
 
     LayerType.Connection.TPR -> TPRLayer(
       inputArray = inputArrays.first(),
       inputType = inputType,
-      params = params,
+      params = params as TPRLayerParameters,
       dropout = dropout,
       layerContextWindow = contextWindow!!,
       q = 0.00001) // TODO

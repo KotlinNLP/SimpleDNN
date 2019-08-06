@@ -44,8 +44,6 @@ class SquaredDistanceBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
    */
   private fun assignParamsGradients() {
 
-    this.layer.params as SquaredDistanceLayerParameters
-
     val gB = this.layer.params.wB.errors.values
 
     gB.assignDot(this.layer.bhOut.errors, this.layer.inputArray.values.t)
@@ -55,8 +53,6 @@ class SquaredDistanceBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
    * Assign the the layer gradients.
    */
   private fun assignLayerGradients() {
-
-    this.layer.params as SquaredDistanceLayerParameters
 
     val b = this.layer.params.wB.values
 

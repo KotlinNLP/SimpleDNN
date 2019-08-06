@@ -52,8 +52,6 @@ class LTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignCellGradients(nextStateLayer: LTMLayer<*>?) {
 
-    this.layer.params as LTMLayerParameters
-
     val gy: DenseNDArray = this.layer.outputArray.errors
     val cellDeriv: DenseNDArray = this.layer.cell.calculateActivationDeriv()
     // Note: gy is assigned by reference because gCell is used no more.
@@ -87,8 +85,6 @@ class LTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun assignParamsGradients() {
 
-    this.layer.params as LTMLayerParameters
-
     this.layer.inputGate1.assignParamsGradients(
       gw = this.layer.params.inputGate1.weights.errors.values,
       gb = this.layer.params.inputGate1.biases.errors.values,
@@ -117,8 +113,6 @@ class LTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun addOutputRecurrentGradients(nextStateLayer: LTMLayer<*>) {
 
-    this.layer.params as LTMLayerParameters
-
     val gy: DenseNDArray = this.layer.outputArray.errors
     val gyRec: DenseNDArray = nextStateLayer.inputArray.errors
 
@@ -129,8 +123,6 @@ class LTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Assign the gradients of the input.
    */
   private fun assignInputGradients() {
-
-    this.layer.params as LTMLayerParameters
 
     val w1: DenseNDArray = this.layer.params.inputGate1.weights.values
     val w2: DenseNDArray = this.layer.params.inputGate2.weights.values

@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers.models.recurrent.gru
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -54,7 +53,7 @@ class GRUForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * p = sigmoid(wp (dot) x + bp + wpRec (dot) yPrev)
    * c = f(wc (dot) x + bc + wcRec (dot) (yPrev * r))
    */
-  private fun setGates(prevStateLayer: Layer<*>?) { this.layer.params as GRULayerParameters
+  private fun setGates(prevStateLayer: Layer<*>?) {
 
     val x: InputNDArrayType = this.layer.inputArray.values
 

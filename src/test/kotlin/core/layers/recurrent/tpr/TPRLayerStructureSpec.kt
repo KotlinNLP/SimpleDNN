@@ -131,7 +131,7 @@ class TPRLayerStructureSpec: Spek({
         layer.outputArray.assignErrors(errors)
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as TPRLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -299,7 +299,7 @@ class TPRLayerStructureSpec: Spek({
         layer.outputArray.assignErrors(errors)
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as TPRLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -464,7 +464,7 @@ class TPRLayerStructureSpec: Spek({
         layer.outputArray.assignErrors(errors)
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as TPRLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the outputArray") {
           assertTrue {
@@ -628,7 +628,7 @@ class TPRLayerStructureSpec: Spek({
         layer.outputArray.assignErrors(errors)
         val paramsErrors = layer.backward(propagateToInput = true)
 
-        val params = layer.params as TPRLayerParameters
+        val params = layer.params
 
         it("should match the expected errors of the outputArray") {
           assertTrue {

@@ -53,7 +53,6 @@ class DeltaRNNRelevanceHelper(override val layer: DeltaRNNLayer<DenseNDArray>)
    */
   override fun getInputRelevance(layerContributions: LayerParameters): DenseNDArray {
 
-    this.layer.params as DeltaRNNLayerParameters
     layerContributions as DeltaRNNLayerParameters
 
     val x = this.layer.inputArray.values
@@ -109,7 +108,7 @@ class DeltaRNNRelevanceHelper(override val layer: DeltaRNNLayer<DenseNDArray>)
    * @param layerContributions the contributions saved during the last forward
    */
   override fun setRecurrentRelevance(layerContributions: LayerParameters) {
-    this.layer.params as DeltaRNNLayerParameters
+
     layerContributions as DeltaRNNLayerParameters
 
     val prevStateOutput: AugmentedArray<DenseNDArray> = this.layer.layerContextWindow.getPrevState()!!.outputArray

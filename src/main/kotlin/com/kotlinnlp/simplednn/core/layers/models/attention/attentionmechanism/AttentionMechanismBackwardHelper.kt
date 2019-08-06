@@ -40,7 +40,7 @@ class AttentionMechanismBackwardHelper(
   /**
    *
    */
-  private fun assignParamsGradients() { this.layer.params as AttentionMechanismLayerParameters
+  private fun assignParamsGradients() {
 
     val gCV = this.layer.params.contextVector.errors.values
 
@@ -50,7 +50,7 @@ class AttentionMechanismBackwardHelper(
   /**
    * Assign the errors of the attentionMatrix.
    */
-  private fun assignAttentionMatrixErrors() { this.layer.params as AttentionMechanismLayerParameters
+  private fun assignAttentionMatrixErrors() {
 
     this.layer.attentionMatrix.assignErrorsByDot(
       this.layer.outputArray.errors, this.layer.params.contextVector.values.t)

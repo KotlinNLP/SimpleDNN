@@ -86,8 +86,6 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun getLayerRecurrentContribution(nextStateLayer: DeltaRNNLayer<*>): DenseNDArray {
 
-    this.layer.params as DeltaRNNLayerParameters
-
     val gyNext: DenseNDArray = nextStateLayer.outputArray.errors
     val gcNext: DenseNDArray = nextStateLayer.candidate.errors
     val pNext: DenseNDArray = nextStateLayer.partition.values
@@ -109,8 +107,6 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param prevStateOutput the output array in the previous state
    */
   private fun assignParamsGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
-
-    this.layer.params as DeltaRNNLayerParameters
 
     val x: InputNDArrayType = this.layer.inputArray.values
 
@@ -156,8 +152,6 @@ class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param prevStateOutput the output array in the previous state
    */
   private fun assignInputGradients(prevStateOutput: AugmentedArray<DenseNDArray>?) {
-
-    this.layer.params as DeltaRNNLayerParameters
 
     val gp: DenseNDArray = this.layer.partition.errors
     val gc: DenseNDArray = this.layer.candidate.errors

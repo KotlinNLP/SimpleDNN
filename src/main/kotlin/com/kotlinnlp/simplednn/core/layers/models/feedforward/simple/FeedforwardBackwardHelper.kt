@@ -41,7 +41,7 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * gb = gy * 1
    * gw = gy (dot) x
    */
-  private fun assignParamsGradients() { this.layer.params as FeedforwardLayerParameters
+  private fun assignParamsGradients() {
 
     this.layer.outputArray.assignParamsGradients(
       gw = this.layer.params.unit.weights.errors.values,
@@ -52,7 +52,7 @@ class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * gx = gy (dot) w
    */
-  private fun assignLayerGradients() { this.layer.params as FeedforwardLayerParameters
+  private fun assignLayerGradients() {
 
     this.layer.inputArray.assignErrors(
       errors = this.layer.outputArray.getInputErrors(w = this.layer.params.unit.weights.values)
