@@ -15,16 +15,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * The RecurrentStackedLayers.
  *
- * @property layersConfiguration layers layersConfiguration
- * @property paramsPerLayer the parameters per layer
+ * @property params the parameters
  * @property structureContextWindow the context window to get the previous and the next state of the structure
  */
 class RecurrentStackedLayers <InputNDArrayType : NDArray<InputNDArrayType>>(
-  layersConfiguration: List<LayerInterface>,
-  paramsPerLayer: List<LayerParameters>,
+  params: StackedLayersParameters,
   val structureContextWindow: StructureContextWindow<InputNDArrayType>
 ) : LayerContextWindow,
-  StackedLayers<InputNDArrayType>(layersConfiguration = layersConfiguration, paramsPerLayer = paramsPerLayer) {
+  StackedLayers<InputNDArrayType>(params = params) {
 
   /**
    * A list of booleans indicating if the init hidden layers must be used in the next forward.

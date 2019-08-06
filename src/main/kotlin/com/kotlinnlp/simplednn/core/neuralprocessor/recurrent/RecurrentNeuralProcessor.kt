@@ -478,8 +478,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     if (this.lastStateIndex == this.sequence.lastIndex) {
 
       val structure = RecurrentStackedLayers(
-        layersConfiguration = this.model.layersConfiguration,
-        paramsPerLayer = this.model.paramsPerLayer,
+        params = this.model,
         structureContextWindow = this).apply {
 
         setParamsErrorsCollector(paramsErrorsCollector)

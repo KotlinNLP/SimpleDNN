@@ -34,12 +34,6 @@ class FeedforwardNetworkStructureSpec : Spek({
 
       context("initialization with null output connection types") {
 
-        val correctLayersConfiguration = arrayOf(
-          LayerInterface(size = 4),
-          LayerInterface(size = 5, activationFunction = Tanh(), connectionType = Connection.Feedforward),
-          LayerInterface(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
-        ).toList()
-
         val wrongLayersConfiguration = arrayOf(
           LayerInterface(size = 4),
           LayerInterface(size = 5, activationFunction = Tanh()),
@@ -47,7 +41,7 @@ class FeedforwardNetworkStructureSpec : Spek({
         ).toList()
 
         it("should throw an exception") {
-          assertFailsWith<IllegalArgumentException> {
+          assertFailsWith<KotlinNullPointerException> {
             StackedLayers<DenseNDArray>(params = StackedLayersParameters(wrongLayersConfiguration))
           }
         }

@@ -42,10 +42,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The structure as support of forward and backward.
    */
-  var structure = StackedLayers<InputNDArrayType>(
-    layersConfiguration = this.model.layersConfiguration,
-    paramsPerLayer = this.model.paramsPerLayer).apply {
-
+  var structure = StackedLayers<InputNDArrayType>(params = this.model).apply {
     setParamsErrorsCollector(paramsErrorsCollector)
   }
 

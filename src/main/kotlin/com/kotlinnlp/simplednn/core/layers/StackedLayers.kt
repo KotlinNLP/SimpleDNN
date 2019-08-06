@@ -20,16 +20,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 /**
  * The StackedLayers.
  *
- * @property layersConfiguration the layers configurations
- * @property paramsPerLayer the parameters per layer
+ * @property params the layers parameters
  */
 open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
-  val layersConfiguration: List<LayerInterface>,
-  val paramsPerLayer: List<LayerParameters>
+  val params: StackedLayersParameters
 ) : LayerContextWindow {
 
   /**
-   * The list of layers generate from the [layersConfiguration].
+   * The list of layers generate from the layers configuration contained inside the [params].
    */
   val layers: List<Layer<*>> = this.buildLayers()
 
@@ -223,7 +221,7 @@ open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return list of layers where the output of a layer is the reference of the input of the next one
    */
-  protected fun buildLayers(): List<Layer<*>> = this.layersConfiguration.let { config ->
+  protected fun buildLayers(): List<Layer<*>> = this.params.layersConfiguration.let { config ->
 
     require(config.subList(1, config.size).all { it.type == LayerType.Input.Dense }) {
       "The last layers must be dense."
@@ -243,7 +241,7 @@ open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
           LayerFactory(
             inputConfiguration = config[0],
             outputConfiguration = config[1],
-            params = this.paramsPerLayer[0],
+            params = this.params.paramsPerLayer[0],
             contextWindow = this
           )
         else
@@ -251,7 +249,7 @@ open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
             inputArrays = listOf(prevLayer!!.outputArray),
             inputType = LayerType.Input.Dense,
             outputConfiguration = config[i + 1],
-            params = this. paramsPerLayer[i],
+            params = this.params.paramsPerLayer[i],
             dropout = config[i].dropout,
             contextWindow = this
           )
