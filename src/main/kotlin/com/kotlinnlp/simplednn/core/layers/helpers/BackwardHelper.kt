@@ -29,8 +29,8 @@ abstract class BackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The set of errors parameters which were considered during the last [backward].
    *
-   * Note: the access to the errors is sufficient to include them in this set, even if they were not used in the
-   * calculations really.
+   * Note: to access to the errors it is sufficient to include them in this set, even if they were not used in the
+   * calculations.
    */
   private val touchedErrors = mutableSetOf<ParamsArray.Errors<*>>()
 
