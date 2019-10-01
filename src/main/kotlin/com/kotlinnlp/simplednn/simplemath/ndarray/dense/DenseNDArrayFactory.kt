@@ -139,13 +139,13 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
     is DenseNDArray -> array.copy()
 
     is SparseNDArray -> {
-      val ret: DenseNDArray = DenseNDArrayFactory.zeros(array.shape)
+      val ret: DenseNDArray = zeros(array.shape)
       array.forEach { (indices, value) -> ret[indices.first, indices.second] = value }
       ret
     }
 
     is SparseBinaryNDArray -> {
-      val ret: DenseNDArray = DenseNDArrayFactory.zeros(array.shape)
+      val ret: DenseNDArray = zeros(array.shape)
       array.forEach { (i, j) -> ret[i, j] = 1.0 }
       ret
     }
@@ -160,5 +160,5 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
    *
    * @return a new [DenseNDArray] filled with the given value
    */
-  fun scalarOf(value: Double) = DenseNDArrayFactory.arrayOf(doubleArrayOf(value))
+  fun scalarOf(value: Double) = arrayOf(doubleArrayOf(value))
 }
