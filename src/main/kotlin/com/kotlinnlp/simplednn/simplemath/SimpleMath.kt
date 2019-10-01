@@ -107,15 +107,23 @@ fun DenseNDArray.toVectors(): List<DenseNDArray> {
 fun List<DenseNDArray>.copy(): List<DenseNDArray> = this.map { it.copy() }
 
 /**
- * Compute the cosine similarity of two arrays (already normalized with the normalize2 function).
+ * Compute the cosine similarity of two one-dimensional vertical arrays (already normalized with the normalize2
+ * function).
  * The cosine similarity value is limited in the range [0.0, 1.0] applying a ReLU function.
  *
- * @param a a dense normalized array
- * @param b a dense normalized array
+ * @param a a dense normalized vertical array
+ * @param b a dense normalized vertical array
  *
  * @return the cosine similarity of the two arrays
  */
-fun cosineSimilarity(a: DenseNDArray, b: DenseNDArray): Double = maxOf(0.0, a.t.dot(b)[0])
+fun cosineSimilarity(a: DenseNDArray, b: DenseNDArray): Double {
+
+  require(a.shape.dim2 == 1 && b.shape.dim2 == 1) {
+    "Cosine similarity can only be calculated for one-dimensional vertical arrays."
+  }
+
+  return maxOf(0.0, a.t.dot(b)[0])
+}
 
 /**
  * Compute the similarity of two arrays (already normalized to unit vectors with the normalize function) based on the
