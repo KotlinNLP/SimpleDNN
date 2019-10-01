@@ -17,6 +17,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import org.jblas.MatrixFunctions.abs
+import org.jblas.Singular
 import kotlin.math.exp
 
 /**
@@ -876,6 +877,31 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   override fun norm2(): Double =
     this.storage.distance2(DoubleMatrix.zeros(this.shape.dim1, shape.dim2))
+
+  /**
+   * Compute the singular-value decomposition of this DenseNDArray (below called A).
+   *
+   * @return a triple containing the DenseNDArrays U, S, V such that A = U ⋅ diag(S) ⋅ V'
+   */
+  fun fullSVD(): Triple<DenseNDArray, DenseNDArray, DenseNDArray> {
+
+    val usv: Array<DoubleMatrix> = Singular.fullSVD(this.storage)
+
+    return Triple(DenseNDArray(usv[0]), DenseNDArray(usv[1]), DenseNDArray(usv[2]))
+  }
+
+  /**
+   * Compute the sparse variant of the singular-value decomposition of this DenseNDArray (below called A).
+   * Sparse means that the matrices U and V are not square but only have as many columns (or rows) as necessary.
+   *
+   * @return a triple containing the DenseNDArrays U, S, V such that A = U ⋅ diag(S) ⋅ V'
+   */
+  fun sparseSVD(): Triple<DenseNDArray, DenseNDArray, DenseNDArray> {
+
+    val usv: Array<DoubleMatrix> = Singular.sparseSVD(this.storage)
+
+    return Triple(DenseNDArray(usv[0]), DenseNDArray(usv[1]), DenseNDArray(usv[2]))
+  }
 
   /**
    * @return the sum of the exponentials
