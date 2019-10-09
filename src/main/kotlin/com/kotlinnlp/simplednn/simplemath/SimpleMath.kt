@@ -96,8 +96,6 @@ fun List<DenseNDArray>.toMatrix(): DenseNDArray {
  */
 fun DenseNDArray.toVectors(): List<DenseNDArray> {
 
-  require(this.isMatrix)
-
   return (0 until this.rows).map { this.getRow(it).t }
 }
 
