@@ -224,7 +224,7 @@ open class EmbeddingsMap<T>(
    * @return the embedding set
    */
   fun set(key: T, embedding: ParamsArray? = null): ParamsArray {
-    require(key !in this.embeddings) { "Embedding with key %s already set.".format(key) }
+    require(key !in this.embeddings) { "Embedding with key '%s' already set.".format(key) }
     require(embedding == null || embedding.values.length == this.size) {
       "Embedding size not compatible (%d != %d).".format(embedding!!.values.length, this.size)
     }
