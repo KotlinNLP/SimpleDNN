@@ -24,7 +24,8 @@ class HighwayForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward the input to the output combining it with the parameters.
    *
    * T = sigmoid(wT (dot) x + bT)
-   * y = T * f(wIn (dot) x + bIn) + (1 - T) * x
+   * In = f(wIn (dot) x + bIn)
+   * y = T * In + (1 - T) * x
    */
   override fun forward() {
 
