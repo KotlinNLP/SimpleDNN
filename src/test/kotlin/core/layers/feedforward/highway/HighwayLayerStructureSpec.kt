@@ -7,7 +7,6 @@
 
 package core.layers.feedforward.highway
 
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.spekframework.spek2.Spek
@@ -131,7 +130,7 @@ class HighwayLayerStructureSpec : Spek({
       it("should match the expected errors of the inputArray") {
         assertTrue {
           layer.inputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.705908, 0.245982, -0.453725, 0.394556)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.822397, 0.132596, -0.437003, 0.446894)),
             tolerance = 1.0e-06)
         }
       }
