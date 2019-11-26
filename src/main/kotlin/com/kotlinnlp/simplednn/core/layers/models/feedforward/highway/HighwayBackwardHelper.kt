@@ -82,14 +82,15 @@ class HighwayBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * gx = (1 - T) * gy + gIn
+   * gx = (1 - T) * gy + gxIn + gxT
    */
   private fun assignLayerGradients() {
 
     val tGate: DenseNDArray = this.layer.transformGate.values
     val gxIn: DenseNDArray = this.layer.inputUnit.getInputErrors(w = this.layer.params.input.weights.values)
+    val gxT: DenseNDArray = this.layer.transformGate.getInputErrors(w = this.layer.params.transformGate.weights.values)
     val gy: DenseNDArray = this.layer.outputArray.errors
 
-    this.layer.inputArray.assignErrors(tGate.reverseSub(1.0).assignProd(gy).assignSum(gxIn))
+    this.layer.inputArray.assignErrors(tGate.reverseSub(1.0).assignProd(gy).assignSum(gxIn).assignSum(gxT))
   }
 }
