@@ -19,12 +19,13 @@ import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 object LTMNeuralNetwork {
 
   /**
-   * @param inputSize the size of the input layer (equal to the hidden and output layers)
+   * @param inputSize the size of the input layer (equal to the hidden layers)
    * @param inputType the type of the input layer (Dense -default-, Sparse, SparseBinary)
    * @param inputDropout the dropout probability of the input (default 0.0). If applying it, the usual value is 0.25.
    * @param hiddenActivation the activation function of the hidden layers
    * @param hiddenDropout the dropout probability of the hidden layers (default 0.0)
    * @param numOfHidden the number of hidden layers (must be >= 0, default 1)
+   * @param outputSize the size of the output layer
    * @param outputActivation the activation function of the output layer
    * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
    * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
@@ -35,6 +36,7 @@ object LTMNeuralNetwork {
                       hiddenActivation: ActivationFunction?,
                       hiddenDropout: Double = 0.0,
                       numOfHidden: Int = 1,
+                      outputSize: Int,
                       outputActivation: ActivationFunction?,
                       weightsInitializer: Initializer? = GlorotInitializer(),
                       biasesInitializer: Initializer? = GlorotInitializer()): StackedLayersParameters =
@@ -47,7 +49,7 @@ object LTMNeuralNetwork {
       hiddenDropout = hiddenDropout,
       hiddenConnection = LayerType.Connection.LTM,
       numOfHidden = numOfHidden,
-      outputSize = inputSize,
+      outputSize = outputSize,
       outputActivation = outputActivation,
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer
