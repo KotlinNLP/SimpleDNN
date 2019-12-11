@@ -121,6 +121,7 @@ class LTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   private fun addOutputRecurrentGradients(nextStateLayer: LTMLayer<*>) {
 
     val gy: DenseNDArray = this.layer.outputArray.errors
+    // Note: the output recurrent errors are equal to the input errors of the next state
     val gyRec: DenseNDArray = nextStateLayer.inputArray.errors
 
     gy.assignSum(gyRec)
