@@ -47,17 +47,20 @@ class LTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   *
    * @param nextStateLayer the layer in the next state
    */
   private fun assignCellGradients(nextStateLayer: LTMLayer<*>?) {
 
+    val l3: DenseNDArray = this.layer.inputGate3.values
     val gy: DenseNDArray = this.layer.outputArray.errors
     val cellDeriv: DenseNDArray = this.layer.cell.calculateActivationDeriv()
-    // Note: gy is assigned by reference because gCell is used no more.
-    val gCell: DenseNDArray = if (nextStateLayer != null) gy.sum(nextStateLayer.c.errors) else gy
 
-    this.layer.cell.assignErrorsByProd(gCell, cellDeriv)
+    this.layer.cell.assignErrorsByProd(gy, l3)
+
+    if (nextStateLayer != null)
+      this.layer.cell.errors.assignSum(nextStateLayer.c.errors)
+
+    this.layer.cell.errors.assignProd(cellDeriv)
 
     val wCell: DenseNDArray = this.layer.params.cell.weights.values
     this.layer.c.assignErrors(this.layer.cell.getInputErrors(wCell))
@@ -71,13 +74,17 @@ class LTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val gy: DenseNDArray = this.layer.outputArray.errors
     val gC: DenseNDArray = this.layer.c.errors
 
+    val l1: DenseNDArray = this.layer.inputGate1.values
+    val l2: DenseNDArray = this.layer.inputGate2.values
+    val cell: DenseNDArray = this.layer.cell.values
+
     val l1Deriv: DenseNDArray = this.layer.inputGate1.calculateActivationDeriv()
     val l2Deriv: DenseNDArray = this.layer.inputGate2.calculateActivationDeriv()
     val l3Deriv: DenseNDArray = this.layer.inputGate3.calculateActivationDeriv()
 
-    this.layer.inputGate1.assignErrorsByProd(gC, l1Deriv)
-    this.layer.inputGate2.assignErrorsByProd(gC, l2Deriv)
-    this.layer.inputGate3.assignErrorsByProd(gy, l3Deriv)
+    this.layer.inputGate1.assignErrorsByProd(gC, l1Deriv.assignProd(l2))
+    this.layer.inputGate2.assignErrorsByProd(gC, l2Deriv.assignProd(l1))
+    this.layer.inputGate3.assignErrorsByProd(gy, l3Deriv.assignProd(cell))
   }
 
   /**
