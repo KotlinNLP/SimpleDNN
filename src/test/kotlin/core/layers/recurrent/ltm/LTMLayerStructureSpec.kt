@@ -7,7 +7,6 @@
 
 package core.layers.recurrent.ltm
 
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.ltm.LTMLayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -146,7 +145,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the cell") {
           assertTrue {
             layer.cell.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.024961, -0.122519, 0.072164, -0.28472)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.019699, -0.043414, 0.063562, -0.241845)),
               tolerance = 1.0e-06)
           }
         }
@@ -154,7 +153,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of C") {
           assertTrue {
             layer.c.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.203316, 0.107195, 0.326185, -0.055519)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.178839, 0.073758, 0.229447, -0.078241)),
               tolerance = 1.0e-06)
           }
         }
@@ -162,7 +161,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L1") {
           assertTrue {
             layer.inputGate1.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.048652, 0.020185, 0.081546, -0.011552)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.036513, 0.006013, 0.006659, -0.008466)),
               tolerance = 1.0e-06)
           }
         }
@@ -170,7 +169,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L2") {
           assertTrue {
             layer.inputGate2.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.025464, 0.026316, 0.033471, -0.013857)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.008881, 0.004556, 0.011772, -0.013763)),
               tolerance = 1.0e-06)
           }
         }
@@ -178,7 +177,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L3") {
           assertTrue {
             layer.inputGate3.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.017186, -0.151772, 0.039594, -0.148267)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.010163, -0.037099, 0.010209, -0.083935)),
               tolerance = 1.0e-06)
           }
         }
@@ -186,7 +185,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the cell biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.cell.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.024961, -0.122519, 0.072164, -0.28472)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.019699, -0.043414, 0.063562, -0.241845)),
               tolerance = 1.0e-06)
           }
         }
@@ -194,7 +193,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L1 biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.inputGate1.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.048652, 0.020185, 0.081546, -0.011552)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.036513, 0.006013, 0.006659, -0.008466)),
               tolerance = 1.0e-06)
           }
         }
@@ -202,7 +201,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L2 biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.inputGate2.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.025464, 0.026316, 0.033471, -0.013857)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.008881, 0.004556, 0.011772, -0.013763)),
               tolerance = 1.0e-06)
           }
         }
@@ -210,7 +209,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L3 biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.inputGate3.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.017186, -0.151772, 0.039594, -0.148267)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.010163, -0.037099, 0.010209, -0.083935)),
               tolerance = 1.0e-06)
           }
         }
@@ -219,10 +218,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.inputGate1.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(-0.038921, -0.043787, -0.043787, 0.048652),
-                doubleArrayOf(-0.016148, -0.018167, -0.018167, 0.020185),
-                doubleArrayOf(-0.065237, -0.073392, -0.073392, 0.081546),
-                doubleArrayOf(0.009242, 0.010397, 0.010397, -0.011552)
+                doubleArrayOf(-0.02921, -0.032861, -0.032861, 0.036513),
+                doubleArrayOf(-0.00481, -0.005411, -0.005411, 0.006013),
+                doubleArrayOf(-0.005327, -0.005993, -0.005993, 0.006659),
+                doubleArrayOf(0.006773, 0.007619, 0.007619, -0.008466)
               )),
               tolerance = 1.0e-06)
           }
@@ -232,10 +231,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.inputGate2.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(-0.020371, -0.022917, -0.022917, 0.025464),
-                doubleArrayOf(-0.021053, -0.023685, -0.023685, 0.026316),
-                doubleArrayOf(-0.026776, -0.030124, -0.030124, 0.033471),
-                doubleArrayOf(0.011086, 0.012472, 0.012472, -0.013857)
+                doubleArrayOf(-0.007105, -0.007993, -0.007993, 0.008881),
+                doubleArrayOf(-0.003645, -0.004101, -0.004101, 0.004556),
+                doubleArrayOf(-0.009418, -0.010595, -0.010595, 0.011772),
+                doubleArrayOf(0.01101, 0.012387, 0.012387, -0.013763)
               )),
               tolerance = 1.0e-06)
           }
@@ -245,10 +244,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.inputGate3.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(0.013749, 0.015467, 0.015467, -0.017186),
-                doubleArrayOf(0.121418, 0.136595, 0.136595, -0.151772),
-                doubleArrayOf(-0.031675, -0.035635, -0.035635, 0.039594),
-                doubleArrayOf(0.118614, 0.13344, 0.13344, -0.148267)
+                doubleArrayOf(0.008131, 0.009147, 0.009147, -0.010163),
+                doubleArrayOf(0.029679, 0.033389, 0.033389, -0.037099),
+                doubleArrayOf(-0.008167, -0.009188, -0.009188, 0.010209),
+                doubleArrayOf(0.067148, 0.075541, 0.075541, -0.083935)
               )),
               tolerance = 1.0e-06)
           }
@@ -258,10 +257,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.cell.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(-0.008445, -0.002719, -0.001449, -0.009147),
-                doubleArrayOf(-0.04145, -0.013346, -0.007112, -0.044898),
-                doubleArrayOf(0.024414, 0.007861, 0.004189, 0.026445),
-                doubleArrayOf(-0.096324, -0.031014, -0.016526, -0.104339)
+                doubleArrayOf(-0.006664, -0.002146, -0.001143, -0.007219),
+                doubleArrayOf(-0.014687, -0.004729, -0.002520, -0.015909),
+                doubleArrayOf(0.021504, 0.006924, 0.003689, 0.023293),
+                doubleArrayOf(-0.081819, -0.026344, -0.014038, -0.088627)
               )),
               tolerance = 1.0e-06)
           }
@@ -270,7 +269,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the inputArray") {
           assertTrue {
             layer.inputArray.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.426737, -0.050815, -0.135758, -0.047913)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.168188, 0.038366, -0.101206, -0.069296)),
               tolerance = 1.0e-06)
           }
         }
@@ -302,7 +301,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the cell") {
           assertTrue {
             layer.cell.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.002897, -0.070402, 0.064222, -0.299546)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.002315, -0.035905, 0.049241, -0.207956)),
               tolerance = 1.0e-06)
           }
         }
@@ -310,7 +309,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of C") {
           assertTrue {
             layer.c.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.225595, 0.109246, 0.291693, -0.080641)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.157387, 0.071769, 0.19399, -0.0643621)),
               tolerance = 1.0e-06)
           }
         }
@@ -318,7 +317,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L1") {
           assertTrue {
             layer.inputGate1.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.054411, 0.024846, 0.061918, -0.018341)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.032388, 0.006239, 0.006975, -0.0101)),
               tolerance = 1.0e-06)
           }
         }
@@ -326,7 +325,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L2") {
           assertTrue {
             layer.inputGate2.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.028254, 0.025797, 0.041039, -0.01725)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.011706, 0.005928, 0.008345, -0.008952)),
               tolerance = 1.0e-06)
           }
         }
@@ -334,7 +333,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L3") {
           assertTrue {
             layer.inputGate3.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.0022, -0.172758, 0.061178, -0.304298)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.001532, -0.019882, 0.015325, -0.090501)),
               tolerance = 1.0e-06)
           }
         }
@@ -342,7 +341,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the cell biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.cell.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.002897, -0.070402, 0.064222, -0.299546)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.002315, -0.035905, 0.049241, -0.207956)),
               tolerance = 1.0e-06)
           }
         }
@@ -350,7 +349,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L1 biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.inputGate1.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.054411, 0.024846, 0.061918, -0.018341)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.032388, 0.006239, 0.006975, -0.0101)),
               tolerance = 1.0e-06)
           }
         }
@@ -358,7 +357,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L2 biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.inputGate2.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.028254, 0.025797, 0.041039, -0.01725)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.011706, 0.005928, 0.008345, -0.008952)),
               tolerance = 1.0e-06)
           }
         }
@@ -366,7 +365,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L3 biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.inputGate3.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.0022, -0.172758, 0.061178, -0.304298)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.001532, -0.019882, 0.015325, -0.090501)),
               tolerance = 1.0e-06)
           }
         }
@@ -375,10 +374,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.inputGate1.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(-0.054411, -0.038088, -0.065293, 0.005441),
-                doubleArrayOf(-0.024846, -0.017392, -0.029816, 0.002485),
-                doubleArrayOf(-0.061918, -0.043343, -0.074302, 0.006192),
-                doubleArrayOf(0.018341, 0.012838, 0.022009, -0.001834)
+                doubleArrayOf(-0.032388, -0.022671, -0.038865, 0.003239),
+                doubleArrayOf(-0.006239, -0.004368, -0.007487, 0.000624),
+                doubleArrayOf(-0.006975, -0.004882, -0.00837, 0.000697),
+                doubleArrayOf(0.0101, 0.00707, 0.01212, -0.00101)
               )),
               tolerance = 1.0e-06)
           }
@@ -388,10 +387,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.inputGate2.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(-0.028254, -0.019778, -0.033905, 0.002825),
-                doubleArrayOf(-0.025797, -0.018058, -0.030956, 0.00258),
-                doubleArrayOf(-0.041039, -0.028727, -0.049247, 0.004104),
-                doubleArrayOf(0.01725, 0.012075, 0.0207, -0.001725)
+                doubleArrayOf(-0.011706, -0.008194, -0.014047, 0.001171),
+                doubleArrayOf(-0.005928, -0.004149, -0.007113, 0.000593),
+                doubleArrayOf(-0.008345, -0.005842, -0.010014, 0.000835),
+                doubleArrayOf(0.008952, 0.006266, 0.010742, -0.000895)
               )),
               tolerance = 1.0e-06)
           }
@@ -401,10 +400,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.inputGate3.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(0.0022, 0.00154, 0.00264, -0.00022),
-                doubleArrayOf(0.172758, 0.12093, 0.207309, -0.017276),
-                doubleArrayOf(-0.061178, -0.042825, -0.073414, 0.006118),
-                doubleArrayOf(0.304298, 0.213009, 0.365158, -0.03043)
+                doubleArrayOf(0.001532, 0.001072, 0.001838, -0.000153),
+                doubleArrayOf(0.019882, 0.013917, 0.023858, -0.001988),
+                doubleArrayOf(-0.015325, -0.010727, -0.01839, 0.001532),
+                doubleArrayOf(0.090501, 0.063351, 0.108601, -0.00905)
               )),
               tolerance = 1.0e-06)
           }
@@ -414,10 +413,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.cell.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(-0.003467, -0.001414, -0.002268, -0.002821),
-                doubleArrayOf(-0.084249, -0.03436, -0.055114, -0.068545),
-                doubleArrayOf(0.076852, 0.031343, 0.050276, 0.062527),
-                doubleArrayOf(-0.358458, -0.146193, -0.234499, -0.291642)
+                doubleArrayOf(-0.00277, -0.00113, -0.001812, -0.002254),
+                doubleArrayOf(-0.042967, -0.017523, -0.028108, -0.034958),
+                doubleArrayOf(0.058926, 0.024032, 0.038549, 0.047942),
+                doubleArrayOf(-0.248855, -0.101492, -0.162798, -0.202468)
               )),
               tolerance = 1.0e-06)
           }
@@ -426,7 +425,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the inputArray") {
           assertTrue {
             layer.inputArray.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.584186, 0.043822, -0.285528, -0.164792)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.14713, 0.054143, -0.111281, -0.071078)),
               tolerance = 1.0e-06)
           }
         }
@@ -458,7 +457,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the cell") {
           assertTrue {
             layer.cell.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.144194, -0.011707, 0.072164, -0.333846)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.113795, 0.103172, 0.068124, -0.302068)),
               tolerance = 1.0e-06)
           }
         }
@@ -466,7 +465,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of C") {
           assertTrue {
             layer.c.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.287529, 0.190182, 0.271923, -0.108747)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.267918, 0.127946, 0.15616, -0.158076)),
               tolerance = 1.0e-06)
           }
         }
@@ -474,7 +473,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L1") {
           assertTrue {
             layer.inputGate1.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.068803, 0.035813, 0.067981, -0.022628)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0547, 0.01043, 0.004532, -0.017104)),
               tolerance = 1.0e-06)
           }
         }
@@ -482,7 +481,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L2") {
           assertTrue {
             layer.inputGate2.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.036011, 0.046689, 0.027903, -0.027143)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.013305, 0.007903, 0.008012, -0.027806)),
               tolerance = 1.0e-06)
           }
         }
@@ -490,7 +489,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L3") {
           assertTrue {
             layer.inputGate3.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.099276, -0.220407, 0.018595, -0.109894)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.05871, -0.053875, 0.004795, -0.062211)),
               tolerance = 1.0e-06)
           }
         }
@@ -498,7 +497,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the cell biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.cell.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.144194, -0.011707, 0.072164, -0.333846)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.113795, 0.103172, 0.068124, -0.302068)),
               tolerance = 1.0e-06)
           }
         }
@@ -506,7 +505,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L1 biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.inputGate1.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.068803, 0.035813, 0.067981, -0.022628)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0547, 0.01043, 0.004532, -0.017104)),
               tolerance = 1.0e-06)
           }
         }
@@ -514,7 +513,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L2 biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.inputGate2.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.036011, 0.046689, 0.027903, -0.027143)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.013305, 0.007903, 0.008012, -0.027806)),
               tolerance = 1.0e-06)
           }
         }
@@ -522,7 +521,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L3 biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.inputGate3.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.099276, -0.220407, 0.018595, -0.109894)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.05871, -0.053875, 0.004795, -0.062211)),
               tolerance = 1.0e-06)
           }
         }
@@ -531,10 +530,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.inputGate1.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(-0.055042, -0.061923, -0.061923, 0.068803),
-                doubleArrayOf(-0.02865, -0.032231, -0.032231, 0.035813),
-                doubleArrayOf(-0.054385, -0.061183, -0.061183, 0.067981),
-                doubleArrayOf(0.018102, 0.020365, 0.020365, -0.022628)
+                doubleArrayOf(-0.04376, -0.04923, -0.04923, 0.0547),
+                doubleArrayOf(-0.008344, -0.009387, -0.009387, 0.01043),
+                doubleArrayOf(-0.003626, -0.004079, -0.004079, 0.004532),
+                doubleArrayOf(0.013683, 0.015393, 0.015393, -0.017104)
               )),
               tolerance = 1.0e-06)
           }
@@ -544,10 +543,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.inputGate2.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(-0.028809, -0.03241, -0.03241, 0.036011),
-                doubleArrayOf(-0.037352, -0.04202, -0.04202, 0.046689),
-                doubleArrayOf(-0.022322, -0.025112, -0.025112, 0.027903),
-                doubleArrayOf(0.021715, 0.024429, 0.024429, -0.027143)
+                doubleArrayOf(-0.010644, -0.011975, -0.011975, 0.013305),
+                doubleArrayOf(-0.006323, -0.007113, -0.007113, 0.007903),
+                doubleArrayOf(-0.00641, -0.007211, -0.007211, 0.008012),
+                doubleArrayOf(0.022245, 0.025026, 0.025026, -0.027806)
               )),
               tolerance = 1.0e-06)
           }
@@ -557,10 +556,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.inputGate3.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(-0.079421, -0.089348, -0.089348, 0.099276),
-                doubleArrayOf(0.176326, 0.198367, 0.198367, -0.220407),
-                doubleArrayOf(-0.014876, -0.016736, -0.016736, 0.018595),
-                doubleArrayOf(0.087915, 0.098904, 0.098904, -0.109894)
+                doubleArrayOf(-0.046968, -0.052839, -0.052839, 0.05871),
+                doubleArrayOf(0.0431, 0.048488, 0.048488, -0.053875),
+                doubleArrayOf(-0.003836, -0.004315, -0.004315, 0.004795),
+                doubleArrayOf(0.049769, 0.055990, 0.055990, -0.062211)
               )),
               tolerance = 1.0e-06)
           }
@@ -570,10 +569,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.cell.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(0.048782, 0.015707, 0.008370, 0.052841),
-                doubleArrayOf(-0.00396, -0.001275, -0.000679, -0.004290),
-                doubleArrayOf(0.024414, 0.007861, 0.004189, 0.026445),
-                doubleArrayOf(-0.112944, -0.036365, -0.019378, -0.122341)
+                doubleArrayOf(0.038498, 0.012395, 0.006605, 0.041701),
+                doubleArrayOf(0.034904, 0.011238, 0.005989, 0.037808),
+                doubleArrayOf(0.023047, 0.007421, 0.003954, 0.024965),
+                doubleArrayOf(-0.102193, -0.032903, -0.017533, -0.110696)
               )),
               tolerance = 1.0e-06)
           }
@@ -582,7 +581,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the inputArray") {
           assertTrue {
             layer.inputArray.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.339681, -0.076956, -0.101, -0.008423)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.10429, 0.034473, -0.089364, -0.044435)),
               tolerance = 1.0e-06)
           }
         }
@@ -614,7 +613,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the cell") {
           assertTrue {
             layer.cell.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.145142, -0.009299, 0.064222, -0.341337)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.115967, 0.040169, 0.058, -0.268914)),
               tolerance = 1.0e-06)
           }
         }
@@ -622,7 +621,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of C") {
           assertTrue {
             layer.c.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.294746, 0.192276, 0.272064, -0.108926)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.236542, 0.138204, 0.179305, -0.112362)),
               tolerance = 1.0e-06)
           }
         }
@@ -630,7 +629,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L1") {
           assertTrue {
             layer.inputGate1.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.071089, 0.043730, 0.057752, -0.024774)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.048676, 0.012015, 0.006447, -0.017632)),
               tolerance = 1.0e-06)
           }
         }
@@ -638,7 +637,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L2") {
           assertTrue {
             layer.inputGate2.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.036915, 0.045403, 0.038277, -0.023300)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.017594, 0.011415, 0.007713, -0.015628)),
               tolerance = 1.0e-06)
           }
         }
@@ -646,7 +645,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L3") {
           assertTrue {
             layer.inputGate3.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.110223, -0.247728, 0.025408, -0.240616)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.076743, -0.028509, 0.006365, -0.071562)),
               tolerance = 1.0e-06)
           }
         }
@@ -654,7 +653,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the cell biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.cell.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.145142, -0.009299, 0.064222, -0.341337)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.115967, 0.040169, 0.058, -0.268914)),
               tolerance = 1.0e-06)
           }
         }
@@ -662,7 +661,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L1 biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.inputGate1.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.071089, 0.043730, 0.057752, -0.024774)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.048676, 0.012015, 0.006447, -0.017632)),
               tolerance = 1.0e-06)
           }
         }
@@ -670,7 +669,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L2 biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.inputGate2.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.036915, 0.045403, 0.038277, -0.023300)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.017594, 0.011415, 0.007713, -0.015628)),
               tolerance = 1.0e-06)
           }
         }
@@ -678,7 +677,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the input gate L3 biases") {
           assertTrue {
             paramsErrors.getErrorsOf(params.inputGate3.biases)!!.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.110223, -0.247728, 0.025408, -0.240616)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.076743, -0.028509, 0.006365, -0.071562)),
               tolerance = 1.0e-06)
           }
         }
@@ -687,10 +686,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.inputGate1.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(-0.071089, -0.049762, -0.085307, 0.007109),
-                doubleArrayOf(-0.043730, -0.030611, -0.052476, 0.004373),
-                doubleArrayOf(-0.057752, -0.040426, -0.069302, 0.005775),
-                doubleArrayOf(0.024774, 0.017342, 0.029728, -0.002477)
+                doubleArrayOf(-0.048676, -0.034074, -0.058412, 0.004868),
+                doubleArrayOf(-0.012015, -0.008411, -0.014418, 0.001202),
+                doubleArrayOf(-0.006447, -0.004513, -0.007736, 0.000645),
+                doubleArrayOf(0.017632, 0.012343, 0.021159, -0.001763)
               )),
               tolerance = 1.0e-06)
           }
@@ -700,10 +699,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.inputGate2.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(-0.036915, -0.025840, -0.044298, 0.003691),
-                doubleArrayOf(-0.045403, -0.031782, -0.054484, 0.004540),
-                doubleArrayOf(-0.038277, -0.026794, -0.045933, 0.003828),
-                doubleArrayOf(0.023300, 0.016310, 0.027960, -0.002330)
+                doubleArrayOf(-0.017594, -0.012316, -0.021112, 0.001759),
+                doubleArrayOf(-0.011415, -0.007991, -0.013698, 0.001142),
+                doubleArrayOf(-0.007713, -0.005399, -0.009256, 0.000771),
+                doubleArrayOf(0.015628, 0.010940, 0.018754, -0.001563)
               )),
               tolerance = 1.0e-06)
           }
@@ -713,10 +712,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.inputGate3.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(-0.110223, -0.077156, -0.132268, 0.011022),
-                doubleArrayOf(0.247728, 0.173409, 0.297273, -0.024773),
-                doubleArrayOf(-0.025408, -0.017786, -0.030490, 0.002541),
-                doubleArrayOf(0.240616, 0.168431, 0.288740, -0.024062)
+                doubleArrayOf(-0.076743, -0.053720, -0.092092, 0.007674),
+                doubleArrayOf(0.028509, 0.019957, 0.034211, -0.002851),
+                doubleArrayOf(-0.006365, -0.004455, -0.007638, 0.000636),
+                doubleArrayOf(0.071562, 0.050093, 0.085874, -0.007156)
               )),
               tolerance = 1.0e-06)
           }
@@ -726,10 +725,10 @@ class LTMLayerStructureSpec : Spek({
           assertTrue {
             (paramsErrors.getErrorsOf(params.cell.weights)!!.values as DenseNDArray).equals(
               DenseNDArrayFactory.arrayOf(listOf(
-                doubleArrayOf(0.173687, 0.070836, 0.113624, 0.141312),
-                doubleArrayOf(-0.011128, -0.004538, -0.007279, -0.009053),
-                doubleArrayOf(0.076852, 0.031343, 0.050276, 0.062527),
-                doubleArrayOf(-0.408469, -0.166589, -0.267216, -0.332330)
+                doubleArrayOf(0.138775, 0.056598, 0.090785, 0.112907),
+                doubleArrayOf(0.048069, 0.019604, 0.031446, 0.039109),
+                doubleArrayOf(0.069407, 0.028307, 0.045405, 0.056470),
+                doubleArrayOf(-0.321803, -0.131243, -0.210520, -0.261819)
               )),
               tolerance = 1.0e-06)
           }
@@ -738,7 +737,7 @@ class LTMLayerStructureSpec : Spek({
         it("should match the expected errors of the inputArray") {
           assertTrue {
             layer.inputArray.errors.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.481427, 0.000129, -0.221932, -0.114356)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.069055, 0.067126, -0.107279, -0.053312)),
               tolerance = 1.0e-06)
           }
         }
