@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 
 /**
- * A Generic [NeuralNetwork] factory.
+ * The factory of a generic neural network model, as stacked layers with a fixed output feed-forward.
  */
 object GenericNeuralNetwork {
 
