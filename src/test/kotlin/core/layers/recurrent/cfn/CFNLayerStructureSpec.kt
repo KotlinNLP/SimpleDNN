@@ -7,7 +7,6 @@
 
 package core.layers.recurrent.cfn
 
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
