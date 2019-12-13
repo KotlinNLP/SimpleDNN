@@ -18,19 +18,17 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsList
  *
  * @property inputSize input size
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
- * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  * @param sparseInput whether the weights connected to the input are sparse or not
  */
 class LTMLayerParameters(
   inputSize: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
-  biasesInitializer: Initializer? = GlorotInitializer(),
   private val sparseInput: Boolean = false
 ) : LayerParameters(
   inputSize = inputSize,
   outputSize = inputSize,
   weightsInitializer = weightsInitializer,
-  biasesInitializer = biasesInitializer
+  biasesInitializer = null
 ) {
 
   companion object {
@@ -70,7 +68,7 @@ class LTMLayerParameters(
   /**
    * The list of biases parameters.
    */
-  override val biasesList: ParamsList
+  override val biasesList: ParamsList = listOf()
 
   /**
    * Initialize all parameters values.
@@ -80,7 +78,6 @@ class LTMLayerParameters(
     val params: List<LinearParams> = listOf(this.inputGate1, this.inputGate2, this.inputGate3, this.cell)
 
     this.weightsList = params.map { it.weights }
-    this.biasesList = params.map { it.biases }
 
     this.initialize()
   }

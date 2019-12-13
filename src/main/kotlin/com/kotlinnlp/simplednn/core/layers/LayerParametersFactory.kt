@@ -202,8 +202,7 @@ object LayerParametersFactory {
       LTMLayerParameters(
         inputSize = inputsSize.first(),
         sparseInput = sparseInput,
-        weightsInitializer = weightsInitializer,
-        biasesInitializer = biasesInitializer)
+        weightsInitializer = weightsInitializer)
     }
 
     LayerType.Connection.TPR -> TPRLayerParameters(

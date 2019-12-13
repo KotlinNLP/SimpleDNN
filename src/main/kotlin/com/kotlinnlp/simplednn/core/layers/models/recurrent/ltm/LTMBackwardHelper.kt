@@ -94,22 +94,22 @@ class LTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.layer.inputGate1.assignParamsGradients(
       gw = this.layer.params.inputGate1.weights.errors.values,
-      gb = this.layer.params.inputGate1.biases.errors.values,
+      gb = null,
       x = this.layer.x)
 
     this.layer.inputGate2.assignParamsGradients(
       gw = this.layer.params.inputGate2.weights.errors.values,
-      gb = this.layer.params.inputGate2.biases.errors.values,
+      gb = null,
       x = this.layer.x)
 
     this.layer.inputGate3.assignParamsGradients(
       gw = this.layer.params.inputGate3.weights.errors.values,
-      gb = this.layer.params.inputGate3.biases.errors.values,
+      gb = null,
       x = this.layer.x)
 
     this.layer.cell.assignParamsGradients(
       gw = this.layer.params.cell.weights.errors.values,
-      gb = this.layer.params.cell.biases.errors.values,
+      gb = null,
       x = this.layer.c.values)
   }
 
