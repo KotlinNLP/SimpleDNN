@@ -69,20 +69,6 @@ object LTMLayerStructureUtils {
       doubleArrayOf(-0.8, -0.3, -0.7, 0.3)
       )))
 
-    params.inputGate1.biases.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8))
-    )
-
-    params.inputGate2.biases.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.9, 0.2, -0.9, 0.2))
-    )
-
-    params.inputGate3.biases.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.5, 1.0, 0.4)))
-
-    params.cell.biases.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, -0.9, -0.9, 0.5)))
-
     return params
   }
 

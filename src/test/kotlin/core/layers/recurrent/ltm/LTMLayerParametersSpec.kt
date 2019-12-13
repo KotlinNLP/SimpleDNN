@@ -7,7 +7,6 @@
 
 package core.layers.recurrent.ltm
 
-import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ltm.LTMLayerParameters
@@ -38,20 +37,12 @@ class LTMLayerParametersSpec : Spek({
         val randomGenerator = mock<RandomGenerator>()
         whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
-        val params = LTMLayerParameters(
-          inputSize = 3,
-          weightsInitializer = RandomInitializer(randomGenerator),
-          biasesInitializer = ConstantInitializer(0.9))
+        val params = LTMLayerParameters(inputSize = 3, weightsInitializer = RandomInitializer(randomGenerator))
 
         val w1 = params.inputGate1.weights.values
         val w2 = params.inputGate2.weights.values
         val w3 = params.inputGate3.weights.values
         val wCell = params.cell.weights.values
-
-        val b1 = params.inputGate1.biases.values
-        val b2 = params.inputGate2.biases.values
-        val b3 = params.inputGate3.biases.values
-        val bCell = params.cell.biases.values
 
         it("should contain the expected initialized weights of the input gate L1") {
           (0 until w1.length).forEach { i -> assertEquals(initValues[i], w1[i]) }
@@ -67,22 +58,6 @@ class LTMLayerParametersSpec : Spek({
 
         it("should contain the expected initialized weights of the cell") {
           (0 until wCell.length).forEach { i -> assertEquals(initValues[i + 27], wCell[i]) }
-        }
-
-        it("should contain the expected initialized biases of the input gate L1") {
-          (0 until b1.length).forEach { i -> assertEquals(0.9, b1[i]) }
-        }
-
-        it("should contain the expected initialized biases of the input gate L3") {
-          (0 until b3.length).forEach { i -> assertEquals(0.9, b3[i]) }
-        }
-
-        it("should contain the expected initialized biases of the input gate L2") {
-          (0 until b2.length).forEach { i -> assertEquals(0.9, b2[i]) }
-        }
-
-        it("should contain the expected initialized biases of the cell") {
-          (0 until bCell.length).forEach { i -> assertEquals(0.9, bCell[i]) }
         }
       }
     }
