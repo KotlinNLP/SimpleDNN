@@ -88,6 +88,19 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * @param copy a Boolean indicating whether the returned arrays must be a copy or a reference
+   *
+   * @return the output arrays of the layers or null if no forward has been called
+   */
+  fun getCurState(copy: Boolean = true): List<DenseNDArray>? =
+    if (this.curStateIndex > 0)
+      this.sequence.getStateStructure(this.curStateIndex).layers.map {
+        if (copy) it.outputArray.values.copy() else it.outputArray.values
+      }
+    else
+      null
+
+  /**
    * @return the previous network structure with respect to the [curStateIndex]
    */
   override fun getPrevState(): RecurrentStackedLayers<InputNDArrayType>? =
@@ -106,6 +119,8 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
       null
 
   /**
+   * @param copy a Boolean indicating whether the returned output must be a copy or a reference
+   *
    * @return the output of the last [forward]
    */
   fun getOutput(copy: Boolean = true): DenseNDArray =
