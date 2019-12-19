@@ -93,7 +93,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @return the output arrays of the layers or null if no forward has been called
    */
   fun getCurState(copy: Boolean = true): List<DenseNDArray>? =
-    if (this.curStateIndex > 0)
+    if (this.lastStateIndex >= 0)
       this.sequence.getStateStructure(this.curStateIndex).layers.map {
         if (copy) it.outputArray.values.copy() else it.outputArray.values
       }
