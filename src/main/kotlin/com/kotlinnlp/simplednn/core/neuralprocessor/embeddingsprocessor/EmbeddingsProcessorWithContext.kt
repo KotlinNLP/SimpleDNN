@@ -27,17 +27,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @param embeddingsMap the embeddings map
  * @param contextVector the context vector to concatenate to each embedding
  * @param dropout the dropout to mask items of the [embeddingsMap]
- * @param useDropout whether to apply the dropout during the forward
  */
 class EmbeddingsProcessorWithContext<T>(
   embeddingsMap: EmbeddingsMap<T>,
   private val contextVector: ParamsArray,
-  dropout: Double = 0.0,
-  useDropout: Boolean
+  dropout: Double = 0.0
 ) : EmbeddingsProcessor<T>(
   embeddingsMap = embeddingsMap,
-  dropout = dropout,
-  useDropout = useDropout
+  dropout = dropout
 ){
 
   companion object {

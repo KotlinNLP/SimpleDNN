@@ -17,19 +17,23 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * The NeuralProcessor that acts on an embeddings map.
  *
  * @param embeddingsMap the embeddings map
- * @param dropout the dropout to mask items of the [embeddingsMap]
- * @param useDropout whether to apply the dropout during the forward
+ * @param dropout the probability to get the unknown embedding
  */
 open class EmbeddingsProcessor<T>(
   private val embeddingsMap: EmbeddingsMap<T>,
-  private val dropout: Double = 0.0,
-  override val useDropout: Boolean
+  private val dropout: Double = 0.0
 ) : NeuralProcessor<
   List<T>, // InputType
   List<DenseNDArray>, // OutputType
   List<DenseNDArray>, // ErrorsType
   NeuralProcessor.NoInputErrors // InputErrorsType
   > {
+
+  /**
+   * Whether to apply the dropout to get the embeddings.
+   * Actually it is not used. The value of the [dropout] itself is enough.
+   */
+  override val useDropout: Boolean = this.dropout > 0.0
 
   /**
    * Whether to propagate the errors to the input during the backward (not supported)
@@ -52,6 +56,13 @@ open class EmbeddingsProcessor<T>(
   private val errorsAccumulator by lazy { ParamsErrorsAccumulator() }
 
   /**
+   * Check the dropout value.
+   */
+  init {
+    require(this.dropout >= 0.0) { "The dropout must be >= 0.0."}
+  }
+
+  /**
    * The Forward.
    *
    * @param input the input
@@ -60,9 +71,7 @@ open class EmbeddingsProcessor<T>(
    */
   override fun forward(input: List<T>): List<DenseNDArray> {
 
-    val dropoutValue: Double = if (this.useDropout) this.dropout else 0.0
-
-    this.usedEmbeddings = input.map { this.embeddingsMap.get(it, dropoutValue) }
+    this.usedEmbeddings = input.map { this.embeddingsMap.get(it, this.dropout) }
 
     return this.usedEmbeddings.map { it.values } // TODO: copy?
   }
