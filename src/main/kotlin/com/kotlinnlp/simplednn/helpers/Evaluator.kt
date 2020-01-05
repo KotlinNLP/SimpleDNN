@@ -12,7 +12,7 @@ import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
 /**
  * A helper which evaluates a neural model with a list of examples.
  *
- * @param examples a list of examples to validate
+ * @param examples a list of examples to validate the model with
  * @param verbose whether to print info about the validation progress (default = true)
  */
 abstract class Evaluator<ExampleType : Any>(
