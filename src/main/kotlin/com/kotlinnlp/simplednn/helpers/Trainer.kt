@@ -29,7 +29,7 @@ abstract class Trainer<ExampleType : Any>(
   private val examples: List<ExampleType>,
   private val epochs: Int,
   protected val batchSize: Int = 1,
-  private val evaluator: Evaluator<ExampleType>? = null,
+  private val evaluator: Evaluator<ExampleType, *>? = null,
   private val shuffler: Shuffler = Shuffler(),
   protected val verbose: Boolean = true
 ) {

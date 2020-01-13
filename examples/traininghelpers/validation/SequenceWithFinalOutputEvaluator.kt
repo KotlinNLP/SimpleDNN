@@ -36,7 +36,7 @@ class SequenceWithFinalOutputEvaluator<NDArrayType: NDArray<NDArrayType>>(
                                     isCorrect: Boolean,
                                     processor: RecurrentNeuralProcessor<NDArrayType>) -> Unit = { _, _, _ -> },
   verbose: Boolean = true
-) : Evaluator<SequenceExampleWithFinalOutput<NDArrayType>>(
+) : Evaluator<SequenceExampleWithFinalOutput<NDArrayType>, Statistics.Simple>(
   examples = examples,
   verbose = verbose
 ) {

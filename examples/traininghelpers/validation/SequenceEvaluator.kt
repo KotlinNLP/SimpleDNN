@@ -36,7 +36,7 @@ class SequenceEvaluator<NDArrayType: NDArray<NDArrayType>>(
                                     processor: RecurrentNeuralProcessor<NDArrayType>) -> Unit = { _, _, _ -> },
   private val saveContributions: Boolean = false,
   verbose: Boolean = true
-) : Evaluator<SequenceExample<NDArrayType>>(
+) : Evaluator<SequenceExample<NDArrayType>, Statistics.Simple>(
   examples = examples,
   verbose = verbose
 ) {

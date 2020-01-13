@@ -15,7 +15,7 @@ import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
  * @param examples a list of examples to validate the model with
  * @param verbose whether to print info about the validation progress (default = true)
  */
-abstract class Evaluator<ExampleType : Any>(
+abstract class Evaluator<ExampleType : Any, StatsType: Statistics>(
   internal val examples: List<ExampleType>,
   private val verbose: Boolean = true
 ) {
@@ -23,14 +23,14 @@ abstract class Evaluator<ExampleType : Any>(
   /**
    * The evaluation statistics.
    */
-  protected abstract val stats: Statistics
+  protected abstract val stats: StatsType
 
   /**
    * Evaluate examples.
    *
    * @return the validation statistics
    */
-  open fun evaluate(): Statistics {
+  open fun evaluate(): StatsType {
 
     val progress = ProgressIndicatorBar(this.examples.size)
 
