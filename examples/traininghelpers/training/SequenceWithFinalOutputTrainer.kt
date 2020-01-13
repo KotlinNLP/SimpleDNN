@@ -14,11 +14,11 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.recurrent.RecurrentNeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
-import com.kotlinnlp.simplednn.helpers.Evaluator
 import com.kotlinnlp.simplednn.helpers.Trainer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.Shuffler
+import traininghelpers.validation.SequenceWithFinalOutputEvaluator
 import utils.SequenceExampleWithFinalOutput
 
 /**
@@ -41,7 +41,7 @@ class SequenceWithFinalOutputTrainer<NDArrayType: NDArray<NDArrayType>>(
   examples: List<SequenceExampleWithFinalOutput<NDArrayType>>,
   epochs: Int,
   batchSize: Int = 1,
-  evaluator: Evaluator<SequenceExampleWithFinalOutput<NDArrayType>>? = null,
+  evaluator: SequenceWithFinalOutputEvaluator<NDArrayType>? = null,
   shuffler: Shuffler = Shuffler(),
   verbose: Boolean = true
 ) : Trainer<SequenceExampleWithFinalOutput<NDArrayType>>(

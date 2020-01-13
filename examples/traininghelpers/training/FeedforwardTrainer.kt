@@ -15,11 +15,11 @@ import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.helpers.Trainer
-import com.kotlinnlp.simplednn.helpers.Evaluator
 import utils.SimpleExample
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.Shuffler
+import traininghelpers.validation.FeedforwardEvaluator
 
 /**
  * A helper to train a feed-forward model with simple examples.
@@ -41,7 +41,7 @@ internal class FeedforwardTrainer<NDArrayType: NDArray<NDArrayType>>(
   examples: List<SimpleExample<NDArrayType>>,
   epochs: Int,
   batchSize: Int = 1,
-  evaluator: Evaluator<SimpleExample<NDArrayType>>? = null,
+  evaluator: FeedforwardEvaluator<NDArrayType>? = null,
   shuffler: Shuffler = Shuffler(),
   verbose: Boolean = true
 ) : Trainer<SimpleExample<NDArrayType>>(
