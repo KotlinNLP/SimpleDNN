@@ -10,6 +10,8 @@ addons:
 os:
   - linux
 
+dist: trusty
+
 jdk:
   - oraclejdk8
 
