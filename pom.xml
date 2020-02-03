@@ -53,7 +53,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <nexus-staging-plugin.version>1.6.7</nexus-staging-plugin.version>
         <maven-source-plugin.version>3.0.0</maven-source-plugin.version>
-        <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
+        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+        <oss.server.id>oss_kotlinnlp</oss.server.id>
+        <gpg.keyname>C73F18F0</gpg.keyname>
         <kotlin.version>1.3.31</kotlin.version>
         <jblas.version>1.2.4</jblas.version>
         <slf4j.version>1.7.21</slf4j.version>
@@ -151,7 +153,7 @@
                 <version>${nexus-staging-plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <serverId>ossrh</serverId>
+                    <serverId>${oss.server.id}</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
@@ -185,6 +187,10 @@
                         <goals>
                             <goal>sign</goal>
                         </goals>
+                        <configuration>
+                            <keyname>${gpg.keyname}</keyname>
+                            <passphraseServerId>${gpg.keyname}</passphraseServerId>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
