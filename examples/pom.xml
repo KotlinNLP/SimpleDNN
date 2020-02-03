@@ -16,7 +16,6 @@
         <fasterxml.jackson.version>[2.9.9.1,)</fasterxml.jackson.version>
         <klaxon.version>3.0.5</klaxon.version>
         <simplednn.version>0.13.3</simplednn.version>
-        <utils.version>2.1.4</utils.version>
     </properties>
 
     <repositories>
@@ -105,12 +104,6 @@
             <groupId>com.kotlinnlp</groupId>
             <artifactId>simplednn</artifactId>
             <version>${simplednn.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.kotlinnlp</groupId>
-            <artifactId>utils</artifactId>
-            <version>${utils.version}</version>
         </dependency>
     </dependencies>
 </project>
