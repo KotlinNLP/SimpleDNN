@@ -64,7 +64,6 @@
         <spek.version>2.0.5</spek.version>
         <dokka.version>0.9.17</dokka.version>
         <utils.version>2.1.4</utils.version>
-        <lmdbkt.version>08b7db2b0f</lmdbkt.version>
     </properties>
 
     <repositories>
@@ -263,12 +262,6 @@
             <groupId>com.kotlinnlp</groupId>
             <artifactId>utils</artifactId>
             <version>${utils.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.matteo-grella</groupId>
-            <artifactId>lmdbkt</artifactId>
-            <version>${lmdbkt.version}</version>
         </dependency>
     </dependencies>
 </project>

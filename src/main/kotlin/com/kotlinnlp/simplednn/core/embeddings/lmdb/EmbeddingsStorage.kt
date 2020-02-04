@@ -7,8 +7,8 @@
 
 package com.kotlinnlp.simplednn.core.embeddings.lmdb
 
-import com.github.matteogrella.lmdbkt.LMDBMap
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
+import com.kotlinnlp.utils.LMDBMap
 import com.kotlinnlp.utils.Serializer
 import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
 import java.io.ByteArrayOutputStream
@@ -51,12 +51,12 @@ class EmbeddingsStorage(
     set(value) { if (field != 0) { throw ValueAlreadySet() }; field = value }
     get() { require(field > 0) { "The value must be set before accessing it" }; return field }
 
-  override fun deserializeKey(obj: ByteArray): String = String(obj)
-  override fun deserializeValue(obj: ByteArray): ParamsArray = Serializer.deserialize(obj.inputStream())
-  override fun serializeKey(obj: String): ByteArray = obj.toByteArray()
-  override fun serializeValue(obj: ParamsArray): ByteArray {
+  override fun deserializeKey(key: ByteArray): String = String(key)
+  override fun deserializeValue(value: ByteArray): ParamsArray = Serializer.deserialize(value.inputStream())
+  override fun serializeKey(key: String): ByteArray = key.toByteArray()
+  override fun serializeValue(value: ParamsArray): ByteArray {
     val outputStream = ByteArrayOutputStream()
-    Serializer.serialize(obj, outputStream)
+    Serializer.serialize(value, outputStream)
     return outputStream.toByteArray()
   }
 
