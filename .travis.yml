@@ -6,6 +6,8 @@ addons:
   apt:
     packages:
       - oracle-java8-installer
+      - gfortran
+      - libgfortran3
 
 os:
   - linux
