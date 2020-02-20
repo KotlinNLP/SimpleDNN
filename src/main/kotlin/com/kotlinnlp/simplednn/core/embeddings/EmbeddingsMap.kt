@@ -10,11 +10,10 @@ package com.kotlinnlp.simplednn.core.embeddings
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
+import com.kotlinnlp.utils.Serializer
 import com.kotlinnlp.utils.getLinesCount
 import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
-import java.io.File
-import java.io.InputStreamReader
-import java.io.Serializable
+import java.io.*
 import java.util.*
 
 /**
@@ -38,6 +37,15 @@ open class EmbeddingsMap<T>(
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
+
+    /**
+     * Read an [EmbeddingsMap] (serialized) from an input stream and decode it.
+     *
+     * @param inputStream the [InputStream] from which to read the serialized [EmbeddingsMap]
+     *
+     * @return the [EmbeddingsMap] read from [inputStream] and decoded
+     */
+    fun <T>load(inputStream: InputStream): EmbeddingsMap<T> = Serializer.deserialize(inputStream)
 
     /**
      * Load an [EmbeddingsMap] with [String] keys from file.
@@ -212,6 +220,13 @@ open class EmbeddingsMap<T>(
    * The random generator used to decide if an embedding must be dropped out.
    */
   private val dropoutRandomGenerator = if (this.pseudoRandomDropout) Random(743) else Random()
+
+  /**
+   * Serialize this [EmbeddingsMap] and write it to an output stream.
+   *
+   * @param outputStream the [OutputStream] in which to write this serialized [EmbeddingsMap]
+   */
+  fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
 
   /**
    * Associate a new embedding to the given [key].
