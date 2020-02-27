@@ -10,9 +10,10 @@ package utils
 import utils.exampleextractor.ExampleExtractor
 import java.io.FileInputStream
 import CorpusPaths
-import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonBase
+import com.beust.klaxon.Klaxon
 import com.beust.klaxon.Parser
+import java.io.File
 
 /**
  * A helper to read corpora from file (containing training, validation and test sets).
@@ -81,7 +82,7 @@ class CorpusReader<ExampleType : Example> {
 
     val examples = ArrayList<ExampleType>()
     val file = FileInputStream(filename)
-    val jsonParser = Parser()
+    val jsonParser: Parser = Parser.default()
 
     file.reader().forEachLine {
       examples.add(exampleExtractor.extract(jsonParser.parse(StringBuilder(it)) as JsonBase))
@@ -103,7 +104,7 @@ class CorpusReader<ExampleType : Example> {
 
     val examples = ArrayList<ExampleType>()
 
-    (Parser().parse(filename) as JsonArray<*>).forEach {
+    (Klaxon().parseJsonArray(File(filename).reader())).forEach {
       examples.add(exampleExtractor.extract(it as JsonBase))
     }
 
