@@ -11,8 +11,14 @@ import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayerParameters
 
+/**
+ * The parameters of the Normalization layer.
+ *
+ * @property inputSize the input size (equal to the output size)
+ * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
+ */
 class NormalizationLayerParameters (
     inputSize: Int,
     weightsInitializer: Initializer? = GlorotInitializer(),
@@ -27,7 +33,7 @@ class NormalizationLayerParameters (
   companion object {
 
     /**
-     * Private val used to serialize the class (needed by Serializable)
+     * Private val used to serialize the class (needed by Serializable).
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L

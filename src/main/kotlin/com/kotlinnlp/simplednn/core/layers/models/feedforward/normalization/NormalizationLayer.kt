@@ -17,14 +17,26 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
-class NormalizationLayer <InputNDArrayType : NDArray<InputNDArrayType>>(
-    val inputArrays: List<AugmentedArray<InputNDArrayType>>,
-    inputType: LayerType.Input,
-    val inputSize: Int,
-    override val params: NormalizationLayerParameters,
-    activationFunction: ActivationFunction? = null,
-    dropout: Double = 0.0,
-    override val id: Int = 0
+/**
+ * The Normalization layer structure.
+ *
+ * @property inputArrays the input arrays of the layer
+ * @property inputType the type of the input arrays
+ * @property inputSize the size of the input arrays (equal to the output size)
+ * @property params the parameters which connect the input to the output
+ * @property activationFunction the activation function of the layer
+ * @property dropout the probability of dropout (default 0.0).
+ *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
+ * @property id an identification number useful to track a specific layer (default: 0)
+ */
+class NormalizationLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
+  val inputArrays: List<AugmentedArray<InputNDArrayType>>,
+  inputType: LayerType.Input,
+  val inputSize: Int,
+  override val params: NormalizationLayerParameters,
+  activationFunction: ActivationFunction? = null,
+  dropout: Double = 0.0,
+  override val id: Int = 0
 ) : Layer<InputNDArrayType>(
     inputArray = inputArrays[0],
     inputType = inputType,
@@ -35,34 +47,34 @@ class NormalizationLayer <InputNDArrayType : NDArray<InputNDArrayType>>(
 ) {
 
   /**
-   * The list containing the layer output
+   * The list containing the layer output.
    */
   val outputArrays: List<AugmentedArray<DenseNDArray>> = List(this.inputArrays.size) {
     AugmentedArray(DenseNDArrayFactory.zeros(Shape(inputSize)))
   }
 
   /**
-   * The vector containing the mean of the input layers
+   * The vector containing the mean of the input layers.
    */
   val meanArray: DenseNDArray = DenseNDArrayFactory.zeros(Shape(inputSize))
 
   /**
-   * The vector containing the standard deviation of the input layers
+   * The vector containing the standard deviation of the input layers.
    */
   val devStdArray: DenseNDArray = DenseNDArrayFactory.zeros(Shape(inputSize))
 
   /**
-   * The helper which executes the forward
+   * The helper which executes the forward.
    */
   override val forwardHelper = NormalizationForwardHelper(layer = this)
 
   /**
-   * The helper which executes the backward
+   * The helper which executes the backward.
    */
   override val backwardHelper = NormalizationBackwardHelper(layer = this)
 
   /**
-   * The helper which calculates the relevance
+   * The helper which calculates the relevance.
    */
   override val relevanceHelper: RelevanceHelper? = null
 
@@ -103,7 +115,9 @@ class NormalizationLayer <InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Check if [arrayList] contains arrays of the same size and shape
+   * @param arrayList a list of augmented arrays
+   *
+   * @return `true` if all the arrays in [arrayList] have the same size and shape, otherwise `false`
    */
   private fun isAllEqualSize(arrayList: List<AugmentedArray<InputNDArrayType>>): Boolean {
 
@@ -119,13 +133,14 @@ class NormalizationLayer <InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Initialization: set the activation function of the outputArrays
+   * Set the activation function of the output arrays.
    */
   init {
-    require(isAllEqualSize(inputArrays))
+
+    require(isAllEqualSize(this.inputArrays))
 
     if (activationFunction != null) {
-      for (outputArray in outputArrays)
+      for (outputArray in this.outputArrays)
         outputArray.setActivation(activationFunction)
     }
   }
