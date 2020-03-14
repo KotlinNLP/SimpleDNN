@@ -40,12 +40,12 @@ class NormalizationLayerParameters (
   }
 
   /**
-   * The bias array.
+   * The bias.
    */
   val b = ParamsArray(this.outputSize)
 
   /**
-   * The bias array.
+   * The weights.
    */
   val g = ParamsArray(this.outputSize)
 
