@@ -38,12 +38,12 @@ class NormalizationLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   dropout: Double = 0.0,
   override val id: Int = 0
 ) : Layer<InputNDArrayType>(
-    inputArray = inputArrays[0],
-    inputType = inputType,
-    outputArray = AugmentedArray(1),
-    params = params,
-    activationFunction = activationFunction,
-    dropout = dropout
+  inputArray = inputArrays[0],
+  inputType = inputType,
+  outputArray = AugmentedArray(1),
+  params = params,
+  activationFunction = activationFunction,
+  dropout = dropout
 ) {
 
   /**

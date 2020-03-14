@@ -22,13 +22,13 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
 class NormalizationLayerParameters (
     inputSize: Int,
     weightsInitializer: Initializer? = GlorotInitializer(),
-    biasesInitializer: Initializer? = GlorotInitializer(),
-    private val sparseInput: Boolean = false
-) : LayerParameters<NormalizationLayerParameters>(
+    biasesInitializer: Initializer? = GlorotInitializer()
+) : LayerParameters(
     inputSize = inputSize,
     outputSize = inputSize,
     weightsInitializer = weightsInitializer,
-    biasesInitializer = biasesInitializer) {
+    biasesInitializer = biasesInitializer
+) {
 
   companion object {
 
@@ -50,13 +50,6 @@ class NormalizationLayerParameters (
   val g = ParamsArray(this.outputSize)
 
   /**
-   * The list of all parameters.
-   */
-  override val paramsList = listOf(
-      this.g, this.b
-  )
-
-  /**
    * The list of weights parameters.
    */
   override val weightsList: List<ParamsArray> = listOf(
@@ -75,21 +68,5 @@ class NormalizationLayerParameters (
    */
   init {
     this.initialize()
-  }
-
-  /**
-   * @return a new [HighwayLayerParameters] containing a copy of all parameters of this
-   */
-  override fun copy(): NormalizationLayerParameters {
-
-    val clonedParams = NormalizationLayerParameters(
-        inputSize = this.inputSize,
-        sparseInput = this.sparseInput,
-        weightsInitializer = null,
-        biasesInitializer = null)
-
-    clonedParams.assignValues(this)
-
-    return clonedParams
   }
 }
