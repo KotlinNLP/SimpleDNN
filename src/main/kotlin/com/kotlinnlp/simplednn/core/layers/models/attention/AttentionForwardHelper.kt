@@ -7,10 +7,10 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.attention
 
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.models.attention.attentionmechanism.AttentionMechanismLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  * The helper which executes the forward on a [layer].
@@ -32,13 +32,12 @@ class AttentionForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.layer.attentionMechanism.forward()
 
-    this.layer.outputArray.values.let { y ->
+    val y: DenseNDArray = this.layer.outputArray.values
 
-      y.zeros()
+    y.zeros()
 
-      this.layer.inputArrays.forEachIndexed { i, inputArray ->
-        y.assignSum(inputArray.values.prod(this.layer.attentionMechanism.outputArray.values[i]))
-      }
+    this.layer.inputArrays.forEachIndexed { i, inputArray ->
+      y.assignSum(inputArray.values.prod(this.layer.attentionMechanism.outputArray.values[i]))
     }
   }
 }

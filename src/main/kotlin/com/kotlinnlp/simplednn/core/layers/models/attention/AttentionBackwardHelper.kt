@@ -76,14 +76,14 @@ class AttentionBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Set the errors of each input array.
    *
-   *     gx_i = gy * alpha_i  // errors of the i-th input array
+   *   gx_i = gy * alpha_i  // errors of the i-th input array
    */
   private fun assignLayerGradients() {
 
     val outputErrors: DenseNDArray = this.layer.outputArray.errors
     val attentionScores: DenseNDArray = this.layer.attentionMechanism.outputArray.values
 
-    for (i in 0 until this.layer.inputArrays.size) {
+    this.layer.inputArrays.indices.forEach { i ->
       this.layer.inputArrays[i].assignErrorsByProd(outputErrors, attentionScores[i])
     }
   }
