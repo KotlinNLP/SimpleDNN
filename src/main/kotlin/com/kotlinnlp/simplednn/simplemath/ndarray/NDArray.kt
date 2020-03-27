@@ -98,6 +98,11 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun getRow(i: Int): SelfType
 
   /**
+   * @return all the rows as a new NDArrays
+   */
+  fun getRows(): List<SelfType> = (0 until this.rows).map { this.getRow(it) }
+
+  /**
    * Get the i-th column
    *
    * @param i the index of the column to be returned
@@ -105,6 +110,11 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
    * @return the selected column as a new NDArray
    */
   fun getColumn(i: Int): SelfType
+
+  /**
+   * @return all the columns as a new NDArrays
+   */
+  fun getColumns(): List<SelfType> = (0 until this.columns).map { this.getColumn(it) }
 
   /**
    * Get a one-dimensional NDArray sub-vector of a vertical vector.

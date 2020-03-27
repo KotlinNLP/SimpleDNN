@@ -70,6 +70,71 @@ class DenseNDArraySpec : Spek({
         }
       }
 
+      context("fromRows()") {
+
+        val matrix = DenseNDArrayFactory.fromRows(listOf(
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2)),
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.4)),
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, 0.6))
+        ))
+
+        it("should have the expected shape") {
+          assertEquals(Shape(3, 2), matrix.shape)
+        }
+
+        it("should have the expected values") {
+          assertTrue {
+            DenseNDArrayFactory.arrayOf(listOf(
+              doubleArrayOf(0.1, 0.2),
+              doubleArrayOf(0.3, 0.4),
+              doubleArrayOf(0.5, 0.6)
+            )).equals(matrix, tolerance = 0.001)
+          }
+        }
+
+        it("should raise an exception if the shapes are not compatible") {
+          assertFailsWith<IllegalArgumentException> {
+            DenseNDArrayFactory.fromRows(listOf(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.4)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, 0.8, 0.9))
+            ))
+          }
+        }
+      }
+
+      context("fromColumns()") {
+
+        val matrix = DenseNDArrayFactory.fromColumns(listOf(
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2)),
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.4)),
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, 0.6))
+        ))
+
+        it("should have the expected shape") {
+          assertEquals(Shape(2, 3), matrix.shape)
+        }
+
+        it("should have the expected values") {
+          assertTrue {
+            DenseNDArrayFactory.arrayOf(listOf(
+              doubleArrayOf(0.1, 0.3, 0.5),
+              doubleArrayOf(0.2, 0.4, 0.6)
+            )).equals(matrix, tolerance = 0.001)
+          }
+        }
+
+        it("should raise an exception if the shapes are not compatible") {
+          assertFailsWith<IllegalArgumentException> {
+            DenseNDArrayFactory.fromColumns(listOf(
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.4)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, 0.8, 0.9))
+            ))
+          }
+        }
+      }
+
       context("zeros()") {
 
         val array = DenseNDArrayFactory.zeros(Shape(2, 3))
@@ -1227,6 +1292,27 @@ class DenseNDArraySpec : Spek({
         }
       }
 
+      context("getRows() method") {
+
+        val rows = array.getRows()
+
+        it("should return the expected number of rows") {
+          assertEquals(2, rows.size)
+        }
+
+        it("should return the expected first row") {
+          assertTrue {
+            rows[0].equals(DenseNDArrayFactory.arrayOf(listOf(doubleArrayOf(0.1, 0.2, 0.3, 0.4))), tolerance = 0.001)
+          }
+        }
+
+        it("should return the expected second row") {
+          assertTrue {
+            rows[1].equals(DenseNDArrayFactory.arrayOf(listOf(doubleArrayOf(0.5, 0.6, 0.7, 0.8))), tolerance = 0.001)
+          }
+        }
+      }
+
       context("getColumn() method") {
 
         val column = array.getColumn(1)
@@ -1237,6 +1323,47 @@ class DenseNDArraySpec : Spek({
 
         it("should return the expected column values") {
           assertTrue { column.equals(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, 0.6))) }
+        }
+      }
+
+      context("getColumns() method") {
+
+        val columns = array.getColumns()
+
+        it("should return the expected number of columns") {
+          assertEquals(4, columns.size)
+        }
+
+        it("should return the expected first column") {
+          assertTrue {
+            columns[0].equals(
+              DenseNDArrayFactory.arrayOf(listOf(doubleArrayOf(0.1), doubleArrayOf(0.5))),
+              tolerance = 0.001)
+          }
+        }
+
+        it("should return the expected second column") {
+          assertTrue {
+            columns[1].equals(
+              DenseNDArrayFactory.arrayOf(listOf(doubleArrayOf(0.2), doubleArrayOf(0.6))),
+              tolerance = 0.001)
+          }
+        }
+
+        it("should return the expected third column") {
+          assertTrue {
+            columns[2].equals(
+              DenseNDArrayFactory.arrayOf(listOf(doubleArrayOf(0.3), doubleArrayOf(0.7))),
+              tolerance = 0.001)
+          }
+        }
+
+        it("should return the expected fourth column") {
+          assertTrue {
+            columns[3].equals(
+              DenseNDArrayFactory.arrayOf(listOf(doubleArrayOf(0.4), doubleArrayOf(0.8))),
+              tolerance = 0.001)
+          }
         }
       }
 

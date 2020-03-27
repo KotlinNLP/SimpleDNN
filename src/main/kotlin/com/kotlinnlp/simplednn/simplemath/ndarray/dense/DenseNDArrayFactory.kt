@@ -137,6 +137,52 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
   }
 
   /**
+   * @param rows rows as dense arrays
+   *
+   * @return a new dense array filled by rows with the given values
+   */
+  fun fromRows(rows: List<DenseNDArray>): DenseNDArray {
+
+    val dim1 = rows.size
+    val dim2 = if (rows.isNotEmpty()) rows[0].length else 0
+    val m = DoubleMatrix(dim1, dim2)
+
+    require(rows.all { it.length == dim2 }) { "All the rows must have the same length. "}
+
+    (0 until dim1 * dim2).forEach { linearIndex ->
+      // linear indexing: loop rows before, column by column
+      val row = linearIndex % dim1
+      val column = linearIndex / dim1
+      m.put(linearIndex, rows[row][column])
+    }
+
+    return DenseNDArray(m)
+  }
+
+  /**
+   * @param columns columns as dense arrays
+   *
+   * @return a new dense array filled by columns with the given values
+   */
+  fun fromColumns(columns: List<DenseNDArray>): DenseNDArray {
+
+    val dim1 = if (columns.isNotEmpty()) columns[0].length else 0
+    val dim2 = columns.size
+    val m = DoubleMatrix(dim1, dim2)
+
+    require(columns.all { it.length == dim1 }) { "All the columns must have the same length. "}
+
+    (0 until dim1 * dim2).forEach { linearIndex ->
+      // linear indexing: loop rows before, column by column
+      val row = linearIndex % dim1
+      val column = linearIndex / dim1
+      m.put(linearIndex, columns[column][row])
+    }
+
+    return DenseNDArray(m)
+  }
+
+  /**
    * Build a [DenseNDArray] that contains the same values of a given generic NDArray.
    *
    * @param array a generic NDArray
