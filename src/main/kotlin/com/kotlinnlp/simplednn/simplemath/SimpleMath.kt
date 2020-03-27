@@ -47,11 +47,19 @@ fun equals(a: DoubleArray, b: DoubleArray, tolerance: Double = 1.0e-04): Boolean
 
 /**
  * Concatenate vertical 1-dim [DenseNDArray]s vertically.
+ *
+ * @param vectors column vectors
+ *
+ * @return a matrix built concatenating vertically the given vectors
  */
 fun concatVectorsV(vectors: List<DenseNDArray>): DenseNDArray = concatVectorsV(*vectors.toTypedArray())
 
 /**
  * Concatenate vertical 1-dim [DenseNDArray]s vertically.
+ *
+ * @param vectors column vectors
+ *
+ * @return a matrix built concatenating vertically the given vectors
  */
 fun concatVectorsV(vararg vectors: DenseNDArray): DenseNDArray {
 
