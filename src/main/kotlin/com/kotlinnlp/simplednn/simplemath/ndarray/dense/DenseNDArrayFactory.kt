@@ -102,35 +102,35 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
     DenseNDArray(DoubleMatrix.ones(shape.dim1, shape.dim2))
 
   /**
-   * @param vector an array of double numbers
+   * @param values an array of double numbers
    *
    * @return a new column vector filled with the given values
    */
-  fun arrayOf(vector: DoubleArray): DenseNDArray {
+  fun arrayOf(values: DoubleArray): DenseNDArray {
 
-    val m = DoubleMatrix(vector.size, 1)
+    val m = DoubleMatrix(values.size, 1)
 
-    vector.indices.forEach { i -> m.put(i, vector[i]) }
+    values.indices.forEach { i -> m.put(i, values[i]) }
 
     return DenseNDArray(m)
   }
 
   /**
-   * @param matrix arrays of double numbers
+   * @param rows rows as arrays of double numbers
    *
    * @return a new dense array filled by rows with the given values
    */
-  fun arrayOf(matrix: List<DoubleArray>): DenseNDArray {
+  fun arrayOf(rows: List<DoubleArray>): DenseNDArray {
 
-    val rows = matrix.size
-    val columns = if (matrix.isNotEmpty()) matrix[0].size else 0
-    val m = DoubleMatrix(rows, columns)
+    val dim1 = rows.size
+    val dim2 = if (rows.isNotEmpty()) rows[0].size else 0
+    val m = DoubleMatrix(dim1, dim2)
 
-    (0 until rows * columns).forEach { linearIndex ->
+    (0 until dim1 * dim2).forEach { linearIndex ->
       // linear indexing: loop rows before, column by column
-      val row = linearIndex % rows
-      val column = linearIndex / rows
-      m.put(linearIndex, matrix[row][column])
+      val row = linearIndex % dim1
+      val column = linearIndex / dim1
+      m.put(linearIndex, rows[row][column])
     }
 
     return DenseNDArray(m)
