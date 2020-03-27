@@ -27,14 +27,15 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
 
   /**
    * @param shape shape
+   *
    * @return a new empty DenseNDArray
    */
   override fun emptyArray(shape: Shape): DenseNDArray =
     DenseNDArray(DoubleMatrix.zeros(shape.dim1, shape.dim2))
 
   /**
-   *
    * @param shape shape
+   *
    * @return a new DenseNDArray filled with zeros
    */
   override fun zeros(shape: Shape): DenseNDArray =
@@ -54,6 +55,7 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
    *
    * @param length the length of the array
    * @param oneAt the index of the one element
+   *
    * @return a oneHotEncoder DenseNDArray
    */
   override fun oneHotEncoder(length: Int, oneAt: Int): DenseNDArray {
@@ -72,6 +74,7 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
    * @param shape shape
    * @param from inclusive lower bound of random values range
    * @param to inclusive upper bound of random values range
+   *
    * @return a new DenseNDArray filled with random values
    */
   override fun random(shape: Shape, from: Double, to: Double): DenseNDArray {
@@ -99,20 +102,26 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
     DenseNDArray(DoubleMatrix.ones(shape.dim1, shape.dim2))
 
   /**
+   * @param vector an array of double numbers
    *
+   * @return a new column vector filled with the given values
    */
   fun arrayOf(vector: DoubleArray): DenseNDArray {
+
     val m = DoubleMatrix(vector.size, 1)
 
-    (0 until vector.size).forEach { i -> m.put(i, vector[i]) }
+    vector.indices.forEach { i -> m.put(i, vector[i]) }
 
     return DenseNDArray(m)
   }
 
   /**
+   * @param matrix arrays of double numbers
    *
+   * @return a new dense array filled by rows with the given values
    */
   fun arrayOf(matrix: List<DoubleArray>): DenseNDArray {
+
     val rows = matrix.size
     val columns = if (matrix.isNotEmpty()) matrix[0].size else 0
     val m = DoubleMatrix(rows, columns)
