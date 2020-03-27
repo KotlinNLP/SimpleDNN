@@ -90,24 +90,6 @@ fun List<DenseNDArray>.assignSum(a: List<DenseNDArray>) {
 }
 
 /**
- * Transform a list of vectors into a matrix.
- */
-fun List<DenseNDArray>.toMatrix(): DenseNDArray {
-
-  require(this.all { it.isVector })
-
-  return DenseNDArrayFactory.arrayOf(this.map { it.toDoubleArray() })
-}
-
-/**
- * Transform a matrix into a list of vectors.
- */
-fun DenseNDArray.toVectors(): List<DenseNDArray> {
-
-  return (0 until this.rows).map { this.getRow(it).t }
-}
-
-/**
  * Return a new list of DenseNDArray where each item is a copy
  */
 fun List<DenseNDArray>.copy(): List<DenseNDArray> = this.map { it.copy() }

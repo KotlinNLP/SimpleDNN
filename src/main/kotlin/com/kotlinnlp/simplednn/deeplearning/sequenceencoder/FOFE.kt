@@ -12,8 +12,6 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.simplednn.simplemath.toMatrix
-import com.kotlinnlp.simplednn.simplemath.toVectors
 import kotlin.math.pow
 
 /**
@@ -84,9 +82,11 @@ class FOFE(
    */
   override fun forward(input: List<DenseNDArray>): List<DenseNDArray> {
 
+    val inputMatrix: DenseNDArray = DenseNDArrayFactory.fromRows(input)
+
     this.matrix = buildMatrix(this.alpha, input.size)
 
-    return this.matrix.dot(input.toMatrix()).toVectors()
+    return this.matrix.dot(inputMatrix).getRows().map { it.t }
   }
 
   /**
@@ -96,7 +96,9 @@ class FOFE(
    */
   override fun backward(outputErrors: List<DenseNDArray>) {
 
-    this.inputErrors = outputErrors.toMatrix().dot(this.matrix.t).toVectors()
+    val errors: DenseNDArray = DenseNDArrayFactory.fromRows(outputErrors)
+
+    this.inputErrors = errors.dot(this.matrix.t).getRows().map { it.t }
   }
 
   /**
