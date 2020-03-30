@@ -14,8 +14,11 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import kotlin.math.sqrt
 
-class NormalizationForwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
-    override val layer: NormalizationLayer<InputNDArrayType>
+/**
+ * The helper which executes the forward on the [NormalizationLayer].
+ */
+internal class NormalizationForwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val layer: NormalizationLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
