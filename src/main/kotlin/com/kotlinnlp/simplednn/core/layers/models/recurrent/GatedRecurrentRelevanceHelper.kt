@@ -15,7 +15,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [RecurrentLayer] in which to calculate the input relevance
  */
-abstract class GatedRecurrentRelevanceHelper(layer: RecurrentLayer<DenseNDArray>) : RecurrentRelevanceHelper(layer) {
+internal abstract class GatedRecurrentRelevanceHelper(
+  layer: RecurrentLayer<DenseNDArray>
+) : RecurrentRelevanceHelper(layer) {
 
   /**
    * Propagate the relevance from the output to the gated units of the layer.

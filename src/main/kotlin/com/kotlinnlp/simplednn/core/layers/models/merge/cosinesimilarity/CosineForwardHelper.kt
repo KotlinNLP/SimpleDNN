@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.merge.cosinesimilarity
 
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -18,7 +17,7 @@ import kotlin.math.sqrt
  *
  * @property layer the layer in which the forward is executed
  */
-class CosineForwardHelper (override val layer: CosineLayer) : ForwardHelper<DenseNDArray>(layer) {
+internal class CosineForwardHelper (override val layer: CosineLayer) : ForwardHelper<DenseNDArray>(layer) {
 
   /**
    * Forward the input to the output calculating a score value d ∈ [-1, 1]. d = cosine_similarity(input1-input2)

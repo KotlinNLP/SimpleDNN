@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance
 
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
@@ -16,7 +15,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  *
  * @property layer the layer in which the forward is executed
  */
-class SquaredDistanceForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class SquaredDistanceForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: SquaredDistanceLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer){
 

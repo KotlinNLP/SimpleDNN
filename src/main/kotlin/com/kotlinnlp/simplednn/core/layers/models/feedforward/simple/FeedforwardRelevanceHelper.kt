@@ -17,7 +17,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [FeedforwardLayer] in which to calculate the input relevance
  */
-class FeedforwardRelevanceHelper(override val layer: FeedforwardLayer<DenseNDArray>) : RelevanceHelper(layer) {
+internal class FeedforwardRelevanceHelper(override val layer: FeedforwardLayer<DenseNDArray>) : RelevanceHelper(layer) {
 
   /**
    * @param layerContributions the contributions saved during the last forward

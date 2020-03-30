@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
  *
  * @property layer the layer in which the backward is executed
  */
-class BiaffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class BiaffineBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: BiaffineLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType>(layer) {
 

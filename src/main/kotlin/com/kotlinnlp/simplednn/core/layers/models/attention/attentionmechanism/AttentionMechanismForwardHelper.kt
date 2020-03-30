@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [AttentionMechanismLayer] in which the forward is executed
  */
-class AttentionMechanismForwardHelper(
+internal class AttentionMechanismForwardHelper(
   override val layer: AttentionMechanismLayer
 ) : ForwardHelper<DenseNDArray>(layer) {
 

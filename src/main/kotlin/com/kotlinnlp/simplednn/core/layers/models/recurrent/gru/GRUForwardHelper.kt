@@ -17,7 +17,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [GRULayer] in which the forward is executed
  */
-class GRUForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class GRUForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: GRULayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 

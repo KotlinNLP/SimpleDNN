@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *
  * @property layer the layer in which the forward is executed
  */
-class AvgForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class AvgForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: AvgLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 

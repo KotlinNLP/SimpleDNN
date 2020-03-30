@@ -17,8 +17,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [SimpleRecurrentLayer] in which to calculate the input relevance
  */
-class SimpleRecurrentRelevanceHelper(override val layer: SimpleRecurrentLayer<DenseNDArray>) :
-  RecurrentRelevanceHelper(layer) {
+internal class SimpleRecurrentRelevanceHelper(
+  override val layer: SimpleRecurrentLayer<DenseNDArray>
+) : RecurrentRelevanceHelper(layer) {
 
   /**
    * @param layerContributions the contributions saved during the last forward

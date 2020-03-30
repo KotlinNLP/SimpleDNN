@@ -17,7 +17,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [HighwayLayer] in which the backward is executed
  */
-class HighwayBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class HighwayBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: HighwayLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType>(layer) {
 

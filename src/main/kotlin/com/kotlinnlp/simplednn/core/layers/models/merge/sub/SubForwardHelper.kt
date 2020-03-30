@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.merge.sub
 
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -17,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the layer in which the forward is executed
  */
-class SubForwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class SubForwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: SubLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 

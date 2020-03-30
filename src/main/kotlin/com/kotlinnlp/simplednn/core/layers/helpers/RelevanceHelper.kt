@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [Layer] in which to calculate the input relevance
  */
-abstract class RelevanceHelper(protected open val layer: Layer<DenseNDArray>) {
+internal abstract class RelevanceHelper(protected open val layer: Layer<DenseNDArray>) {
 
   /**
    * Calculate the relevance of the input respect of the output and assign it to the input array.

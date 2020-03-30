@@ -19,7 +19,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *
  * @property layer the [TPRLayer] in which the backward is executed
  */
-class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: TPRLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType>(layer) {
 

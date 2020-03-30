@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [HighwayLayer] in which to calculate the input relevance
  */
-class HighwayRelevanceHelper(override val layer: HighwayLayer<DenseNDArray>) : RelevanceHelper(layer) {
+internal class HighwayRelevanceHelper(override val layer: HighwayLayer<DenseNDArray>) : RelevanceHelper(layer) {
 
   /**
    * @param layerContributions the contributions saved during the last forward

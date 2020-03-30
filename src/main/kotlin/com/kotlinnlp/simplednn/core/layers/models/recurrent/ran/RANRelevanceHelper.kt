@@ -19,8 +19,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [RANLayer] in which to calculate the input relevance
  */
-class RANRelevanceHelper(override val layer: RANLayer<DenseNDArray>)
-  : GatedRecurrentRelevanceHelper(layer) {
+internal class RANRelevanceHelper(override val layer: RANLayer<DenseNDArray>) : GatedRecurrentRelevanceHelper(layer) {
 
   /**
    * Propagate the relevance from the output to the gate units of the layer.

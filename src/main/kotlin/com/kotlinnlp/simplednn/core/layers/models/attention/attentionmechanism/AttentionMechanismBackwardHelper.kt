@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [AttentionMechanismLayer] in which the backward is executed
  */
-class AttentionMechanismBackwardHelper(
+internal class AttentionMechanismBackwardHelper(
   override val layer: AttentionMechanismLayer
 ) : BackwardHelper<DenseNDArray>(layer) {
 

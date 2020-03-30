@@ -18,8 +18,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [DeltaRNNLayer] in which to calculate the input relevance
  */
-class DeltaRNNRelevanceHelper(override val layer: DeltaRNNLayer<DenseNDArray>)
-  : GatedRecurrentRelevanceHelper(layer) {
+internal class DeltaRNNRelevanceHelper(
+  override val layer: DeltaRNNLayer<DenseNDArray>
+) : GatedRecurrentRelevanceHelper(layer) {
 
   /**
    * Propagate the relevance from the output to the array units of the layer.
@@ -36,8 +37,9 @@ class DeltaRNNRelevanceHelper(override val layer: DeltaRNNLayer<DenseNDArray>)
     val candidateRelevance: DenseNDArray = if (previousStateExists)
       this.getInputPartition(layerContributions).div(2.0)
     else
-      halfOutputRelevance // if there isn't a previous state, all the output relevance is assigned to the candidate
-                          // partition (p * c), half to the partition array and half to the candidate array
+    // if there isn't a previous state, all the output relevance is assigned to the candidate
+    // partition (p * c), half to the partition array and half to the candidate array
+      halfOutputRelevance
 
     // pRelevance = inputPartition / 2 + recurrentPartition / 2 = outputRelevance / 2
     this.layer.partition.assignRelevance(halfOutputRelevance)
@@ -88,8 +90,9 @@ class DeltaRNNRelevanceHelper(override val layer: DeltaRNNLayer<DenseNDArray>)
     if (previousStateExists) {
       val d2InputRelevance = RelevanceUtils.calculateRelevanceOfArray(
         x = x,
-        y = this.layer.wx.values, // the product by 'alpha' is not included during the calculation of the relevance
-                                  // ('alpha' doesn't depend on variables of interest)
+        // the product by 'alpha' is not included during the calculation of the relevance
+        // ('alpha' doesn't depend on variables of interest)
+        y = this.layer.wx.values,
         yRelevance = relevanceSupport.d2.relevance.div(2.0),
         contributions = wxContrib // w (dot) x
       )
@@ -130,8 +133,9 @@ class DeltaRNNRelevanceHelper(override val layer: DeltaRNNLayer<DenseNDArray>)
 
     val d2RecRelevance = RelevanceUtils.calculateRelevanceOfArray(
       x = yPrev,
-      y = this.layer.wyRec.values, // the product by 'alpha' is not included during the calculation of the relevance
-                                   // ('alpha' doesn't depend on variables of interest)
+      // the product by 'alpha' is not included during the calculation of the relevance
+      // ('alpha' doesn't depend on variables of interest)
+      y = this.layer.wyRec.values,
       yRelevance = relevanceSupport.d2.relevance.div(2.0),
       contributions = wyRecContrib // wyRec (dot) yPrev
     )
@@ -216,19 +220,19 @@ class DeltaRNNRelevanceHelper(override val layer: DeltaRNNLayer<DenseNDArray>)
 
     relevanceSupport.d1Rec.assignRelevance(
       RelevanceUtils.getRelevancePartition1(
-      yRelevance = cRelevance,
-      y = c,
-      yContribute1 = relevanceSupport.d1Rec.values,
-      yContribute2 = d2,
-      nPartitions = 3)
+        yRelevance = cRelevance,
+        y = c,
+        yContribute1 = relevanceSupport.d1Rec.values,
+        yContribute2 = d2,
+        nPartitions = 3)
     )
 
     relevanceSupport.d2.assignRelevance(
       RelevanceUtils.getRelevancePartition2(
-      yRelevance = cRelevance,
-      y = c,
-      yContribute2 = d2,
-      nPartitions = 3)
+        yRelevance = cRelevance,
+        y = c,
+        yContribute2 = d2,
+        nPartitions = 3)
     )
   }
 

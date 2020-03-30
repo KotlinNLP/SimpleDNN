@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.distance
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import java.lang.Math.abs
+import kotlin.math.abs
 import kotlin.math.exp
 
 /**
@@ -18,7 +18,7 @@ import kotlin.math.exp
  *
  * @property layer the layer in which the forward is executed
  */
-class DistanceForwardHelper(override val layer: DistanceLayer) : ForwardHelper<DenseNDArray>(layer){
+internal class DistanceForwardHelper(override val layer: DistanceLayer) : ForwardHelper<DenseNDArray>(layer) {
 
   /**
    * Forward the input to the output calculating a score value d ∈ [0, 1]. d = exp(-||input1-input2||1)

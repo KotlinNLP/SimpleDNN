@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the layer in which the forward is executed
  */
-class SquaredDistanceBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class SquaredDistanceBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: SquaredDistanceLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType>(layer) {
 

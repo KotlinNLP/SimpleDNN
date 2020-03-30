@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  *
  * @property layer the [FeedforwardLayer] in which the backward is executed
  */
-class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class FeedforwardBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: FeedforwardLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType>(layer) {
 

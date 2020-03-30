@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers.models.merge.product
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -18,7 +17,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *
  * @property layer the layer in which the forward is executed
  */
-class ProductForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class ProductForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: ProductLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 

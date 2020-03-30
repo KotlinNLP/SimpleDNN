@@ -50,17 +50,17 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The helper which execute the forward
    */
-  protected abstract val forwardHelper: ForwardHelper<InputNDArrayType>
+  internal abstract val forwardHelper: ForwardHelper<InputNDArrayType>
 
   /**
    * The helper which execute the backward
    */
-  protected abstract val backwardHelper: BackwardHelper<InputNDArrayType>
+  internal abstract val backwardHelper: BackwardHelper<InputNDArrayType>
 
   /**
    * The helper which calculates the relevance
    */
-  protected abstract val relevanceHelper: RelevanceHelper?
+  internal abstract val relevanceHelper: RelevanceHelper?
 
   /**
    * Whether the input is dense.

@@ -17,7 +17,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.utils.SplitVHelper
  *
  * @property layer the layer in which the backward is executed
  */
-class ConcatBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class ConcatBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: ConcatLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType>(layer) {
 

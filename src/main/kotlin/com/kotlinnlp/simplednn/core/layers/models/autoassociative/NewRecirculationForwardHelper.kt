@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [NewRecirculationLayer] in which the forward is executed
  */
-class NewRecirculationForwardHelper(
+internal class NewRecirculationForwardHelper(
   override val layer: NewRecirculationLayer
 ) : ForwardHelper<DenseNDArray>(layer) {
 

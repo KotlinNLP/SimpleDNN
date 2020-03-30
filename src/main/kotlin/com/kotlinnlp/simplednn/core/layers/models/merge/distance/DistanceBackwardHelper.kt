@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *
  * @property layer the layer in which the forward is executed
  */
-class DistanceBackwardHelper(override val layer: DistanceLayer) : BackwardHelper<DenseNDArray>(layer) {
+internal class DistanceBackwardHelper(override val layer: DistanceLayer) : BackwardHelper<DenseNDArray>(layer) {
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD

@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [SimpleRecurrentLayer] in which the forward is executed
  */
-class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: SimpleRecurrentLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 

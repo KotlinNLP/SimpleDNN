@@ -20,7 +20,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *
  * @property layer the layer in which the forward is executed
  */
-class BiaffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class BiaffineForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: BiaffineLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 

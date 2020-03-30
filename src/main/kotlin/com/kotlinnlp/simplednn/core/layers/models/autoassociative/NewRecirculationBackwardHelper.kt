@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [NewRecirculationLayer] in which the backward is executed
  */
-class NewRecirculationBackwardHelper(
+internal class NewRecirculationBackwardHelper(
   override val layer: NewRecirculationLayer
 ) : BackwardHelper<DenseNDArray>(layer) {
 

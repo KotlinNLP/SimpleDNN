@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [RANLayer] in which the backward is executed
  */
-class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: RANLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType>(layer) {
 

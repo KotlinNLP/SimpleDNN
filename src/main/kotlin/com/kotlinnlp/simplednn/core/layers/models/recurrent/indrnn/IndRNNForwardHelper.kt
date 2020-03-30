@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  *
  * @property layer the [IndRNNLayer] in which the forward is executed
  */
-class IndRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class IndRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: IndRNNLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 

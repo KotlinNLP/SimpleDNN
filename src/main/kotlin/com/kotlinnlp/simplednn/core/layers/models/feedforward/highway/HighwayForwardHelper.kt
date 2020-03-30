@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property layer the [HighwayLayer] in which the forward is executed
  */
-class HighwayForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class HighwayForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: HighwayLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
