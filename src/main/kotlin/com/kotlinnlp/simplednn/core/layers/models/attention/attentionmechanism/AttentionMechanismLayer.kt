@@ -49,7 +49,7 @@ class AttentionMechanismLayer(
    * A matrix containing the attention arrays as rows.
    */
   internal val attentionMatrix: AugmentedArray<DenseNDArray> = AugmentedArray(
-    DenseNDArrayFactory.arrayOf(this.inputArrays.map { it.values.toDoubleArray() })
+    DenseNDArrayFactory.fromRows(this.inputArrays.map { it.values })
   )
 
   /**
