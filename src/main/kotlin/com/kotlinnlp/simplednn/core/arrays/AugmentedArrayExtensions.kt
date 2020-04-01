@@ -30,8 +30,8 @@ fun AugmentedArray<DenseNDArray>.getInputErrors(w: NDArray<*>): DenseNDArray = t
  */
 fun AugmentedArray<DenseNDArray>.getInputRelevance(x: DenseNDArray, cw: DenseNDArray): DenseNDArray =
   RelevanceUtils.calculateRelevanceOfArray(
-  x = x,
-  y = this.valuesNotActivated,
-  yRelevance = this.relevance,
-  contributions = cw
-)
+    x = x,
+    y = this.valuesNotActivated,
+    yRelevance = this.relevance,
+    contributions = cw
+  )

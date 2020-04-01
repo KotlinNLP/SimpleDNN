@@ -77,8 +77,8 @@ class AttentionMechanismLayer(
       "The input arrays must have the expected size (%d).".format(this.params.inputSize)
     }
 
-    if (activationFunction != null) {
-      this.outputArray.setActivation(activationFunction)
+    if (activation != null) {
+      this.outputArray.setActivation(activation)
     }
   }
 }

@@ -176,7 +176,7 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
 
       this.outputArray.calculateActivationDeriv().let { deriv ->
 
-        if (deriv.isMatrix) // e.g., Jacobian matrix
+        if (deriv.isMatrix) // e.g. the Jacobian matrix in the Softmax function
           this.outputArray.assignErrorsByDot(deriv, gY)
         else
           this.outputArray.assignErrorsByProd(deriv, gY)

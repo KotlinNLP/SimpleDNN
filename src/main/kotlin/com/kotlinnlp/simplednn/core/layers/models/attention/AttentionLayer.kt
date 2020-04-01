@@ -73,8 +73,8 @@ class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
     inputArrays = this.attentionArrays,
     inputType = inputType,
     params = params as AttentionMechanismLayerParameters,
-    activation = SoftmaxBase()).apply {
-
+    activation = SoftmaxBase()
+  ).apply {
     setParamsErrorsCollector(this@AttentionLayer.getParamsErrorsCollector())
   }
 
@@ -102,7 +102,6 @@ class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
     }
 
     this.inputArrays.first().size.let { inputSize ->
-
       this.inputArrays.forEach { require(it.size == inputSize) }
     }
   }
