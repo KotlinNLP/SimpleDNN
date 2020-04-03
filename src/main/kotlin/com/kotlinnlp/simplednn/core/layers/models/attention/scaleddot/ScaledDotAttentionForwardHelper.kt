@@ -61,13 +61,13 @@ internal class ScaledDotAttentionForwardHelper(
    */
   private fun forwardInputs() {
 
-    val i: DenseNDArray = this.layer.inputMatrix.values
-    val q: DenseNDArray = this.layer.queries.values
-    val k: DenseNDArray = this.layer.keys.values
-    val v: DenseNDArray = this.layer.values.values
+    val x: DenseNDArray = this.layer.inputMatrix.values
+    val wQ: DenseNDArray = this.layer.params.queries.values
+    val wK: DenseNDArray = this.layer.params.keys.values
+    val wV: DenseNDArray = this.layer.params.values.values
 
-    this.layer.queries.assignValues(i.dot(q))
-    this.layer.keys.assignValues(i.dot(k))
-    this.layer.values.assignValues(i.dot(v))
+    this.layer.queries.forward(x = x, w = wQ, b = null)
+    this.layer.keys.forward(x = x, w = wK, b = null)
+    this.layer.values.forward(x = x, w = wV, b = null)
   }
 }
