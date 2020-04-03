@@ -55,9 +55,9 @@ internal class ScaledDotAttentionForwardHelper(
   /**
    * Forward the input to calculate queries, keys and values.
    *
-   *   Q = I (dot) Wq
-   *   K = I (dot) Wk
-   *   V = I (dot) Wv
+   *   Q = Wq (dot) I
+   *   K = Wk (dot) I
+   *   V = Wv (dot) I
    */
   private fun forwardInputs() {
 
