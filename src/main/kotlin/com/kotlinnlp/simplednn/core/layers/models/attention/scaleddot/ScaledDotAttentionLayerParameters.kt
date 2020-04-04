@@ -50,17 +50,17 @@ class ScaledDotAttentionLayerParameters(
   /**
    * The queries trainable parameter.
    */
-  val queries = ParamsArray(dim1 = inputSize, dim2 = this.attentionSize)
+  val queries = ParamsArray(dim1 = this.attentionSize, dim2 = inputSize)
 
   /**
    * The keys trainable parameter.
    */
-  val keys = ParamsArray(dim1 = inputSize, dim2 = this.attentionSize)
+  val keys = ParamsArray(dim1 = this.attentionSize, dim2 = inputSize)
 
   /**
    * The values trainable parameter.
    */
-  val values = ParamsArray(dim1 = inputSize, dim2 = this.outputSize)
+  val values = ParamsArray(dim1 = this.outputSize, dim2 = inputSize)
 
   /**
    * The list of weights parameters.
