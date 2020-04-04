@@ -33,13 +33,13 @@ internal class ScaledDotAttentionForwardHelper(
 
     val q: DenseNDArray = this.layer.queries.values
     val k: DenseNDArray = this.layer.keys.values
-    val v: DenseNDArray = this.layer.values.values
+    val vT: DenseNDArray = this.layer.values.values.t
 
     this.layer.attention = q.dot(k.t).assignProd(this.layer.params.attentionFactor)
-    this.layer.attentionAct = this.layer.attention.getRows().map { SoftmaxBase().f(it) }
+    this.layer.attentionAct = this.layer.attention.getRows().map { SoftmaxBase().f(it).t }
 
     this.layer.outputArrays.zip(this.layer.attentionAct) { y, a ->
-      y.assignValues(a.dot(v))
+      y.assignValues(vT.dot(a))
     }
   }
 

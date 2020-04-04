@@ -32,7 +32,7 @@ internal class ScaledDotAttentionBackwardHelper(
     val outputErrors: Sequence<DenseNDArray> = this.layer.outputArrays.asSequence().map { it.errors }
 
     this.assignValuesGradients(outputErrors)
-    this.assignAttentionGradient(outputErrors)
+    this.assignAttentionGradients(outputErrors)
 
     this.assignParamsGradients()
 
@@ -59,13 +59,13 @@ internal class ScaledDotAttentionBackwardHelper(
    *
    * @param outputErrors the errors of the output arrays
    */
-  private fun assignAttentionGradient(outputErrors: Sequence<DenseNDArray>) {
+  private fun assignAttentionGradients(outputErrors: Sequence<DenseNDArray>) {
 
     val k: DenseNDArray = this.layer.keys.values
     val q: DenseNDArray = this.layer.queries.values
-    val vT: DenseNDArray = this.layer.values.values.t
+    val v: DenseNDArray = this.layer.values.values
 
-    val attentionErrors: Sequence<DenseNDArray> = outputErrors.map { it.dot(vT) }
+    val attentionErrors: Sequence<DenseNDArray> = outputErrors.map { v.dot(it) }
 
     val attentionInnerErrors: DenseNDArray = DenseNDArrayFactory.fromRows(
       this.layer.attentionAct.asSequence().zip(attentionErrors)
@@ -85,13 +85,13 @@ internal class ScaledDotAttentionBackwardHelper(
   private fun assignParamsGradients() {
 
     val x: DenseNDArray = this.layer.inputMatrix.values
-    val gQ: DenseNDArray = this.layer.params.queries.errors.values as DenseNDArray
-    val gK: DenseNDArray = this.layer.params.keys.errors.values as DenseNDArray
-    val gV: DenseNDArray = this.layer.params.values.errors.values as DenseNDArray
+    val gQ: DenseNDArray = this.layer.queries.errors
+    val gK: DenseNDArray = this.layer.keys.errors
+    val gV: DenseNDArray = this.layer.values.errors
 
-    this.layer.queries.assignErrorsByDot(gQ, x)
-    this.layer.keys.assignErrorsByDot(gK, x)
-    this.layer.values.assignErrorsByDot(gV, x)
+    this.layer.params.queries.errors.values.assignDot(gQ.t, x)
+    this.layer.params.keys.errors.values.assignDot(gK.t, x)
+    this.layer.params.values.errors.values.assignDot(gV.t, x)
   }
 
   /**
