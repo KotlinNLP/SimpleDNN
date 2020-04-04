@@ -17,7 +17,7 @@ import kotlin.test.assertTrue
 /**
  *
  */
-class ScaledDotAttentionLayerStructureSpec : Spek({
+class ScaledDotAttentionLayerSpec : Spek({
 
   describe("a ScaledDotAttentionLayer") {
 
@@ -98,6 +98,76 @@ class ScaledDotAttentionLayerStructureSpec : Spek({
             doubleArrayOf(0.236194, 0.28672, 0.21373)
           )).equals(
             DenseNDArrayFactory.fromRows(layer.outputArrays.map { it.values }),
+            tolerance = 1.0e-06)
+        }
+      }
+    }
+
+    context("backward") {
+
+      val inputSequence = ScaledDotAttentionLayerUtils.buildInputSequence()
+      val layer = ScaledDotAttentionLayer(
+        inputArrays = inputSequence,
+        params = ScaledDotAttentionLayerUtils.buildAttentionParams()
+      )
+
+      layer.forward()
+
+      layer.outputArrays.zip(ScaledDotAttentionLayerUtils.buildOutputErrors()).forEach { (array, errors) ->
+        array.assignErrors(errors)
+      }
+      layer.backward(propagateToInput = true)
+
+      it("should match the expected errors of the queries") {
+        assertTrue {
+          DenseNDArrayFactory.arrayOf(listOf(
+            doubleArrayOf(0.174483, 0.041656),
+            doubleArrayOf(-0.180767, -0.052399),
+            doubleArrayOf(-0.214206, -0.057895)
+          )).equals(layer.queries.errors, tolerance = 1.0e-06)
+        }
+      }
+
+      it("should match the expected errors of the keys") {
+        assertTrue {
+          DenseNDArrayFactory.arrayOf(listOf(
+            doubleArrayOf(0.059608, 0.009763),
+            doubleArrayOf(-0.037046, -0.006843),
+            doubleArrayOf(-0.055119, -0.009594)
+          )).equals(layer.keys.errors, tolerance = 1.0e-06)
+        }
+      }
+
+      it("should match the expected errors of the values") {
+        assertTrue {
+          DenseNDArrayFactory.arrayOf(listOf(
+            doubleArrayOf(-0.005669, -0.131906, -0.12656),
+            doubleArrayOf(-0.619443, -0.593181, -0.594279),
+            doubleArrayOf(-0.358144, -0.281670, -0.284987)
+          )).equals(layer.values.errors, tolerance = 1.0e-06)
+        }
+      }
+
+      it("should match the expected errors of the first input") {
+        assertTrue {
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.200684, 0.231562, 0.069854, -0.098474)).equals(
+            layer.inputArrays[0].errors,
+            tolerance = 1.0e-06)
+        }
+      }
+
+      it("should match the expected errors of the second input") {
+        assertTrue {
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(0.096308, -0.063101, -0.372903, -0.800489)).equals(
+            layer.inputArrays[1].errors,
+            tolerance = 1.0e-06)
+        }
+      }
+
+      it("should match the expected errors of the third input") {
+        assertTrue {
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.049071, -0.162354, -0.259447, -0.421338)).equals(
+            layer.inputArrays[2].errors,
             tolerance = 1.0e-06)
         }
       }

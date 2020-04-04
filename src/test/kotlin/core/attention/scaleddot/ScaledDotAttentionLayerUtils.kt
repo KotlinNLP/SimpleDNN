@@ -51,4 +51,13 @@ object ScaledDotAttentionLayerUtils {
     AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.5, 0.7, -0.7, 0.8))),
     AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, -0.5, 0.0, 0.2)))
   )
+
+  /**
+   *
+   */
+  fun buildOutputErrors(): List<DenseNDArray> = listOf(
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.7)),
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.5, -0.5)),
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.6, -0.5, 0.2))
+  )
 }
