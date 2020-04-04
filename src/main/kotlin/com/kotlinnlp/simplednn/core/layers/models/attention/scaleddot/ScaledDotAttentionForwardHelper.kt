@@ -66,8 +66,8 @@ internal class ScaledDotAttentionForwardHelper(
     val wK: DenseNDArray = this.layer.params.keys.values
     val wV: DenseNDArray = this.layer.params.values.values
 
-    this.layer.queries.forward(x = x, w = wQ, b = null)
-    this.layer.keys.forward(x = x, w = wK, b = null)
-    this.layer.values.forward(x = x, w = wV, b = null)
+    this.layer.queries.assignValues(x.dot(wQ.t))
+    this.layer.keys.assignValues(x.dot(wK.t))
+    this.layer.values.assignValues(x.dot(wV.t))
   }
 }
