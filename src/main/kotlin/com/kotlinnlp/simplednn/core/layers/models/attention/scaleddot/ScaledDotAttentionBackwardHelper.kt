@@ -51,7 +51,7 @@ internal class ScaledDotAttentionBackwardHelper(
     val outputErrorsMatrix: DenseNDArray = DenseNDArrayFactory.fromRows(outputErrors.toList())
     val attentionActMatrixT: DenseNDArray = DenseNDArrayFactory.fromColumns(this.layer.attentionAct)
 
-    this.layer.values.assignErrorsByDot(outputErrorsMatrix, attentionActMatrixT)
+    this.layer.values.assignErrorsByDot(attentionActMatrixT, outputErrorsMatrix)
   }
 
   /**
@@ -76,7 +76,7 @@ internal class ScaledDotAttentionBackwardHelper(
     attentionInnerErrors.assignProd(this.layer.params.attentionFactor)
 
     this.layer.queries.assignErrorsByDot(attentionInnerErrors, k)
-    this.layer.keys.assignErrorsByDot(attentionInnerErrors, q)
+    this.layer.keys.assignErrorsByDot(attentionInnerErrors.t, q)
   }
 
   /**
