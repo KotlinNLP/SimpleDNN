@@ -25,7 +25,7 @@ object ScaledDotAttentionLayerUtils {
     ScaledDotAttentionLayerParameters(
       inputSize = 4,
       attentionSize = 2,
-      outputSize = 3,
+      outputSize = 4,
       weightsInitializer = initializer
     ).apply {
       queries.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
@@ -39,7 +39,8 @@ object ScaledDotAttentionLayerUtils {
       values.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.9, 0.8, 0.5, 0.3),
         doubleArrayOf(-0.6, -0.2, 0.4, 0.4),
-        doubleArrayOf(-0.6, -0.7, -0.4, 0.6)
+        doubleArrayOf(-0.6, -0.7, -0.4, 0.6),
+        doubleArrayOf(0.8, -0.8, 0.8, -0.7)
       )))
     }
 
@@ -56,8 +57,8 @@ object ScaledDotAttentionLayerUtils {
    *
    */
   fun buildOutputErrors(): List<DenseNDArray> = listOf(
-    DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.7)),
-    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.5, -0.5)),
-    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.6, -0.5, 0.2))
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.7, -0.5)),
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.5, -0.5, 0.1)),
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.6, -0.5, 0.2, -0.9))
   )
 }
