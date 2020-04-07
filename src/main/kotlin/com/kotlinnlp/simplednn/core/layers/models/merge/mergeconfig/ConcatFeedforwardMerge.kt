@@ -22,7 +22,7 @@ class ConcatFeedforwardMerge(
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
 ) : OpenOutputMerge(
-  type = LayerType.Connection.Concat,
+  type = LayerType.Connection.ConcatFeedforward,
   dropout = dropout,
   outputSize = outputSize,
   activationFunction = activationFunction

@@ -31,6 +31,8 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerPa
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayer
+import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayer
+import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.product.ProductLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.product.ProductLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.sub.SubLayer
@@ -210,6 +212,14 @@ object LayerFactory {
       inputType = inputType,
       outputArray = AugmentedArray.zeros(outputSize),
       params = params as ConcatLayerParameters)
+
+    LayerType.Connection.ConcatFeedforward -> ConcatFFLayer(
+      inputArrays = inputArrays,
+      inputType = inputType,
+      outputArray = AugmentedArray.zeros(outputSize),
+      params = params as ConcatFFLayerParameters,
+      activationFunction = activationFunction,
+      dropout = dropout)
 
     LayerType.Connection.Sum -> SumLayer(
       inputArrays = inputArrays,

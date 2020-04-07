@@ -22,6 +22,7 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.affine.AffineLayerParame
 import com.kotlinnlp.simplednn.core.layers.models.merge.avg.AvgLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.product.ProductLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.sub.SubLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayerParameters
@@ -107,6 +108,12 @@ object LayerParametersFactory {
 
       ConcatLayerParameters(inputsSize = inputsSize)
     }
+
+    LayerType.Connection.ConcatFeedforward -> ConcatFFLayerParameters(
+      inputsSize = inputsSize,
+      outputSize = outputSize!!,
+      weightsInitializer = weightsInitializer,
+      biasesInitializer = biasesInitializer)
 
     LayerType.Connection.Sum -> {
 

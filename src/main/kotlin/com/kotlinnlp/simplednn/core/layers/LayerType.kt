@@ -31,6 +31,7 @@ sealed class LayerType {
     Affine(property = Property.Merge),
     Biaffine(property = Property.Merge),
     Concat(property = Property.Merge),
+    ConcatFeedforward(property = Property.Merge),
     Sum(property = Property.Merge),
     Sub(property = Property.Merge),
     Avg(property = Property.Merge),
