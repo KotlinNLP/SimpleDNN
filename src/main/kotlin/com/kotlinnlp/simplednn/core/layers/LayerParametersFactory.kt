@@ -102,7 +102,7 @@ object LayerParametersFactory {
     LayerType.Connection.Concat -> {
 
       require(outputSize == null || outputSize == inputsSize.sum()) {
-        "The Concat merge layer requires that the output size must double the input size."
+        "The Concat merge layer requires that the output size must be equal to the sum of the the inputs sizes."
       }
 
       ConcatLayerParameters(inputsSize = inputsSize)
