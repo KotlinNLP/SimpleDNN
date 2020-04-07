@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.concat
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.utils.SplitVHelper
 
 /**
  * The helper which executes the backward on a [ConcatLayer].
@@ -22,9 +21,9 @@ internal class ConcatBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType>(layer) {
 
   /**
-   * The backward helper to split the output errors.
+   * The errors split sizes.
    */
-  private val errorsSplitter = SplitVHelper(*this.layer.params.inputsSize.toIntArray())
+  private val errorsSplitSizes = this.layer.params.inputsSize.toIntArray()
 
   /**
    * Executes the backward calculating the errors of the parameters and eventually of the input through the SGD
@@ -46,7 +45,7 @@ internal class ConcatBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
 
     val gy: DenseNDArray = this.layer.outputArray.errors
 
-    this.layer.inputArrays.zip(this.errorsSplitter.split(gy)).forEach { (x, gradients) ->
+    this.layer.inputArrays.zip(gy.splitV(*this.errorsSplitSizes)).forEach { (x, gradients) ->
       x.assignErrors(gradients)
     }
   }
