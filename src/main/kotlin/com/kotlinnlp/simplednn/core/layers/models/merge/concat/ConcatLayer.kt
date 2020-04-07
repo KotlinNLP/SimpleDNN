@@ -19,6 +19,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property inputArrays the input arrays of the layer
  * @property inputType the input array type (default Dense)
+ * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
  * @property id an identification number useful to track a specific [ConcatLayer]
  */

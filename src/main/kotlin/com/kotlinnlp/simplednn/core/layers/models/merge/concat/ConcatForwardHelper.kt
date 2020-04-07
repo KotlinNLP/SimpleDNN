@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers.models.merge.concat
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.simplemath.concatVectorsV
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -29,7 +28,7 @@ internal class ConcatForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
   override fun forward() {
 
     this.layer.outputArray.assignValues(
-      concatVectorsV(*this.layer.inputArrays.map { it.values as DenseNDArray }.toTypedArray())
+      concatVectorsV(this.layer.inputArrays.map { it.values as DenseNDArray })
     )
   }
 }
