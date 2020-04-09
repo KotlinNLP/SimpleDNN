@@ -166,7 +166,7 @@ class BERT(
    * @return the input errors
    */
   override fun getInputErrors(copy: Boolean): List<DenseNDArray> =
-    this.inputSequence.map { it.errors }
+    this.inputSequence.map { if (copy) it.errors.copy() else it.errors }
 
   /**
    * Set the input sequence combining it with the positional encoding.
