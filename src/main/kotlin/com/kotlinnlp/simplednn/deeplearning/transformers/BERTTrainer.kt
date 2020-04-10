@@ -18,6 +18,7 @@ import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.Feedforward
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.helpers.Trainer
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.utils.DictionarySet
@@ -64,6 +65,15 @@ class BERTTrainer(
 ) {
 
   /**
+   * The encoded term of an example.
+   *
+   * @property form the term form
+   * @property vector the term encoding
+   * @property dropped whether this term has been dropped in input
+   */
+  private data class EncodedTerm(val form: String, val vector: DenseNDArray, val dropped: Boolean)
+
+  /**
    * A Bidirectional Encoder Representations from Transformers.
    */
   private val bert = BERT(this.model)
@@ -80,6 +90,11 @@ class BERTTrainer(
     activationFunction = Softmax())
 
   /**
+   * The errors given when a term has not been dropped.
+   */
+  private val zeroErrors: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.model.inputSize))
+
+  /**
    * Learn from an example (forward + backward).
    *
    * @param example an example to train the model with
@@ -87,12 +102,15 @@ class BERTTrainer(
   override fun learnFromExample(example: String) {
 
     val forms: List<String> = this.tokenizer.tokenize(example).flattenTokens().map { it.form }
-    val encodings: List<DenseNDArray> = this.encodeExample(forms)
+    val encodedTerms: List<EncodedTerm> = this.encodeExample(forms)
 
-    this.bert.forward(encodings)
+    this.bert.forward(encodedTerms.map { it.vector })
 
-    val encodingErrors: List<DenseNDArray> = encodings.zip(forms).map { (vector, form) ->
-      this.classifyVector(vector = vector, goldIndex = this.getId(form))
+    val encodingErrors: List<DenseNDArray> = encodedTerms.map {
+      if (it.dropped)
+        this.classifyVector(vector = it.vector, goldIndex = this.getId(it.form))
+      else
+        this.zeroErrors
     }
 
     this.bert.backward(encodingErrors)
@@ -115,10 +133,14 @@ class BERTTrainer(
   /**
    * @param forms the forms that compose an example
    *
-   * @return the encodings of the given forms
+   * @return the encoded terms
    */
-  private fun encodeExample(forms: List<String>): List<DenseNDArray> = forms.map {
-    this.embeddingsMap.get(key = it, dropout = this.termsDropout).values
+  private fun encodeExample(forms: List<String>): List<EncodedTerm> = forms.map { form ->
+
+    val embedding = this.embeddingsMap.get(key = form, dropout = this.termsDropout)
+    val dropped: Boolean = this.embeddingsMap.contains(form) && embedding == this.embeddingsMap.unknownEmbedding
+
+    EncodedTerm(form = form, vector = embedding.values, dropped = dropped)
   }
 
   /**
