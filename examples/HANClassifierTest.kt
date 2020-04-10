@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
-import com.kotlinnlp.utils.ExamplesIndices
+import com.kotlinnlp.utils.ShuffledIndices
 import com.kotlinnlp.utils.Shuffler
 import utils.Corpus
 import utils.SimpleExample
@@ -142,7 +142,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
 
     this.startTiming()
 
-    for (exampleIndex in ExamplesIndices(size = trainingSet.size, shuffler = shuffler)) {
+    for (exampleIndex in ShuffledIndices(size = trainingSet.size, shuffler = shuffler)) {
 
       progress.tick()
 
@@ -169,7 +169,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
     var correctPredictions = 0
 
     val progress = ProgressIndicatorBar(validationSet.size)
-    val exampleIndices = ExamplesIndices(
+    val exampleIndices = ShuffledIndices(
       size = validationSet.size,
       shuffler = Shuffler(enablePseudoRandom = true, seed = 1)
     )

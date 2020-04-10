@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayer
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.utils.ExamplesIndices
+import com.kotlinnlp.utils.ShuffledIndices
 import com.kotlinnlp.utils.Shuffler
 import java.io.File
 
@@ -163,7 +163,7 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
    */
   private fun loopExamples(examples: List<Example>, callback: (example: Example) -> Unit) {
 
-    for (exampleIndex in ExamplesIndices(examples.size, shuffler = this.shuffler)) {
+    for (exampleIndex in ShuffledIndices(examples.size, shuffler = this.shuffler)) {
       callback(examples[exampleIndex])
     }
   }
