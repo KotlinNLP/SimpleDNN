@@ -14,6 +14,9 @@ import com.kotlinnlp.simplednn.core.layers.models.attention.scaleddot.ScaledDotA
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayerParameters
+import com.kotlinnlp.utils.Serializer
+import java.io.InputStream
+import java.io.OutputStream
 import java.io.Serializable
 
 /**
@@ -38,10 +41,19 @@ class BERTParameters(
   companion object {
 
     /**
-     * Private val used to serialize the class (needed by Serializable).
+     * Private val used to serialize the class (needed from Serializable).
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
+
+    /**
+     * Read [BERTParameters] (serialized) from an input stream and decode it.
+     *
+     * @param inputStream the [InputStream] from which to read the serialized [BERTParameters]
+     *
+     * @return the [BERTParameters] read from [inputStream] and decoded
+     */
+    fun load(inputStream: InputStream): BERTParameters = Serializer.deserialize(inputStream)
   }
 
   /**
@@ -85,4 +97,11 @@ class BERTParameters(
    * The scalar parameter used to normalize the merged vectors.
    */
   val normScalar: Double get() = this.normScalarParam.values[0]
+
+  /**
+   * Serialize this [BERTParameters] and write it to an output stream.
+   *
+   * @param outputStream the [OutputStream] in which to write this serialized [BERTParameters]
+   */
+  fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
 }
