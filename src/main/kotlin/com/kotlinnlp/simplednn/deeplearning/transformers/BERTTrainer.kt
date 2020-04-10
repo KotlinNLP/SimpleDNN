@@ -7,6 +7,8 @@
 
 package com.kotlinnlp.simplednn.deeplearning.transformers
 
+import com.kotlinnlp.linguisticdescription.sentence.flattenTokens
+import com.kotlinnlp.neuraltokenizer.NeuralTokenizer
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
@@ -28,6 +30,7 @@ import java.io.FileOutputStream
  *
  * @param model the parameters of the model of the network
  * @param modelFilename the name of the file in which to save the serialized model
+ * @param tokenizer a neural tokenizer
  * @param embeddingsMap pre-trained word embeddings
  * @param dictionary a dictionary set with all the forms in the examples
  * @param termsDropout the probability to dropout an input token
@@ -41,16 +44,17 @@ import java.io.FileOutputStream
 class BERTTrainer(
   private val model: BERTParameters,
   modelFilename: String,
+  private val tokenizer: NeuralTokenizer,
   private val embeddingsMap: EmbeddingsMap<String>,
   private val dictionary: DictionarySet<String>,
   private val termsDropout: Double = 0.15,
   updateMethod: UpdateMethod<*>,
-  examples: List<List<String>>,
+  examples: List<String>,
   epochs: Int,
   evaluator: BERTEvaluator? = null,
   shuffler: Shuffler = Shuffler(),
   verbose: Boolean = true
-) : Trainer<List<String>>(
+) : Trainer<String>(
   modelFilename = modelFilename,
   optimizers = listOf(ParamsOptimizer(updateMethod)),
   examples = examples,
@@ -82,13 +86,14 @@ class BERTTrainer(
    *
    * @param example an example to train the model with
    */
-  override fun learnFromExample(example: List<String>) {
+  override fun learnFromExample(example: String) {
 
-    val encodings: List<DenseNDArray> = this.encodeExample(example)
+    val forms: List<String> = this.tokenizer.tokenize(example).flattenTokens().map { it.form }
+    val encodings: List<DenseNDArray> = this.encodeExample(forms)
 
     this.bert.forward(encodings)
 
-    val encodingErrors: List<DenseNDArray> = encodings.zip(example).map { (vector, form) ->
+    val encodingErrors: List<DenseNDArray> = encodings.zip(forms).map { (vector, form) ->
       this.classifyVector(vector = vector, goldIndex = this.getId(form))
     }
 
