@@ -109,7 +109,7 @@ class BERTTrainer(
    * Dump the model to file.
    */
   override fun dumpModel() {
-    this.model.dump(FileOutputStream(File(modelFilename)))
+    this.model.dump(FileOutputStream(File(this.modelFilename)))
   }
 
   /**
@@ -134,9 +134,8 @@ class BERTTrainer(
     this.classificationLayer.setInput(vector)
     this.classificationLayer.forward()
 
-    val goldOutput: DenseNDArray = DenseNDArrayFactory.oneHotEncoder(
-      length = this.classificationLayer.outputArray.size,
-      oneAt = goldIndex)
+    val goldOutput: DenseNDArray =
+      DenseNDArrayFactory.oneHotEncoder(length = this.classificationLayer.outputArray.size, oneAt = goldIndex)
     val errors: DenseNDArray = this.classificationLayer.outputArray.values.sub(goldOutput)
 
     this.classificationLayer.setErrors(errors)
