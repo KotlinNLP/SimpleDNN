@@ -28,7 +28,6 @@ import kotlin.math.sin
  * A Bidirectional Encoder Representations from Transformers.
  *
  * @property model the parameters of the model of the network
- * @property inputType the type of the input arrays
  * @property dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.5 (better 0.25 if
  *                   it's the first layer).
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
@@ -36,7 +35,6 @@ import kotlin.math.sin
  */
 class BERT(
   val model: BERTParameters,
-  val inputType: LayerType.Input,
   val dropout: Double = 0.0,
   override val propagateToInput: Boolean = false,
   override val id: Int
