@@ -37,7 +37,7 @@ class BERT(
   val model: BERTParameters,
   val dropout: Double = 0.0,
   override val propagateToInput: Boolean = false,
-  override val id: Int
+  override val id: Int = 0
 ) : NeuralProcessor<
   List<DenseNDArray>, // InputType
   List<DenseNDArray>, // OutputType
