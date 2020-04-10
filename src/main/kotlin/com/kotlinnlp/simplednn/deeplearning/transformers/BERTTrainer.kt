@@ -69,7 +69,7 @@ class BERTTrainer(
   private val bert = BERT(this.model)
 
   /**
-   * A feed-forward layer trained to reproduce the input vectors.
+   * A feed-forward layer trained to classify an encoded vector within the terms of the dictionary.
    * It is used only during the training phase.
    */
   private val classificationLayer = FeedforwardLayer<DenseNDArray>(
