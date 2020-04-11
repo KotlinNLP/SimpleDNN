@@ -16,7 +16,7 @@ import com.kotlinnlp.utils.progressindicator.ProgressIndicatorBar
  * @param verbose whether to print info about the validation progress (default = true)
  */
 abstract class Evaluator<ExampleType : Any, StatsType: Statistics>(
-  internal val examples: List<ExampleType>,
+  internal val examples: Iterable<ExampleType>,
   private val verbose: Boolean = true
 ) {
 
@@ -32,7 +32,8 @@ abstract class Evaluator<ExampleType : Any, StatsType: Statistics>(
    */
   open fun evaluate(): StatsType {
 
-    val progress = ProgressIndicatorBar(this.examples.size)
+    val progress: ProgressIndicatorBar? =
+      if (this.examples is Collection<*>) ProgressIndicatorBar(this.examples.size) else null
 
     this.stats.reset()
 
@@ -40,7 +41,7 @@ abstract class Evaluator<ExampleType : Any, StatsType: Statistics>(
 
       this.evaluate(it)
 
-      if (this.verbose) progress.tick()
+      if (this.verbose) progress?.tick()
     }
 
     return this.stats
