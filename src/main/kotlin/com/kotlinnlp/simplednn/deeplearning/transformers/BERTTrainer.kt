@@ -174,5 +174,5 @@ class BERTTrainer(
    * @return a unique ID of the given form, considering all the unknown terms equal to each other
    */
   private fun getId(form: String): Int =
-    this.dictionary.getId(form) ?: this.dictionary.size + 1
+    this.dictionary.getId(form) ?: this.dictionary.size
 }
