@@ -82,9 +82,9 @@ class BERTTrainer(
    * A feed-forward layer trained to classify an encoded vector within the terms of the dictionary.
    * It is used only during the training phase.
    */
-  private val classificationLayer = FeedforwardLayer<DenseNDArray>(
-    inputArray = AugmentedArray(size = this.model.inputSize),
-    outputArray = AugmentedArray(size = this.dictionary.size + 1), // dictionary size + unknown
+  private val classificationLayer: FeedforwardLayer<DenseNDArray> = FeedforwardLayer(
+    inputArray = AugmentedArray.zeros(size = this.model.inputSize),
+    outputArray = AugmentedArray.zeros(size = this.dictionary.size + 1), // dictionary size + unknown
     params = FeedforwardLayerParameters(inputSize = this.model.inputSize, outputSize = this.dictionary.size + 1),
     inputType = LayerType.Input.Dense,
     activationFunction = Softmax())
@@ -157,7 +157,7 @@ class BERTTrainer(
     this.classificationLayer.forward()
 
     val goldOutput: DenseNDArray =
-      DenseNDArrayFactory.oneHotEncoder(length = this.classificationLayer.outputArray.size, oneAt = goldIndex)
+      DenseNDArrayFactory.oneHotEncoder(length = this.classificationLayer.params.outputSize, oneAt = goldIndex)
     val errors: DenseNDArray = this.classificationLayer.outputArray.values.sub(goldOutput)
 
     this.classificationLayer.setErrors(errors)
