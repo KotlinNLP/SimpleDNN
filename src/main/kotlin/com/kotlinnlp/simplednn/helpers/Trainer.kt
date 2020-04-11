@@ -20,19 +20,36 @@ import com.kotlinnlp.utils.*
  * @param epochs the number of training epochs
  * @param batchSize the size of each batch (default 1)
  * @param evaluator the helper for the evaluation (default null)
- * @param shuffler used to shuffle the examples before each epoch (with pseudo random by default)
+ * @param shuffler shuffle the examples before each epoch, converting the sequence to a list
  * @param verbose whether to print info about the training progress and timing (default = true)
  */
 abstract class Trainer<ExampleType : Any>(
   protected val modelFilename: String,
   protected val optimizers: List<ParamsOptimizer>,
-  private val examples: List<ExampleType>,
+  private val examples: Iterable<ExampleType>,
   private val epochs: Int,
   protected val batchSize: Int = 1,
   private val evaluator: Evaluator<ExampleType, *>? = null,
-  private val shuffler: Shuffler = Shuffler(),
+  private val shuffler: Shuffler? = Shuffler(),
   protected val verbose: Boolean = true
 ) {
+
+  /**
+   * An iterator of shuffled examples.
+   *
+   * @param examples the examples list
+   */
+  private inner class ShuffledExamplesIterator(private val examples: List<ExampleType>) : Iterator<ExampleType> {
+
+    /**
+     * The iterator of shuffled examples indices.
+     */
+    private val indicesIterator = ShuffledIndices(this.examples.size, shuffler = shuffler!!).iterator()
+
+    override fun next(): ExampleType = this.examples[indicesIterator.next()]
+
+    override fun hasNext(): Boolean = indicesIterator.hasNext()
+  }
 
   /**
    * Counter of values used during the training (accuracy, loss, etc..).
@@ -100,20 +117,31 @@ abstract class Trainer<ExampleType : Any>(
    */
   protected open fun trainEpoch() {
 
-    val progress = ProgressIndicatorBar(this.examples.size)
+    val examplesIterator: Iterator<ExampleType> = this.buildExamplesIterator()
+    val progress: ProgressIndicatorBar? =
+      if (this.examples is Collection<*>) ProgressIndicatorBar(this.examples.size) else null
 
-    for (exampleIndex in ExamplesIndices(this.examples.size, shuffler = this.shuffler)) {
+    while (examplesIterator.hasNext()) {
 
-      if (this.verbose) progress.tick()
+      if (this.verbose) progress?.tick()
 
       if (this.counter.exampleCount % this.batchSize == 0) // A new batch starts
         this.newBatch()
 
       this.newExample() // !! must be called after newBatch() !!
 
-      this.trainExample(example = this.examples[exampleIndex])
+      this.trainExample(examplesIterator.next())
     }
   }
+
+  /**
+   * @return an iterator of examples
+   */
+  private fun buildExamplesIterator(): Iterator<ExampleType> =
+    if (this.shuffler != null)
+      ShuffledExamplesIterator(if (this.examples is List<ExampleType>) this.examples else this.examples.toList())
+    else
+      this.examples.iterator()
 
   /**
    * Train the neural model with a given example and accumulate the errors into the [optimizers].
@@ -220,9 +248,14 @@ abstract class Trainer<ExampleType : Any>(
 
     if (this.verbose) {
 
+      val evaluationExamples: Iterable<ExampleType> = this.evaluator!!.examples
+
       this.timer.reset()
 
-      println("\nValidate on ${this.evaluator!!.examples.size} examples...")
+      if (evaluationExamples is Collection<*>)
+        println("\nValidate on ${evaluationExamples.size} examples...")
+      else
+        println("\nValidate model...")
     }
   }
 

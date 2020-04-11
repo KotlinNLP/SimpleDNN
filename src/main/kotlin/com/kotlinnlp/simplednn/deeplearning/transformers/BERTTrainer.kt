@@ -38,7 +38,7 @@ import java.io.FileOutputStream
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  * @param examples the training examples
  * @param epochs the number of training epochs
- * @param shuffler used to shuffle the examples before each epoch (with pseudo random by default)
+ * @param shuffler shuffle the examples before each epoch, converting the sequence to a list
  * @param verbose whether to print info about the training progress and timing (default = true)
  */
 class BERTTrainer(
@@ -49,9 +49,9 @@ class BERTTrainer(
   private val dictionary: DictionarySet<String>,
   private val termsDropout: Double = 0.15,
   updateMethod: UpdateMethod<*>,
-  examples: List<String>,
+  examples: Iterable<String>,
   epochs: Int,
-  shuffler: Shuffler = Shuffler(),
+  shuffler: Shuffler? = Shuffler(),
   verbose: Boolean = true
 ) : Trainer<String>(
   modelFilename = modelFilename,
