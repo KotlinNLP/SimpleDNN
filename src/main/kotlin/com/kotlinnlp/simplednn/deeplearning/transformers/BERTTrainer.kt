@@ -12,17 +12,20 @@ import com.kotlinnlp.neuraltokenizer.NeuralTokenizer
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
+import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
+import com.kotlinnlp.simplednn.helpers.Statistics
 import com.kotlinnlp.simplednn.helpers.Trainer
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.utils.DictionarySet
 import com.kotlinnlp.utils.Shuffler
+import com.kotlinnlp.utils.Timer
 import java.io.File
 import java.io.FileOutputStream
 
@@ -95,6 +98,31 @@ class BERTTrainer(
   private val zeroErrors: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.model.inputSize))
 
   /**
+   * The index of the unknown term in the classification.
+   */
+  private val unknownIndex: Int = this.dictionary.size
+
+  /**
+   * The classification stats.
+   */
+  private val stats = Statistics.Simple()
+
+  /**
+   * The losses of the last classifications made.
+   */
+  private val lastLosses: MutableList<Double> = mutableListOf()
+
+  /**
+   * The examples iteration counter.
+   */
+  private var examplesCount = 0
+
+  /**
+   * A timer to track the elapsed time.
+   */
+  private val timer = Timer()
+
+  /**
    * Learn from an example (forward + backward).
    *
    * @param example an example to train the model with
@@ -114,6 +142,28 @@ class BERTTrainer(
     }
 
     this.bert.backward(encodingErrors)
+
+    if (this.verbose) this.printProgressAndStats()
+  }
+
+  /**
+   * Print progress and stats.
+   */
+  private fun printProgressAndStats() {
+
+    this.examplesCount++
+
+    if (this.examplesCount % 100 == 0)
+      print(".")
+
+    if (this.examplesCount % 1000 == 0) {
+
+      val lossStr = "loss %.2f".format(this.lastLosses.average())
+      println("\n[${this.timer.formatElapsedTime()}] After $examplesCount examples: $lossStr | ${this.stats.metric}")
+
+      this.lastLosses.clear()
+      this.stats.reset()
+    }
   }
 
   /**
@@ -156,9 +206,12 @@ class BERTTrainer(
     this.classificationLayer.setInput(vector)
     this.classificationLayer.forward()
 
+    val classification: DenseNDArray = this.classificationLayer.outputArray.values
     val goldOutput: DenseNDArray =
       DenseNDArrayFactory.oneHotEncoder(length = this.classificationLayer.params.outputSize, oneAt = goldIndex)
-    val errors: DenseNDArray = this.classificationLayer.outputArray.values.sub(goldOutput)
+    val errors: DenseNDArray = classification.sub(goldOutput)
+
+    this.updateStats(classification = classification, goldOutput = goldOutput)
 
     this.classificationLayer.setErrors(errors)
     this.classificationLayer.backward(propagateToInput = true)
@@ -169,10 +222,31 @@ class BERTTrainer(
   }
 
   /**
+   * Update the classification stats.
+   *
+   * @param classification the last classification made
+   * @param goldOutput the expected classification
+   */
+  private fun updateStats(classification: DenseNDArray, goldOutput: DenseNDArray) {
+
+    val predictedIndex: Int = classification.argMaxIndex()
+    val goldIndex: Int = goldOutput.argMaxIndex()
+
+    this.lastLosses.add(
+      SoftmaxCrossEntropyCalculator().calculateLoss(output = classification, outputGold = goldOutput).sum())
+
+    when (predictedIndex) {
+      goldIndex -> if (goldIndex != this.unknownIndex) this.stats.metric.truePos++
+      this.unknownIndex -> this.stats.metric.falseNeg
+      else -> this.stats.metric.falsePos++
+    }
+  }
+
+  /**
    * @param form a form found in the examples
    *
    * @return a unique ID of the given form, considering all the unknown terms equal to each other
    */
   private fun getId(form: String): Int =
-    this.dictionary.getId(form) ?: this.dictionary.size
+    this.dictionary.getId(form) ?: this.unknownIndex
 }
