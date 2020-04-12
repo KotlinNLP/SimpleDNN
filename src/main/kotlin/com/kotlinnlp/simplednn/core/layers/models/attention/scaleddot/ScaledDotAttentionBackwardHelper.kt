@@ -51,7 +51,10 @@ internal class ScaledDotAttentionBackwardHelper(
     val outputErrorsMatrix: DenseNDArray = DenseNDArrayFactory.fromRows(outputErrors.toList())
     val attentionActMatrixT: DenseNDArray = DenseNDArrayFactory.fromColumns(this.layer.attentionAct)
 
-    this.layer.values.assignErrorsByDot(attentionActMatrixT, outputErrorsMatrix)
+    this.layer.dropoutMaskFull?.let {
+      this.layer.values.assignErrors(attentionActMatrixT.dotLeftMasked(outputErrorsMatrix, mask = it))
+    } ?: this.layer.values.assignErrorsByDot(attentionActMatrixT, outputErrorsMatrix)
+
   }
 
   /**
@@ -69,7 +72,11 @@ internal class ScaledDotAttentionBackwardHelper(
 
     val attentionInnerErrors: DenseNDArray = DenseNDArrayFactory.fromRows(
       this.layer.attentionAct.asSequence().zip(attentionErrors)
-        .map { (attention, errors) -> SoftmaxBase().dfOptimized(attention).dot(errors) }
+        .mapIndexed { i, (attention, errors) ->
+          this.layer.dropoutMasks?.let {
+            SoftmaxBase().dfOptimized(attention).dotRightMasked(errors, mask = it[i])
+          } ?: SoftmaxBase().dfOptimized(attention).dot(errors)
+        }
         .toList()
     )
 

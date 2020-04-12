@@ -38,8 +38,10 @@ internal class ScaledDotAttentionForwardHelper(
     this.layer.attention = q.dot(k.t).assignProd(this.layer.params.attentionFactor)
     this.layer.attentionAct = this.layer.attention.getRows().map { SoftmaxBase().f(it).t }
 
-    this.layer.outputArrays.zip(this.layer.attentionAct) { y, a ->
-      y.assignValues(vT.dot(a))
+    this.layer.outputArrays.zip(this.layer.attentionAct).forEachIndexed { i, (y, a) ->
+      this.layer.dropoutMasks?.let {
+        y.assignValues(vT.dotRightMasked(a, mask = it[i]))
+      } ?: y.assignValues(vT.dot(a))
     }
   }
 

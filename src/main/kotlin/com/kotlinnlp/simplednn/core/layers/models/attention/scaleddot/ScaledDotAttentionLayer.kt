@@ -11,20 +11,27 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.Layer
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
+import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.utils.ItemsPool
+import java.lang.Math.random
 
 /**
  * The Scaled-Dot Attention Layer structure.
  *
  * @property inputArrays the input arrays of the layer
  * @property params the parameters which connect the input to the output
+ * @property dropout the probability of attention dropout (default 0.0)
+ * @param inputDropout the probability of input dropout (default 0.0)
+ * @param attentionDropout the probability of attention dropout (default 0.0)
  * @property id an identification number useful to track a specific layer (default: 0)
  */
 class ScaledDotAttentionLayer(
   val inputArrays: List<AugmentedArray<DenseNDArray>>,
   override val params: ScaledDotAttentionLayerParameters,
+  inputDropout: Double = 0.0,
+  private val attentionDropout: Double = 0.0,
   override val id: Int = 0
 ) : ItemsPool.IDItem,
   Layer<DenseNDArray>(
@@ -33,7 +40,7 @@ class ScaledDotAttentionLayer(
     outputArray = AugmentedArray(inputArrays.size),
     params = params,
     activationFunction = null,
-    dropout = 0.0
+    dropout = inputDropout
   ) {
 
   /**
@@ -66,6 +73,22 @@ class ScaledDotAttentionLayer(
    */
   internal val values: AugmentedArray<DenseNDArray> =
     AugmentedArray(size = this.inputArrays.size * this.params.outputSize)
+
+  /**
+   * The dropout masks of the activated attention column arrays.
+   */
+  internal var dropoutMasks: List<NDArrayMask>? = if (this.attentionDropout > 0.0) this.buildDropoutMasks() else null
+
+  /**
+   * The masks of the attention arrays concatenated horizontally in a unique matrix.
+   */
+  internal var dropoutMaskFull: NDArrayMask? = this.dropoutMasks?.let { masks ->
+    NDArrayMask(
+      dim1 = masks.fold(intArrayOf()) { dim1Indices, mask -> dim1Indices + mask.dim1},
+      dim2 = masks.foldIndexed(intArrayOf()) { j, dim2Indices, mask ->
+        dim2Indices + IntArray(size = mask.size, init = { j })
+      })
+  }
 
   /**
    * The attention matrix.
@@ -101,4 +124,24 @@ class ScaledDotAttentionLayer(
       "All the input arrays must have the same size (%d).".format(this.params.inputSize)
     }
   }
+
+  /**
+   * @return the dropout masks of the attention column arrays
+   */
+  private fun buildDropoutMasks(): List<NDArrayMask> = List(
+    size = this.inputArrays.size,
+    init = {
+
+      val activeIndices: List<Int> = this.inputArrays.indices
+        .asSequence()
+        .map { it to random() }
+        .filter { it.second >= this.attentionDropout }
+        .map { it.first }
+        .toList()
+
+      val dim2Indices = IntArray(size = activeIndices.size, init = { 0 })
+
+      NDArrayMask(dim1 = activeIndices.toIntArray(), dim2 = dim2Indices)
+    }
+  )
 }
