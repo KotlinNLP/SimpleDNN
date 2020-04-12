@@ -28,15 +28,14 @@ import kotlin.math.sin
  * A Bidirectional Encoder Representations from Transformers.
  *
  * @property model the parameters of the model of the network
- * @property dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.5 (better 0.25 if
- *                   it's the first layer).
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
+ * @property useDropout whether to apply the attention dropout during the [forward]
  * @property id a unique ID
  */
 class BERT(
   val model: BERTParameters,
-  val dropout: Double = 0.0,
   override val propagateToInput: Boolean = false,
+  override val useDropout: Boolean = false,
   override val id: Int = 0
 ) : NeuralProcessor<
   List<DenseNDArray>, // InputType
@@ -44,11 +43,6 @@ class BERT(
   List<DenseNDArray>, // ErrorsType
   List<DenseNDArray> // InputErrorsType
   > {
-
-  /**
-   * Whether to apply the dropout during the [forward].
-   */
-  override val useDropout: Boolean = this.dropout > 0.0
 
   /**
    * The errors accumulator.
@@ -177,7 +171,12 @@ class BERT(
 
     this.attentionLayers = List(
       size = this.model.multiHeadStack,
-      init = { ScaledDotAttentionLayer(inputArrays = this.inputSequence, params = this.model.attention) }
+      init = {
+        ScaledDotAttentionLayer(
+          inputArrays = this.inputSequence,
+          params = this.model.attention,
+          inputDropout = if (this.useDropout) this.model.dropout else 0.0)
+      }
     )
 
     this.multiHeadMergePool.releaseAll()
@@ -225,7 +224,7 @@ class BERT(
    */
   private fun forwardAttention(): List<DenseNDArray> {
 
-    this.attentionLayers.forEach { it.forward() }
+    this.attentionLayers.forEach { it.forward(useDropout = this.useDropout) }
 
     return this.multiHeadConcatLayers.zip(this.multiHeadSumLayers).mapIndexed { i, (concatLayer, sumLayer) ->
 

@@ -79,7 +79,7 @@ class BERTTrainer(
   /**
    * A Bidirectional Encoder Representations from Transformers.
    */
-  private val bert = BERT(this.model)
+  private val bert = BERT(model = this.model, useDropout = true)
 
   /**
    * A feed-forward layer trained to classify an encoded vector within the terms of the dictionary.

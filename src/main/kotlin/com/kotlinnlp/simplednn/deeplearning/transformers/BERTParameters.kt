@@ -26,6 +26,7 @@ import java.io.Serializable
  * @property attentionSize the size of the attention arrays
  * @property hiddenSize the size of the hidden arrays, after the attention
  * @property multiHeadStack the number of scaled-dot attention layers
+ * @property dropout the probability of attention dropout (default 0.0)
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
@@ -34,6 +35,7 @@ class BERTParameters(
   val attentionSize: Int,
   val hiddenSize: Int,
   val multiHeadStack: Int,
+  val dropout: Double = 0.0,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
 ) : Serializable {

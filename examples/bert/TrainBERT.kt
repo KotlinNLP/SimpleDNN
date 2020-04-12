@@ -49,7 +49,8 @@ fun main(args: Array<String>) {
       inputSize = embeddingsMap.size,
       attentionSize = 100,
       hiddenSize = 100,
-      multiHeadStack = 3)
+      multiHeadStack = 3,
+      dropout = 0.15)
 
     val helper = BERTTrainer(
       model = model,
