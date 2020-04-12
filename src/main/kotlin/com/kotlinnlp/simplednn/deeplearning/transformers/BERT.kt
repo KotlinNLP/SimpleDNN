@@ -235,10 +235,10 @@ class BERT(
       concatLayer.forward()
 
       sumLayer.inputArrays[0].assignValues(this.inputSequence[i].values)
-      sumLayer.inputArrays[1].assignValues(concatLayer.outputArray.values)
+      sumLayer.inputArrays[1].assignValues(concatLayer.outputArray.values.prod(this.model.normScalar))
       sumLayer.forward()
 
-      sumLayer.outputArray.values.prod(this.model.normScalar)
+      sumLayer.outputArray.values
     }
   }
 
@@ -260,10 +260,10 @@ class BERT(
       outputLayer.apply { setInput(attentionArray); forward() }
 
       sumLayer.inputArrays[0].assignValues(attentionArray)
-      sumLayer.inputArrays[1].assignValues(outputLayer.outputArray.values)
+      sumLayer.inputArrays[1].assignValues(outputLayer.outputArray.values.prod(this.model.normScalar))
       sumLayer.forward()
 
-      sumLayer.outputArray.values.prod(this.model.normScalar)
+      sumLayer.outputArray.values
     }
 
   /**
@@ -280,14 +280,14 @@ class BERT(
       val outputLayer: FeedforwardLayer<DenseNDArray> = this.outputFFLayers[i]
       val sumLayer: SumLayer<DenseNDArray> = this.outputSumLayers[i]
 
-      this.normScalarError += errors.prod(sumLayer.outputArray.values).sum()
-
-      sumLayer.setErrors(errors.prod(this.model.normScalar))
+      sumLayer.setErrors(errors)
       this.errorsAccumulator.accumulate(sumLayer.backward(propagateToInput = true))
 
       val sumErrors: List<DenseNDArray> = sumLayer.getInputErrors(copy = false)
-      outputLayer.setErrors(sumErrors[1])
+      outputLayer.setErrors(sumErrors[1].prod(this.model.normScalar))
       this.errorsAccumulator.accumulate(outputLayer.backward(propagateToInput = true))
+
+      this.normScalarError += sumErrors[1].prod(outputLayer.outputArray.values).sum()
 
       sumErrors[0].sum(outputLayer.inputArray.errors)
     }
@@ -304,14 +304,14 @@ class BERT(
       val concatLayer: ConcatFFLayer<DenseNDArray> = this.multiHeadConcatLayers[i]
       val sumLayer: SumLayer<DenseNDArray> = this.multiHeadSumLayers[i]
 
-      this.normScalarError += errors.prod(sumLayer.outputArray.values).sum()
-
-      sumLayer.setErrors(errors.prod(this.model.normScalar))
+      sumLayer.setErrors(errors)
       this.errorsAccumulator.accumulate(sumLayer.backward(propagateToInput = true))
 
       val sumErrors: List<DenseNDArray> = sumLayer.getInputErrors(copy = false)
-      concatLayer.setErrors(sumErrors[1])
+      concatLayer.setErrors(sumErrors[1].prod(this.model.normScalar))
       this.errorsAccumulator.accumulate(concatLayer.backward(propagateToInput = true))
+
+      this.normScalarError += sumErrors[1].prod(concatLayer.outputArray.values).sum()
 
       this.attentionLayers.zip(concatLayer.getInputErrors(copy = false)).forEach { (attentionLayer, concatErrors) ->
         attentionLayer.outputArrays[i].assignErrors(concatErrors)
