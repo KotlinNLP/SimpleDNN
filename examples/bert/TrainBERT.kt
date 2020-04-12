@@ -59,6 +59,7 @@ fun main(args: Array<String>) {
       embeddingsMap = embeddingsMap,
       dictionary = dictionary,
       updateMethod = ADAMMethod(stepSize = 0.001),
+      termsDropout = 0.15,
       examples = examples.asIterable(),
       shuffler = null,
       epochs = parsedArgs.epochs)
