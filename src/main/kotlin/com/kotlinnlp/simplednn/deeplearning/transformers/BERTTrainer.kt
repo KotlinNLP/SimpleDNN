@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.transformers
 import com.kotlinnlp.linguisticdescription.sentence.flattenTokens
 import com.kotlinnlp.neuraltokenizer.NeuralTokenizer
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
@@ -71,10 +72,16 @@ class BERTTrainer(
    * The encoded term of an example.
    *
    * @property form the term form
-   * @property vector the term encoding
+   * @property embedding the term embedding
    * @property dropped whether this term has been dropped in input
    */
-  private data class EncodedTerm(val form: String, val vector: DenseNDArray, val dropped: Boolean)
+  private data class EncodedTerm(val form: String, val embedding: ParamsArray, val dropped: Boolean) {
+
+    /**
+     * The BERT encoding.
+     */
+    lateinit var encoding: DenseNDArray
+  }
 
   /**
    * A Bidirectional Encoder Representations from Transformers.
@@ -132,11 +139,13 @@ class BERTTrainer(
     val forms: List<String> = this.tokenizer.tokenize(example).flattenTokens().map { it.form }
     val encodedTerms: List<EncodedTerm> = this.encodeExample(forms)
 
-    this.bert.forward(encodedTerms.map { it.vector })
+    this.bert.forward(encodedTerms.map { it.embedding.values })
+      .zip(encodedTerms)
+      .forEach { (encoding, encodedTerm) -> encodedTerm.encoding = encoding }
 
     val encodingErrors: List<DenseNDArray> = encodedTerms.map {
       if (it.dropped)
-        this.classifyVector(vector = it.vector, goldIndex = this.getId(it.form))
+        this.classifyVector(vector = it.encoding, goldIndex = this.getId(it.form))
       else
         this.zeroErrors
     }
@@ -190,7 +199,7 @@ class BERTTrainer(
     val embedding = this.embeddingsMap.get(key = form, dropout = this.termsDropout)
     val dropped: Boolean = this.embeddingsMap.contains(form) && embedding == this.embeddingsMap.unknownEmbedding
 
-    EncodedTerm(form = form, vector = embedding.values, dropped = dropped)
+    EncodedTerm(form = form, embedding = embedding, dropped = dropped)
   }
 
   /**
