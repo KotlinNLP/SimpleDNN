@@ -207,10 +207,10 @@ class BERT(
 
       (0 .. array.values.length / 2).forEach { i ->
 
-        array.values[i] = sin(pos / 10000.0.pow(2.0 * i / this.model.inputSize))
+        array.values[i] += sin(pos / 10000.0.pow(2.0 * i / this.model.inputSize))
 
         if ((i + 1) < array.values.length)
-          array.values[i + 1] = sin(pos / 10000.0.pow((2.0 * i + 1.0) / this.model.inputSize))
+          array.values[i + 1] += sin(pos / 10000.0.pow((2.0 * i + 1.0) / this.model.inputSize))
       }
     }
 
