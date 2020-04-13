@@ -568,17 +568,42 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    *
    * @param a an array
    * @param b an array
-   * @param aMask the mask applied to a
+   * @param aMask the mask applied to [a]
    *
    * @return this array
    */
   fun assignDotLeftMasked(a: DenseNDArray, b: DenseNDArray, aMask: NDArrayMask): DenseNDArray {
+
     require(a.rows == this.rows && b.columns == this.columns && a.columns == b.rows)
 
     this.zeros()
 
     for (j in 0 until b.shape.dim2) {
       for ((i, k) in aMask) {
+        this[i, j] += a[i, k] * b[k, j]
+      }
+    }
+
+    return this
+  }
+
+  /**
+   * In-place dot product between the arrays [a] and [b] with a mask applied to [b], assigning the result to this array.
+   *
+   * @param a an array
+   * @param b an array
+   * @param bMask the mask applied to [b]
+   *
+   * @return this array
+   */
+  fun assignDotRightMasked(a: DenseNDArray, b: DenseNDArray, bMask: NDArrayMask): DenseNDArray {
+
+    require(a.rows == this.rows && b.columns == this.columns && a.columns == b.rows)
+
+    this.zeros()
+
+    for (i in 0 until a.shape.dim1) {
+      for ((k, j) in bMask) {
         this[i, j] += a[i, k] * b[k, j]
       }
     }
