@@ -176,7 +176,7 @@ class BERT(
       size = this.model.multiHeadStack,
       init = {
         ScaledDotAttentionLayer(
-          inputArrays = this.inputSequence,
+          inputArrays = if (this.propagateToInput) this.inputSequence.map { it.clone() } else this.inputSequence,
           params = this.model.attention,
           inputDropout = if (this.useDropout) this.model.dropout else 0.0)
       }
@@ -333,17 +333,12 @@ class BERT(
    */
   private fun backwardInput() {
 
-    this.attentionLayers.fold(mutableListOf<DenseNDArray>()) { errorsList, layer ->
+    val inputs: Sequence<AugmentedArray<DenseNDArray>> = this.inputSequence.asSequence()
 
-      val attentionInputErrors: Sequence<DenseNDArray> = layer.inputArrays.asSequence().map { it.errors }
+    this.attentionLayers.forEach { attentionLayer ->
 
-      errorsList.apply {
-        if (isEmpty())
-          addAll(attentionInputErrors)
-        else
-          asSequence().zip(attentionInputErrors).forEach { (inputErrors, attentionInputErrors) ->
-            inputErrors.assignSum(attentionInputErrors)
-          }
+      inputs.zip(attentionLayer.inputArrays.asSequence()).forEach { (input, attentionInput) ->
+        input.errors.assignSum(attentionInput.errors)
       }
     }
   }
