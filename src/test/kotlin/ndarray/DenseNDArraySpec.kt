@@ -572,6 +572,72 @@ class DenseNDArraySpec : Spek({
         }
       }
 
+      context("dotLeftMasked(array, mask) method") {
+
+        val a1 = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.5, 0.3),
+          doubleArrayOf(1.0, 0.5),
+          doubleArrayOf(0.7, 0.6)
+        ))
+        val a2 = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.2, 0.9),
+          doubleArrayOf(0.5, 0.6)
+        ))
+        val expected = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.1, 0.45),
+          doubleArrayOf(0.25, 0.3),
+          doubleArrayOf(0.0, 0.0)
+        ))
+        val res = a1.dotLeftMasked(a2, mask = NDArrayMask(dim1 = intArrayOf(0, 1), dim2 = intArrayOf(0, 1)))
+
+        it("should throw an error with not compatible shapes") {
+          val a3 = DenseNDArrayFactory.arrayOf(listOf(
+            doubleArrayOf(0.7, 0.5),
+            doubleArrayOf(0.3, 0.2),
+            doubleArrayOf(0.3, 0.5),
+            doubleArrayOf(0.7, 0.5)
+          ))
+          assertFails { array.assignDot(a1, a3) }
+        }
+
+        it("should assign the expected values") {
+          assertTrue { expected.equals(res, tolerance = 1.0e-04) }
+        }
+      }
+
+      context("dotRightMasked(array, mask) method") {
+
+        val a1 = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.5, 0.3),
+          doubleArrayOf(1.0, 0.5),
+          doubleArrayOf(0.7, 0.6)
+        ))
+        val a2 = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.2, 0.9),
+          doubleArrayOf(0.5, 0.6)
+        ))
+        val expected = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.1, 0.18),
+          doubleArrayOf(0.2, 0.3),
+          doubleArrayOf(0.14, 0.36)
+        ))
+        val res = a1.dotRightMasked(a2, mask = NDArrayMask(dim1 = intArrayOf(0, 1), dim2 = intArrayOf(0, 1)))
+
+        it("should throw an error with not compatible shapes") {
+          val a3 = DenseNDArrayFactory.arrayOf(listOf(
+            doubleArrayOf(0.7, 0.5),
+            doubleArrayOf(0.3, 0.2),
+            doubleArrayOf(0.3, 0.5),
+            doubleArrayOf(0.7, 0.5)
+          ))
+          assertFails { array.assignDot(a1, a3) }
+        }
+
+        it("should assign the expected values") {
+          assertTrue { expected.equals(res, tolerance = 1.0e-04) }
+        }
+      }
+
       context("prod(number) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.09, 0.18, 0.27, 0.0))
@@ -994,6 +1060,81 @@ class DenseNDArraySpec : Spek({
 
         it("should assign the expected values") {
           assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
+        }
+      }
+
+      context("assignDotRightMasked(array[1-d], array[2-d], mask) method") {
+
+        val array = DenseNDArrayFactory.emptyArray(Shape(1, 2))
+        val a1 = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.7, 0.3, 0.6)
+        ))
+        val m = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.5, 0.3),
+          doubleArrayOf(1.0, 0.5),
+          doubleArrayOf(0.7, 0.6)
+        ))
+        val expectedArray = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.35, 0.15)
+        ))
+        val mask = NDArrayMask(dim1 = intArrayOf(0, 1), dim2 = intArrayOf(0, 1))
+        val res = array.assignDotRightMasked(a1, m, bMask = mask)
+
+        it("should return the same DenseNDArray") {
+          assertTrue { array === res }
+        }
+
+        it("should throw an error with not compatible shapes") {
+          val m2 = DenseNDArrayFactory.arrayOf(listOf(
+            doubleArrayOf(0.7, 0.5),
+            doubleArrayOf(0.3, 0.2),
+            doubleArrayOf(0.3, 0.5),
+            doubleArrayOf(0.7, 0.5)
+          ))
+          assertFails { array.assignDot(a1, m2) }
+        }
+
+        it("should assign the expected values") {
+          assertTrue { expectedArray.equals(array, tolerance = 1.0e-04) }
+        }
+      }
+
+      context("assignDotRightMasked(array[2-d], array[2-d], mask) method") {
+
+        val array = DenseNDArrayFactory.emptyArray(Shape(3, 2))
+        val m1 = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.5, 0.3),
+          doubleArrayOf(1.0, 0.5),
+          doubleArrayOf(0.7, 0.6)
+        ))
+        val m2 = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.2, 0.9),
+          doubleArrayOf(0.5, 0.6)
+        ))
+        val expectedArray = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.1, 0.18),
+          doubleArrayOf(0.2, 0.3),
+          doubleArrayOf(0.14, 0.36)
+        ))
+        val mask = NDArrayMask(dim1 = intArrayOf(0, 1), dim2 = intArrayOf(0, 1))
+        val res = array.assignDotRightMasked(m1, m2, bMask = mask)
+
+        it("should return the same DenseNDArray") {
+          assertTrue { array === res }
+        }
+
+        it("should throw an error with not compatible shapes") {
+          val m3 = DenseNDArrayFactory.arrayOf(listOf(
+            doubleArrayOf(0.7, 0.5),
+            doubleArrayOf(0.3, 0.2),
+            doubleArrayOf(0.3, 0.5),
+            doubleArrayOf(0.7, 0.5)
+          ))
+          assertFails { array.assignDot(m1, m3) }
+        }
+
+        it("should assign the expected values") {
+          assertTrue { expectedArray.equals(array, tolerance = 1.0e-04) }
         }
       }
 
