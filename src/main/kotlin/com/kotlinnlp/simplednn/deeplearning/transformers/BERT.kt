@@ -283,7 +283,7 @@ class BERT(
       val sumLayer: SumLayer<DenseNDArray> = this.outputSumLayers[i]
 
       sumLayer.setErrors(errors)
-      this.errorsAccumulator.accumulate(sumLayer.backward(propagateToInput = true))
+      sumLayer.backward(propagateToInput = true) // no need to accumulate params errors (no params)
 
       val sumErrors: List<DenseNDArray> = sumLayer.getInputErrors(copy = false)
       outputFF.backward(sumErrors[1].prod(this.model.normScalar))
@@ -307,7 +307,7 @@ class BERT(
       val sumLayer: SumLayer<DenseNDArray> = this.multiHeadSumLayers[i]
 
       sumLayer.setErrors(errors)
-      this.errorsAccumulator.accumulate(sumLayer.backward(propagateToInput = true))
+      sumLayer.backward(propagateToInput = true) // no need to accumulate params errors (no params)
 
       val sumErrors: List<DenseNDArray> = sumLayer.getInputErrors(copy = false)
       concatLayer.setErrors(sumErrors[1].prod(this.model.normScalar))
