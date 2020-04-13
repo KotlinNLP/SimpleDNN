@@ -48,7 +48,8 @@ fun main(args: Array<String>) {
     val model = BERTParameters(
       inputSize = embeddingsMap.size,
       attentionSize = 100,
-      hiddenSize = 100,
+      attentionOutputSize = 100,
+      outputHiddenSize = 2048,
       multiHeadStack = 3,
       dropout = 0.15)
 

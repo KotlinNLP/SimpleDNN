@@ -8,12 +8,13 @@
 package com.kotlinnlp.simplednn.deeplearning.transformers
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
+import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.models.attention.scaleddot.ScaledDotAttentionLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayerParameters
+import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream
@@ -24,7 +25,8 @@ import java.io.Serializable
  *
  * @property inputSize the size of the input arrays
  * @property attentionSize the size of the attention arrays
- * @property hiddenSize the size of the hidden arrays, after the attention
+ * @property attentionOutputSize the size of the attention outputs
+ * @property outputHiddenSize the number of the hidden nodes of the output feed-forward
  * @property multiHeadStack the number of scaled-dot attention layers
  * @property dropout the probability of attention dropout (default 0.0)
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
@@ -33,7 +35,8 @@ import java.io.Serializable
 class BERTParameters(
   val inputSize: Int,
   val attentionSize: Int,
-  val hiddenSize: Int,
+  val attentionOutputSize: Int,
+  val outputHiddenSize: Int,
   val multiHeadStack: Int,
   val dropout: Double = 0.0,
   weightsInitializer: Initializer? = GlorotInitializer(),
@@ -64,24 +67,27 @@ class BERTParameters(
   val attention = ScaledDotAttentionLayerParameters(
     inputSize = this.inputSize,
     attentionSize = this.attentionSize,
-    outputSize = this.hiddenSize,
+    outputSize = this.attentionOutputSize,
     weightsInitializer = weightsInitializer)
 
   /**
    * The parameters of the merge layer of the multi-head attention outputs.
    */
   val multiHeadMerge = ConcatFFLayerParameters(
-    inputsSize = List(size = this.multiHeadStack, init = { this.hiddenSize }),
+    inputsSize = List(size = this.multiHeadStack, init = { this.attentionOutputSize }),
     outputSize = this.inputSize,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
 
   /**
-   * The parameters of the output feed-forward layer.
+   * The parameters of the output feed-forward network.
    */
-  val outputFF = FeedforwardLayerParameters(
+  val outputFF = FeedforwardNeuralNetwork(
     inputSize = this.inputSize,
+    hiddenSize = this.outputHiddenSize,
+    hiddenActivation = ReLU(),
     outputSize = this.inputSize,
+    outputActivation = null,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
 

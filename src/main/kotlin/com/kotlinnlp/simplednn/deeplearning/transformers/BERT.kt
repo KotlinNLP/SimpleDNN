@@ -10,13 +10,13 @@ package com.kotlinnlp.simplednn.deeplearning.transformers
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.attention.scaleddot.ScaledDotAttentionLayer
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayersPool
 import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayersPool
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayersPool
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
+import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
+import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -82,17 +82,17 @@ class BERT(
   private lateinit var multiHeadSumLayers: List<SumLayer<DenseNDArray>>
 
   /**
-   * The pool of output feed-forward layers.
+   * The pool of output feed-forward networks.
    */
-  private val outputFFPool = FeedforwardLayersPool<DenseNDArray>(
-    params = this.model.outputFF,
-    inputType = LayerType.Input.Dense,
-    activationFunction = null)
+  private val outputFFPool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
+    model = this.model.outputFF,
+    propagateToInput = true,
+    useDropout = false)
 
   /**
-   * The output feed-forward layers that have been used for the last forward.
+   * The output feed-forward networks that have been used for the last forward.
    */
-  private lateinit var outputFFLayers: List<FeedforwardLayer<DenseNDArray>>
+  private lateinit var outputFFNetworks: List<FeedforwardNeuralProcessor<DenseNDArray>>
 
   /**
    * The pool of sum layers for the feed-forward outputs.
@@ -189,7 +189,7 @@ class BERT(
     this.multiHeadSumLayers = inputSequence.indices.map { this.multiHeadSumPool.getItem() }
 
     this.outputFFPool.releaseAll()
-    this.outputFFLayers = inputSequence.indices.map { this.outputFFPool.getItem() }
+    this.outputFFNetworks = inputSequence.indices.map { this.outputFFPool.getItem() }
 
     this.outputSumPool.releaseAll()
     this.outputSumLayers = inputSequence.indices.map { this.outputSumPool.getItem() }
@@ -255,14 +255,14 @@ class BERT(
 
     this.inputSequence.indices.map { i ->
 
-      val outputLayer: FeedforwardLayer<DenseNDArray> = this.outputFFLayers[i]
+      val outputFF: FeedforwardNeuralProcessor<DenseNDArray> = this.outputFFNetworks[i]
       val attentionArray: DenseNDArray = attentionArrays[i]
       val sumLayer: SumLayer<DenseNDArray> = this.outputSumLayers[i]
 
-      outputLayer.apply { setInput(attentionArray); forward() }
+      outputFF.forward(attentionArray)
 
       sumLayer.inputArrays[0].assignValues(attentionArray)
-      sumLayer.inputArrays[1].assignValues(outputLayer.outputArray.values.prod(this.model.normScalar))
+      sumLayer.inputArrays[1].assignValues(outputFF.getOutput(copy = false).prod(this.model.normScalar))
       sumLayer.forward()
 
       sumLayer.outputArray.values
@@ -279,19 +279,19 @@ class BERT(
 
     outputErrors.mapIndexed { i, errors ->
 
-      val outputLayer: FeedforwardLayer<DenseNDArray> = this.outputFFLayers[i]
+      val outputFF: FeedforwardNeuralProcessor<DenseNDArray> = this.outputFFNetworks[i]
       val sumLayer: SumLayer<DenseNDArray> = this.outputSumLayers[i]
 
       sumLayer.setErrors(errors)
       this.errorsAccumulator.accumulate(sumLayer.backward(propagateToInput = true))
 
       val sumErrors: List<DenseNDArray> = sumLayer.getInputErrors(copy = false)
-      outputLayer.setErrors(sumErrors[1].prod(this.model.normScalar))
-      this.errorsAccumulator.accumulate(outputLayer.backward(propagateToInput = true))
+      outputFF.backward(sumErrors[1].prod(this.model.normScalar))
+      this.errorsAccumulator.accumulate(outputFF.getParamsErrors(copy = false))
 
-      this.normScalarError += sumErrors[1].prod(outputLayer.outputArray.values).sum()
+      this.normScalarError += sumErrors[1].prod(outputFF.getOutput(copy = false)).sum()
 
-      sumErrors[0].sum(outputLayer.inputArray.errors)
+      sumErrors[0].sum(outputFF.getInputErrors(copy = false))
     }
 
   /**
