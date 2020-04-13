@@ -128,6 +128,7 @@ class BERT(
    */
   override fun backward(outputErrors: List<DenseNDArray>) {
 
+    this.errorsAccumulator.clear()
     this.normScalarError = 0.0
 
     this.backwardAttention(attentionErrors = this.backwardOutput(outputErrors))
