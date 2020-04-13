@@ -170,6 +170,7 @@ class BERTTrainer(
       val lossStr = "loss %.2f".format(this.lastLosses.average())
       println("\n[${this.timer.formatElapsedTime()}] After $examplesCount examples: $lossStr | ${this.stats.metric}")
 
+      this.validateAndSaveModel()
       this.lastLosses.clear()
       this.stats.reset()
     }
