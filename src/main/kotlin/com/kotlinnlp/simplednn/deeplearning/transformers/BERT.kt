@@ -138,6 +138,8 @@ class BERT(
 
     this.errorsAccumulator.accumulate(
       this.model.normScalarParam.buildDenseErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(this.normScalarError))))
+
+    this.errorsAccumulator.averageErrors()
   }
 
   /**
