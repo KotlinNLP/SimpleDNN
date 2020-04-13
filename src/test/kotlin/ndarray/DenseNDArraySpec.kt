@@ -924,7 +924,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      context("assignDot(array[1-d], array[2-d], mask) method") {
+      context("assignDotLeftMasked(array[1-d], array[2-d], mask) method") {
 
         val array = DenseNDArrayFactory.emptyArray(Shape(1, 2))
         val a1 = DenseNDArrayFactory.arrayOf(listOf(
@@ -938,7 +938,7 @@ class DenseNDArraySpec : Spek({
         val expectedArray = DenseNDArrayFactory.arrayOf(listOf(
           doubleArrayOf(0.3, 0.15)
         ))
-        val res = array.assignDot(a1, m, aMask = NDArrayMask(dim1 = intArrayOf(0), dim2 = intArrayOf(1)))
+        val res = array.assignDotLeftMasked(a1, m, aMask = NDArrayMask(dim1 = intArrayOf(0), dim2 = intArrayOf(1)))
 
         it("should return the same DenseNDArray") {
           assertTrue { array === res }
@@ -959,7 +959,7 @@ class DenseNDArraySpec : Spek({
         }
       }
 
-      context("assignDot(array[2-d], array[2-d], mask) method") {
+      context("assignDotLeftMasked(array[2-d], array[2-d], mask) method") {
 
         val array = DenseNDArrayFactory.emptyArray(Shape(3, 2))
         val m1 = DenseNDArrayFactory.arrayOf(listOf(
@@ -976,7 +976,7 @@ class DenseNDArraySpec : Spek({
           doubleArrayOf(0.25, 0.3),
           doubleArrayOf(0.0, 0.0)
         ))
-        val res = array.assignDot(m1, m2, aMask = NDArrayMask(dim1 = intArrayOf(0, 1), dim2 = intArrayOf(0, 1)))
+        val res = array.assignDotLeftMasked(m1, m2, aMask = NDArrayMask(dim1 = intArrayOf(0, 1), dim2 = intArrayOf(0, 1)))
 
         it("should return the same DenseNDArray") {
           assertTrue { array === res }
