@@ -224,9 +224,7 @@ class BERTTrainer(
     this.updateStats(classification = classification, goldOutput = goldOutput)
 
     this.classificationLayer.setErrors(errors)
-    this.classificationLayer.backward(propagateToInput = true)
-
-    this.optimizers.single().accumulate(this.classificationLayer.getParamsErrorsCollector().getAll())
+    this.optimizers.single().accumulate(this.classificationLayer.backward(propagateToInput = true))
 
     return this.classificationLayer.inputArray.errors
   }
