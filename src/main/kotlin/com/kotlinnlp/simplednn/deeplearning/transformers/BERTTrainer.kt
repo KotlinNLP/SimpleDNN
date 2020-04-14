@@ -226,7 +226,7 @@ class BERTTrainer(
     this.classificationLayer.setErrors(errors)
     this.optimizers.single().accumulate(this.classificationLayer.backward(propagateToInput = true))
 
-    return this.classificationLayer.inputArray.errors
+    return this.classificationLayer.inputArray.errors.copy()
   }
 
   /**

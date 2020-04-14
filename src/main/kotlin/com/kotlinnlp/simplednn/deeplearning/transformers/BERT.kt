@@ -301,7 +301,7 @@ class BERT(
    */
   private fun backwardAttention(attentionErrors: List<DenseNDArray>) {
 
-    attentionErrors.mapIndexed { i, errors ->
+    attentionErrors.forEachIndexed { i, errors ->
 
       val concatLayer: ConcatFFLayer<DenseNDArray> = this.multiHeadConcatLayers[i]
       val sumLayer: SumLayer<DenseNDArray> = this.multiHeadSumLayers[i]
