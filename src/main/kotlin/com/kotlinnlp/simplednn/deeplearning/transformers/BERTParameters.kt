@@ -112,6 +112,13 @@ class BERTParameters(
   val normScalar: Double get() = this.normScalarParam.values[0]
 
   /**
+   * Check requirements.
+   */
+  init {
+    require(this.multiHeadStack >= 2) { "At least 2 layers are required in the attention stack." }
+  }
+
+  /**
    * Serialize this [BERTParameters] and write it to an output stream.
    *
    * @param outputStream the [OutputStream] in which to write this serialized [BERTParameters]
