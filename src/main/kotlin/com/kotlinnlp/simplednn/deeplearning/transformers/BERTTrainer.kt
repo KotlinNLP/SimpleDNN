@@ -29,6 +29,7 @@ import com.kotlinnlp.utils.Shuffler
 import com.kotlinnlp.utils.Timer
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.math.sqrt
 
 /**
  * The trainer of a [BERT] model.
@@ -130,6 +131,11 @@ class BERTTrainer(
   private val timer = Timer()
 
   /**
+   * The embeddings scale factor.
+   */
+  private val embeddingsScale: Double = sqrt(this.embeddingsMap.size.toDouble())
+
+  /**
    * Learn from an example (forward + backward).
    *
    * @param example an example to train the model with
@@ -139,7 +145,7 @@ class BERTTrainer(
     val forms: List<String> = this.tokenizer.tokenize(example).flattenTokens().map { it.form }
     val encodedTerms: List<EncodedTerm> = this.encodeExample(forms)
 
-    this.bert.forward(encodedTerms.map { it.embedding.values })
+    this.bert.forward(encodedTerms.map { it.embedding.values.prod(this.embeddingsScale) })
       .zip(encodedTerms)
       .forEach { (encoding, encodedTerm) -> encodedTerm.encoding = encoding }
 
