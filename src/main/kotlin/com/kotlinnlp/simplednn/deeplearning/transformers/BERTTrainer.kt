@@ -219,11 +219,11 @@ class BERTTrainer(
     val classification: DenseNDArray = this.classificationLayer.outputArray.values
     val goldOutput: DenseNDArray =
       DenseNDArrayFactory.oneHotEncoder(length = this.classificationLayer.params.outputSize, oneAt = goldIndex)
-    val errors: DenseNDArray = classification.sub(goldOutput)
 
     this.updateStats(classification = classification, goldOutput = goldOutput)
 
-    this.classificationLayer.setErrors(errors)
+    this.classificationLayer.setErrors(
+      SoftmaxCrossEntropyCalculator().calculateErrors(output = classification, outputGold = goldOutput))
     this.optimizers.single().accumulate(this.classificationLayer.backward(propagateToInput = true))
 
     return this.classificationLayer.inputArray.errors.copy()
