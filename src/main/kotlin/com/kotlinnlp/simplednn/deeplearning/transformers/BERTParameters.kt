@@ -62,13 +62,18 @@ class BERTParameters(
   }
 
   /**
-   * The parameters of the scaled-dot attention layer.
+   * The parameters of the scaled-dot attention layers.
    */
-  val attention = ScaledDotAttentionLayerParameters(
-    inputSize = this.inputSize,
-    attentionSize = this.attentionSize,
-    outputSize = this.attentionOutputSize,
-    weightsInitializer = weightsInitializer)
+  val attention: List<ScaledDotAttentionLayerParameters> = List(
+    size = this.multiHeadStack,
+    init = {
+      ScaledDotAttentionLayerParameters(
+        inputSize = this.inputSize,
+        attentionSize = this.attentionSize,
+        outputSize = this.attentionOutputSize,
+        weightsInitializer = weightsInitializer)
+    }
+  )
 
   /**
    * The parameters of the merge layer of the multi-head attention outputs.

@@ -172,15 +172,12 @@ class BERT(
 
     this.inputSequence = this.addPositionalEncodings(inputSequence.map { AugmentedArray(it) })
 
-    this.attentionLayers = List(
-      size = this.model.multiHeadStack,
-      init = {
-        ScaledDotAttentionLayer(
-          inputArrays = if (this.propagateToInput) this.inputSequence.map { it.clone() } else this.inputSequence,
-          params = this.model.attention,
-          inputDropout = if (this.useDropout) this.model.dropout else 0.0)
-      }
-    )
+    this.attentionLayers = this.model.attention.map { params ->
+      ScaledDotAttentionLayer(
+        inputArrays = if (this.propagateToInput) this.inputSequence.map { it.clone() } else this.inputSequence,
+        params = params,
+        inputDropout = if (this.useDropout) this.model.dropout else 0.0)
+    }
 
     this.multiHeadMergePool.releaseAll()
     this.multiHeadConcatLayers = inputSequence.indices.map { this.multiHeadMergePool.getItem() }
