@@ -12,8 +12,6 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.attention.scaleddot.ScaledDotAttentionLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayersPool
-import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayer
-import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayersPool
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
@@ -72,16 +70,6 @@ class BERT(
   private lateinit var multiHeadConcatLayers: List<ConcatFFLayer<DenseNDArray>>
 
   /**
-   * The pool of sum layers for the concatenated multi-head attention outputs.
-   */
-  private val multiHeadSumPool = SumLayersPool<DenseNDArray>(params = this.model.sum, inputType = LayerType.Input.Dense)
-
-  /**
-   * The sum layers for the merged multi-head attention outputs that have been used for the last forward.
-   */
-  private lateinit var multiHeadSumLayers: List<SumLayer<DenseNDArray>>
-
-  /**
    * The pool of output feed-forward networks.
    */
   private val outputFFPool = FeedforwardNeuralProcessorsPool<DenseNDArray>(
@@ -93,16 +81,6 @@ class BERT(
    * The output feed-forward networks that have been used for the last forward.
    */
   private lateinit var outputFFNetworks: List<FeedforwardNeuralProcessor<DenseNDArray>>
-
-  /**
-   * The pool of sum layers for the feed-forward outputs.
-   */
-  private val outputSumPool = SumLayersPool<DenseNDArray>(params = this.model.sum, inputType = LayerType.Input.Dense)
-
-  /**
-   * The sum layers for the feed-forward outputs that have been used for the last forward.
-   */
-  private lateinit var outputSumLayers: List<SumLayer<DenseNDArray>>
 
   /**
    * The error of the norm scalar parameter accumulated during the last backward.
@@ -182,14 +160,8 @@ class BERT(
     this.multiHeadMergePool.releaseAll()
     this.multiHeadConcatLayers = inputSequence.indices.map { this.multiHeadMergePool.getItem() }
 
-    this.multiHeadSumPool.releaseAll()
-    this.multiHeadSumLayers = inputSequence.indices.map { this.multiHeadSumPool.getItem() }
-
     this.outputFFPool.releaseAll()
     this.outputFFNetworks = inputSequence.indices.map { this.outputFFPool.getItem() }
-
-    this.outputSumPool.releaseAll()
-    this.outputSumLayers = inputSequence.indices.map { this.outputSumPool.getItem() }
   }
 
   /**
@@ -226,18 +198,14 @@ class BERT(
 
     this.attentionLayers.forEach { it.forward(useDropout = this.useDropout) }
 
-    return this.multiHeadConcatLayers.zip(this.multiHeadSumLayers).mapIndexed { i, (concatLayer, sumLayer) ->
+    return this.multiHeadConcatLayers.mapIndexed { i, concatLayer ->
 
       concatLayer.inputArrays.zip(this.attentionLayers).forEach { (mergeInput, attentionLayer) ->
         mergeInput.assignValues(attentionLayer.outputArrays[i].values)
       }
       concatLayer.forward()
 
-      sumLayer.inputArrays[0].assignValues(this.inputSequence[i].values)
-      sumLayer.inputArrays[1].assignValues(concatLayer.outputArray.values.prod(this.model.normScalar))
-      sumLayer.forward()
-
-      sumLayer.outputArray.values
+      this.inputSequence[i].values.sum(concatLayer.outputArray.values.prod(this.model.normScalar))
     }
   }
 
@@ -250,19 +218,11 @@ class BERT(
    */
   private fun forwardOutput(attentionArrays: List<DenseNDArray>): List<DenseNDArray> =
 
-    this.inputSequence.indices.map { i ->
-
-      val outputFF: FeedforwardNeuralProcessor<DenseNDArray> = this.outputFFNetworks[i]
-      val attentionArray: DenseNDArray = attentionArrays[i]
-      val sumLayer: SumLayer<DenseNDArray> = this.outputSumLayers[i]
+    this.outputFFNetworks.zip(attentionArrays).map { (outputFF, attentionArray) ->
 
       outputFF.forward(attentionArray)
 
-      sumLayer.inputArrays[0].assignValues(attentionArray)
-      sumLayer.inputArrays[1].assignValues(outputFF.getOutput(copy = false).prod(this.model.normScalar))
-      sumLayer.forward()
-
-      sumLayer.outputArray.values
+      attentionArray.sum(outputFF.getOutput(copy = false).prod(this.model.normScalar))
     }
 
   /**
@@ -274,21 +234,14 @@ class BERT(
    */
   private fun backwardOutput(outputErrors: List<DenseNDArray>): List<DenseNDArray> =
 
-    outputErrors.mapIndexed { i, errors ->
+    this.outputFFNetworks.zip(outputErrors).map { (outputFF, errors) ->
 
-      val outputFF: FeedforwardNeuralProcessor<DenseNDArray> = this.outputFFNetworks[i]
-      val sumLayer: SumLayer<DenseNDArray> = this.outputSumLayers[i]
-
-      sumLayer.setErrors(errors)
-      sumLayer.backward(propagateToInput = true) // no need to accumulate params errors (no params)
-
-      val sumErrors: List<DenseNDArray> = sumLayer.getInputErrors(copy = false)
-      outputFF.backward(sumErrors[1].prod(this.model.normScalar))
+      outputFF.backward(errors.prod(this.model.normScalar))
       this.errorsAccumulator.accumulate(outputFF.getParamsErrors(copy = false))
 
-      this.normScalarError += sumErrors[1].prod(outputFF.getOutput(copy = false)).sum()
+      this.normScalarError += errors.prod(outputFF.getOutput(copy = false)).sum()
 
-      sumErrors[0].sum(outputFF.getInputErrors(copy = false))
+      errors.sum(outputFF.getInputErrors(copy = false))
     }
 
   /**
@@ -301,23 +254,18 @@ class BERT(
     attentionErrors.forEachIndexed { i, errors ->
 
       val concatLayer: ConcatFFLayer<DenseNDArray> = this.multiHeadConcatLayers[i]
-      val sumLayer: SumLayer<DenseNDArray> = this.multiHeadSumLayers[i]
 
-      sumLayer.setErrors(errors)
-      sumLayer.backward(propagateToInput = true) // no need to accumulate params errors (no params)
-
-      val sumErrors: List<DenseNDArray> = sumLayer.getInputErrors(copy = false)
-      concatLayer.setErrors(sumErrors[1].prod(this.model.normScalar))
+      concatLayer.setErrors(errors.prod(this.model.normScalar))
       this.errorsAccumulator.accumulate(concatLayer.backward(propagateToInput = true))
 
-      this.normScalarError += sumErrors[1].prod(concatLayer.outputArray.values).sum()
+      this.normScalarError += errors.prod(concatLayer.outputArray.values).sum()
 
       this.attentionLayers.zip(concatLayer.getInputErrors(copy = false)).forEach { (attentionLayer, concatErrors) ->
         attentionLayer.outputArrays[i].assignErrors(concatErrors)
       }
 
       if (this.propagateToInput)
-        this.inputSequence[i].assignErrors(sumErrors[0])
+        this.inputSequence[i].assignErrors(errors)
     }
 
     this.attentionLayers.forEach {

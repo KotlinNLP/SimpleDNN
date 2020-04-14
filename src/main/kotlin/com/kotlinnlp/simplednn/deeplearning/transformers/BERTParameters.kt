@@ -13,7 +13,6 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializ
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.models.attention.scaleddot.ScaledDotAttentionLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.utils.Serializer
 import java.io.InputStream
@@ -95,11 +94,6 @@ class BERTParameters(
     outputActivation = null,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
-
-  /**
-   * The sum layer parameters.
-   */
-  val sum = SumLayerParameters(inputSize = this.inputSize, nInputs = 2)
 
   /**
    * The updatable normalization scalar parameter.
