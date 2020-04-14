@@ -245,7 +245,7 @@ class BERTTrainer(
 
     when (predictedIndex) {
       goldIndex -> if (goldIndex != this.unknownIndex) this.stats.metric.truePos++
-      this.unknownIndex -> this.stats.metric.falseNeg
+      this.unknownIndex -> this.stats.metric.falseNeg++
       else -> this.stats.metric.falsePos++
     }
   }
