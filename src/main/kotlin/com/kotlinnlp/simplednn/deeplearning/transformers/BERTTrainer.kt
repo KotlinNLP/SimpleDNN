@@ -34,7 +34,7 @@ import kotlin.math.sqrt
 /**
  * The trainer of a [BERT] model.
  *
- * @param model the parameters of the model of the network
+ * @param model the model to train
  * @param modelFilename the name of the file in which to save the serialized model
  * @param tokenizer a neural tokenizer
  * @param embeddingsMap pre-trained word embeddings
@@ -47,7 +47,7 @@ import kotlin.math.sqrt
  * @param verbose whether to print info about the training progress and timing (default = true)
  */
 class BERTTrainer(
-  private val model: BERTParameters,
+  private val model: BERTModel,
   modelFilename: String,
   private val tokenizer: NeuralTokenizer,
   private val embeddingsMap: EmbeddingsMap<String>,

@@ -14,30 +14,25 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.models.attention.scaleddot.ScaledDotAttentionLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
-import com.kotlinnlp.utils.Serializer
-import java.io.InputStream
-import java.io.OutputStream
 import java.io.Serializable
 
 /**
  * The BERT parameters.
  *
- * @property inputSize the size of the input arrays
- * @property attentionSize the size of the attention arrays
- * @property attentionOutputSize the size of the attention outputs
- * @property outputHiddenSize the number of the hidden nodes of the output feed-forward
- * @property multiHeadStack the number of scaled-dot attention layers
- * @property dropout the probability of attention dropout (default 0.0)
+ * @param inputSize the size of the input arrays
+ * @param attentionSize the size of the attention arrays
+ * @param attentionOutputSize the size of the attention outputs
+ * @param outputHiddenSize the number of the hidden nodes of the output feed-forward
+ * @param multiHeadStack the number of scaled-dot attention layers
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
 class BERTParameters(
-  val inputSize: Int,
-  val attentionSize: Int,
-  val attentionOutputSize: Int,
-  val outputHiddenSize: Int,
-  val multiHeadStack: Int,
-  val dropout: Double = 0.0,
+  inputSize: Int,
+  attentionSize: Int,
+  attentionOutputSize: Int,
+  outputHiddenSize: Int,
+  multiHeadStack: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
 ) : Serializable {
@@ -45,31 +40,22 @@ class BERTParameters(
   companion object {
 
     /**
-     * Private val used to serialize the class (needed from Serializable).
+     * Private val used to serialize the class (needed by Serializable).
      */
     @Suppress("unused")
     private const val serialVersionUID: Long = 1L
-
-    /**
-     * Read [BERTParameters] (serialized) from an input stream and decode it.
-     *
-     * @param inputStream the [InputStream] from which to read the serialized [BERTParameters]
-     *
-     * @return the [BERTParameters] read from [inputStream] and decoded
-     */
-    fun load(inputStream: InputStream): BERTParameters = Serializer.deserialize(inputStream)
   }
 
   /**
    * The parameters of the scaled-dot attention layers.
    */
   val attention: List<ScaledDotAttentionLayerParameters> = List(
-    size = this.multiHeadStack,
+    size = multiHeadStack,
     init = {
       ScaledDotAttentionLayerParameters(
-        inputSize = this.inputSize,
-        attentionSize = this.attentionSize,
-        outputSize = this.attentionOutputSize,
+        inputSize = inputSize,
+        attentionSize = attentionSize,
+        outputSize = attentionOutputSize,
         weightsInitializer = weightsInitializer)
     }
   )
@@ -78,8 +64,8 @@ class BERTParameters(
    * The parameters of the merge layer of the multi-head attention outputs.
    */
   val multiHeadMerge = ConcatFFLayerParameters(
-    inputsSize = List(size = this.multiHeadStack, init = { this.attentionOutputSize }),
-    outputSize = this.inputSize,
+    inputsSize = List(size = multiHeadStack, init = { attentionOutputSize }),
+    outputSize = inputSize,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
 
@@ -87,10 +73,10 @@ class BERTParameters(
    * The parameters of the output feed-forward network.
    */
   val outputFF = FeedforwardNeuralNetwork(
-    inputSize = this.inputSize,
-    hiddenSize = this.outputHiddenSize,
+    inputSize = inputSize,
+    hiddenSize = outputHiddenSize,
     hiddenActivation = ReLU(),
-    outputSize = this.inputSize,
+    outputSize = inputSize,
     outputActivation = null,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
@@ -109,13 +95,6 @@ class BERTParameters(
    * Check requirements.
    */
   init {
-    require(this.multiHeadStack >= 2) { "At least 2 layers are required in the attention stack." }
+    require(multiHeadStack >= 2) { "At least 2 layers are required in the attention stack." }
   }
-
-  /**
-   * Serialize this [BERTParameters] and write it to an output stream.
-   *
-   * @param outputStream the [OutputStream] in which to write this serialized [BERTParameters]
-   */
-  fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
 }

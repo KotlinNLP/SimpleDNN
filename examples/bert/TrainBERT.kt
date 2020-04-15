@@ -11,7 +11,7 @@ import com.kotlinnlp.neuraltokenizer.NeuralTokenizer
 import com.kotlinnlp.neuraltokenizer.NeuralTokenizerModel
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
-import com.kotlinnlp.simplednn.deeplearning.transformers.BERTParameters
+import com.kotlinnlp.simplednn.deeplearning.transformers.BERTModel
 import com.kotlinnlp.simplednn.deeplearning.transformers.BERTTrainer
 import com.kotlinnlp.utils.DictionarySet
 import java.io.File
@@ -45,12 +45,13 @@ fun main(args: Array<String>) {
 
     println("Reading training set from '${parsedArgs.datasetPath}'...")
 
-    val model = BERTParameters(
+    val model = BERTModel(
       inputSize = embeddingsMap.size,
       attentionSize = 100,
       attentionOutputSize = 100,
       outputHiddenSize = 2048,
       multiHeadStack = 3,
+      numOfLayers = 3,
       dropout = 0.15)
 
     val helper = BERTTrainer(
