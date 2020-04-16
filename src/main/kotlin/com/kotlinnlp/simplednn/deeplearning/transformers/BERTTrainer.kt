@@ -40,6 +40,7 @@ import kotlin.math.sqrt
  * @param embeddingsMap pre-trained word embeddings
  * @param dictionary a dictionary set with all the forms in the examples
  * @param termsDropout the probability to dropout an input token
+ * @param optimizeEmbeddings whether to optimize the embeddings during the training (default = false)
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  * @param examples the training examples
  * @param epochs the number of training epochs
@@ -53,6 +54,7 @@ class BERTTrainer(
   private val embeddingsMap: EmbeddingsMap<String>,
   private val dictionary: DictionarySet<String>,
   private val termsDropout: Double = 0.15,
+  private val optimizeEmbeddings: Boolean = false,
   updateMethod: UpdateMethod<*>,
   examples: Iterable<String>,
   epochs: Int,
@@ -87,7 +89,7 @@ class BERTTrainer(
   /**
    * A Bidirectional Encoder Representations from Transformers.
    */
-  private val bert = BERT(model = this.model, useDropout = true)
+  private val bert = BERT(model = this.model, useDropout = true, propagateToInput = this.optimizeEmbeddings)
 
   /**
    * A feed-forward layer trained to classify an encoded vector within the terms of the dictionary.
@@ -158,6 +160,9 @@ class BERTTrainer(
 
     this.bert.backward(encodingErrors)
 
+    if (this.optimizeEmbeddings)
+      this.accumulateEmbeddingsErrors(encodedTerms)
+
     if (this.verbose) this.printProgressAndStats()
   }
 
@@ -207,6 +212,16 @@ class BERTTrainer(
     val dropped: Boolean = this.embeddingsMap.contains(form) && embedding == this.embeddingsMap.unknownEmbedding
 
     EncodedTerm(form = form, embedding = embedding, dropped = dropped)
+  }
+
+  /**
+   * Accumulate the BERT input errors into the embeddings.
+   */
+  private fun accumulateEmbeddingsErrors(encodedTerms: List<EncodedTerm>) {
+
+    encodedTerms.zip(this.bert.getInputErrors()).forEach { (encodedTerm, errors) ->
+      this.optimizers.single().accumulate(encodedTerm.embedding, errors)
+    }
   }
 
   /**
