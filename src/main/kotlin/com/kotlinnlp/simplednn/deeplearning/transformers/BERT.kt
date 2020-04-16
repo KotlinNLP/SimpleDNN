@@ -234,10 +234,7 @@ class BERT(
     val concatLayers: List<ConcatFFLayer<DenseNDArray>> = this.multiHeadConcatLayers[layerIndex]
     val normScalar: Double = this.model.layers[layerIndex].normScalar
 
-    attentionLayers.forEach {
-      it.inputArrays.zip(inputs).forEach { (array, input) -> array.assignValues(input) }
-      it.forward(useDropout = this.useDropout)
-    }
+    attentionLayers.forEach { it.forward(useDropout = this.useDropout) }
 
     return concatLayers.mapIndexed { i, concatLayer ->
 
@@ -246,7 +243,7 @@ class BERT(
       }
       concatLayer.forward()
 
-      this.inputSequence[i].values.sum(concatLayer.outputArray.values.prod(normScalar))
+      inputs[i].sum(concatLayer.outputArray.values.prod(normScalar))
     }
   }
 
