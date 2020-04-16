@@ -19,6 +19,7 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
+import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
 
@@ -189,7 +190,7 @@ class BERT(
         array.values[i] += sin(pos / 10000.0.pow(2.0 * i / this.model.inputSize))
 
         if ((i + 1) < array.values.length)
-          array.values[i + 1] += sin(pos / 10000.0.pow((2.0 * i + 1.0) / this.model.inputSize))
+          array.values[i + 1] += cos(pos / 10000.0.pow((2.0 * i + 1.0) / this.model.inputSize))
       }
     }
 
