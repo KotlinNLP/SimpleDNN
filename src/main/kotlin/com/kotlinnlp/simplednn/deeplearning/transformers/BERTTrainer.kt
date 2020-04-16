@@ -40,7 +40,7 @@ import kotlin.math.sqrt
  * @param embeddingsMap pre-trained word embeddings
  * @param dictionary a dictionary set with all the forms in the examples
  * @param termsDropout the probability to dropout an input token
- * @param optimizeEmbeddings whether to optimize the embeddings during the training (default = false)
+ * @param optimizeEmbeddings whether to optimize the embeddings during the training
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
  * @param examples the training examples
  * @param epochs the number of training epochs
@@ -54,7 +54,7 @@ class BERTTrainer(
   private val embeddingsMap: EmbeddingsMap<String>,
   private val dictionary: DictionarySet<String>,
   private val termsDropout: Double = 0.15,
-  private val optimizeEmbeddings: Boolean = false,
+  private val optimizeEmbeddings: Boolean,
   updateMethod: UpdateMethod<*>,
   examples: Iterable<String>,
   epochs: Int,
@@ -208,8 +208,13 @@ class BERTTrainer(
    */
   private fun encodeExample(forms: List<String>): List<EncodedTerm> = forms.map { form ->
 
-    val embedding = this.embeddingsMap.get(key = form, dropout = this.termsDropout)
-    val dropped: Boolean = this.embeddingsMap.contains(form) && embedding == this.embeddingsMap.unknownEmbedding
+    val embedding = if (this.optimizeEmbeddings)
+      this.embeddingsMap.getOrSet(key = form, dropout = this.termsDropout)
+    else
+      this.embeddingsMap.get(key = form, dropout = this.termsDropout)
+
+    val dropped: Boolean = embedding == this.embeddingsMap.unknownEmbedding &&
+      (this.optimizeEmbeddings || this.embeddingsMap.contains(form))
 
     EncodedTerm(form = form, embedding = embedding, dropped = dropped)
   }
