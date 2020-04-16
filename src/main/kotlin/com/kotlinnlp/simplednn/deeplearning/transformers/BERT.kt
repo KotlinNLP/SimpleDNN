@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.deeplearning.transformers
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.attention.scaleddot.ScaledDotAttentionLayer
+import com.kotlinnlp.simplednn.core.layers.models.attention.scaleddot.ScaledDotAttentionLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayersPool
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
@@ -62,7 +63,7 @@ class BERT(
    * The scaled-dot attention layers used for the last forward.
    * One list per stacked layer.
    */
-  private lateinit var attentionLayers: List<List<ScaledDotAttentionLayer>>
+  private val attentionLayers: MutableList<List<ScaledDotAttentionLayer>> = mutableListOf()
 
   /**
    * The pools of concat layers of the multi-head attention outputs, one per stacked layer.
@@ -160,15 +161,7 @@ class BERT(
   private fun setInputSequence(inputSequence: List<DenseNDArray>) {
 
     this.inputSequence = this.addPositionalEncodings(inputSequence.map { AugmentedArray(it) })
-
-    this.attentionLayers = this.model.layers.map { params ->
-      params.attention.map { attentionParams ->
-        ScaledDotAttentionLayer(
-          inputArrays = List(size = this.inputSequence.size, init = { AugmentedArray.zeros(this.model.inputSize) }),
-          params = attentionParams,
-          inputDropout = if (this.useDropout) this.model.dropout else 0.0)
-      }
-    }
+    this.attentionLayers.clear()
 
     this.multiHeadMergePools.forEach { it.releaseAll() }
     this.multiHeadConcatLayers = this.multiHeadMergePools.map { pool -> inputSequence.indices.map { pool.getItem() } }
@@ -236,7 +229,8 @@ class BERT(
    */
   private fun forwardAttention(inputs: List<DenseNDArray>, layerIndex: Int): List<DenseNDArray> {
 
-    val attentionLayers: List<ScaledDotAttentionLayer> = this.attentionLayers[layerIndex]
+    val attentionLayers: List<ScaledDotAttentionLayer> =
+      this.buildAttentionLayers(inputs = inputs, params = this.model.layers[layerIndex].attention)
     val concatLayers: List<ConcatFFLayer<DenseNDArray>> = this.multiHeadConcatLayers[layerIndex]
     val normScalar: Double = this.model.layers[layerIndex].normScalar
 
@@ -254,6 +248,30 @@ class BERT(
 
       this.inputSequence[i].values.sum(concatLayer.outputArray.values.prod(normScalar))
     }
+  }
+
+  /**
+   * Build a new stack of scaled-dot attention layers for a given input sequence, adding it to the [attentionLayers]
+   * list.
+   *
+   * @param inputs the input sequence
+   * @param params the layers parameters
+   *
+   * @return a new stack of scaled-dot attention layers
+   */
+  private fun buildAttentionLayers(inputs: List<DenseNDArray>,
+                                   params: List<ScaledDotAttentionLayerParameters>): List<ScaledDotAttentionLayer> {
+
+    val layers: List<ScaledDotAttentionLayer> = params.map { attentionParams ->
+      ScaledDotAttentionLayer(
+        inputArrays = inputs.map { AugmentedArray(it) },
+        params = attentionParams,
+        inputDropout = if (this.useDropout) this.model.dropout else 0.0)
+    }
+
+    this.attentionLayers.add(layers)
+
+    return layers
   }
 
   /**
