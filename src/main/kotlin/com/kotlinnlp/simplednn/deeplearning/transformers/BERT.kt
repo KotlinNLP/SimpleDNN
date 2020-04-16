@@ -188,7 +188,7 @@ class BERT(
     inputSequence: List<AugmentedArray<DenseNDArray>>
   ): List<AugmentedArray<DenseNDArray>> {
 
-    inputSequence.forEachIndexed { pos, array -> array.values.sum(this.getPositionalEncoding(pos)) }
+    inputSequence.forEachIndexed { pos, array -> array.values.assignSum(this.getPositionalEncoding(pos)) }
 
     return inputSequence
   }
