@@ -54,6 +54,11 @@ class BERT(
   private lateinit var inputSequence: List<AugmentedArray<DenseNDArray>>
 
   /**
+   * The pre-calculated positional encodings.
+   */
+  private val positionalEncodings: MutableList<DenseNDArray> = mutableListOf()
+
+  /**
    * The scaled-dot attention layers used for the last forward.
    * One list per stacked layer.
    */
@@ -183,18 +188,42 @@ class BERT(
     inputSequence: List<AugmentedArray<DenseNDArray>>
   ): List<AugmentedArray<DenseNDArray>> {
 
-    inputSequence.forEachIndexed { pos, array ->
-
-      (0 .. array.values.length / 2).forEach { i ->
-
-        array.values[i] += sin(pos / 10000.0.pow(2.0 * i / this.model.inputSize))
-
-        if ((i + 1) < array.values.length)
-          array.values[i + 1] += cos(pos / 10000.0.pow((2.0 * i + 1.0) / this.model.inputSize))
-      }
-    }
+    inputSequence.forEachIndexed { pos, array -> array.values.sum(this.getPositionalEncoding(pos)) }
 
     return inputSequence
+  }
+
+  /**
+   * @param pos the position of an input array within the sequence
+   *
+   * @return the positioanl encoding for the given position
+   */
+  private fun getPositionalEncoding(pos: Int): DenseNDArray =
+    this.positionalEncodings.getOrElse(pos) { this.buildPositionalEncoding() }
+
+  /**
+   * Build a new positional encoding and add it to the pre-calculated arrays.
+   *
+   * @return a new positional encoding for the (last + 1) position
+   */
+  private fun buildPositionalEncoding(): DenseNDArray {
+
+    val pos: Int = this.positionalEncodings.size
+    val encoding: DenseNDArray = DenseNDArrayFactory.arrayOf(
+      DoubleArray(
+        size = this.model.inputSize,
+        init = { i ->
+          if (i % 2 == 0)
+            sin(pos / 10000.0.pow(i / this.model.inputSize))
+          else
+            cos(pos / 10000.0.pow(i / this.model.inputSize))
+        }
+      )
+    )
+
+    this.positionalEncodings.add(encoding)
+
+    return encoding
   }
 
   /**
