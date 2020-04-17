@@ -207,9 +207,9 @@ class BERT(
         size = this.model.inputSize,
         init = { i ->
           if (i % 2 == 0)
-            sin(pos / 10000.0.pow(i / this.model.inputSize))
+            sin(pos / 10000.0.pow(i.toDouble() / this.model.inputSize))
           else
-            cos(pos / 10000.0.pow(i / this.model.inputSize))
+            cos(pos / 10000.0.pow(i.toDouble() / this.model.inputSize))
         }
       )
     )
