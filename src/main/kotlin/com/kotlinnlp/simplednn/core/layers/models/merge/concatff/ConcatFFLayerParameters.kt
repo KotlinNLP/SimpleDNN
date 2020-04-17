@@ -60,4 +60,11 @@ class ConcatFFLayerParameters(
    * The list of biases parameters.
    */
   override val biasesList: List<ParamsArray> = this.output.biasesList
+
+  /**
+   * Initialize all parameters values.
+   */
+  init {
+    this.initialize()
+  }
 }
