@@ -8,6 +8,7 @@
 package com.kotlinnlp.simplednn.core.functionalities.losses
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import kotlin.math.ln
 
 /**
  * Softmax cross-entropy Calculator.
@@ -41,11 +42,10 @@ open class SoftmaxCrossEntropyCalculator : LossCalculator {
       "The gold output must be a one hot encoder to calculate the loss with the cross-entropy function."
     }
 
-    val oneIndex: Int = outputGold.argMaxIndex()
+    val goldIndex: Int = outputGold.argMaxIndex()
     val loss: DenseNDArray = output.zerosLike()
-    val argmaxOutput: Double = output[oneIndex]
 
-    loss[oneIndex] = -Math.log(if (argmaxOutput >= EPS) argmaxOutput else EPS)
+    loss[goldIndex] = -ln(maxOf(EPS, output[goldIndex]))
 
     return loss
   }
