@@ -13,8 +13,7 @@ import com.kotlinnlp.simplednn.core.layers.models.attention.scaleddot.ScaledDotA
 import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayersPool
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
-import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
-import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessorsPool
+import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -67,15 +66,15 @@ internal class BERTLayer(
   private lateinit var multiHeadConcatLayers: List<ConcatFFLayer<DenseNDArray>>
 
   /**
-   * The pools of output feed-forward networks.
+   * The batch of output feed-forward processors.
    */
-  private val outputFFPool: FeedforwardNeuralProcessorsPool<DenseNDArray> =
-    FeedforwardNeuralProcessorsPool(model = this.params.outputFF, propagateToInput = true, useDropout = false)
+  private val outputFF: BatchFeedforwardProcessor<DenseNDArray> =
+    BatchFeedforwardProcessor(model = this.params.outputFF, propagateToInput = true, useDropout = false)
 
   /**
-   * The output feed-forward networks that have been used for the last forward.
+   * The outputs of the last forward.
    */
-  private lateinit var outputFFNetworks: List<FeedforwardNeuralProcessor<DenseNDArray>>
+  private lateinit var outputs: List<DenseNDArray>
 
   /**
    * The error of the norm scalar parameter accumulated during the last backward.
@@ -91,7 +90,9 @@ internal class BERTLayer(
 
     this.setInputSequence(input)
 
-    return this.forwardOutput(this.forwardAttention())
+    this.outputs = this.forwardOutput(this.forwardAttention())
+
+    return this.outputs
   }
 
   /**
@@ -153,7 +154,6 @@ internal class BERTLayer(
     }
 
     this.multiHeadConcatLayers = this.multiHeadMergePool.releaseAndGetItems(inputSequence.size)
-    this.outputFFNetworks = this.outputFFPool.releaseAndGetItems(inputSequence.size)
   }
 
   /**
@@ -185,11 +185,10 @@ internal class BERTLayer(
    */
   private fun forwardOutput(attentionArrays: List<DenseNDArray>): List<DenseNDArray> {
 
-    return this.outputFFNetworks.zip(attentionArrays).map { (outputFF, attentionArray) ->
+    val outputs: List<DenseNDArray> = this.outputFF.forward(attentionArrays)
 
-      outputFF.forward(attentionArray)
-
-      attentionArray.sum(outputFF.getOutput(copy = false).prod(this.params.normScalar))
+    return attentionArrays.zip(outputs).map { (attention, output) ->
+      attention.sum(output.prod(this.params.normScalar))
     }
   }
 
@@ -202,14 +201,15 @@ internal class BERTLayer(
    */
   private fun backwardOutput(outputErrors: List<DenseNDArray>): List<DenseNDArray> {
 
-    return this.outputFFNetworks.zip(outputErrors).map { (outputFF, errors) ->
+    this.outputFF.backward(outputErrors.map { it.prod(this.params.normScalar) })
+    this.errorsAccumulator.accumulate(this.outputFF.getParamsErrors(copy = false))
 
-      outputFF.backward(errors.prod(this.params.normScalar))
-      this.errorsAccumulator.accumulate(outputFF.getParamsErrors(copy = false))
+    this.outputs.zip(outputErrors).forEach { (output, errors) ->
+      this.normScalarsError += errors.prod(output).sum()
+    }
 
-      this.normScalarsError += errors.prod(outputFF.getOutput(copy = false)).sum()
-
-      errors.sum(outputFF.getInputErrors(copy = false))
+    return this.outputFF.getInputErrors(copy = false).zip(outputErrors).map { (inputErrors, errors) ->
+      inputErrors.sum(errors)
     }
   }
 
