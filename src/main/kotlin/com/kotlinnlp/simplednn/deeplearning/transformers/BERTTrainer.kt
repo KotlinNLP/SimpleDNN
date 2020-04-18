@@ -78,12 +78,18 @@ class BERTTrainer(
    * @property embedding the term embedding
    * @property dropped whether this term has been dropped in input
    */
-  private data class EncodedTerm(val form: String, val embedding: ParamsArray, val dropped: Boolean) {
+  private inner class EncodedTerm(val form: String, val embedding: ParamsArray, val dropped: Boolean) {
 
     /**
      * The BERT encoding.
      */
     lateinit var encoding: DenseNDArray
+
+    /**
+     * A unique ID of this term within the dictionary.
+     * All the unknown terms are considered equal to each other.
+     */
+    val id: Int = this@BERTTrainer.dictionary.getId(this.form) ?: this@BERTTrainer.unknownIndex
   }
 
   /**
@@ -153,7 +159,7 @@ class BERTTrainer(
 
     val encodingErrors: List<DenseNDArray> = encodedTerms.map {
       if (it.dropped)
-        this.classifyVector(vector = it.encoding, goldIndex = this.getId(it.form))
+        this.classifyVector(vector = it.encoding, goldIndex = it.id)
       else
         this.zeroErrors
     }
@@ -275,12 +281,4 @@ class BERTTrainer(
       else -> this.stats.metric.falsePos++
     }
   }
-
-  /**
-   * @param form a form found in the examples
-   *
-   * @return a unique ID of the given form, considering all the unknown terms equal to each other
-   */
-  private fun getId(form: String): Int =
-    this.dictionary.getId(form) ?: this.unknownIndex
 }
