@@ -52,11 +52,11 @@ internal class CommandLineArguments(args: Array<String>) {
   /**
    * The file path of the pre-trained word embeddings.
    */
-  val embeddingsPath: String by parser.storing(
+  val embeddingsPath: String? by parser.storing(
     "-w",
     "--word-embeddings",
     help="the file path of the pre-trained word embeddings"
-  )
+  ).default { null }
 
   /**
    * The file path of the training dataset.

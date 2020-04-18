@@ -36,10 +36,10 @@ fun main(args: Array<String>) {
     readDictionary(filename = parsedArgs.dictionaryPath, minOccurrences = 100, maxTerms = 20000)
   }
 
-  val embeddingsMap: EmbeddingsMap<String> = parsedArgs.embeddingsPath.let {
+  val embeddingsMap: EmbeddingsMap<String> = parsedArgs.embeddingsPath?.let {
     println("Loading pre-trained word embeddings from '$it'...")
     EmbeddingsMap.load(it)
-  }
+  } ?: EmbeddingsMap(size = 100)
 
   File(parsedArgs.datasetPath).useLines { examples ->
 
@@ -47,8 +47,8 @@ fun main(args: Array<String>) {
 
     val model = BERTModel(
       inputSize = embeddingsMap.size,
-      attentionSize = 100,
-      attentionOutputSize = 100,
+      attentionSize = embeddingsMap.size / 3,
+      attentionOutputSize = embeddingsMap.size / 3,
       outputHiddenSize = 2048,
       multiHeadStack = 3,
       numOfLayers = 3,
@@ -62,7 +62,7 @@ fun main(args: Array<String>) {
       dictionary = dictionary,
       updateMethod = ADAMMethod(stepSize = 0.001),
       termsDropout = 0.15,
-      optimizeEmbeddings = false,
+      optimizeEmbeddings = parsedArgs.embeddingsPath == null,
       examples = examples.asIterable(),
       shuffler = null,
       epochs = parsedArgs.epochs)
