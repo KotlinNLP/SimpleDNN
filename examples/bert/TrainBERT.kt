@@ -54,6 +54,9 @@ fun main(args: Array<String>) {
       numOfLayers = 3,
       dropout = 0.15)
 
+    if (parsedArgs.embeddingsPath == null)
+      model.embeddingsMap = embeddingsMap
+
     val helper = BERTTrainer(
       model = model,
       modelFilename = parsedArgs.modelPath,

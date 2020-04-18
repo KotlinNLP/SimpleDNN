@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.simplednn.deeplearning.transformers
 
+import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.utils.Serializer
@@ -72,6 +73,11 @@ class BERTModel(
         biasesInitializer = biasesInitializer)
     }
   )
+
+  /**
+   * The embeddings used to train the model, useful to save them in the same structure.
+   */
+  var embeddingsMap: EmbeddingsMap<String>? = null
 
   /**
    * Serialize this [BERTModel] and write it to an output stream.
