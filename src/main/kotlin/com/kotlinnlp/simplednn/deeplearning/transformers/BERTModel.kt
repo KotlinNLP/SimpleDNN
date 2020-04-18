@@ -23,7 +23,7 @@ import java.io.Serializable
  * @property attentionOutputSize the size of the attention outputs
  * @property outputHiddenSize the number of the hidden nodes of the output feed-forward
  * @property multiHeadStack the number of scaled-dot attention layers
- * @property dropout the probability of attention dropout (default 0.0)
+ * @param dropout the probability of attention dropout (default 0.0)
  * @param numOfLayers the number of stacked layers
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
@@ -34,7 +34,7 @@ class BERTModel(
   val attentionOutputSize: Int,
   val outputHiddenSize: Int,
   val multiHeadStack: Int,
-  val dropout: Double = 0.0,
+  dropout: Double = 0.0,
   numOfLayers: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()) : Serializable {
@@ -69,6 +69,7 @@ class BERTModel(
         attentionOutputSize = this.attentionOutputSize,
         outputHiddenSize = this.outputHiddenSize,
         multiHeadStack = this.multiHeadStack,
+        dropout = dropout,
         weightsInitializer = weightsInitializer,
         biasesInitializer = biasesInitializer)
     }
