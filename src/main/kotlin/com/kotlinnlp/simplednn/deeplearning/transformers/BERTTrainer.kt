@@ -103,8 +103,8 @@ class BERTTrainer(
    */
   private val classificationLayer: FeedforwardLayer<DenseNDArray> = FeedforwardLayer(
     inputArray = AugmentedArray.zeros(size = this.model.inputSize),
-    outputArray = AugmentedArray.zeros(size = this.dictionary.size + 1), // dictionary size + unknown
-    params = FeedforwardLayerParameters(inputSize = this.model.inputSize, outputSize = this.dictionary.size + 1),
+    outputArray = AugmentedArray.zeros(size = this.dictionary.size),
+    params = FeedforwardLayerParameters(inputSize = this.model.inputSize, outputSize = this.dictionary.size),
     inputType = LayerType.Input.Dense,
     activationFunction = Softmax())
 
@@ -158,7 +158,7 @@ class BERTTrainer(
       .forEach { (encoding, encodedTerm) -> encodedTerm.encoding = encoding }
 
     val encodingErrors: List<DenseNDArray> = encodedTerms.map {
-      if (it.dropped)
+      if (it.dropped && it.id != this.unknownIndex)
         this.classifyVector(vector = it.encoding, goldIndex = it.id)
       else
         this.zeroErrors
@@ -275,10 +275,9 @@ class BERTTrainer(
     this.lastLosses.add(
       SoftmaxCrossEntropyCalculator().calculateLoss(output = classification, outputGold = goldOutput).sum())
 
-    when (predictedIndex) {
-      goldIndex -> if (goldIndex != this.unknownIndex) this.stats.metric.truePos++
-      this.unknownIndex -> this.stats.metric.falseNeg++
-      else -> this.stats.metric.falsePos++
-    }
+    if (predictedIndex == goldIndex)
+      this.stats.metric.truePos++
+    else
+      this.stats.metric.falsePos++
   }
 }
