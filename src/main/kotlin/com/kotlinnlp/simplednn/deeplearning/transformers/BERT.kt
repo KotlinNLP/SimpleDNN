@@ -20,12 +20,14 @@ import kotlin.math.sin
  * A Bidirectional Encoder Representations from Transformers.
  *
  * @property model the BERT model
+ * @param fineTuning whether to train the last layer only (default false)
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
  * @property useDropout whether to apply the attention dropout during the [forward]
  * @property id a unique ID
  */
 class BERT(
   val model: BERTModel,
+  fineTuning: Boolean = false,
   override val propagateToInput: Boolean = false,
   override val useDropout: Boolean = false,
   override val id: Int = 0
@@ -57,6 +59,12 @@ class BERT(
   }
 
   /**
+   * The trainable layers.
+   * Only the last of the stack in case of model fine tuning.
+   */
+  private val trainableLayers: List<BERTLayer> = if (fineTuning) this.layers.takeLast(1) else this.layers
+
+  /**
    * @param input the input sequence
    *
    * @return the encoded sequence
@@ -83,7 +91,7 @@ class BERT(
 
     var errors: List<DenseNDArray> = outputErrors
 
-    this.layers.reversed().forEach {
+    this.trainableLayers.reversed().forEach {
 
       it.backward(errors)
 
