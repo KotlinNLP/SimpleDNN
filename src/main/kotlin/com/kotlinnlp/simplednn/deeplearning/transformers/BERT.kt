@@ -15,6 +15,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 /**
  * A Bidirectional Encoder Representations from Transformers.
@@ -49,6 +50,11 @@ class BERT(
   private val positionalEncodings: MutableList<DenseNDArray> = mutableListOf()
 
   /**
+   * The input arrays scale factor.
+   */
+  private val inputScale: Double = sqrt(this.model.inputSize.toDouble())
+
+  /**
    * The BERT layers.
    */
   private val layers: List<BERTLayer> = this.model.layers.mapIndexed { i, params ->
@@ -71,7 +77,7 @@ class BERT(
    */
   override fun forward(input: List<DenseNDArray>): List<DenseNDArray> {
 
-    var sequence: List<DenseNDArray> = this.addPositionalEncodings(input)
+    var sequence: List<DenseNDArray> = this.addPositionalEncodings(input).map { it.assignProd(this.inputScale) }
 
     this.layers.forEach {
       sequence = it.forward(sequence)
@@ -122,7 +128,7 @@ class BERT(
    * @return the input errors
    */
   override fun getInputErrors(copy: Boolean): List<DenseNDArray> =
-    this.layers.first().getInputErrors(copy = copy)
+    this.layers.first().getInputErrors(copy = false).map { it.prod(this.inputScale) }
 
   /**
    * Add positional encodings to the input sequence.
