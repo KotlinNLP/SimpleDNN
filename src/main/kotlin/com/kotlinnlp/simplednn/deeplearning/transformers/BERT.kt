@@ -77,7 +77,7 @@ class BERT(
    */
   override fun forward(input: List<DenseNDArray>): List<DenseNDArray> {
 
-    var sequence: List<DenseNDArray> = this.addPositionalEncodings(input).map { it.assignProd(this.inputScale) }
+    var sequence: List<DenseNDArray> = this.addPositionalEncodings(input.map { it.prod(this.inputScale) })
 
     this.layers.forEach {
       sequence = it.forward(sequence)
@@ -131,14 +131,14 @@ class BERT(
     this.layers.first().getInputErrors(copy = false).map { it.prod(this.inputScale) }
 
   /**
-   * Add positional encodings to the input sequence.
+   * Add positional encodings to the input sequence, in-place.
    *
    * @param inputSequence the input sequence
    *
-   * @return the input sequence with the positional encodings added
+   * @return the input sequence with the positional encodings added in-place
    */
   private fun addPositionalEncodings(inputSequence: List<DenseNDArray>): List<DenseNDArray> =
-    inputSequence.mapIndexed { pos, array -> array.sum(this.getPositionalEncoding(pos)) }
+    inputSequence.mapIndexed { pos, array -> array.assignSum(this.getPositionalEncoding(pos)) }
 
   /**
    * @param pos the position of an input array within the sequence
