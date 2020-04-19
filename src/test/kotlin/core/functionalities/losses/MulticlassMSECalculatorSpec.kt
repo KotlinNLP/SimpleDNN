@@ -20,13 +20,11 @@ class MulticlassMSECalculatorSpec : Spek({
 
   describe("a MulticlassMSECalculator") {
 
-    val lossCalculator = MulticlassMSECalculator()
-
     val outputValues = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.7, 0.2, 0.1))
     val goldValues = DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.0, 0.0, 0.0))
 
     context("calculateErrors") {
-      val errors = lossCalculator.calculateErrors(outputValues, goldValues)
+      val errors = MulticlassMSECalculator.calculateErrors(outputValues, goldValues)
 
       it("should calculate the expected errors") {
         assertTrue(DenseNDArrayFactory.arrayOf(doubleArrayOf(-1.0, 0.7, 0.2, 0.1)).equals(errors))

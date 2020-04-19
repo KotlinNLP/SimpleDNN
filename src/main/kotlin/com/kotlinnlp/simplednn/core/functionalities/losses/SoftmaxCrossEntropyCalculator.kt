@@ -13,18 +13,15 @@ import kotlin.math.ln
 /**
  * Softmax cross-entropy Calculator.
  *
- * It must be used to calculate the loss ONLY if the activation function of the
- * output is the [com.kotlinnlp.simplednn.core.functionalities.activations.Softmax].
+ * It must be used to calculate the loss ONLY if the activation function of the output is the
+ * [com.kotlinnlp.simplednn.core.functionalities.activations.Softmax].
  */
-open class SoftmaxCrossEntropyCalculator : LossCalculator {
+object SoftmaxCrossEntropyCalculator : LossCalculator {
 
-  companion object {
-
-    /**
-     * A values threshold to avoid underflow errors.
-     */
-    private const val EPS: Double = 1.0e-08
-  }
+  /**
+   * A values threshold to avoid underflow errors.
+   */
+  private const val EPS: Double = 1.0e-08
 
   /**
    * Calculate the loss between an output and its gold.

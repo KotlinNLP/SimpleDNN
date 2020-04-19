@@ -11,9 +11,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
  *
- * MeanSquaredErrorCalculator
+ * Multiclass Mean Squared Error calculator.
  */
-class MulticlassMSECalculator : MSECalculator() {
+object MulticlassMSECalculator : MSECalculator() {
 
   /**
    * Calculate the errors between an output and its gold.

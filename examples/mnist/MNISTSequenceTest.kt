@@ -60,7 +60,7 @@ private class MNISTSequenceTest(val dataset: Corpus<SequenceExampleWithFinalOutp
     SequenceWithFinalOutputTrainer(
       model = this.neuralNetwork,
       updateMethod = ADAMMethod(stepSize = 0.001),
-      lossCalculator = SoftmaxCrossEntropyCalculator(),
+      lossCalculator = SoftmaxCrossEntropyCalculator,
       examples = this.dataset.training,
       epochs = 3,
       batchSize = 1,

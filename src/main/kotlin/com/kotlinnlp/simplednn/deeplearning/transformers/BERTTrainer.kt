@@ -244,7 +244,7 @@ class BERTTrainer(
     this.updateStats(classification = classification, goldOutput = goldOutput)
 
     this.classificationLayer.setErrors(
-      SoftmaxCrossEntropyCalculator().calculateErrors(output = classification, outputGold = goldOutput))
+      SoftmaxCrossEntropyCalculator.calculateErrors(output = classification, outputGold = goldOutput))
     this.optimizers.single().accumulate(this.classificationLayer.backward(propagateToInput = true))
 
     return this.classificationLayer.inputArray.errors.copy()
@@ -262,7 +262,7 @@ class BERTTrainer(
     val goldIndex: Int = goldOutput.argMaxIndex()
 
     this.lastLosses.add(
-      SoftmaxCrossEntropyCalculator().calculateLoss(output = classification, outputGold = goldOutput).sum())
+      SoftmaxCrossEntropyCalculator.calculateLoss(output = classification, outputGold = goldOutput).sum())
 
     if (predictedIndex == goldIndex)
       this.stats.metric.truePos++

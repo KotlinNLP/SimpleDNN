@@ -16,10 +16,7 @@ import kotlin.math.ln
  * @param predictions the predictions
  * @param goldIndex the index of the gold item in the predictions
  */
-class NegativeLogProbability(
-  private val predictions: List<Double>,
-  private val goldIndex: Int
-) {
+class NegativeLogProbability(private val predictions: List<Double>, private val goldIndex: Int) {
 
   /**
    * The sum of the exponentials.

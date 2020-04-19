@@ -67,7 +67,7 @@ class SparseInputTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArray>>) {
     FeedforwardTrainer(
       model = this.neuralNetwork,
       updateMethod = AdaGradMethod(learningRate = 0.1),
-      lossCalculator = SoftmaxCrossEntropyCalculator(),
+      lossCalculator = SoftmaxCrossEntropyCalculator,
       examples = this.dataset.training,
       epochs = 3,
       batchSize = 1,

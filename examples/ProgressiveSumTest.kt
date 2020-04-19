@@ -85,7 +85,7 @@ class ProgressiveSumTest(val dataset: Corpus<SequenceExample<DenseNDArray>>) {
     SequenceTrainer(
       model = this.neuralNetwork,
       updateMethod = LearningRateMethod(learningRate = 0.1),
-      lossCalculator = SoftmaxCrossEntropyCalculator(),
+      lossCalculator = SoftmaxCrossEntropyCalculator,
       examples = this.dataset.training,
       epochs = 4,
       batchSize = 1,

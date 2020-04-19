@@ -80,7 +80,7 @@ private class MNISTSparseBinaryTest(private val dataset: Corpus<SimpleExample<Sp
       updateMethod = LearningRateMethod(
         learningRate = 0.01,
         decayMethod = HyperbolicDecay(decay = 0.5, initLearningRate = 0.01)),
-      lossCalculator = SoftmaxCrossEntropyCalculator(),
+      lossCalculator = SoftmaxCrossEntropyCalculator,
       examples = this.dataset.training,
       epochs = 3,
       batchSize = 1,

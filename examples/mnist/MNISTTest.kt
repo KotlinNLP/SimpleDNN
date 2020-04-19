@@ -61,7 +61,7 @@ private class MNISTTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
     FeedforwardTrainer(
       model = this.neuralNetwork,
       updateMethod = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999),
-      lossCalculator = SoftmaxCrossEntropyCalculator(),
+      lossCalculator = SoftmaxCrossEntropyCalculator,
       examples = this.dataset.training,
       epochs = 15,
       batchSize = 1,

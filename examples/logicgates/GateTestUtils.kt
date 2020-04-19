@@ -78,7 +78,7 @@ object GateTestUtils {
         learningRate = 0.01,
         decayMethod = HyperbolicDecay(decay = 0.0, initLearningRate = 0.01)),
       lossCalculator = if (evaluationFunction is ClassificationEvaluation)
-        SoftmaxCrossEntropyCalculator()
+        SoftmaxCrossEntropyCalculator
       else
         MSECalculator(),
       examples = examples,

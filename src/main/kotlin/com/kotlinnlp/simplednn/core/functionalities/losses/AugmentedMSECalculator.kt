@@ -8,9 +8,10 @@
 package com.kotlinnlp.simplednn.core.functionalities.losses
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import kotlin.math.exp
 
 /**
- * Augmented Mean Squared Error calculator
+ * Augmented Mean Squared Error calculator.
  *
  * @property pi pi (0.1 by default)
  * @property c c (10 by default)
@@ -95,6 +96,5 @@ class AugmentedMSECalculator(val pi: Double = 0.1, val c: Double = 10.0) : LossC
   /**
    *
    */
-  private fun calculateRegularization(): Double = 1.0 - Math.exp(- c * this.injectedErrorStrength.weight)
+  private fun calculateRegularization(): Double = 1.0 - exp(-c * this.injectedErrorStrength.weight)
 }
-

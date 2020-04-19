@@ -24,7 +24,7 @@ class SoftmaxCrossEntropyCalculatorSpec : Spek({
 
   describe("a SoftmaxCrossEntropyCalculator") {
 
-    val lossCalculator = SoftmaxCrossEntropyCalculator()
+    val lossCalculator = SoftmaxCrossEntropyCalculator
 
     context("output and gold not compatible") {
 

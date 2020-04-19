@@ -107,7 +107,7 @@ class SumSignRelevanceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<De
     SequenceWithFinalOutputTrainer(
       model = this.neuralNetwork,
       updateMethod = LearningRateMethod(learningRate = 0.01),
-      lossCalculator = SoftmaxCrossEntropyCalculator(),
+      lossCalculator = SoftmaxCrossEntropyCalculator,
       examples = this.dataset.training,
       epochs = 3,
       batchSize = 1,
