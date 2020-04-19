@@ -74,10 +74,8 @@ class BERTTrainer(
    * The encoded term of an example.
    *
    * @property form the term form
-   * @property embedding the term embedding
-   * @property dropped whether this term has been dropped in input
    */
-  private inner class EncodedTerm(val form: String, val embedding: ParamsArray, val dropped: Boolean) {
+  private inner class EncodedTerm(val form: String) {
 
     /**
      * The BERT encoding.
@@ -89,6 +87,21 @@ class BERTTrainer(
      * All the unknown terms are considered equal to each other.
      */
     val id: Int = this@BERTTrainer.dictionary.getId(this.form) ?: this@BERTTrainer.unknownIndex
+
+    /**
+     * The term embedding.
+     */
+    val embedding: ParamsArray = if (this@BERTTrainer.optimizeEmbeddings)
+      this@BERTTrainer.embeddingsMap.getOrSet(key = this.form, dropout = this@BERTTrainer.termsDropout)
+    else
+      this@BERTTrainer.embeddingsMap.get(key = this.form, dropout = this@BERTTrainer.termsDropout)
+
+    /**
+     * Whether this term must be considered as masked input.
+     */
+    val isMasked: Boolean = this.embedding == this@BERTTrainer.embeddingsMap.unknownEmbedding &&
+      (this@BERTTrainer.optimizeEmbeddings || this@BERTTrainer.embeddingsMap.contains(this.form)) &&
+      this.id != this@BERTTrainer.unknownIndex
   }
 
   /**
@@ -145,14 +158,14 @@ class BERTTrainer(
   override fun learnFromExample(example: String) {
 
     val forms: List<String> = this.tokenizer.tokenize(example).flattenTokens().map { it.form }
-    val encodedTerms: List<EncodedTerm> = this.encodeExample(forms)
+    val encodedTerms: List<EncodedTerm> = forms.map { EncodedTerm(it) }
 
     this.bert.forward(encodedTerms.map { it.embedding.values })
       .zip(encodedTerms)
       .forEach { (encoding, encodedTerm) -> encodedTerm.encoding = encoding }
 
     val encodingErrors: List<DenseNDArray> = encodedTerms.map {
-      if (it.dropped && it.id != this.unknownIndex)
+      if (it.isMasked)
         this.classifyVector(vector = it.encoding, goldIndex = it.id)
       else
         this.zeroErrors
@@ -199,24 +212,6 @@ class BERTTrainer(
    */
   override fun dumpModel() {
     this.model.dump(FileOutputStream(File(this.modelFilename)))
-  }
-
-  /**
-   * @param forms the forms that compose an example
-   *
-   * @return the encoded terms
-   */
-  private fun encodeExample(forms: List<String>): List<EncodedTerm> = forms.map { form ->
-
-    val embedding = if (this.optimizeEmbeddings)
-      this.embeddingsMap.getOrSet(key = form, dropout = this.termsDropout)
-    else
-      this.embeddingsMap.get(key = form, dropout = this.termsDropout)
-
-    val dropped: Boolean = embedding == this.embeddingsMap.unknownEmbedding &&
-      (this.optimizeEmbeddings || this.embeddingsMap.contains(form))
-
-    EncodedTerm(form = form, embedding = embedding, dropped = dropped)
   }
 
   /**
