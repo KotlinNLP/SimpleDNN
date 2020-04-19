@@ -55,15 +55,15 @@ internal class BERTLayer(
   private lateinit var attentionLayers: List<ScaledDotAttentionLayer>
 
   /**
-   * The pool of concat layers of the multi-head attention outputs.
+   * The pool of merge layers of the multi-head attention outputs.
    */
   private val multiHeadMergePool: ConcatFFLayersPool<DenseNDArray> =
     ConcatFFLayersPool(params = this.params.multiHeadMerge, inputType = LayerType.Input.Dense)
 
   /**
-   * The concat layers of the multi-head attention outputs that have been used for the last forward.
+   * The merge layers of the multi-head attention outputs that have been used for the last forward.
    */
-  private lateinit var multiHeadConcatLayers: List<ConcatFFLayer<DenseNDArray>>
+  private lateinit var multiHeadMergeLayers: List<ConcatFFLayer<DenseNDArray>>
 
   /**
    * The batch of output feed-forward processors.
@@ -153,7 +153,7 @@ internal class BERTLayer(
         inputDropout = if (this.useDropout) this.params.dropout else 0.0)
     }
 
-    this.multiHeadConcatLayers = this.multiHeadMergePool.releaseAndGetItems(inputSequence.size)
+    this.multiHeadMergeLayers = this.multiHeadMergePool.releaseAndGetItems(inputSequence.size)
   }
 
   /**
@@ -165,14 +165,14 @@ internal class BERTLayer(
 
     this.attentionLayers.forEach { it.forward(useDropout = this.useDropout) }
 
-    return this.multiHeadConcatLayers.mapIndexed { i, concatLayer ->
+    return this.multiHeadMergeLayers.mapIndexed { i, mergeLayer ->
 
-      concatLayer.inputArrays.zip(this.attentionLayers).forEach { (mergeInput, attentionLayer) ->
+      mergeLayer.inputArrays.zip(this.attentionLayers).forEach { (mergeInput, attentionLayer) ->
         mergeInput.assignValues(attentionLayer.outputArrays[i].values)
       }
-      concatLayer.forward()
+      mergeLayer.forward()
 
-      this.inputSequence[i].values.sum(concatLayer.outputArray.values.prod(this.params.normScalar))
+      this.inputSequence[i].values.sum(mergeLayer.outputArray.values.prod(this.params.normScalar))
     }
   }
 
@@ -222,14 +222,14 @@ internal class BERTLayer(
    */
   private fun backwardAttention(attentionErrors: List<DenseNDArray>): List<DenseNDArray> {
 
-    this.multiHeadConcatLayers.zip(attentionErrors).forEachIndexed { i, (concatLayer, errors) ->
+    this.multiHeadMergeLayers.zip(attentionErrors).forEachIndexed { i, (mergeLayer, errors) ->
 
-      concatLayer.setErrors(errors.prod(this.params.normScalar))
-      this.errorsAccumulator.accumulate(concatLayer.backward(propagateToInput = true))
+      mergeLayer.setErrors(errors.prod(this.params.normScalar))
+      this.errorsAccumulator.accumulate(mergeLayer.backward(propagateToInput = true))
 
-      this.normScalarsError += errors.prod(concatLayer.outputArray.values).sum()
+      this.normScalarsError += errors.prod(mergeLayer.outputArray.values).sum()
 
-      this.attentionLayers.zip(concatLayer.getInputErrors(copy = false)).forEach { (attentionLayer, concatErrors) ->
+      this.attentionLayers.zip(mergeLayer.getInputErrors(copy = false)).forEach { (attentionLayer, concatErrors) ->
         attentionLayer.outputArrays[i].assignErrors(concatErrors)
       }
     }
