@@ -8,16 +8,13 @@
 package com.kotlinnlp.simplednn.deeplearning.transformers
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.attention.scaleddot.ScaledDotAttentionLayer
-import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayer
-import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayersPool
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
+import com.kotlinnlp.simplednn.deeplearning.attention.multihead.MultiHeadAttentionNetwork
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * A single BERT layer.
@@ -50,20 +47,12 @@ internal class BERTLayer(
   private lateinit var inputSequence: List<AugmentedArray<DenseNDArray>>
 
   /**
-   * The scaled-dot attention layers used for the last forward.
+   * The multi-head scaled-dot attention network.
    */
-  private lateinit var attentionLayers: List<ScaledDotAttentionLayer>
-
-  /**
-   * The pool of merge layers of the multi-head attention outputs.
-   */
-  private val multiHeadMergePool: ConcatFFLayersPool<DenseNDArray> =
-    ConcatFFLayersPool(params = this.params.multiHeadMerge, inputType = LayerType.Input.Dense)
-
-  /**
-   * The merge layers of the multi-head attention outputs that have been used for the last forward.
-   */
-  private lateinit var multiHeadMergeLayers: List<ConcatFFLayer<DenseNDArray>>
+  private val multiHeadAttention = MultiHeadAttentionNetwork(
+    model = this.params.attention,
+    useDropout = this.useDropout,
+    propagateToInput = this.propagateToInput)
 
   /**
    * The batch of output feed-forward processors.
@@ -72,14 +61,24 @@ internal class BERTLayer(
     BatchFeedforwardProcessor(model = this.params.outputFF, propagateToInput = true, useDropout = false)
 
   /**
-   * The outputs of the last forward.
+   * The multi-head attention arrays of the last forward.
    */
-  private lateinit var outputs: List<DenseNDArray>
+  private lateinit var multiHeadAttentionArrays: List<DenseNDArray>
+
+  /**
+   * The last outputs of the feed-forward processors.
+   */
+  private lateinit var ffOutputs: List<DenseNDArray>
 
   /**
    * The error of the norm scalar parameter accumulated during the last backward.
    */
-  private var normScalarsError: Double = 0.0
+  private var normScalarError: Double = 0.0
+
+  /**
+   * The norm scalar parameter error that is accumulated into the [errorsAccumulator].
+   */
+  private val normScalarParamError: ParamsArray.Errors<DenseNDArray> = this.params.normScalarParam.buildDenseErrors()
 
   /**
    * @param input the input sequence
@@ -88,11 +87,9 @@ internal class BERTLayer(
    */
   override fun forward(input: List<DenseNDArray>): List<DenseNDArray> {
 
-    this.setInputSequence(input)
+    this.inputSequence = input.map { AugmentedArray(it) }
 
-    this.outputs = this.forwardOutput(this.forwardAttention())
-
-    return this.outputs
+    return this.forwardOutput(this.forwardAttention(input))
   }
 
   /**
@@ -103,12 +100,12 @@ internal class BERTLayer(
   override fun backward(outputErrors: List<DenseNDArray>) {
 
     this.errorsAccumulator.clear()
-    this.normScalarsError = 0.0
+    this.normScalarError = 0.0
 
     val inputErrors: List<DenseNDArray> = this.backwardAttention(this.backwardOutput(outputErrors))
 
-    this.errorsAccumulator.accumulate(
-      this.params.normScalarParam.buildDenseErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(this.normScalarsError))))
+    this.normScalarParamError.values[0] = this.normScalarError
+    this.errorsAccumulator.accumulate(this.normScalarParamError)
 
     if (this.propagateToInput)
       this.inputSequence.zip(inputErrors).forEach { (input, errors) -> input.assignErrors(errors) }
@@ -138,42 +135,17 @@ internal class BERTLayer(
     this.inputSequence.map { if (copy) it.errors.copy() else it.errors }
 
   /**
-   * Set the input sequence combining it with the positional encoding.
-   *
-   * @param inputSequence the list of arrays of input
-   */
-  private fun setInputSequence(inputSequence: List<DenseNDArray>) {
-
-    this.inputSequence = inputSequence.map { AugmentedArray(it) }
-
-    this.attentionLayers = this.params.attention.map { attentionParams ->
-      ScaledDotAttentionLayer(
-        inputArrays = inputSequence.map { AugmentedArray(it) },
-        params = attentionParams,
-        inputDropout = if (this.useDropout) this.params.dropout else 0.0)
-    }
-
-    this.multiHeadMergeLayers = this.multiHeadMergePool.releaseAndGetItems(inputSequence.size)
-  }
-
-  /**
    * The attention component forward.
+   *
+   * @param input the input sequence
    *
    * @return the output arrays of the attention
    */
-  private fun forwardAttention(): List<DenseNDArray> {
+  private fun forwardAttention(input: List<DenseNDArray>): List<DenseNDArray> {
 
-    this.attentionLayers.forEach { it.forward(useDropout = this.useDropout) }
+    this.multiHeadAttentionArrays = this.multiHeadAttention.forward(input)
 
-    return this.multiHeadMergeLayers.mapIndexed { i, mergeLayer ->
-
-      mergeLayer.inputArrays.zip(this.attentionLayers).forEach { (mergeInput, attentionLayer) ->
-        mergeInput.assignValues(attentionLayer.outputArrays[i].values)
-      }
-      mergeLayer.forward()
-
-      this.inputSequence[i].values.sum(mergeLayer.outputArray.values.prod(this.params.normScalar))
-    }
+    return this.normAndAdd(inputs = input, outputs = this.multiHeadAttentionArrays)
   }
 
   /**
@@ -185,12 +157,21 @@ internal class BERTLayer(
    */
   private fun forwardOutput(attentionArrays: List<DenseNDArray>): List<DenseNDArray> {
 
-    val outputs: List<DenseNDArray> = this.outputFF.forward(attentionArrays)
+    this.ffOutputs = this.outputFF.forward(attentionArrays)
 
-    return attentionArrays.zip(outputs).map { (attention, output) ->
-      attention.sum(output.prod(this.params.normScalar))
-    }
+    return this.normAndAdd(inputs = attentionArrays, outputs = this.ffOutputs)
   }
+
+  /**
+   * Normalize the outputs of a function with the norm scalar factor and sum them to the related inputs.
+   *
+   * @param inputs the input arrays of a function
+   * @param outputs the output arrays of a function
+   */
+  private fun normAndAdd(inputs: List<DenseNDArray>, outputs: List<DenseNDArray>): List<DenseNDArray> =
+    inputs.zip(outputs).map { (input, output) ->
+      output.prod(this.params.normScalar).assignSum(input)
+    }
 
   /**
    * The output component backward.
@@ -204,9 +185,7 @@ internal class BERTLayer(
     this.outputFF.backward(outputErrors.map { it.prod(this.params.normScalar) })
     this.errorsAccumulator.accumulate(this.outputFF.getParamsErrors(copy = false))
 
-    this.outputs.zip(outputErrors).forEach { (output, errors) ->
-      this.normScalarsError += errors.prod(output).sum()
-    }
+    this.accumulateNormScalarErrors(arrays = this.ffOutputs, errors = outputErrors)
 
     return this.outputFF.getInputErrors(copy = false).zip(outputErrors).map { (inputErrors, errors) ->
       inputErrors.sum(errors)
@@ -222,41 +201,29 @@ internal class BERTLayer(
    */
   private fun backwardAttention(attentionErrors: List<DenseNDArray>): List<DenseNDArray> {
 
-    this.multiHeadMergeLayers.zip(attentionErrors).forEachIndexed { i, (mergeLayer, errors) ->
+    this.multiHeadAttention.backward(attentionErrors.map { it.prod(this.params.normScalar) })
+    this.errorsAccumulator.accumulate(this.multiHeadAttention.getParamsErrors(copy = false))
 
-      mergeLayer.setErrors(errors.prod(this.params.normScalar))
-      this.errorsAccumulator.accumulate(mergeLayer.backward(propagateToInput = true))
-
-      this.normScalarsError += errors.prod(mergeLayer.outputArray.values).sum()
-
-      this.attentionLayers.zip(mergeLayer.getInputErrors(copy = false)).forEach { (attentionLayer, concatErrors) ->
-        attentionLayer.outputArrays[i].assignErrors(concatErrors)
-      }
-    }
-
-    this.attentionLayers.forEach { this.errorsAccumulator.accumulate(it.backward(this.propagateToInput)) }
+    this.accumulateNormScalarErrors(arrays = this.multiHeadAttentionArrays, errors = attentionErrors)
 
     return if (this.propagateToInput)
-      this.backwardAttentionInput(attentionErrors)
+      this.multiHeadAttention.getInputErrors().zip(attentionErrors).map { it.first.assignSum(it.second) }
     else
       listOf()
   }
 
   /**
-   * Errors back-propagation to the input of the attention layers.
+   * Accumulate the errors of the norm scalar factor, used to normalize a list of arrays.
    *
-   * @param attentionErrors the output errors of the given multi-head attention
-   *
-   * @return the input errors of the multi-head attention
+   * @param arrays the arrays before the normalization
+   * @param errors the errors of the normalized arrays
    */
-  private fun backwardAttentionInput(attentionErrors: List<DenseNDArray>): List<DenseNDArray> {
+  private fun accumulateNormScalarErrors(arrays: List<DenseNDArray>, errors: List<DenseNDArray>) {
 
-    val inputErrors: List<DenseNDArray> = attentionErrors.map { it.copy() }
-
-    this.attentionLayers.forEach {
-      inputErrors.zip(it.inputArrays).forEach { (errors, input) -> errors.assignSum(input.errors) }
+    arrays.asSequence().zip(errors.asSequence()).forEach { (array, error) ->
+      (0 until array.length).forEach { i ->
+        this.normScalarError += array[i] * error[i]
+      }
     }
-
-    return inputErrors
   }
 }

@@ -11,9 +11,8 @@ import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.models.attention.scaleddot.ScaledDotAttentionLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
+import com.kotlinnlp.simplednn.deeplearning.attention.multihead.MultiHeadAttentionParameters
 import java.io.Serializable
 
 /**
@@ -34,7 +33,7 @@ class BERTParameters(
   attentionOutputSize: Int,
   outputHiddenSize: Int,
   multiHeadStack: Int,
-  val dropout: Double,
+  dropout: Double,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
 ) : Serializable {
@@ -49,25 +48,14 @@ class BERTParameters(
   }
 
   /**
-   * The parameters of the scaled-dot attention layers.
+   * The parameters of the multi-head scaled-dot attention network.
    */
-  val attention: List<ScaledDotAttentionLayerParameters> = List(
-    size = multiHeadStack,
-    init = {
-      ScaledDotAttentionLayerParameters(
-        inputSize = inputSize,
-        attentionSize = attentionSize,
-        outputSize = attentionOutputSize,
-        weightsInitializer = weightsInitializer)
-    }
-  )
-
-  /**
-   * The parameters of the merge layer of the multi-head attention outputs.
-   */
-  val multiHeadMerge = ConcatFFLayerParameters(
-    inputsSize = List(size = multiHeadStack, init = { attentionOutputSize }),
-    outputSize = inputSize,
+  val attention = MultiHeadAttentionParameters(
+    inputSize = inputSize,
+    attentionSize = attentionSize,
+    attentionOutputSize = attentionOutputSize,
+    numOfLayers = multiHeadStack,
+    dropout = dropout,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
 
