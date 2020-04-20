@@ -99,6 +99,7 @@ internal class BERTLayer(
 
     val inputErrors: List<DenseNDArray> = this.backwardAttention(this.backwardOutput(outputErrors))
 
+    this.normScalarParamError.values[0] /= 2.0 * outputErrors.size // div by the number of accumulations (= avg)
     this.errorsAccumulator.accumulate(this.normScalarParamError, copy = false)
 
     if (this.propagateToInput)
