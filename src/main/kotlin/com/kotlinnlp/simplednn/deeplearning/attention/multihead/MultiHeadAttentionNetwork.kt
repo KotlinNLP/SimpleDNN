@@ -79,7 +79,7 @@ class MultiHeadAttentionNetwork(
 
       mergeLayer.forward()
 
-      mergeLayer.outputArray.values.copy()
+      mergeLayer.outputArray.values
     }
   }
 
