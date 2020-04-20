@@ -204,7 +204,7 @@ class BERTTrainer(
    * Accumulate the errors of the model resulting after the call of [learnFromExample].
    */
   override fun accumulateErrors() {
-    this.optimizers.single().accumulate(this.bert.getParamsErrors(copy = false))
+    this.optimizers.single().accumulate(this.bert.getParamsErrors(copy = false), copy = false)
   }
 
   /**

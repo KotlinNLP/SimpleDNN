@@ -101,7 +101,7 @@ class BERT(
 
       it.backward(errors)
 
-      this.errorsAccumulator.accumulate(it.getParamsErrors(copy = false))
+      this.errorsAccumulator.accumulate(it.getParamsErrors(copy = false), copy = false)
 
       errors = it.getInputErrors(copy = false)
     }

@@ -105,7 +105,7 @@ internal class BERTLayer(
     val inputErrors: List<DenseNDArray> = this.backwardAttention(this.backwardOutput(outputErrors))
 
     this.normScalarParamError.values[0] = this.normScalarError
-    this.errorsAccumulator.accumulate(this.normScalarParamError)
+    this.errorsAccumulator.accumulate(this.normScalarParamError, copy = false)
 
     if (this.propagateToInput)
       this.inputSequence.zip(inputErrors).forEach { (input, errors) -> input.assignErrors(errors) }
@@ -183,7 +183,7 @@ internal class BERTLayer(
   private fun backwardOutput(outputErrors: List<DenseNDArray>): List<DenseNDArray> {
 
     this.outputFF.backward(outputErrors.map { it.prod(this.params.normScalar) })
-    this.errorsAccumulator.accumulate(this.outputFF.getParamsErrors(copy = false))
+    this.errorsAccumulator.accumulate(this.outputFF.getParamsErrors(copy = false), copy = false)
 
     this.accumulateNormScalarErrors(arrays = this.ffOutputs, errors = outputErrors)
 
@@ -202,7 +202,7 @@ internal class BERTLayer(
   private fun backwardAttention(attentionErrors: List<DenseNDArray>): List<DenseNDArray> {
 
     this.multiHeadAttention.backward(attentionErrors.map { it.prod(this.params.normScalar) })
-    this.errorsAccumulator.accumulate(this.multiHeadAttention.getParamsErrors(copy = false))
+    this.errorsAccumulator.accumulate(this.multiHeadAttention.getParamsErrors(copy = false), copy = false)
 
     this.accumulateNormScalarErrors(arrays = this.multiHeadAttentionArrays, errors = attentionErrors)
 
