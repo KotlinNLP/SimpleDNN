@@ -71,11 +71,6 @@ internal class BERTLayer(
   private lateinit var ffOutputs: List<DenseNDArray>
 
   /**
-   * The error of the norm scalar parameter accumulated during the last backward.
-   */
-  private var normScalarError: Double = 0.0
-
-  /**
    * The norm scalar parameter error that is accumulated into the [errorsAccumulator].
    */
   private val normScalarParamError: ParamsArray.Errors<DenseNDArray> = this.params.normScalarParam.buildDenseErrors()
@@ -100,11 +95,10 @@ internal class BERTLayer(
   override fun backward(outputErrors: List<DenseNDArray>) {
 
     this.errorsAccumulator.clear()
-    this.normScalarError = 0.0
+    this.normScalarParamError.values[0] = 0.0
 
     val inputErrors: List<DenseNDArray> = this.backwardAttention(this.backwardOutput(outputErrors))
 
-    this.normScalarParamError.values[0] = this.normScalarError
     this.errorsAccumulator.accumulate(this.normScalarParamError, copy = false)
 
     if (this.propagateToInput)
@@ -222,7 +216,7 @@ internal class BERTLayer(
 
     arrays.asSequence().zip(errors.asSequence()).forEach { (array, error) ->
       (0 until array.length).forEach { i ->
-        this.normScalarError += array[i] * error[i]
+        this.normScalarParamError.values[0] += array[i] * error[i]
       }
     }
   }
