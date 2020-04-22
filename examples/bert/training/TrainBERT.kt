@@ -7,6 +7,7 @@
 
 package bert.training
 
+import bert.readDictionary
 import com.kotlinnlp.neuraltokenizer.NeuralTokenizer
 import com.kotlinnlp.neuraltokenizer.NeuralTokenizerModel
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
@@ -74,29 +75,4 @@ fun main(args: Array<String>) {
     println("\n-- Start training")
     helper.train()
   }
-}
-
-/**
- * Read the dictionary set for the training from file.
- * Each line of the file must contain a term and its occurrences, separated by a tab char (`\t`).
- *
- * @param filename the filename of the dictionary
- * @param minOccurrences the min number of occurrences to insert a term into the dictionary
- * @param maxTerms the max number of terms to insert into the dictionary or null for no limit
- *
- * @return a dictionary set for the training
- */
-private fun readDictionary(filename: String, minOccurrences: Int, maxTerms: Int? = null): DictionarySet<String> {
-
-  val terms: List<String> = File(filename)
-    .readLines()
-    .asSequence()
-    .map { it.split("\t") }
-    .map { it[0] to it[1].toInt() }
-    .filter { it.second >= minOccurrences }
-    .sortedByDescending { it.second }
-    .map { it.first }
-    .toList()
-
-  return DictionarySet(terms.take(maxTerms ?: terms.size))
 }
