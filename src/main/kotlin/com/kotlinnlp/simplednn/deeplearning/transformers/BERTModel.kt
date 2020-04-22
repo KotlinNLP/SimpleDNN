@@ -7,9 +7,14 @@
 
 package com.kotlinnlp.simplednn.deeplearning.transformers
 
+import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
+import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream
@@ -55,6 +60,21 @@ class BERTModel(
      * @return the [BERTModel] read from [inputStream] and decoded
      */
     fun load(inputStream: InputStream): BERTModel = Serializer.deserialize(inputStream)
+
+    /**
+     * Build a classifier for the classification of masked tokens.
+     * It can be used for training and test purpose.
+     *
+     * @param params the classifier parameters
+     *
+     * @return a classifier of masked tokens
+     */
+    fun buildClassifier(params: FeedforwardLayerParameters) = FeedforwardLayer(
+      inputArray = AugmentedArray.zeros(size = params.inputSize),
+      outputArray = AugmentedArray.zeros(size = params.outputSize),
+      params = params,
+      inputType = LayerType.Input.Dense,
+      activationFunction = Softmax())
   }
 
   /**

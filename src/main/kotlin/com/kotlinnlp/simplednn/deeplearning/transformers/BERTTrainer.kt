@@ -113,12 +113,8 @@ class BERTTrainer(
    * A feed-forward layer trained to classify an encoded vector within the terms of the dictionary.
    * It is used only during the training phase.
    */
-  private val classificationLayer: FeedforwardLayer<DenseNDArray> = FeedforwardLayer(
-    inputArray = AugmentedArray.zeros(size = this.model.inputSize),
-    outputArray = AugmentedArray.zeros(size = this.dictionary.size),
-    params = FeedforwardLayerParameters(inputSize = this.model.inputSize, outputSize = this.dictionary.size),
-    inputType = LayerType.Input.Dense,
-    activationFunction = Softmax())
+  private val classificationLayer: FeedforwardLayer<DenseNDArray> = BERTModel.buildClassifier(
+    params = FeedforwardLayerParameters(inputSize = this.model.inputSize, outputSize = this.dictionary.size))
 
   /**
    * The errors given when a term has not been dropped.
