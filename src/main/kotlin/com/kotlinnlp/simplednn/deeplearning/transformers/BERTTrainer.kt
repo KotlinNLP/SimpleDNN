@@ -9,13 +9,10 @@ package com.kotlinnlp.simplednn.deeplearning.transformers
 
 import com.kotlinnlp.linguisticdescription.sentence.flattenTokens
 import com.kotlinnlp.neuraltokenizer.NeuralTokenizer
-import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
-import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
@@ -25,6 +22,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.utils.DictionarySet
+import com.kotlinnlp.utils.Serializer
 import com.kotlinnlp.utils.Shuffler
 import com.kotlinnlp.utils.Timer
 import java.io.File
@@ -35,6 +33,7 @@ import java.io.FileOutputStream
  *
  * @param model the model to train
  * @param modelFilename the name of the file in which to save the serialized model
+ * @param classifierModelFilename the name of the file in which to save the classifier model or null to do not save it
  * @param tokenizer a neural tokenizer
  * @param embeddingsMap pre-trained word embeddings
  * @param dictionary a dictionary set with all the forms in the examples
@@ -49,6 +48,7 @@ import java.io.FileOutputStream
 class BERTTrainer(
   private val model: BERTModel,
   modelFilename: String,
+  private val classifierModelFilename: String? = null,
   private val tokenizer: NeuralTokenizer,
   private val embeddingsMap: EmbeddingsMap<String>,
   private val dictionary: DictionarySet<String>,
@@ -193,6 +193,8 @@ class BERTTrainer(
       this.validateAndSaveModel()
       this.lastLosses.clear()
       this.stats.reset()
+
+      this.classifierModelFilename?.let { this.saveClassifierModel(it) }
     }
   }
 
@@ -264,5 +266,17 @@ class BERTTrainer(
       this.stats.metric.truePos++
     else
       this.stats.metric.falsePos++
+  }
+
+  /**
+   * Save the classifier model to file.
+   *
+   * @param filename the filename in which to dump the classifier model
+   */
+  private fun saveClassifierModel(filename: String) {
+
+    println("Saving the output classifier model to '$filename'...")
+
+    Serializer.serialize(this.classificationLayer.params, FileOutputStream(File(filename)))
   }
 }

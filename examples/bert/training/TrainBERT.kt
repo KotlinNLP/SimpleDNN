@@ -60,6 +60,7 @@ fun main(args: Array<String>) {
     val helper = BERTTrainer(
       model = model,
       modelFilename = parsedArgs.modelPath,
+      classifierModelFilename = parsedArgs.classifierModelPath,
       tokenizer = tokenizer,
       embeddingsMap = embeddingsMap,
       dictionary = dictionary,

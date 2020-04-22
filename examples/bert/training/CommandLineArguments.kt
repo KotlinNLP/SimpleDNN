@@ -41,6 +41,15 @@ internal class CommandLineArguments(args: Array<String>) {
   )
 
   /**
+   * The file path in which to serialize the output classifier model (optional).
+   */
+  val classifierModelPath: String? by parser.storing(
+    "-c",
+    "--classifier",
+    help="the file path in which to serialize the output classifier model (optional)"
+  ).default { null }
+
+  /**
    * The file path of the serialized tokenizer model.
    */
   val tokenizerModelPath: String by parser.storing(
