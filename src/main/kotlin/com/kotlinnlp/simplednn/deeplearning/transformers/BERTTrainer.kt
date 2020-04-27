@@ -275,8 +275,8 @@ class BERTTrainer(
    */
   private fun saveClassifierModel(filename: String) {
 
-    println("Saving the output classifier model to '$filename'...")
-
     Serializer.serialize(this.classificationLayer.params, FileOutputStream(File(filename)))
+
+    println("Output classifier model saved to '$filename'...")
   }
 }
