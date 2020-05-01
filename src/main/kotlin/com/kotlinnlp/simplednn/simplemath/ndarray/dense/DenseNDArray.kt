@@ -19,6 +19,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
 import org.jblas.MatrixFunctions.abs
 import org.jblas.Singular
 import kotlin.math.exp
+import kotlin.math.sqrt
 
 /**
  * [NDArray] with dense values (implemented using JBlas)
@@ -388,7 +389,17 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override fun sub(a: DenseNDArray): DenseNDArray = DenseNDArray(this.storage.sub(a.storage))
+  override fun sub(a: NDArray<*>): DenseNDArray = when(a) {
+    is DenseNDArray -> this.sub(a)
+    is SparseNDArray -> TODO("not implemented")
+    is SparseBinaryNDArray -> TODO("not implemented")
+    else -> throw RuntimeException("Invalid NDArray type")
+  }
+
+  /**
+   *
+   */
+  fun sub(a: DenseNDArray): DenseNDArray = DenseNDArray(this.storage.sub(a.storage))
 
   /**
    * In-place subtraction by number
@@ -845,7 +856,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   override fun sqrt(mask: NDArrayMask): SparseNDArray {
 
-    val values = DoubleArray(size = mask.size, init = { Math.sqrt(this.storage[mask.dim1[it], mask.dim2[it]]) })
+    val values = DoubleArray(size = mask.size, init = { sqrt(this.storage[mask.dim1[it], mask.dim2[it]]) })
 
     return SparseNDArray(shape = this.shape, values = values, rows = mask.dim1, columns = mask.dim2)
   }

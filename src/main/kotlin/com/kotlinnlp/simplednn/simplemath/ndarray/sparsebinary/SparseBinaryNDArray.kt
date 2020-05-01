@@ -26,7 +26,7 @@ class SparseBinaryNDArray(
   val activeIndicesByRow: VectorsMap = mutableMapOf(),
   val activeIndicesByColumn: VectorsMap = mutableMapOf()
 ) : NDArray<SparseBinaryNDArray>,
-    Iterable<Indices> {
+  Iterable<Indices> {
 
   companion object {
 
@@ -426,8 +426,11 @@ class SparseBinaryNDArray(
   /**
    *
    */
-  override fun sub(a: SparseBinaryNDArray): SparseBinaryNDArray {
-    TODO("not implemented")
+  override fun sub(a: NDArray<*>): SparseBinaryNDArray = when(a) {
+    is DenseNDArray -> TODO("not implemented")
+    is SparseNDArray -> TODO("not implemented")
+    is SparseBinaryNDArray -> TODO("not implemented")
+    else -> throw RuntimeException("Invalid NDArray type")
   }
 
   /**

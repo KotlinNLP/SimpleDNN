@@ -535,6 +535,20 @@ class DenseNDArraySpec : Spek({
         }
       }
 
+      context("sub(array) method") {
+
+        val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, -0.1, -0.2, -0.7))
+        val res = array.sub(a)
+
+        it("should return a new DenseNDArray") {
+          assertFalse { array === res }
+        }
+
+        it("should assign the expected values") {
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
+        }
+      }
+
       context("reverseSub(number) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 0.7, 0.6, 0.9))

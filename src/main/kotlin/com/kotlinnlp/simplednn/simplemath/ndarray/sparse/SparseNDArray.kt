@@ -459,8 +459,11 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override fun sub(a: SparseNDArray): SparseNDArray {
-    TODO("not implemented")
+  override fun sub(a: NDArray<*>): SparseNDArray = when(a) {
+    is DenseNDArray -> TODO("not implemented")
+    is SparseNDArray -> TODO("not implemented")
+    is SparseBinaryNDArray -> TODO("not implemented")
+    else -> throw RuntimeException("Invalid NDArray type")
   }
 
   /**

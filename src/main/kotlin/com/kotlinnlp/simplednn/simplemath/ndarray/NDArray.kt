@@ -198,7 +198,7 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
-  fun sub(a: SelfType): SelfType
+  fun sub(a: NDArray<*>): SelfType
 
   /**
    * In-place subtraction by number
