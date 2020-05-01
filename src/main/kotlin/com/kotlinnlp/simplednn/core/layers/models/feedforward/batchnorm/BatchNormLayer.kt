@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization
+package com.kotlinnlp.simplednn.core.layers.models.feedforward.batchnorm
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
- * The Normalization layer structure.
+ * The batch normalization layer structure.
  *
  * @property inputArrays the input arrays of the layer
  * @property inputType the type of the input arrays
@@ -28,10 +28,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  * @property id an identification number useful to track a specific layer (default: 0)
  */
-class NormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
+class BatchNormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArrays: List<AugmentedArray<InputNDArrayType>>,
   inputType: LayerType.Input,
-  override val params: NormLayerParameters,
+  override val params: BatchNormLayerParameters,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0,
   override val id: Int = 0
@@ -69,12 +69,12 @@ class NormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The helper which executes the forward.
    */
-  override val forwardHelper = NormForwardHelper(layer = this)
+  override val forwardHelper = BatchNormForwardHelper(layer = this)
 
   /**
    * The helper which executes the backward.
    */
-  override val backwardHelper = NormBackwardHelper(layer = this)
+  override val backwardHelper = BatchNormBackwardHelper(layer = this)
 
   /**
    * The helper which calculates the relevance.

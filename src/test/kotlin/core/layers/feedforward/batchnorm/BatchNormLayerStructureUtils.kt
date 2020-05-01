@@ -5,22 +5,22 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package core.layers.feedforward.normalization
+package core.layers.feedforward.batchnorm
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization.NormLayer
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization.NormLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.batchnorm.BatchNormLayer
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.batchnorm.BatchNormLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
-object NormLayerStructureUtils {
+object BatchNormLayerStructureUtils {
 
   /**
    *
    */
-  fun buildLayer(): NormLayer<DenseNDArray> = NormLayer(
+  fun buildLayer(): BatchNormLayer<DenseNDArray> = BatchNormLayer(
     inputArrays = listOf(
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.8, -0.7, -0.5))),
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.6, -0.2, -0.9))),
@@ -32,9 +32,9 @@ object NormLayerStructureUtils {
   /**
    *
    */
-  fun buildParams(): NormLayerParameters {
+  fun buildParams(): BatchNormLayerParameters {
 
-    val params = NormLayerParameters(inputSize = 4)
+    val params = BatchNormLayerParameters(inputSize = 4)
 
     params.g.values.assignValues(
       DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8))

@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package core.layers.feedforward.normalization
+package core.layers.feedforward.batchnorm
 
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -13,13 +13,13 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
-class NormLayerStructureSpec : Spek({
+class BatchNormLayerStructureSpec : Spek({
 
-  describe("a NormLayer") {
+  describe("a BatchNormLayer") {
 
     context("forward") {
 
-      val layer = NormLayerStructureUtils.buildLayer()
+      val layer = BatchNormLayerStructureUtils.buildLayer()
       layer.forward()
 
       it("should match the expected output at position 0") {
@@ -49,13 +49,13 @@ class NormLayerStructureSpec : Spek({
 
     context("backward") {
 
-      val layer = NormLayerStructureUtils.buildLayer()
+      val layer = BatchNormLayerStructureUtils.buildLayer()
 
       layer.forward()
 
-      layer.outputArrays[0].assignErrors(NormLayerStructureUtils.getOutputErrors1())
-      layer.outputArrays[1].assignErrors(NormLayerStructureUtils.getOutputErrors2())
-      layer.outputArrays[2].assignErrors(NormLayerStructureUtils.getOutputErrors3())
+      layer.outputArrays[0].assignErrors(BatchNormLayerStructureUtils.getOutputErrors1())
+      layer.outputArrays[1].assignErrors(BatchNormLayerStructureUtils.getOutputErrors2())
+      layer.outputArrays[2].assignErrors(BatchNormLayerStructureUtils.getOutputErrors3())
 
       val paramsErrors = layer.backward(propagateToInput = true)
       val params = layer.params

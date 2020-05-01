@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization
+package com.kotlinnlp.simplednn.core.layers.models.feedforward.batchnorm
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
@@ -19,15 +19,15 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
-class NormLayerParameters (
-    inputSize: Int,
-    weightsInitializer: Initializer? = GlorotInitializer(),
-    biasesInitializer: Initializer? = GlorotInitializer()
+class BatchNormLayerParameters(
+  inputSize: Int,
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = GlorotInitializer()
 ) : LayerParameters(
-    inputSize = inputSize,
-    outputSize = inputSize,
-    weightsInitializer = weightsInitializer,
-    biasesInitializer = biasesInitializer
+  inputSize = inputSize,
+  outputSize = inputSize,
+  weightsInitializer = weightsInitializer,
+  biasesInitializer = biasesInitializer
 ) {
 
   companion object {
@@ -53,14 +53,14 @@ class NormLayerParameters (
    * The list of weights parameters.
    */
   override val weightsList: List<ParamsArray> = listOf(
-     this.g
+    this.g
   )
 
   /**
    * The list of biases parameters.
    */
   override val biasesList: List<ParamsArray> = listOf(
-      this.b
+    this.b
   )
 
   /**

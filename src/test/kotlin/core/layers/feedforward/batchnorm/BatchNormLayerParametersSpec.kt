@@ -5,21 +5,21 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package core.layers.feedforward.normalization
+package core.layers.feedforward.batchnorm
 
 import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization.NormLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.batchnorm.BatchNormLayerParameters
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 
-class NormLayerParametersSpec: Spek({
+class BatchNormLayerParametersSpec: Spek({
 
-  describe("NormLayerParameters") {
+  describe("BatchNormLayerParameters") {
 
     context("initialization") {
 
@@ -32,7 +32,7 @@ class NormLayerParametersSpec: Spek({
         val randomGenerator = mock<RandomGenerator>()
         whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
-        val params = NormLayerParameters(
+        val params = BatchNormLayerParameters(
           inputSize = 10,
           weightsInitializer = RandomInitializer(randomGenerator),
           biasesInitializer = ConstantInitializer(0.9))

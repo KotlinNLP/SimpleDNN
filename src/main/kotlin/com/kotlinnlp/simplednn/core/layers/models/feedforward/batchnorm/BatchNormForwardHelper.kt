@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization
+package com.kotlinnlp.simplednn.core.layers.models.feedforward.batchnorm
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -13,12 +13,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import kotlin.math.sqrt
 
 /**
- * The helper which executes the forward on the [NormLayer].
+ * The helper which executes the forward on the [BatchNormLayer].
  *
  * @param layer the layer with which this helper works
  */
-internal class NormForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: NormLayer<InputNDArrayType>
+internal class BatchNormForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val layer: BatchNormLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   companion object {

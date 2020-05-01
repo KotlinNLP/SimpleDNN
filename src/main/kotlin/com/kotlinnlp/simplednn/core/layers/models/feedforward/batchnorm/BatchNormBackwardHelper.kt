@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization
+package com.kotlinnlp.simplednn.core.layers.models.feedforward.batchnorm
 
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -13,10 +13,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
- * The helper which executes the backward on the [NormLayer].
+ * The helper which executes the backward on the [BatchNormLayer].
  */
-internal class NormBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: NormLayer<InputNDArrayType>
+internal class BatchNormBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val layer: BatchNormLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType>(layer) {
 
   /**
