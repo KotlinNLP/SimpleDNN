@@ -59,10 +59,7 @@ internal class NormForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     this.layer.inputArrays.forEach { input ->
 
-      val diff: DenseNDArray = this.layer.mean.copy()
-
-      diff.assignSub(input.values)
-      diff.assignProd(diff)
+      val diff: DenseNDArray = this.layer.mean.sub(input.values).assignPow(2.0)
 
       this.layer.stdDev.assignSum(diff)
     }
