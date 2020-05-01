@@ -37,13 +37,13 @@ internal class NormBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
 
       val sub: DenseNDArray = DenseNDArrayFactory.zeros(this.layer.inputArrays[0].values.shape)
       sub.assignValues(this.layer.inputArrays[index].values)
-      sub.assignSub(this.layer.meanArray).assignDiv(this.layer.devStdArray.assignSum(0.00000000001))
+      sub.assignSub(this.layer.mean).assignDiv(this.layer.stdDev.assignSum(0.00000000001))
 
       this.layer.params.g.errors.values.assignSum(sub.assignProd(gy))
 
       if (propagateToInput) {
         this.layer.inputArrays[index].assignErrors(
-          gy.assignProd(this.layer.params.g.values.div(this.layer.devStdArray)))
+          gy.assignProd(this.layer.params.g.values.div(this.layer.stdDev)))
       }
     }
   }

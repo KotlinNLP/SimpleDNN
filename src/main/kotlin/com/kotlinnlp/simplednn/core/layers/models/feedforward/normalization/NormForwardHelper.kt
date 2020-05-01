@@ -7,82 +7,82 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization
 
-import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import kotlin.math.sqrt
 
 /**
  * The helper which executes the forward on the [NormLayer].
+ *
+ * @param layer the layer with which this helper works
  */
 internal class NormForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: NormLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
-  /**
-   * Calculate the standard deviation of [arrays]
-   *
-   * @param meanVector The mean of [arrays]
-   * @param arrays The input arrays
-   *
-   * @return a dense array
-   */
-  private fun calculateStdDev(meanVector: DenseNDArray, arrays: List<AugmentedArray<InputNDArrayType>>): DenseNDArray{
+  companion object {
 
-    val dev: DenseNDArray = DenseNDArrayFactory.zeros(this.layer.inputArrays[0].values.shape)
-    val e = 0.00000000001
-
-    arrays.indices.forEach { i ->
-
-      val diff: DenseNDArray = DenseNDArrayFactory.fromNDArray(meanVector)
-
-      diff.assignSub(this.layer.inputArrays[i].values)
-      diff.assignProd(diff)
-
-      dev.assignSum(diff)
-    }
-
-    (0 until dev.length).forEach { i -> dev[i] = sqrt(dev[i] / arrays.size + e) }
-
-    return dev
+    /**
+     * Avoid underflow errors.
+     */
+    private const val EPS = 1.0e-12
   }
 
   /**
-   * Forward the input to the output combining it with the parameters
-   */
-  private fun calculateMean(arrays: List<AugmentedArray<InputNDArrayType>>): DenseNDArray{
-
-    val mean: DenseNDArray = DenseNDArrayFactory.zeros(this.layer.inputArrays[0].values.shape)
-
-    arrays.indices.forEach { i ->
-      mean.assignSum(arrays[i].values)
-    }
-
-    return mean.assignDiv(arrays.size.toDouble())
-  }
-
-  /**
-   * Forward the input to the output combining it with the parameters
+   * Forward the input to the output combining it with the parameters.
    */
   override fun forward() {
 
-    val mean: DenseNDArray = calculateMean(this.layer.inputArrays)
-    val dev: DenseNDArray = calculateStdDev(mean, this.layer.inputArrays)
+    // Important: the mean must be calculated before the std dev!
+    calculateMean()
+    calculateStdDev()
 
-    this.layer.devStdArray.assignValues(dev)
-    dev.assignValues(this.layer.params.g.values.div(dev))
+    val gStdDev: DenseNDArray = this.layer.params.g.values.div(this.layer.stdDev)
 
-    this.layer.meanArray.assignValues(mean)
+    this.layer.inputArrays.zip(this.layer.outputArrays).forEach { (input, output) ->
 
-    this.layer.outputArrays.forEachIndexed { index, outputArray ->
+      output.valuesNotActivated.assignValues(input.values)
+      output.valuesNotActivated.assignSub(this.layer.mean)
+      output.valuesNotActivated.assignProd(gStdDev).assignSum(this.layer.params.b.values)
 
-      outputArray.valuesNotActivated.assignValues(this.layer.inputArrays[index].values as DenseNDArray)
-      outputArray.valuesNotActivated.assignSub(mean)
-      outputArray.valuesNotActivated.assignProd(dev).assignSum(this.layer.params.b.values)
-
-      outputArray.activate()
+      output.activate()
     }
+  }
+
+  /**
+   * Calculate the standard deviation of the input arrays and assign it to the support array `this.layer.stdDev`.
+   */
+  private fun calculateStdDev() {
+
+    this.layer.stdDev.zeros()
+
+    this.layer.inputArrays.forEach { input ->
+
+      val diff: DenseNDArray = this.layer.mean.copy()
+
+      diff.assignSub(input.values)
+      diff.assignProd(diff)
+
+      this.layer.stdDev.assignSum(diff)
+    }
+
+    (0 until this.layer.stdDev.length).forEach { i ->
+      this.layer.stdDev[i] = sqrt(this.layer.stdDev[i] / this.layer.inputArrays.size + EPS)
+    }
+  }
+
+  /**
+   * Calculate the mean of the input arrays and assign it to the support array `this.layer.mean`.
+   */
+  private fun calculateMean() {
+
+    this.layer.mean.zeros()
+
+    this.layer.inputArrays.forEach {
+      this.layer.mean.assignSum(it.values)
+    }
+
+    this.layer.mean.assignDiv(this.layer.inputArrays.size.toDouble())
   }
 }

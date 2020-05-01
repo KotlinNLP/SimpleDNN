@@ -57,14 +57,14 @@ class NormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * The vector containing the mean of the input layers.
+   * The vector containing the mean of the input arrays.
    */
-  val meanArray: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.inputSize))
+  internal val mean: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.inputSize))
 
   /**
-   * The vector containing the standard deviation of the input layers.
+   * The vector containing the standard deviation of the input arrays.
    */
-  val devStdArray: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.inputSize))
+  internal val stdDev: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.inputSize))
 
   /**
    * The helper which executes the forward.

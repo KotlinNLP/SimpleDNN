@@ -22,34 +22,12 @@ object NormLayerStructureUtils {
    */
   fun buildLayer(): NormLayer<DenseNDArray> = NormLayer(
     inputArrays = listOf(
-      AugmentedArray(values = buildarray1()),
-      AugmentedArray(values = buildarray2()),
-      AugmentedArray(values = buildarray3())),
+      AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.8, -0.7, -0.5))),
+      AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.6, -0.2, -0.9))),
+      AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.4, 0.2, 0.8)))),
     inputType = LayerType.Input.Dense,
     params = buildParams(),
     activationFunction = ReLU())
-
-  /**
-   *
-   */
-  private fun buildarray1(): DenseNDArray {
-
-    return DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.8, -0.7, -0.5))
-  }
-  /**
-   *
-   */
-  private fun buildarray2(): DenseNDArray {
-
-    return DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.6, -0.2, -0.9))
-  }
-  /**
-   *
-   */
-  private fun buildarray3(): DenseNDArray {
-
-    return DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.4, 0.2, 0.8))
-  }
 
   /**
    *

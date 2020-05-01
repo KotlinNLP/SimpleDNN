@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * The helper which executes the forward on a [layer].
  *
- * @property layer the [Layer] in which the forward is executed.
+ * @param layer the layer with which this helper works
  */
 internal abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   protected open val layer: Layer<InputNDArrayType>
