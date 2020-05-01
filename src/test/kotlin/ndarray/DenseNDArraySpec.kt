@@ -1257,6 +1257,21 @@ class DenseNDArraySpec : Spek({
         }
       }
 
+      context("assignSqrt(number) method") {
+
+        val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
+        val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3162, 0.4472, 0.5478, 0.0))
+        val res = array.assignSqrt()
+
+        it("should return the same DenseNDArray") {
+          assertTrue { array === res }
+        }
+
+        it("should assign the expected values") {
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
+        }
+      }
+
       context("assignLog10() method") {
 
         val array1 = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))

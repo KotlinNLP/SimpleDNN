@@ -809,6 +809,13 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
+   *
+   */
+  override fun assignSqrt(): SparseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
    * Square root of this [SparseNDArray] masked by [mask]
    *
    * @param mask the mask to apply

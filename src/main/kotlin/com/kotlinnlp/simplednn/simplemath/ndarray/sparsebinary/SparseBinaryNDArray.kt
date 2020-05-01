@@ -611,6 +611,13 @@ class SparseBinaryNDArray(
   }
 
   /**
+   *
+   */
+  override fun assignSqrt(): SparseBinaryNDArray {
+    TODO("not implemented")
+  }
+
+  /**
    * Square root of this [SparseBinaryNDArray] masked by [mask]
    *
    * @param mask the mask to apply

@@ -848,6 +848,14 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   override fun sqrt(): DenseNDArray = DenseNDArray(MatrixFunctions.sqrt(this.storage))
 
   /**
+   *
+   */
+  override fun assignSqrt(): DenseNDArray {
+    MatrixFunctions.sqrti(this.storage)
+    return this
+  }
+
+  /**
    * Square root of this [DenseNDArray] masked by [mask]
    *
    * @param mask the mask to apply

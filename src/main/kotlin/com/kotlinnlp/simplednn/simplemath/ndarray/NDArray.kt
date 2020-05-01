@@ -330,6 +330,11 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun sqrt(): SelfType
 
   /**
+   *
+   */
+  fun assignSqrt(): SelfType
+
+  /**
    * Square root of this [NDArray] masked by [mask]
    *
    * @param mask the mask to apply
