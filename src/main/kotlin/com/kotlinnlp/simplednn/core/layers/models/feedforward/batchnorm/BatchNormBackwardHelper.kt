@@ -27,22 +27,25 @@ internal class BatchNormBackwardHelper<InputNDArrayType : NDArray<InputNDArrayTy
    */
   override fun execBackward(propagateToInput: Boolean) {
 
-    this.layer.outputArrays.forEachIndexed { index, outputArray ->
+    val gIn: DenseNDArray? = if (propagateToInput) this.layer.params.g.values.div(this.layer.stdDev) else null
 
-      val gy: DenseNDArray = outputArray.errors
+    this.layer.params.b.errors.values.zeros()
+    this.layer.params.g.errors.values.zeros()
+
+    this.layer.inputArrays.zip(this.layer.outputArrays).forEach { (input, output) ->
+
+      val gy: DenseNDArray = output.errors
 
       this.layer.params.b.errors.values.assignSum(gy)
 
-      val sub: DenseNDArray = DenseNDArrayFactory.zeros(this.layer.inputArrays[0].values.shape)
-      sub.assignValues(this.layer.inputArrays[index].values)
-      sub.assignSub(this.layer.mean).assignDiv(this.layer.stdDev.assignSum(0.00000000001))
+      val gg: DenseNDArray = DenseNDArrayFactory.zeros(input.values.shape)
+      gg.assignValues(input.values)
+      gg.assignSub(this.layer.mean).assignDiv(this.layer.stdDev)
 
-      this.layer.params.g.errors.values.assignSum(sub.assignProd(gy))
+      this.layer.params.g.errors.values.assignSum(gg.assignProd(gy))
 
-      if (propagateToInput) {
-        this.layer.inputArrays[index].assignErrors(
-          gy.assignProd(this.layer.params.g.values.div(this.layer.stdDev)))
-      }
+      if (propagateToInput)
+        input.assignErrorsByProd(gy, gIn!!)
     }
   }
 }
