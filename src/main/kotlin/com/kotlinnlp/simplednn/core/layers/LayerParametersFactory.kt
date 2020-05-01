@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.batchnorm.BatchNormLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.norm.NormLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance.SquaredDistanceLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayerParameters
@@ -70,6 +71,18 @@ object LayerParametersFactory {
       HighwayLayerParameters(
         inputSize = inputsSize.first(),
         sparseInput = sparseInput,
+        weightsInitializer = weightsInitializer,
+        biasesInitializer = biasesInitializer)
+    }
+
+    LayerType.Connection.Norm -> {
+
+      require(outputSize == null || outputSize == inputsSize.first()) {
+        "The Norm layer requires that the output size must be equal to the input size."
+      }
+
+      NormLayerParameters(
+        inputSize = inputsSize.first(),
         weightsInitializer = weightsInitializer,
         biasesInitializer = biasesInitializer)
     }

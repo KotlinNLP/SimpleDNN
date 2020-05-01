@@ -14,6 +14,8 @@ import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLay
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.batchnorm.BatchNormLayer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.batchnorm.BatchNormLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.norm.NormLayer
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.norm.NormLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance.SquaredDistanceLayer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance.SquaredDistanceLayerParameters
@@ -184,6 +186,12 @@ object LayerFactory {
       params = params as HighwayLayerParameters,
       activationFunction = activationFunction,
       dropout = dropout)
+
+    LayerType.Connection.Norm -> NormLayer(
+      inputArray = inputArrays.first(),
+      inputType = inputType,
+      outputArray = AugmentedArray.zeros(outputSize),
+      params = params as NormLayerParameters)
 
     LayerType.Connection.BatchNorm -> BatchNormLayer(
       inputArrays = inputArrays,

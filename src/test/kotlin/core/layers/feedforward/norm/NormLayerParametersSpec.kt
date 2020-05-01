@@ -1,16 +1,16 @@
-/* Copyright 2016-present The KotlinNLP Authors. All Rights Reserved.
+/* Copyright 2020-present Simone Cangialosi. All Rights Reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-package core.layers.feedforward.batchnorm
+package core.layers.feedforward.norm
 
 import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.batchnorm.BatchNormLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.norm.NormLayerParameters
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.spekframework.spek2.Spek
@@ -20,22 +20,20 @@ import kotlin.test.assertEquals
 /**
  *
  */
-class BatchNormLayerParametersSpec: Spek({
+class NormLayerParametersSpec: Spek({
 
-  describe("BatchNormLayerParameters") {
+  describe("NormLayerParameters") {
 
     context("initialization") {
 
       context("dense input") {
 
         var k = 0
-        val initValues = doubleArrayOf(
-          0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1,
-          1.2, 1.3, 1.4, 1.5, 1.6)
+        val initValues = doubleArrayOf(0.1, 0.2, 0.3, 0.4)
         val randomGenerator = mock<RandomGenerator>()
         whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
-        val params = BatchNormLayerParameters(
+        val params = NormLayerParameters(
           inputSize = 10,
           weightsInitializer = RandomInitializer(randomGenerator),
           biasesInitializer = ConstantInitializer(0.9))

@@ -28,6 +28,7 @@ sealed class LayerType {
   enum class Connection(val property: Property) {
     Feedforward(property = Property.Feedforward),
     Highway(property = Property.Feedforward),
+    Norm(property = Property.Feedforward),
     BatchNorm(property = Property.Batch),
     SquaredDistance(property = Property.Feedforward),
     Affine(property = Property.Merge),
