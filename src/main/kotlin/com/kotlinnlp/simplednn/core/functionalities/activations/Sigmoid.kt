@@ -39,5 +39,4 @@ class Sigmoid : ScalarActivationFunction() {
    * @return the Sigmoid derivative calculated in x
    */
   override fun dfOptimized(fx: Double): Double = fx * (1.0 - fx)
-
 }

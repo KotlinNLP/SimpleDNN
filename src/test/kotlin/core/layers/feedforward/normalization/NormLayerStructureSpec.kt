@@ -7,21 +7,19 @@
 
 package core.layers.feedforward.normalization
 
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import core.layers.feedforward.highway.HighwayLayerStructureUtils
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertTrue
 
-class NormalizationLayerStructureSpec : Spek({
+class NormLayerStructureSpec : Spek({
 
-  describe("a Normalization") {
+  describe("a NormLayer") {
 
     context("forward") {
 
-      val layer = NormalizationLayerStructureUtils.buildLayer()
+      val layer = NormLayerStructureUtils.buildLayer()
       layer.forward()
 
       it("should match the expected output at position 0") {
@@ -51,13 +49,13 @@ class NormalizationLayerStructureSpec : Spek({
 
     context("backward") {
 
-      val layer = NormalizationLayerStructureUtils.buildLayer()
+      val layer = NormLayerStructureUtils.buildLayer()
 
       layer.forward()
 
-      layer.outputArrays[0].assignErrors(NormalizationLayerStructureUtils.getOutputErrors1())
-      layer.outputArrays[1].assignErrors(NormalizationLayerStructureUtils.getOutputErrors2())
-      layer.outputArrays[2].assignErrors(NormalizationLayerStructureUtils.getOutputErrors3())
+      layer.outputArrays[0].assignErrors(NormLayerStructureUtils.getOutputErrors1())
+      layer.outputArrays[1].assignErrors(NormLayerStructureUtils.getOutputErrors2())
+      layer.outputArrays[2].assignErrors(NormLayerStructureUtils.getOutputErrors3())
 
       val paramsErrors = layer.backward(propagateToInput = true)
       val params = layer.params

@@ -15,10 +15,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import kotlin.math.sqrt
 
 /**
- * The helper which executes the forward on the [NormalizationLayer].
+ * The helper which executes the forward on the [NormLayer].
  */
-internal class NormalizationForwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: NormalizationLayer<InputNDArrayType>
+internal class NormForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val layer: NormLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
   /**
@@ -31,36 +31,36 @@ internal class NormalizationForwardHelper <InputNDArrayType : NDArray<InputNDArr
    */
   private fun calculateStdDev(meanVector: DenseNDArray, arrays: List<AugmentedArray<InputNDArrayType>>): DenseNDArray{
 
-    val devVector: DenseNDArray = DenseNDArrayFactory.zeros(this.layer.inputArrays[0].values.shape)
-    var n = 0.0
+    val dev: DenseNDArray = DenseNDArrayFactory.zeros(this.layer.inputArrays[0].values.shape)
     val e = 0.00000000001
 
-    (0 until arrays.size).forEach {
-      i ->
-      val diffVector: DenseNDArray = DenseNDArrayFactory.fromNDArray(meanVector)
-      diffVector.assignSub(this.layer.inputArrays[i].values)
-      diffVector.assignProd(diffVector)
-      devVector.assignSum(diffVector)
-      n += 1
+    arrays.indices.forEach { i ->
+
+      val diff: DenseNDArray = DenseNDArrayFactory.fromNDArray(meanVector)
+
+      diff.assignSub(this.layer.inputArrays[i].values)
+      diff.assignProd(diff)
+
+      dev.assignSum(diff)
     }
 
-    (0 until devVector.length).forEach { i -> devVector[i] = sqrt(devVector[i] / n + e) }
+    (0 until dev.length).forEach { i -> dev[i] = sqrt(dev[i] / arrays.size + e) }
 
-    return devVector
+    return dev
   }
 
   /**
    * Forward the input to the output combining it with the parameters
    */
   private fun calculateMean(arrays: List<AugmentedArray<InputNDArrayType>>): DenseNDArray{
-    val meanVector: DenseNDArray = DenseNDArrayFactory.zeros(this.layer.inputArrays[0].values.shape)
-    var n = 0.0
 
-    (0 until arrays.size).forEach { i -> meanVector.assignSum(arrays[i].values)
-      n += 1
+    val mean: DenseNDArray = DenseNDArrayFactory.zeros(this.layer.inputArrays[0].values.shape)
+
+    arrays.indices.forEach { i ->
+      mean.assignSum(arrays[i].values)
     }
 
-    return meanVector.assignDiv(n)
+    return mean.assignDiv(arrays.size.toDouble())
   }
 
   /**
@@ -68,17 +68,20 @@ internal class NormalizationForwardHelper <InputNDArrayType : NDArray<InputNDArr
    */
   override fun forward() {
 
-    val meanVector: DenseNDArray = calculateMean(this.layer.inputArrays)
+    val mean: DenseNDArray = calculateMean(this.layer.inputArrays)
+    val dev: DenseNDArray = calculateStdDev(mean, this.layer.inputArrays)
 
-    val devVector: DenseNDArray = calculateStdDev(meanVector, this.layer.inputArrays)
-    this.layer.devStdArray.assignValues(devVector)
-    devVector.assignValues(this.layer.params.g.values.div(devVector))
+    this.layer.devStdArray.assignValues(dev)
+    dev.assignValues(this.layer.params.g.values.div(dev))
 
-    this.layer.meanArray.assignValues(meanVector)
-    for ((index, outputArray) in this.layer.outputArrays.withIndex()){
+    this.layer.meanArray.assignValues(mean)
+
+    this.layer.outputArrays.forEachIndexed { index, outputArray ->
+
       outputArray.valuesNotActivated.assignValues(this.layer.inputArrays[index].values as DenseNDArray)
-      outputArray.valuesNotActivated.assignSub(meanVector)
-      outputArray.valuesNotActivated.assignProd(devVector).assignSum(this.layer.params.b.values)
+      outputArray.valuesNotActivated.assignSub(mean)
+      outputArray.valuesNotActivated.assignProd(dev).assignSum(this.layer.params.b.values)
+
       outputArray.activate()
     }
   }

@@ -29,11 +29,11 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  * @property id an identification number useful to track a specific layer (default: 0)
  */
-class NormalizationLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
+class NormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArrays: List<AugmentedArray<InputNDArrayType>>,
   inputType: LayerType.Input,
   val inputSize: Int,
-  override val params: NormalizationLayerParameters,
+  override val params: NormLayerParameters,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0,
   override val id: Int = 0
@@ -66,12 +66,12 @@ class NormalizationLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The helper which executes the forward.
    */
-  override val forwardHelper = NormalizationForwardHelper(layer = this)
+  override val forwardHelper = NormForwardHelper(layer = this)
 
   /**
    * The helper which executes the backward.
    */
-  override val backwardHelper = NormalizationBackwardHelper(layer = this)
+  override val backwardHelper = NormBackwardHelper(layer = this)
 
   /**
    * The helper which calculates the relevance.

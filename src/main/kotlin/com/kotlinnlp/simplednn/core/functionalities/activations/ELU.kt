@@ -53,5 +53,4 @@ class ELU(val alpha: Double = 1.0) : ScalarActivationFunction() {
    * @return the ELU derivative calculated in x
    */
   override fun dfOptimized(fx: Double): Double = if (fx > 0.0) 1.0 else fx + this.alpha
-
 }

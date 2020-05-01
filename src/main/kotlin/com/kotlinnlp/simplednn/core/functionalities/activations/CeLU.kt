@@ -17,7 +17,7 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
  *           Using default value, the function is identical to ELU.
  *
  */
-class CeLU (val alpha: Double = 1.0) : ScalarActivationFunction() {
+class CeLU(val alpha: Double = 1.0) : ScalarActivationFunction() {
 
   companion object {
 
@@ -52,5 +52,4 @@ class CeLU (val alpha: Double = 1.0) : ScalarActivationFunction() {
    * @return the CeLU derivative calculated in x
    */
   override fun dfOptimized(fx: Double): Double = if (fx > 0.0) 1.0 else (fx + this.alpha) / this.alpha
-
 }

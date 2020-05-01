@@ -10,16 +10,16 @@ package core.layers.feedforward.normalization
 import com.kotlinnlp.simplednn.core.functionalities.initializers.ConstantInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.RandomInitializer
 import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.RandomGenerator
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization.NormalizationLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization.NormLayerParameters
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertEquals
 
-class NormalizationLayerParametersSpec: Spek({
+class NormLayerParametersSpec: Spek({
 
-  describe("a ConvolutionLayerParameters") {
+  describe("NormLayerParameters") {
 
     context("initialization") {
 
@@ -32,7 +32,7 @@ class NormalizationLayerParametersSpec: Spek({
         val randomGenerator = mock<RandomGenerator>()
         whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
-        val params = NormalizationLayerParameters(
+        val params = NormLayerParameters(
           inputSize = 10,
           weightsInitializer = RandomInitializer(randomGenerator),
           biasesInitializer = ConstantInitializer(0.9))
@@ -48,7 +48,6 @@ class NormalizationLayerParametersSpec: Spek({
             assertEquals(0.9, params.b.values[i])
           }
         }
-
       }
     }
   }

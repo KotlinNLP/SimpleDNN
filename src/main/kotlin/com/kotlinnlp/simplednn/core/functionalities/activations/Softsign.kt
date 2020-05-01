@@ -41,5 +41,4 @@ class Softsign : ScalarActivationFunction() {
    * @return the Softsign derivative calculated in x
    */
   override fun dfOptimized(fx: Double): Double = Math.pow(1.0 - abs(fx), 2.0)
-
 }

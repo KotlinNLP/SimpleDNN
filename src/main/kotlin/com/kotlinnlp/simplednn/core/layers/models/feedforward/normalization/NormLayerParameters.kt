@@ -19,7 +19,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
-class NormalizationLayerParameters (
+class NormLayerParameters (
     inputSize: Int,
     weightsInitializer: Initializer? = GlorotInitializer(),
     biasesInitializer: Initializer? = GlorotInitializer()

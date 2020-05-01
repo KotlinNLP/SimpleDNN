@@ -43,5 +43,4 @@ class Threshold(val threshold: Double= 0.1, val value: Double = 0.0): ScalarActi
    * @return the Threshold derivative calculated in x
    */
   override fun dfOptimized(fx: Double): Double =  if (fx > this.threshold) 1.0 else this.value
-
 }

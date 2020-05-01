@@ -9,21 +9,18 @@ package core.layers.feedforward.normalization
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
-import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization.NormalizationLayer
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization.NormalizationLayerParameters
-import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization.NormLayer
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.normalization.NormLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.sun.xml.internal.ws.spi.db.RepeatedElementBridge
 
-object NormalizationLayerStructureUtils {
+object NormLayerStructureUtils {
 
   /**
    *
    */
-  fun buildLayer(): NormalizationLayer<DenseNDArray> = NormalizationLayer(
+  fun buildLayer(): NormLayer<DenseNDArray> = NormLayer(
       inputArrays = listOf(
           AugmentedArray(values = buildarray1()),
           AugmentedArray(values = buildarray2()),
@@ -58,9 +55,9 @@ object NormalizationLayerStructureUtils {
   /**
    *
    */
-  fun buildParams(): NormalizationLayerParameters {
+  fun buildParams(): NormLayerParameters {
 
-    val params = NormalizationLayerParameters(inputSize = 4)
+    val params = NormLayerParameters(inputSize = 4)
 
     params.g.values.assignValues(
         DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8))

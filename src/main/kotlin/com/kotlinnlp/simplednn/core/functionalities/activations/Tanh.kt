@@ -7,6 +7,9 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.activations
 
+import kotlin.math.pow
+import kotlin.math.tanh
+
 /**
  * The hyperbolic tangent tanh(x) activation function is an S-shaped function,
  * transforming the values x into the range [−1, 1].
@@ -29,7 +32,7 @@ class Tanh : ScalarActivationFunction() {
    *
    * @return f([x])
    */
-  override fun f(x: Double): Double = Math.tanh(x)
+  override fun f(x: Double): Double = tanh(x)
 
   /**
    * Optimized derivative of the Tanh function, calculated respect to the input already activated.
@@ -38,6 +41,5 @@ class Tanh : ScalarActivationFunction() {
    *
    * @return the Tanh derivative calculated in x
    */
-  override fun dfOptimized(fx: Double): Double = 1.0 - Math.pow(fx, 2.0)
-
+  override fun dfOptimized(fx: Double): Double = 1.0 - fx.pow(2.0)
 }

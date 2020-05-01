@@ -13,10 +13,10 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
- * The helper which executes the backward on the [NormalizationLayer].
+ * The helper which executes the backward on the [NormLayer].
  */
-internal class NormalizationBackwardHelper <InputNDArrayType : NDArray<InputNDArrayType>>(
-  override val layer: NormalizationLayer<InputNDArrayType>
+internal class NormBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
+  override val layer: NormLayer<InputNDArrayType>
 ) : BackwardHelper<InputNDArrayType>(layer) {
 
   /**
@@ -29,20 +29,21 @@ internal class NormalizationBackwardHelper <InputNDArrayType : NDArray<InputNDAr
 
     this.layer.applyOutputActivationDerivs()
 
-    for ((index, outputArray) in this.layer.outputArrays.withIndex()) {
+    this.layer.outputArrays.forEachIndexed { index, outputArray ->
 
       val gy: DenseNDArray = outputArray.errors
 
       this.layer.params.b.errors.values.assignSum(gy)
 
-      val sub : DenseNDArray = DenseNDArrayFactory.zeros(this.layer.inputArrays[0].values.shape)
+      val sub: DenseNDArray = DenseNDArrayFactory.zeros(this.layer.inputArrays[0].values.shape)
       sub.assignValues(this.layer.inputArrays[index].values)
       sub.assignSub(this.layer.meanArray).assignDiv(this.layer.devStdArray.assignSum(0.00000000001))
 
       this.layer.params.g.errors.values.assignSum(sub.assignProd(gy))
 
       if (propagateToInput) {
-        this.layer.inputArrays[index].assignErrors(gy.assignProd(this.layer.params.g.values.div(this.layer.devStdArray)))
+        this.layer.inputArrays[index].assignErrors(
+          gy.assignProd(this.layer.params.g.values.div(this.layer.devStdArray)))
       }
     }
   }
