@@ -21,14 +21,13 @@ object NormLayerStructureUtils {
    *
    */
   fun buildLayer(): NormLayer<DenseNDArray> = NormLayer(
-      inputArrays = listOf(
-          AugmentedArray(values = buildarray1()),
-          AugmentedArray(values = buildarray2()),
-          AugmentedArray(values = buildarray3())),
-      inputSize = 4,
-      inputType = LayerType.Input.Dense,
-      params = buildParams(),
-      activationFunction = ReLU())
+    inputArrays = listOf(
+      AugmentedArray(values = buildarray1()),
+      AugmentedArray(values = buildarray2()),
+      AugmentedArray(values = buildarray3())),
+    inputType = LayerType.Input.Dense,
+    params = buildParams(),
+    activationFunction = ReLU())
 
   /**
    *
@@ -60,11 +59,11 @@ object NormLayerStructureUtils {
     val params = NormLayerParameters(inputSize = 4)
 
     params.g.values.assignValues(
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8))
     )
 
     params.b.values.assignValues(
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.9, 0.2, -0.9, 0.2))
+      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.9, 0.2, -0.9, 0.2))
     )
 
     return params

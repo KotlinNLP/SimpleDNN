@@ -22,7 +22,6 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *
  * @property inputArrays the input arrays of the layer
  * @property inputType the type of the input arrays
- * @property inputSize the size of the input arrays (equal to the output size)
  * @property params the parameters which connect the input to the output
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default 0.0).
@@ -32,7 +31,6 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 class NormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArrays: List<AugmentedArray<InputNDArrayType>>,
   inputType: LayerType.Input,
-  val inputSize: Int,
   override val params: NormLayerParameters,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0,
@@ -47,21 +45,26 @@ class NormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) {
 
   /**
+   * The size of the input arrays.
+   */
+  val inputSize: Int = this.inputArrays.first().values.length
+
+  /**
    * The list containing the layer output.
    */
   val outputArrays: List<AugmentedArray<DenseNDArray>> = List(this.inputArrays.size) {
-    AugmentedArray(DenseNDArrayFactory.zeros(Shape(inputSize)))
+    AugmentedArray(DenseNDArrayFactory.zeros(Shape(this.inputSize)))
   }
 
   /**
    * The vector containing the mean of the input layers.
    */
-  val meanArray: DenseNDArray = DenseNDArrayFactory.zeros(Shape(inputSize))
+  val meanArray: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.inputSize))
 
   /**
    * The vector containing the standard deviation of the input layers.
    */
-  val devStdArray: DenseNDArray = DenseNDArrayFactory.zeros(Shape(inputSize))
+  val devStdArray: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.inputSize))
 
   /**
    * The helper which executes the forward.
@@ -77,6 +80,15 @@ class NormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The helper which calculates the relevance.
    */
   override val relevanceHelper: RelevanceHelper? = null
+
+  /**
+   * Check input arrays size.
+   */
+  init {
+    require(this.inputArrays.all { it.size == this.inputSize }) {
+      "All the input arrays must have the same size."
+    }
+  }
 
   /**
    * Set the values of the inputArray at the given [index].
