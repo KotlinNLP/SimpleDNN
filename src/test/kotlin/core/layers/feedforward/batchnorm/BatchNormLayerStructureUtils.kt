@@ -8,13 +8,15 @@
 package core.layers.feedforward.batchnorm
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.batchnorm.BatchNormLayer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.batchnorm.BatchNormLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
+/**
+ *
+ */
 object BatchNormLayerStructureUtils {
 
   /**
@@ -26,25 +28,14 @@ object BatchNormLayerStructureUtils {
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.6, -0.2, -0.9))),
       AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.4, 0.2, 0.8)))),
     inputType = LayerType.Input.Dense,
-    params = buildParams(),
-    activationFunction = ReLU())
+    params = buildParams())
 
   /**
    *
    */
-  fun buildParams(): BatchNormLayerParameters {
-
-    val params = BatchNormLayerParameters(inputSize = 4)
-
-    params.g.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8))
-    )
-
-    params.b.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.9, 0.2, -0.9, 0.2))
-    )
-
-    return params
+  fun buildParams() = BatchNormLayerParameters(inputSize = 4).apply {
+    g.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8)))
+    b.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.9, 0.2, -0.9, 0.2)))
   }
 
   /**
@@ -61,5 +52,4 @@ object BatchNormLayerStructureUtils {
    *
    */
   fun getOutputErrors3() = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, -0.4, 0.7, -0.8))
-
 }
