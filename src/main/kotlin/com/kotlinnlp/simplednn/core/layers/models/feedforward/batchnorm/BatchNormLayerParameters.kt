@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
 
 /**
- * The parameters of the Normalization layer.
+ * The parameters of the [BatchNormLayer].
  *
  * @property inputSize the input size (equal to the output size)
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
