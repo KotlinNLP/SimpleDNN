@@ -29,7 +29,7 @@ class NormLayerParametersSpec: Spek({
       context("dense input") {
 
         var k = 0
-        val initValues = doubleArrayOf(0.1, 0.2, 0.3, 0.4)
+        val initValues = doubleArrayOf(0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
         val randomGenerator = mock<RandomGenerator>()
         whenever(randomGenerator.next()).thenAnswer { initValues[k++] }
 
