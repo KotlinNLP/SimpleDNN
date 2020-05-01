@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.layers
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.highway.HighwayLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.batchnorm.BatchNormLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance.SquaredDistanceLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayerParameters
@@ -69,6 +70,21 @@ object LayerParametersFactory {
       HighwayLayerParameters(
         inputSize = inputsSize.first(),
         sparseInput = sparseInput,
+        weightsInitializer = weightsInitializer,
+        biasesInitializer = biasesInitializer)
+    }
+
+    LayerType.Connection.BatchNorm -> {
+
+      require(inputsSize.all { it == inputsSize.first() }) {
+        "The BatchNorm layer requires the same size for all the inputs."
+      }
+      require(outputSize == null || outputSize == inputsSize.first()) {
+        "The BatchNorm layer requires that the output size must be equal to the input size."
+      }
+
+      BatchNormLayerParameters(
+        inputSize = inputsSize.first(),
         weightsInitializer = weightsInitializer,
         biasesInitializer = biasesInitializer)
     }
