@@ -46,8 +46,6 @@ internal class BatchNormForwardHelper<InputNDArrayType : NDArray<InputNDArrayTyp
         .assignSub(this.layer.mean)
         .assignProd(gStdDev)
         .assignSum(this.layer.params.b.values)
-
-      output.activate()
     }
   }
 
