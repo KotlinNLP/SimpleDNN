@@ -19,9 +19,6 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 /**
  * The batch normalization layer structure.
  *
- * Reference:
- * [Jimmy Lei Ba, Jamie Ryan Kiros, and Geoffrey E Hinto, 2016, Layer Normalization](https://arxiv.org/abs/1607.06450)
- *
  * @property inputArrays the input arrays of the layer
  * @property inputType the type of the input arrays
  * @property params the parameters which connect the input to the output
