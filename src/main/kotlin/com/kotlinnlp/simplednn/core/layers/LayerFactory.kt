@@ -188,9 +188,7 @@ object LayerFactory {
     LayerType.Connection.BatchNorm -> BatchNormLayer(
       inputArrays = inputArrays,
       inputType = inputType,
-      params = params as BatchNormLayerParameters,
-      activationFunction = activationFunction,
-      dropout = dropout)
+      params = params as BatchNormLayerParameters)
 
     LayerType.Connection.SquaredDistance -> SquaredDistanceLayer(
       inputArray = inputArrays.first(),

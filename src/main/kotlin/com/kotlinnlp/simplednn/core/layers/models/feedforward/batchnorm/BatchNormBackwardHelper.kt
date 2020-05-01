@@ -27,8 +27,6 @@ internal class BatchNormBackwardHelper<InputNDArrayType : NDArray<InputNDArrayTy
    */
   override fun execBackward(propagateToInput: Boolean) {
 
-    this.layer.applyOutputActivationDerivs()
-
     this.layer.outputArrays.forEachIndexed { index, outputArray ->
 
       val gy: DenseNDArray = outputArray.errors

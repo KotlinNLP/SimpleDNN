@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.core.layers.models.feedforward.batchnorm
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import kotlin.math.sqrt
 
 /**
  * The helper which executes the forward on the [BatchNormLayer].
@@ -66,9 +65,10 @@ internal class BatchNormForwardHelper<InputNDArrayType : NDArray<InputNDArrayTyp
       this.layer.stdDev.assignSum(diff)
     }
 
-    (0 until this.layer.stdDev.length).forEach { i ->
-      this.layer.stdDev[i] = sqrt(this.layer.stdDev[i] / this.layer.inputArrays.size + EPS)
-    }
+    this.layer.stdDev
+      .assignDiv(this.layer.inputArrays.size.toDouble())
+      .assignSum(EPS)
+      .assignSqrt()
   }
 
   /**
