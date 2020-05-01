@@ -399,7 +399,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  fun sub(a: DenseNDArray): DenseNDArray = DenseNDArray(this.storage.sub(a.storage))
+  private fun sub(a: DenseNDArray): DenseNDArray = DenseNDArray(this.storage.sub(a.storage))
 
   /**
    * In-place subtraction by number
@@ -717,7 +717,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  fun assignProd(a: NDArray<*>): DenseNDArray = when(a) {
+  override fun assignProd(a: NDArray<*>): DenseNDArray = when(a) {
     is DenseNDArray -> this.assignProd(a)
     is SparseNDArray -> this.assignProd(a)
     is SparseBinaryNDArray -> this.assignProd(a)
@@ -727,7 +727,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
-  override fun assignProd(a: DenseNDArray): DenseNDArray {
+  private fun assignProd(a: DenseNDArray): DenseNDArray {
     this.storage.muli(a.storage)
     return this
   }

@@ -260,7 +260,7 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
-  fun assignProd(a: SelfType): SelfType
+  fun assignProd(a: NDArray<*>): SelfType
 
   /**
    *

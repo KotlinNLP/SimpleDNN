@@ -717,7 +717,18 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override fun assignProd(a: SparseNDArray): SparseNDArray {
+  override fun assignProd(a: NDArray<*>): SparseNDArray = when(a) {
+    is DenseNDArray -> TODO("not implemented")
+    is SparseNDArray -> this.assignProd(a)
+    is SparseBinaryNDArray -> TODO("not implemented")
+    else -> throw RuntimeException("Invalid NDArray type")
+  }
+
+  /**
+   *
+   */
+  private fun assignProd(a: SparseNDArray): SparseNDArray {
+
     require(a.shape == this.shape) { "Arrays with different size" }
     require(a.values.size == this.values.size) { "Arrays with a different amount of active values" }
 
