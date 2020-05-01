@@ -26,7 +26,7 @@ internal class BatchNormForwardHelper<InputNDArrayType : NDArray<InputNDArrayTyp
     /**
      * Avoid underflow errors.
      */
-    private const val EPS = 1.0e-12
+    private const val EPS = 1.0e-5
   }
 
   /**
