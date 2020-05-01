@@ -82,27 +82,33 @@ class BatchNormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val relevanceHelper: RelevanceHelper? = null
 
   /**
-   * Check input arrays size.
+   * Check sizes and set activation functions.
    */
   init {
+
     require(this.inputArrays.all { it.size == this.inputSize }) {
       "All the input arrays must have the same size."
     }
+
+    require(isAllEqualSize(this.inputArrays))
+
+    if (activationFunction != null)
+      this.outputArrays.forEach { it.setActivation(activationFunction) }
   }
 
   /**
-   * Set the values of the inputArray at the given [index].
+   * Set the values of the input array at a given index.
    *
-   * @param index the index of the inputArray to set
-   * @param values the values to set into the inputArray1
+   * @param index the index of an input array
+   * @param values the values to set
    */
   fun setInput(index: Int, values: InputNDArrayType) = this.inputArrays[index].assignValues(values)
 
   /**
-   * Set the values of the inputArray at the given [index].
+   * Set the errors of the output array at a given index.
    *
-   * @param index the index of the inputArray to set
-   * @param values the values to set into the inputArray1
+   * @param index the index of the output array
+   * @param errors the errors to set
    */
   fun setErrors(index: Int, errors: DenseNDArray) = this.outputArrays[index].assignErrors(errors)
 
@@ -142,18 +148,5 @@ class BatchNormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
     }
 
     return true
-  }
-
-  /**
-   * Set the activation function of the output arrays.
-   */
-  init {
-
-    require(isAllEqualSize(this.inputArrays))
-
-    if (activationFunction != null) {
-      for (outputArray in this.outputArrays)
-        outputArray.setActivation(activationFunction)
-    }
   }
 }

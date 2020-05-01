@@ -42,9 +42,11 @@ internal class BatchNormForwardHelper<InputNDArrayType : NDArray<InputNDArrayTyp
 
     this.layer.inputArrays.zip(this.layer.outputArrays).forEach { (input, output) ->
 
-      output.valuesNotActivated.assignValues(input.values)
-      output.valuesNotActivated.assignSub(this.layer.mean)
-      output.valuesNotActivated.assignProd(gStdDev).assignSum(this.layer.params.b.values)
+      output.values
+        .assignValues(input.values)
+        .assignSub(this.layer.mean)
+        .assignProd(gStdDev)
+        .assignSum(this.layer.params.b.values)
 
       output.activate()
     }
