@@ -175,7 +175,7 @@ class SparseBinaryNDArray(
     val rowIndices = mutableListOf<Int>()
     val colIndices = mutableListOf<Int>()
 
-    this.activeIndicesByColumn.forEach { j, column ->
+    this.activeIndicesByColumn.forEach { (j, column) ->
       if (column != null)
         column.forEach { i -> rowIndices.add(i); colIndices.add(j) }
       else {
@@ -354,8 +354,8 @@ class SparseBinaryNDArray(
       this.addElement(this.activeIndicesByColumn, key = j, element = i, sortElements = false)
     }
 
-    this.activeIndicesByRow.forEach { _, u -> u?.sort() }
-    this.activeIndicesByColumn.forEach { _, u -> u?.sort() }
+    this.activeIndicesByRow.forEach { (_, u) -> u?.sort() }
+    this.activeIndicesByColumn.forEach { (_, u) -> u?.sort() }
 
     return this
   }

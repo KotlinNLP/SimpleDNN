@@ -13,7 +13,6 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.*
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import java.util.*
 
 /**
  *
@@ -344,7 +343,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
-  override fun sum(): Double = (0 until this.values.size).sumByDouble { i -> this.values[i] }
+  override fun sum(): Double = this.values.indices.sumByDouble { i -> this.values[i] }
 
   /**
    *
@@ -365,8 +364,8 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    */
   override fun assignSum(n: Double): SparseNDArray {
 
-    for (index in 0 until this.values.size) {
-      this.values[index] += n
+    this.values.indices.forEach { i ->
+      this.values[i] += n
     }
 
     return this
@@ -504,7 +503,7 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
     val ret: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.rows, a.columns))
 
     for (aCol in 0 until a.shape.dim2) {
-      for (k in 0 until this.values.size) {
+      this.values.indices.forEach { k ->
         val row: Int = this.rowIndices[k]
         val col: Int = this.colIndices[k]
 
@@ -684,8 +683,8 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    */
   override fun assignProd(n: Double): SparseNDArray {
 
-    for (index in 0 until this.values.size) {
-      this.values[index] *= n
+    this.values.indices.forEach { i ->
+      this.values[i] *= n
     }
 
     return this
@@ -719,8 +718,8 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
     require(a.shape == this.shape) { "Arrays with different size" }
     require(a.values.size == this.values.size) { "Arrays with a different amount of active values" }
 
-    for (index in 0 until this.values.size) {
-      this.values[index] *= a.values[index]
+    this.values.indices.forEach { i ->
+      this.values[i] *= a.values[i]
     }
 
     return this
@@ -762,8 +761,8 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
    */
   override fun assignDiv(n: Double): SparseNDArray {
 
-    for (index in 0 until this.values.size) {
-      this.values[index] /= n
+    this.values.indices.forEach { i ->
+      this.values[i] /= n
     }
 
     return this
@@ -991,8 +990,8 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
     a.sortValues()
 
     return equals(this.values, a.values, tolerance = tolerance) &&
-      Arrays.equals(this.rowIndices, a.rowIndices) &&
-      Arrays.equals(this.colIndices, a.colIndices)
+      this.rowIndices.contentEquals(a.rowIndices) &&
+      this.colIndices.contentEquals(a.colIndices)
   }
 
   /**

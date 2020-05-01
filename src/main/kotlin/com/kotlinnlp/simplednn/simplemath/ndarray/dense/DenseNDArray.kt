@@ -219,6 +219,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    * @return this [DenseNDArray]
    */
   override fun assignValues(a: NDArray<*>): DenseNDArray {
+
     require(this.shape == a.shape ||
       (this.isVector && a.isVector && this.length == a.length))
 
@@ -249,7 +250,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
 
     this.zeros()
 
-    for (k in 0 until a.values.size) {
+    a.values.indices.forEach { k ->
       this[a.rowIndices[k], a.colIndices[k]] = a.values[k]
     }
   }
@@ -258,6 +259,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    *
    */
   override fun assignValues(a: NDArray<*>, mask: NDArrayMask): DenseNDArray {
+
     require(a.shape == this.shape) { "Arrays with different size" }
 
     when(a) {
@@ -287,6 +289,7 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    *
    */
   private fun assignValues(a: SparseNDArray, mask: NDArrayMask): DenseNDArray {
+
     require(a.values.size == mask.size) { "Mask has a different number of active values respect of a" }
 
     for (index in 0 until mask.size) {
@@ -350,11 +353,11 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    */
   private fun assignSum(a: SparseNDArray): DenseNDArray {
 
-    for (index in 0 until a.values.size) {
+    a.values.indices.forEach { i ->
       this.storage.put(
-        a.rowIndices[index],
-        a.colIndices[index],
-        this.storage[a.rowIndices[index], a.colIndices[index]] + a.values[index]
+        a.rowIndices[i],
+        a.colIndices[i],
+        this.storage[a.rowIndices[i], a.colIndices[i]] + a.values[i]
       )
     }
 
@@ -413,9 +416,10 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
    *
    */
   private fun assignSub(a: SparseNDArray): DenseNDArray {
+
     require(a.shape == this.shape) { "Arrays with different size" }
 
-    for (k in 0 until a.values.size) {
+    a.values.indices.forEach { k ->
       this[a.rowIndices[k], a.colIndices[k]] -= a.values[k]
     }
 
