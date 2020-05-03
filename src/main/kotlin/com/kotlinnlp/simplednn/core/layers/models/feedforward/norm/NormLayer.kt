@@ -71,7 +71,7 @@ class NormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   init {
 
-    require(this.inputArray.values.shape == this.outputArray.values.shape) {
+    require(this.inputArray.size == this.outputArray.size) {
       "The input and the output arrays must have the same size."
     }
   }
