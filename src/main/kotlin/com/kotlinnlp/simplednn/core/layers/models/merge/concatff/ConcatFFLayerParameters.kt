@@ -26,7 +26,7 @@ class ConcatFFLayerParameters(
   outputSize: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
-  ) : MergeLayerParameters(
+) : MergeLayerParameters(
   inputsSize = inputsSize,
   outputSize = outputSize,
   weightsInitializer = weightsInitializer,
@@ -46,7 +46,7 @@ class ConcatFFLayerParameters(
   /**
    * The output params.
    */
-  internal val output = FeedforwardLayerParameters(
+  val output = FeedforwardLayerParameters(
     inputSize = inputsSize.sum(),
     outputSize = outputSize,
     sparseInput = this.sparseInput)
