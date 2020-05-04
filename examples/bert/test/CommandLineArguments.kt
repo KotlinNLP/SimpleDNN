@@ -22,12 +22,12 @@ internal class CommandLineArguments(args: Array<String>) {
   private val parser = ArgParser(args)
 
   /**
-   * The file path of the serializes BERT model.
+   * The file path of the serialized BERT model.
    */
   val bertModelPath: String by parser.storing(
     "-b",
     "--bert",
-    help="the file path of the serializes BERT model"
+    help="the file path of the serialized BERT model"
   )
 
   /**
