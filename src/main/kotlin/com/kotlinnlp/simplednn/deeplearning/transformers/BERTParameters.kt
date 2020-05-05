@@ -11,7 +11,9 @@ import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.norm.NormLayerParameters
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.deeplearning.attention.multihead.MultiHeadAttentionParameters
 import java.io.Serializable
@@ -75,16 +77,18 @@ class BERTParameters(
   /**
    * The parameters of the multi-head norm layer.
    */
-  val multiHeadNorm = NormLayerParameters(
-    inputSize = this.inputSize,
+  val multiHeadNorm = StackedLayersParameters(
+    LayerInterface(size = this.inputSize),
+    LayerInterface(size = this.inputSize, connectionType = LayerType.Connection.Norm),
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
 
   /**
    * The parameters of the output norm layer.
    */
-  val outputNorm = NormLayerParameters(
-    inputSize = this.inputSize,
+  val outputNorm = StackedLayersParameters(
+    LayerInterface(size = this.inputSize),
+    LayerInterface(size = this.inputSize, connectionType = LayerType.Connection.Norm),
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
 
