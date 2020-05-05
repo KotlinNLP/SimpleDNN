@@ -234,11 +234,13 @@ open class EmbeddingsMap<T>(
    * If [embedding] is null a new randomly initialize [ParamsArray] is associated to the given [key].
    *
    * @param key the key to associate to the new embedding
-   * @param embedding the embedding to associate to the given [key] or null to generate it randomly
+   * @param embedding the embedding to associate to the given [key] if not already present or null to generate it
+   *                  randomly
    *
    * @return the embedding set
    */
   fun set(key: T, embedding: ParamsArray? = null): ParamsArray {
+
     require(key !in this.embeddings) { "Embedding with key '%s' already set.".format(key) }
     require(embedding == null || embedding.values.length == this.size) {
       "Embedding size not compatible (%d != %d).".format(embedding!!.values.length, this.size)
@@ -273,6 +275,7 @@ open class EmbeddingsMap<T>(
    * @return the embedding with the given not-null [key] or [nullEmbedding] or [unknownEmbedding]
    */
   fun get(key: T?, dropout: Double): ParamsArray {
+
     require(dropout in 0.0 .. 1.0)
 
     return when {
@@ -291,16 +294,41 @@ open class EmbeddingsMap<T>(
    *
    * @param key the key of an embedding (can be null)
    * @param dropout the probability to get the [unknownEmbedding] (default = 0.0 = no dropout)
-   * @param embedding the embedding to associate to the given [key] or null to generate it randomly
+   * @param embedding the embedding to associate to the given [key] if not already present or null to generate it
+   *                  randomly
    *
    * @return the embedding with the given not-null [key] or [nullEmbedding] or [unknownEmbedding]
    */
   fun getOrSet(key: T?, dropout: Double = 0.0, embedding: ParamsArray? = null): ParamsArray {
+
     require(dropout in 0.0 .. 1.0)
 
     return when {
       dropout > 0.0 && this.mustBeDropped(dropout) -> this.unknownEmbedding
       key != null -> if (key in this.embeddings) this.embeddings[key]!! else this.set(key = key, embedding = embedding)
+      else -> this.nullEmbedding
+    }
+  }
+
+  /**
+   * Get the embedding with the given [key].
+   * If the [key] is null return the [nullEmbedding].
+   * If no embedding has the given [key] associate a new initialized embedding to it and return it.
+   * If dropout > 0.0 and the dropout is applied, return the [unknownEmbedding].
+   *
+   * @param key the key of an embedding (can be null)
+   * @param dropout the probability to get the [unknownEmbedding] (default = 0.0 = no dropout)
+   * @param action callback that returns the embedding to associate to the given [key] if not already present
+   *
+   * @return the embedding with the given not-null [key] or [nullEmbedding] or [unknownEmbedding]
+   */
+  fun getOrSet(key: T?, dropout: Double = 0.0, action: () -> ParamsArray): ParamsArray {
+
+    require(dropout in 0.0 .. 1.0)
+
+    return when {
+      dropout > 0.0 && this.mustBeDropped(dropout) -> this.unknownEmbedding
+      key != null -> if (key in this.embeddings) this.embeddings[key]!! else this.set(key = key, embedding = action())
       else -> this.nullEmbedding
     }
   }
