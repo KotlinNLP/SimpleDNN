@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
+import com.kotlinnlp.simplednn.core.layers.models.feedforward.norm.NormLayerParameters
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.FeedforwardNeuralNetwork
 import com.kotlinnlp.simplednn.deeplearning.attention.multihead.MultiHeadAttentionParameters
 import java.io.Serializable
@@ -72,14 +73,20 @@ class BERTParameters(
     biasesInitializer = biasesInitializer)
 
   /**
-   * The updatable normalization scalar parameter.
+   * The parameters of the multi-head norm layer.
    */
-  var normScalarParam = ParamsArray(doubleArrayOf(0.0))
+  val multiHeadNorm = NormLayerParameters(
+    inputSize = this.inputSize,
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer)
 
   /**
-   * The scalar parameter used to normalize the merged vectors.
+   * The parameters of the output norm layer.
    */
-  val normScalar: Double get() = this.normScalarParam.values[0]
+  val outputNorm = NormLayerParameters(
+    inputSize = this.inputSize,
+    weightsInitializer = weightsInitializer,
+    biasesInitializer = biasesInitializer)
 
   /**
    * Check requirements.
