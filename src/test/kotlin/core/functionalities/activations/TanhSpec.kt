@@ -31,7 +31,7 @@ class TanhSpec : Spek({
           0.0, 0.099668, 0.00999967, -0.099668, -0.00999967, 0.76159416, 1.0, -0.76159416, -1.0
       ))
 
-      it("should return the expected errors") {
+      it("should return the expected values") {
         assertTrue { expectedArray.equals(activatedArray, tolerance = 1.0e-08) }
       }
     }
@@ -43,7 +43,7 @@ class TanhSpec : Spek({
           1.0, 0.99006629, 0.99990001, 0.99006629, 0.999900007, 0.41997434, 8.2e-09, 0.41997434, 8.2e-09
       ))
 
-      it("should return the expected errors") {
+      it("should return the expected values") {
         assertTrue { expectedArray.equals(dfArray, tolerance = 1.0e-08) }
       }
     }

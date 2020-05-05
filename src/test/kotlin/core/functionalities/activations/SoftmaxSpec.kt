@@ -36,7 +36,7 @@ class SoftmaxSpec : Spek({
         assertEquals(1.0, activatedArray.sum())
       }
 
-      it("should return the expected array") {
+      it("should return the expected values") {
         assertTrue(expectedArray.equals(activatedArray, tolerance = 1.0e-10))
       }
     }
@@ -47,7 +47,7 @@ class SoftmaxSpec : Spek({
 
         val dfArray = activationFunction.dfOptimized(activatedArray)
 
-        it("should return the expected array") {
+        it("should return the expected values") {
           assertTrue(activatedArray.onesLike().equals(dfArray, tolerance = 1.0e-08))
         }
       }

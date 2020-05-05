@@ -31,7 +31,7 @@ class HardTanhSpec: Spek({
           0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 1.0, -1.0, -1.0
       ))
 
-      it("should return the expected errors") {
+      it("should return the expected values") {
         assertTrue { expectedArray.equals(activatedArray, tolerance = 1.0e-08) }
       }
     }
@@ -43,7 +43,7 @@ class HardTanhSpec: Spek({
           1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0
       ))
 
-      it("should return the expected errors") {
+      it("should return the expected values") {
         assertTrue { expectedArray.equals(dfArray, tolerance = 1.0e-08) }
       }
     }

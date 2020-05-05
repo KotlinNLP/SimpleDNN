@@ -34,7 +34,7 @@ class CeLUSpec: Spek({
             0.0, 0.1, 0.01, -0.097541151, -0.009975042, 1.0, 10.0, -0.786938681, -1.986524106
         ))
 
-        it("should return the expected errors") {
+        it("should return the expected values") {
           assertTrue { expectedArray.equals(activatedArray, tolerance = 1.0e-08) }
         }
       }
@@ -46,7 +46,7 @@ class CeLUSpec: Spek({
             1.0, 1.0, 1.0, 0.95122942, 0.995012479, 1.0, 1.0, 0.606530659, 0.006737947
         ))
 
-        it("should return the expected errors") {
+        it("should return the expected values") {
           assertTrue { expectedArray.equals(dfArray, tolerance = 1.0e-08) }
         }
       }

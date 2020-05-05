@@ -31,7 +31,7 @@ class SigmoidSpec : Spek({
         0.5, 0.52497919, 0.50249998, 0.47502081, 0.49750002, 0.73105858, 0.9999546, 0.26894142, 4.54e-5
       ))
 
-      it("should return the expected errors") {
+      it("should return the expected values") {
         assertTrue { expectedArray.equals(activatedArray, tolerance = 1.0e-08) }
       }
     }
@@ -43,7 +43,7 @@ class SigmoidSpec : Spek({
         0.25, 0.24937604, 0.24999375, 0.24937604, 0.24999375, 0.19661193, 4.54e-5, 0.19661193, 4.54e-5
       ))
 
-      it("should return the expected errors") {
+      it("should return the expected values") {
         assertTrue { expectedArray.equals(dfArray, tolerance = 1.0e-08) }
       }
     }

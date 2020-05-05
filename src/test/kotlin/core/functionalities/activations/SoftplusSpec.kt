@@ -31,7 +31,7 @@ class SoftplusSpec : Spek({
           0.693147181, 0.74439666, 0.69815968, 0.64439666, 0.688159681, 1.313261688, 10.0000454, 0.313261687, 4.539e-5
       ))
 
-      it("should return the expected errors") {
+      it("should return the expected values") {
         assertTrue { expectedArray.equals(activatedArray, tolerance = 1.0e-08) }
       }
     }
@@ -43,7 +43,7 @@ class SoftplusSpec : Spek({
           0.5, 0.52497919, 0.50249998, 0.47502081, 0.49750002, 0.73105858, 0.9999546, 0.26894142, 4.54e-5
       ))
 
-      it("should return the expected errors") {
+      it("should return the expected values") {
         assertTrue { expectedArray.equals(dfArray, tolerance = 1.0e-08) }
       }
     }

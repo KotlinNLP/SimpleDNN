@@ -31,7 +31,7 @@ class HardSigmoidSpec : Spek({
           0.5, 0.52, 0.502, 0.48, 0.498, 0.7, 1.0, 0.3, 0.0
       ))
 
-      it("should return the expected errors") {
+      it("should return the expected values") {
         assertTrue { expectedArray.equals(activatedArray, tolerance = 1.0e-08) }
       }
     }
@@ -43,7 +43,7 @@ class HardSigmoidSpec : Spek({
           0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.0, 0.2, 0.0
       ))
 
-      it("should return the expected errors") {
+      it("should return the expected values") {
         assertTrue { expectedArray.equals(dfArray, tolerance = 1.0e-08) }
       }
     }
