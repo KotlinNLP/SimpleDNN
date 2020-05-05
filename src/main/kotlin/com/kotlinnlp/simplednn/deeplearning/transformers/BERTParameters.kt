@@ -22,7 +22,7 @@ import java.io.Serializable
  * @property attentionSize the size of the attention arrays
  * @property attentionOutputSize the size of the attention outputs
  * @property outputHiddenSize the number of the hidden nodes of the output feed-forward
- * @property multiHeadStack the number of scaled-dot attention layers
+ * @property numOfHeads the number of self-attention heads
  * @param dropout the probability of attention dropout (default 0.0)
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
@@ -32,7 +32,7 @@ class BERTParameters(
   val attentionSize: Int,
   val attentionOutputSize: Int,
   val outputHiddenSize: Int,
-  val multiHeadStack: Int,
+  val numOfHeads: Int,
   dropout: Double,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
@@ -54,7 +54,7 @@ class BERTParameters(
     inputSize = this.inputSize,
     attentionSize = this.attentionSize,
     attentionOutputSize = this.attentionOutputSize,
-    numOfLayers = this.multiHeadStack,
+    numOfLayers = this.numOfHeads,
     dropout = dropout,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
@@ -85,6 +85,6 @@ class BERTParameters(
    * Check requirements.
    */
   init {
-    require(this.multiHeadStack >= 2) { "At least 2 layers are required in the attention stack." }
+    require(this.numOfHeads >= 2) { "At least 2 heads are required in the attention stack." }
   }
 }

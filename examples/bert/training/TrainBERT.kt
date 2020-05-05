@@ -51,7 +51,7 @@ fun main(args: Array<String>) {
       attentionSize = embeddingsMap.size / 3,
       attentionOutputSize = embeddingsMap.size / 3,
       outputHiddenSize = 2048,
-      multiHeadStack = 3,
+      numOfHeads = 3,
       numOfLayers = 3,
       dropout = 0.15)
 
