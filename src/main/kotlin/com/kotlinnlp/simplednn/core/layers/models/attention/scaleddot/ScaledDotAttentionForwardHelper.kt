@@ -57,19 +57,35 @@ internal class ScaledDotAttentionForwardHelper(
   /**
    * Forward the input to calculate queries, keys and values.
    *
-   *   Q = Wq (dot) I
-   *   K = Wk (dot) I
-   *   V = Wv (dot) I
+   *   Q = Wq (dot) I + Bq
+   *   K = Wk (dot) I + Bk
+   *   V = Wv (dot) I + Bv
    */
   private fun forwardInputs() {
 
+    /**
+     * Add the same bias [b] to each row of [m].
+     */
+    fun addBias(m: DenseNDArray, b: DenseNDArray) {
+      (0 until m.rows).forEach { i ->
+        (0 until m.columns).forEach { j ->
+          m[i, j] += b[j]
+        }
+      }
+    }
+
     val x: DenseNDArray = this.layer.inputMatrix.values
-    val wQ: DenseNDArray = this.layer.params.queries.values
-    val wK: DenseNDArray = this.layer.params.keys.values
-    val wV: DenseNDArray = this.layer.params.values.values
+
+    val wQ: DenseNDArray = this.layer.params.queries.weights.values
+    val wK: DenseNDArray = this.layer.params.keys.weights.values
+    val wV: DenseNDArray = this.layer.params.values.weights.values
 
     this.layer.queries.assignValues(x.dot(wQ.t))
     this.layer.keys.assignValues(x.dot(wK.t))
     this.layer.values.assignValues(x.dot(wV.t))
+
+    addBias(m = this.layer.queries.values, b = this.layer.params.queries.biases.values)
+    addBias(m = this.layer.keys.values, b = this.layer.params.keys.biases.values)
+    addBias(m = this.layer.values.values, b = this.layer.params.values.biases.values)
   }
 }

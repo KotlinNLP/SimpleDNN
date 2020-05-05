@@ -9,6 +9,7 @@ package com.kotlinnlp.simplednn.core.layers.models.attention.scaleddot
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.SoftmaxBase
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
@@ -91,14 +92,34 @@ internal class ScaledDotAttentionBackwardHelper(
    */
   private fun assignParamsGradients() {
 
+    /**
+     * @return the element-wise sum of the rows of this array
+     */
+    fun DenseNDArray.sumRows(): DenseNDArray {
+
+      val res: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.columns))
+
+      (0 until this.rows).forEach { i ->
+        (0 until this.columns).forEach { j ->
+          res[j] += this[i, j]
+        }
+      }
+
+      return res
+    }
+
     val x: DenseNDArray = this.layer.inputMatrix.values
     val gQ: DenseNDArray = this.layer.queries.errors
     val gK: DenseNDArray = this.layer.keys.errors
     val gV: DenseNDArray = this.layer.values.errors
 
-    this.layer.params.queries.errors.values.assignDot(gQ.t, x)
-    this.layer.params.keys.errors.values.assignDot(gK.t, x)
-    this.layer.params.values.errors.values.assignDot(gV.t, x)
+    this.layer.params.queries.weights.errors.values.assignDot(gQ.t, x)
+    this.layer.params.keys.weights.errors.values.assignDot(gK.t, x)
+    this.layer.params.values.weights.errors.values.assignDot(gV.t, x)
+
+    this.layer.params.queries.biases.errors.values.assignValues(gQ.sumRows())
+    this.layer.params.keys.biases.errors.values.assignValues(gK.sumRows())
+    this.layer.params.values.biases.errors.values.assignValues(gV.sumRows())
   }
 
   /**
@@ -110,9 +131,9 @@ internal class ScaledDotAttentionBackwardHelper(
     val gK: DenseNDArray = this.layer.keys.errors
     val gV: DenseNDArray = this.layer.values.errors
 
-    val wQ: DenseNDArray = this.layer.params.queries.values
-    val wK: DenseNDArray = this.layer.params.keys.values
-    val wV: DenseNDArray = this.layer.params.values.values
+    val wQ: DenseNDArray = this.layer.params.queries.weights.values
+    val wK: DenseNDArray = this.layer.params.keys.weights.values
+    val wV: DenseNDArray = this.layer.params.values.weights.values
 
     val inputErrors: DenseNDArray = gQ.dot(wQ).assignSum(gK.dot(wK)).assignSum(gV.dot(wV))
 

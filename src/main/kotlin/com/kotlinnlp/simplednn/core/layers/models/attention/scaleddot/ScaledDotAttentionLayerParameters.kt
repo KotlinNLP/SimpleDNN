@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.LinearParams
 import kotlin.math.sqrt
 
 /**
@@ -20,17 +21,19 @@ import kotlin.math.sqrt
  * @property attentionSize the size of each element of the attention sequence
  * @property outputSize the size of each element of the output sequence
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
 class ScaledDotAttentionLayerParameters(
   inputSize: Int,
   val attentionSize: Int,
   outputSize: Int,
-  weightsInitializer: Initializer? = GlorotInitializer()
+  weightsInitializer: Initializer? = GlorotInitializer(),
+  biasesInitializer: Initializer? = GlorotInitializer()
 ) : LayerParameters(
   inputSize = inputSize,
   outputSize = outputSize,
   weightsInitializer = weightsInitializer,
-  biasesInitializer = null
+  biasesInitializer = biasesInitializer
 ) {
 
   companion object {
@@ -50,27 +53,35 @@ class ScaledDotAttentionLayerParameters(
   /**
    * The queries trainable parameter.
    */
-  val queries = ParamsArray(dim1 = this.attentionSize, dim2 = inputSize)
+  val queries = LinearParams(inputSize = inputSize, outputSize = this.attentionSize)
 
   /**
    * The keys trainable parameter.
    */
-  val keys = ParamsArray(dim1 = this.attentionSize, dim2 = inputSize)
+  val keys = LinearParams(inputSize = inputSize, outputSize = this.attentionSize)
 
   /**
    * The values trainable parameter.
    */
-  val values = ParamsArray(dim1 = this.outputSize, dim2 = inputSize)
+  val values = LinearParams(inputSize = inputSize, outputSize = this.outputSize)
 
   /**
    * The list of weights parameters.
    */
-  override val weightsList: List<ParamsArray> = listOf(this.queries, this.keys, this.values)
+  override val weightsList: List<ParamsArray> = listOf(
+    this.queries.weights,
+    this.keys.weights,
+    this.values.weights
+  )
 
   /**
    * The list of biases parameters.
    */
-  override val biasesList: List<ParamsArray> = listOf()
+  override val biasesList: List<ParamsArray> = listOf(
+    this.queries.biases,
+    this.keys.biases,
+    this.values.biases
+  )
 
   /**
    * Initialize all parameters values.

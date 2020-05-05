@@ -58,7 +58,8 @@ class MultiHeadAttentionParameters(
         inputSize = this.inputSize,
         attentionSize = this.attentionSize,
         outputSize = this.attentionOutputSize,
-        weightsInitializer = weightsInitializer)
+        weightsInitializer = weightsInitializer,
+        biasesInitializer = biasesInitializer)
     }
   )
 
