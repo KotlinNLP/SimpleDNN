@@ -54,7 +54,7 @@ class BERTParameters(
     inputSize = this.inputSize,
     attentionSize = this.attentionSize,
     attentionOutputSize = this.attentionOutputSize,
-    numOfLayers = this.numOfHeads,
+    numOfHeads = this.numOfHeads,
     dropout = dropout,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)

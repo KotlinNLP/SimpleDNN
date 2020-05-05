@@ -14,13 +14,13 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayerPa
 import java.io.Serializable
 
 /**
- * The parameters of the Attention Network.
+ * The parameters of the multi-head attention network.
  *
  * @property inputSize the size of the input arrays
  * @property attentionSize the size of the attention arrays
  * @property attentionOutputSize the size of the attention outputs
  * @property dropout the probability of dropout (default 0.0)
- * @param numOfLayers the number of scaled-dot attention layers
+ * @property numOfHeads the number of self-attention heads
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
@@ -29,7 +29,7 @@ class MultiHeadAttentionParameters(
   val attentionSize: Int,
   val attentionOutputSize: Int,
   val dropout: Double = 0.0,
-  numOfLayers: Int,
+  val numOfHeads: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
 ) : Serializable {
@@ -52,7 +52,7 @@ class MultiHeadAttentionParameters(
    * The parameters of the scaled-dot attention layers.
    */
   val attention: List<ScaledDotAttentionLayerParameters> = List(
-    size = numOfLayers,
+    size = this.numOfHeads,
     init = {
       ScaledDotAttentionLayerParameters(
         inputSize = this.inputSize,
@@ -66,7 +66,7 @@ class MultiHeadAttentionParameters(
    * The parameters of the output merge layer.
    */
   val merge = ConcatFFLayerParameters(
-    inputsSize = List(size = numOfLayers, init = { this.attentionOutputSize }),
+    inputsSize = List(size = this.numOfHeads, init = { this.attentionOutputSize }),
     outputSize = this.outputSize,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
