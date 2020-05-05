@@ -48,6 +48,13 @@ object BERTBaseImportHelper {
       "The number of attention heads ($numOfHeads) must be an exact divider of the input size ($inputSize)"
     }
 
+    val wordEmb = EmbeddingsMap<String>(size = inputSize).apply {
+      val embeddings: List<DenseNDArray> = embMatrix.getRows()
+      vocab.getElements().forEach { form ->
+        set(key = form, embedding = ParamsArray(embeddings[vocab.getId(form)!!]))
+      }
+    }
+
     return BERTModel(
       inputSize = inputSize,
       attentionSize = inputSize / numOfHeads,
@@ -55,29 +62,18 @@ object BERTBaseImportHelper {
       outputHiddenSize = params.getValue("bert.encoder.layer.0.intermediate.dense.bias").shape.dim1,
       numOfHeads = numOfHeads,
       numOfLayers = countLayers(params),
+      vocabulary = vocab,
+      wordEmbeddings = wordEmb,
       weightsInitializer = null,
       biasesInitializer = null
     ).apply {
 
-      dictionary = vocab
-
-      wordEmb = EmbeddingsMap<String>(size = inputSize).apply {
-        val embeddings: List<DenseNDArray> = embMatrix.getRows()
-        vocab.getElements().forEach { form ->
-          set(key = form, embedding = ParamsArray(embeddings[vocab.getId(form)!!]))
-        }
+      params.getValue("bert.embeddings.position_embeddings.weight").getRows().forEachIndexed { i, values ->
+        positionalEmb.set(key = i, embedding = ParamsArray(values))
       }
 
-      positionalEmb = EmbeddingsMap<Int>(size = inputSize).apply {
-        params.getValue("bert.embeddings.position_embeddings.weight").getRows().forEachIndexed { i, emb ->
-          set(key = i, embedding = ParamsArray(emb))
-        }
-      }
-
-      tokenTypeEmb = EmbeddingsMap<Int>(size = inputSize).apply {
-        params.getValue("bert.embeddings.token_type_embeddings.weight").getRows().forEachIndexed { i, emb ->
-          set(key = i, embedding = ParamsArray(emb))
-        }
+      params.getValue("bert.embeddings.token_type_embeddings.weight").getRows().forEachIndexed { i, values ->
+        tokenTypeEmb.getOrSet(i).values.assignValues(values)
       }
 
       classifierModel = buildClassifierModel(hiddenSize = inputSize, outputSize = vocabSize)
@@ -180,8 +176,8 @@ object BERTBaseImportHelper {
   private fun getAssignMap(model: BERTModel): Map<String, ParamsArray> {
 
     val assignMap: MutableMap<String, ParamsArray> = mutableMapOf(
-      "bert.embeddings.LayerNorm.weight" to model.embNorm.g,
-      "bert.embeddings.LayerNorm.bias" to model.embNorm.b,
+      "bert.embeddings.LayerNorm.weight" to (model.embNorm.paramsPerLayer.single() as NormLayerParameters).g,
+      "bert.embeddings.LayerNorm.bias" to (model.embNorm.paramsPerLayer.single() as NormLayerParameters).b,
       "cls.predictions.transform.dense.weight" to
         (model.classifierModel!!.paramsPerLayer[0] as FeedforwardLayerParameters).unit.weights,
       "cls.predictions.transform.dense.bias" to
@@ -228,8 +224,10 @@ object BERTBaseImportHelper {
     assignMap += mapOf(
       "bert.encoder.layer.$i.attention.output.dense.weight" to params.attention.merge.output.unit.weights,
       "bert.encoder.layer.$i.attention.output.dense.bias" to params.attention.merge.output.unit.biases,
-      "bert.encoder.layer.$i.attention.output.LayerNorm.weight" to params.multiHeadNorm.g,
-      "bert.encoder.layer.$i.attention.output.LayerNorm.bias" to params.multiHeadNorm.b,
+      "bert.encoder.layer.$i.attention.output.LayerNorm.weight" to
+        (params.multiHeadNorm.paramsPerLayer.single() as NormLayerParameters).g,
+      "bert.encoder.layer.$i.attention.output.LayerNorm.bias" to
+        (params.multiHeadNorm.paramsPerLayer.single() as NormLayerParameters).b,
       "bert.encoder.layer.$i.intermediate.dense.weight" to
         (params.outputFF.paramsPerLayer[0] as FeedforwardLayerParameters).unit.weights,
       "bert.encoder.layer.$i.intermediate.dense.bias" to
@@ -238,8 +236,10 @@ object BERTBaseImportHelper {
         (params.outputFF.paramsPerLayer[1] as FeedforwardLayerParameters).unit.weights,
       "bert.encoder.layer.$i.output.dense.bias" to
         (params.outputFF.paramsPerLayer[1] as FeedforwardLayerParameters).unit.biases,
-      "bert.encoder.layer.$i.output.LayerNorm.weight" to params.outputNorm.g,
-      "bert.encoder.layer.$i.output.LayerNorm.bias" to params.outputNorm.b
+      "bert.encoder.layer.$i.output.LayerNorm.weight" to
+        (params.outputNorm.paramsPerLayer.single() as NormLayerParameters).g,
+      "bert.encoder.layer.$i.output.LayerNorm.bias" to
+        (params.outputNorm.paramsPerLayer.single() as NormLayerParameters).b
     )
 
     return assignMap
