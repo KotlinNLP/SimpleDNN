@@ -34,11 +34,12 @@ class ScaledDotAttentionParametersSpec : Spek({
         inputSize = 2,
         attentionSize = 3,
         outputSize = 2,
-        weightsInitializer = RandomInitializer(randomGenerator))
+        weightsInitializer = RandomInitializer(randomGenerator),
+        biasesInitializer = RandomInitializer(randomGenerator))
 
-      it("should have a queries vector with the expected initialized values") {
+      it("should have the queries weights with the expected initialized values") {
         assertTrue {
-          params.queries.values.equals(
+          params.queries.weights.values.equals(
             DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(0.0, 3.0),
               doubleArrayOf(1.0, 4.0),
@@ -49,9 +50,9 @@ class ScaledDotAttentionParametersSpec : Spek({
         }
       }
 
-      it("should have a keys vector with the expected initialized values") {
+      it("should have the keys weights with the expected initialized values") {
         assertTrue {
-          params.keys.values.equals(
+          params.keys.weights.values.equals(
             DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(6.0, 9.0),
               doubleArrayOf(7.0, 10.0),
@@ -62,15 +63,39 @@ class ScaledDotAttentionParametersSpec : Spek({
         }
       }
 
-      it("should have a values vector with the expected initialized values") {
+      it("should have the values weights with the expected initialized values") {
         assertTrue {
-          params.values.values.equals(
+          params.values.weights.values.equals(
             DenseNDArrayFactory.arrayOf(listOf(
               doubleArrayOf(12.0, 14.0),
               doubleArrayOf(13.0, 15.0)
             )),
             tolerance = 1.0e-06
           )
+        }
+      }
+
+      it("should have the queries biases with the expected initialized values") {
+        assertTrue {
+          params.queries.biases.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(16.0, 17.0, 18.0)),
+            tolerance = 1.0e-06)
+        }
+      }
+
+      it("should have the keys biases with the expected initialized values") {
+        assertTrue {
+          params.keys.biases.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(19.0, 20.0, 21.0)),
+            tolerance = 1.0e-06)
+        }
+      }
+
+      it("should have the values biases with the expected initialized values") {
+        assertTrue {
+          params.values.biases.values.equals(
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(22.0, 23.0)),
+            tolerance = 1.0e-06)
         }
       }
     }
