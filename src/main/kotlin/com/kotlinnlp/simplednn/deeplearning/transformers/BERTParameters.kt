@@ -18,21 +18,21 @@ import java.io.Serializable
 /**
  * The BERT parameters.
  *
- * @param inputSize the size of the input arrays
- * @param attentionSize the size of the attention arrays
- * @param attentionOutputSize the size of the attention outputs
- * @param outputHiddenSize the number of the hidden nodes of the output feed-forward
- * @param multiHeadStack the number of scaled-dot attention layers
+ * @property inputSize the size of the input arrays
+ * @property attentionSize the size of the attention arrays
+ * @property attentionOutputSize the size of the attention outputs
+ * @property outputHiddenSize the number of the hidden nodes of the output feed-forward
+ * @property multiHeadStack the number of scaled-dot attention layers
  * @param dropout the probability of attention dropout (default 0.0)
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
  */
 class BERTParameters(
-  inputSize: Int,
-  attentionSize: Int,
-  attentionOutputSize: Int,
-  outputHiddenSize: Int,
-  multiHeadStack: Int,
+  val inputSize: Int,
+  val attentionSize: Int,
+  val attentionOutputSize: Int,
+  val outputHiddenSize: Int,
+  val multiHeadStack: Int,
   dropout: Double,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
@@ -51,10 +51,10 @@ class BERTParameters(
    * The parameters of the multi-head scaled-dot attention network.
    */
   val attention = MultiHeadAttentionParameters(
-    inputSize = inputSize,
-    attentionSize = attentionSize,
-    attentionOutputSize = attentionOutputSize,
-    numOfLayers = multiHeadStack,
+    inputSize = this.inputSize,
+    attentionSize = this.attentionSize,
+    attentionOutputSize = this.attentionOutputSize,
+    numOfLayers = this.multiHeadStack,
     dropout = dropout,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
@@ -63,10 +63,10 @@ class BERTParameters(
    * The parameters of the output feed-forward network.
    */
   val outputFF = FeedforwardNeuralNetwork(
-    inputSize = inputSize,
-    hiddenSize = outputHiddenSize,
+    inputSize = this.inputSize,
+    hiddenSize = this.outputHiddenSize,
     hiddenActivation = ReLU(),
-    outputSize = inputSize,
+    outputSize = this.inputSize,
     outputActivation = null,
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
@@ -85,6 +85,6 @@ class BERTParameters(
    * Check requirements.
    */
   init {
-    require(multiHeadStack >= 2) { "At least 2 layers are required in the attention stack." }
+    require(this.multiHeadStack >= 2) { "At least 2 layers are required in the attention stack." }
   }
 }
