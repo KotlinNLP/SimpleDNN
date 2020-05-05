@@ -43,6 +43,15 @@ abstract class ScalarActivationFunction : ActivationFunction {
   protected abstract fun dfOptimized(fx: Double): Double
 
   /**
+   * Derivative of the activation function, calculated in [x].
+   *
+   * @param x the input
+   *
+   * @return the derivative of f calculated in x
+   */
+  protected open fun df(x: Double): Double = this.dfOptimized(this.f(x))
+
+  /**
    * Assign to [out] the result of the activation function applied to [array].
    *
    * @param array the input array
@@ -61,5 +70,15 @@ abstract class ScalarActivationFunction : ActivationFunction {
    */
   override fun dfOptimized(fxArray: DenseNDArray, out: DenseNDArray) {
     (0 until fxArray.length).forEach { i -> out[i] = this.dfOptimized(fxArray[i]) }
+  }
+
+  /**
+   * Assign to [out] the activation function derivative calculated respect to the input array.
+   *
+   * @param xArray the input array
+   * @param out the NDArray in which the result is written
+   */
+  override fun df(xArray: DenseNDArray, out: DenseNDArray) {
+    (0 until xArray.length).forEach { i -> out[i] = this.df(xArray[i]) }
   }
 }
