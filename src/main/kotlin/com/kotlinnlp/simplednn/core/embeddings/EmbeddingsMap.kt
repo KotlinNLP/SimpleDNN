@@ -234,7 +234,7 @@ open class EmbeddingsMap<T>(
    * If [embedding] is null a new randomly initialize [ParamsArray] is associated to the given [key].
    *
    * @param key the key to associate to the new embedding
-   * @param embedding the embedding to associate to the given [key] (optional, default = null)
+   * @param embedding the embedding to associate to the given [key] or null to generate it randomly
    *
    * @return the embedding set
    */
@@ -291,15 +291,16 @@ open class EmbeddingsMap<T>(
    *
    * @param key the key of an embedding (can be null)
    * @param dropout the probability to get the [unknownEmbedding] (default = 0.0 = no dropout)
+   * @param embedding the embedding to associate to the given [key] or null to generate it randomly
    *
    * @return the embedding with the given not-null [key] or [nullEmbedding] or [unknownEmbedding]
    */
-  fun getOrSet(key: T?, dropout: Double = 0.0): ParamsArray {
+  fun getOrSet(key: T?, dropout: Double = 0.0, embedding: ParamsArray? = null): ParamsArray {
     require(dropout in 0.0 .. 1.0)
 
     return when {
       dropout > 0.0 && this.mustBeDropped(dropout) -> this.unknownEmbedding
-      key != null -> if (key in this.embeddings) this.embeddings[key]!! else this.set(key)
+      key != null -> if (key in this.embeddings) this.embeddings[key]!! else this.set(key = key, embedding = embedding)
       else -> this.nullEmbedding
     }
   }
