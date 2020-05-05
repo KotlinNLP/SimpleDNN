@@ -66,16 +66,6 @@ internal class BERTLayer(
     BatchFeedforwardProcessor(model = this.params.outputFF, propagateToInput = true, useDropout = false)
 
   /**
-   * The multi-head attention arrays of the last forward.
-   */
-  private lateinit var multiHeadAttentionArrays: List<DenseNDArray>
-
-  /**
-   * The last outputs of the feed-forward processors.
-   */
-  private lateinit var ffOutputs: List<DenseNDArray>
-
-  /**
    * The output norm batch processor.
    */
   private val outputNorm: BatchFeedforwardProcessor<DenseNDArray> =
@@ -140,9 +130,9 @@ internal class BERTLayer(
    */
   private fun forwardAttention(input: List<DenseNDArray>): List<DenseNDArray> {
 
-    this.multiHeadAttentionArrays = this.multiHeadAttention.forward(input)
+    val attentionArrays: List<DenseNDArray> = this.multiHeadAttention.forward(input)
 
-    return this.multiHeadNorm.forward(input.zip(this.multiHeadAttentionArrays).map { it.first.sum(it.second) })
+    return this.multiHeadNorm.forward(input.zip(attentionArrays).map { it.first.sum(it.second) })
   }
 
   /**
@@ -154,9 +144,9 @@ internal class BERTLayer(
    */
   private fun forwardOutput(attentionArrays: List<DenseNDArray>): List<DenseNDArray> {
 
-    this.ffOutputs = this.outputFF.forward(attentionArrays)
+    val ffOutputs: List<DenseNDArray> = this.outputFF.forward(attentionArrays)
 
-    return this.outputNorm.forward(attentionArrays.zip(this.ffOutputs).map { it.first.sum(it.second) })
+    return this.outputNorm.forward(attentionArrays.zip(ffOutputs).map { it.first.sum(it.second) })
   }
 
   /**
