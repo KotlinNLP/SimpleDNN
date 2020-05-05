@@ -265,6 +265,15 @@ open class EmbeddingsMap<T>(
   operator fun get(key: T?): ParamsArray = this.get(key = key, dropout = 0.0)
 
   /**
+   * @param key the key associated to an embedding
+   *
+   * @return the embedding with the given [key] or null if it is not present
+   */
+  fun getOrNull(key: T): ParamsArray? = this.get(key = key, dropout = 0.0).let {
+    if (it == this.unknownEmbedding) null else it
+  }
+
+  /**
    * Get the embedding with the given [key].
    * If the [key] is null return the [nullEmbedding].
    * If no embedding has the given [key] return the [unknownEmbedding].
