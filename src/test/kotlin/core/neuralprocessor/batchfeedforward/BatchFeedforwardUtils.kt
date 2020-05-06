@@ -49,7 +49,7 @@ object BatchFeedforwardUtils {
         type = LayerType.Input.Dense),
       LayerInterface(
         size = 2,
-        activationFunction = Tanh(),
+        activationFunction = Tanh,
         connectionType = LayerType.Connection.Feedforward
       ))
 

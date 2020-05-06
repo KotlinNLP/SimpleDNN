@@ -94,10 +94,10 @@ class LTMLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Initialization: set the activation function of the gates.
    */
   init {
-    this.inputGate1.setActivation(Sigmoid())
-    this.inputGate2.setActivation(Sigmoid())
-    this.inputGate3.setActivation(Sigmoid())
-    this.cell.setActivation(Sigmoid())
+    this.inputGate1.setActivation(Sigmoid)
+    this.inputGate2.setActivation(Sigmoid)
+    this.inputGate3.setActivation(Sigmoid)
+    this.cell.setActivation(Sigmoid)
   }
 
   /**

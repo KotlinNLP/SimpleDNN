@@ -25,7 +25,7 @@ class IndRNNLayerStructureSpec : Spek({
 
       context("without previous state context") {
 
-        val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Empty())
+        val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Empty)
         layer.forward()
 
         it("should match the expected output") {
@@ -37,7 +37,7 @@ class IndRNNLayerStructureSpec : Spek({
 
       context("with previous state context") {
 
-        val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Back())
+        val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Back)
 
         layer.forward()
 
@@ -53,7 +53,7 @@ class IndRNNLayerStructureSpec : Spek({
 
       context("without next and previous state") {
 
-        val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Empty())
+        val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Empty)
 
         layer.forward()
 
@@ -101,7 +101,7 @@ class IndRNNLayerStructureSpec : Spek({
 
       context("with prev state only") {
 
-        val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Back())
+        val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Back)
 
         layer.forward()
 
@@ -149,7 +149,7 @@ class IndRNNLayerStructureSpec : Spek({
 
       context("with next state only") {
 
-        val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Front())
+        val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Front)
 
         layer.forward()
 
@@ -197,7 +197,7 @@ class IndRNNLayerStructureSpec : Spek({
 
       context("with next and previous state") {
 
-        val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Bilateral())
+        val layer = IndRNNLayerStructureUtils.buildLayer(IndRNNLayerContextWindow.Bilateral)
 
         layer.forward()
 

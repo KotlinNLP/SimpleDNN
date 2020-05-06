@@ -32,7 +32,7 @@ object ConcatFFLayerUtils {
     inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray.zeros(3),
     params = buildParams(),
-    activationFunction = Tanh()
+    activationFunction = Tanh
   )
 
   /**

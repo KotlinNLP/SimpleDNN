@@ -84,7 +84,7 @@ class SumSignRelevanceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<De
   private val neuralNetwork = SimpleRecurrentNeuralNetwork(
     inputSize = 1,
     hiddenSize = 10,
-    hiddenActivation = Tanh(),
+    hiddenActivation = Tanh,
     outputSize = 3,
     outputActivation = Softmax())
 

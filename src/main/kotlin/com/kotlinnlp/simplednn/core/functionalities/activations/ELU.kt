@@ -17,7 +17,7 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
  *
  * @property alpha defines the decreasing exponential rate for the negative values. It must be positive.
  */
-class ELU(val alpha: Double = 1.0) : ScalarActivationFunction() {
+class ELU(val alpha: Double = 1.0) : ScalarActivationFunction {
 
   companion object {
 

@@ -86,8 +86,8 @@ class RANLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   init {
 
-    this.inputGate.setActivation(Sigmoid())
-    this.forgetGate.setActivation(Sigmoid())
+    this.inputGate.setActivation(Sigmoid)
+    this.forgetGate.setActivation(Sigmoid)
 
     if (this.activationFunction != null) {
       this.outputArray.setActivation(this.activationFunction)

@@ -43,7 +43,7 @@ class FeedforwardLayerStructureSpec : Spek({
       context("input size 5 (activated with tanh) and output size 3 (softmax)") {
 
         val layer = FeedforwardLayerStructureUtils.buildLayer53()
-        layer.inputArray.setActivation(Tanh())
+        layer.inputArray.setActivation(Tanh)
         layer.inputArray.activate()
         layer.forward()
 
@@ -176,7 +176,7 @@ class FeedforwardLayerStructureSpec : Spek({
         val layer = FeedforwardLayerStructureUtils.buildLayer53()
         val outputGold = FeedforwardLayerStructureUtils.getOutputGold3()
 
-        layer.inputArray.setActivation(Tanh())
+        layer.inputArray.setActivation(Tanh)
         layer.inputArray.activate()
         layer.forward()
 

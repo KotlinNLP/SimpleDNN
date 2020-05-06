@@ -30,7 +30,7 @@ object AffineLayerUtils {
     inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray(size = 2),
     params = buildParams(),
-    activationFunction = Tanh()
+    activationFunction = Tanh
   )
 
   /**

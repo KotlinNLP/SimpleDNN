@@ -21,7 +21,7 @@ class HardTanhSpec: Spek({
 
   describe("an HardTanh activation function") {
 
-    val activationFunction = HardTanh()
+    val activationFunction = HardTanh
     val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
     val activatedArray = activationFunction.f(array)
 

@@ -92,7 +92,7 @@ private fun buildPrevStateLayer(): LSTMLayer<DenseNDArray> {
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = LSTMLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = LSTMLayerContextWindow.Empty())
 
   layer.cell.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, -0.6, 1.0, 0.1, 0.1)))
@@ -113,7 +113,7 @@ private fun buildInitHiddenLayer(refLayer: LSTMLayer<DenseNDArray>): LSTMLayer<D
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = refLayer.params,
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = LSTMLayerContextWindow.Front(refLayer))
 }
 
@@ -130,7 +130,7 @@ private fun buildNextStateLayer(): LSTMLayer<DenseNDArray> {
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = LSTMLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = LSTMLayerContextWindow.Empty())
 
   layer.inputGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))

@@ -76,7 +76,7 @@ private fun buildPrevStateLayer(): CFNLayer<DenseNDArray> {
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = CFNLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = CFNLayerContextWindow.Empty()
   )
 }
@@ -94,7 +94,7 @@ private fun buildNextStateLayer(currentLayerOutput: DenseNDArray): CFNLayer<Dens
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = CFNLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = CFNLayerContextWindow.Empty())
 
   layer.inputGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0, 0.1)))

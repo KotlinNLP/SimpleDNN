@@ -117,8 +117,8 @@ class DeltaRNNLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
       outputArray.setActivation(activationFunction)
     }
 
-    this.candidate.setActivation(activationFunction ?: Tanh())
-    this.partition.setActivation(Sigmoid())
+    this.candidate.setActivation(activationFunction ?: Tanh)
+    this.partition.setActivation(Sigmoid)
   }
 
   /**

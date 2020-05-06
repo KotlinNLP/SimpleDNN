@@ -46,7 +46,7 @@ class SparseInputTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArray>>) {
     inputSize = 356425,
     inputType = LayerType.Input.SparseBinary,
     hiddenSize = 200,
-    hiddenActivation = Softsign(),
+    hiddenActivation = Softsign,
     outputSize = 86,
     outputActivation = Softmax())
 

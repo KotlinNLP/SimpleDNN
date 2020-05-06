@@ -30,7 +30,7 @@ object IndRNNLayerStructureUtils {
     inputType = LayerType.Input.Dense,
     outputArray = RecurrentLayerUnit<DenseNDArray>(5),
     params = buildParams(),
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = layerContextWindow)
 
   /**

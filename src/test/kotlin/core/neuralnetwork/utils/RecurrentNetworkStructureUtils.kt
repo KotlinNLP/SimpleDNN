@@ -53,7 +53,7 @@ object RecurrentNetworkStructureUtils {
 
     val layersConfiguration = arrayOf(
       LayerInterface(size = 4),
-      LayerInterface(size = 5, activationFunction = Tanh(), connectionType = LayerType.Connection.SimpleRecurrent),
+      LayerInterface(size = 5, activationFunction = Tanh, connectionType = LayerType.Connection.SimpleRecurrent),
       LayerInterface(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
     ).toList()
 

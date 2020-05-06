@@ -55,7 +55,7 @@ object GateTestUtils {
       hiddenSize = 10,
       hiddenActivation = ELU(),
       outputSize = 1,
-      outputActivation = Sigmoid())
+      outputActivation = Sigmoid)
 
     return this.testAccuracy(
       neuralNetwork = neuralNetwork,

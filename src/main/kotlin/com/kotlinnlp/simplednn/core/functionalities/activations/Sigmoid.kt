@@ -7,20 +7,19 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.activations
 
+import kotlin.math.exp
+
 /**
  * The sigmoid activation function σ(x) = 1/(1 + e−x) is an S-shaped function,
  * transforming each value x into the range [0, 1].
  */
-class Sigmoid : ScalarActivationFunction() {
+object Sigmoid : ScalarActivationFunction {
 
-  companion object {
-
-    /**
-     * Private val used to serialize the class (needed by Serializable).
-     */
-    @Suppress("unused")
-    private const val serialVersionUID: Long = 1L
-  }
+  /**
+   * Private val used to serialize the class (needed by Serializable).
+   */
+  @Suppress("unused")
+  private const val serialVersionUID: Long = 1L
 
   /**
    * Calculate the Sigmoid function in [x].
@@ -29,7 +28,7 @@ class Sigmoid : ScalarActivationFunction() {
    *
    * @return f([x])
    */
-  override fun f(x: Double): Double = 1.0 / (1.0 + Math.exp(-x))
+  override fun f(x: Double): Double = 1.0 / (1.0 + exp(-x))
 
   /**
    * Optimized derivative of the Sigmoid function, calculated respect to the input already activated.

@@ -76,7 +76,7 @@ private fun buildPrevStateLayer(): GRULayer<DenseNDArray> {
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = GRULayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = GRULayerContextWindow.Empty()
   )
 }
@@ -94,7 +94,7 @@ private fun buildNextStateLayer(): GRULayer<DenseNDArray> {
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = GRULayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = GRULayerContextWindow.Empty())
 
   layer.resetGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0, 0.1)))

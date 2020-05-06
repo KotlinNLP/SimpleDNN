@@ -94,7 +94,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
       hierarchySize = 1,
       inputSize = this.embeddingsSize,
       inputType = LayerType.Input.Dense,
-      biRNNsActivation = Tanh(),
+      biRNNsActivation = Tanh,
       biRNNsConnectionType = LayerType.Connection.RAN,
       attentionSize = this.embeddingsSize,
       outputSize = 2,

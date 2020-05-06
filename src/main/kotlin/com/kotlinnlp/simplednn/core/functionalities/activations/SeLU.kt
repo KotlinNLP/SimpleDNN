@@ -18,7 +18,7 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
  *
  */
 
-class SeLU(val scale: Double = 1.05070099, val alpha: Double = 1.67326324) : ScalarActivationFunction() {
+class SeLU(val scale: Double = 1.05070099, val alpha: Double = 1.67326324) : ScalarActivationFunction {
 
   companion object {
 

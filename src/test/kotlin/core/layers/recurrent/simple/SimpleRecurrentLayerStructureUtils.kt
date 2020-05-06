@@ -29,7 +29,7 @@ object SimpleRecurrentLayerStructureUtils {
     inputType = LayerType.Input.Dense,
     outputArray = RecurrentLayerUnit(5),
     params = buildParams(),
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = layerContextWindow)
 
   /**

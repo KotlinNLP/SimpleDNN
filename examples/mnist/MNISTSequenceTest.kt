@@ -46,7 +46,7 @@ private class MNISTSequenceTest(val dataset: Corpus<SequenceExampleWithFinalOutp
   private val neuralNetwork = GRUNeuralNetwork(
     inputSize = 2,
     hiddenSize = 200,
-    hiddenActivation = Tanh(),
+    hiddenActivation = Tanh,
     outputSize = 10,
     outputActivation = Softmax())
 

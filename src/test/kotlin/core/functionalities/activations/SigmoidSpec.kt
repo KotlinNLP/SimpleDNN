@@ -21,7 +21,7 @@ class SigmoidSpec : Spek({
 
   describe("a Sigmoid activation function") {
 
-    val activationFunction = Sigmoid()
+    val activationFunction = Sigmoid
     val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
     val activatedArray = activationFunction.f(array)
 

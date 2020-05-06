@@ -86,8 +86,8 @@ class CFNLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   init {
 
-    this.inputGate.setActivation(Sigmoid())
-    this.forgetGate.setActivation(Sigmoid())
+    this.inputGate.setActivation(Sigmoid)
+    this.forgetGate.setActivation(Sigmoid)
 
     if (this.activationFunction != null) {
       this.candidate.setActivation(this.activationFunction)

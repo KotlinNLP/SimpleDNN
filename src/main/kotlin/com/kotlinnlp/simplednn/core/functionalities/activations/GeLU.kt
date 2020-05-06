@@ -18,7 +18,7 @@ import kotlin.math.*
  * Reference:
  * [Dan Hendrycks, Kevin Gimpel, 2018, Gaussian Error Linear Units (GELUs)](https://arxiv.org/abs/1606.08415)
  */
-object GeLU : ScalarActivationFunction() {
+object GeLU : ScalarActivationFunction {
 
   /**
    * Private val used to serialize the class (needed by Serializable).

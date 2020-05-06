@@ -15,7 +15,7 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
  *
  * @property lambda defines the lambda value
  */
-class Softshrink(val lambda: Double = 0.5) : ScalarActivationFunction() {
+class Softshrink(val lambda: Double = 0.5) : ScalarActivationFunction {
 
   companion object {
 

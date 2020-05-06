@@ -12,16 +12,13 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
  * transforming the values x into the range [0, 1].
  */
 
-class HardSigmoid: ScalarActivationFunction() {
+object HardSigmoid: ScalarActivationFunction {
 
-  companion object {
-
-    /**
-     * Private val used to serialize the class (needed by Serializable).
-     */
-    @Suppress("unused")
-    private const val serialVersionUID: Long = 1L
-  }
+  /**
+   * Private val used to serialize the class (needed by Serializable).
+   */
+  @Suppress("unused")
+  private const val serialVersionUID: Long = 1L
 
   /**
    * Calculate the activation function in [x].

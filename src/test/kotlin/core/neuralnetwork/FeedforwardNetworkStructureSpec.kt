@@ -36,7 +36,7 @@ class FeedforwardNetworkStructureSpec : Spek({
 
         val wrongLayersConfiguration = arrayOf(
           LayerInterface(size = 4),
-          LayerInterface(size = 5, activationFunction = Tanh()),
+          LayerInterface(size = 5, activationFunction = Tanh),
           LayerInterface(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
         ).toList()
 
@@ -52,7 +52,7 @@ class FeedforwardNetworkStructureSpec : Spek({
 
       val layersConfiguration = arrayOf(
         LayerInterface(size = 4),
-        LayerInterface(size = 5, activationFunction = Tanh(), connectionType = Connection.Feedforward),
+        LayerInterface(size = 5, activationFunction = Tanh, connectionType = Connection.Feedforward),
         LayerInterface(size = 3, activationFunction = Softmax(), connectionType = Connection.Feedforward)
       ).toList()
 

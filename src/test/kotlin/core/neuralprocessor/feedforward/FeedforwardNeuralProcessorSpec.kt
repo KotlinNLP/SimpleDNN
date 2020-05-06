@@ -26,7 +26,7 @@ class FeedforwardNeuralProcessorSpec : Spek({
     val network = FeedforwardNeuralNetwork(
       inputSize = 4,
       hiddenSize = 5,
-      hiddenActivation = Tanh(),
+      hiddenActivation = Tanh,
       outputSize = 3,
       outputActivation = Softmax())
 

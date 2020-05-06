@@ -25,7 +25,7 @@ sealed class IndRNNLayerContextWindow: LayerContextWindow {
   /**
    *
    */
-  class Empty: IndRNNLayerContextWindow() {
+  object Empty : IndRNNLayerContextWindow() {
 
     override fun getPrevState(): IndRNNLayer<DenseNDArray>? = null
 
@@ -35,7 +35,7 @@ sealed class IndRNNLayerContextWindow: LayerContextWindow {
   /**
    *
    */
-  class Back: IndRNNLayerContextWindow() {
+  object Back : IndRNNLayerContextWindow() {
 
     override fun getPrevState(): IndRNNLayer<DenseNDArray> = buildPrevStateLayer()
 
@@ -45,7 +45,7 @@ sealed class IndRNNLayerContextWindow: LayerContextWindow {
   /**
    *
    */
-  class Front: IndRNNLayerContextWindow() {
+  object Front : IndRNNLayerContextWindow() {
 
     override fun getPrevState(): IndRNNLayer<DenseNDArray>? = null
 
@@ -55,7 +55,7 @@ sealed class IndRNNLayerContextWindow: LayerContextWindow {
   /**
    *
    */
-  class Bilateral: IndRNNLayerContextWindow() {
+  object Bilateral : IndRNNLayerContextWindow() {
 
     override fun getPrevState(): IndRNNLayer<DenseNDArray> = buildPrevStateLayer()
 
@@ -70,7 +70,7 @@ private fun buildPrevStateLayer(): IndRNNLayer<DenseNDArray> {
 
   val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
   outputArray.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
-  outputArray.setActivation(Tanh())
+  outputArray.setActivation(Tanh)
   outputArray.activate()
 
   return IndRNNLayer(
@@ -78,8 +78,8 @@ private fun buildPrevStateLayer(): IndRNNLayer<DenseNDArray> {
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = IndRNNLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh(),
-    layerContextWindow = IndRNNLayerContextWindow.Empty())
+    activationFunction = Tanh,
+    layerContextWindow = IndRNNLayerContextWindow.Empty)
 }
 
 /**
@@ -95,6 +95,6 @@ private fun buildNextStateLayer(): IndRNNLayer<DenseNDArray> {
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = IndRNNLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh(),
-    layerContextWindow = IndRNNLayerContextWindow.Empty())
+    activationFunction = Tanh,
+    layerContextWindow = IndRNNLayerContextWindow.Empty)
 }

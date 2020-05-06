@@ -28,7 +28,7 @@ object HighwayLayerStructureUtils {
     inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray.zeros(4),
     params = buildParams(),
-    activationFunction = Tanh())
+    activationFunction = Tanh)
 
   /**
    *

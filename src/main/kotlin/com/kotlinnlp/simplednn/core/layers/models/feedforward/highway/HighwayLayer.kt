@@ -83,7 +83,7 @@ class HighwayLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
       "The Highway layer requires the input size to be equal to the output size."
     }
 
-    this.transformGate.setActivation(Sigmoid())
+    this.transformGate.setActivation(Sigmoid)
 
     if (activationFunction != null) {
       this.inputUnit.setActivation(activationFunction)

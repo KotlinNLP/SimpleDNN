@@ -69,7 +69,7 @@ sealed class RANLayerContextWindow: LayerContextWindow {
 private fun buildPrevStateLayer(): RANLayer<DenseNDArray> {
 
   val outputArray = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
-  outputArray.setActivation(Tanh())
+  outputArray.setActivation(Tanh)
   outputArray.activate()
 
   return RANLayer(
@@ -77,7 +77,7 @@ private fun buildPrevStateLayer(): RANLayer<DenseNDArray> {
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = RANLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = RANLayerContextWindow.Empty()
   )
 }
@@ -95,7 +95,7 @@ private fun buildNextStateLayer(): RANLayer<DenseNDArray> {
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = RANLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = RANLayerContextWindow.Empty())
 
   layer.inputGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0, 0.1)))

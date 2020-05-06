@@ -14,16 +14,13 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
  * References
  * [Deep Sparse Rectifier Neural Networks](http://proceedings.mlr.press/v15/glorot11a/glorot11a.pdf)
  */
-class ReLU : ScalarActivationFunction() {
+object ReLU : ScalarActivationFunction {
 
-  companion object {
-
-    /**
-     * Private val used to serialize the class (needed by Serializable).
-     */
-    @Suppress("unused")
-    private const val serialVersionUID: Long = 1L
-  }
+  /**
+   * Private val used to serialize the class (needed by Serializable).
+   */
+  @Suppress("unused")
+  private const val serialVersionUID: Long = 1L
 
   /**
    * Calculate the ReLU function in [x].

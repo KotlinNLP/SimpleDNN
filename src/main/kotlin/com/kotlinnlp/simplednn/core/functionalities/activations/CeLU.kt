@@ -17,7 +17,7 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
  *           Using default value, the function is identical to ELU.
  *
  */
-class CeLU(val alpha: Double = 1.0) : ScalarActivationFunction() {
+class CeLU(val alpha: Double = 1.0) : ScalarActivationFunction {
 
   companion object {
 

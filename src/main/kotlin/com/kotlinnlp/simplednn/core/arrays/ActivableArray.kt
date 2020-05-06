@@ -138,7 +138,6 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
 
   /**
    * Calculate the derivative of the activation calculated in [valuesNotActivated].
-   *
    * Note: when possible the optimized derivative is used (most of the common activation functions contain the activated
    * values themselves in their derivatives).
    *

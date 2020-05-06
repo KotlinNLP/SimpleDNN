@@ -45,7 +45,7 @@ class ProgressiveSumTest(val dataset: Corpus<SequenceExample<DenseNDArray>>) {
   private val neuralNetwork = CFN(
       inputSize = 1,
       hiddenSize = 100,
-      hiddenActivation = Tanh(),
+      hiddenActivation = Tanh,
       outputSize = 11,
       outputActivation = Softmax())
 

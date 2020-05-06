@@ -52,7 +52,7 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
   private var transformLayersPool = FeedforwardLayersPool<InputNDArrayType>(
     params = this.model.transformParams,
     inputType = this.inputType,
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     dropout = this.dropout
   )
 

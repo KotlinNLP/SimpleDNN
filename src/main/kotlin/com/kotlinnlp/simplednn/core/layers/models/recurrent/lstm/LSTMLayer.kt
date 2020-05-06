@@ -92,9 +92,9 @@ class LSTMLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   init {
 
-    this.inputGate.setActivation(Sigmoid())
-    this.outputGate.setActivation(Sigmoid())
-    this.forgetGate.setActivation(Sigmoid())
+    this.inputGate.setActivation(Sigmoid)
+    this.outputGate.setActivation(Sigmoid)
+    this.forgetGate.setActivation(Sigmoid)
 
     if (activationFunction != null) {
       this.candidate.setActivation(activationFunction)

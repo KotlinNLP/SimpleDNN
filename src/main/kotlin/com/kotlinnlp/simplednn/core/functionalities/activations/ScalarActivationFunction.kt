@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * ActivationsFunction can either be used through an [com.kotlinnlp.simplednn.core.arrays.ActivableArray],
  * or through the activation of a [com.kotlinnlp.simplednn.core.layers.Layer]
  */
-abstract class ScalarActivationFunction : ActivationFunction {
+interface ScalarActivationFunction : ActivationFunction {
 
   companion object {
 
@@ -31,7 +31,7 @@ abstract class ScalarActivationFunction : ActivationFunction {
    *
    * @return f([x])
    */
-  protected abstract fun f(x: Double): Double
+  fun f(x: Double): Double
 
   /**
    * Optimized derivative of the activation function, calculated in [fx].
@@ -40,7 +40,7 @@ abstract class ScalarActivationFunction : ActivationFunction {
    *
    * @return the derivative of f calculated in x
    */
-  protected abstract fun dfOptimized(fx: Double): Double
+  fun dfOptimized(fx: Double): Double
 
   /**
    * Derivative of the activation function, calculated in [x].
@@ -49,7 +49,7 @@ abstract class ScalarActivationFunction : ActivationFunction {
    *
    * @return the derivative of f calculated in x
    */
-  protected open fun df(x: Double): Double = this.dfOptimized(this.f(x))
+  fun df(x: Double): Double = this.dfOptimized(this.f(x))
 
   /**
    * Assign to [out] the result of the activation function applied to [array].

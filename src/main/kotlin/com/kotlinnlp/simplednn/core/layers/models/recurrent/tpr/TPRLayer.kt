@@ -98,8 +98,8 @@ class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Initialization: set the activation function of the gates
    */
   init {
-    this.aS.setActivation(Sigmoid())
-    this.aR.setActivation(Sigmoid())
+    this.aS.setActivation(Sigmoid)
+    this.aR.setActivation(Sigmoid)
   }
 
   /**

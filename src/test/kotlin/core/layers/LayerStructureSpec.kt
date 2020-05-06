@@ -38,7 +38,7 @@ class LayerStructureSpec : Spek({
           inputType = LayerType.Input.Dense,
           outputArray = AugmentedArray.zeros(5),
           params = FeedforwardLayerParameters(inputSize = 100000, outputSize = 5),
-          activationFunction = Tanh(),
+          activationFunction = Tanh,
           dropout = 0.25)
 
         layer.forward(useDropout = true)

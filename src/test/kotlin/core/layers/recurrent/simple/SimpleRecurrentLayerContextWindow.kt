@@ -70,7 +70,7 @@ private fun buildPrevStateLayer(): SimpleRecurrentLayer<DenseNDArray> {
 
   val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
   outputArray.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
-  outputArray.setActivation(Tanh())
+  outputArray.setActivation(Tanh)
   outputArray.activate()
 
   return SimpleRecurrentLayer(
@@ -78,7 +78,7 @@ private fun buildPrevStateLayer(): SimpleRecurrentLayer<DenseNDArray> {
     outputArray = outputArray,
     inputType = LayerType.Input.Dense,
     params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = SimpleRecurrentLayerContextWindow.Empty())
 }
 
@@ -95,7 +95,7 @@ private fun buildNextStateLayer(): SimpleRecurrentLayer<DenseNDArray> {
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = SimpleRecurrentLayerContextWindow.Empty())
 
   return layer

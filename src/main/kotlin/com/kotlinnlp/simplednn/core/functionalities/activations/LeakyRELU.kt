@@ -13,7 +13,7 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
  * @property slope defines the decreasing rate for the negative values. Defaults to 0.01
  *
  */
-class LeakyRELU(val slope: Double = 0.01) : ScalarActivationFunction() {
+class LeakyRELU(val slope: Double = 0.01) : ScalarActivationFunction {
 
   companion object {
 

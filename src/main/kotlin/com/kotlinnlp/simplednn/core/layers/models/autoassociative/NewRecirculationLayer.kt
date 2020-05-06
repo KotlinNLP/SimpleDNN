@@ -34,7 +34,7 @@ class NewRecirculationLayer(
   inputArray: AugmentedArray<DenseNDArray>,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: NewRecirculationLayerParameters,
-  activationFunction: ActivationFunction? = Sigmoid(),
+  activationFunction: ActivationFunction? = Sigmoid,
   val lambda: Double = 0.75,
   dropout: Double = 0.0,
   override val id: Int = 0

@@ -7,22 +7,20 @@
 
 package com.kotlinnlp.simplednn.core.functionalities.activations
 
-import java.lang.Math.abs
+import kotlin.math.abs
+import kotlin.math.pow
 
 /**
  * The Softsign function can be considered an alternative to [Tanh],
  * transforming the values x into the range [−1, 1].
  */
-class Softsign : ScalarActivationFunction() {
+object Softsign : ScalarActivationFunction {
 
-  companion object {
-
-    /**
-     * Private val used to serialize the class (needed by Serializable).
-     */
-    @Suppress("unused")
-    private const val serialVersionUID: Long = 1L
-  }
+  /**
+   * Private val used to serialize the class (needed by Serializable).
+   */
+  @Suppress("unused")
+  private const val serialVersionUID: Long = 1L
 
   /**
    * Calculate the activation function in [x].
@@ -40,5 +38,5 @@ class Softsign : ScalarActivationFunction() {
    *
    * @return the Softsign derivative calculated in x
    */
-  override fun dfOptimized(fx: Double): Double = Math.pow(1.0 - abs(fx), 2.0)
+  override fun dfOptimized(fx: Double): Double = (1.0 - abs(fx)).pow(2.0)
 }

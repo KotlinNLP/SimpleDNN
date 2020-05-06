@@ -21,7 +21,7 @@ class ReLUSpec : Spek({
 
   describe("a ReLU activation function") {
 
-    val activationFunction = ReLU()
+    val activationFunction = ReLU
     val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.1, 0.01, -0.1, -0.01, 1.0, 10.0, -1.0, -10.0))
     val activatedArray = activationFunction.f(array)
 

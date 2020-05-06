@@ -11,16 +11,13 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
  * The Hardtanh(x) activation function,
  * transforming the values x into the range [−1, 1].
  */
-class HardTanh : ScalarActivationFunction() {
+object HardTanh : ScalarActivationFunction {
 
-  companion object {
-
-    /**
-     * Private val used to serialize the class (needed by Serializable).
-     */
-    @Suppress("unused")
-    private const val serialVersionUID: Long = 1L
-  }
+  /**
+   * Private val used to serialize the class (needed by Serializable).
+   */
+  @Suppress("unused")
+  private const val serialVersionUID: Long = 1L
 
   /**
    * Calculate the activation function in [x].

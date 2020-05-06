@@ -82,8 +82,8 @@ class GRULayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   init {
 
-    this.resetGate.setActivation(Sigmoid())
-    this.partitionGate.setActivation(Sigmoid())
+    this.resetGate.setActivation(Sigmoid)
+    this.partitionGate.setActivation(Sigmoid)
 
     if (activationFunction != null) {
       this.candidate.setActivation(activationFunction)

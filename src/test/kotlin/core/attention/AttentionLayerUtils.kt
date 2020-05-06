@@ -147,6 +147,6 @@ object AttentionLayerUtils {
     inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray.zeros(2),
     params = buildTransformLayerParams1(),
-    activationFunction = Tanh()
+    activationFunction = Tanh
   )
 }

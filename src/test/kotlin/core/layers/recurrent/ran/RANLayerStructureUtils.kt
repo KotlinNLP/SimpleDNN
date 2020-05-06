@@ -31,7 +31,7 @@ object RANLayerStructureUtils {
     inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))),
     params = buildParams(),
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = layerContextWindow)
 
   /**

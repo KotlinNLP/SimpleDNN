@@ -47,7 +47,7 @@ private class MNISTTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
   private val neuralNetwork = FeedforwardNeuralNetwork(
     inputSize = 784,
     hiddenSize = 500,
-    hiddenActivation = ReLU(),
+    hiddenActivation = ReLU,
     outputSize = 10,
     outputActivation = Softmax())
 

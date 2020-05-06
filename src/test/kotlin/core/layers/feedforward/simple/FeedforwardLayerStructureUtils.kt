@@ -34,7 +34,7 @@ object FeedforwardLayerStructureUtils {
       inputType = LayerType.Input.Dense,
       outputArray = AugmentedArray.zeros(5),
       params = getParams45(),
-      activationFunction = Tanh())
+      activationFunction = Tanh)
   }
 
   /**
@@ -88,7 +88,7 @@ object FeedforwardLayerStructureUtils {
     val inputArray = AugmentedArray(SparseBinaryNDArrayFactory.arrayOf(
       activeIndices = listOf(2, 4),
       shape = Shape(5)))
-    inputArray.setActivation(Tanh())
+    inputArray.setActivation(Tanh)
 
     return FeedforwardLayer(
       inputArray = inputArray,

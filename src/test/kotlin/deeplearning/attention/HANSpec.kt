@@ -28,7 +28,7 @@ class HANSpec : Spek({
       val han = HAN(
         hierarchySize = 3,
         inputSize = 10,
-        biRNNsActivation = Tanh(),
+        biRNNsActivation = Tanh,
         biRNNsConnectionType = LayerType.Connection.GRU,
         attentionSize = 5,
         outputSize = 30,

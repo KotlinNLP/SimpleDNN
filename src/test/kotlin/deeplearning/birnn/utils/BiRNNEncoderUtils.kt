@@ -46,7 +46,7 @@ object BiRNNEncoderUtils {
       inputSize = 2,
       inputType = LayerType.Input.Dense,
       hiddenSize = 3,
-      hiddenActivation = Tanh(),
+      hiddenActivation = Tanh,
       recurrentConnectionType = LayerType.Connection.SimpleRecurrent
     )
 

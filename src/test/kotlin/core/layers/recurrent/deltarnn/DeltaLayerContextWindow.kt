@@ -71,7 +71,7 @@ private fun buildPrevStateLayer(): DeltaRNNLayer<DenseNDArray> {
 
   val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
   outputArray.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
-  outputArray.setActivation(Tanh())
+  outputArray.setActivation(Tanh)
   outputArray.activate()
 
   return DeltaRNNLayer(
@@ -79,7 +79,7 @@ private fun buildPrevStateLayer(): DeltaRNNLayer<DenseNDArray> {
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = DeltaLayerContextWindow.Empty())
 }
 
@@ -96,7 +96,7 @@ private fun buildNextStateLayer(): DeltaRNNLayer<DenseNDArray> {
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh(),
+    activationFunction = Tanh,
     layerContextWindow = SimpleRecurrentLayerContextWindow.Empty())
 
   layer.wx.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.7, -0.2, 0.8, -0.6)))

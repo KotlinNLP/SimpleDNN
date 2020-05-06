@@ -15,7 +15,7 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
  * @property threshold the threshold of the function
  * @property value the result of threshold function if x <= [threshold]
  */
-class Threshold(val threshold: Double= 0.1, val value: Double = 0.0): ScalarActivationFunction() {
+class Threshold(val threshold: Double= 0.1, val value: Double = 0.0): ScalarActivationFunction {
 
   companion object {
 
