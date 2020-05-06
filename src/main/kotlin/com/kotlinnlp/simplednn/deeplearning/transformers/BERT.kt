@@ -7,52 +7,47 @@
 
 package com.kotlinnlp.simplednn.deeplearning.transformers
 
+import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
+import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
-import kotlin.math.sqrt
 
 /**
  * A Bidirectional Encoder Representations from Transformers.
  *
  * @property model the BERT model
  * @param fineTuning whether to train the last layer only (default false)
- * @property propagateToInput whether to propagate the errors to the input during the [backward]
+ * @param masksEnabled whether to consider the token [BERTModel.FuncToken.MASK] as a functional token if present in a
+ *                     sentence (default = false)
+ * @property propagateToInput whether to propagate the errors to the input word embeddings during the [backward]
  * @property useDropout whether to apply the attention dropout during the [forward]
  * @property id a unique ID
  */
 class BERT(
   val model: BERTModel,
   fineTuning: Boolean = false,
+  private val masksEnabled: Boolean = false,
   override val propagateToInput: Boolean = false,
   override val useDropout: Boolean = false,
   override val id: Int = 0
 ) : NeuralProcessor<
-  List<DenseNDArray>, // InputType
+  List<String>, // InputType
   List<DenseNDArray>, // OutputType
   List<DenseNDArray>, // ErrorsType
-  List<DenseNDArray> // InputErrorsType
+  NeuralProcessor.NoInputErrors // InputErrorsType
   > {
 
   /**
    * The errors accumulator.
    */
   private val errorsAccumulator = ParamsErrorsAccumulator()
-
-  /**
-   * The pre-calculated positional encodings.
-   */
-  private val positionalEncodings: MutableList<DenseNDArray> = mutableListOf()
-
-  /**
-   * The input arrays scale factor.
-   */
-  private val inputScale: Double = sqrt(this.model.inputSize.toDouble())
 
   /**
    * The BERT layers.
@@ -71,19 +66,35 @@ class BERT(
   private val trainableLayers: List<BERTLayer> = if (fineTuning) this.layers.takeLast(1) else this.layers
 
   /**
+   * The norm layer batch processor.
+   */
+  private val embNorm: BatchFeedforwardProcessor<DenseNDArray> =
+    BatchFeedforwardProcessor(model = this.model.embNorm, propagateToInput = true, useDropout = false)
+
+  /**
+   * The input sequence as pairs of <form, encoding>.
+   */
+  private lateinit var inputSequence: List<Pair<String, DenseNDArray>>
+
+  /**
+   * The errors associated to the padding terms.
+   */
+  private val zeroErrors: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.model.inputSize))
+
+  /**
    * @param input the input sequence
    *
    * @return the encoded sequence
    */
-  override fun forward(input: List<DenseNDArray>): List<DenseNDArray> {
+  override fun forward(input: List<String>): List<DenseNDArray> {
 
-    var sequence: List<DenseNDArray> = this.addPositionalEncodings(input.map { it.prod(this.inputScale) })
+    var encodings: List<DenseNDArray> = this.embNorm.forward(this.encodeSequence(input))
 
     this.layers.forEach {
-      sequence = it.forward(sequence)
+      encodings = it.forward(encodings)
     }
 
-    return sequence
+    return encodings.subList(1, encodings.lastIndex) // remove the padding tokens
   }
 
   /**
@@ -95,7 +106,7 @@ class BERT(
 
     this.errorsAccumulator.clear()
 
-    var errors: List<DenseNDArray> = outputErrors
+    var errors: List<DenseNDArray> = listOf(this.zeroErrors) + outputErrors + listOf(this.zeroErrors)
 
     this.trainableLayers.reversed().forEach {
 
@@ -105,6 +116,8 @@ class BERT(
 
       errors = it.getInputErrors(copy = false)
     }
+
+    this.backwardInput(errors)
 
     this.errorsAccumulator.averageErrors()
   }
@@ -120,56 +133,98 @@ class BERT(
     this.errorsAccumulator.getParamsErrors(copy = copy)
 
   /**
-   * Return the input errors of the last backward.
-   * Before calling this method make sure that [propagateToInput] is enabled.
-   *
-   * @param copy whether to return by value or by reference (default true)
-   *
-   * @return the input errors
+   * Input errors not provided.
    */
-  override fun getInputErrors(copy: Boolean): List<DenseNDArray> =
-    this.layers.first().getInputErrors(copy = false).map { it.prod(this.inputScale) }
+  override fun getInputErrors(copy: Boolean) = NeuralProcessor.NoInputErrors
 
   /**
-   * Add positional encodings to the input sequence, in-place.
+   * Encode the input sequence adding the padding functional tokens and associating the embeddings properly.
+   * The tokens with their encodings are saved into [inputSequence].
    *
-   * @param inputSequence the input sequence
+   * @param input the input sequence
    *
-   * @return the input sequence with the positional encodings added in-place
+   * @return the input encodings
    */
-  private fun addPositionalEncodings(inputSequence: List<DenseNDArray>): List<DenseNDArray> =
-    inputSequence.mapIndexed { pos, array -> array.assignSum(this.getPositionalEncoding(pos)) }
+  private fun encodeSequence(input: List<String>): List<DenseNDArray> {
+
+    fun encodeToken(token: String, pos: Int, isFunc: Boolean = false): Pair<String, DenseNDArray> {
+
+      val wordEmb: ParamsArray = if (isFunc || (this.masksEnabled && token == BERTModel.FuncToken.MASK.form))
+        this.model.funcEmb[BERTModel.FuncToken.byForm(token)]
+      else
+        this.model.wordEmb!![token]
+
+      val encoding: DenseNDArray = wordEmb.values.sum(
+        this.getPositionalEncoding(pos).assignSum(
+          this.model.tokenTypeEmb[0].values))
+
+      return token to encoding
+    }
+
+    // -------------------------------
+
+    this.inputSequence = listOf(encodeToken(token = BERTModel.FuncToken.CLS.form, pos = 0, isFunc = true)) +
+      input.mapIndexed { i, it -> encodeToken(token = it, pos = i + 1) } +
+      listOf(encodeToken(token = BERTModel.FuncToken.SEP.form, pos = input.lastIndex + 2, isFunc = true))
+
+    return this.inputSequence.unzip().second
+  }
 
   /**
    * @param pos the position of an input array within the sequence
    *
-   * @return the positioanl encoding for the given position
+   * @return the positional encoding for the given position
    */
   private fun getPositionalEncoding(pos: Int): DenseNDArray =
-    this.positionalEncodings.getOrElse(pos) { this.buildPositionalEncoding() }
+    this.model.positionalEmb
+      .getOrSet(pos) { ParamsArray(this.buildPositionalEncoding(pos)) }
+      .values
 
   /**
-   * Build a new positional encoding and add it to the pre-calculated arrays.
+   * @param pos the ordinal position
    *
-   * @return a new positional encoding for the (last + 1) position
+   * @return a new positional encoding for the given position
    */
-  private fun buildPositionalEncoding(): DenseNDArray {
-
-    val pos: Int = this.positionalEncodings.size
-    val encoding: DenseNDArray = DenseNDArrayFactory.arrayOf(
-      DoubleArray(
-        size = this.model.inputSize,
-        init = { i ->
-          if (i % 2 == 0)
-            sin(pos / 10000.0.pow(i.toDouble() / this.model.inputSize))
-          else
-            cos(pos / 10000.0.pow(i.toDouble() / this.model.inputSize))
-        }
-      )
+  private fun buildPositionalEncoding(pos: Int): DenseNDArray = DenseNDArrayFactory.arrayOf(
+    DoubleArray(
+      size = this.model.inputSize,
+      init = { i ->
+        if (i % 2 == 0)
+          sin(pos / 10000.0.pow(i.toDouble() / this.model.inputSize))
+        else
+          cos(pos / 10000.0.pow(i.toDouble() / this.model.inputSize))
+      }
     )
+  )
 
-    this.positionalEncodings.add(encoding)
+  /**
+   * Execute the backward of the input normalization and embeddings.
+   *
+   * @param errors the input normalization errors
+   */
+  private fun backwardInput(errors: List<DenseNDArray>) {
 
-    return encoding
+    val embErrors: List<DenseNDArray> = this.embNorm.let {
+      it.backward(errors)
+      this.errorsAccumulator.accumulate(it.getParamsErrors(copy = false))
+      it.getInputErrors(copy = false)
+    }
+
+    this.inputSequence.zip(embErrors).forEachIndexed { i, (input, inputErrors) ->
+
+      val isFuncToken: Boolean = i == 0 || i == this.inputSequence.lastIndex
+      val token: String = input.first
+
+      val wordEmb: ParamsArray = if (isFuncToken)
+        this.model.funcEmb[BERTModel.FuncToken.byForm(token)]
+      else
+        this.model.wordEmb!![token]
+
+      if (isFuncToken || this.propagateToInput)
+        this.errorsAccumulator.accumulate(wordEmb, inputErrors)
+
+      this.errorsAccumulator.accumulate(this.model.positionalEmb[i], inputErrors)
+      this.errorsAccumulator.accumulate(this.model.tokenTypeEmb[0], inputErrors)
+    }
   }
 }

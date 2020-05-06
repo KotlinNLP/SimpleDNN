@@ -9,34 +9,27 @@ package com.kotlinnlp.simplednn.deeplearning.transformers
 
 import com.kotlinnlp.linguisticdescription.sentence.flattenTokens
 import com.kotlinnlp.neuraltokenizer.NeuralTokenizer
-import com.kotlinnlp.simplednn.core.arrays.ParamsArray
-import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.helpers.Statistics
 import com.kotlinnlp.simplednn.helpers.Trainer
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.utils.DictionarySet
-import com.kotlinnlp.utils.Serializer
 import com.kotlinnlp.utils.Shuffler
 import com.kotlinnlp.utils.Timer
 import java.io.File
 import java.io.FileOutputStream
+import java.util.*
 
 /**
  * The trainer of a [BERT] model.
  *
  * @param model the model to train
  * @param modelFilename the name of the file in which to save the serialized model
- * @param classifierModelFilename the name of the file in which to save the classifier model or null to do not save it
  * @param tokenizer a neural tokenizer
- * @param embeddingsMap pre-trained word embeddings
- * @param dictionary a dictionary set with all the forms in the examples
  * @param termsDropout the probability to dropout an input token
  * @param optimizeEmbeddings whether to optimize the embeddings during the training
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
@@ -48,10 +41,7 @@ import java.io.FileOutputStream
 class BERTTrainer(
   private val model: BERTModel,
   modelFilename: String,
-  private val classifierModelFilename: String? = null,
   private val tokenizer: NeuralTokenizer,
-  private val embeddingsMap: EmbeddingsMap<String>,
-  private val dictionary: DictionarySet<String>,
   private val termsDropout: Double = 0.15,
   private val optimizeEmbeddings: Boolean,
   updateMethod: UpdateMethod<*>,
@@ -70,6 +60,14 @@ class BERTTrainer(
   verbose = verbose
 ) {
 
+  companion object {
+
+    /**
+     * The random generator used to decide if an token must be masked.
+     */
+    private val randomGenerator = Random(743)
+  }
+
   /**
    * The encoded term of an example.
    *
@@ -83,48 +81,38 @@ class BERTTrainer(
     lateinit var encoding: DenseNDArray
 
     /**
-     * A unique ID of this term within the dictionary.
-     * All the unknown terms are considered equal to each other.
+     * The classification index of this term within the vocabulary.
+     * Note: the unknown terms are not considered for the classification.
      */
-    val id: Int = this@BERTTrainer.dictionary.getId(this.form) ?: this@BERTTrainer.unknownIndex
+    val index: Int = this@BERTTrainer.model.vocabulary.getId(this.form) ?: -1
 
     /**
-     * The term embedding.
+     * Whether this term must be considered as a masked input.
      */
-    val embedding: ParamsArray = if (this@BERTTrainer.optimizeEmbeddings)
-      this@BERTTrainer.embeddingsMap.getOrSet(key = this.form, dropout = this@BERTTrainer.termsDropout)
-    else
-      this@BERTTrainer.embeddingsMap.get(key = this.form, dropout = this@BERTTrainer.termsDropout)
-
-    /**
-     * Whether this term must be considered as masked input.
-     */
-    val isMasked: Boolean = this.embedding == this@BERTTrainer.embeddingsMap.unknownEmbedding &&
-      (this@BERTTrainer.optimizeEmbeddings || this@BERTTrainer.embeddingsMap.contains(this.form)) &&
-      this.id != this@BERTTrainer.unknownIndex
+    val isMasked: Boolean =
+      this.form in this@BERTTrainer.model.vocabulary && randomGenerator.nextDouble() < this@BERTTrainer.termsDropout
   }
 
   /**
    * A Bidirectional Encoder Representations from Transformers.
    */
-  private val bert = BERT(model = this.model, useDropout = true, propagateToInput = this.optimizeEmbeddings)
+  private val bert = BERT(
+    model = this.model,
+    useDropout = true,
+    propagateToInput = this.optimizeEmbeddings,
+    masksEnabled = true)
 
   /**
-   * A feed-forward layer trained to classify an encoded vector within the terms of the dictionary.
+   * A feed-forward layer trained to classify an encoded vector within the terms of the model vocabulary.
    * It is used only during the training phase.
    */
-  private val classificationLayer: FeedforwardLayer<DenseNDArray> = BERTModel.buildClassifier(
-    params = FeedforwardLayerParameters(inputSize = this.model.inputSize, outputSize = this.dictionary.size))
+  private val classifier: FeedforwardNeuralProcessor<DenseNDArray> =
+    FeedforwardNeuralProcessor(model = this.model.classifier, propagateToInput = true, useDropout = false)
 
   /**
    * The errors given when a term has not been dropped.
    */
   private val zeroErrors: DenseNDArray = DenseNDArrayFactory.zeros(Shape(this.model.inputSize))
-
-  /**
-   * The index of the unknown term in the classification.
-   */
-  private val unknownIndex: Int = this.dictionary.size
 
   /**
    * The classification stats.
@@ -147,6 +135,13 @@ class BERTTrainer(
   private val timer = Timer()
 
   /**
+   * Check requirements.
+   */
+  init {
+    require(this.termsDropout.let { it > 0.0 && it < 1.0 }) { "The terms dropout must be in the range (0.0, 1.0)" }
+  }
+
+  /**
    * Learn from an example (forward + backward).
    *
    * @param example an example to train the model with
@@ -156,46 +151,20 @@ class BERTTrainer(
     val forms: List<String> = this.tokenizer.tokenize(example).flattenTokens().map { it.form }
     val encodedTerms: List<EncodedTerm> = forms.map { EncodedTerm(it) }
 
-    this.bert.forward(encodedTerms.map { it.embedding.values })
+    this.bert.forward(encodedTerms.map { if (it.isMasked) BERTModel.FuncToken.MASK.form else it.form })
       .zip(encodedTerms)
       .forEach { (encoding, encodedTerm) -> encodedTerm.encoding = encoding }
 
     val encodingErrors: List<DenseNDArray> = encodedTerms.map {
       if (it.isMasked)
-        this.classifyVector(vector = it.encoding, goldIndex = it.id)
+        this.classifyVector(vector = it.encoding, goldIndex = it.index)
       else
         this.zeroErrors
     }
 
     this.bert.backward(encodingErrors)
 
-    if (this.optimizeEmbeddings)
-      this.accumulateEmbeddingsErrors(encodedTerms)
-
     if (this.verbose) this.printProgressAndStats()
-  }
-
-  /**
-   * Print progress and stats.
-   */
-  private fun printProgressAndStats() {
-
-    this.examplesCount++
-
-    if (this.examplesCount % 100 == 0)
-      print(".")
-
-    if (this.examplesCount % 1000 == 0) {
-
-      val lossStr = "loss %.2f".format(this.lastLosses.average())
-      println("\n[${this.timer.formatElapsedTime()}] After $examplesCount examples: $lossStr | ${this.stats.metric}")
-
-      this.validateAndSaveModel()
-      this.lastLosses.clear()
-      this.stats.reset()
-
-      this.classifierModelFilename?.let { this.saveClassifierModel(it) }
-    }
   }
 
   /**
@@ -213,16 +182,6 @@ class BERTTrainer(
   }
 
   /**
-   * Accumulate the BERT input errors into the embeddings.
-   */
-  private fun accumulateEmbeddingsErrors(encodedTerms: List<EncodedTerm>) {
-
-    encodedTerms.zip(this.bert.getInputErrors()).forEach { (encodedTerm, errors) ->
-      this.optimizers.single().accumulate(encodedTerm.embedding, errors)
-    }
-  }
-
-  /**
    * Classify a vector (representing a term) comparing the result with the expected term index.
    *
    * @param vector the vector to classify
@@ -232,20 +191,19 @@ class BERTTrainer(
    */
   private fun classifyVector(vector: DenseNDArray, goldIndex: Int): DenseNDArray {
 
-    this.classificationLayer.setInput(vector)
-    this.classificationLayer.forward()
+    this.classifier.forward(vector)
 
-    val classification: DenseNDArray = this.classificationLayer.outputArray.values
+    val classification: DenseNDArray = this.classifier.getOutput(copy = false)
     val goldOutput: DenseNDArray =
-      DenseNDArrayFactory.oneHotEncoder(length = this.classificationLayer.params.outputSize, oneAt = goldIndex)
+      DenseNDArrayFactory.oneHotEncoder(length = this.classifier.model.outputSize, oneAt = goldIndex)
 
     this.updateStats(classification = classification, goldOutput = goldOutput)
 
-    this.classificationLayer.setErrors(
+    this.classifier.backward(
       SoftmaxCrossEntropyCalculator.calculateErrors(output = classification, outputGold = goldOutput))
-    this.optimizers.single().accumulate(this.classificationLayer.backward(propagateToInput = true))
+    this.optimizers.single().accumulate(this.classifier.getParamsErrors(copy = false))
 
-    return this.classificationLayer.inputArray.errors.copy()
+    return this.classifier.getInputErrors(copy = true)
   }
 
   /**
@@ -269,14 +227,23 @@ class BERTTrainer(
   }
 
   /**
-   * Save the classifier model to file.
-   *
-   * @param filename the filename in which to dump the classifier model
+   * Print progress and stats.
    */
-  private fun saveClassifierModel(filename: String) {
+  private fun printProgressAndStats() {
 
-    Serializer.serialize(this.classificationLayer.params, FileOutputStream(File(filename)))
+    this.examplesCount++
 
-    println("Output classifier model saved to '$filename'...")
+    if (this.examplesCount % 100 == 0)
+      print(".")
+
+    if (this.examplesCount % 1000 == 0) {
+
+      val lossStr = "loss %.2f".format(this.lastLosses.average())
+      println("\n[${this.timer.formatElapsedTime()}] After $examplesCount examples: $lossStr | ${this.stats.metric}")
+
+      this.validateAndSaveModel()
+      this.lastLosses.clear()
+      this.stats.reset()
+    }
   }
 }
