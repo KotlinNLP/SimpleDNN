@@ -137,12 +137,18 @@ open class ActivableArray<NDArrayType : NDArray<NDArrayType>>(val size: Int) {
   fun getActivatedValues(): DenseNDArray = this.activationFunction!!.f(this.valuesNotActivated as DenseNDArray)
 
   /**
+   * Calculate the derivative of the activation calculated in [valuesNotActivated].
    *
-   * @return the derivative of the activation calculated in valuesNotActivated (it uses an
-   *         optimized function because all the common functions used as activation contain
-   *         the activated values themselves in their derivative)
+   * Note: when possible the optimized derivative is used (most of the common activation functions contain the activated
+   * values themselves in their derivatives).
+   *
+   * @return the derivative of the activation calculated in [valuesNotActivated]
    */
-  fun calculateActivationDeriv(): DenseNDArray = this.activationFunction!!.dfOptimized(this._values as DenseNDArray)
+  fun calculateActivationDeriv(): DenseNDArray = try {
+    this.activationFunction!!.dfOptimized(this._values as DenseNDArray)
+  } catch (e: NotImplementedError) {
+    this.activationFunction!!.df(this._valuesNotActivated as DenseNDArray)
+  }
 
   /**
    *

@@ -71,11 +71,8 @@ object GeLU : ScalarActivationFunction() {
   }
 
   /**
-   * Optimized derivative of the GeLU function, calculated respect to the input already activated.
-   *
-   * @param fx the input already activated [f(x)]
-   *
-   * @return the GeLU derivative calculated in x
+   * Optimized derivative not available.
    */
-  override fun dfOptimized(fx: Double): Double = throw RuntimeException("Optimized derivative not available for GeLU")
+  override fun dfOptimized(fx: Double): Double =
+    throw NotImplementedError("Optimized derivative not available for GeLU")
 }
