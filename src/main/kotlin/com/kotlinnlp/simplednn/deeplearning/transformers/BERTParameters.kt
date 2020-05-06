@@ -7,8 +7,7 @@
 
 package com.kotlinnlp.simplednn.deeplearning.transformers
 
-import com.kotlinnlp.simplednn.core.arrays.ParamsArray
-import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
+import com.kotlinnlp.simplednn.core.functionalities.activations.GeLU
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerInterface
@@ -68,7 +67,7 @@ class BERTParameters(
   val outputFF = FeedforwardNeuralNetwork(
     inputSize = this.inputSize,
     hiddenSize = this.outputHiddenSize,
-    hiddenActivation = ReLU(),
+    hiddenActivation = GeLU,
     outputSize = this.inputSize,
     outputActivation = null,
     weightsInitializer = weightsInitializer,
