@@ -41,7 +41,6 @@ object BERTBaseImportHelper {
   fun buildModel(params: Map<String, DenseNDArray>, vocab: DictionarySet<String>, numOfHeads: Int): BERTModel {
 
     val embMatrix: DenseNDArray = params.getValue("bert.embeddings.word_embeddings.weight")
-    val vocabSize: Int = embMatrix.shape.dim1
     val inputSize: Int = embMatrix.shape.dim2
 
     require(inputSize % numOfHeads == 0) {
@@ -75,8 +74,6 @@ object BERTBaseImportHelper {
       params.getValue("bert.embeddings.token_type_embeddings.weight").getRows().forEachIndexed { i, values ->
         tokenTypeEmb.getOrSet(i).values.assignValues(values)
       }
-
-      classifierModel = buildClassifierModel(hiddenSize = inputSize, outputSize = vocabSize)
 
       getAssignMap(this).forEach { (paramName, array) ->
         array.values.assignValues(params.getValue(paramName))
@@ -179,17 +176,17 @@ object BERTBaseImportHelper {
       "bert.embeddings.LayerNorm.weight" to (model.embNorm.paramsPerLayer.single() as NormLayerParameters).g,
       "bert.embeddings.LayerNorm.bias" to (model.embNorm.paramsPerLayer.single() as NormLayerParameters).b,
       "cls.predictions.transform.dense.weight" to
-        (model.classifierModel!!.paramsPerLayer[0] as FeedforwardLayerParameters).unit.weights,
+        (model.classifier.paramsPerLayer[0] as FeedforwardLayerParameters).unit.weights,
       "cls.predictions.transform.dense.bias" to
-        (model.classifierModel!!.paramsPerLayer[0] as FeedforwardLayerParameters).unit.biases,
+        (model.classifier.paramsPerLayer[0] as FeedforwardLayerParameters).unit.biases,
       "cls.predictions.transform.LayerNorm.weight" to
-        (model.classifierModel!!.paramsPerLayer[1] as NormLayerParameters).g,
+        (model.classifier.paramsPerLayer[1] as NormLayerParameters).g,
       "cls.predictions.transform.LayerNorm.bias" to
-        (model.classifierModel!!.paramsPerLayer[1] as NormLayerParameters).b,
+        (model.classifier.paramsPerLayer[1] as NormLayerParameters).b,
       "cls.predictions.decoder.weight" to
-        (model.classifierModel!!.paramsPerLayer[2] as FeedforwardLayerParameters).unit.weights,
+        (model.classifier.paramsPerLayer[2] as FeedforwardLayerParameters).unit.weights,
       "cls.predictions.decoder.bias" to
-        (model.classifierModel!!.paramsPerLayer[2] as FeedforwardLayerParameters).unit.biases
+        (model.classifier.paramsPerLayer[2] as FeedforwardLayerParameters).unit.biases
     )
 
     model.layers.forEachIndexed { i, layerParams ->
