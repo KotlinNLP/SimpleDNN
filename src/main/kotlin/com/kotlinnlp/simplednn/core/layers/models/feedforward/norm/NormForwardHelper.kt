@@ -21,18 +21,10 @@ internal class NormForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val layer: NormLayer<InputNDArrayType>
 ) : ForwardHelper<InputNDArrayType>(layer) {
 
-  companion object {
-
-    /**
-     * Avoid underflow errors.
-     */
-    private const val EPS = 1.0e-5
-  }
-
   /**
    * Forward the input to the output combining it with the parameters.
    *
-   *  y = (x - E\[x\]) / sqrt(VAR\[x\] + [EPS]) * g + b
+   *  y = (x - E\[x\]) / sqrt(VAR\[x\] + EPS) * g + b
    */
   override fun forward() {
 
@@ -41,13 +33,16 @@ internal class NormForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
     val g: DenseNDArray = this.layer.params.g.values
     val b: DenseNDArray = this.layer.params.b.values
 
-    val mean: Double = x.avg()
-    val dev: InputNDArrayType = x.sub(mean)
-    val stdDev: Double = sqrt(dev.pow(2.0).avg() + EPS)
+    val dev: InputNDArrayType = x.sub(x.avg())
+    val v: Double = dev.pow(2.0).avg()
+    val stdDev: Double = sqrt(v + NormLayer.EPS)
+    val devStdDev: InputNDArrayType = dev.div(stdDev)
 
-    y.assignValues(dev).assignDiv(stdDev).assignProd(g).assignSum(b)
+    y.assignValues(devStdDev).assignProd(g).assignSum(b)
 
-    this.layer.mean = mean
+    this.layer.dev = dev
+    this.layer.v = v
     this.layer.stdDev = stdDev
+    this.layer.devStdDev = devStdDev
   }
 }

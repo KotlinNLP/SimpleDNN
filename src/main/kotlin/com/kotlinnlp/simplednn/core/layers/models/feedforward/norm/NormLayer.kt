@@ -41,15 +41,33 @@ class NormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   dropout = 0.0
 ) {
 
+  companion object {
+
+    /**
+     * Avoid underflow errors.
+     */
+    internal const val EPS = 1.0e-5
+  }
+
   /**
-   * Support for the mean of the input array.
+   * Support for the square deviation of the input array.
    */
-  internal var mean: Double = 0.0
+  internal lateinit var dev: InputNDArrayType
 
   /**
    * Support for the standard deviation of the input array.
    */
   internal var stdDev: Double = 0.0
+
+  /**
+   * Support for the standard deviation of the input array.
+   */
+  internal lateinit var devStdDev: InputNDArrayType
+
+  /**
+   * Support for the variance of the input array.
+   */
+  internal var v: Double = 0.0
 
   /**
    * The helper which executes the forward.

@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.core.layers.models.feedforward.norm
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
 /**
  * The helper which executes the backward on the [NormLayer].
@@ -28,16 +27,30 @@ internal class NormBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
   override fun execBackward(propagateToInput: Boolean) {
 
     val gy: DenseNDArray = this.layer.outputArray.errors
+    val devStdDev: InputNDArrayType = this.layer.devStdDev
 
     this.layer.params.b.errors.values.assignValues(gy)
+    this.layer.params.g.errors.values.assignValues(gy).assignProd(devStdDev)
 
-    val gg: DenseNDArray = DenseNDArrayFactory.zeros(this.layer.inputArray.values.shape)
-    gg.assignValues(this.layer.inputArray.values)
-    gg.assignSub(this.layer.mean).assignDiv(this.layer.stdDev)
+    if (propagateToInput) {
 
-    this.layer.params.g.errors.values.assignValues(gg.assignProd(gy))
+      val n: Double = this.layer.inputArray.size.toDouble()
+      val g: DenseNDArray = this.layer.params.g.values
+      val v: Double = this.layer.v
+      val dev: InputNDArrayType = this.layer.dev
+      val stdDev: Double = this.layer.stdDev
 
-    if (propagateToInput)
-      this.layer.inputArray.assignErrorsByProd(gy, this.layer.params.g.values.div(this.layer.stdDev))
+      val gyG: DenseNDArray = gy.prod(g)
+      val gxDev: DenseNDArray = gyG.div(stdDev)
+      val gxDevXm: Double = -gxDev.sum() / n
+
+      val gxV: Double = -gyG.assignProd(dev).assignDiv(2.0 * (v + NormLayer.EPS) * stdDev).sum() / n
+      val gxVx: InputNDArrayType = dev.prod(2.0)
+      val gxVxm: Double = -gxVx.sum() / n
+
+      val gx: DenseNDArray = gxDev.assignSum(gxDevXm).assignSum(gxVx.assignSum(gxVxm).assignProd(gxV))
+
+      this.layer.inputArray.assignErrors(gx)
+    }
   }
 }
