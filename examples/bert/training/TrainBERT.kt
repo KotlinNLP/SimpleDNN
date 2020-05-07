@@ -25,7 +25,7 @@ fun main(args: Array<String>) {
 
   val vocabulary: DictionarySet<String> = parsedArgs.vocabularyPath.let {
     println("Reading vocabulary from '$it'...")
-    readVocabulary(filename = parsedArgs.vocabularyPath, minOccurrences = 100, maxTerms = 20000)
+    readVocabulary(filename = parsedArgs.vocabularyPath, maxTerms = parsedArgs.maxVocabularySize)
   }
 
   val embeddingsMap: EmbeddingsMap<String> = parsedArgs.embeddingsPath?.let {
@@ -115,26 +115,17 @@ private val punctTerms: List<String> = listOf(
 
 /**
  * Read the vocabulary for the BERT training from file.
- * Each line of the file must contain a term and its occurrences, separated by a tab char (`\t`).
+ * Each line of the file must contain a term.
  * On top of this, punctuation terms are inserted in the dictionary.
  *
  * @param filename the filename of the vocabulary
- * @param minOccurrences the min number of occurrences to insert a term into the vocabulary
  * @param maxTerms the max number of terms to insert into the vocabulary or null for no limit
  *
  * @return a vocabulary for the training
  */
-private fun readVocabulary(filename: String, minOccurrences: Int, maxTerms: Int? = null): DictionarySet<String> {
+private fun readVocabulary(filename: String, maxTerms: Int? = null): DictionarySet<String> {
 
-  val terms: List<String> = File(filename)
-    .readLines()
-    .asSequence()
-    .map { it.split("\t") }
-    .map { it[0] to it[1].toInt() }
-    .filter { it.second >= minOccurrences }
-    .sortedByDescending { it.second }
-    .map { it.first }
-    .toList()
+  val terms: List<String> = File(filename).readLines()
 
   return DictionarySet(terms.take(maxTerms ?: terms.size)).apply {
     punctTerms.forEach { it.forEach { c -> add(c.toString()) } }

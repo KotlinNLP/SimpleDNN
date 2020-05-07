@@ -68,6 +68,14 @@ internal class CommandLineArguments(args: Array<String>) {
   )
 
   /**
+   * The max number of terms to load from the vocabulary (optional).
+   */
+  val maxVocabularySize: Int? by parser.storing(
+    "--max-vocab-size",
+    help="the max number of terms to load from the vocabulary (optional)"
+  ) { toInt() }.default { null }
+
+  /**
    * Force parsing all arguments (only read ones are parsed by default).
    */
   init {
