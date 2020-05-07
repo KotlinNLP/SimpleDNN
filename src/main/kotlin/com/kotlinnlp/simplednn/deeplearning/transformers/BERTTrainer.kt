@@ -22,6 +22,7 @@ import com.kotlinnlp.utils.WordPieceTokenizer
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
+import kotlin.math.floor
 
 /**
  * The trainer of a [BERT] model.
@@ -62,7 +63,17 @@ class BERTTrainer(
     /**
      * The random generator used to decide if an token must be masked.
      */
-    private val randomGenerator = Random(743)
+    private val maskRandom = Random(739)
+
+    /**
+     * The random generator used to decide if the form of a masked token must be replaced.
+     */
+    private val replaceRandom = Random(743)
+
+    /**
+     * The random generator used to take a random form from the model vocabulary.
+     */
+    private val formRandom = Random(751)
 
     /**
      * The special tokens that must not be split with the tokenization.
@@ -92,7 +103,34 @@ class BERTTrainer(
      * Whether this term must be considered as a masked input.
      */
     val isMasked: Boolean =
-      this.form in this@BERTTrainer.model.vocabulary && randomGenerator.nextDouble() < this@BERTTrainer.termsDropout
+      this.form in this@BERTTrainer.model.vocabulary && maskRandom.nextDouble() < this@BERTTrainer.termsDropout
+
+    /**
+     * @return the masked form of this token
+     */
+    fun getMaskedForm(): String = if (this.isMasked) {
+
+      val prob: Double = replaceRandom.nextDouble()
+
+      when {
+        prob < 0.80 -> BERTModel.FuncToken.MASK.form
+        prob < 0.90 -> this.getRandomForm()
+        else -> this.form
+      }
+
+    } else {
+      this.form
+    }
+
+    /**
+     * @return a random form from the model vocabulary
+     */
+    private fun getRandomForm(): String {
+
+      val elementId: Int = floor(formRandom.nextDouble() * this@BERTTrainer.model.vocabulary.size).toInt()
+
+      return this@BERTTrainer.model.vocabulary.getElement(elementId)!!
+    }
   }
 
   /**
@@ -158,7 +196,7 @@ class BERTTrainer(
     val forms: List<String> = this.tokenizer.tokenize(example, neverSplit = SPECIAL_TOKENS)
     val encodedTerms: List<EncodedTerm> = forms.map { EncodedTerm(it) }
 
-    this.bert.forward(encodedTerms.map { if (it.isMasked) BERTModel.FuncToken.MASK.form else it.form })
+    this.bert.forward(encodedTerms.map { it.getMaskedForm() })
       .zip(encodedTerms)
       .forEach { (encoding, encodedTerm) -> encodedTerm.encoding = encoding }
 
