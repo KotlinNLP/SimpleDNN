@@ -63,6 +63,11 @@ class BERTTrainer(
      * The random generator used to decide if an token must be masked.
      */
     private val randomGenerator = Random(743)
+
+    /**
+     * The special tokens that must not be split with the tokenization.
+     */
+    private val SPECIAL_TOKENS: Set<String> = BERTModel.FuncToken.values().map { it.form }.toSet()
   }
 
   /**
@@ -150,7 +155,7 @@ class BERTTrainer(
    */
   override fun learnFromExample(example: String) {
 
-    val forms: List<String> = this.tokenizer.tokenize(example)
+    val forms: List<String> = this.tokenizer.tokenize(example, neverSplit = SPECIAL_TOKENS)
     val encodedTerms: List<EncodedTerm> = forms.map { EncodedTerm(it) }
 
     this.bert.forward(encodedTerms.map { if (it.isMasked) BERTModel.FuncToken.MASK.form else it.form })
