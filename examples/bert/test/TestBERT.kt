@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeura
 import com.kotlinnlp.simplednn.deeplearning.transformers.BERT
 import com.kotlinnlp.simplednn.deeplearning.transformers.BERTModel
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.utils.WordPieceTokenizer
 import java.io.FileInputStream
 
 /**
@@ -29,7 +30,7 @@ fun main(args: Array<String>) {
 
   while (true) {
     readInput()?.let {
-      println("Reconstructed text: ${reconstructor.reconstruct(it.split(" "))}")
+      println("Reconstructed text: ${reconstructor.reconstruct(it)}")
     } ?: break
   }
 }
@@ -50,6 +51,11 @@ private class TextReconstructor(model: BERTModel) {
   }
 
   /**
+   * The text tokenizer.
+   */
+  private val tokenizer = WordPieceTokenizer(model.vocabulary)
+
+  /**
    * A BERT transformer.
    */
   private val bert = BERT(model, masksEnabled = true)
@@ -67,13 +73,15 @@ private class TextReconstructor(model: BERTModel) {
    *
    * @return the given text with the [RECONSTRUCT_KEY]s replaced with the predictions of the [classifier]
    */
-  fun reconstruct(text: List<String>): String {
+  fun reconstruct(text: String): String {
 
-    val maskedText: List<String> = text.map { if (it == RECONSTRUCT_KEY) BERTModel.FuncToken.MASK.form else it }
-    val encodings: List<DenseNDArray> = this.bert.forward(maskedText)
+    val tokens: List<String> = this.tokenizer.tokenize(text)
+    val maskedTokens: List<String> = tokens.map { if (it == RECONSTRUCT_KEY) BERTModel.FuncToken.MASK.form else it }
 
-    return text.zip(encodings).joinToString(" ") { (form, encoding) ->
-      if (form == RECONSTRUCT_KEY) this.reconstructForm(encoding) else form
+    val encodings: List<DenseNDArray> = this.bert.forward(maskedTokens)
+
+    return tokens.zip(encodings).joinToString(" ") { (token, encoding) ->
+      if (token == RECONSTRUCT_KEY) this.reconstructForm(encoding) else token
     }
   }
 
