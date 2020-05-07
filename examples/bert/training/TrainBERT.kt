@@ -7,15 +7,12 @@
 
 package bert.training
 
-import com.kotlinnlp.neuraltokenizer.NeuralTokenizer
-import com.kotlinnlp.neuraltokenizer.NeuralTokenizerModel
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.deeplearning.transformers.BERTModel
 import com.kotlinnlp.simplednn.deeplearning.transformers.BERTTrainer
 import com.kotlinnlp.utils.DictionarySet
 import java.io.File
-import java.io.FileInputStream
 
 /**
  * Train a BERT model.
@@ -25,11 +22,6 @@ import java.io.FileInputStream
 fun main(args: Array<String>) {
 
   val parsedArgs = CommandLineArguments(args)
-
-  val tokenizer = NeuralTokenizer(model = parsedArgs.tokenizerModelPath.let {
-    println("Reading tokenizer model from '$it'...")
-    NeuralTokenizerModel.load(FileInputStream(it))
-  })
 
   val vocabulary: DictionarySet<String> = parsedArgs.vocabularyPath.let {
     println("Reading vocabulary from '$it'...")
@@ -59,7 +51,6 @@ fun main(args: Array<String>) {
     val helper = BERTTrainer(
       model = model,
       modelFilename = parsedArgs.modelPath,
-      tokenizer = tokenizer,
       updateMethod = ADAMMethod(stepSize = 0.001),
       termsDropout = 0.15,
       optimizeEmbeddings = parsedArgs.embeddingsPath == null,

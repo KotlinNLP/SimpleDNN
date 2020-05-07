@@ -7,8 +7,6 @@
 
 package com.kotlinnlp.simplednn.deeplearning.transformers
 
-import com.kotlinnlp.linguisticdescription.sentence.flattenTokens
-import com.kotlinnlp.neuraltokenizer.NeuralTokenizer
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
@@ -20,6 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.utils.Shuffler
 import com.kotlinnlp.utils.Timer
+import com.kotlinnlp.utils.WordPieceTokenizer
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
@@ -29,7 +28,6 @@ import java.util.*
  *
  * @param model the model to train
  * @param modelFilename the name of the file in which to save the serialized model
- * @param tokenizer a neural tokenizer
  * @param termsDropout the probability to dropout an input token
  * @param optimizeEmbeddings whether to optimize the embeddings during the training
  * @param updateMethod the update method helper (Learning Rate, ADAM, AdaGrad, ...)
@@ -41,7 +39,6 @@ import java.util.*
 class BERTTrainer(
   private val model: BERTModel,
   modelFilename: String,
-  private val tokenizer: NeuralTokenizer,
   private val termsDropout: Double = 0.15,
   private val optimizeEmbeddings: Boolean,
   updateMethod: UpdateMethod<*>,
@@ -92,6 +89,11 @@ class BERTTrainer(
     val isMasked: Boolean =
       this.form in this@BERTTrainer.model.vocabulary && randomGenerator.nextDouble() < this@BERTTrainer.termsDropout
   }
+
+  /**
+   * The examples tokenizer.
+   */
+  private val tokenizer = WordPieceTokenizer(this.model.vocabulary)
 
   /**
    * A Bidirectional Encoder Representations from Transformers.
@@ -148,7 +150,7 @@ class BERTTrainer(
    */
   override fun learnFromExample(example: String) {
 
-    val forms: List<String> = this.tokenizer.tokenize(example).flattenTokens().map { it.form }
+    val forms: List<String> = this.tokenizer.tokenize(example)
     val encodedTerms: List<EncodedTerm> = forms.map { EncodedTerm(it) }
 
     this.bert.forward(encodedTerms.map { if (it.isMasked) BERTModel.FuncToken.MASK.form else it.form })

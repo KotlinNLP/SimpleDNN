@@ -41,15 +41,6 @@ internal class CommandLineArguments(args: Array<String>) {
   )
 
   /**
-   * The file path of the serialized tokenizer model.
-   */
-  val tokenizerModelPath: String by parser.storing(
-    "-t",
-    "--tokenizer",
-    help="the file path of the serialized tokenizer model"
-  )
-
-  /**
    * The file path of the pre-trained word embeddings.
    */
   val embeddingsPath: String? by parser.storing(

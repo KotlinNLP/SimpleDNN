@@ -63,7 +63,6 @@
         <surfire.version>2.22.0</surfire.version>
         <spek.version>2.0.5</spek.version>
         <dokka.version>0.9.17</dokka.version>
-        <neuraltokenizer.version>0.4.8</neuraltokenizer.version>
         <utils.version>2.1.4</utils.version>
     </properties>
 
@@ -257,12 +256,6 @@
             <groupId>org.spekframework.spek2</groupId>
             <artifactId>spek-runner-junit5</artifactId>
             <version>${spek.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.kotlinnlp</groupId>
-            <artifactId>neuraltokenizer</artifactId>
-            <version>${neuraltokenizer.version}</version>
         </dependency>
 
         <dependency>
