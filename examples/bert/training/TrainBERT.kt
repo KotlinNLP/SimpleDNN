@@ -73,6 +73,56 @@ fun main(args: Array<String>) {
 }
 
 /**
+ * Punctuation terms that are included automatically in the dictionary.
+ */
+private val punctTerms: List<String> = listOf(
+  "’'", // apostrophe
+  "()[]{}<>", // brackets
+  ":", // colon
+  ",", // comma
+  "‒–—―", // dashes
+  "…", // ellipsis
+  "!", // exclamation mark
+  ".", // full stop/period
+  "«»", // guillemets
+  "-‐", // hyphen
+  "?", // question mark
+  "‘’“”", // quotation marks
+  ";", // semicolon
+  "/", // slash/stroke
+  "\\", // backslash
+  "⁄", // solidus
+  "␠", // space?
+  "·", // interpunct
+  "&", // ampersand
+  "@", // at sign
+  "*", // asterisk
+  "•", // bullet
+  "^", // caret
+  "¤¢$€£¥₩₪", // currency
+  "†‡", // dagger
+  "°", // degree
+  "¡", // inverted exclamation point
+  "¿", // inverted question mark
+  "¬", // negation
+  "#", // number sign (hashtag)
+  "№", // numero sign ()
+  "%‰‱", // percent and related signs
+  "¶", // pilcrow
+  "′", // prime
+  "§", // section sign
+  "~", // tilde/swung dash
+  "¨", // umlaut/diaeresis
+  "_", // underscore/understrike
+  "|¦", // vertical/pipe/broken bar
+  "⁂", // asterism
+  "☞", // index/fist
+  "∴", // therefore sign
+  "‽", // interrobang
+  "※" // reference mark
+)
+
+/**
  * Read the vocabulary for the BERT training from file.
  * Each line of the file must contain a term and its occurrences, separated by a tab char (`\t`).
  * On top of this, punctuation terms are inserted in the dictionary.
@@ -95,5 +145,7 @@ private fun readVocabulary(filename: String, minOccurrences: Int, maxTerms: Int?
     .map { it.first }
     .toList()
 
-  return DictionarySet(terms.take(maxTerms ?: terms.size))
+  return DictionarySet(terms.take(maxTerms ?: terms.size)).apply {
+    punctTerms.forEach { it.forEach { c -> add(c.toString()) } }
+  }
 }
