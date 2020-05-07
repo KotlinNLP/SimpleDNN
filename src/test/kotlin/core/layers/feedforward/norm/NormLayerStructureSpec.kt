@@ -48,7 +48,7 @@ class NormLayerStructureSpec : Spek({
       it("should match the expected errors of the input") {
         assertTrue {
           layer.inputArray.errors.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.64465, 0.0, -0.193395, 0.77358)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.496258, 0.280667, -0.408761, 0.624352)),
             tolerance = 1.0e-06)
         }
       }
