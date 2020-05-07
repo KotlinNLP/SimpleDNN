@@ -183,7 +183,7 @@ internal class BERTLayer(
     this.errorsAccumulator.accumulate(this.multiHeadAttention.getParamsErrors(copy = false), copy = false)
 
     return if (this.propagateToInput)
-      this.multiHeadAttention.getInputErrors().zip(attentionErrors).map { it.first.assignSum(it.second) }
+      this.multiHeadAttention.getInputErrors().zip(normErrors).map { it.first.assignSum(it.second) }
     else
       listOf()
   }
