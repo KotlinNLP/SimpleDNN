@@ -19,7 +19,7 @@ import java.io.File
 import java.io.FileInputStream
 
 /**
- * Execute the training of a BERT model.
+ * Train a BERT model.
  *
  * Launch with the '-h' option for help about the command line arguments.
  */
@@ -32,9 +32,9 @@ fun main(args: Array<String>) {
     NeuralTokenizerModel.load(FileInputStream(it))
   })
 
-  val dictionary: DictionarySet<String> = parsedArgs.dictionaryPath.let {
-    println("Reading dictionary set from '$it'...")
-    readDictionary(filename = parsedArgs.dictionaryPath, minOccurrences = 100, maxTerms = 20000)
+  val vocabulary: DictionarySet<String> = parsedArgs.vocabularyPath.let {
+    println("Reading vocabulary from '$it'...")
+    readVocabulary(filename = parsedArgs.vocabularyPath, minOccurrences = 100, maxTerms = 20000)
   }
 
   val embeddingsMap: EmbeddingsMap<String> = parsedArgs.embeddingsPath?.let {
@@ -53,18 +53,14 @@ fun main(args: Array<String>) {
       outputHiddenSize = 2048,
       numOfHeads = 3,
       numOfLayers = 3,
-      dropout = 0.15)
-
-    if (parsedArgs.embeddingsPath == null)
-      model.embeddingsMap = embeddingsMap
+      dropout = 0.15,
+      vocabulary = vocabulary,
+      wordEmbeddings = parsedArgs.embeddingsPath?.let { embeddingsMap })
 
     val helper = BERTTrainer(
       model = model,
       modelFilename = parsedArgs.modelPath,
-      classifierModelFilename = parsedArgs.classifierModelPath,
       tokenizer = tokenizer,
-      embeddingsMap = embeddingsMap,
-      dictionary = dictionary,
       updateMethod = ADAMMethod(stepSize = 0.001),
       termsDropout = 0.15,
       optimizeEmbeddings = parsedArgs.embeddingsPath == null,

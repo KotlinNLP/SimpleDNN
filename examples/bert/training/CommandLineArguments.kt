@@ -41,15 +41,6 @@ internal class CommandLineArguments(args: Array<String>) {
   )
 
   /**
-   * The file path in which to serialize the output classifier model (optional).
-   */
-  val classifierModelPath: String? by parser.storing(
-    "-c",
-    "--classifier",
-    help="the file path in which to serialize the output classifier model (optional)"
-  ).default { null }
-
-  /**
    * The file path of the serialized tokenizer model.
    */
   val tokenizerModelPath: String by parser.storing(
@@ -71,16 +62,18 @@ internal class CommandLineArguments(args: Array<String>) {
    * The file path of the training dataset.
    */
   val datasetPath: String by parser.storing(
+    "-d",
     "--dataset",
     help="the file path of the training dataset"
   )
 
   /**
-   * The file path of the training dictionary.
+   * The file path of the training vocabulary.
    */
-  val dictionaryPath: String by parser.storing(
-    "--dictionary",
-    help="the file path of the training dictionary"
+  val vocabularyPath: String by parser.storing(
+    "-v",
+    "--vocabulary",
+    help="the file path of the training vocabulary"
   )
 
   /**

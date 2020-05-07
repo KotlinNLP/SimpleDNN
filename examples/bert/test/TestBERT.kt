@@ -7,18 +7,10 @@
 
 package bert.test
 
-import bert.readDictionary
-import com.kotlinnlp.linguisticdescription.sentence.flattenTokens
-import com.kotlinnlp.neuraltokenizer.NeuralTokenizer
-import com.kotlinnlp.neuraltokenizer.NeuralTokenizerModel
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.deeplearning.transformers.BERT
 import com.kotlinnlp.simplednn.deeplearning.transformers.BERTModel
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.utils.DictionarySet
-import com.kotlinnlp.utils.Serializer
-import java.io.File
 import java.io.FileInputStream
 
 /**
@@ -30,27 +22,14 @@ fun main(args: Array<String>) {
 
   val parsedArgs = CommandLineArguments(args)
 
-  val reconstructor = TextReconstructor(
-    bert = BERT(model = parsedArgs.bertModelPath.let {
-      println("Reading BERT model from '$it'...")
-      BERTModel.load(FileInputStream(it))
-    }),
-    classifier = BERTModel.buildClassifier(params = parsedArgs.classifierModelPath.let {
-      println("Reading classifier model from '$it'...")
-      Serializer.deserialize(FileInputStream(File(it))) as FeedforwardLayerParameters
-    }),
-    dictionary = parsedArgs.dictionaryPath.let {
-      println("Reading dictionary set from '$it'...")
-      readDictionary(filename = parsedArgs.dictionaryPath, minOccurrences = 100, maxTerms = 20000)
-    },
-    tokenizer = NeuralTokenizer(model = parsedArgs.tokenizerModelPath.let {
-      println("Reading tokenizer model from '$it'...")
-      NeuralTokenizerModel.load(FileInputStream(it))
-    }))
+  val reconstructor = TextReconstructor(model = parsedArgs.bertModelPath.let {
+    println("Reading BERT model from '$it'...")
+    BERTModel.load(FileInputStream(it))
+  })
 
   while (true) {
     readInput()?.let {
-      println("Reconstructed text: ${reconstructor.reconstruct(it)}")
+      println("Reconstructed text: ${reconstructor.reconstruct(it.split(" "))}")
     } ?: break
   }
 }
@@ -58,17 +37,9 @@ fun main(args: Array<String>) {
 /**
  * Reconstruct a text with masked words.
  *
- * @param tokenizer a text tokenizer
- * @param dictionary a dictionary with the possible forms to predict
- * @param bert a BERT transformer
- * @param classifier the terms classifier based on the [dictionary]
+ * @param model a BERT transformer model
  */
-private class TextReconstructor(
-  val tokenizer: NeuralTokenizer,
-  val dictionary: DictionarySet<String>,
-  val bert: BERT,
-  val classifier: FeedforwardLayer<DenseNDArray>
-) {
+private class TextReconstructor(model: BERTModel) {
 
   companion object {
 
@@ -79,34 +50,32 @@ private class TextReconstructor(
   }
 
   /**
-   * Reconstruct the masked words of a text.
+   * A BERT transformer.
+   */
+  private val bert = BERT(model, masksEnabled = true)
+
+  /**
+   * The terms classifier based on the BERT model dictionary.
+   */
+  private val classifier: FeedforwardNeuralProcessor<DenseNDArray> =
+    FeedforwardNeuralProcessor(model = model.classifier, propagateToInput = false, useDropout = false)
+
+  /**
+   * Reconstruct the masked tokens of a text.
    *
    * @param text the input text
    *
    * @return the given text with the [RECONSTRUCT_KEY]s replaced with the predictions of the [classifier]
    */
-  fun reconstruct(text: String): String {
+  fun reconstruct(text: List<String>): String {
 
-    val forms: List<String> = this.tokenizer.tokenize(text).flattenTokens().map { it.form }
-    val embeddings: List<DenseNDArray> = forms.map { this.getEmbedding(it) }
-    val encodings: List<DenseNDArray> = this.bert.forward(embeddings)
+    val maskedText: List<String> = text.map { if (it == RECONSTRUCT_KEY) BERTModel.FuncToken.MASK.form else it }
+    val encodings: List<DenseNDArray> = this.bert.forward(maskedText)
 
-    val reconstructedForms: List<String> = forms.zip(encodings).map { (form, encoding) ->
+    return text.zip(encodings).joinToString(" ") { (form, encoding) ->
       if (form == RECONSTRUCT_KEY) this.reconstructForm(encoding) else form
     }
-
-    return reconstructedForms.joinToString(" ")
   }
-
-  /**
-   * @param form a token form
-   *
-   * @return the embedding vector that represents the given form
-   */
-  private fun getEmbedding(form: String): DenseNDArray = if (form == RECONSTRUCT_KEY)
-    this.bert.model.embeddingsMap!!.unknownEmbedding.values
-  else
-    this.bert.model.embeddingsMap!![form].values
 
   /**
    * @param encoding the encoding of a token
@@ -115,12 +84,9 @@ private class TextReconstructor(
    */
   private fun reconstructForm(encoding: DenseNDArray): String {
 
-    this.classifier.setInput(encoding)
-    this.classifier.forward()
+    val classification: DenseNDArray = this.classifier.forward(encoding)
 
-    val classification: DenseNDArray = this.classifier.outputArray.values
-
-    return this.dictionary.getElement(id = classification.argMaxIndex())!!
+    return this.bert.model.vocabulary.getElement(id = classification.argMaxIndex())!!
   }
 }
 
