@@ -58,6 +58,7 @@ class BERTModel(
     CLS("[CLS]"),
     SEP("[SEP]"),
     PAD("[PAD]"),
+    UNK("[UNK]"),
     MASK("[MASK]");
 
     companion object {
