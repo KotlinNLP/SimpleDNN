@@ -154,9 +154,9 @@ class BERT(
       else
         this.model.wordEmb!![token]
 
-      val encoding: DenseNDArray = wordEmb.values.sum(
-        this.getPositionalEncoding(pos).assignSum(
-          this.model.tokenTypeEmb[0].values))
+      val encoding: DenseNDArray = wordEmb.values
+        .sum(this.getPositionalEncoding(pos))
+        .assignSum(this.model.tokenTypeEmb[0].values)
 
       return token to encoding
     }
