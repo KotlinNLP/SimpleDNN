@@ -25,36 +25,9 @@ internal class CommandLineArguments(args: Array<String>) {
    * The file path of the serialized BERT model.
    */
   val bertModelPath: String by parser.storing(
-    "-b",
-    "--bert",
+    "-m",
+    "--model",
     help="the file path of the serialized BERT model"
-  )
-
-  /**
-   * The file path of output classifier model.
-   */
-  val classifierModelPath: String by parser.storing(
-    "-c",
-    "--classifier",
-    help="the file path of output classifier model"
-  )
-
-  /**
-   * The file path of the training dictionary.
-   */
-  val dictionaryPath: String by parser.storing(
-    "-d",
-    "--dictionary",
-    help="the file path of the training dictionary"
-  )
-
-  /**
-   * The file path of the serialized tokenizer model.
-   */
-  val tokenizerModelPath: String by parser.storing(
-    "-t",
-    "--tokenizer",
-    help="the file path of the serialized tokenizer model"
   )
 
   /**
