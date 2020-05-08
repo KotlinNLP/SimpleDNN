@@ -140,6 +140,28 @@ class ParamsArray(
      * @return a copy of this params errors (the copy share the same [refParams])
      */
     fun copy() = Errors(this.values.copy())
+
+    /**
+     * @return the hash code for this object
+     */
+    override fun hashCode(): Int = this.refParams.uuid.hashCode()
+
+    /**
+     * @param other an object
+     *
+     * @return `true` if the other object is equal to this one, otherwise `false`
+     */
+    override fun equals(other: Any?): Boolean {
+
+      if (this === other) return true
+      if (javaClass != other?.javaClass) return false
+
+      other as Errors<*>
+
+      if (refParams.uuid != other.refParams.uuid) return false
+
+      return true
+    }
   }
 
   /**
