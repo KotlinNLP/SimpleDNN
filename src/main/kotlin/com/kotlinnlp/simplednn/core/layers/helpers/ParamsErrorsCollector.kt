@@ -29,7 +29,7 @@ class ParamsErrorsCollector {
    * @return the current errors of the given parameters
    */
   fun getErrors(params: ParamsArray) =
-    this.paramsErrorsMap.getOrPut(params.uuid, defaultValue = { params.buildDefaultErrors() } )
+    this.paramsErrorsMap.getOrPut(params.uuid, defaultValue = { params.buildDefaultErrors() })
 
   /**
    * @return all the collected params errors

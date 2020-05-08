@@ -91,19 +91,24 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param relevance the relevance to set into the outputArray
    */
-  fun setOutputRelevance(relevance: Norm1Array<DenseNDArray>) = this.outputArray.assignRelevance(relevance.values)
+  fun setOutputRelevance(relevance: Norm1Array<DenseNDArray>) {
+    this.outputArray.assignRelevance(relevance.values)
+  }
 
   /**
    * Set the params errors collector used by the [backwardHelper].
    *
    * @param c a collector of params errors
    */
-  fun setParamsErrorsCollector(c: ParamsErrorsCollector) { this.backwardHelper.setParamsErrorsCollector(c) }
+  fun setParamsErrorsCollector(c: ParamsErrorsCollector) {
+    this.backwardHelper.setParamsErrorsCollector(c)
+  }
 
   /**
    * Return the params errors collector used by the [backwardHelper].
    */
-  fun getParamsErrorsCollector(): ParamsErrorsCollector = this.backwardHelper.getParamsErrorsCollector()
+  fun getParamsErrorsCollector(): ParamsErrorsCollector =
+    this.backwardHelper.getParamsErrorsCollector()
 
   /**
    * Forward the input to the output combining it with the parameters.

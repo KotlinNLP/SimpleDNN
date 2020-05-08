@@ -32,7 +32,7 @@ internal abstract class BackwardHelper<InputNDArrayType : NDArray<InputNDArrayTy
    * Note: to access to the errors it is sufficient to include them in this set, even if they were not used in the
    * calculations.
    */
-  private val touchedErrors = mutableSetOf<ParamsArray.Errors<*>>()
+  private val touchedErrors: MutableSet<ParamsArray.Errors<*>> = mutableSetOf()
 
   /**
    * Replace the current [paramsErrorsCollector] with [c].
