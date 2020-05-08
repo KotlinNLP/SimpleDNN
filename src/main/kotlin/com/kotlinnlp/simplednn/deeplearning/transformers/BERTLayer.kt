@@ -20,13 +20,11 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property params the layer parameters
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
- * @property useDropout whether to apply the attention dropout during the [forward]
  * @property id a unique ID
  */
 internal class BERTLayer(
   val params: BERTParameters,
   override val propagateToInput: Boolean = false,
-  override val useDropout: Boolean = false,
   override val id: Int = 0
 ) : NeuralProcessor<
   List<DenseNDArray>, // InputType
@@ -34,6 +32,11 @@ internal class BERTLayer(
   List<DenseNDArray>, // ErrorsType
   List<DenseNDArray> // InputErrorsType
   > {
+
+  /**
+   * Dropout not available.
+   */
+  override val useDropout: Boolean = false
 
   /**
    * The errors accumulator.
@@ -48,10 +51,8 @@ internal class BERTLayer(
   /**
    * The multi-head scaled-dot attention network.
    */
-  private val multiHeadAttention = MultiHeadAttentionNetwork(
-    model = this.params.attention,
-    useDropout = this.useDropout,
-    propagateToInput = this.propagateToInput)
+  private val multiHeadAttention =
+    MultiHeadAttentionNetwork(model = this.params.attention, propagateToInput = this.propagateToInput)
 
   /**
    * The multi-head norm batch processor.

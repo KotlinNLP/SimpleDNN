@@ -27,7 +27,6 @@ import kotlin.math.sin
  * @param masksEnabled whether to consider the token [BERTModel.FuncToken.MASK] as a functional token if present in a
  *                     sentence (default = false)
  * @property propagateToInput whether to propagate the errors to the input word embeddings during the [backward]
- * @property useDropout whether to apply the attention dropout during the [forward]
  * @property id a unique ID
  */
 class BERT(
@@ -35,7 +34,6 @@ class BERT(
   fineTuning: Boolean = false,
   private val masksEnabled: Boolean = false,
   override val propagateToInput: Boolean = false,
-  override val useDropout: Boolean = false,
   override val id: Int = 0
 ) : NeuralProcessor<
   List<String>, // InputType
@@ -43,6 +41,11 @@ class BERT(
   List<DenseNDArray>, // ErrorsType
   NeuralProcessor.NoInputErrors // InputErrorsType
   > {
+
+  /**
+   * Dropout not available.
+   */
+  override val useDropout: Boolean = false
 
   /**
    * The errors accumulator.
@@ -53,10 +56,7 @@ class BERT(
    * The BERT layers.
    */
   private val layers: List<BERTLayer> = this.model.layers.mapIndexed { i, params ->
-    BERTLayer(
-      params = params,
-      propagateToInput = i > 0 || this.propagateToInput,
-      useDropout = this.useDropout)
+    BERTLayer(params = params, propagateToInput = i > 0 || this.propagateToInput)
   }
 
   /**

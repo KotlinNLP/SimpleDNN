@@ -32,7 +32,6 @@ import java.io.Serializable
  * @property vocabulary the vocabulary with all the well-known forms of the model (forms not present in it are treated
  *                      as unknown)
  * @param wordEmbeddings pre-trained word embeddings or null to generate them randomly using the [vocabulary]
- * @param dropout the probability of attention dropout (default 0.0)
  * @param numOfLayers the number of stacked layers
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
@@ -45,7 +44,6 @@ class BERTModel(
   val numOfHeads: Int,
   val vocabulary: DictionarySet<String>,
   wordEmbeddings: EmbeddingsMap<String>? = null,
-  dropout: Double = 0.0,
   numOfLayers: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
@@ -107,7 +105,6 @@ class BERTModel(
         attentionOutputSize = this.attentionOutputSize,
         outputHiddenSize = this.outputHiddenSize,
         numOfHeads = this.numOfHeads,
-        dropout = dropout,
         weightsInitializer = weightsInitializer,
         biasesInitializer = biasesInitializer)
     }

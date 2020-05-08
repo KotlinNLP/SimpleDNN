@@ -44,7 +44,6 @@ fun main(args: Array<String>) {
       outputHiddenSize = 2048,
       numOfHeads = 3,
       numOfLayers = 3,
-      dropout = 0.15,
       vocabulary = vocabulary,
       wordEmbeddings = parsedArgs.embeddingsPath?.let { embeddingsMap })
 
