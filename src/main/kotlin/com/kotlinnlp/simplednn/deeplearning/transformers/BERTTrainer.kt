@@ -52,7 +52,7 @@ class BERTTrainer(
   optimizers = listOf(ParamsOptimizer(updateMethod)),
   examples = examples,
   epochs = epochs,
-  batchSize = 1,
+  batchSize = 1, // params errors accumulation is optimized considering the model update after each example
   evaluator = null,
   shuffler = shuffler,
   verbose = verbose
