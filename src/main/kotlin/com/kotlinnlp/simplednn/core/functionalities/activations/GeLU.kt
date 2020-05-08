@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.functionalities.activations
 
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import java.lang.RuntimeException
 import kotlin.math.*
 
 /**
@@ -45,13 +44,11 @@ object GeLU : ScalarActivationFunction() {
    */
   override fun df(x: Double): Double {
 
-    fun sech(x: Double): Double = 2.0 * exp(-x) / (1.0 + exp(-2.0 * x))
-
     val x3 = x.pow(3.0)
     val a = 0.0356774 * x3 + 0.797885 * x
-    val s = sech(a)
+    val sech = 1.0 / cosh(a)
 
-    return 0.5 * tanh(a) + (0.0535161 * x3 + 0.398942 * x) * s * s + 0.5
+    return 0.5 * tanh(a) + (0.0535161 * x3 + 0.398942 * x) * sech * sech + 0.5
   }
 
   /**
