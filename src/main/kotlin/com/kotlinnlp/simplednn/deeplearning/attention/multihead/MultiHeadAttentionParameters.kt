@@ -19,7 +19,6 @@ import java.io.Serializable
  * @property inputSize the size of the input arrays
  * @property attentionSize the size of the attention arrays
  * @property attentionOutputSize the size of the attention outputs
- * @property dropout the probability of dropout (default 0.0)
  * @property numOfHeads the number of self-attention heads
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
@@ -28,7 +27,6 @@ class MultiHeadAttentionParameters(
   val inputSize: Int,
   val attentionSize: Int,
   val attentionOutputSize: Int,
-  val dropout: Double = 0.0,
   val numOfHeads: Int,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()

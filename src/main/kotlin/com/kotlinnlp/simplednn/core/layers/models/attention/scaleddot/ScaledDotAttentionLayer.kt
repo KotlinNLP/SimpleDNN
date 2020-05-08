@@ -23,14 +23,12 @@ import java.lang.Math.random
  * @property inputArrays the input arrays of the layer
  * @property params the parameters which connect the input to the output
  * @property dropout the probability of attention dropout (default 0.0)
- * @param inputDropout the probability of input dropout (default 0.0)
  * @param attentionDropout the probability of attention dropout (default 0.0)
  * @property id an identification number useful to track a specific layer (default: 0)
  */
 class ScaledDotAttentionLayer(
   val inputArrays: List<AugmentedArray<DenseNDArray>>,
   override val params: ScaledDotAttentionLayerParameters,
-  inputDropout: Double = 0.0,
   private val attentionDropout: Double = 0.0,
   override val id: Int = 0
 ) : ItemsPool.IDItem,
@@ -40,7 +38,7 @@ class ScaledDotAttentionLayer(
     outputArray = AugmentedArray(inputArrays.size),
     params = params,
     activationFunction = null,
-    dropout = inputDropout
+    dropout = 0.0
   ) {
 
   /**

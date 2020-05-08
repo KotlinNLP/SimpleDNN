@@ -27,7 +27,6 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  */
 class MultiHeadAttentionNetwork(
   val model: MultiHeadAttentionParameters,
-  override val useDropout: Boolean,
   override val propagateToInput: Boolean,
   override val id: Int = 0
 ) : NeuralProcessor<
@@ -36,6 +35,11 @@ class MultiHeadAttentionNetwork(
   List<DenseNDArray>, // ErrorsType
   List<DenseNDArray> // InputErrorsType
   > {
+
+  /**
+   * Dropout not available.
+   */
+  override val useDropout: Boolean = false
 
   /**
    * Contains the errors accumulated from the processors during the forward.
@@ -144,10 +148,7 @@ class MultiHeadAttentionNetwork(
   private fun initLayers(input: List<DenseNDArray>) {
 
     this.attentionLayers = this.model.attention.map { params ->
-      ScaledDotAttentionLayer(
-        inputArrays = input.map { AugmentedArray(it) },
-        params = params,
-        inputDropout = if (this.useDropout) this.model.dropout else 0.0)
+      ScaledDotAttentionLayer(inputArrays = input.map { AugmentedArray(it) }, params = params)
     }
 
     this.mergeLayers = this.mergePool.releaseAndGetItems(input.size)
