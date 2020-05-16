@@ -94,6 +94,11 @@ class BERTModel(
   }
 
   /**
+   * The size of the output arrays (equal to the input).
+   */
+  val outputSize: Int = this.inputSize
+
+  /**
    * The parameters of the stacked layers.
    */
   val layers: List<BERTParameters> = List(
