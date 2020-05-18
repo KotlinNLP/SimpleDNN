@@ -15,6 +15,8 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupport
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 /**
  * The ADAM method.
@@ -30,8 +32,7 @@ class ADAMMethod(
   val beta2: Double = 0.999,
   val epsilon: Double = 1.0E-8,
   regularization: WeightsRegularization? = null
-) : ExampleScheduling,
-    UpdateMethod<ADAMStructure>(regularization) {
+) : ExampleScheduling, UpdateMethod<ADAMStructure>(regularization) {
 
   /**
    * @param config the configuration
@@ -59,6 +60,14 @@ class ADAMMethod(
    * The number of examples seen.
    */
   private var exampleCount: Double = 0.0
+
+  /**
+   * Check requirements.
+   */
+  init {
+    require(this.beta1 >= 0.0 && this.beta1 < 1.0) { "`beta1` must be in the range [0.0, 1.0)" }
+    require(this.beta2 >= 0.0 && this.beta2 < 1.0) { "`beta2` must be in the range [0.0, 1.0)" }
+  }
 
   /**
    * Method to call every new example
@@ -91,8 +100,7 @@ class ADAMMethod(
    * Update the 'alpha' coefficient.
    */
   private fun updateAlpha() {
-    this.alpha = this.stepSize *
-      Math.sqrt(1.0 - Math.pow(this.beta2, this.exampleCount)) /
-      (1.0 - Math.pow(this.beta1, this.exampleCount))
+    this.alpha = this.stepSize * sqrt(1.0 - this.beta2.pow(this.exampleCount)) /
+      (1.0 - this.beta1.pow(this.exampleCount))
   }
 }
