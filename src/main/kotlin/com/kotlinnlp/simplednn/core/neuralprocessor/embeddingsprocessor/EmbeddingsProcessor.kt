@@ -91,11 +91,8 @@ open class EmbeddingsProcessor<T>(
     this.errorsAccumulator.clear()
 
     this.usedEmbeddings.zip(outputErrors).forEach { (embedding, errors) ->
-
       this.errorsAccumulator.accumulate(embedding, errors)
     }
-
-    this.errorsAccumulator.averageErrors()
   }
 
   /**

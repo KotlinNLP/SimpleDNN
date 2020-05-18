@@ -48,11 +48,6 @@ open class ParamsErrorsAccumulator {
     }
 
     /**
-     * Count the number of accumulation.
-     */
-    private var count: Int = 1
-
-    /**
      * Sum the [other] params errors to the [paramsErrors].
      *
      * @param other the params errors to accumulate
@@ -64,20 +59,6 @@ open class ParamsErrorsAccumulator {
       require(!this.byReference) { "Cannot accumulate errors into paramsErrors given by reference" }
 
       this.paramsErrors.values.assignSum(other.values)
-      this.count++
-    }
-
-    /**
-     * Average the accumulated the [paramsErrors] dividing each parameter by [count].
-     */
-    fun averageErrors() {
-
-      if (this.count > 1) {
-
-        this.paramsErrors.values.assignDiv(this.count.toDouble())
-
-        this.count = 1
-      }
     }
   }
 
@@ -155,11 +136,6 @@ open class ParamsErrorsAccumulator {
       else -> throw RuntimeException("Invalid errors type")
     }
   }
-
-  /**
-   * Divide the accumulated errors by the number of accumulations.
-   */
-  fun averageErrors() = this.paramsErrorsMap.values.forEach { it.averageErrors() }
 
   /**
    * @param copy a Boolean indicating if the returned errors must be a copy or a reference

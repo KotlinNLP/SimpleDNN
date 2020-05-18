@@ -107,8 +107,6 @@ class MultiHeadAttentionNetwork(
     }
 
     this.attentionLayers.forEach { this.errorsAccumulator.accumulate(it.backward(this.propagateToInput), copy = false) }
-
-    this.errorsAccumulator.averageErrors()
   }
 
   /**

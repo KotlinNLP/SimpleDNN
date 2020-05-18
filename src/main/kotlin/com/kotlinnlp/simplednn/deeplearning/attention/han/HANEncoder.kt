@@ -152,10 +152,7 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
     this.backwardHierarchicalGroup(
       outputErrors = this.outputProcessor.getInputErrors(copy = false),
       levelIndex = 0,
-      groupIndex = 0
-    )
-
-    this.averageAccumulatedErrors()
+      groupIndex = 0)
   }
 
   /**
@@ -314,20 +311,6 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
     encoder.backward(this.usedAttentionNetworksPerLevel[levelIndex][groupIndex].getInputErrors())
 
     accumulator.accumulate(encoder.getParamsErrors(copy = false))
-  }
-
-  /**
-   * Set the average of all the params errors accumulated by each accumulator.
-   */
-  private fun averageAccumulatedErrors() {
-
-    this.encodersParamsErrorsAccumulators.forEach {
-      it.averageErrors()
-    }
-
-    this.attentionNetworksParamsErrorsAccumulators.forEach {
-      it.averageErrors()
-    }
   }
 
   /**

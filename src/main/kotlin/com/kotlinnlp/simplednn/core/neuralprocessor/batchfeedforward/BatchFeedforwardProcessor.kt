@@ -178,8 +178,6 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
     this.usedProcessors.zip(outputErrors).forEach { (processor, errors) ->
       this.processorBackward(processor = processor, errors = errors)
     }
-
-    this.errorsAccumulator.averageErrors()
   }
 
   /**

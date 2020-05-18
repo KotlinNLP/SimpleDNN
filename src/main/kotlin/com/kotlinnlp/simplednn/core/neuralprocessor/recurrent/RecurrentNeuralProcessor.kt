@@ -475,8 +475,6 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
       this.paramsErrorsAccumulator.accumulate(paramsErrors)
     }
 
-    if (this.curStateIndex == 0) this.paramsErrorsAccumulator.averageErrors()
-
     this.curStateIndex--
   }
 

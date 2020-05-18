@@ -97,8 +97,6 @@ internal class BERTLayer(
 
     if (this.propagateToInput)
       this.inputSequence.zip(inputErrors).forEach { (input, errors) -> input.assignErrors(errors) }
-
-    this.errorsAccumulator.averageErrors()
   }
 
   /**

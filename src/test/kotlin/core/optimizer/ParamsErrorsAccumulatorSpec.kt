@@ -75,45 +75,5 @@ class ParamsErrorsAccumulatorSpec : Spek({
         assertTrue { accumulator.getParamsErrors().isEmpty() }
       }
     }
-
-    context("average") {
-
-      val accumulator = ParamsErrorsAccumulator()
-
-      val params: FeedforwardLayerParameters = ParamsErrorsAccumulatorUtils.buildEmptyParams()
-
-      val gw1 = params.unit.weights.buildDenseErrors(ParamsErrorsAccumulatorUtils.buildWeightsErrorsValues1())
-      val gb1 = params.unit.biases.buildDenseErrors(ParamsErrorsAccumulatorUtils.buildBiasesErrorsValues1())
-      val gw2 = params.unit.weights.buildDenseErrors(ParamsErrorsAccumulatorUtils.buildWeightsErrorsValues2())
-      val gb2 = params.unit.biases.buildDenseErrors(ParamsErrorsAccumulatorUtils.buildBiasesErrorsValues2())
-
-      accumulator.accumulate(listOf(gw1, gb1, gw2, gb2))
-      accumulator.averageErrors()
-
-      val accumulatedErrors = accumulator.getParamsErrors()
-      val accW: DenseNDArray = accumulatedErrors[0].values as DenseNDArray
-      val accB: DenseNDArray = accumulatedErrors[1].values as DenseNDArray
-
-      it("should match the expected average of the weights errors") {
-        assertTrue {
-          accW.equals(
-            DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.5, -0.2, 0.15, -0.4),
-              doubleArrayOf(0.5, 0.25, -0.4, 0.2)
-            )),
-            tolerance = 1.0e-06
-          )
-        }
-      }
-
-      it("should match the expected average of the biases errors") {
-        assertTrue {
-          accB.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, -0.15)),
-            tolerance = 1.0e-06
-          )
-        }
-      }
-    }
   }
 })

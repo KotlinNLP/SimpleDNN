@@ -121,20 +121,15 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     val paramsErrors = mutableListOf<ParamsErrorsList>()
 
-    paramsErrors.add(
-      this.backwardAttentionLayer(
-        outputErrors = outputErrors,
-        propagateToInput = propagateToInput))
+    paramsErrors.add(this.backwardAttentionLayer(outputErrors = outputErrors, propagateToInput = propagateToInput))
 
     if (this.internalAttentionArraysUsed) {
 
       // WARNING: call it after the backward of the attention layer
-      paramsErrors.add(
-        this.backwardTransformLayers(propagateToInput))
+      paramsErrors.add(this.backwardTransformLayers(propagateToInput))
 
-      if (propagateToInput) {
+      if (propagateToInput)
         this.addTransformErrorsToInput()
-      }
     }
 
     return paramsErrors.flatten()
@@ -243,13 +238,9 @@ class AttentionNetwork<InputNDArrayType: NDArray<InputNDArrayType>>(
       this.transformParamsErrorsAccumulator.accumulate(layer.backward(propagateToInput))
     }
 
-    this.transformParamsErrorsAccumulator.averageErrors()
-
-    val accumulatedErrors = this.transformParamsErrorsAccumulator.getParamsErrors()
-
-    this.transformParamsErrorsAccumulator.clear()
-
-    return accumulatedErrors
+    return this.transformParamsErrorsAccumulator.getParamsErrors(copy = true).also {
+      this.transformParamsErrorsAccumulator.clear()
+    }
   }
 
   /**

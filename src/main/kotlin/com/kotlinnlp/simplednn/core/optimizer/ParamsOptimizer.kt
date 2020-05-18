@@ -30,8 +30,7 @@ class ParamsOptimizer(
   override fun update() {
 
     if (this.isNotEmpty) {
-      
-      this.averageErrors()
+
       this.clipGradients()
       this.updateParams()
       this.clear()

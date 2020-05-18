@@ -118,8 +118,6 @@ class BERT(
     }
 
     this.backwardInput(errors)
-
-    this.errorsAccumulator.averageErrors()
   }
 
   /**

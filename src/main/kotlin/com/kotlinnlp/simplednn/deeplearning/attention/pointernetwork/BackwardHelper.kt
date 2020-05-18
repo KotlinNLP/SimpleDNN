@@ -57,14 +57,12 @@ class BackwardHelper(private val networkProcessor: PointerNetworkProcessor) {
 
     this.initBackward()
 
-    (0 until outputErrors.size).reversed().forEach { stateIndex ->
+    outputErrors.indices.reversed().forEach { stateIndex ->
 
       this.stateIndex = stateIndex
 
       this.backwardStep(outputErrors[stateIndex])
     }
-
-    this.attentionErrorsAccumulator.averageErrors()
   }
 
   /**

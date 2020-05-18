@@ -151,7 +151,6 @@ class EmbeddingsProcessorWithContext<T>(
   private fun accumulateContextVectorErrors(outputErrors: List<DenseNDArray>) {
 
     this.contextErrorsAccumulator.clear()
-    this.contextErrorsAccumulator.accumulate(params = contextVector, errors = outputErrors)
-    this.contextErrorsAccumulator.averageErrors()
+    this.contextErrorsAccumulator.accumulate(params = this.contextVector, errors = outputErrors)
   }
 }
