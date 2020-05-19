@@ -10,21 +10,21 @@ package com.kotlinnlp.simplednn.core.functionalities.regularization
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 
 /**
- * Regularize weights before the update
- *
- * @property lambda regularization parameter
+ * Regularization method based on the Euclidean norm.
  */
-class MaxNormRegularization(override val lambda: Double) : WeightsRegularization {
+object MaxNormRegularization : ParamsRegularization {
 
   /**
-   * @param weights the weights to regularize
+   * Apply the regularization to given parameters.
+   *
+   * @param params the parameters to regularize
    */
-  override fun apply(weights: ParamsArray) {
+  override fun apply(params: ParamsArray) {
 
-    val norm2 = weights.values.norm2()
+    val norm2 = params.values.norm2()
 
-    (0 until weights.values.length)
-      .filter { weights.values[it] > norm2 }
-      .forEach { weights.values[it] = norm2 }
+    (0 until params.values.length)
+      .filter { params.values[it] > norm2 }
+      .forEach { params.values[it] = norm2 }
   }
 }

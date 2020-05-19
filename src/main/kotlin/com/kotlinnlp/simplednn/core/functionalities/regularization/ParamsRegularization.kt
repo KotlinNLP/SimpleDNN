@@ -10,19 +10,14 @@ package com.kotlinnlp.simplednn.core.functionalities.regularization
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 
 /**
- *
+ * A parameters regularization method.
  */
-interface WeightsRegularization {
+interface ParamsRegularization {
 
   /**
-   * Regularization parameter
-   */
-  val lambda: Double
-
-  /**
-   * Regularize [weights] before the update
+   * Regularize parameters before the update.
    *
-   * @param weights the weights to update
+   * @param params the parameters to regularize
    */
-  fun apply(weights: ParamsArray)
+  fun apply(params: ParamsArray)
 }

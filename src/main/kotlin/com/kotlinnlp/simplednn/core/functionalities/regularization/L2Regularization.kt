@@ -10,18 +10,20 @@ package com.kotlinnlp.simplednn.core.functionalities.regularization
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 
 /**
- * Regularize weights before the update
+ * L2 regularization method.
  *
- * @property lambda regularization parameter
+ * @param lambda regularization parameter
  */
-class L2Regularization(override val lambda: Double) : WeightsRegularization {
+class L2Regularization(private val lambda: Double) : ParamsRegularization {
 
   /**
+   * Apply the regularization to given parameters.
+   *
    * w = (1 - lambda) * w
    *
-   * @param weights the weights to regularize
+   * @param params the parameters to regularize
    */
-  override fun apply(weights: ParamsArray) {
-    weights.values.assignProd(1 - lambda)
+  override fun apply(params: ParamsArray) {
+    params.values.assignProd(1 - this.lambda)
   }
 }
