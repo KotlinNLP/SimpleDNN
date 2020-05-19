@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
+import com.kotlinnlp.simplednn.core.functionalities.regularization.ParamsRegularization
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethodConfig
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -21,20 +21,25 @@ import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 /**
  * The LearningRate method.
  *
- * @param learningRate learningRate
- * @param decayMethod decayMethod
+ * @property learningRate the initial learning rate
+ * @property decayMethod the rate decay method
+ * @property regularization a parameters regularization method
  */
 class LearningRateMethod(
   val learningRate: Double,
   val decayMethod: DecayMethod? = null,
-  regularization: WeightsRegularization? = null
+  regularization: ParamsRegularization? = null
 ) : EpochScheduling, UpdateMethod<LearningRateStructure>(regularization) {
 
   /**
-   * @param config the configuration
+   * Build a [LearningRateMethod] with a given configuration object.
+   *
+   * @param config the configuration of this update method
    */
-  constructor(config: UpdateMethodConfig.LearningRateConfig) : this(
-    learningRate = config.learningRate
+  constructor(config: UpdateMethodConfig.LearningRateConfig): this(
+    learningRate = config.learningRate,
+    decayMethod = config.decayMethod,
+    regularization = config.regularization
   )
 
   /**

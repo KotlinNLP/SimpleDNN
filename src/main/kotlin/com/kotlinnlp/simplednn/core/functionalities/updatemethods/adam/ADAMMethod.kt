@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
+import com.kotlinnlp.simplednn.core.functionalities.regularization.ParamsRegularization
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethodConfig
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -21,28 +21,33 @@ import kotlin.math.sqrt
 /**
  * The ADAM method.
  *
- * @param stepSize stepSize
- * @param beta1 beta1
- * @param beta2 beta2
- * @param epsilon epsilon
+ * @property stepSize the initial step size
+ * @property beta1 the beta1 hyper-parameter
+ * @property beta2 the beta2 hyper-parameter
+ * @property epsilon the epsilon hyper-parameter
+ * @property regularization a parameters regularization method
  */
 class ADAMMethod(
   val stepSize: Double = 0.001,
   val beta1: Double = 0.9,
   val beta2: Double = 0.999,
   val epsilon: Double = 1.0E-8,
-  regularization: WeightsRegularization? = null
+  regularization: ParamsRegularization? = null
 ) : ExampleScheduling, UpdateMethod<ADAMStructure>(regularization) {
 
   /**
-   * @param config the configuration
+   * Build an [ADAMMethod] with a given configuration object.
+   *
+   * @param config the configuration of this update method
    */
-  constructor(config: UpdateMethodConfig.ADAMConfig) : this(
+  constructor(config: UpdateMethodConfig.ADAMConfig): this(
     stepSize = config.stepSize,
     beta1 = config.beta1,
     beta2 = config.beta2,
-    epsilon = config.epsilon
+    epsilon = config.epsilon,
+    regularization = config.regularization
   )
+
   /**
    * @param array the array from which to extract the support structure
    *
@@ -59,7 +64,7 @@ class ADAMMethod(
   /**
    * The number of examples seen.
    */
-  private var exampleCount: Double = 0.0
+  protected var exampleCount: Double = 0.0
 
   /**
    * Check requirements.

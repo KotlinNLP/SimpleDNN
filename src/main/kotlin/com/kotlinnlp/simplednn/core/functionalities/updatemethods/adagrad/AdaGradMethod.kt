@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
+import com.kotlinnlp.simplednn.core.functionalities.regularization.ParamsRegularization
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethodConfig
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -24,20 +24,23 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
  *
  * @property learningRate Initial learning rate
  * @property epsilon Bias parameter
- * @property regularization
+ * @property regularization a parameters regularization method
  */
 class AdaGradMethod(
-  val learningRate:Double = 0.01,
+  val learningRate: Double = 0.01,
   val epsilon: Double = 1.0E-8,
-  regularization: WeightsRegularization? = null
+  regularization: ParamsRegularization? = null
 ) : UpdateMethod<AdaGradStructure>(regularization) {
 
   /**
-   * @param config the configuration
+   * Build an [AdaGradMethod] with a given configuration object.
+   *
+   * @param config the configuration of this update method
    */
-  constructor(config: UpdateMethodConfig.AdaGradConfig) : this(
+  constructor(config: UpdateMethodConfig.AdaGradConfig): this(
     learningRate = config.learningRate,
-    epsilon = config.epsilon
+    epsilon = config.epsilon,
+    regularization = config.regularization
   )
 
   /**

@@ -9,7 +9,7 @@ package com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
-import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
+import com.kotlinnlp.simplednn.core.functionalities.regularization.ParamsRegularization
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethodConfig
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.*
@@ -20,9 +20,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
  * The RMSProp method is a variant of the AdaGradMethod where the squared sum of previous gradients is replaced with a
  * moving average.
  *
- * @property learningRate Double >= 0. Initial learning rate
- * @property epsilon Double >= 0. Bias parameter
- * @property decay Learning rate decay parameter
+ * @property learningRate the initial learning rate
+ * @property epsilon a ias parameter
+ * @property decay the rate decay parameter
  *
  * References
  * [rmsprop: Divide the gradient by a running average of its recent magnitude]
@@ -33,15 +33,19 @@ class RMSPropMethod(
   val learningRate: Double = 0.001,
   val epsilon: Double = 1e-08,
   val decay: Double = 0.95,
-  regularization: WeightsRegularization? = null
+  regularization: ParamsRegularization? = null
 ) : UpdateMethod<RMSPropStructure>(regularization) {
 
   /**
-   * @param config the configuration
+   * Build a [RMSPropMethod] with a given configuration object
+   *
+   * @param config the configuration of this update method
    */
-  constructor(config: UpdateMethodConfig.RMSPropConfig) : this(
+  constructor(config: UpdateMethodConfig.RMSPropConfig): this(
     learningRate = config.learningRate,
-    epsilon = config.epsilon
+    epsilon = config.epsilon,
+    decay = config.decay,
+    regularization = config.regularization
   )
 
   /**

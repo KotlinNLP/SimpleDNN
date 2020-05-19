@@ -8,32 +8,33 @@
 package com.kotlinnlp.simplednn.core.functionalities.updatemethods
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
-import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
+import com.kotlinnlp.simplednn.core.functionalities.regularization.ParamsRegularization
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adagrad.AdaGradMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.learningrate.LearningRateMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.momentum.MomentumMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.nesterovmomentum.NesterovMomentumMethod
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.radam.RADAMMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.rmsprop.RMSPropMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 
 /**
- * UpdateMethod implements different gradient-based optimization algorithm (e.g. LearningRate, Adagrad, ADAM).
+ * Neural parameters optimization algorithm (e.g. LearningRate, Adagrad, ADAM).
  *
  * @property regularization
  */
-abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(
-  val regularization: WeightsRegularization?
-) {
+abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(val regularization: ParamsRegularization?) {
 
   companion object {
 
     /**
-     * @param config the configuration
+     * Build an [UpdateMethod] with a configuration object.
      *
-     * @return the [UpdateMethod] of the given [config]
+     * @param config the configuration of an update method
+     *
+     * @return a new update method described by the given configuration
      */
     operator fun invoke(config: UpdateMethodConfig) = when(config) {
       is UpdateMethodConfig.AdaGradConfig -> AdaGradMethod(config)

@@ -10,7 +10,7 @@ package com.kotlinnlp.simplednn.core.functionalities.updatemethods.nesterovmomen
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.DecayMethod
 import com.kotlinnlp.simplednn.core.functionalities.decaymethods.HyperbolicDecay
-import com.kotlinnlp.simplednn.core.functionalities.regularization.WeightsRegularization
+import com.kotlinnlp.simplednn.core.functionalities.regularization.ParamsRegularization
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethod
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethodConfig
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
@@ -21,22 +21,28 @@ import com.kotlinnlp.simplednn.utils.scheduling.EpochScheduling
 /**
  * The NesterovMomentum method.
  *
- * @param learningRate Double >= 0. Learning rate
- * @param momentum  Double >= 0. Parameter updates momentum
+ * @property learningRate the initial learning rate
+ * @property momentum  the momentum
+ * @property decayMethod the rate decay method
+ * @property regularization a parameters regularization method
  */
 class NesterovMomentumMethod(
   val learningRate: Double = 0.01,
   val momentum: Double = 0.9,
   val decayMethod: DecayMethod? = null,
-  regularization: WeightsRegularization? = null
+  regularization: ParamsRegularization? = null
 ) : EpochScheduling, UpdateMethod<NesterovMomentumStructure>(regularization) {
 
   /**
-   * @param config the configuration
+   * Build a [NesterovMomentumMethod] with a given configuration object.
+   *
+   * @param config the configuration of this update method
    */
-  constructor(config: UpdateMethodConfig.NesterovMomentumConfig) : this(
+  constructor(config: UpdateMethodConfig.NesterovMomentumConfig): this(
     learningRate = config.learningRate,
-    momentum = config.momentum
+    momentum = config.momentum,
+    decayMethod = config.decayMethod,
+    regularization = config.regularization
   )
 
   /**
