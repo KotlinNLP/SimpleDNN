@@ -42,6 +42,7 @@ abstract class UpdateMethod<SupportStructureType: UpdaterSupportStructure>(val r
       is UpdateMethodConfig.LearningRateConfig -> LearningRateMethod(config)
       is UpdateMethodConfig.MomentumConfig -> MomentumMethod(config)
       is UpdateMethodConfig.NesterovMomentumConfig -> NesterovMomentumMethod(config)
+      is UpdateMethodConfig.RADAMConfig -> RADAMMethod(config)
       is UpdateMethodConfig.RMSPropConfig -> RMSPropMethod(config)
     }
   }

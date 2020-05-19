@@ -91,6 +91,23 @@ sealed class UpdateMethodConfig(val regularization: ParamsRegularization? = null
   ) : UpdateMethodConfig(regularization)
 
   /**
+   * Rectified ADAM configuration.
+   *
+   * @property stepSize the initial step size
+   * @property beta1 the beta1 hyper-parameter
+   * @property beta2 the beta2 hyper-parameter
+   * @property epsilon the epsilon hyper-parameter
+   * @property regularization a parameters regularization method
+   */
+  class RADAMConfig(
+    val stepSize: Double = 0.001,
+    val beta1: Double = 0.9,
+    val beta2: Double = 0.999,
+    val epsilon: Double = 1.0E-8,
+    regularization: ParamsRegularization? = null
+  ) : UpdateMethodConfig(regularization)
+
+  /**
    * RMSProp configuration.
    *
    * @property learningRate the initial learning rate
