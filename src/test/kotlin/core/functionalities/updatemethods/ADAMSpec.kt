@@ -33,12 +33,13 @@ class ADAMSpec : Spek({
         supportStructure.firstOrderMoments.assignValues(UpdateMethodsUtils.supportArray1())
         supportStructure.secondOrderMoments.assignValues(UpdateMethodsUtils.supportArray2())
 
+        updateHelper.newExample()
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildDenseErrors())
 
         it("should match the expected updated array") {
           assertTrue {
             updatableArray.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39928, 0.398751, 0.499414, 0.986165, 0.799575)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.399772, 0.399605, 0.499815, 0.995625, 0.799866)),
               tolerance = 1.0e-6)
           }
         }
@@ -56,12 +57,13 @@ class ADAMSpec : Spek({
         supportStructure.firstOrderMoments.assignValues(UpdateMethodsUtils.supportArray1())
         supportStructure.secondOrderMoments.assignValues(UpdateMethodsUtils.supportArray2())
 
+        updateHelper.newExample()
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildSparseErrors())
 
         it("should match the expected updated array") {
           assertTrue {
             updatableArray.values.equals(
-              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.39937, 0.398751, 0.499462, -26999.0, 0.79953)),
+              DenseNDArrayFactory.arrayOf(doubleArrayOf(0.399801, 0.399605, 0.49983, -269999.0, 0.799851)),
               tolerance = 1.0e-6)
           }
         }
