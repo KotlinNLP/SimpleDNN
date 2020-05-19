@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.deeplearning.transformers.BERT
 import com.kotlinnlp.simplednn.deeplearning.transformers.BERTModel
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.WordPieceTokenizer
+import com.xenomachina.argparser.mainBody
 import java.io.FileInputStream
 
 /**
@@ -19,7 +20,7 @@ import java.io.FileInputStream
  *
  * Launch with the '-h' option for help about the command line arguments.
  */
-fun main(args: Array<String>) {
+fun main(args: Array<String>) = mainBody {
 
   val parsedArgs = CommandLineArguments(args)
 

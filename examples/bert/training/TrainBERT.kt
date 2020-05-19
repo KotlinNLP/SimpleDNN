@@ -12,6 +12,7 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMetho
 import com.kotlinnlp.simplednn.deeplearning.transformers.BERTModel
 import com.kotlinnlp.simplednn.deeplearning.transformers.BERTTrainer
 import com.kotlinnlp.utils.DictionarySet
+import com.xenomachina.argparser.mainBody
 import java.io.File
 
 /**
@@ -19,7 +20,7 @@ import java.io.File
  *
  * Launch with the '-h' option for help about the command line arguments.
  */
-fun main(args: Array<String>) {
+fun main(args: Array<String>) = mainBody {
 
   val parsedArgs = CommandLineArguments(args)
 

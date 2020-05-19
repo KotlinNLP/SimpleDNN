@@ -10,6 +10,7 @@ package bert.convert
 import com.kotlinnlp.simplednn.deeplearning.transformers.BERTBaseImportHelper
 import com.kotlinnlp.simplednn.deeplearning.transformers.BERTModel
 import com.kotlinnlp.utils.DictionarySet
+import com.xenomachina.argparser.mainBody
 import java.io.File
 import java.io.FileOutputStream
 
@@ -18,7 +19,7 @@ import java.io.FileOutputStream
  *
  * Launch with the '-h' option for help about the command line arguments.
  */
-fun main(args: Array<String>) {
+fun main(args: Array<String>) = mainBody {
 
   val parsedArgs = CommandLineArguments(args)
 
