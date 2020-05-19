@@ -92,13 +92,13 @@ class ADAMMethod(
    */
   override fun optimizeGenericErrors(errors: NDArray<*>, supportStructure: ADAMStructure): DenseNDArray {
 
-    val v = supportStructure.firstOrderMoments
-    val m = supportStructure.secondOrderMoments
+    val m = supportStructure.firstOrderMoments
+    val v = supportStructure.secondOrderMoments
 
-    v.assignProd(this.beta1).assignSum(errors.prod(1.0 - this.beta1))
-    m.assignProd(this.beta2).assignSum(errors.prod(errors).assignProd(1.0 - this.beta2))
+    m.assignProd(this.beta1).assignSum(errors.prod(1.0 - this.beta1))
+    v.assignProd(this.beta2).assignSum(errors.prod(errors).assignProd(1.0 - this.beta2))
 
-    return v.div(m.sqrt().assignSum(this.epsilon)).assignProd(this.alpha)
+    return m.div(v.sqrt().assignSum(this.epsilon)).assignProd(this.alpha)
   }
 
   /**
