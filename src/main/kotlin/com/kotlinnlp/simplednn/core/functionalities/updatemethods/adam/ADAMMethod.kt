@@ -88,13 +88,18 @@ open class ADAMMethod(
     val m: DenseNDArray = supportStructure.firstOrderMoments
     val v: DenseNDArray = supportStructure.secondOrderMoments
 
-    val beta2T: Double = sqrt(1.0 - this.beta2.pow(this.timeStep))
-    val eps: Double = this.epsilon * beta2T
-    val alphaT: Double = this.stepSize * beta2T / (1.0 - this.beta1.pow(this.timeStep))
+    val sqrtB2T: Double = sqrt(1.0 - this.beta2.pow(this.timeStep))
+    val alpha: Double = this.calcAlpha()
 
     m.assignProd(this.beta1).assignSum(errors.prod(1.0 - this.beta1))
     v.assignProd(this.beta2).assignSum(errors.prod(errors).assignProd(1.0 - this.beta2))
 
-    return m.div(v.sqrt().assignSum(eps)).assignProd(alphaT)
+    return m.div(v.sqrt().assignSum(this.epsilon * sqrtB2T)).assignProd(alpha)
   }
+
+  /**
+   * @return the `alpha` coefficient
+   */
+  protected open fun calcAlpha(): Double =
+    this.stepSize * sqrt(1.0 - this.beta2.pow(this.timeStep)) / (1.0 - this.beta1.pow(this.timeStep))
 }
