@@ -9,7 +9,6 @@ package core.functionalities.updatemethods
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
-import com.kotlinnlp.simplednn.simplemath.equals
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -33,7 +32,6 @@ class ADAMSpec : Spek({
         supportStructure.firstOrderMoments.assignValues(UpdateMethodsUtils.supportArray1())
         supportStructure.secondOrderMoments.assignValues(UpdateMethodsUtils.supportArray2())
 
-        updateHelper.newExample()
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildDenseErrors())
 
         it("should match the expected updated array") {
@@ -57,7 +55,6 @@ class ADAMSpec : Spek({
         supportStructure.firstOrderMoments.assignValues(UpdateMethodsUtils.supportArray1())
         supportStructure.secondOrderMoments.assignValues(UpdateMethodsUtils.supportArray2())
 
-        updateHelper.newExample()
         updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildSparseErrors())
 
         it("should match the expected updated array") {
@@ -67,17 +64,6 @@ class ADAMSpec : Spek({
               tolerance = 1.0e-6)
           }
         }
-      }
-    }
-
-    context("newExample") {
-
-      val updateHelper = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999, epsilon = 1.0e-8)
-
-      updateHelper.newExample()
-
-      it("should update the 'alpha' parameter") {
-        assertTrue { equals(updateHelper.alpha, 3.1623e-4, tolerance = 1.0e-08) }
       }
     }
   }

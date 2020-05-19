@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdateMethodCo
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.UpdaterSupportStructure
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.simplednn.utils.scheduling.ExampleScheduling
+import com.kotlinnlp.simplednn.utils.scheduling.BatchScheduling
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -27,13 +27,13 @@ import kotlin.math.sqrt
  * @property epsilon the epsilon hyper-parameter
  * @property regularization a parameters regularization method
  */
-class ADAMMethod(
+open class ADAMMethod(
   val stepSize: Double = 0.001,
   val beta1: Double = 0.9,
   val beta2: Double = 0.999,
   val epsilon: Double = 1.0E-8,
   regularization: ParamsRegularization? = null
-) : ExampleScheduling, UpdateMethod<ADAMStructure>(regularization) {
+) : BatchScheduling, UpdateMethod<ADAMStructure>(regularization) {
 
   /**
    * Build an [ADAMMethod] with a given configuration object.
@@ -56,15 +56,9 @@ class ADAMMethod(
   override fun getSupportStructure(array: ParamsArray): ADAMStructure = array.getOrSetSupportStructure()
 
   /**
-   * The 'alpha' coefficient.
+   * The current time step.
    */
-  var alpha: Double = this.stepSize
-    private set
-
-  /**
-   * The number of examples seen.
-   */
-  protected var exampleCount: Double = 0.0
+  protected var timeStep: Int = 1
 
   /**
    * Check requirements.
@@ -77,9 +71,8 @@ class ADAMMethod(
   /**
    * Method to call every new example
    */
-  override fun newExample() {
-    this.exampleCount++
-    this.updateAlpha()
+  override fun newBatch() {
+    this.timeStep++
   }
 
   /**
@@ -94,19 +87,14 @@ class ADAMMethod(
 
     val m: DenseNDArray = supportStructure.firstOrderMoments
     val v: DenseNDArray = supportStructure.secondOrderMoments
-    val eps: Double = this.epsilon * sqrt(1.0 - this.beta2.pow(this.exampleCount))
+
+    val beta2T: Double = sqrt(1.0 - this.beta2.pow(this.timeStep))
+    val eps: Double = this.epsilon * beta2T
+    val alphaT: Double = this.stepSize * beta2T / (1.0 - this.beta1.pow(this.timeStep))
 
     m.assignProd(this.beta1).assignSum(errors.prod(1.0 - this.beta1))
     v.assignProd(this.beta2).assignSum(errors.prod(errors).assignProd(1.0 - this.beta2))
 
-    return m.div(v.sqrt().assignSum(eps)).assignProd(this.alpha)
-  }
-
-  /**
-   * Update the 'alpha' coefficient.
-   */
-  private fun updateAlpha() {
-    this.alpha = this.stepSize * sqrt(1.0 - this.beta2.pow(this.exampleCount)) /
-      (1.0 - this.beta1.pow(this.exampleCount))
+    return m.div(v.sqrt().assignSum(eps)).assignProd(alphaT)
   }
 }
