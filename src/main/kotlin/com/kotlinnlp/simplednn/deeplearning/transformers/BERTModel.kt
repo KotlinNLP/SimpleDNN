@@ -17,6 +17,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.utils.DictionarySet
 import com.kotlinnlp.utils.Serializer
+import com.kotlinnlp.utils.removeFrom
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.Serializable
@@ -99,9 +100,10 @@ class BERTModel(
   val outputSize: Int = this.inputSize
 
   /**
-   * The parameters of the stacked layers.
+   * The initial parameters of the stacked BERT layers.
+   * They can be reduced with the method [reduceLayersTo].
    */
-  val layers: List<BERTParameters> = List(
+  private val initLayers: MutableList<BERTParameters> = MutableList(
     size = numOfLayers,
     init = {
       BERTParameters(
@@ -114,6 +116,12 @@ class BERTModel(
         biasesInitializer = biasesInitializer)
     }
   )
+
+  /**
+   * The parameters of the stacked BERT layers.
+   */
+  var layers: List<BERTParameters> = this.initLayers.toList()
+    private set
 
   /**
    * The parameters of the embeddings norm layer.
@@ -172,4 +180,20 @@ class BERTModel(
    * @param outputStream the [OutputStream] in which to write this serialized [BERTModel]
    */
   fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
+
+  /**
+   * Reduce the layers of this model to a given size, starting from the last.
+   *
+   * @param size the new number of [BERT] layers
+   */
+  fun reduceLayersTo(size: Int) {
+
+    require(size < this.layers.size) {
+      "The reducing size ($size) must be lower than the current layer size (${this.layers.size})"
+    }
+
+    this.initLayers.removeFrom(size)
+
+    this.layers = this.initLayers.toList()
+  }
 }
