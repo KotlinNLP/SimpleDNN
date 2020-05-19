@@ -46,8 +46,8 @@ class ParamsOptimizerSpec : Spek({
         assertTrue {
           w.equals(
             DenseNDArrayFactory.arrayOf(listOf(
-              doubleArrayOf(0.25, 0.42, 0.185, -0.16),
-              doubleArrayOf(0.15, -0.125, 0.14, 0.58)
+              doubleArrayOf(0.2, 0.44, 0.17, -0.12),
+              doubleArrayOf(0.1, -0.15, 0.18, 0.56)
             )),
             tolerance = 1.0e-06
           )
@@ -57,7 +57,7 @@ class ParamsOptimizerSpec : Spek({
       it("should match the expected updated biases") {
         assertTrue {
           b.equals(
-            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.33, -0.385)),
+            DenseNDArrayFactory.arrayOf(doubleArrayOf(0.36, -0.37)),
             tolerance = 1.0e-06
           )
         }

@@ -69,7 +69,7 @@ class BatchFeedforwardProcessorSpec : Spek({
     it("should match the expected errors of the biases") {
       assertTrue {
         paramsErrors.getErrorsOf(params.unit.biases)!!.values.equals(
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.096723, -0.219754)),
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.290168, -0.659261)),
           tolerance = 1.0e-06
         )
       }
@@ -79,8 +79,8 @@ class BatchFeedforwardProcessorSpec : Spek({
       assertTrue {
         (paramsErrors.getErrorsOf(params.unit.weights)!!.values).equals(
           DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(-0.086611, 0.097745, -0.094472),
-            doubleArrayOf(-0.165914, -0.065926, 0.136797)
+            doubleArrayOf(-0.259834, 0.293235, -0.283416),
+            doubleArrayOf(-0.497742, -0.197778, 0.41039)
           )),
           tolerance = 1.0e-06
         )

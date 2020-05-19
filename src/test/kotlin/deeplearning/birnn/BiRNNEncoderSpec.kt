@@ -67,7 +67,7 @@ class BiRNNEncoderSpec : Spek({
     it("should match the expected errors of the Left-to-right biases") {
       assertTrue {
         paramsErrors.getErrorsOf(l2rParams.unit.biases)!!.values.equals(
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.071016, 0.268027, 0.345019)),
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.213048, 0.804082, 1.035058)),
           tolerance = 1.0e-06
         )
       }
@@ -77,9 +77,9 @@ class BiRNNEncoderSpec : Spek({
       assertTrue {
         (paramsErrors.getErrorsOf(l2rParams.unit.weights)!!.values as DenseNDArray).equals(
           DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.001234, -0.107987),
-            doubleArrayOf(0.175039, 0.015738),
-            doubleArrayOf(0.213397, -0.046717)
+            doubleArrayOf(0.003701, -0.32396),
+            doubleArrayOf(0.525116, 0.047213),
+            doubleArrayOf(0.640192, -0.140151)
           )),
           tolerance = 1.0e-06
         )
@@ -90,9 +90,9 @@ class BiRNNEncoderSpec : Spek({
       assertTrue {
         paramsErrors.getErrorsOf(l2rParams.unit.recurrentWeights)!!.values.equals(
           DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.041817, -0.059241, 0.013592),
-            doubleArrayOf(0.042229, -0.086071, 0.019157),
-            doubleArrayOf(0.035331, -0.11595, 0.02512)
+            doubleArrayOf(0.125452, -0.177722, 0.040777),
+            doubleArrayOf(0.126687, -0.258213, 0.057472),
+            doubleArrayOf(0.105992, -0.347851, 0.07536)
           )),
           tolerance = 1.0e-06
         )
@@ -102,7 +102,7 @@ class BiRNNEncoderSpec : Spek({
     it("should match the expected errors of the Right-to-left biases") {
       assertTrue {
         paramsErrors.getErrorsOf(r2lParams.unit.biases)!!.values.equals(
-          DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.03906, 0.237598, -0.137858)),
+          DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.117179, 0.712793, -0.413573)),
           tolerance = 1.0e-06
         )
       }
@@ -112,9 +112,9 @@ class BiRNNEncoderSpec : Spek({
       assertTrue {
         (paramsErrors.getErrorsOf(r2lParams.unit.weights)!!.values as DenseNDArray).equals(
           DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.145713, 0.234548),
-            doubleArrayOf(0.050135, 0.070768),
-            doubleArrayOf(-0.06125, -0.017281)
+            doubleArrayOf(0.43714, 0.703645),
+            doubleArrayOf(0.150406, 0.212304),
+            doubleArrayOf(-0.18375, -0.051842)
           )),
           tolerance = 1.0e-06
         )
@@ -125,9 +125,9 @@ class BiRNNEncoderSpec : Spek({
       assertTrue {
         paramsErrors.getErrorsOf(r2lParams.unit.recurrentWeights)!!.values.equals(
           DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(-0.029278, -0.112568, -0.089725),
-            doubleArrayOf(-0.074426, 0.003116, -0.070784),
-            doubleArrayOf(0.022664, 0.040583, 0.044139)
+            doubleArrayOf(-0.087835, -0.337705, -0.269176),
+            doubleArrayOf(-0.223279, 0.009348, -0.212353),
+            doubleArrayOf(0.067992, 0.121748, 0.132418)
           )),
           tolerance = 1.0e-06
         )
