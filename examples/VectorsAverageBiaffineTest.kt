@@ -14,8 +14,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.utils.ShuffledIndices
 import com.kotlinnlp.utils.Shuffler
 import java.io.File
+import kotlin.math.roundToInt
 
-fun main(args: Array<String>) {
+fun main() {
 
   println("Start 'Vectors Average Biaffine Test'")
 
@@ -59,7 +60,7 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
   fun start() {
 
     val dataset: ArrayList<Example> = this.loadExamples()
-    val testSetSize: Int = Math.round(dataset.size * 0.1).toInt()
+    val testSetSize: Int = (0.1 * dataset.size).roundToInt()
     val testSet = dataset.subList(fromIndex = 0, toIndex = testSetSize)
     val trainingSet = dataset.subList(fromIndex = testSetSize, toIndex = dataset.size)
 

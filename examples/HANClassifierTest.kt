@@ -22,8 +22,12 @@ import utils.Corpus
 import utils.SimpleExample
 import utils.CorpusReader
 import utils.exampleextractor.ClassificationExampleExtractor
+import kotlin.math.roundToInt
 
-fun main(args: Array<String>) {
+/**
+ * Train a HAN classifier.
+ */
+fun main() {
 
   println("Start 'HAN Classifier Test'")
 
@@ -110,7 +114,7 @@ class HANClassifierTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
 
     val optimizer = ParamsOptimizer(updateMethod = ADAMMethod(stepSize = 0.005))
     val shuffler = Shuffler(enablePseudoRandom = true, seed = 743)
-    val trainingSize = Math.round(this.dataset.training.size * this.trainingSetPartition).toInt()
+    val trainingSize = (this.dataset.training.size * this.trainingSetPartition).roundToInt()
     val trainingSet = ArrayList(this.dataset.training.subList(0, trainingSize))
     val validationSet = ArrayList(this.dataset.training.subList(trainingSize, this.dataset.training.size))
 
