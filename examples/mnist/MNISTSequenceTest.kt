@@ -10,11 +10,11 @@ package mnist
 import com.kotlinnlp.simplednn.core.functionalities.activations.Softmax
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.neuralnetwork.preset.GRUNeuralNetwork
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
 import com.kotlinnlp.simplednn.core.functionalities.outputevaluation.ClassificationEvaluation
 import traininghelpers.training.SequenceWithFinalOutputTrainer
 import traininghelpers.validation.SequenceWithFinalOutputEvaluator
 import com.kotlinnlp.simplednn.core.functionalities.losses.SoftmaxCrossEntropyCalculator
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.radam.RADAMMethod
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import utils.Corpus
 import utils.SequenceExampleWithFinalOutput
@@ -59,7 +59,7 @@ private class MNISTSequenceTest(val dataset: Corpus<SequenceExampleWithFinalOutp
 
     SequenceWithFinalOutputTrainer(
       model = this.neuralNetwork,
-      updateMethod = ADAMMethod(stepSize = 0.001),
+      updateMethod = RADAMMethod(stepSize = 0.001),
       lossCalculator = SoftmaxCrossEntropyCalculator,
       examples = this.dataset.training,
       epochs = 3,

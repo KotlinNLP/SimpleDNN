@@ -8,7 +8,7 @@
 package bert.training
 
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.radam.RADAMMethod
 import com.kotlinnlp.simplednn.deeplearning.transformers.BERTModel
 import com.kotlinnlp.simplednn.deeplearning.transformers.BERTTrainer
 import com.kotlinnlp.utils.DictionarySet
@@ -51,7 +51,7 @@ fun main(args: Array<String>) = mainBody {
     val helper = BERTTrainer(
       model = model,
       modelFilename = parsedArgs.modelPath,
-      updateMethod = ADAMMethod(stepSize = 0.001),
+      updateMethod = RADAMMethod(stepSize = 0.001),
       termsDropout = 0.15,
       optimizeEmbeddings = parsedArgs.embeddingsPath == null,
       examples = examples.asIterable(),

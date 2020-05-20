@@ -18,7 +18,7 @@ import utils.exampleextractor.ClassificationExampleExtractor
 import utils.CorpusReader
 import Configuration
 import com.kotlinnlp.simplednn.core.functionalities.activations.ReLU
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.radam.RADAMMethod
 import utils.Corpus
 import utils.SimpleExample
 
@@ -60,7 +60,7 @@ private class MNISTTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
 
     FeedforwardTrainer(
       model = this.neuralNetwork,
-      updateMethod = ADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999),
+      updateMethod = RADAMMethod(stepSize = 0.001, beta1 = 0.9, beta2 = 0.999),
       lossCalculator = SoftmaxCrossEntropyCalculator,
       examples = this.dataset.training,
       epochs = 15,

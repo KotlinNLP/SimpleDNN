@@ -5,7 +5,7 @@
  * file, you can obtain one at http://mozilla.org/MPL/2.0/.
  * ------------------------------------------------------------------*/
 
-import com.kotlinnlp.simplednn.core.functionalities.updatemethods.adam.ADAMMethod
+import com.kotlinnlp.simplednn.core.functionalities.updatemethods.radam.RADAMMethod
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayer
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
@@ -52,7 +52,7 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
    *
    */
   private val optimizer = ParamsOptimizer(
-    updateMethod = ADAMMethod(stepSize = 0.001, beta1 = 0.99, beta2 = 0.99999))
+    updateMethod = RADAMMethod(stepSize = 0.001, beta1 = 0.99, beta2 = 0.99999))
 
   /**
    *
