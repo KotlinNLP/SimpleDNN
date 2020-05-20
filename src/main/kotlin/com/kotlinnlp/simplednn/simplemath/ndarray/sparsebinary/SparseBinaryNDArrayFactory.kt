@@ -42,6 +42,16 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
   }
 
   /**
+   * Build a new diagonal [SparseBinaryNDArray] filled with ones.
+   *
+   * @param size the number of rows and columns
+   *
+   * @return a new [SparseBinaryNDArray]
+   */
+  override fun eye(size: Int): SparseBinaryNDArray =
+    this.arrayOf(activeIndices = Array(size) { i -> Indices(i, i) }, shape = Shape(size, size))
+
+  /**
    *
    * @param shape shape
    * @param value the init value

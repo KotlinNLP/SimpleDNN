@@ -185,6 +185,37 @@ class DenseNDArraySpec : Spek({
         }
       }
 
+      context("eye()") {
+
+        val array = DenseNDArrayFactory.eye(4)
+
+        it("should have the expected length") {
+          assertEquals(16, array.length)
+        }
+
+        it("should have the expected last index") {
+          assertEquals(15, array.lastIndex)
+        }
+
+        it("should have the expected number of rows") {
+          assertEquals(4, array.rows)
+        }
+
+        it("should have the expected number of columns") {
+          assertEquals(4, array.columns)
+        }
+
+        it("should be filled with the expected values") {
+          assertTrue {
+            (0 until array.rows).all { i ->
+              (0 until array.columns).all { j ->
+                if (i == j) array[i, j] == 1.0 else array[i, j] == 0.0
+              }
+            }
+          }
+        }
+      }
+
       context("fill()") {
 
         val array = DenseNDArrayFactory.fill(shape = Shape(2, 3), value = 0.35)

@@ -7,6 +7,7 @@
 
 package com.kotlinnlp.simplednn.simplemath.ndarray.sparse
 
+import com.kotlinnlp.simplednn.simplemath.ndarray.Indices
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayFactory
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.SparseEntry
@@ -40,6 +41,17 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
    * @return a new [SparseNDArray] filled with zeros
    */
   override fun zeros(shape: Shape) = SparseNDArray(shape = shape)
+
+  /**
+   * Build a new diagonal [SparseNDArray] filled with ones.
+   *
+   * @param size the number of rows and columns
+   *
+   * @return a new [SparseNDArray]
+   */
+  override fun eye(size: Int): SparseNDArray = this.arrayOf(
+    activeIndicesValues = Array(size) { i -> SparseEntry(Indices(i, i), 1.0) },
+    shape = Shape(size, size))
 
   /**
    *

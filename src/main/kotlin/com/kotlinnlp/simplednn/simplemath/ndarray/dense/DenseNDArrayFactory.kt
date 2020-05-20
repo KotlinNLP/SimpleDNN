@@ -42,6 +42,18 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
     this.emptyArray(shape)
 
   /**
+   * Build a new diagonal [DenseNDArray] filled with ones.
+   *
+   * @param size the number of rows and columns
+   *
+   * @return a new [DenseNDArray]
+   */
+  override fun eye(size: Int): DenseNDArray =
+    this.zeros(Shape(size, size)).apply {
+      (0 until rows).forEach { i -> set(i, i, 1.0) }
+    }
+
+  /**
    * @param shape shape
    * @param value the init value
    *

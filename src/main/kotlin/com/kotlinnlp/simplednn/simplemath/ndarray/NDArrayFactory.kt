@@ -31,6 +31,15 @@ interface NDArrayFactory<NDArrayType : NDArray<NDArrayType>> : Serializable {
   fun zeros(shape: Shape): NDArrayType
 
   /**
+   * Build a new diagonal [NDArrayType] filled with ones.
+   *
+   * @param size the number of rows and columns
+   *
+   * @return a new [NDArrayType]
+   */
+  fun eye(size: Int): NDArrayType
+
+  /**
    * Build a new [NDArrayType] filled with a given value.
    *
    * @param shape shape
