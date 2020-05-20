@@ -87,7 +87,7 @@ private class MNISTSparseBinaryTest(private val dataset: Corpus<SimpleExample<Sp
       evaluator = FeedforwardEvaluator(
         model = this.neuralNetwork,
         examples = this.dataset.validation,
-        outputEvaluationFunction = ClassificationEvaluation())
+        outputEvaluationFunction = ClassificationEvaluation)
     ).train()
   }
 
@@ -101,7 +101,7 @@ private class MNISTSparseBinaryTest(private val dataset: Corpus<SimpleExample<Sp
     FeedforwardEvaluator(
       model = this.neuralNetwork,
       examples = examples,
-      outputEvaluationFunction = ClassificationEvaluation(),
+      outputEvaluationFunction = ClassificationEvaluation,
       saveContributions = true,
       afterEachEvaluation = { example, _, processor ->
 

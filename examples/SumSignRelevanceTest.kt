@@ -114,7 +114,7 @@ class SumSignRelevanceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<De
       evaluator = SequenceWithFinalOutputEvaluator(
         model = this.neuralNetwork,
         examples = this.dataset.validation,
-        outputEvaluationFunction = ClassificationEvaluation(),
+        outputEvaluationFunction = ClassificationEvaluation,
         verbose = false),
       verbose = false
     ).train()
@@ -132,7 +132,7 @@ class SumSignRelevanceTest(val dataset: Corpus<SequenceExampleWithFinalOutput<De
     SequenceWithFinalOutputEvaluator(
       model = this.neuralNetwork,
       examples = this.dataset.test,
-      outputEvaluationFunction = ClassificationEvaluation(),
+      outputEvaluationFunction = ClassificationEvaluation,
       saveContributions = true,
       afterEachEvaluation = { example, isCorrect, processor ->
         if (isCorrect && exampleIndex < this.examplesToPrint) {

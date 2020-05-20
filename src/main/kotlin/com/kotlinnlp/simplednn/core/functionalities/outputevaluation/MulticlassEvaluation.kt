@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * Evaluation function which returns true if all the binary outputs are equal to the gold binary outputs.
  */
-class MulticlassEvaluation : OutputEvaluationFunction {
+object MulticlassEvaluation : OutputEvaluationFunction {
 
   /**
    * The evaluation function.

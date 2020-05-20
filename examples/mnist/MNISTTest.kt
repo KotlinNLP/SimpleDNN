@@ -68,7 +68,7 @@ private class MNISTTest(val dataset: Corpus<SimpleExample<DenseNDArray>>) {
       evaluator = FeedforwardEvaluator(
         model = this.neuralNetwork,
         examples = this.dataset.validation,
-        outputEvaluationFunction = ClassificationEvaluation())
+        outputEvaluationFunction = ClassificationEvaluation)
     ).train()
   }
 }

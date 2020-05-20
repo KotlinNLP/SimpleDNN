@@ -41,7 +41,7 @@ object GateTestUtils {
     return this.testAccuracy(
       neuralNetwork = neuralNetwork,
       examples = examples,
-      evaluationFunction = ClassificationEvaluation(),
+      evaluationFunction = ClassificationEvaluation,
       epochs = epochs)
   }
 
@@ -60,7 +60,7 @@ object GateTestUtils {
     return this.testAccuracy(
       neuralNetwork = neuralNetwork,
       examples = examples,
-      evaluationFunction = MulticlassEvaluation(),
+      evaluationFunction = MulticlassEvaluation,
       epochs = epochs)
   }
 

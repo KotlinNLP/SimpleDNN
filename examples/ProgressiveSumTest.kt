@@ -68,7 +68,7 @@ class ProgressiveSumTest(val dataset: Corpus<SequenceExample<DenseNDArray>>) {
     val evaluator = SequenceEvaluator(
         model = this.neuralNetwork,
         examples = this.dataset.validation,
-        outputEvaluationFunction = ClassificationEvaluation())
+        outputEvaluationFunction = ClassificationEvaluation)
 
     val stats: Statistics = evaluator.evaluate()
 
@@ -92,7 +92,7 @@ class ProgressiveSumTest(val dataset: Corpus<SequenceExample<DenseNDArray>>) {
       evaluator = SequenceEvaluator(
         model = this.neuralNetwork,
         examples = this.dataset.validation,
-        outputEvaluationFunction = ClassificationEvaluation())
+        outputEvaluationFunction = ClassificationEvaluation)
     ).train()
   }
 }

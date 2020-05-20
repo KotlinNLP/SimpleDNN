@@ -67,7 +67,7 @@ private class MNISTSequenceTest(val dataset: Corpus<SequenceExampleWithFinalOutp
       evaluator = SequenceWithFinalOutputEvaluator(
         model = this.neuralNetwork,
         examples = this.dataset.validation,
-        outputEvaluationFunction = ClassificationEvaluation())
+        outputEvaluationFunction = ClassificationEvaluation)
     ).train()
   }
 }

@@ -74,7 +74,7 @@ class SparseInputTest(val dataset: Corpus<SimpleExample<SparseBinaryNDArray>>) {
       evaluator = FeedforwardEvaluator(
         model = this.neuralNetwork,
         examples = this.dataset.validation,
-        outputEvaluationFunction = ClassificationEvaluation())
+        outputEvaluationFunction = ClassificationEvaluation)
     ).train()
   }
 }
