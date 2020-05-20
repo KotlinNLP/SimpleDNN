@@ -50,7 +50,7 @@ object DenseNDArrayFactory : NDArrayFactory<DenseNDArray> {
    *
    * @return a new [DenseNDArray]
    */
-  fun ones(shape: Shape): DenseNDArray =
+  override fun ones(shape: Shape): DenseNDArray =
     DenseNDArray(DoubleMatrix.ones(shape.dim1, shape.dim2))
 
   /**
