@@ -178,14 +178,12 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
     if (this.outputArray.hasActivation) {
 
       val gY: DenseNDArray = this.outputArray.errors
+      val dgY: DenseNDArray = this.outputArray.calculateActivationDeriv()
 
-      this.outputArray.calculateActivationDeriv().let { deriv ->
-
-        if (deriv.isMatrix) // e.g. the Jacobian matrix in the Softmax function
-          this.outputArray.assignErrorsByDot(deriv, gY)
-        else
-          this.outputArray.assignErrorsByProd(deriv, gY)
-      }
+      if (dgY.isMatrix) // e.g. the Jacobian matrix in the Softmax function
+        this.outputArray.assignErrorsByDot(dgY, gY)
+      else
+        this.outputArray.assignErrorsByProd(dgY, gY)
     }
   }
 
