@@ -10,6 +10,7 @@ package com.kotlinnlp.simplednn.core.layers
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.arrays.Norm1Array
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
+import com.kotlinnlp.simplednn.core.functionalities.randomgenerators.BaseRandom
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.core.layers.helpers.ParamsErrorsCollector
@@ -17,6 +18,8 @@ import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
+import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.utils.ItemsPool
 import java.lang.RuntimeException
 
@@ -43,9 +46,25 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) : ItemsPool.IDItem {
 
   /**
-   * The probability to keep an output value (no dropout on it)
+   * The probability to keep an output value (= no dropout).
    */
   private val p = 1.0 - this.dropout
+
+  /**
+   * Support to save the dropout mask.
+   * It will contains values in the set {0.0, 1.0/[p]}.
+   */
+  private val dropoutMask: DenseNDArray = DenseNDArrayFactory.emptyArray(Shape(this.inputArray.size))
+
+  /**
+   * Support to save the original input in case of dropout.
+   */
+  private lateinit var nonDroppedInput: InputNDArrayType
+
+  /**
+   * Whether the dropout has been applied during the last forward.
+   */
+  private var dropoutApplied: Boolean = false
 
   /**
    * The helper which execute the forward
@@ -118,9 +137,7 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   fun forward(useDropout: Boolean = false) {
 
-    if (useDropout) {
-      this.applyDropout()
-    }
+    this.dropoutApplied = useDropout && this.applyDropout()
 
     this.forwardHelper.forward()
   }
@@ -134,9 +151,7 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   fun forward(layerContributions: LayerParameters, useDropout: Boolean = false) {
 
-    if (useDropout) {
-      this.applyDropout()
-    }
+    this.dropoutApplied = useDropout && this.applyDropout()
 
     this.forwardHelper.forward(layerContributions = layerContributions)
   }
@@ -167,8 +182,16 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @return the params errors
    */
-  fun backward(propagateToInput: Boolean): ParamsErrorsList =
-    this.backwardHelper.backward(propagateToInput = propagateToInput)
+  fun backward(propagateToInput: Boolean): ParamsErrorsList = this.backwardHelper.backward(propagateToInput).also {
+
+    if (this.dropoutApplied) {
+
+      if (propagateToInput)
+        this.addDropoutErrors()
+
+      this.restoreInput()
+    }
+  }
 
   /**
    * Perform the multiplication of the output array by the derivative of its activated values.
@@ -188,20 +211,51 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
+   * Apply the dropout of the input values, based on the probability [p].
    *
+   * @return `true` if the dropout has been actually applied, otherwise `false`
    */
-  private fun applyDropout() {
+  private fun applyDropout(): Boolean {
 
     if (this.dropout > 0.0) {
-      val inputShape = this.inputArray.values.shape
-      val mask = this.inputArray.values.factory // mask of zeros and ones
-        .random(inputShape)
-        .roundInt(threshold = this.dropout)
 
-      mask.assignDiv(this.p) // mask of zeros and [1.0 / this.p]
+      this.saveNonDroppedInput()
 
-      this.inputArray.values.assignProd(mask)
+      this.dropoutMask
+        .randomize(BaseRandom())
+        .assignRoundInt(threshold = this.dropout)
+        .assignDiv(this.p)
+
+      this.inputArray.values.assignProd(this.dropoutMask)
+
+      return true
     }
+
+    return false
+  }
+
+  /**
+   * Save the input values still not dropped into the [nonDroppedInput] support variable.
+   */
+  private fun saveNonDroppedInput() {
+
+    if (::nonDroppedInput.isInitialized)
+      this.nonDroppedInput.assignValues(this.inputArray.values)
+    else
+      this.nonDroppedInput = this.inputArray.values.copy()
+  }
+
+  /**
+   * Add the dropout mask component to the input errors.
+   */
+  private fun addDropoutErrors() {
+    this.inputArray.errors.assignProd(this.dropoutMask)
+  }
+
+  /**
+   * Restore the original non-dropped input values.
+   */
+  private fun restoreInput() {
+    this.inputArray.values.assignValues(this.nonDroppedInput)
   }
 }
-

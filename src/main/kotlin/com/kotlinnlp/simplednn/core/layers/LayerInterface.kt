@@ -17,8 +17,8 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
  * @property type the type of the arrays in this interface
  * @property connectionType the type of connection with the interface before (meaningless in case of input interface)
  * @property activationFunction the activation function (meaningless if this is an input interface)
- * @property dropout the probability of dropout (meaningless in case of input interface). If applying it, the usual
- *                   value is 0.5 (better 0.25 if it's the first layer).
+ * @property dropout the probability of input dropout. If applying it, the usual value is 0.5 (better 0.25 if it's the
+ *                   first layer).
  */
 data class LayerInterface(
   val sizes: List<Int>,
@@ -35,8 +35,8 @@ data class LayerInterface(
    * @param type the type of the arrays in this interface
    * @param connectionType the type of connection with the interface before (meaningless in case of input interface)
    * @param activationFunction the activation function (meaningless if this is an input interface)
-   * @param dropout the probability of dropout (meaningless in case of input interface). If applying it, the usual
-   *                value is 0.5 (better 0.25 if it's the first layer).
+   * @param dropout the probability of input dropout. If applying it, the usual value is 0.5 (better 0.25 if it's the
+   *                first layer).
    */
   constructor(
     size: Int,

@@ -14,6 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.Feedforward
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.simplemath.equals
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
+import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -57,6 +58,43 @@ class LayerStructureSpec : Spek({
               val origValue = inputArrayCopy.values[i]
 
               value == 0.0 || equals(origValue / 0.75, value, tolerance=1.0e-08)
+            }
+          }
+        }
+      }
+
+      context("backward") {
+
+        val dropout = 0.40
+        val p: Double = 1.0 - dropout
+
+        val origInput: DenseNDArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))
+
+        // Note: identity layer.
+        val layer: FeedforwardLayer<DenseNDArray> = FeedforwardLayer(
+          inputArray = AugmentedArray(origInput),
+          inputType = LayerType.Input.Dense,
+          dropout = dropout,
+          outputArray = AugmentedArray.zeros(4),
+          activationFunction = null,
+          params = FeedforwardLayerParameters(inputSize = 4, outputSize = 4, biasesInitializer = null).apply {
+            unit.weights.values.assignValues(DenseNDArrayFactory.eye(4))
+          })
+
+        layer.forward(useDropout = true)
+
+        val outputErrors: DenseNDArray = layer.outputArray.values.sub(origInput) // identity
+        layer.setErrors(outputErrors)
+        layer.backward(propagateToInput = true)
+
+        it("should match the expected errors of the input array") {
+
+          val input: DenseNDArray = layer.inputArray.values
+          val inputErrors: DenseNDArray = layer.inputArray.errors
+
+          assertTrue {
+            (0 until input.length).all { i ->
+              inputErrors[i] == 0.0 || inputErrors[i] == outputErrors[i] / p
             }
           }
         }
