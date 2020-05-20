@@ -10,14 +10,14 @@ package com.kotlinnlp.simplednn.core.functionalities.randomgenerators
 import java.io.Serializable
 
 /**
- * A generator of Double random numbers
+ * A generator of random numbers.
  */
 interface RandomGenerator : Serializable {
 
   /**
-   * Get a new random value.
+   * Generate a new random number.
    *
-   * @return a Double random number
+   * @return a random number
    */
   fun next(): Double
 }

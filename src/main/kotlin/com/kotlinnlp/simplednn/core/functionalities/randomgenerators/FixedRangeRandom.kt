@@ -10,9 +10,11 @@ package com.kotlinnlp.simplednn.core.functionalities.randomgenerators
 import java.util.*
 
 /**
- * @param radius radius of the range
- * @param enablePseudoRandom if true use pseudo-random with a seed
- * @param seed seed used for the pseudo-random
+ * A generator of random numbers uniformly distributed in a closed range centered in 0.0 with a given radius.
+ *
+ * @property radius radius of the range
+ * @property enablePseudoRandom whether to use a pseudo-random generation with the given [seed]
+ * @property seed seed used for the pseudo-random generation
  */
 class FixedRangeRandom(
   val radius: Double = 0.01,
@@ -30,12 +32,12 @@ class FixedRangeRandom(
   }
 
   /**
-   *
+   * A random numbers generator with a uniform distribution.
    */
   private val rndGenerator = if (this.enablePseudoRandom) Random(this.seed) else Random()
 
   /**
-   * @return a pseudo-random value in the range [-radius, radius]
-   * */
+   * @return a random value uniformly distributed in in the range [-[radius], [radius]]
+   */
   override fun next(): Double = (2.0 * this.rndGenerator.nextDouble() * this.radius) - this.radius
 }

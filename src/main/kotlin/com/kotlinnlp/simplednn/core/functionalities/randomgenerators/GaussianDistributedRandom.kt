@@ -8,11 +8,14 @@
 package com.kotlinnlp.simplednn.core.functionalities.randomgenerators
 
 import java.util.*
+import kotlin.math.sqrt
 
 /**
- * @param variance variance (e.g. 2.0 / n)
- * @param enablePseudoRandom if true use pseudo-random with a seed
- * @param seed seed used for the pseudo-random
+ * A generator of random numbers with a Gaussian distribution.
+ *
+ * @property variance the variance of the distribution (e.g. 2.0 / n)
+ * @property enablePseudoRandom whether to use a pseudo-random generation with the given [seed]
+ * @property seed seed used for the pseudo-random generation
  */
 class GaussianDistributedRandom(
   val variance: Double = 1.0,
@@ -30,12 +33,12 @@ class GaussianDistributedRandom(
   }
 
   /**
-   *
+   * A random numbers generator with a uniform distribution.
    */
   private val rndGenerator = if (enablePseudoRandom) Random(seed) else Random()
 
   /**
-   * @return a pseudo-random value in the range [-radius, radius]
-   * */
-  override fun next(): Double = rndGenerator.nextGaussian() * Math.sqrt(variance)
+   * @return a random value generated following a Gaussian distribution
+   */
+  override fun next(): Double = rndGenerator.nextGaussian() * sqrt(variance)
 }
