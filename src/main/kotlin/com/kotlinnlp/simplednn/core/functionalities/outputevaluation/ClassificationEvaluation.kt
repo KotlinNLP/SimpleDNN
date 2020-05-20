@@ -23,7 +23,9 @@ object ClassificationEvaluation : OutputEvaluationFunction {
    * @return a Boolean indicating whether the output must be considered equal to the gold or not
    */
   override fun invoke(output: DenseNDArray, outputGold: DenseNDArray): Boolean {
+
     require(outputGold.isOneHotEncoder) { "outputGold should be a one hot encoder"}
-    return outputGold[output.argMaxIndex()] == 1.0
+
+    return output.argMaxIndex() == outputGold.argMaxIndex()
   }
 }
