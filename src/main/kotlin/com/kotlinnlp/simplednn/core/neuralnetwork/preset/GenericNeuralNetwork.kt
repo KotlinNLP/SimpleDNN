@@ -47,33 +47,29 @@ object GenericNeuralNetwork {
 
     require(numOfHidden >= 0) { "The number of hidden layers must be >= 0." }
 
-    val layersConfiguration = mutableListOf<LayerInterface>()
+    val layersConfiguration = mutableListOf<LayerInterface>().apply {
 
-    layersConfiguration.add(LayerInterface(
-      size = inputSize,
-      type = inputType,
-      dropout = inputDropout
-    ))
+      add(LayerInterface(size = inputSize, type = inputType, dropout = inputDropout))
 
-    repeat(numOfHidden) {
-      layersConfiguration.add(LayerInterface(
-        size = hiddenSize,
-        activationFunction = hiddenActivation,
-        connectionType = hiddenConnection,
-        dropout = hiddenDropout
+      repeat(numOfHidden) {
+        add(LayerInterface(
+          size = hiddenSize,
+          activationFunction = hiddenActivation,
+          connectionType = hiddenConnection,
+          dropout = hiddenDropout
+        ))
+      }
+
+      add(LayerInterface(
+        size = outputSize,
+        activationFunction = outputActivation,
+        connectionType = LayerType.Connection.Feedforward
       ))
     }
-
-    layersConfiguration.add(LayerInterface(
-      size = outputSize,
-      activationFunction = outputActivation,
-      connectionType = LayerType.Connection.Feedforward
-    ))
 
     return StackedLayersParameters(
       layersConfiguration = *layersConfiguration.toTypedArray(),
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer
-    )
+      biasesInitializer = biasesInitializer)
   }
 }
