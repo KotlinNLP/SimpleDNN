@@ -33,9 +33,11 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
   }
 
   /**
+   * Build a new [SparseBinaryNDArray] filled with zeros.
    *
    * @param shape shape
-   * @return a new [SparseBinaryNDArray] filled with zeros
+   *
+   * @return a new [SparseBinaryNDArray]
    */
   override fun zeros(shape: Shape): SparseBinaryNDArray {
     TODO("not implemented")
@@ -52,21 +54,23 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
     this.arrayOf(activeIndices = Array(size) { i -> Indices(i, i) }, shape = Shape(size, size))
 
   /**
+   * Build a new [SparseBinaryNDArray] filled with a constant value.
    *
    * @param shape shape
    * @param value the init value
    *
-   * @return a new [SparseBinaryNDArray] filled with the given value
+   * @return a new [SparseBinaryNDArray]
    */
   override fun fill(shape: Shape, value: Double): SparseBinaryNDArray {
     TODO("not implemented")
   }
 
   /**
-   * Build a new [SparseBinaryNDArray] filled with zeros but one with 1.0
+   * Build a new [SparseBinaryNDArray] filled with zeros but one with 1.0.
    *
    * @param length the length of the array
    * @param oneAt the index of the one element
+   *
    * @return a oneHotEncoder [SparseBinaryNDArray]
    */
   override fun oneHotEncoder(length: Int, oneAt: Int): SparseBinaryNDArray {
@@ -74,11 +78,12 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
   }
 
   /**
-   * Build a new [SparseBinaryNDArray] filled with random values uniformly distributed in range [[from], [to]]
+   * Build a new [SparseBinaryNDArray] filled with random values uniformly distributed in range [[from], [to]].
    *
    * @param shape shape
    * @param from inclusive lower bound of random values range
    * @param to inclusive upper bound of random values range
+   *
    * @return a new [SparseBinaryNDArray] filled with random values
    */
   override fun random(shape: Shape, from: Double, to: Double): SparseBinaryNDArray {
@@ -96,8 +101,8 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
     val vectorMap = mutableMapOf<Int, VectorIndices?>(Pair(0, activeIndices.toMutableList()))
     val indicesMap = mutableMapOf<Int, VectorIndices?>()
 
-    for (index in activeIndices) {
-      indicesMap[index] = null
+    activeIndices.forEach { i ->
+      indicesMap[i] = null
     }
 
     return if (shape.dim1 == 1)
@@ -113,7 +118,7 @@ object SparseBinaryNDArrayFactory : NDArrayFactory<SparseBinaryNDArray> {
 
     val res = SparseBinaryNDArray(shape = shape)
 
-    for ((i, j) in activeIndices) {
+    activeIndices.forEach { (i, j) ->
       res.set(i, j)
     }
 

@@ -22,7 +22,7 @@ interface NDArrayFactory<NDArrayType : NDArray<NDArrayType>> : Serializable {
   fun emptyArray(shape: Shape): NDArrayType
 
   /**
-   * Build a new [NDArrayType] filled with zeros
+   * Build a new [NDArrayType] filled with zeros.
    *
    * @param shape shape
    *
@@ -40,7 +40,7 @@ interface NDArrayFactory<NDArrayType : NDArray<NDArrayType>> : Serializable {
   fun eye(size: Int): NDArrayType
 
   /**
-   * Build a new [NDArrayType] filled with a given value.
+   * Build a new [NDArrayType] filled with a constant value.
    *
    * @param shape shape
    * @param value the init value
@@ -50,7 +50,7 @@ interface NDArrayFactory<NDArrayType : NDArray<NDArrayType>> : Serializable {
   fun fill(shape: Shape, value: Double): NDArrayType
 
   /**
-   * Build a new [NDArrayType] filled with zeros but one with 1.0
+   * Build a new [NDArrayType] filled with zeros but one with 1.0.
    *
    * @param length the length of the array
    * @param oneAt the index of the one element
@@ -60,7 +60,7 @@ interface NDArrayFactory<NDArrayType : NDArray<NDArrayType>> : Serializable {
   fun oneHotEncoder(length: Int, oneAt: Int): NDArrayType
 
   /**
-   * Build a new [NDArrayType] filled with random values uniformly distributed in range [[from], [to]]
+   * Build a new [NDArrayType] filled with random values uniformly distributed in range [[from], [to]].
    *
    * @param shape shape
    * @param from inclusive lower bound of random values range

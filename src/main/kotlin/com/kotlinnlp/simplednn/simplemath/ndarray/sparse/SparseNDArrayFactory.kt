@@ -36,9 +36,11 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
   )
 
   /**
+   * Build a new [SparseNDArray] filled with zeros.
    *
    * @param shape shape
-   * @return a new [SparseNDArray] filled with zeros
+   *
+   * @return a new [SparseNDArray]
    */
   override fun zeros(shape: Shape) = SparseNDArray(shape = shape)
 
@@ -54,21 +56,23 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
     shape = Shape(size, size))
 
   /**
+   * Build a new [SparseNDArray] filled with a constant value.
    *
    * @param shape shape
    * @param value the init value
    *
-   * @return a new [SparseNDArray] filled with the given value
+   * @return a new [SparseNDArray]
    */
   override fun fill(shape: Shape, value: Double): SparseNDArray {
     TODO("not implemented")
   }
 
   /**
-   * Build a new [SparseNDArray] filled with zeros but one with 1.0
+   * Build a new [SparseNDArray] filled with zeros but one with 1.0.
    *
    * @param length the length of the array
    * @param oneAt the index of the one element
+   *
    * @return a oneHotEncoder [SparseNDArray]
    */
   override fun oneHotEncoder(length: Int, oneAt: Int): SparseNDArray {
@@ -76,11 +80,12 @@ object SparseNDArrayFactory : NDArrayFactory<SparseNDArray> {
   }
 
   /**
-   * Build a new [SparseNDArray] filled with random values uniformly distributed in range [[from], [to]]
+   * Build a new [SparseNDArray] filled with random values uniformly distributed in range [[from], [to]].
    *
    * @param shape shape
    * @param from inclusive lower bound of random values range
    * @param to inclusive upper bound of random values range
+   *
    * @return a new [SparseNDArray] filled with random values
    */
   override fun random(shape: Shape, from: Double, to: Double): SparseNDArray {
