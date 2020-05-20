@@ -55,7 +55,7 @@ object GenericNeuralNetwork {
       dropout = inputDropout
     ))
 
-    (0 until numOfHidden).forEach {
+    repeat(numOfHidden) {
       layersConfiguration.add(LayerInterface(
         size = hiddenSize,
         activationFunction = hiddenActivation,
