@@ -11,7 +11,7 @@ import java.io.Serializable
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 
 /**
- * The configuration of the (input or output) interface of a layer.
+ * The configuration of the input or the output of a layer.
  *
  * @property sizes the list of sizes of the arrays in this interface
  * @property type the type of the arrays in this interface
