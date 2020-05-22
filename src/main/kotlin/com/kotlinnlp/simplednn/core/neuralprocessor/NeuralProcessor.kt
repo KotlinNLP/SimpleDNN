@@ -37,16 +37,16 @@ interface NeuralProcessor<
   val propagateToInput: Boolean
 
   /**
-   * The Forward.
+   * Execute the forward of the input to the output.
    *
    * @param input the input
    *
-   * @return the result of the forward
+   * @return the output
    */
   fun forward(input: InputType): OutputType
 
   /**
-   * The Backward.
+   * Propagate the output errors with a stochastic gradient descent (SGD) algorithm.
    *
    * @param outputErrors the output errors
    */
@@ -72,9 +72,8 @@ interface NeuralProcessor<
   fun getParamsErrors(copy: Boolean = true): ParamsErrorsList
 
   /**
-   * Back-propagate the [errors] through the network, accumulate the resulting params errors in the
-   * [optimizer] and returns the input errors.
-   *
+   * Back-propagate the [errors] through the network, accumulate the resulting params errors in the [optimizer] and
+   * return the input errors.
    * Before calling this method make sure that [propagateToInput] is enabled.
    *
    * @param errors the output errors

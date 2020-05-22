@@ -17,13 +17,13 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 internal class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val model: StackedLayersParameters) {
 
   /**
-   * A state of the sequence.
+   * A state of a recurrent processor.
    *
-   * @property structure the stacked layers
+   * @property layers the stacked layers
    * @property contributions support to save the parameters contributions to the forward (used for the relevance)
    */
   private inner class NNState(
-    val structure: RecurrentStackedLayers<InputNDArrayType>,
+    val layers: RecurrentStackedLayers<InputNDArrayType>,
     val contributions: StackedLayersParameters? = null
   )
 
@@ -48,7 +48,7 @@ internal class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val mode
    * @return the structure of the state at the given [index]
    */
   fun getStateStructure(index: Int): RecurrentStackedLayers<InputNDArrayType> =
-    this.states[index].structure
+    this.states[index].layers
 
   /**
    * @param stateIndex an index of the sequence
@@ -60,14 +60,14 @@ internal class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val mode
   /**
    * Add a new state to the sequence.
    *
-   * @param structure the [RecurrentStackedLayers] of the state
+   * @param layers the [RecurrentStackedLayers] of the state
    * @param saveContributions whether to include the contributions structure into the state
    */
-  fun add(structure: RecurrentStackedLayers<InputNDArrayType>, saveContributions: Boolean) {
+  fun add(layers: RecurrentStackedLayers<InputNDArrayType>, saveContributions: Boolean) {
 
     this.states.add(
       NNState(
-        structure = structure,
+        layers = layers,
         contributions = if (saveContributions)
           StackedLayersParameters(
             layersConfiguration = this.model.layersConfiguration,

@@ -58,47 +58,44 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
     paramsErrorsCollector = this.paramsErrorsCollector)
 
   /**
-   * The amount of processors used at a given time.
+   * The processors currently used (as many as the current batch size).
    */
   private var usedProcessors: MutableList<FeedforwardNeuralProcessor<InputNDArrayType>> = mutableListOf()
 
   /**
-   * Get the input errors of all the batch.
-   * This method must be used when the input layer is not a Merge layer.
+   * Get the input errors of the whole batch when the input layer is NOT a merge layer.
    *
-   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   * @param copy whether the returned errors must be a copy or a reference
    *
-   * @return the errors of the input
+   * @return the input errors of the whole batch
    */
   override fun getInputErrors(copy: Boolean): List<DenseNDArray> =
     this.usedProcessors.map { it.getInputErrors(copy = copy) }
 
   /**
-   * Get the inputs errors of all the batch.
-   * This method must be used when the input layer is a Merge layer.
+   * Get the inputs errors of the whole batch when the input layer is a merge layer.
    *
-   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   * @param copy whether the returned errors must be a copy or a reference
    *
-   * @return the list of errors of the inputs
+   * @return the input errors of the whole batch
    */
   fun getInputsErrors(copy: Boolean = true): List<List<DenseNDArray>> =
     this.usedProcessors.map { it.getInputsErrors(copy = copy) }
 
   /**
-   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   * @param copy whether the returned errors must be a copy or a reference
    *
-   * @return the errors of the internal network
+   * @return the parameters errors
    */
-  override fun getParamsErrors(copy: Boolean): ParamsErrorsList
-    = this.errorsAccumulator.getParamsErrors(copy = copy)
+  override fun getParamsErrors(copy: Boolean): ParamsErrorsList =
+    this.errorsAccumulator.getParamsErrors(copy = copy)
 
   /**
-   * The Forward.
+   * Execute the forward of the input to the output, using a dedicated feed-forward processor for each array of the
+   * batch.
+   * This method must be used when the input layer is NOT a merge layer.
    *
-   * Start a new batch and forward each array of the [input] within a dedicated feed-forward processor.
-   * This method must be used when the input layer is not a Merge layer.
-   *
-   * @param input the batch to forward
+   * @param input the input batch
    *
    * @return a list containing the output of each forwarded processor
    */
@@ -106,51 +103,53 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
     this.forward(input = input, continueBatch = false)
 
   /**
-   * Forward each array of the [input] within a dedicated feed-forward processor.
-   * This method must be used when the input layer is not a Merge layer.
+   * Execute the forward of the input to the output, using a dedicated feed-forward processor for each array of the
+   * batch.
+   * This method must be used when the input layer is NOT a merge layer.
    *
-   * If [continueBatch] is true, the current forwarding batch is expanded with the new elements given,
-   * otherwise a new batch is started (the default).
+   * If [continueBatch] is `true`, the current forwarding batch is expanded with the given [input], otherwise a new
+   * batch is started (the default).
    *
-   * @param input the batch to forward
-   * @param continueBatch whether this batch is the continuation of the last forwarded one (without have called a
-   *        backward)
+   * WARNING: [continueBatch] should not be `true` if a backward has been called before.
+   *
+   * @param input the input batch
+   * @param continueBatch whether this batch is the continuation of the last forwarded one
    *
    * @return a list containing the output of each forwarded processor
    */
-  fun forward(input: List<InputNDArrayType>,
-              continueBatch: Boolean = false): List<DenseNDArray> =
+  fun forward(input: List<InputNDArrayType>, continueBatch: Boolean = false): List<DenseNDArray> =
     input.mapIndexed { i, values ->
       if (!continueBatch && i == 0) this.reset()
       this.forwardProcessor(values)
     }
 
   /**
-   * Forward the inputs with a dedicated feed-forward processor.
-   * This method must be used when the input layer is a Merge layer.
+   * Execute the forward of the input to the output, using a dedicated feed-forward processor for each array of the
+   * batch.
+   * This method must be used when the input layer is a merge layer.
    *
-   * If [continueBatch] is true, the current forwarding batch is expanded with the new elements given,
-   * otherwise a new batch is started (the default).
+   * If [continueBatch] is `true`, the current forwarding batch is expanded with the given [input], otherwise a new
+   * batch is started (the default).
    *
-   * @param featuresListBatch the batch to forward
-   * @param continueBatch whether this batch is the continuation of the last forwarded one (without have called a
-   *        backward)
+   * WARNING: [continueBatch] should not be `true` if a backward has been called before.
+   *
+   * @param input the input batch
+   * @param continueBatch whether this batch is the continuation of the last forwarded one
    *
    * @return a list containing the output of each forwarded processor
    */
-  fun forward(featuresListBatch: ArrayList<List<InputNDArrayType>>,
-              continueBatch: Boolean = false): List<DenseNDArray> =
-    featuresListBatch.mapIndexed { i, featuresList ->
+  fun forward(input: ArrayList<List<InputNDArrayType>>, continueBatch: Boolean = false): List<DenseNDArray> =
+    input.mapIndexed { i, featuresList ->
       if (!continueBatch && i == 0) this.reset()
       this.forwardProcessor(featuresList)
     }
 
   /**
-   * Execute the backward for a single element of the input batch, given its output errors and the index within the
-   * range of all the elements of the batch.
+   * Execute the backward for a single element of the input batch, given its output errors and its index within the
+   * range of all the elements of the current batch.
    *
-   * @param elementIndex the index of an element of the whole batch
-   * @param outputErrors the output errors of a single element of the batch
+   * @param elementIndex the index of an element within the whole batch
+   * @param outputErrors the output errors given element
    */
   fun backward(elementIndex: Int, outputErrors: DenseNDArray) {
 
@@ -158,15 +157,13 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
       "The processor index exceeds the last index of the used processors."
     }
 
-    this.processorBackward(
-      processor = this.usedProcessors[elementIndex],
-      errors = outputErrors)
+    this.processorBackward(processor = this.usedProcessors[elementIndex], outputErrors = outputErrors)
   }
 
   /**
-   * Execute the backward for each element of the input batch, given its output errors.
+   * Execute the backward for all the elements of the batch, given the output errors.
    *
-   * @param outputErrors the output errors of the batch to propagate
+   * @param outputErrors the output errors of the whole batch
    */
   override fun backward(outputErrors: List<DenseNDArray>) {
 
@@ -176,49 +173,54 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
     }
 
     this.usedProcessors.zip(outputErrors).forEach { (processor, errors) ->
-      this.processorBackward(processor = processor, errors = errors)
+      this.processorBackward(processor = processor, outputErrors = errors)
     }
   }
 
   /**
-   * Forward the input with a dedicated feed-forward processor, when the input layer is not a Merge layer.
+   * Execute the forward of the input of a new element to the output, instantiating a new dedicated feed-forward
+   * processor.
+   * This method must be used when the input layer is NOT a merge layer.
    *
-   * @param features the input features
+   * @param input the input array
    *
-   * @return an array containing the forwarded sequence
+   * @return the output array
    */
-  private fun forwardProcessor(features: InputNDArrayType): DenseNDArray =
-    this.processorsPool.getItem().let { this.usedProcessors.add(it); it.forward(features) }
+  private fun forwardProcessor(input: InputNDArrayType): DenseNDArray =
+    this.processorsPool.getItem().let { this.usedProcessors.add(it); it.forward(input) }
 
   /**
-   * Forward the input with a dedicated feed-forward processor, when the input layer is a Merge layer.
+   * Execute the forward of the input of a new element to the output, instantiating a new dedicated feed-forward
+   * processor.
+   * This method must be used when the input layer is a merge layer.
    *
-   * @param input the input
+   * @param input the input array
    *
-   * @return an array containing the forwarded sequence
+   * @return the output array
    */
   private fun forwardProcessor(input: List<InputNDArrayType>): DenseNDArray =
     this.processorsPool.getItem().let { this.usedProcessors.add(it); it.forward(input) }
 
   /**
-   * Reset temporary memories.
+   * Reset the current batch.
    */
   private fun reset() {
+
     this.processorsPool.releaseAll()
     this.usedProcessors.clear()
     this.errorsAccumulator.clear()
   }
 
   /**
-   * Perform the backward of a processor by the given [errors] and accumulate its params errors.
+   * Execute the backward of a given [processor], given its output [outputErrors].
    *
-   * @param processor the processor to perform the backward
-   * @param errors the output errors of the [processor]
+   * @param processor a processor used for the current batch
+   * @param outputErrors the output errors
    */
-  private fun processorBackward(processor: FeedforwardNeuralProcessor<InputNDArrayType>,
-                                errors: DenseNDArray) {
+  private fun processorBackward(processor: FeedforwardNeuralProcessor<InputNDArrayType>, outputErrors: DenseNDArray) {
 
-    processor.backward(outputErrors = errors)
+    processor.backward(outputErrors = outputErrors)
+
     this.errorsAccumulator.accumulate(processor.getParamsErrors(copy = false))
   }
 }
