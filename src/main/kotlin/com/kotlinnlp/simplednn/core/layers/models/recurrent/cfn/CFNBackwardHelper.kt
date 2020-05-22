@@ -29,8 +29,8 @@ internal class CFNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun execBackward(propagateToInput: Boolean) {
 
-    val prevStateLayer = this.layer.layerContextWindow.getPrevState() as? CFNLayer
-    val nextStateLayer = this.layer.layerContextWindow.getNextState() as? CFNLayer
+    val prevStateLayer = this.layer.layersWindow.getPrevState() as? CFNLayer
+    val nextStateLayer = this.layer.layersWindow.getNextState() as? CFNLayer
 
     if (nextStateLayer != null) {
       this.addOutputRecurrentGradients(nextStateLayer)

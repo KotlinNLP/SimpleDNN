@@ -30,8 +30,8 @@ internal class IndRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>
    */
   override fun execBackward(propagateToInput: Boolean) {
 
-    val prevStateLayer = this.layer.layerContextWindow.getPrevState()
-    val nextStateLayer = this.layer.layerContextWindow.getNextState()
+    val prevStateLayer = this.layer.layersWindow.getPrevState()
+    val nextStateLayer = this.layer.layersWindow.getNextState()
 
     if (nextStateLayer != null) {
       this.addLayerRecurrentGradients(nextStateLayer as IndRNNLayer<*>)

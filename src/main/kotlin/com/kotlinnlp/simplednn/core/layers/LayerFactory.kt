@@ -19,7 +19,7 @@ import com.kotlinnlp.simplednn.core.layers.models.feedforward.norm.NormLayerPara
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance.SquaredDistanceLayer
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance.SquaredDistanceLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.gru.GRULayer
@@ -71,13 +71,14 @@ object LayerFactory {
    * @param inputConfiguration layers layersConfiguration of the input array
    * @param outputConfiguration the layersConfiguration of the output array
    * @param params the network parameters of the current layer
+   * @param contextWindow the layers context window in case of recurrent layer
    *
    * @return a new Layer
    */
   operator fun invoke(inputConfiguration: LayerInterface,
                       outputConfiguration: LayerInterface,
                       params: LayerParameters,
-                      contextWindow: LayerContextWindow? = null): Layer<*> {
+                      contextWindow: LayersWindow? = null): Layer<*> {
 
     require(outputConfiguration.connectionType != null) {
       "Output layer configurations must have a not null connectionType"
@@ -135,7 +136,7 @@ object LayerFactory {
     outputConfiguration: LayerInterface,
     params: LayerParameters,
     dropout: Double,
-    contextWindow: LayerContextWindow? = null
+    contextWindow: LayersWindow? = null
   ) : Layer<InputNDArrayType> = LayerFactory(
     inputArrays = inputArrays,
     inputType = inputType,
@@ -168,7 +169,7 @@ object LayerFactory {
     connectionType: LayerType.Connection,
     activationFunction: ActivationFunction? = null,
     dropout: Double = 0.0,
-    contextWindow: LayerContextWindow? = null
+    contextWindow: LayersWindow? = null
   ) : Layer<InputNDArrayType> = when (connectionType) {
 
     LayerType.Connection.Feedforward -> FeedforwardLayer(
@@ -268,7 +269,7 @@ object LayerFactory {
       params = params as SimpleRecurrentLayerParameters,
       activationFunction = activationFunction,
       dropout = dropout,
-      layerContextWindow = contextWindow!!)
+      layersWindow = contextWindow!!)
 
     LayerType.Connection.GRU -> GRULayer(
       inputArray = inputArrays.first(),
@@ -277,7 +278,7 @@ object LayerFactory {
       params = params as GRULayerParameters,
       activationFunction = activationFunction,
       dropout = dropout,
-      layerContextWindow = contextWindow!!)
+      layersWindow = contextWindow!!)
 
     LayerType.Connection.LSTM -> LSTMLayer(
       inputArray = inputArrays.first(),
@@ -286,7 +287,7 @@ object LayerFactory {
       params = params as LSTMLayerParameters,
       activationFunction = activationFunction,
       dropout = dropout,
-      layerContextWindow = contextWindow!!)
+      layersWindow = contextWindow!!)
 
     LayerType.Connection.CFN -> CFNLayer(
       inputArray = inputArrays.first(),
@@ -295,7 +296,7 @@ object LayerFactory {
       params = params as CFNLayerParameters,
       activationFunction = activationFunction,
       dropout = dropout,
-      layerContextWindow = contextWindow!!)
+      layersWindow = contextWindow!!)
 
     LayerType.Connection.RAN -> RANLayer(
       inputArray = inputArrays.first(),
@@ -304,7 +305,7 @@ object LayerFactory {
       params = params as RANLayerParameters,
       activationFunction = activationFunction,
       dropout = dropout,
-      layerContextWindow = contextWindow!!)
+      layersWindow = contextWindow!!)
 
     LayerType.Connection.DeltaRNN -> DeltaRNNLayer(
       inputArray = inputArrays.first(),
@@ -313,7 +314,7 @@ object LayerFactory {
       params = params as DeltaRNNLayerParameters,
       activationFunction = activationFunction,
       dropout = dropout,
-      layerContextWindow = contextWindow!!)
+      layersWindow = contextWindow!!)
 
     LayerType.Connection.IndRNN -> IndRNNLayer(
       inputArray = inputArrays.first(),
@@ -322,7 +323,7 @@ object LayerFactory {
       params = params as IndRNNLayerParameters,
       activationFunction = activationFunction,
       dropout = dropout,
-      layerContextWindow = contextWindow!!)
+      layersWindow = contextWindow!!)
 
     LayerType.Connection.LTM -> LTMLayer(
       inputArray = inputArrays.first(),
@@ -330,14 +331,14 @@ object LayerFactory {
       outputArray = AugmentedArray.zeros(outputSize),
       params = params as LTMLayerParameters,
       dropout = dropout,
-      layerContextWindow = contextWindow!!)
+      layersWindow = contextWindow!!)
 
     LayerType.Connection.TPR -> TPRLayer(
       inputArray = inputArrays.first(),
       inputType = inputType,
       params = params as TPRLayerParameters,
       dropout = dropout,
-      layerContextWindow = contextWindow!!,
+      layersWindow = contextWindow!!,
       q = 0.00001) // TODO
   }
 }

@@ -47,7 +47,7 @@ internal class TPRForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun addRecurrentContribution() {
 
-    this.layer.layerContextWindow.getPrevState()?.let { prevStateLayer ->
+    this.layer.layersWindow.getPrevState()?.let { prevStateLayer ->
 
       val yPrev: DenseNDArray = prevStateLayer.outputArray.values
 

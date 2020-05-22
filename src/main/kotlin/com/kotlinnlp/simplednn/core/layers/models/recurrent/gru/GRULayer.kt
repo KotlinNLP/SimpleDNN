@@ -13,7 +13,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentRelevanceHelper
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -25,7 +25,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * @property inputType the input array type (default Dense)
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
- * @property layerContextWindow the context window used for the forward and the backward
+ * @property layersWindow the context window used for the forward and the backward
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
@@ -35,7 +35,7 @@ class GRULayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: GRULayerParameters,
-  layerContextWindow: LayerContextWindow,
+  layersWindow: LayersWindow,
   activationFunction: ActivationFunction? = null,
   dropout: Double = 0.0
 ) : GatedRecurrentLayer<InputNDArrayType>(
@@ -43,7 +43,7 @@ class GRULayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputType = inputType,
   outputArray = outputArray,
   params = params,
-  layerContextWindow = layerContextWindow,
+  layersWindow = layersWindow,
   activationFunction = activationFunction,
   dropout = dropout) {
 

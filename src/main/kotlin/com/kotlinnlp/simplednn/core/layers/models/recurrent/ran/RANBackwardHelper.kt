@@ -30,8 +30,8 @@ internal class RANBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun execBackward(propagateToInput: Boolean) {
 
-    val prevStateLayer = this.layer.layerContextWindow.getPrevState() as? RANLayer
-    val nextStateLayer = this.layer.layerContextWindow.getNextState() as? RANLayer
+    val prevStateLayer = this.layer.layersWindow.getPrevState() as? RANLayer
+    val nextStateLayer = this.layer.layersWindow.getNextState() as? RANLayer
 
     this.layer.applyOutputActivationDeriv() // must be applied BEFORE having added the recurrent contribution
 

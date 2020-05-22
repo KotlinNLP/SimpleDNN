@@ -28,7 +28,7 @@ internal class LSTMForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun forward() {
 
-    this.setGates(this.layer.layerContextWindow.getPrevState()) // must be called before accessing to the activated values of the gates
+    this.setGates(this.layer.layersWindow.getPrevState()) // must be called before accessing to the activated values of the gates
 
     val y: DenseNDArray = this.layer.outputArray.values
     val outG: DenseNDArray = this.layer.outputGate.values

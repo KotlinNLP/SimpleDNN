@@ -30,7 +30,7 @@ internal class DeltaRNNRelevanceHelper(
   override fun propagateRelevanceToGates(layerContributions: LayerParameters) {
     layerContributions as DeltaRNNLayerParameters
 
-    val previousStateExists: Boolean = this.layer.layerContextWindow.getPrevState() != null
+    val previousStateExists: Boolean = this.layer.layersWindow.getPrevState() != null
 
     val halfOutputRelevance: DenseNDArray = this.layer.outputArray.relevance.div(2.0)
 
@@ -60,7 +60,7 @@ internal class DeltaRNNRelevanceHelper(
     val wxContrib: DenseNDArray = (contributions as DeltaRNNLayerParameters).feedforwardUnit.weights.values
 
     val relevanceSupport: DeltaRNNRelevanceSupport = this.layer.relevanceSupport
-    val previousStateExists: Boolean = this.layer.layerContextWindow.getPrevState() != null
+    val previousStateExists: Boolean = this.layer.layersWindow.getPrevState() != null
 
     val bp: DenseNDArray = this.layer.params.recurrentUnit.biases.values
     val bc: DenseNDArray = this.layer.params.feedforwardUnit.biases.values
@@ -113,7 +113,7 @@ internal class DeltaRNNRelevanceHelper(
 
     contributions as DeltaRNNLayerParameters
 
-    val prevStateOutput: AugmentedArray<DenseNDArray> = this.layer.layerContextWindow.getPrevState()!!.outputArray
+    val prevStateOutput: AugmentedArray<DenseNDArray> = this.layer.layersWindow.getPrevState()!!.outputArray
     val yPrev: DenseNDArray = prevStateOutput.values
 
     val wyRecContrib: DenseNDArray = contributions.recurrentUnit.weights.values

@@ -34,7 +34,7 @@ internal class IndRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>
     )
 
     // y += wRec * yPrev
-    this.layer.layerContextWindow.getPrevState()?.let { prevStateLayer ->
+    this.layer.layersWindow.getPrevState()?.let { prevStateLayer ->
 
       val wRec = this.layer.params.recurrentWeights.values
       this.layer.outputArray.values.assignSum(wRec.prod(prevStateLayer.outputArray.values))

@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.GatedRecurrentRelevanceHelper
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
@@ -26,7 +26,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @property inputType the input array type (default Dense)
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
- * @property layerContextWindow the context window used for the forward and the backward
+ * @property layersWindow the context window used for the forward and the backward
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
@@ -36,7 +36,7 @@ class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   override val params: TPRLayerParameters,
-  layerContextWindow: LayerContextWindow,
+  layersWindow: LayersWindow,
   dropout: Double = 0.0,
   val q: Double
 ) : RecurrentLayer<InputNDArrayType>(
@@ -44,7 +44,7 @@ class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputType = inputType,
   outputArray = AugmentedArray(size = 1),
   params = params,
-  layerContextWindow = layerContextWindow,
+  layersWindow = layersWindow,
   activationFunction = null,
   dropout = dropout) {
 

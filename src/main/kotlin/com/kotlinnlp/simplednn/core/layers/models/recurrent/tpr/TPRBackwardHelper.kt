@@ -31,8 +31,8 @@ internal class TPRBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun execBackward(propagateToInput: Boolean) {
 
-    val prevStateOutput = this.layer.layerContextWindow.getPrevState()?.outputArray
-    val nextStateLayer = this.layer.layerContextWindow.getNextState()
+    val prevStateOutput = this.layer.layersWindow.getPrevState()?.outputArray
+    val nextStateLayer = this.layer.layersWindow.getNextState()
 
     this.addOutputRecurrentGradients(nextStateLayer as? TPRLayer<*>)
 

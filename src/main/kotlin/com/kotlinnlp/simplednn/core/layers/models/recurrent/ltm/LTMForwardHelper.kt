@@ -28,7 +28,7 @@ internal class LTMForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun forward() {
 
-    val prevStateLayer: LTMLayer<*>? = this.layer.layerContextWindow.getPrevState() as? LTMLayer<*>
+    val prevStateLayer: LTMLayer<*>? = this.layer.layersWindow.getPrevState() as? LTMLayer<*>
 
     this.forwardInputGates(prevStateLayer)
     this.forwardCell(prevStateLayer)

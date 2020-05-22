@@ -16,7 +16,7 @@ import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.layers.RecurrentStackedLayers
-import com.kotlinnlp.simplednn.core.layers.StructureContextWindow
+import com.kotlinnlp.simplednn.core.layers.StatesWindow
 import com.kotlinnlp.simplednn.core.layers.helpers.ParamsErrorsCollector
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
@@ -41,7 +41,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val propagateToInput: Boolean,
   private val paramsErrorsCollector: ParamsErrorsCollector = ParamsErrorsCollector(),
   override val id: Int = 0
-) : StructureContextWindow<InputNDArrayType>,
+) : StatesWindow<InputNDArrayType>(),
   NeuralProcessor<
     List<InputNDArrayType>, // InputType
     List<DenseNDArray>, // OutputType
@@ -490,10 +490,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     if (this.lastStateIndex == this.sequence.lastIndex) {
 
-      val structure = RecurrentStackedLayers(
-        params = this.model,
-        structureContextWindow = this).apply {
-
+      val structure = RecurrentStackedLayers(params = this.model, statesWindow = this).apply {
         setParamsErrorsCollector(paramsErrorsCollector)
       }
 

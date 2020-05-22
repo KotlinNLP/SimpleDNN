@@ -28,7 +28,7 @@ internal class GRUForwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun forward() {
 
-    val prevStateLayer = this.layer.layerContextWindow.getPrevState()
+    val prevStateLayer = this.layer.layersWindow.getPrevState()
 
     this.setGates(prevStateLayer) // must be called before accessing to the activated values of the gates
 

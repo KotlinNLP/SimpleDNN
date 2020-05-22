@@ -36,7 +36,7 @@ internal class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDAr
       x = this.layer.inputArray.values)
 
     // y += wRec (dot) yPrev
-    val prevStateLayer = this.layer.layerContextWindow.getPrevState()
+    val prevStateLayer = this.layer.layersWindow.getPrevState()
     if (prevStateLayer != null) {
       this.layer.outputArray.addRecurrentContribution(
         parameters = this.layer.params.unit,
@@ -61,7 +61,7 @@ internal class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDAr
 
     contributions as SimpleRecurrentLayerParameters
 
-    val prevStateLayer: Layer<*>? = this.layer.layerContextWindow.getPrevState()
+    val prevStateLayer: Layer<*>? = this.layer.layersWindow.getPrevState()
     val b: DenseNDArray = this.layer.params.unit.biases.values
     val bContrib: DenseNDArray = if (prevStateLayer != null) b.div(2.0) else b
     // if there's a recurrent contribution b is divided equally within the sum

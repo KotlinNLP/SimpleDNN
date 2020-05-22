@@ -21,14 +21,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * The NeuralProcessor that acts on stacked-layers networks.
  *
  * @property model the stacked-layers parameters
- * @property useDropout whether to apply the dropout during the [forward]
+ * @param dropouts the probability of dropout for each stacked layer (default 0.0)
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
  * @property paramsErrorsCollector where to collect the local params errors during the [backward] (optional)
  * @property id an identification number useful to track a specific processor
  */
 class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   val model: StackedLayersParameters,
-  override val useDropout: Boolean,
+  dropouts: List<Double> = List(model.numOfLayers) { 0.0 },
   override val propagateToInput: Boolean,
   private val paramsErrorsCollector: ParamsErrorsCollector = ParamsErrorsCollector(),
   override val id: Int = 0
@@ -42,7 +42,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The structure as support of forward and backward.
    */
-  var structure = StackedLayers<InputNDArrayType>(params = this.model).apply {
+  private var structure = StackedLayers<InputNDArrayType>(params = this.model).apply {
     setParamsErrorsCollector(paramsErrorsCollector)
   }
 
@@ -61,6 +61,16 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The errors of the network model parameters
    */
   private var backwardParamsErrors: ParamsErrorsList = listOf()
+
+  /**
+   * Check requirements.
+   */
+  init {
+    require(dropouts.size == this.model.numOfLayers) {
+      "The number of dropout values (${dropouts.size}) must be equal to the number of layers " +
+        "(${this.model.numOfLayers})."
+    }
+  }
 
   /**
    * @param copy a Boolean indicating whether the returned array must be a copy or a reference
@@ -129,7 +139,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun forward(input: InputNDArrayType): DenseNDArray {
 
-    this.structure.forward(input = input, useDropout = this.useDropout)
+    this.structure.forward(input)
 
     return this.structure.outputLayer.outputArray.values // TODO: check copy
   }
@@ -147,14 +157,9 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
               saveContributions: Boolean): DenseNDArray {
 
     if (saveContributions)
-      this.structure.forward(
-        input = features,
-        stackedLayersContributions = this.forwardContributions,
-        useDropout = this.useDropout)
+      this.structure.forward(features, contributions = this.forwardContributions)
     else
-      this.structure.forward(
-        input = features,
-        useDropout = this.useDropout)
+      this.structure.forward(features)
 
     return this.structure.outputLayer.outputArray.values
   }
@@ -168,7 +173,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   fun forward(featuresList: List<InputNDArrayType>): DenseNDArray {
 
-    this.structure.forward(input = featuresList, useDropout = this.useDropout)
+    this.structure.forward(featuresList)
 
     return this.structure.outputLayer.outputArray.values
   }
@@ -186,14 +191,9 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
               saveContributions: Boolean): DenseNDArray {
 
     if (saveContributions)
-      this.structure.forward(
-        input = featuresList,
-        stackedLayersContributions = this.forwardContributions,
-        useDropout = this.useDropout)
+      this.structure.forward(featuresList, contributions = this.forwardContributions)
     else
-      this.structure.forward(
-        input = featuresList,
-        useDropout = this.useDropout)
+      this.structure.forward(featuresList)
 
     return this.structure.outputLayer.outputArray.values
   }

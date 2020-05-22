@@ -42,7 +42,7 @@ internal class SimpleRecurrentRelevanceHelper(
    */
   override fun setRecurrentRelevance(contributions: LayerParameters) {
 
-    val prevStateLayer: Layer<*> = this.layer.layerContextWindow.getPrevState()!!
+    val prevStateLayer: Layer<*> = this.layer.layersWindow.getPrevState()!!
     val recurrentRelevance: DenseNDArray = this.layer.outputArray.getRecurrentRelevance(
       contributions = (contributions as SimpleRecurrentLayerParameters).unit,
       yPrev = prevStateLayer.outputArray.values)

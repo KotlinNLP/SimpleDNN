@@ -29,8 +29,8 @@ internal class DeltaRNNBackwardHelper<InputNDArrayType : NDArray<InputNDArrayTyp
    */
   override fun execBackward(propagateToInput: Boolean) {
 
-    val prevStateOutput = this.layer.layerContextWindow.getPrevState()?.outputArray
-    val nextStateLayer = this.layer.layerContextWindow.getNextState()
+    val prevStateOutput = this.layer.layersWindow.getPrevState()?.outputArray
+    val nextStateLayer = this.layer.layersWindow.getNextState()
 
     if (nextStateLayer != null) {
       this.addOutputRecurrentGradients(nextStateLayer as DeltaRNNLayer<*>)

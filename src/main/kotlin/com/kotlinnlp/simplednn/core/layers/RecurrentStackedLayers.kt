@@ -7,7 +7,7 @@
 
 package com.kotlinnlp.simplednn.core.layers
 
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -16,13 +16,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * The RecurrentStackedLayers.
  *
  * @property params the parameters
- * @property structureContextWindow the context window to get the previous and the next state of the structure
+ * @property statesWindow the context window to get the previous and the next state of the structure
  */
 class RecurrentStackedLayers <InputNDArrayType : NDArray<InputNDArrayType>>(
   params: StackedLayersParameters,
-  val structureContextWindow: StructureContextWindow<InputNDArrayType>
-) : LayerContextWindow,
-  StackedLayers<InputNDArrayType>(params = params) {
+  val statesWindow: StatesWindow<InputNDArrayType>
+) : LayersWindow, StackedLayers<InputNDArrayType>(params = params) {
 
   /**
    * A list of booleans indicating if the init hidden layers must be used in the next forward.
@@ -69,14 +68,13 @@ class RecurrentStackedLayers <InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * @return the current layer in previous state
    */
-  override fun getPrevState(): Layer<*>? = if (this.useInitHidden[this.curLayerIndex]) {
+  override fun getPrevState(): Layer<*>? = if (this.useInitHidden[this.curLayerIndex])
     this.initHiddenLayers[this.curLayerIndex]
-  } else {
-    this.structureContextWindow.getPrevState()?.layers?.get(this.curLayerIndex)
-  }
+  else
+    this.statesWindow.getPrevState()?.layers?.get(this.curLayerIndex)
 
   /**
    * @return the current layer in next state
    */
-  override fun getNextState(): Layer<*>? = this.structureContextWindow.getNextState()?.layers?.get(this.curLayerIndex)
+  override fun getNextState(): Layer<*>? = this.statesWindow.getNextState()?.layers?.get(this.curLayerIndex)
 }

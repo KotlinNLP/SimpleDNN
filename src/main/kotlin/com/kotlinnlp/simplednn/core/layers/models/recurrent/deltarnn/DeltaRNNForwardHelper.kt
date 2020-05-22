@@ -32,7 +32,7 @@ internal class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType
     val x: InputNDArrayType = this.layer.inputArray.values
     val w: DenseNDArray = this.layer.params.feedforwardUnit.weights.values
     val wx: DenseNDArray = this.layer.wx.values
-    val prevStateLayer: Layer<*>? = this.layer.layerContextWindow.getPrevState()
+    val prevStateLayer: Layer<*>? = this.layer.layersWindow.getPrevState()
     val yPrev: DenseNDArray? = prevStateLayer?.outputArray?.values
 
     wx.assignDot(w, x)
@@ -67,7 +67,7 @@ internal class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType
 
     val wx: DenseNDArray = this.layer.wx.values
     var wyRec: DenseNDArray? = null
-    val prevStateLayer: Layer<*>? = this.layer.layerContextWindow.getPrevState()
+    val prevStateLayer: Layer<*>? = this.layer.layersWindow.getPrevState()
     val yPrev: DenseNDArray? = prevStateLayer?.outputArray?.values
 
     // w (dot) x

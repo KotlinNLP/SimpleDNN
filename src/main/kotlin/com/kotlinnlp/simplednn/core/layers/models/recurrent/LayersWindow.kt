@@ -10,10 +10,12 @@ package com.kotlinnlp.simplednn.core.layers.models.recurrent
 import com.kotlinnlp.simplednn.core.layers.Layer
 
 /**
- * The context window for a recurrent layer. It permits to get the layer in the previous and next states.
+ * A window of recurrent layers.
+ * It provides methods to get the current stacked layer in the next and the previous state of a recurrent network.
+ * Useful during the forward and backward operations.
  */
-interface LayerContextWindow {
-  
+internal interface LayersWindow {
+
   /**
    * @return the current layer in previous state
    */

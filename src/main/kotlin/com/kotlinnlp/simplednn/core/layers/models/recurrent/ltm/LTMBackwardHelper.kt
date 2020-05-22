@@ -29,8 +29,8 @@ internal class LTMBackwardHelper<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun execBackward(propagateToInput: Boolean) {
 
-    val prevStateLayer = this.layer.layerContextWindow.getPrevState() as? LTMLayer
-    val nextStateLayer = this.layer.layerContextWindow.getNextState() as? LTMLayer
+    val prevStateLayer = this.layer.layersWindow.getPrevState() as? LTMLayer
+    val nextStateLayer = this.layer.layersWindow.getNextState() as? LTMLayer
 
     if (nextStateLayer != null) this.addOutputRecurrentGradients(nextStateLayer)
 

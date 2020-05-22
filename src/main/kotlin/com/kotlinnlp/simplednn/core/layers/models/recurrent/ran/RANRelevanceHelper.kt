@@ -84,7 +84,7 @@ internal class RANRelevanceHelper(override val layer: RANLayer<DenseNDArray>) : 
 
     contributions as RANLayerParameters
 
-    val prevStateOutput = this.layer.layerContextWindow.getPrevState()!!.outputArray
+    val prevStateOutput = this.layer.layersWindow.getPrevState()!!.outputArray
     val (_, recurrentRelevance) = this.getRelevancePartitions(contributions)
     val halfRecurrentRelevance: DenseNDArray = recurrentRelevance!!.assignDiv(2.0)
 
@@ -113,7 +113,7 @@ internal class RANRelevanceHelper(override val layer: RANLayer<DenseNDArray>) : 
 
     val yRelevance: DenseNDArray = this.layer.outputArray.relevance
 
-    return if (this.layer.layerContextWindow.getPrevState() != null) {
+    return if (this.layer.layersWindow.getPrevState() != null) {
       this.splitRelevancePartitions(yRelevance = yRelevance, contributions = contributions)
 
     } else {
