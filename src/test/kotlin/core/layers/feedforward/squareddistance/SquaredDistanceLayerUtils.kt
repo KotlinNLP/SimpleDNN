@@ -7,7 +7,7 @@ import com.kotlinnlp.simplednn.core.layers.models.feedforward.squareddistance.Sq
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
-object SquaredDistanceLayerUtils {
+internal object SquaredDistanceLayerUtils {
 
   /**
    *

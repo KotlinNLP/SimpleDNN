@@ -17,7 +17,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 /**
  *
  */
-object NormLayerStructureUtils {
+internal object NormLayerStructureUtils {
 
   /**
    *

@@ -12,7 +12,10 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.distance.DistanceLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.distance.DistanceLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
-object DistanceLayerUtils {
+/**
+ *
+ */
+internal object DistanceLayerUtils {
 
   /**
    *

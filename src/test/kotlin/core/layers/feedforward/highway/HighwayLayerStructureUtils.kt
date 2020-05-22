@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 /**
  *
  */
-object HighwayLayerStructureUtils {
+internal object HighwayLayerStructureUtils {
 
   /**
    *

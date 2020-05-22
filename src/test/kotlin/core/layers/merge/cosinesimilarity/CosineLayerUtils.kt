@@ -12,7 +12,10 @@ import com.kotlinnlp.simplednn.core.layers.models.merge.cosinesimilarity.CosineL
 import com.kotlinnlp.simplednn.core.layers.models.merge.cosinesimilarity.CosineLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 
-object CosineLayerUtils {
+/**
+ *
+ */
+internal object CosineLayerUtils {
 
   /**
    *

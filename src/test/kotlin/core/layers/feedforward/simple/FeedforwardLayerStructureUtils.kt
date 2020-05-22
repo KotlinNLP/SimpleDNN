@@ -22,7 +22,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
 /**
  *
  */
-object FeedforwardLayerStructureUtils {
+internal object FeedforwardLayerStructureUtils {
 
   /**
    *
