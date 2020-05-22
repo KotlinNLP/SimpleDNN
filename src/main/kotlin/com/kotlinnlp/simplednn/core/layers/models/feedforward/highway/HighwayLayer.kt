@@ -68,11 +68,7 @@ class HighwayLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The helper which calculates the relevance
    */
-  @Suppress("UNCHECKED_CAST")
-  override val relevanceHelper: HighwayRelevanceHelper? = if (this.denseInput)
-    HighwayRelevanceHelper(layer = this as HighwayLayer<DenseNDArray>)
-  else
-    null
+  override val relevanceHelper: RelevanceHelper? = null
 
   /**
    * Initialization: set the activation function of the outputArray
