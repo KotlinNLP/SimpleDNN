@@ -14,10 +14,10 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The NeuralProcessor that acts on an embeddings map.
+ * The neural processor that manages embeddings in a map.
  *
- * @param embeddingsMap the embeddings map
- * @param dropout the probability to get the unknown embedding
+ * @param embeddingsMap an embeddings map
+ * @param dropout the probability to get the unknown embedding (default 0.0)
  */
 open class EmbeddingsProcessor<T>(
   private val embeddingsMap: EmbeddingsMap<T>,
@@ -28,12 +28,6 @@ open class EmbeddingsProcessor<T>(
   List<DenseNDArray>, // ErrorsType
   NeuralProcessor.NoInputErrors // InputErrorsType
   > {
-
-  /**
-   * Whether to apply the dropout to get the embeddings.
-   * Actually it is not used. The value of the [dropout] itself is enough.
-   */
-  override val useDropout: Boolean = this.dropout > 0.0
 
   /**
    * Whether to propagate the errors to the input during the backward (not supported)
@@ -63,11 +57,11 @@ open class EmbeddingsProcessor<T>(
   }
 
   /**
-   * The Forward.
+   * Execute the forward of the input to the output.
    *
-   * @param input the input
+   * @param input the embeddings keys
    *
-   * @return the result of the forward
+   * @return the embeddings vectors associated to the given keys
    */
   override fun forward(input: List<T>): List<DenseNDArray> {
 
@@ -77,9 +71,9 @@ open class EmbeddingsProcessor<T>(
   }
 
   /**
-   * The Backward.
+   * Accumulate errors into the last given embeddings.
    *
-   * @param outputErrors the output errors
+   * @param outputErrors the errors of the last given embeddings
    */
   override fun backward(outputErrors: List<DenseNDArray>) {
 
@@ -96,21 +90,16 @@ open class EmbeddingsProcessor<T>(
   }
 
   /**
-   * Return the input errors of the last backward.
-   * Before calling this method make sure that [propagateToInput] is enabled.
-   *
-   * @param copy whether to return by value or by reference (default true)
-   *
-   * @return the input errors
+   * No input errors available.
    */
   override fun getInputErrors(copy: Boolean) = NeuralProcessor.NoInputErrors
 
   /**
-   * Return the params errors of the last backward.
+   * Return the embeddings errors accumulated with the last backward.
    *
-   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference (default true)
+   * @param copy whether the returned errors must be a copy or a reference (default true)
    *
-   * @return the parameters errors
+   * @return the accumulated errors of the last used embeddings
    */
   override fun getParamsErrors(copy: Boolean) = this.errorsAccumulator.getParamsErrors(copy = copy)
 }
