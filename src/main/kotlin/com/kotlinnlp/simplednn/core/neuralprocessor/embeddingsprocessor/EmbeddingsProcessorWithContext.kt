@@ -9,24 +9,21 @@ package com.kotlinnlp.simplednn.core.neuralprocessor.embeddingsprocessor
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayer
-import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.merge.concat.ConcatLayersPool
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
+import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The NeuralProcessor that acts on an embeddings map.
- *
- * The particularity of this variant of [EmbeddingsProcessor] is that a shared context vector is concatenated
- * to each embedding.
+ * Extension of the [EmbeddingsProcessor] with a context vector that is concatenated to each embedding.
  *
  * The [dropout] has no effect on the [contextVector].
  *
- * @param embeddingsMap the embeddings map
- * @param contextVector the context vector to concatenate to each embedding
- * @param dropout the dropout to mask items of the [embeddingsMap]
+ * @param embeddingsMap an embeddings map
+ * @param contextVector the context vector concatenated to each embedding
+ * @param dropout the probability to get the unknown embedding (default 0.0)
  */
 class EmbeddingsProcessorWithContext<T>(
   embeddingsMap: EmbeddingsMap<T>,
@@ -35,33 +32,16 @@ class EmbeddingsProcessorWithContext<T>(
 ) : EmbeddingsProcessor<T>(
   embeddingsMap = embeddingsMap,
   dropout = dropout
-){
-
-  companion object {
-
-    /**
-     * The index of the embeddings in the input arrays of the concat layer.
-     */
-    private const val embdIndex = 0
-
-    /**
-     * The index of the context vector in the input arrays of the concat layer.
-     */
-    private const val cntxIndex = 1
-  }
+) {
 
   /**
-   * Pool of concat layers.
+   * The processor that concatenates the [contextVector] to each embedding.
    */
-  private val concatLayersPool = ConcatLayersPool<DenseNDArray>(
-    params = ConcatLayerParameters(inputsSize = listOf(embeddingsMap.size, this.contextVector.values.length)),
-    inputType = LayerType.Input.Dense
-  )
-
-  /**
-   * The concat layers used during the last forward.
-   */
-  private val concatLayers = mutableListOf<ConcatLayer<DenseNDArray>>()
+  private val concatProcessor = BatchFeedforwardProcessor<DenseNDArray>(
+    model = StackedLayersParameters(
+      LayerInterface(sizes = listOf(embeddingsMap.size, contextVector.values.length), type = LayerType.Input.Dense),
+      LayerInterface(sizes = listOf(), connectionType = LayerType.Connection.Concat)),
+    propagateToInput = true)
 
   /**
    * Accumulator of the errors of the [contextVector].
@@ -77,18 +57,9 @@ class EmbeddingsProcessorWithContext<T>(
    */
   override fun forward(input: List<T>): List<DenseNDArray> {
 
-    this.initConcatLayers(input.size)
+    val embeddings: List<DenseNDArray> = super.forward(input)
 
-    return super.forward(input).mapIndexed { i, embedding ->
-
-      this.concatLayers[i].let {
-
-        it.setInput(embdIndex, embedding)
-        it.setInput(cntxIndex, this.contextVector.values)
-        it.forward()
-        it.outputArray.values
-      }
-    }
+    return this.concatProcessor.forward(embeddings.map { listOf(it, this.contextVector.values) }.toTypedArray())
   }
 
   /**
@@ -98,11 +69,14 @@ class EmbeddingsProcessorWithContext<T>(
    */
   override fun backward(outputErrors: List<DenseNDArray>) {
 
-    this.backwardConcatLayers(outputErrors)
+    val concatErrors: List<List<DenseNDArray>> = this.concatProcessor.let {
+      it.backward(outputErrors)
+      it.getInputsErrors(copy = false)
+    }
 
-    super.backward(this.concatLayers.map { it.inputArrays[embdIndex].errors })
+    super.backward(concatErrors.map { it.first() })
 
-    this.accumulateContextVectorErrors(this.concatLayers.map { it.inputArrays[cntxIndex].errors })
+    this.accumulateContextVectorErrors(concatErrors.map { it.last() })
   }
 
   /**
@@ -114,34 +88,6 @@ class EmbeddingsProcessorWithContext<T>(
    */
   override fun getParamsErrors(copy: Boolean) =
     super.getParamsErrors(copy) + this.contextErrorsAccumulator.getParamsErrors(copy)
-
-  /**
-   * Initialize the [concatLayers].
-   *
-   * @param size the number of concat layers to initialize
-   */
-  private fun initConcatLayers(size: Int) {
-
-    this.concatLayers.clear()
-    this.concatLayersPool.releaseAll()
-    this.concatLayers.addAll((0 until size).map { this.concatLayersPool.getItem() } )
-  }
-
-  /**
-   * Perform the backward of the [concatLayers].
-   *
-   * @param outputErrors the errors to propagate
-   */
-  private fun backwardConcatLayers(outputErrors: List<DenseNDArray>) {
-
-    outputErrors.forEachIndexed { i, errors ->
-
-      this.concatLayers[i].let {
-        it.setErrors(errors)
-        it.backward(propagateToInput = true)
-      }
-    }
-  }
 
   /**
    * Accumulate the errors of the context vector.
