@@ -13,10 +13,13 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * A Feed-forward processor with multiple parallel outputs for each input.
- * It encodes a sequence of arrays into another sequence of n parallel arrays using more networks.
+ * The neural processor that acts on more networks of stacked-layers, performing operations with the same input batch
+ * and obtaining more outputs for each element.
  *
- * @property model list of feed-forward network models
+ * It forwards the same sequence of X arrays using N different networks and obtaining N outputs for each element of the
+ * sequence.
+ *
+ * @property model the parameters of more stacked-layers networks
  * @property useDropout whether to apply the dropout during the forward
  * @property propagateToInput whether to propagate the errors to the input during the backward
  */
@@ -33,7 +36,7 @@ class MultiBatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>
   > {
 
   /**
-   * A list of processors which encode each input array into multiple vectors.
+   * The feed-forward processors to encode each input batch.
    */
   private val encoders: List<BatchFeedforwardProcessor<InputNDArrayType>> =
     this.model.map { BatchFeedforwardProcessor<InputNDArrayType>(
@@ -43,10 +46,10 @@ class MultiBatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>
     ) }
 
   /**
-   * @param copy a Boolean indicating whether the returned errors must be a copy or a
-   *             reference (ignored, the value is always copied)
+   * @param copy whether the returned errors must be a copy or a reference (actually without effect, the errors are
+   *             always copied!)
    *
-   * @return the errors of the input sequence
+   * @return the errors of the input batch accumulated from all the networks
    */
   override fun getInputErrors(copy: Boolean): List<DenseNDArray> {
 
@@ -62,18 +65,18 @@ class MultiBatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>
   }
 
   /**
-   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference
+   * @param copy whether the returned errors must be a copy or a reference
    *
-   * @return the parameters errors of the sub-networks
+   * @return the parameters errors of all the networks
    */
   override fun getParamsErrors(copy: Boolean) = this.encoders.flatMap { it.getParamsErrors(copy = copy) }
 
   /**
-   * The Forward.
+   * For each network, execute the forward of the same input batch to the output.
    *
-   * @param input the input sequence to encode
+   * @param input the input batch
    *
-   * @return a list containing the forwarded sequence for each network
+   * @return the outputs of all the networks for each element of the input batch
    */
   override fun forward(input: List<InputNDArrayType>): List<List<DenseNDArray>> {
 
@@ -88,10 +91,9 @@ class MultiBatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>
   }
 
   /**
-   * Execute the backward for each element of the input sequence, given sequence of output errors (one for
-   * each network), and return its input errors.
+   * Execute the backward for each network, given their output errors.
    *
-   * @param outputErrors the sequence of output errors to propagate
+   * @param outputErrors the output errors of each network
    */
   override fun backward(outputErrors: List<List<DenseNDArray>>) {
 

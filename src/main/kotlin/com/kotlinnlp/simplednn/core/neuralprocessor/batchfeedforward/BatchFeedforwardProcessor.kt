@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The NeuralProcessor that acts on a Feed-forward Neural Network performing operations through with mini-batch.
+ * The neural processor that acts on networks of stacked-layers, performing operations through with mini-batches.
  *
  * @property model the stacked-layers parameters
  * @property useDropout whether to apply the dropout during the [forward]
