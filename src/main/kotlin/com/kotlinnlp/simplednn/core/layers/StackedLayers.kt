@@ -27,7 +27,7 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
 ) {
 
   /**
-   * The list of layers generate from the layers configuration contained inside the [params].
+   * The stacked layers with the given [params].
    */
   val layers: List<Layer<*>> = this.buildLayers()
 
@@ -203,17 +203,18 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun setParamsErrorsCollector(c: ParamsErrorsCollector) { this.layers.forEach { it.setParamsErrorsCollector(c) } }
 
   /**
-   * Build a new list of layer.
+   * Build the stacked layers with the given [params].
    *
-   * Layers are defined as a list [x, y, z] of [LayerInterface].
-   * The resulting list of [Layer] consist in input-output pairs [x-y, y-z].
+   * Layers are configured with the list of [LayerInterface] [x, y, z, ...] defined in the [params].
+   * The resulting list of [Layer] will contain one element less the configuration interfaces and each layer is defined
+   * by two consecutive configurations of input-output [x-y, y-z, ...].
    *
-   * @return list of layers where the output of a layer is the reference of the input of the next one
+   * @return the stacked layers where the output of a layer references the input of the next
    */
   protected fun buildLayers(): List<Layer<*>> = this.params.layersConfiguration.let { config ->
 
     require(config.subList(1, config.size).all { it.type == LayerType.Input.Dense }) {
-      "The last layers must be dense."
+      "The layers except the first must be dense."
     }
 
     require(config.subList(2, config.size).all { it.connectionType!!.property != LayerType.Property.Merge }) {
@@ -222,27 +223,24 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     var prevLayer: Layer<*>? = null
 
-    return List(
-      size = config.size - 1,
-      init = { i ->
+    return List(config.size - 1) { i ->
 
-        val layer: Layer<*> = if (i == 0)
-          LayerFactory(
-            inputConfiguration = config[0],
-            outputConfiguration = config[1],
-            params = this.params.paramsPerLayer[0])
-        else
-          LayerFactory(
-            inputArrays = listOf(prevLayer!!.outputArray),
-            inputType = LayerType.Input.Dense,
-            outputConfiguration = config[i + 1],
-            params = this.params.paramsPerLayer[i],
-            dropout = config[i].dropout)
+      val layer: Layer<*> = if (i == 0)
+        LayerFactory(
+          inputConfiguration = config[0],
+          outputConfiguration = config[1],
+          params = this.params.paramsPerLayer[0])
+      else
+        LayerFactory(
+          inputArrays = listOf(prevLayer!!.outputArray),
+          inputType = LayerType.Input.Dense,
+          outputConfiguration = config[i + 1],
+          params = this.params.paramsPerLayer[i],
+          dropout = config[i].dropout)
 
-        prevLayer = layer
+      prevLayer = layer
 
-        layer
-      }
-    )
+      layer
+    }
   }
 }
