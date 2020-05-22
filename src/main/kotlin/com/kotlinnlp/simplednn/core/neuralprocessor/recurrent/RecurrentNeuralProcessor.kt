@@ -50,9 +50,9 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     > {
 
   /**
-   * Sequence of states.
+   * The sequence of states.
    */
-  private val sequence = NNSequence<InputNDArrayType>(this.model)
+  private val sequence: NNSequence<InputNDArrayType> = NNSequence(this.model)
 
   /**
    * Set each time a single forward or a single backward are called

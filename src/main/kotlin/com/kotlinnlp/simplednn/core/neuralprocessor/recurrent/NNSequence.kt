@@ -7,29 +7,30 @@
 
 package com.kotlinnlp.simplednn.core.neuralprocessor.recurrent
 
-
 import com.kotlinnlp.simplednn.core.layers.RecurrentStackedLayers
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
- *
+ * The sequence of neural structures which represent each state of a recurrent neural processor execution.
  */
-class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val model: StackedLayersParameters) {
+internal class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val model: StackedLayersParameters) {
 
   /**
+   * A state of the sequence.
    *
-   * @param structure neural network
+   * @property structure the stacked layers
+   * @property contributions support to save the parameters contributions to the forward (used for the relevance)
    */
-  inner class NNState(
+  private inner class NNState(
     val structure: RecurrentStackedLayers<InputNDArrayType>,
     val contributions: StackedLayersParameters? = null
   )
 
   /**
-   * Sequence of RNNStates
+   * The sequence of states.
    */
-  private val states = mutableListOf<NNState>()
+  private val states: MutableList<NNState> = mutableListOf()
 
   /**
    * The number of states.
@@ -42,19 +43,15 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val model: Stacke
   val lastIndex: Int get() = this.states.size - 1
 
   /**
-   * Get the structure of the state at the given [stateIndex].
+   * @param index an index of the sequence
    *
-   * @param stateIndex the index of the sequence
-   *
-   * @return the structure of the state at the given [stateIndex]
+   * @return the structure of the state at the given [index]
    */
-  fun getStateStructure(stateIndex: Int): RecurrentStackedLayers<InputNDArrayType>
-    = this.states[stateIndex].structure
+  fun getStateStructure(index: Int): RecurrentStackedLayers<InputNDArrayType> =
+    this.states[index].structure
 
   /**
-   * Get the contributions of the state at the given [stateIndex].
-   *
-   * @param stateIndex the index of the sequence
+   * @param stateIndex an index of the sequence
    *
    * @return the contributions of the state at the given [stateIndex]
    */
@@ -68,14 +65,14 @@ class NNSequence<InputNDArrayType : NDArray<InputNDArrayType>>(val model: Stacke
    */
   fun add(structure: RecurrentStackedLayers<InputNDArrayType>, saveContributions: Boolean) {
 
-    // TODO: set always contributions?? (structures are created only when it's needed)
     this.states.add(
       NNState(
         structure = structure,
-        contributions = if (saveContributions) StackedLayersParameters(
-          layersConfiguration = this.model.layersConfiguration,
-          weightsInitializer = null,
-          biasesInitializer = null)
+        contributions = if (saveContributions)
+          StackedLayersParameters(
+            layersConfiguration = this.model.layersConfiguration,
+            weightsInitializer = null,
+            biasesInitializer = null)
         else
           null
       )
