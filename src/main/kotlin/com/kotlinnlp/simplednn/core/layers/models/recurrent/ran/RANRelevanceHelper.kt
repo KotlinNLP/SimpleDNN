@@ -22,13 +22,13 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 internal class RANRelevanceHelper(override val layer: RANLayer<DenseNDArray>) : GatedRecurrentRelevanceHelper(layer) {
 
   /**
-   * Propagate the relevance from the output to the gate units of the layer.
+   * Propagate the relevance from the output to the gates.
    *
-   * @param layerContributions the structure in which to save the contributions during the calculations
+   * @param contributions the contributions saved during the last forward
    */
-  override fun propagateRelevanceToGates(layerContributions: LayerParameters) {
+  override fun propagateRelevanceToGates(contributions: LayerParameters) {
 
-    val (inputRelevance, recurrentRelevance) = this.getRelevancePartitions(layerContributions as RANLayerParameters)
+    val (inputRelevance, recurrentRelevance) = this.getRelevancePartitions(contributions as RANLayerParameters)
     val halfInputRelevance: DenseNDArray = inputRelevance.assignDiv(2.0)
 
     this.layer.candidate.assignRelevance(halfInputRelevance)

@@ -80,7 +80,7 @@ class FeedforwardLayerStructureSpec : Spek({
         val layer = FeedforwardLayerStructureUtils.buildLayer53()
         val contributions = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
 
-        layer.forward(layerContributions = contributions)
+        layer.forward(contributions)
 
         it("should match the expected output values") {
           assertTrue {
@@ -104,7 +104,7 @@ class FeedforwardLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 3))
-        layer.setInputRelevance(layerContributions = contributions)
+        layer.setInputRelevance(contributions)
 
         it("should match the expected input relevance") {
           val relevance: DenseNDArray = layer.inputArray.relevance

@@ -49,10 +49,15 @@ internal abstract class GatedRecurrentLayer<InputNDArrayType : NDArray<InputNDAr
   abstract override val relevanceHelper: GatedRecurrentRelevanceHelper?
 
   /**
-   * @param layerContributions the contributions saved during the last forward
+   * Calculate the relevance of the output in the previous state respect to the current one and assign it to the output
+   * array of the previous state.
+   *
+   * @param contributions the contributions saved during the last forward
    */
-  fun propagateRelevanceToGates(layerContributions: LayerParameters) {
-    this.relevanceHelper?.propagateRelevanceToGates(layerContributions) ?:
-      throw RuntimeException("Relevance propagation not available.")
+  fun propagateRelevanceToGates(contributions: LayerParameters) {
+
+    this.relevanceHelper
+      ?.propagateRelevanceToGates(contributions)
+      ?: throw RuntimeException("Relevance propagation not available.")
   }
 }

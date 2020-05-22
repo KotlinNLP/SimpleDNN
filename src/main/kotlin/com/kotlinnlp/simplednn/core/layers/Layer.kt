@@ -162,6 +162,7 @@ internal abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @param contributions the contributions saved during the last forward
    */
   fun setInputRelevance(contributions: LayerParameters) {
+
     this.relevanceHelper
       ?.setInputRelevance(contributions = contributions)
       ?: throw RuntimeException("Relevance propagation not available.")

@@ -20,9 +20,9 @@ internal abstract class GatedRecurrentRelevanceHelper(
 ) : RecurrentRelevanceHelper(layer) {
 
   /**
-   * Propagate the relevance from the output to the gated units of the layer.
+   * Propagate the relevance from the output to the gates.
    *
-   * @param layerContributions the structure in which to save the contributions during the calculations
+   * @param contributions the contributions saved during the last forward
    */
-  abstract fun propagateRelevanceToGates(layerContributions: LayerParameters)
+  abstract fun propagateRelevanceToGates(contributions: LayerParameters)
 }

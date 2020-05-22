@@ -23,19 +23,20 @@ internal class DeltaRNNRelevanceHelper(
 ) : GatedRecurrentRelevanceHelper(layer) {
 
   /**
-   * Propagate the relevance from the output to the array units of the layer.
+   * Propagate the relevance from the output to the gates.
    *
-   * @param layerContributions the structure in which to save the contributions during the calculations
+   * @param contributions the contributions saved during the last forward
    */
-  override fun propagateRelevanceToGates(layerContributions: LayerParameters) {
-    layerContributions as DeltaRNNLayerParameters
+  override fun propagateRelevanceToGates(contributions: LayerParameters) {
+
+    contributions as DeltaRNNLayerParameters
 
     val previousStateExists: Boolean = this.layer.layersWindow.getPrevState() != null
 
     val halfOutputRelevance: DenseNDArray = this.layer.outputArray.relevance.div(2.0)
 
     val candidateRelevance: DenseNDArray = if (previousStateExists)
-      this.getInputPartition(layerContributions).div(2.0)
+      this.getInputPartition(contributions).div(2.0)
     else
     // if there isn't a previous state, all the output relevance is assigned to the candidate
     // partition (p * c), half to the partition array and half to the candidate array

@@ -55,8 +55,10 @@ internal abstract class RecurrentLayer<InputNDArrayType : NDArray<InputNDArrayTy
    * @param contributions the contributions saved during the last forward
    */
   fun setRecurrentRelevance(contributions: LayerParameters) {
-    this.relevanceHelper?.setRecurrentRelevance(contributions) ?:
-    throw RuntimeException("Relevance propagation not available.")
+
+    this.relevanceHelper
+      ?.setRecurrentRelevance(contributions)
+      ?: throw RuntimeException("Relevance propagation not available.")
   }
 
   /**
