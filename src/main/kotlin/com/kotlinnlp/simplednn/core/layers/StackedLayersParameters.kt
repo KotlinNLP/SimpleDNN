@@ -91,9 +91,9 @@ class StackedLayersParameters(
   val outputSize: Int = this.layersConfiguration.last().size
 
   /**
-   * A list containing a [LayerParameters] for each layer.
+   * The [LayerParameters] of each layer.
    */
-  val paramsPerLayer = List(size = this.layersConfiguration.size - 1, init = { i ->
+  val paramsPerLayer = List(this.layersConfiguration.size - 1) { i ->
     LayerParametersFactory(
       inputsSize = this.layersConfiguration[i].sizes,
       outputSize = this.layersConfiguration[i + 1].size,
@@ -101,7 +101,12 @@ class StackedLayersParameters(
       weightsInitializer = weightsInitializer,
       biasesInitializer = biasesInitializer,
       sparseInput = this.layersConfiguration[i].type == LayerType.Input.SparseBinary)
-  } )
+  }
+
+  /**
+   * The number of stacked layers.
+   */
+  val numOfLayers: Int = this.paramsPerLayer.size
 
   /**
    * Serialize this [StackedLayersParameters] and write it to an output stream.
