@@ -80,7 +80,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     this.sequence = input
 
-    return outputMergeProcessors.forward(ArrayList(this.biEncoding().map { it.toList() } ))
+    return outputMergeProcessors.forward(this.biEncoding().map { it.toList() }.toTypedArray())
   }
 
   /**

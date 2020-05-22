@@ -138,7 +138,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    * @return a list containing the output of each forwarded processor
    */
-  fun forward(input: ArrayList<List<InputNDArrayType>>, continueBatch: Boolean = false): List<DenseNDArray> =
+  fun forward(input: Array<List<InputNDArrayType>>, continueBatch: Boolean = false): List<DenseNDArray> =
     input.mapIndexed { i, featuresList ->
       if (!continueBatch && i == 0) this.reset()
       this.forwardProcessor(featuresList)
