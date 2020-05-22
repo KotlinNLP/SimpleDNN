@@ -28,13 +28,10 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
 
     if (this.networkProcessor.firstState) this.initForward()
 
-    val attentionArrays: List<DenseNDArray> = this.buildAttentionSequence(context)
-
-    val attentionMechanism = this.buildAttentionMechanism(attentionArrays)
-
-    attentionMechanism.forward()
-
-    return attentionMechanism.outputArray.values
+    return this.buildAttentionMechanism(attentionArrays = this.buildAttentionSequence(context)).let {
+      it.forward()
+      it.outputArray.values
+    }
   }
 
   /**
@@ -67,7 +64,6 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
    * Initialize the structures used during the forward.
    */
   private fun initForward() {
-
     this.networkProcessor.usedAttentionMechanisms.clear()
   }
 
@@ -76,8 +72,5 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
    *
    * @return the given [element]
    */
-  private fun <E>MutableList<E>.addAndReturn(element: E): E {
-    this.add(element)
-    return element
-  }
+  private fun <E>MutableList<E>.addAndReturn(element: E): E = element.also { this.add(it) }
 }
