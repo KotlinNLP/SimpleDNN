@@ -32,7 +32,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  * @property q The weight of the quantization in the loss function
  */
-class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   override val params: TPRLayerParameters,

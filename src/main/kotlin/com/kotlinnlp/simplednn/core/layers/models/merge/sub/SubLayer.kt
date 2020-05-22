@@ -23,7 +23,7 @@ import com.kotlinnlp.utils.ItemsPool
  * @property params the parameters which connect the input to the output
  * @property id an identification number useful to track a specific [SubLayer]
  */
-class SubLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class SubLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   internal val inputArray1: AugmentedArray<InputNDArrayType>,
   internal val inputArray2: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,

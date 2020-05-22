@@ -30,7 +30,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
-class GRULayer<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class GRULayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,

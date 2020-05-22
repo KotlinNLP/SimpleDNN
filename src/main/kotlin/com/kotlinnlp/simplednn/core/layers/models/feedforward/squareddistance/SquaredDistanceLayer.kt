@@ -22,7 +22,7 @@ import com.kotlinnlp.utils.ItemsPool
  * @property params the parameters which connect the input to the output
  * @property id an identification number useful to track a specific [SquaredDistanceLayer]
  */
-class SquaredDistanceLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class SquaredDistanceLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,

@@ -24,7 +24,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @property params the parameters which connect the input to the output
  * @property id an identification number useful to track a specific layer (default: 0)
  */
-class BatchNormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class BatchNormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArrays: List<AugmentedArray<InputNDArrayType>>,
   inputType: LayerType.Input,
   override val params: BatchNormLayerParameters,

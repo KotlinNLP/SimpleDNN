@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 /**
  * The basic unit of the recurrent layer, which extends the [AugmentedArray] with the recurrent contribution.
  */
-class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : AugmentedArray<DenseNDArray>(size) {
+internal class RecurrentLayerUnit<InputNDArrayType : NDArray<InputNDArrayType>>(size: Int) : AugmentedArray<DenseNDArray>(size) {
 
   init {
     this.assignValues(DenseNDArrayFactory.emptyArray(Shape(size)))

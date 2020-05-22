@@ -28,7 +28,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  * @property id an identification number useful to track a specific [ConcatFFLayer]
  */
-class ConcatFFLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class ConcatFFLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArrays: List<AugmentedArray<InputNDArrayType>>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,

@@ -33,7 +33,7 @@ import com.kotlinnlp.utils.ItemsPool
  *                If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  * @property id an identification number useful to track a specific layer (default: 0)
  */
-class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArrays: List<AugmentedArray<InputNDArrayType>>,
   inputType: LayerType.Input,
   val attentionArrays: List<AugmentedArray<DenseNDArray>>,

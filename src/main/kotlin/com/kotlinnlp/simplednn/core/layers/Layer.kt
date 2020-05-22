@@ -35,7 +35,7 @@ import java.lang.RuntimeException
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  * @property id an identification number useful to track a specific [Layer]
  */
-abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArray: AugmentedArray<InputNDArrayType>,
   val inputType: LayerType.Input, // = LayerType.Input.Dense,
   open val outputArray: AugmentedArray<DenseNDArray>,

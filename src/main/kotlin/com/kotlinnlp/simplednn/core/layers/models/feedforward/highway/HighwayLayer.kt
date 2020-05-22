@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.Sigmoid
 import com.kotlinnlp.simplednn.core.layers.*
+import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.utils.ItemsPool
@@ -27,7 +28,7 @@ import com.kotlinnlp.utils.ItemsPool
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  * @property id an identification number useful to track a specific layer (default: 0)
  */
-class HighwayLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class HighwayLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,

@@ -63,7 +63,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArr
 /**
  * Helper that builds a generic [Layer].
  */
-object LayerFactory {
+internal object LayerFactory {
 
   /**
    * Base layer factory, given input and output configurations.

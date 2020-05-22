@@ -21,7 +21,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  *
  * @property params the layers parameters
  */
-open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
   val params: StackedLayersParameters
 ) {
 

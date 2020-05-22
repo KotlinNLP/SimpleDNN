@@ -22,7 +22,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property params the parameters which connect the input to the output
  * @property id an identification number useful to track a specific [SumLayer]
  */
-class SumLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class SumLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArrays: List<AugmentedArray<InputNDArrayType>>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,

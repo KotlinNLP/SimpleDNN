@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property params the parameters
  * @property statesWindow the context window to get the previous and the next state of the structure
  */
-class RecurrentStackedLayers <InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class RecurrentStackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
   params: StackedLayersParameters,
   val statesWindow: StatesWindow<InputNDArrayType>
 ) : LayersWindow, StackedLayers<InputNDArrayType>(params = params) {

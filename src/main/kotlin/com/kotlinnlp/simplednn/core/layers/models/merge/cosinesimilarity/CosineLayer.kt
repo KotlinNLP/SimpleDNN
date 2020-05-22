@@ -22,7 +22,7 @@ import com.kotlinnlp.utils.ItemsPool
  * @property params the parameters which connect the input to the output
  * @property id an identification number useful to track a specific [CosineLayer]
  */
-class CosineLayer(
+internal class CosineLayer(
   internal val inputArray1: AugmentedArray<DenseNDArray>,
   internal val inputArray2: AugmentedArray<DenseNDArray>,
   override val params: CosineLayerParameters,

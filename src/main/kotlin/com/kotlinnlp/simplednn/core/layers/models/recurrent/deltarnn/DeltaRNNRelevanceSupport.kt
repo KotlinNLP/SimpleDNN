@@ -17,7 +17,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  *
  * @property outputSize the size of the output array of the layer
  */
-data class DeltaRNNRelevanceSupport(val outputSize: Int) {
+internal data class DeltaRNNRelevanceSupport(val outputSize: Int) {
 
   /**
    * The contribution from the input to the d1 array, including half biases of the candidate.

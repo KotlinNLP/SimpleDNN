@@ -34,7 +34,7 @@ import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayerParamete
 /**
  * Helper that builds generic [LayerParameters].
  */
-object LayerParametersFactory {
+internal object LayerParametersFactory {
 
   /**
    * Build new generic [LayerParameters].

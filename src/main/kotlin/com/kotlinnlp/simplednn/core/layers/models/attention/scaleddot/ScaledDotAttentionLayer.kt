@@ -26,7 +26,7 @@ import java.lang.Math.random
  * @param attentionDropout the probability of attention dropout (default 0.0)
  * @property id an identification number useful to track a specific layer (default: 0)
  */
-class ScaledDotAttentionLayer(
+internal class ScaledDotAttentionLayer(
   val inputArrays: List<AugmentedArray<DenseNDArray>>,
   override val params: ScaledDotAttentionLayerParameters,
   private val attentionDropout: Double = 0.0,
