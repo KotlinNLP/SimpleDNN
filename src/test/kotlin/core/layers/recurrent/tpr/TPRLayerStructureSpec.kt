@@ -23,7 +23,7 @@ class TPRLayerStructureSpec: Spek({
 
       context("without previous state context") {
 
-        val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Empty())
+        val layer = TPRLayerStructureUtils.buildLayer(TPRLayersWindow.Empty)
         layer.forward()
 
         it("should match the expected Symbol Attention Vector") {
@@ -69,7 +69,7 @@ class TPRLayerStructureSpec: Spek({
 
       context("with previous state context") {
 
-        val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Back())
+        val layer = TPRLayerStructureUtils.buildLayer(TPRLayersWindow.Back)
         layer.forward()
 
         it("should match the expected Symbol Attention Vector") {
@@ -119,7 +119,7 @@ class TPRLayerStructureSpec: Spek({
 
       context("without previous and next state") {
 
-        val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Empty())
+        val layer = TPRLayerStructureUtils.buildLayer(TPRLayersWindow.Empty)
 
         layer.forward()
 
@@ -287,7 +287,7 @@ class TPRLayerStructureSpec: Spek({
 
       context("with previous state only") {
 
-        val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Back())
+        val layer = TPRLayerStructureUtils.buildLayer(TPRLayersWindow.Back)
 
         layer.forward()
 
@@ -452,7 +452,7 @@ class TPRLayerStructureSpec: Spek({
       }
 
       context("with next state only") {
-        val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Front())
+        val layer = TPRLayerStructureUtils.buildLayer(TPRLayersWindow.Front())
 
         layer.forward()
 
@@ -616,7 +616,7 @@ class TPRLayerStructureSpec: Spek({
       }
 
       context("with previous and next state") {
-        val layer = TPRLayerStructureUtils.buildLayer(TPRLayerContextWindow.Bilateral())
+        val layer = TPRLayerStructureUtils.buildLayer(TPRLayersWindow.Bilateral)
 
         layer.forward()
 

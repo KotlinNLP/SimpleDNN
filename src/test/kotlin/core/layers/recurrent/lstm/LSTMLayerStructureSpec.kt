@@ -26,7 +26,7 @@ class LSTMLayerStructureSpec : Spek({
 
       context("without previous state context") {
 
-        val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayerContextWindow.Empty())
+        val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayersWindow.Empty)
         layer.forward()
 
         it("should match the expected input gate") {
@@ -80,7 +80,7 @@ class LSTMLayerStructureSpec : Spek({
 
       context("with previous state context") {
 
-        val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayerContextWindow.Back())
+        val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayersWindow.Back)
         layer.forward()
 
         it("should match the expected input gate") {
@@ -134,7 +134,7 @@ class LSTMLayerStructureSpec : Spek({
 
       context("with init hidden layer") {
 
-        val contextWindow = LSTMLayerContextWindow.BackHidden()
+        val contextWindow = LSTMLayersWindow.BackHidden()
         val layer = LSTMLayerStructureUtils.buildLayer(contextWindow)
 
         contextWindow.setRefLayer(layer)
@@ -195,7 +195,7 @@ class LSTMLayerStructureSpec : Spek({
 
       context("without previous and next state") {
 
-        val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayerContextWindow.Empty())
+        val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayersWindow.Empty)
 
         layer.forward()
 
@@ -411,7 +411,7 @@ class LSTMLayerStructureSpec : Spek({
 
       context("with previous state only") {
 
-        val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayerContextWindow.Back())
+        val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayersWindow.Back)
 
         layer.forward()
 
@@ -627,7 +627,7 @@ class LSTMLayerStructureSpec : Spek({
 
       context("with init hidden") {
 
-        val contextWindow = LSTMLayerContextWindow.BackHidden()
+        val contextWindow = LSTMLayersWindow.BackHidden()
         val layer = LSTMLayerStructureUtils.buildLayer(contextWindow)
 
         contextWindow.setRefLayer(layer)
@@ -668,7 +668,7 @@ class LSTMLayerStructureSpec : Spek({
 
       context("with next state only") {
 
-        val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayerContextWindow.Front())
+        val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayersWindow.Front())
 
         layer.forward()
 
@@ -884,7 +884,7 @@ class LSTMLayerStructureSpec : Spek({
 
       context("with previous and next state") {
 
-        val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayerContextWindow.Bilateral())
+        val layer = LSTMLayerStructureUtils.buildLayer(LSTMLayersWindow.Bilateral)
 
         layer.forward()
 

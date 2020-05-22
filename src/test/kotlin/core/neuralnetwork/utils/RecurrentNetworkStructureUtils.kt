@@ -15,7 +15,7 @@ import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.Feedforward
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerParameters
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.layers.RecurrentStackedLayers
-import com.kotlinnlp.simplednn.core.layers.StructureContextWindow
+import com.kotlinnlp.simplednn.core.layers.StatesWindow
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import core.layers.feedforward.simple.FeedforwardLayerStructureUtils
 import core.layers.recurrent.simple.SimpleRecurrentLayerStructureUtils
@@ -23,7 +23,7 @@ import core.layers.recurrent.simple.SimpleRecurrentLayerStructureUtils
 /**
  *
  */
-object RecurrentNetworkStructureUtils {
+internal object RecurrentNetworkStructureUtils {
 
   /**
    *
@@ -48,8 +48,7 @@ object RecurrentNetworkStructureUtils {
   /**
    *
    */
-  fun buildStructure(structureContextWindow: StructureContextWindow<DenseNDArray>):
-    RecurrentStackedLayers<DenseNDArray> {
+  fun buildStructure(statesWindow: StatesWindow<DenseNDArray>): RecurrentStackedLayers<DenseNDArray> {
 
     val layersConfiguration = arrayOf(
       LayerInterface(size = 4),
@@ -57,8 +56,6 @@ object RecurrentNetworkStructureUtils {
       LayerInterface(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
     ).toList()
 
-    return RecurrentStackedLayers(
-      params = this.buildParams(layersConfiguration),
-      structureContextWindow = structureContextWindow)
+    return RecurrentStackedLayers(params = this.buildParams(layersConfiguration), statesWindow = statesWindow)
   }
 }

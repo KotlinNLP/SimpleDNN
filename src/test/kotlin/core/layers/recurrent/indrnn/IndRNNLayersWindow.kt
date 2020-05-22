@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn.IndRNNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.indrnn.IndRNNLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -20,34 +20,34 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 /**
  *
  */
-sealed class IndRNNLayerContextWindow: LayerContextWindow {
+internal sealed class IndRNNLayersWindow: LayersWindow {
 
   /**
    *
    */
-  object Empty : IndRNNLayerContextWindow() {
+  object Empty : IndRNNLayersWindow() {
 
-    override fun getPrevState(): IndRNNLayer<DenseNDArray>? = null
+    override fun getPrevState(): Nothing? = null
 
-    override fun getNextState(): IndRNNLayer<DenseNDArray>? = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  object Back : IndRNNLayerContextWindow() {
+  object Back : IndRNNLayersWindow() {
 
     override fun getPrevState(): IndRNNLayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextState(): IndRNNLayer<DenseNDArray>? = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  object Front : IndRNNLayerContextWindow() {
+  object Front : IndRNNLayersWindow() {
 
-    override fun getPrevState(): IndRNNLayer<DenseNDArray>? = null
+    override fun getPrevState(): Nothing? = null
 
     override fun getNextState(): IndRNNLayer<DenseNDArray> = buildNextStateLayer()
   }
@@ -55,7 +55,7 @@ sealed class IndRNNLayerContextWindow: LayerContextWindow {
   /**
    *
    */
-  object Bilateral : IndRNNLayerContextWindow() {
+  object Bilateral : IndRNNLayersWindow() {
 
     override fun getPrevState(): IndRNNLayer<DenseNDArray> = buildPrevStateLayer()
 
@@ -79,7 +79,7 @@ private fun buildPrevStateLayer(): IndRNNLayer<DenseNDArray> {
     outputArray = outputArray,
     params = IndRNNLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh,
-    layerContextWindow = IndRNNLayerContextWindow.Empty)
+    layersWindow = IndRNNLayersWindow.Empty)
 }
 
 /**
@@ -96,5 +96,5 @@ private fun buildNextStateLayer(): IndRNNLayer<DenseNDArray> {
     outputArray = outputArray,
     params = IndRNNLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh,
-    layerContextWindow = IndRNNLayerContextWindow.Empty)
+    layersWindow = IndRNNLayersWindow.Empty)
 }

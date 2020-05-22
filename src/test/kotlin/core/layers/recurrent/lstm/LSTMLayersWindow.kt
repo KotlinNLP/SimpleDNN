@@ -10,7 +10,7 @@ package core.layers.recurrent.lstm
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.lstm.LSTMLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -20,32 +20,32 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 /**
  *
  */
-sealed class LSTMLayerContextWindow: LayerContextWindow {
+internal sealed class LSTMLayersWindow: LayersWindow {
 
   /**
    *
    */
-  class Empty: LSTMLayerContextWindow() {
+  object Empty : LSTMLayersWindow() {
 
-    override fun getPrevState() = null
+    override fun getPrevState(): Nothing? = null
 
-    override fun getNextState() = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  class Back: LSTMLayerContextWindow() {
+  object Back : LSTMLayersWindow() {
 
     override fun getPrevState(): LSTMLayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextState() = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  class BackHidden: LSTMLayerContextWindow() {
+  class BackHidden: LSTMLayersWindow() {
 
     private lateinit var initHidden: LSTMLayer<DenseNDArray>
 
@@ -55,15 +55,15 @@ sealed class LSTMLayerContextWindow: LayerContextWindow {
 
     override fun getPrevState(): LSTMLayer<DenseNDArray> = this.initHidden
 
-    override fun getNextState() = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  class Front(private val refLayer: LSTMLayer<DenseNDArray>? = null): LSTMLayerContextWindow() {
+  class Front(private val refLayer: LSTMLayer<DenseNDArray>? = null): LSTMLayersWindow() {
 
-    override fun getPrevState() = null
+    override fun getPrevState(): Nothing? = null
 
     override fun getNextState(): LSTMLayer<DenseNDArray> = this.refLayer ?: buildNextStateLayer()
   }
@@ -71,7 +71,7 @@ sealed class LSTMLayerContextWindow: LayerContextWindow {
   /**
    *
    */
-  class Bilateral: LSTMLayerContextWindow() {
+  object Bilateral : LSTMLayersWindow() {
 
     override fun getPrevState(): LSTMLayer<DenseNDArray> = buildPrevStateLayer()
 
@@ -93,7 +93,7 @@ private fun buildPrevStateLayer(): LSTMLayer<DenseNDArray> {
     outputArray = outputArray,
     params = LSTMLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh,
-    layerContextWindow = LSTMLayerContextWindow.Empty())
+    layersWindow = LSTMLayersWindow.Empty)
 
   layer.cell.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, -0.6, 1.0, 0.1, 0.1)))
   layer.cell.activate()
@@ -114,7 +114,7 @@ private fun buildInitHiddenLayer(refLayer: LSTMLayer<DenseNDArray>): LSTMLayer<D
     outputArray = outputArray,
     params = refLayer.params,
     activationFunction = Tanh,
-    layerContextWindow = LSTMLayerContextWindow.Front(refLayer))
+    layersWindow = LSTMLayersWindow.Front(refLayer))
 }
 
 /**
@@ -131,7 +131,7 @@ private fun buildNextStateLayer(): LSTMLayer<DenseNDArray> {
     outputArray = outputArray,
     params = LSTMLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh,
-    layerContextWindow = LSTMLayerContextWindow.Empty())
+    layersWindow = LSTMLayersWindow.Empty)
 
   layer.inputGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))
   layer.outputGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5, 1.0)))

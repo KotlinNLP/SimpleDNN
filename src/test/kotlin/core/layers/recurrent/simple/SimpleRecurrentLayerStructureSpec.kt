@@ -9,7 +9,7 @@ package core.layers.recurrent.simple
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -31,7 +31,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
       context("without previous state context") {
 
-        val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Empty())
+        val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayersWindow.Empty)
         layer.forward()
 
         it("should match the expected output") {
@@ -43,7 +43,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
       context("with previous state context") {
 
-        val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Back())
+        val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayersWindow.Back)
         layer.forward()
 
         it("should match the expected output") {
@@ -58,10 +58,10 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
       context("without previous state context") {
 
-        val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Empty())
+        val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayersWindow.Empty)
         val contributions = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5)
 
-        layer.forward(layerContributions = contributions)
+        layer.forward(contributions)
 
         it("should match the expected output") {
           assertTrue(layer.outputArray.values.equals(
@@ -85,7 +85,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 5))
-        layer.setInputRelevance(layerContributions = contributions)
+        layer.setInputRelevance(contributions)
 
         it("should match the expected input relevance") {
           val relevance: DenseNDArray = layer.inputArray.relevance
@@ -98,21 +98,21 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
         it("should throw an Exception when calculating the recurrent relevance") {
           assertFailsWith <KotlinNullPointerException> {
-            layer.setRecurrentRelevance(layerContributions = contributions)
+            layer.setRecurrentRelevance(contributions)
           }
         }
       }
 
       context("with previous state context") {
 
-        val prevStateLayer = SimpleRecurrentLayerContextWindow.Back().getPrevState()
-        val contextWindow = mock<LayerContextWindow>()
+        val prevStateLayer = SimpleRecurrentLayersWindow.Back.getPrevState()
+        val contextWindow = mock<LayersWindow>()
         val layer = SimpleRecurrentLayerStructureUtils.buildLayer(contextWindow)
         val contributions = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5)
 
         whenever(contextWindow.getPrevState()).thenReturn(prevStateLayer)
 
-        layer.forward(layerContributions = contributions)
+        layer.forward(contributions)
 
         it("should match the expected output") {
           assertTrue(layer.outputArray.values.equals(
@@ -151,8 +151,8 @@ class SimpleRecurrentLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 5))
-        layer.setInputRelevance(layerContributions = contributions)
-        layer.setRecurrentRelevance(layerContributions = contributions)
+        layer.setInputRelevance(contributions)
+        layer.setRecurrentRelevance(contributions)
 
         it("should match the expected input relevance") {
           val relevance: DenseNDArray = layer.inputArray.relevance
@@ -178,7 +178,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
       context("without next and previous state") {
 
-        val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Empty())
+        val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayersWindow.Empty)
 
         layer.forward()
 
@@ -234,7 +234,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
       context("with prev state only") {
 
-        val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Back())
+        val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayersWindow.Back)
 
         layer.forward()
 
@@ -290,7 +290,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
       context("with next state only") {
 
-        val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Front())
+        val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayersWindow.Front)
 
         layer.forward()
 
@@ -346,7 +346,7 @@ class SimpleRecurrentLayerStructureSpec : Spek({
 
       context("with next and previous state") {
 
-        val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayerContextWindow.Bilateral())
+        val layer = SimpleRecurrentLayerStructureUtils.buildLayer(SimpleRecurrentLayersWindow.Bilateral)
 
         layer.forward()
 

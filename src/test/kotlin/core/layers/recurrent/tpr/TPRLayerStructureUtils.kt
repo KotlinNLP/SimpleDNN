@@ -9,7 +9,7 @@ package core.layers.recurrent.tpr
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -19,16 +19,16 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 /**
  *
  */
-object TPRLayerStructureUtils {
+internal object TPRLayerStructureUtils {
 
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow): TPRLayer<DenseNDArray> = TPRLayer(
+  fun buildLayer(layersWindow: LayersWindow): TPRLayer<DenseNDArray> = TPRLayer(
       inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, 0.9, 0.1))),
       inputType = LayerType.Input.Dense,
       params = buildParams(),
-      layerContextWindow = layerContextWindow,
+      layersWindow = layersWindow,
       q = 0.001)
 
   /**

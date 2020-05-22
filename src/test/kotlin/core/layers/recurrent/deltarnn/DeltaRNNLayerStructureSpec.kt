@@ -8,7 +8,7 @@
 package core.layers.recurrent.deltarnn
 
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayerParameters
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -32,7 +32,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
       context("without previous state context") {
 
-        val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Empty())
+        val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayersWindow.Empty)
         layer.forward()
 
         it("should match the expected candidate") {
@@ -62,7 +62,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
       context("with previous state context") {
 
-        val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Back())
+        val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayersWindow.Back)
         layer.forward()
 
         it("should match the expected candidate") {
@@ -95,14 +95,14 @@ class DeltaRNNLayerStructureSpec : Spek({
 
       context("without previous state context") {
 
-        val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Empty())
+        val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayersWindow.Empty)
         val contributions = DeltaRNNLayerParameters(
           inputSize = 4,
           outputSize = 5,
           weightsInitializer = null,
           biasesInitializer = null)
 
-        layer.forward(layerContributions = contributions)
+        layer.forward(contributions)
 
         it("should match the expected candidate") {
           assertTrue {
@@ -159,8 +159,8 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 5))
-        layer.propagateRelevanceToGates(layerContributions = contributions)
-        layer.setInputRelevance(layerContributions = contributions)
+        layer.propagateRelevanceToGates(contributions)
+        layer.setInputRelevance(contributions)
 
         it("should match the expected relevance of the partition array") {
           val relevance: DenseNDArray = layer.partition.relevance
@@ -200,21 +200,21 @@ class DeltaRNNLayerStructureSpec : Spek({
 
         it("should throw an Exception when calculating the recurrent relevance") {
           assertFailsWith <KotlinNullPointerException> {
-            layer.setRecurrentRelevance(layerContributions = contributions)
+            layer.setRecurrentRelevance(contributions)
           }
         }
       }
 
       context("with previous state context") {
 
-        val prevStateLayer = DeltaLayerContextWindow.Back().getPrevState()
-        val contextWindow = mock<LayerContextWindow>()
+        val prevStateLayer = DeltaLayersWindow.Back.getPrevState()
+        val contextWindow = mock<LayersWindow>()
         val layer = DeltaRNNLayerStructureUtils.buildLayer(contextWindow)
         val contributions = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5)
 
         whenever(contextWindow.getPrevState()).thenReturn(prevStateLayer)
 
-        layer.forward(layerContributions = contributions)
+        layer.forward(contributions)
 
         it("should match the expected candidate") {
           assertTrue {
@@ -271,9 +271,9 @@ class DeltaRNNLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 5))
-        layer.propagateRelevanceToGates(layerContributions = contributions)
-        layer.setInputRelevance(layerContributions = contributions)
-        layer.setRecurrentRelevance(layerContributions = contributions)
+        layer.propagateRelevanceToGates(contributions)
+        layer.setInputRelevance(contributions)
+        layer.setRecurrentRelevance(contributions)
 
         it("should match the expected relevance of the partition array") {
           val relevance: DenseNDArray = layer.partition.relevance
@@ -344,7 +344,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
       context("without previous and next state") {
 
-        val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Empty())
+        val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayersWindow.Empty)
 
         layer.forward()
 
@@ -446,7 +446,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
       context("with previous state only") {
 
-        val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Back())
+        val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayersWindow.Back)
 
         layer.forward()
 
@@ -559,7 +559,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
       context("with next state only") {
 
-        val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Front())
+        val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayersWindow.Front)
 
         layer.forward()
 
@@ -661,7 +661,7 @@ class DeltaRNNLayerStructureSpec : Spek({
 
       context("with previous and next state") {
 
-        val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayerContextWindow.Bilateral())
+        val layer = DeltaRNNLayerStructureUtils.buildLayer(DeltaLayersWindow.Bilateral)
 
         layer.forward()
 

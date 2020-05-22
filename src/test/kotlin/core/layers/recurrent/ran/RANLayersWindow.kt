@@ -10,7 +10,7 @@ package core.layers.recurrent.ran
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ran.RANLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -20,34 +20,34 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 /**
  *
  */
-sealed class RANLayerContextWindow: LayerContextWindow {
+internal sealed class RANLayersWindow: LayersWindow {
 
   /**
    *
    */
-  class Empty: RANLayerContextWindow() {
+  object Empty : RANLayersWindow() {
 
-    override fun getPrevState() = null
+    override fun getPrevState(): Nothing? = null
 
-    override fun getNextState() = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  class Back: RANLayerContextWindow() {
+  object Back : RANLayersWindow() {
 
     override fun getPrevState(): RANLayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextState() = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  class Front: RANLayerContextWindow() {
+  object Front : RANLayersWindow() {
 
-    override fun getPrevState() = null
+    override fun getPrevState(): Nothing? = null
 
     override fun getNextState(): RANLayer<DenseNDArray> = buildNextStateLayer()
   }
@@ -55,7 +55,7 @@ sealed class RANLayerContextWindow: LayerContextWindow {
   /**
    *
    */
-  class Bilateral: RANLayerContextWindow() {
+  object Bilateral : RANLayersWindow() {
 
     override fun getPrevState(): RANLayer<DenseNDArray> = buildPrevStateLayer()
 
@@ -78,7 +78,7 @@ private fun buildPrevStateLayer(): RANLayer<DenseNDArray> {
     outputArray = outputArray,
     params = RANLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh,
-    layerContextWindow = RANLayerContextWindow.Empty()
+    layersWindow = RANLayersWindow.Empty
   )
 }
 
@@ -96,7 +96,7 @@ private fun buildNextStateLayer(): RANLayer<DenseNDArray> {
     outputArray = outputArray,
     params = RANLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh,
-    layerContextWindow = RANLayerContextWindow.Empty())
+    layersWindow = RANLayersWindow.Empty)
 
   layer.inputGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0, 0.1)))
   layer.inputGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))

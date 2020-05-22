@@ -9,7 +9,7 @@ package core.layers.recurrent.ltm
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ltm.LTMLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ltm.LTMLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -18,34 +18,34 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 /**
  *
  */
-sealed class LTMLayerContextWindow: LayerContextWindow {
+internal sealed class LTMLayersWindow: LayersWindow {
 
   /**
    *
    */
-  class Empty: LTMLayerContextWindow() {
+  object Empty : LTMLayersWindow() {
 
-    override fun getPrevState() = null
+    override fun getPrevState(): Nothing? = null
 
-    override fun getNextState() = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  class Back: LTMLayerContextWindow() {
+  object Back : LTMLayersWindow() {
 
     override fun getPrevState(): LTMLayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextState() = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  class Front(private val refLayer: LTMLayer<DenseNDArray>? = null): LTMLayerContextWindow() {
+  class Front(private val refLayer: LTMLayer<DenseNDArray>? = null): LTMLayersWindow() {
 
-    override fun getPrevState() = null
+    override fun getPrevState(): Nothing? = null
 
     override fun getNextState(): LTMLayer<DenseNDArray> = this.refLayer ?: buildNextStateLayer()
   }
@@ -53,7 +53,7 @@ sealed class LTMLayerContextWindow: LayerContextWindow {
   /**
    *
    */
-  class Bilateral: LTMLayerContextWindow() {
+  object Bilateral : LTMLayersWindow() {
 
     override fun getPrevState(): LTMLayer<DenseNDArray> = buildPrevStateLayer()
 
@@ -74,7 +74,7 @@ private fun buildPrevStateLayer(): LTMLayer<DenseNDArray> {
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = LTMLayerParameters(inputSize = 4),
-    layerContextWindow = LTMLayerContextWindow.Empty())
+    layersWindow = LTMLayersWindow.Empty)
 
   layer.cell.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, -0.6, 1.0, 0.1)))
   layer.cell.activate()
@@ -95,7 +95,7 @@ private fun buildNextStateLayer(): LTMLayer<DenseNDArray> {
     inputType = LayerType.Input.Dense,
     outputArray = outputArray,
     params = LTMLayerParameters(inputSize = 4),
-    layerContextWindow = LTMLayerContextWindow.Empty())
+    layersWindow = LTMLayersWindow.Empty)
 
   layer.inputArray.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3)))
   layer.c.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5)))

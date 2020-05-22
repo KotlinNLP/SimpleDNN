@@ -10,7 +10,7 @@ package core.layers.recurrent.gru
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.gru.GRULayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.gru.GRULayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -20,34 +20,34 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 /**
  *
  */
-sealed class GRULayerContextWindow: LayerContextWindow {
+internal sealed class GRULayersWindow: LayersWindow {
 
   /**
    *
    */
-  class Empty: GRULayerContextWindow() {
+  object Empty : GRULayersWindow() {
 
-    override fun getPrevState() = null
+    override fun getPrevState(): Nothing? = null
 
-    override fun getNextState() = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  class Back: GRULayerContextWindow() {
+  object Back : GRULayersWindow() {
 
     override fun getPrevState(): GRULayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextState() = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  class Front: GRULayerContextWindow() {
+  object Front : GRULayersWindow() {
 
-    override fun getPrevState() = null
+    override fun getPrevState(): Nothing? = null
 
     override fun getNextState(): GRULayer<DenseNDArray> = buildNextStateLayer()
   }
@@ -55,7 +55,7 @@ sealed class GRULayerContextWindow: LayerContextWindow {
   /**
    *
    */
-  class Bilateral: GRULayerContextWindow() {
+  object Bilateral : GRULayersWindow() {
 
     override fun getPrevState(): GRULayer<DenseNDArray> = buildPrevStateLayer()
 
@@ -77,7 +77,7 @@ private fun buildPrevStateLayer(): GRULayer<DenseNDArray> {
     outputArray = outputArray,
     params = GRULayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh,
-    layerContextWindow = GRULayerContextWindow.Empty()
+    layersWindow = GRULayersWindow.Empty
   )
 }
 
@@ -95,7 +95,7 @@ private fun buildNextStateLayer(): GRULayer<DenseNDArray> {
     outputArray = outputArray,
     params = GRULayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh,
-    layerContextWindow = GRULayerContextWindow.Empty())
+    layersWindow = GRULayersWindow.Empty)
 
   layer.resetGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0, 0.1)))
   layer.resetGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))

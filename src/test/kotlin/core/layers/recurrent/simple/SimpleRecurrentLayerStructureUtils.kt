@@ -11,7 +11,7 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.simple.SimpleRecurrentLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -19,18 +19,18 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 /**
  *
  */
-object SimpleRecurrentLayerStructureUtils {
+internal object SimpleRecurrentLayerStructureUtils {
 
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow) = SimpleRecurrentLayer(
+  fun buildLayer(layersWindow: LayersWindow) = SimpleRecurrentLayer(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
     inputType = LayerType.Input.Dense,
     outputArray = RecurrentLayerUnit(5),
     params = buildParams(),
     activationFunction = Tanh,
-    layerContextWindow = layerContextWindow)
+    layersWindow = layersWindow)
 
   /**
    *

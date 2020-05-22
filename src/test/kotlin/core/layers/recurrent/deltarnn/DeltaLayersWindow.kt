@@ -11,44 +11,43 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.RecurrentLayerUnit
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.deltarnn.DeltaRNNLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import core.layers.recurrent.simple.SimpleRecurrentLayerContextWindow
 
 /**
  *
  */
-sealed class DeltaLayerContextWindow: LayerContextWindow {
+internal sealed class DeltaLayersWindow: LayersWindow {
 
   /**
    *
    */
-  class Empty: DeltaLayerContextWindow() {
+  object Empty : DeltaLayersWindow() {
 
-    override fun getPrevState() = null
+    override fun getPrevState(): Nothing? = null
 
-    override fun getNextState() = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  class Back: DeltaLayerContextWindow() {
+  object Back : DeltaLayersWindow() {
 
     override fun getPrevState(): DeltaRNNLayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextState() = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  class Front: DeltaLayerContextWindow() {
+  object Front : DeltaLayersWindow() {
 
-    override fun getPrevState() = null
+    override fun getPrevState(): Nothing? = null
 
     override fun getNextState(): DeltaRNNLayer<DenseNDArray> = buildNextStateLayer()
   }
@@ -56,7 +55,7 @@ sealed class DeltaLayerContextWindow: LayerContextWindow {
   /**
    *
    */
-  class Bilateral: DeltaLayerContextWindow() {
+  object Bilateral : DeltaLayersWindow() {
 
     override fun getPrevState(): DeltaRNNLayer<DenseNDArray> = buildPrevStateLayer()
 
@@ -80,7 +79,7 @@ private fun buildPrevStateLayer(): DeltaRNNLayer<DenseNDArray> {
     outputArray = outputArray,
     params = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh,
-    layerContextWindow = DeltaLayerContextWindow.Empty())
+    layersWindow = DeltaLayersWindow.Empty)
 }
 
 /**
@@ -97,7 +96,7 @@ private fun buildNextStateLayer(): DeltaRNNLayer<DenseNDArray> {
     outputArray = outputArray,
     params = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh,
-    layerContextWindow = SimpleRecurrentLayerContextWindow.Empty())
+    layersWindow = DeltaLayersWindow.Empty)
 
   layer.wx.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.7, -0.2, 0.8, -0.6)))
   layer.partition.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, -0.1, 0.6, -0.8, 0.5)))

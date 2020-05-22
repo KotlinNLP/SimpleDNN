@@ -9,7 +9,7 @@ package core.layers.recurrent.ltm
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ltm.LTMLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ltm.LTMLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -18,17 +18,17 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 /**
  *
  */
-object LTMLayerStructureUtils {
+internal object LTMLayerStructureUtils {
 
   /**
    *
    */
-  fun buildLayer(layerContextWindow: LayerContextWindow): LTMLayer<DenseNDArray> = LTMLayer(
+  fun buildLayer(layersWindow: LayersWindow): LTMLayer<DenseNDArray> = LTMLayer(
     inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
     inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray.zeros(4),
     params = buildParams(),
-    layerContextWindow = layerContextWindow)
+    layersWindow = layersWindow)
 
   /**
    *

@@ -26,7 +26,7 @@ class LTMLayerStructureSpec : Spek({
 
       context("without previous state context") {
 
-        val layer = LTMLayerStructureUtils.buildLayer(LTMLayerContextWindow.Empty())
+        val layer = LTMLayerStructureUtils.buildLayer(LTMLayersWindow.Empty)
         layer.forward()
 
         it("should match the expected input gate L1") {
@@ -72,7 +72,7 @@ class LTMLayerStructureSpec : Spek({
 
       context("with previous state context") {
 
-        val layer = LTMLayerStructureUtils.buildLayer(LTMLayerContextWindow.Back())
+        val layer = LTMLayerStructureUtils.buildLayer(LTMLayersWindow.Back)
         layer.forward()
 
         it("should match the expected input gate L1") {
@@ -121,7 +121,7 @@ class LTMLayerStructureSpec : Spek({
 
       context("without previous and next state") {
 
-        val layer = LTMLayerStructureUtils.buildLayer(LTMLayerContextWindow.Empty())
+        val layer = LTMLayerStructureUtils.buildLayer(LTMLayersWindow.Empty)
 
         layer.forward()
 
@@ -245,7 +245,7 @@ class LTMLayerStructureSpec : Spek({
 
       context("with previous state only") {
 
-        val layer = LTMLayerStructureUtils.buildLayer(LTMLayerContextWindow.Back())
+        val layer = LTMLayerStructureUtils.buildLayer(LTMLayersWindow.Back)
 
         layer.forward()
 
@@ -369,7 +369,7 @@ class LTMLayerStructureSpec : Spek({
 
       context("with next state only") {
 
-        val layer = LTMLayerStructureUtils.buildLayer(LTMLayerContextWindow.Front())
+        val layer = LTMLayerStructureUtils.buildLayer(LTMLayersWindow.Front())
 
         layer.forward()
 
@@ -493,7 +493,7 @@ class LTMLayerStructureSpec : Spek({
 
       context("with previous and next state") {
 
-        val layer = LTMLayerStructureUtils.buildLayer(LTMLayerContextWindow.Bilateral())
+        val layer = LTMLayerStructureUtils.buildLayer(LTMLayersWindow.Bilateral)
 
         layer.forward()
 

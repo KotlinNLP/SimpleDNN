@@ -10,7 +10,7 @@ package core.layers.recurrent.cfn
 import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.cfn.CFNLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -20,34 +20,34 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 /**
  *
  */
-sealed class CFNLayerContextWindow: LayerContextWindow {
+internal sealed class CFNLayersWindow: LayersWindow {
 
   /**
    *
    */
-  class Empty: CFNLayerContextWindow() {
+  object Empty : CFNLayersWindow() {
 
-    override fun getPrevState(): CFNLayer<DenseNDArray>? = null
+    override fun getPrevState(): Nothing? = null
 
-    override fun getNextState(): CFNLayer<DenseNDArray>? = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  class Back: CFNLayerContextWindow() {
+  object Back : CFNLayersWindow() {
 
     override fun getPrevState(): CFNLayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextState(): CFNLayer<DenseNDArray>? = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  class Front(val currentLayerOutput: DenseNDArray): CFNLayerContextWindow() {
+  class Front(val currentLayerOutput: DenseNDArray): CFNLayersWindow() {
 
-    override fun getPrevState(): CFNLayer<DenseNDArray>? = null
+    override fun getPrevState(): Nothing? = null
 
     override fun getNextState(): CFNLayer<DenseNDArray> = buildNextStateLayer(currentLayerOutput)
   }
@@ -55,7 +55,7 @@ sealed class CFNLayerContextWindow: LayerContextWindow {
   /**
    *
    */
-  class Bilateral(val currentLayerOutput: DenseNDArray): CFNLayerContextWindow() {
+  class Bilateral(val currentLayerOutput: DenseNDArray): CFNLayersWindow() {
 
     override fun getPrevState(): CFNLayer<DenseNDArray> = buildPrevStateLayer()
 
@@ -77,7 +77,7 @@ private fun buildPrevStateLayer(): CFNLayer<DenseNDArray> {
     outputArray = outputArray,
     params = CFNLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh,
-    layerContextWindow = CFNLayerContextWindow.Empty()
+    layersWindow = CFNLayersWindow.Empty
   )
 }
 
@@ -95,7 +95,7 @@ private fun buildNextStateLayer(currentLayerOutput: DenseNDArray): CFNLayer<Dens
     outputArray = outputArray,
     params = CFNLayerParameters(inputSize = 4, outputSize = 5),
     activationFunction = Tanh,
-    layerContextWindow = CFNLayerContextWindow.Empty())
+    layersWindow = CFNLayersWindow.Empty)
 
   layer.inputGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0, 0.1)))
   layer.inputGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))

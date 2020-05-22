@@ -9,7 +9,7 @@ package core.layers.recurrent.tpr
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayer
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.tpr.TPRLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -18,34 +18,34 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 /**
  *
  */
-sealed class TPRLayerContextWindow: LayerContextWindow {
+internal sealed class TPRLayersWindow: LayersWindow {
 
   /**
    *
    */
-  class Empty: TPRLayerContextWindow() {
+  object Empty : TPRLayersWindow() {
 
-    override fun getPrevState() = null
+    override fun getPrevState(): Nothing? = null
 
-    override fun getNextState() = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  class Back: TPRLayerContextWindow() {
+  object Back : TPRLayersWindow() {
 
     override fun getPrevState(): TPRLayer<DenseNDArray> = buildPrevStateLayer()
 
-    override fun getNextState() = null
+    override fun getNextState(): Nothing? = null
   }
 
   /**
    *
    */
-  class Front(private val refLayer: TPRLayer<DenseNDArray>? = null): TPRLayerContextWindow() {
+  class Front(private val refLayer: TPRLayer<DenseNDArray>? = null): TPRLayersWindow() {
 
-    override fun getPrevState() = null
+    override fun getPrevState(): Nothing? = null
 
     override fun getNextState(): TPRLayer<DenseNDArray> = this.refLayer ?: buildNextStateLayer()
   }
@@ -53,7 +53,7 @@ sealed class TPRLayerContextWindow: LayerContextWindow {
   /**
    *
    */
-  class Bilateral: TPRLayerContextWindow() {
+  object Bilateral : TPRLayersWindow() {
 
     override fun getPrevState(): TPRLayer<DenseNDArray> = buildPrevStateLayer()
 
@@ -70,7 +70,7 @@ private fun buildPrevStateLayer(): TPRLayer<DenseNDArray> {
       inputArray = AugmentedArray<DenseNDArray>(size = 4),
       inputType = LayerType.Input.Dense,
       params = TPRLayerParameters(inputSize = 4, dRoles = 3, dSymbols = 2, nRoles = 3, nSymbols = 4),
-      layerContextWindow = TPRLayerContextWindow.Empty(),
+      layersWindow = TPRLayersWindow.Empty,
       q = 0.001)
 
   layer.outputArray.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.211, -0.451, 0.499, -1.333, -0.11645, 0.366)))
@@ -87,7 +87,7 @@ private fun buildNextStateLayer(): TPRLayer<DenseNDArray> {
       inputArray = AugmentedArray<DenseNDArray>(size = 4),
       inputType = LayerType.Input.Dense,
       params = TPRLayerParameters(inputSize = 4, dRoles = 3, dSymbols = 2, nRoles = 3, nSymbols = 4),
-      layerContextWindow = TPRLayerContextWindow.Empty(),
+      layersWindow = TPRLayersWindow.Empty,
       q = 0.001)
 
   layer.outputArray.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.711, -0.099, 0.459, -1.235, -0.9845, 0.9292)))

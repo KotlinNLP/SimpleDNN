@@ -10,7 +10,7 @@ package core.layers.recurrent.ran
 import com.kotlinnlp.simplednn.core.arrays.DistributionArray
 import com.kotlinnlp.simplednn.core.layers.models.recurrent.ran.RANLayerParameters
 import com.kotlinnlp.simplednn.core.functionalities.losses.MSECalculator
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
+import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayersWindow
 import com.kotlinnlp.simplednn.core.optimizer.getErrorsOf
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -32,7 +32,7 @@ class RANLayerStructureSpec : Spek({
 
       context("without previous state context") {
 
-        val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Empty())
+        val layer = RANLayerStructureUtils.buildLayer(RANLayersWindow.Empty)
         layer.forward()
 
         it("should match the expected input gate") {
@@ -70,7 +70,7 @@ class RANLayerStructureSpec : Spek({
 
       context("with previous state context") {
 
-        val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Back())
+        val layer = RANLayerStructureUtils.buildLayer(RANLayersWindow.Back)
         layer.forward()
 
         it("should match the expected input gate") {
@@ -111,10 +111,10 @@ class RANLayerStructureSpec : Spek({
 
       context("without previous state context") {
 
-        val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Empty())
+        val layer = RANLayerStructureUtils.buildLayer(RANLayersWindow.Empty)
         val contributions = RANLayerParameters(inputSize = 4, outputSize = 5)
 
-        layer.forward(layerContributions = contributions)
+        layer.forward(contributions)
 
         it("should match the expected input gate") {
           assertTrue {
@@ -179,8 +179,8 @@ class RANLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 5))
-        layer.propagateRelevanceToGates(layerContributions = contributions)
-        layer.setInputRelevance(layerContributions = contributions)
+        layer.propagateRelevanceToGates(contributions)
+        layer.setInputRelevance(contributions)
 
         it("should match the expected input relevance") {
           val relevance: DenseNDArray = layer.inputArray.relevance
@@ -193,21 +193,21 @@ class RANLayerStructureSpec : Spek({
 
         it("should throw an Exception when calculating the recurrent relevance") {
           assertFailsWith <KotlinNullPointerException> {
-            layer.setRecurrentRelevance(layerContributions = contributions)
+            layer.setRecurrentRelevance(contributions)
           }
         }
       }
 
       context("with previous state context") {
 
-        val prevStateLayer = RANLayerContextWindow.Back().getPrevState()
-        val contextWindow = mock<LayerContextWindow>()
+        val prevStateLayer = RANLayersWindow.Back.getPrevState()
+        val contextWindow = mock<LayersWindow>()
         val layer = RANLayerStructureUtils.buildLayer(contextWindow)
         val contributions = RANLayerParameters(inputSize = 4, outputSize = 5)
 
         whenever(contextWindow.getPrevState()).thenReturn(prevStateLayer)
 
-        layer.forward(layerContributions = contributions)
+        layer.forward(contributions)
 
         it("should match the expected input gate") {
           assertTrue {
@@ -317,9 +317,9 @@ class RANLayerStructureSpec : Spek({
         }
 
         layer.setOutputRelevance(DistributionArray.uniform(length = 5))
-        layer.propagateRelevanceToGates(layerContributions = contributions)
-        layer.setInputRelevance(layerContributions = contributions)
-        layer.setRecurrentRelevance(layerContributions = contributions)
+        layer.propagateRelevanceToGates(contributions)
+        layer.setInputRelevance(contributions)
+        layer.setRecurrentRelevance(contributions)
 
         it("should match the expected relevance of the input gate") {
           val relevance: DenseNDArray = layer.inputGate.relevance
@@ -372,7 +372,7 @@ class RANLayerStructureSpec : Spek({
 
       context("without previous and next state") {
 
-        val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Empty())
+        val layer = RANLayerStructureUtils.buildLayer(RANLayersWindow.Empty)
 
         layer.forward()
 
@@ -522,7 +522,7 @@ class RANLayerStructureSpec : Spek({
 
       context("with previous state only") {
 
-        val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Back())
+        val layer = RANLayerStructureUtils.buildLayer(RANLayersWindow.Back)
 
         layer.forward()
 
@@ -672,7 +672,7 @@ class RANLayerStructureSpec : Spek({
 
       context("with next state only") {
 
-        val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Front())
+        val layer = RANLayerStructureUtils.buildLayer(RANLayersWindow.Front)
 
         layer.forward()
 
@@ -822,7 +822,7 @@ class RANLayerStructureSpec : Spek({
 
       context("with previous and next state") {
 
-        val layer = RANLayerStructureUtils.buildLayer(RANLayerContextWindow.Bilateral())
+        val layer = RANLayerStructureUtils.buildLayer(RANLayersWindow.Bilateral)
 
         layer.forward()
 

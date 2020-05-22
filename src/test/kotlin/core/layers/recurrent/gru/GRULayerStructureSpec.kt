@@ -27,7 +27,7 @@ class GRULayerStructureSpec : Spek({
 
       context("without previous state context") {
 
-        val layer = GRULayerStructureUtils.buildLayer(GRULayerContextWindow.Empty())
+        val layer = GRULayerStructureUtils.buildLayer(GRULayersWindow.Empty)
         layer.forward()
 
         it("should match the expected reset gate") {
@@ -65,7 +65,7 @@ class GRULayerStructureSpec : Spek({
 
       context("with previous state context") {
 
-        val layer = GRULayerStructureUtils.buildLayer(GRULayerContextWindow.Back())
+        val layer = GRULayerStructureUtils.buildLayer(GRULayersWindow.Back)
         layer.forward()
 
         it("should match the expected reset gate") {
@@ -106,7 +106,7 @@ class GRULayerStructureSpec : Spek({
 
       context("without previous and next state") {
 
-        val layer = GRULayerStructureUtils.buildLayer(GRULayerContextWindow.Empty())
+        val layer = GRULayerStructureUtils.buildLayer(GRULayersWindow.Empty)
 
         layer.forward()
 
@@ -261,7 +261,7 @@ class GRULayerStructureSpec : Spek({
 
       context("with previous state only") {
 
-        val layer = GRULayerStructureUtils.buildLayer(GRULayerContextWindow.Back())
+        val layer = GRULayerStructureUtils.buildLayer(GRULayersWindow.Back)
 
         layer.forward()
 
@@ -425,7 +425,7 @@ class GRULayerStructureSpec : Spek({
 
       context("with next state only") {
 
-        val layer = GRULayerStructureUtils.buildLayer(GRULayerContextWindow.Front())
+        val layer = GRULayerStructureUtils.buildLayer(GRULayersWindow.Front)
 
         layer.forward()
 
@@ -579,7 +579,7 @@ class GRULayerStructureSpec : Spek({
 
       context("with previous and next state") {
 
-        val layer = GRULayerStructureUtils.buildLayer(GRULayerContextWindow.Bilateral())
+        val layer = GRULayerStructureUtils.buildLayer(GRULayersWindow.Bilateral)
 
         layer.forward()
 
