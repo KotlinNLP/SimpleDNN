@@ -59,7 +59,7 @@ open class EmbeddingsProcessor<T>(
    * Check the dropout value.
    */
   init {
-    require(this.dropout >= 0.0) { "The dropout must be >= 0.0."}
+    require(this.dropout in 0.0 .. 1.0) { "The dropout probability must be in the range [0.0, 1.0]."}
   }
 
   /**
