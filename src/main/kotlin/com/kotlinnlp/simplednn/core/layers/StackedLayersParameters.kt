@@ -93,7 +93,7 @@ class StackedLayersParameters(
   /**
    * The [LayerParameters] of each layer.
    */
-  val paramsPerLayer = List(this.layersConfiguration.size - 1) { i ->
+  val paramsPerLayer: List<LayerParameters> = List(this.layersConfiguration.size - 1) { i ->
     LayerParametersFactory(
       inputsSize = this.layersConfiguration[i].sizes,
       outputSize = this.layersConfiguration[i + 1].size,

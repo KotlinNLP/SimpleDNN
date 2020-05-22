@@ -27,7 +27,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 
 /**
- * The NeuralProcessor that acts on stacked-layers networks with recurrent connections.
+ * The neural processor that acts on stacked-layers networks with recurrent connections.
  *
  * @property model the stacked-layers parameters
  * @property useDropout whether to apply the dropout during the [forward]

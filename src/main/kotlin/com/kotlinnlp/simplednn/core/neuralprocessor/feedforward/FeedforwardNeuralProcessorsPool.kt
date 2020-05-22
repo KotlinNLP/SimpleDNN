@@ -20,7 +20,7 @@ import com.kotlinnlp.utils.ItemsPool
  * @param model the stacked-layers parameters
  * @param useDropout whether to apply the dropout during the forward
  * @param propagateToInput whether to propagate the errors to the input during the backward
- * @property paramsErrorsCollector where to collect the local params errors during the [backward] (optional)
+ * @property paramsErrorsCollector where to collect the local params errors during the backward (optional)
  */
 class FeedforwardNeuralProcessorsPool<InputNDArrayType : NDArray<InputNDArrayType>>(
   private val model: StackedLayersParameters,

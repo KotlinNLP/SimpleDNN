@@ -9,7 +9,6 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.sub
 
 import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.merge.sum.SumLayerParameters
 
 /**
  * The parameters of the Distance layer.

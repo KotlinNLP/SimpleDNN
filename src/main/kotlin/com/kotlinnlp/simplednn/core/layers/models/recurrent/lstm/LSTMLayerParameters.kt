@@ -46,7 +46,7 @@ class LSTMLayerParameters(
   }
 
   /**
-   *
+   * The input gate parameters.
    */
   val inputGate = RecurrentLinearParams(
     inputSize = this.inputSize,
@@ -54,7 +54,7 @@ class LSTMLayerParameters(
     sparseInput = this.sparseInput)
 
   /**
-   *
+   * The output gate parameters.
    */
   val outputGate = RecurrentLinearParams(
     inputSize = this.inputSize,
@@ -62,7 +62,7 @@ class LSTMLayerParameters(
     sparseInput = this.sparseInput)
 
   /**
-   *
+   * The forget gate parameters.
    */
   val forgetGate = RecurrentLinearParams(
     inputSize = this.inputSize,
@@ -70,7 +70,7 @@ class LSTMLayerParameters(
     sparseInput = this.sparseInput)
 
   /**
-   *
+   * The candidate parameters.
    */
   val candidate = RecurrentLinearParams(
     inputSize = this.inputSize,

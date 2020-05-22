@@ -17,7 +17,8 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
- * The StackedLayers.
+ * A structure of stacked layers, in which the output array of a layer references the input array of the following.
+ * This permits to optimize the forward and backward operations without duplicating values.
  *
  * @property params the layers parameters
  */

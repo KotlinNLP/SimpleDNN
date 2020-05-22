@@ -13,7 +13,9 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * The RecurrentStackedLayers.
+ * A structure of stacked layers used in recurrent networks, in which the output array of a layer references the input
+ * array of the following.
+ * This permits to optimize the forward and backward operations without duplicating values.
  *
  * @property params the parameters
  * @property statesWindow the context window to get the previous and the next state of the structure

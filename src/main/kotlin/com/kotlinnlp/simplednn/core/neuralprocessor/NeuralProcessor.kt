@@ -12,7 +12,7 @@ import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.utils.ItemsPool
 
 /**
- * The NeuralProcessor interface.
+ * A generic neural processor.
  */
 interface NeuralProcessor<
   in InputType : Any,
@@ -83,9 +83,7 @@ interface NeuralProcessor<
    *
    * @return the input errors
    */
-  fun propagateErrors(errors: ErrorsType,
-                      optimizer: ParamsOptimizer,
-                      copy: Boolean = false): InputErrorsType {
+  fun propagateErrors(errors: ErrorsType, optimizer: ParamsOptimizer, copy: Boolean = false): InputErrorsType {
 
     this.backward(errors)
 
