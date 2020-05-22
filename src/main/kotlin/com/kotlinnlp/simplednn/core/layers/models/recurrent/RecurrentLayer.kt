@@ -48,14 +48,14 @@ abstract class RecurrentLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   abstract override val relevanceHelper: RecurrentRelevanceHelper?
 
   /**
-   * Calculate the relevance of the output in the previous state respect of the current one and assign it to the output
+   * Calculate the relevance of the output in the previous state respect to the current one and assign it to the output
    * array of the previous state.
    *
-   * @param layerContributions the contributions saved during the last forward
+   * @param contributions the contributions saved during the last forward
    */
-  fun setRecurrentRelevance(layerContributions: LayerParameters) {
-    this.relevanceHelper?.setRecurrentRelevance(layerContributions = layerContributions) ?:
-      throw RuntimeException("Relevance propagation not available.")
+  fun setRecurrentRelevance(contributions: LayerParameters) {
+    this.relevanceHelper?.setRecurrentRelevance(contributions) ?:
+    throw RuntimeException("Relevance propagation not available.")
   }
 
   /**

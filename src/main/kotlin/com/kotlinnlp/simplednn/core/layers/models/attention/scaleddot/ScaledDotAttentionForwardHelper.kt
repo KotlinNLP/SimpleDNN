@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers.models.attention.scaleddot
 
 import com.kotlinnlp.simplednn.core.functionalities.activations.SoftmaxBase
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -43,15 +42,6 @@ internal class ScaledDotAttentionForwardHelper(
         y.assignValues(vT.dotRightMasked(a, mask = it[i]))
       } ?: y.assignValues(vT.dot(a))
     }
-  }
-
-  /**
-   * Forward the input to the output combining it with the parameters, saving the contributions.
-   *
-   * @param layerContributions the structure in which to save the contributions during the calculations
-   */
-  override fun forward(layerContributions: LayerParameters) {
-    throw NotImplementedError("Forward with contributions not available for the Scaled-Dot Attention layer.")
   }
 
   /**

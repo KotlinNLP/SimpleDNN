@@ -146,35 +146,37 @@ abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward the input to the output combining it with the parameters, calculating its relevance respect of the output.
    * If [useDropout] is true apply the dropout to the input before.
    *
-   * @param layerContributions the [LayerParameters] in which to save the contributions during calculations
+   * @param contributions the support in which to save the contributions of the input respect to the output
    * @param useDropout whether to apply the dropout
    */
-  fun forward(layerContributions: LayerParameters, useDropout: Boolean = false) {
+  fun forward(contributions: LayerParameters, useDropout: Boolean = false) {
 
     this.dropoutApplied = useDropout && this.applyDropout()
 
-    this.forwardHelper.forward(layerContributions = layerContributions)
+    this.forwardHelper.forward(contributions)
   }
 
   /**
-   * Calculate the relevance of the input respect of the output and assign it to the input array.
+   * Calculate the relevance of the input respect to the output and assign it to the input array.
    *
-   * @param layerContributions the contributions saved during the last forward
+   * @param contributions the contributions saved during the last forward
    */
-  fun setInputRelevance(layerContributions: LayerParameters) {
-    this.relevanceHelper?.setInputRelevance(layerContributions = layerContributions) ?:
-    throw RuntimeException("Relevance propagation not available.")
+  fun setInputRelevance(contributions: LayerParameters) {
+    this.relevanceHelper
+      ?.setInputRelevance(contributions = contributions)
+      ?: throw RuntimeException("Relevance propagation not available.")
   }
 
   /**
-   * Calculate the relevance of the input respect of the output and add it to the relevance of the input array
+   * Calculate the relevance of the input respect to the output and add it to the relevance of the input array
    * previously set.
    *
-   * @param layerContributions the contributions saved during the last forward
+   * @param contributions the contributions saved during the last forward
    */
-  fun addInputRelevance(layerContributions: LayerParameters) {
-    this.relevanceHelper?.addInputRelevance(layerContributions = layerContributions) ?:
-    throw RuntimeException("Relevance propagation not available.")
+  fun addInputRelevance(contributions: LayerParameters) {
+    this.relevanceHelper
+      ?.addInputRelevance(contributions = contributions)
+      ?: throw RuntimeException("Relevance propagation not available.")
   }
 
   /**

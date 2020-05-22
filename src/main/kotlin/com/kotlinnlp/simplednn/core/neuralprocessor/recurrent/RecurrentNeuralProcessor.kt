@@ -610,8 +610,8 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     require(propagateToInput || propagateToPrevState)
 
-    val contributions: LayerParameters
-      = this.sequence.getStateContributions(this.curStateIndex).paramsPerLayer[layerIndex]
+    val contributions: LayerParameters =
+      this.sequence.getStateContributions(this.curStateIndex).paramsPerLayer[layerIndex]
 
     if (layer is GatedRecurrentLayer) {
       layer.propagateRelevanceToGates(layerContributions = contributions)
@@ -620,13 +620,13 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     if (propagateToInput) {
 
       if (replaceInputRelevance)
-        layer.setInputRelevance(layerContributions = contributions)
+        layer.setInputRelevance(contributions = contributions)
       else
-        layer.addInputRelevance(layerContributions = contributions)
+        layer.addInputRelevance(contributions = contributions)
     }
 
     if (propagateToPrevState) {
-      (layer as RecurrentLayer).setRecurrentRelevance(layerContributions = contributions)
+      (layer as RecurrentLayer).setRecurrentRelevance(contributions = contributions)
     }
   }
 

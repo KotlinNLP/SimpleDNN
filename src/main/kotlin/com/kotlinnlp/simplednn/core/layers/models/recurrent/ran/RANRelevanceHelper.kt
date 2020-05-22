@@ -40,33 +40,31 @@ internal class RANRelevanceHelper(override val layer: RANLayer<DenseNDArray>) : 
   }
 
   /**
-   * @param layerContributions the contributions saved during the last forward
+   * @param contributions the contributions saved during the last forward
    *
-   * @return the relevance of the input in respect of the output
+   * @return the relevance of the input respect to the output
    */
-  override fun getInputRelevance(layerContributions: LayerParameters): DenseNDArray {
-    layerContributions as RANLayerParameters
+  override fun getInputRelevance(contributions: LayerParameters): DenseNDArray {
+
+    contributions as RANLayerParameters
 
     val x = this.layer.inputArray.values
-    val prevStateExists: Boolean = this.layer.layerContextWindow.getPrevState() != null
+    val prevStateExists: Boolean = this.layer.layersWindow.getPrevState() != null
 
     val inputGateRelevance: DenseNDArray = this.layer.inputGate.getInputRelevance(
       x = x,
-      contributions = layerContributions.inputGate,
+      contributions = contributions.inputGate,
       prevStateExists = prevStateExists)
 
-    val candidateRelevance: DenseNDArray = this.layer.candidate.getInputRelevance(
-      x = x,
-      cw = layerContributions.candidate.weights.values)
+    val candidateRelevance: DenseNDArray =
+      this.layer.candidate.getInputRelevance(x = x, cw = contributions.candidate.weights.values)
 
     val inputRelevance: DenseNDArray = inputGateRelevance.assignSum(candidateRelevance)
 
     if (prevStateExists) {
 
-      val forgetGateRelevance: DenseNDArray = this.layer.forgetGate.getInputRelevance(
-        x = x,
-        contributions = layerContributions.forgetGate,
-        prevStateExists = true)
+      val forgetGateRelevance: DenseNDArray =
+        this.layer.forgetGate.getInputRelevance(x = x, contributions = contributions.forgetGate, prevStateExists = true)
 
       inputRelevance.assignSum(forgetGateRelevance)
     }
@@ -75,25 +73,27 @@ internal class RANRelevanceHelper(override val layer: RANLayer<DenseNDArray>) : 
   }
 
   /**
-   * Calculate the relevance of the output in the previous state respect of the current one and assign it to the output
+   * Calculate the relevance of the output in the previous state respect to the current one and assign it to the output
    * array of the previous state.
-   * WARNING: it's needed that a previous state exists.
    *
-   * @param layerContributions the contributions saved during the last forward
+   * WARNING: the previous state must exist!
+   *
+   * @param contributions the contributions saved during the last forward
    */
-  override fun setRecurrentRelevance(layerContributions: LayerParameters) {
-    layerContributions as RANLayerParameters
+  override fun setRecurrentRelevance(contributions: LayerParameters) {
+
+    contributions as RANLayerParameters
 
     val prevStateOutput = this.layer.layerContextWindow.getPrevState()!!.outputArray
-    val (_, recurrentRelevance) = this.getRelevancePartitions(layerContributions)
+    val (_, recurrentRelevance) = this.getRelevancePartitions(contributions)
     val halfRecurrentRelevance: DenseNDArray = recurrentRelevance!!.assignDiv(2.0)
 
     val inputGateRelevance: NDArray<*> = this.layer.inputGate.getRecurrentRelevance(
-      contributions = layerContributions.inputGate,
+      contributions = contributions.inputGate,
       yPrev = prevStateOutput.values)
 
     val forgetGateRelevance: NDArray<*> = this.layer.forgetGate.getRecurrentRelevance(
-      contributions = layerContributions.forgetGate,
+      contributions = contributions.forgetGate,
       yPrev = prevStateOutput.values)
 
     prevStateOutput.assignRelevance(halfRecurrentRelevance)

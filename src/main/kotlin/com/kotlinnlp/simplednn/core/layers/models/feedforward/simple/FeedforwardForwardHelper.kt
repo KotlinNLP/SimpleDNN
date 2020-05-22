@@ -41,23 +41,20 @@ internal class FeedforwardForwardHelper<InputNDArrayType : NDArray<InputNDArrayT
    *
    * y = f(w (dot) x + b)
    *
-   * @param layerContributions the structure in which to save the contributions during the calculations
+   * @param contributions the support in which to save the contributions of the input respect to the output
    */
-  override fun forward(layerContributions: LayerParameters) {
-
-    layerContributions as FeedforwardLayerParameters
+  override fun forward(contributions: LayerParameters) {
 
     require(this.layer.inputArray.values is DenseNDArray) {
       "Forwarding with contributions requires the input to be dense."
     }
 
     this.forwardArray(
-      contributions = layerContributions.unit.weights.values,
+      contributions = (contributions as FeedforwardLayerParameters).unit.weights.values,
       x = this.layer.inputArray.values as DenseNDArray,
       y = this.layer.outputArray.values,
       w = this.layer.params.unit.weights.values,
-      b = this.layer.params.unit.biases.values
-    )
+      b = this.layer.params.unit.biases.values)
 
     this.layer.outputArray.activate()
   }

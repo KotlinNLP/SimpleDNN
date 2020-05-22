@@ -31,9 +31,9 @@ internal abstract class ForwardHelper<InputNDArrayType : NDArray<InputNDArrayTyp
    *
    * Override this function for layers that support the relevance calculation.
    *
-   * @param layerContributions the structure in which to save the contributions during the calculations
+   * @param contributions the support in which to save the contributions of the input respect to the output
    */
-  open fun forward(layerContributions: LayerParameters) {
+  open fun forward(contributions: LayerParameters) {
     throw NotImplementedError("Forward with contributions not available for this layer.")
   }
 

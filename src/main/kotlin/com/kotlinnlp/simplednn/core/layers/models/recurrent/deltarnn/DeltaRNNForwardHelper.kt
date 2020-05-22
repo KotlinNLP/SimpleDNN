@@ -55,15 +55,15 @@ internal class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType
   /**
    * Forward the input to the output combining it with the parameters, saving the contributions.
    *
-   * @param layerContributions the structure in which to save the contributions during the calculations
+   * @param contributions the support in which to save the contributions of the input respect to the output
    */
-  override fun forward(layerContributions: LayerParameters) {
+  override fun forward(contributions: LayerParameters) {
 
     assert (this.layer.inputArray.values is DenseNDArray) {
       "Forwarding with contributions requires the input to be dense."
     }
 
-    layerContributions as DeltaRNNLayerParameters
+    contributions as DeltaRNNLayerParameters
 
     val wx: DenseNDArray = this.layer.wx.values
     var wyRec: DenseNDArray? = null
@@ -72,7 +72,7 @@ internal class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType
 
     // w (dot) x
     this.forwardArray(
-      contributions = layerContributions.feedforwardUnit.weights.values,
+      contributions = contributions.feedforwardUnit.weights.values,
       x = this.layer.inputArray.values as DenseNDArray,
       y = wx,
       w = this.layer.params.feedforwardUnit.weights.values)
@@ -81,7 +81,7 @@ internal class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType
     if (yPrev != null) {
       wyRec = this.layer.wyRec.values
       this.forwardArray(
-        contributions = layerContributions.recurrentUnit.weights.values,
+        contributions = contributions.recurrentUnit.weights.values,
         x =  yPrev,
         y = wyRec,
         w = this.layer.params.recurrentUnit.weights.values)
@@ -94,7 +94,7 @@ internal class DeltaRNNForwardHelper<InputNDArrayType : NDArray<InputNDArrayType
     y.assignProd(p, c)
 
     if (yPrev != null) {
-      val yRec: DenseNDArray = layerContributions.recurrentUnit.biases.values
+      val yRec: DenseNDArray = contributions.recurrentUnit.biases.values
 
       yRec.assignValues(p.reverseSub(1.0).assignProd(yPrev))
       y.assignSum(yRec)

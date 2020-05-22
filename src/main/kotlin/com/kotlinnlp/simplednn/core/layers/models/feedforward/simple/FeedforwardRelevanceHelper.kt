@@ -20,15 +20,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 internal class FeedforwardRelevanceHelper(override val layer: FeedforwardLayer<DenseNDArray>) : RelevanceHelper(layer) {
 
   /**
-   * @param layerContributions the contributions saved during the last forward
+   * @param contributions the contributions saved during the last forward
    *
-   * @return the relevance of the input respect of the output
+   * @return the relevance of the input respect to the output
    */
-  override fun getInputRelevance(layerContributions: LayerParameters): DenseNDArray {
-    layerContributions as FeedforwardLayerParameters
-
-    return this.layer.outputArray.getInputRelevance(
+  override fun getInputRelevance(contributions: LayerParameters): DenseNDArray =
+    this.layer.outputArray.getInputRelevance(
       x = this.layer.inputArray.values,
-      cw = layerContributions.unit.weights.values)
-  }
+      cw = (contributions as FeedforwardLayerParameters).unit.weights.values)
 }

@@ -47,8 +47,8 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * The structure in which to save the contributions of the calculations during the forward (needed to calculate the
-   * relevance of the input in respect of the output)
+   * The structure in which to save the contributions of the parameters to the calculations of a forward (used to
+   * calculate the relevance of the input respect to the output).
    */
   private val forwardContributions: StackedLayersParameters by lazy {
     StackedLayersParameters(
@@ -212,7 +212,7 @@ class FeedforwardNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun calculateInputRelevance(relevantOutcomesDistribution: DistributionArray, copy: Boolean = true): NDArray<*> {
 
     this.structure.propagateRelevance(
-      stackedLayersContributions = this.forwardContributions,
+      layersContributions = this.forwardContributions,
       relevantOutcomesDistribution = relevantOutcomesDistribution)
 
     return this.structure.inputLayer.inputArray.relevance.let { if (copy) it.copy() else it }

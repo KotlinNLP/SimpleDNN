@@ -49,17 +49,15 @@ internal class DeltaRNNRelevanceHelper(
   }
 
   /**
-   * @param layerContributions the contributions saved during the last forward
+   * @param contributions the contributions saved during the last forward
    *
-   * @return the relevance of the input respect of the output
+   * @return the relevance of the input respect to the output
    */
-  override fun getInputRelevance(layerContributions: LayerParameters): DenseNDArray {
-
-    layerContributions as DeltaRNNLayerParameters
+  override fun getInputRelevance(contributions: LayerParameters): DenseNDArray {
 
     val x = this.layer.inputArray.values
 
-    val wxContrib: DenseNDArray = layerContributions.feedforwardUnit.weights.values
+    val wxContrib: DenseNDArray = (contributions as DeltaRNNLayerParameters).feedforwardUnit.weights.values
 
     val relevanceSupport: DeltaRNNRelevanceSupport = this.layer.relevanceSupport
     val previousStateExists: Boolean = this.layer.layerContextWindow.getPrevState() != null
@@ -104,20 +102,21 @@ internal class DeltaRNNRelevanceHelper(
   }
 
   /**
-   * Calculate the relevance of the output in the previous state in respect of the current one and assign it to the
-   * output array of the previous state.
-   * WARNING: a previous state must exist.
+   * Calculate the relevance of the output in the previous state respect to the current one and assign it to the output
+   * array of the previous state.
    *
-   * @param layerContributions the contributions saved during the last forward
+   * WARNING: the previous state must exist!
+   *
+   * @param contributions the contributions saved during the last forward
    */
-  override fun setRecurrentRelevance(layerContributions: LayerParameters) {
+  override fun setRecurrentRelevance(contributions: LayerParameters) {
 
-    layerContributions as DeltaRNNLayerParameters
+    contributions as DeltaRNNLayerParameters
 
     val prevStateOutput: AugmentedArray<DenseNDArray> = this.layer.layerContextWindow.getPrevState()!!.outputArray
     val yPrev: DenseNDArray = prevStateOutput.values
 
-    val wyRecContrib: DenseNDArray = layerContributions.recurrentUnit.weights.values
+    val wyRecContrib: DenseNDArray = contributions.recurrentUnit.weights.values
 
     val halfBc: DenseNDArray = this.layer.params.feedforwardUnit.biases.values.div(2.0)
     val beta2: DenseNDArray = this.layer.params.beta2.values
@@ -140,7 +139,7 @@ internal class DeltaRNNRelevanceHelper(
       contributions = wyRecContrib // wyRec (dot) yPrev
     )
 
-    prevStateOutput.assignRelevance(this.getRecurrentPartition(layerContributions).div(2.0))
+    prevStateOutput.assignRelevance(this.getRecurrentPartition(contributions).div(2.0))
     prevStateOutput.relevance.assignSum(d1RecRelevance).assignSum(d2RecRelevance)
   }
 

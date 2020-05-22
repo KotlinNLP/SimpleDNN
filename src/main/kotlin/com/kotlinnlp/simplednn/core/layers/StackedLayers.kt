@@ -72,21 +72,20 @@ open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward features, saving the contributions.
    *
    * @param input the input to forward from the input to the output
-   * @param stackedLayersContributions the [StackedLayersParameters] in which to save the contributions of the input of each layer
-   *                             in respect of the related output
+   * @param contributions the support in which to save the contributions of the input respect to the related output
    * @param useDropout whether to apply the dropout
    *
    * @return the output [NDArray]
    */
   fun forward(input: InputNDArrayType,
-              stackedLayersContributions: StackedLayersParameters,
+              contributions: StackedLayersParameters,
               useDropout: Boolean = false): DenseNDArray {
 
     this.inputLayer.setInput(input)
 
     for ((i, layer) in this.layers.withIndex()) {
       this.curLayerIndex = i
-      layer.forward(layerContributions = stackedLayersContributions.paramsPerLayer[i], useDropout = useDropout)
+      layer.forward(contributions = contributions.paramsPerLayer[i], useDropout = useDropout)
     }
 
     return this.outputLayer.outputArray.values
@@ -122,14 +121,13 @@ open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Forward a list of features if the first layer is a Merge layer, saving the contributions.
    *
    * @param input the input to forward from the input to the output
-   * @param stackedLayersContributions the [StackedLayersParameters] in which to save the contributions of the input of each layer
-   *                             in respect of the related output
+   * @param contributions the support in which to save the contributions of the input respect to the related output
    * @param useDropout whether to apply the dropout
    *
    * @return the output [NDArray]
    */
   fun forward(input: List<InputNDArrayType>,
-              stackedLayersContributions: StackedLayersParameters,
+              contributions: StackedLayersParameters,
               useDropout: Boolean = false): DenseNDArray {
 
     require(this.inputLayer is MergeLayer<InputNDArrayType>) {
@@ -142,7 +140,7 @@ open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     for ((i, layer) in this.layers.withIndex()) {
       this.curLayerIndex = i
-      layer.forward(layerContributions = stackedLayersContributions.paramsPerLayer[i], useDropout = useDropout)
+      layer.forward(contributions = contributions.paramsPerLayer[i], useDropout = useDropout)
     }
 
     return this.outputLayer.outputArray.values
@@ -178,11 +176,12 @@ open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Propagate the relevance from the output to the input of each layer, starting from the given distribution on
    * the outcomes.
    *
-   * @param stackedLayersContributions the [StackedLayersParameters] in which to save the contributions during calculations
+   * @param layersContributions the contributions of the input respect to the related output
    * @param relevantOutcomesDistribution the distribution which indicates which outcomes are relevant, used
    *                                     as reference to calculate the relevance of the input
    */
-  fun propagateRelevance(stackedLayersContributions: StackedLayersParameters, relevantOutcomesDistribution: DistributionArray) {
+  fun propagateRelevance(layersContributions: StackedLayersParameters,
+                         relevantOutcomesDistribution: DistributionArray) {
 
     require(this.layers.all { it is FeedforwardLayer } ) {
       "The relevance propagation requires that all the layers must be feed-forward."
@@ -192,7 +191,7 @@ open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     for ((i, layer) in this.layers.withIndex().reversed()) { layer as FeedforwardLayer
       this.curLayerIndex = i
-      layer.setInputRelevance(layerContributions = stackedLayersContributions.paramsPerLayer[i])
+      layer.setInputRelevance(contributions = layersContributions.paramsPerLayer[i])
     }
   }
 

@@ -22,32 +22,29 @@ internal class SimpleRecurrentRelevanceHelper(
 ) : RecurrentRelevanceHelper(layer) {
 
   /**
-   * @param layerContributions the contributions saved during the last forward
+   * @param contributions the contributions saved during the last forward
    *
-   * @return the relevance of the input respect of the output
+   * @return the relevance of the input respect to the output
    */
-  override fun getInputRelevance(layerContributions: LayerParameters): DenseNDArray {
-    layerContributions as SimpleRecurrentLayerParameters
-
-    return this.layer.outputArray.getInputRelevance(
+  override fun getInputRelevance(contributions: LayerParameters): DenseNDArray =
+    this.layer.outputArray.getInputRelevance(
       x = this.layer.inputArray.values,
-      contributions = layerContributions.unit,
-      prevStateExists = this.layer.layerContextWindow.getPrevState() != null)
-  }
+      contributions = (contributions as SimpleRecurrentLayerParameters).unit,
+      prevStateExists = this.layer.layersWindow.getPrevState() != null)
 
   /**
-   * Calculate the relevance of the output in the previous state in respect of the current one and assign it to the
-   * output array of the previous state.
-   * WARNING: it's needed that a previous state exists.
+   * Calculate the relevance of the output in the previous state respect to the current one and assign it to the output
+   * array of the previous state.
    *
-   * @param layerContributions the contributions saved during the last forward
+   * WARNING: the previous state must exist!
+   *
+   * @param contributions the contributions saved during the last forward
    */
-  override fun setRecurrentRelevance(layerContributions: LayerParameters) {
-    layerContributions as SimpleRecurrentLayerParameters
+  override fun setRecurrentRelevance(contributions: LayerParameters) {
 
     val prevStateLayer: Layer<*> = this.layer.layerContextWindow.getPrevState()!!
     val recurrentRelevance: DenseNDArray = this.layer.outputArray.getRecurrentRelevance(
-      contributions = layerContributions.unit,
+      contributions = (contributions as SimpleRecurrentLayerParameters).unit,
       yPrev = prevStateLayer.outputArray.values)
 
     prevStateLayer.outputArray.assignRelevance(recurrentRelevance)

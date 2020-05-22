@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.core.layers.models.attention.attentionmechanism
 
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -32,14 +31,5 @@ internal class AttentionMechanismForwardHelper(
 
     this.layer.outputArray.assignValues(this.layer.attentionMatrix.values.dot(this.layer.params.contextVector.values))
     this.layer.outputArray.activate()
-  }
-
-  /**
-   * Forward the input to the output combining it with the parameters, saving the contributions.
-   *
-   * @param layerContributions the structure in which to save the contributions during the calculations
-   */
-  override fun forward(layerContributions: LayerParameters) {
-    throw NotImplementedError("Forward with contributions not available for the Attention layer.")
   }
 }

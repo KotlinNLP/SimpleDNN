@@ -51,15 +51,15 @@ internal class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDAr
    *
    * y = f(w (dot) x + b + wRec (dot) yPrev)
    *
-   * @param layerContributions the structure in which to save the contributions during the calculations
+   * @param contributions the support in which to save the contributions of the input respect to the output
    */
-  override fun forward(layerContributions: LayerParameters) {
+  override fun forward(contributions: LayerParameters) {
 
     assert (this.layer.inputArray.values is DenseNDArray) {
       "Forwarding with contributions requires the input to be dense."
     }
 
-    layerContributions as SimpleRecurrentLayerParameters
+    contributions as SimpleRecurrentLayerParameters
 
     val prevStateLayer: Layer<*>? = this.layer.layerContextWindow.getPrevState()
     val b: DenseNDArray = this.layer.params.unit.biases.values
@@ -68,7 +68,7 @@ internal class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDAr
 
     // y = w (dot) x + b ( -> b / 2)
     this.forwardArray(
-      contributions = layerContributions.unit.weights.values,
+      contributions = contributions.unit.weights.values,
       x = this.layer.inputArray.values as DenseNDArray,
       y = this.layer.outputArray.values,
       w = this.layer.params.unit.weights.values,
@@ -79,11 +79,11 @@ internal class SimpleRecurrentForwardHelper<InputNDArrayType : NDArray<InputNDAr
     if (prevStateLayer != null) {
       this.addRecurrentContribution(
         yPrev = prevStateLayer.outputArray.values,
-        yRec = layerContributions.unit.biases.values, // a tricky way to save the recurrent contribution
+        yRec = contributions.unit.biases.values, // a tricky way to save the recurrent contribution
         y = this.layer.outputArray.values,            //     (b.size == y.size)
         wRec = this.layer.params.unit.recurrentWeights.values,
         b = bContrib,
-        contributions = layerContributions.unit.recurrentWeights.values
+        contributions = contributions.unit.recurrentWeights.values
       )
     }
 
