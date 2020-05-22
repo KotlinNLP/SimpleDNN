@@ -12,7 +12,6 @@ import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.layers.helpers.ParamsErrorsCollector
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
-import com.kotlinnlp.simplednn.core.layers.models.recurrent.LayerContextWindow
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
@@ -24,7 +23,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  */
 open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
   val params: StackedLayersParameters
-) : LayerContextWindow {
+) {
 
   /**
    * The list of layers generate from the layers configuration contained inside the [params].
@@ -196,16 +195,6 @@ open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * @return the current layer in previous state
-   */
-  override fun getPrevState(): Layer<*>? = null
-
-  /**
-   * @return the current layer in next state
-   */
-  override fun getNextState(): Layer<*>? = null
-
-  /**
    * Set the given params errors collector [c] to all [layers].
    *
    * @param c a collector of params errors
@@ -240,18 +229,14 @@ open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
           LayerFactory(
             inputConfiguration = config[0],
             outputConfiguration = config[1],
-            params = this.params.paramsPerLayer[0],
-            contextWindow = this
-          )
+            params = this.params.paramsPerLayer[0])
         else
           LayerFactory(
             inputArrays = listOf(prevLayer!!.outputArray),
             inputType = LayerType.Input.Dense,
             outputConfiguration = config[i + 1],
             params = this.params.paramsPerLayer[i],
-            dropout = config[i].dropout,
-            contextWindow = this
-          )
+            dropout = config[i].dropout)
 
         prevLayer = layer
 
