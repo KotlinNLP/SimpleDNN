@@ -176,15 +176,14 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   fun getInputErrors(elementIndex: Int, copy: Boolean = true): DenseNDArray {
 
     require(elementIndex in 0 .. this.lastStateIndex) {
-      "element index (%d) must be within the length of the sequence in the range [0, %d]"
-        .format(elementIndex, this.lastStateIndex)
+      "The element index ($elementIndex) must be in the range of the sequence [0, $lastStateIndex]"
     }
 
-    val structure: RecurrentStackedLayers<InputNDArrayType> = this.sequence.getStateStructure(elementIndex)
+    val layers: RecurrentStackedLayers<InputNDArrayType> = this.sequence.getStateStructure(elementIndex)
 
-    require(structure.inputLayer !is MergeLayer<InputNDArrayType>)
+    require(layers.inputLayer !is MergeLayer<InputNDArrayType>)
 
-    return structure.inputLayer.inputArray.let { if (copy) it.errors.copy() else it.errors }
+    return layers.inputLayer.inputArray.let { if (copy) it.errors.copy() else it.errors }
   }
 
   /**
@@ -203,11 +202,11 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
         .format(elementIndex, this.lastStateIndex)
     }
 
-    val structure: RecurrentStackedLayers<InputNDArrayType> = this.sequence.getStateStructure(elementIndex)
+    val layers: RecurrentStackedLayers<InputNDArrayType> = this.sequence.getStateStructure(elementIndex)
 
-    require(structure.inputLayer is MergeLayer<InputNDArrayType>)
+    require(layers.inputLayer is MergeLayer<InputNDArrayType>)
 
-    return (structure.inputLayer as MergeLayer<InputNDArrayType>).inputArrays.map {
+    return (layers.inputLayer as MergeLayer<InputNDArrayType>).inputArrays.map {
       if (copy) it.errors.copy() else it.errors
     }
   }
@@ -489,7 +488,7 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     if (this.lastStateIndex == this.sequence.lastIndex) {
 
-      val layers = RecurrentStackedLayers(params = this.model, statesWindow = this).apply {
+      val layers = RecurrentStackedLayers(params = this.model, dropouts = this.dropouts, statesWindow = this).apply {
         setParamsErrorsCollector(paramsErrorsCollector)
       }
 
@@ -551,15 +550,15 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   private fun propagateRelevanceOnCurrentState(isFirstState: Boolean, isLastState: Boolean) {
 
-    val structure: RecurrentStackedLayers<InputNDArrayType> = this.sequence.getStateStructure(this.curStateIndex)
+    val layers: RecurrentStackedLayers<InputNDArrayType> = this.sequence.getStateStructure(this.curStateIndex)
     var isPropagating: Boolean = isLastState
 
-    for ((layerIndex, layer) in structure.layers.withIndex().reversed()) {
+    for ((layerIndex, layer) in layers.layers.withIndex().reversed()) {
 
-      structure.curLayerIndex = layerIndex // crucial to provide the right context
+      layers.curLayerIndex = layerIndex // crucial to provide the right context
 
       val isCurLayerRecurrent = layer is RecurrentLayer
-      val isPrevLayerRecurrent = layerIndex > 0 && structure.layers[layerIndex - 1] is RecurrentLayer
+      val isPrevLayerRecurrent = layerIndex > 0 && layers.layers[layerIndex - 1] is RecurrentLayer
 
       isPropagating = isPropagating || isCurLayerRecurrent
 
