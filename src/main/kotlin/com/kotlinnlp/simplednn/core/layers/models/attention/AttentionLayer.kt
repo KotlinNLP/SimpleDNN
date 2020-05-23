@@ -28,8 +28,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @param inputType the input array type (default Dense)
  * @param params the parameters which connect the input to the output
  * @param activation the activation function of the layer (default SoftmaxBase)
- * @param dropout the probability of dropout (default 0.0).
- *                If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
+ * @property dropout the probability of dropout
  */
 internal class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArrays: List<AugmentedArray<InputNDArrayType>>,
@@ -37,7 +36,7 @@ internal class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val attentionArrays: List<AugmentedArray<DenseNDArray>>,
   params: LayerParameters,
   activation: ActivationFunction? = SoftmaxBase(),
-  dropout: Double = 0.0
+  dropout: Double
 ) : Layer<InputNDArrayType>(
   inputArray = inputArrays[0],
   inputType = inputType,

@@ -21,14 +21,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property inputType the input array type (default Dense)
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
- * @property dropout the probability of dropout (default 0.0).
+ * @property dropout the probability of dropout
  */
 internal class SquaredDistanceLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: SquaredDistanceLayerParameters,
-  dropout: Double = 0.0
+  dropout: Double
 ) : Layer<InputNDArrayType>(
   inputArray = inputArray,
   inputType = inputType,

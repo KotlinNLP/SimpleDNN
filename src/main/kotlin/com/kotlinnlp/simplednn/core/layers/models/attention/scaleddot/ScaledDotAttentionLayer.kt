@@ -21,7 +21,6 @@ import java.lang.Math.random
  *
  * @property inputArrays the input arrays of the layer
  * @property params the parameters which connect the input to the output
- * @property dropout the probability of attention dropout (default 0.0)
  * @param attentionDropout the probability of attention dropout (default 0.0)
  */
 internal class ScaledDotAttentionLayer(

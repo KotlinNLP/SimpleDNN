@@ -23,22 +23,19 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @param inputType the input array type (default Dense)
  * @param params the parameters which connect the input to the output
  * @param activation the activation function of the layer (default SoftmaxBase)
- * @param dropout the probability of dropout (default 0.0).
- *                If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
  */
 internal class AttentionMechanismLayer(
   val inputArrays: List<AugmentedArray<DenseNDArray>>,
   inputType: LayerType.Input,
   override val params: AttentionMechanismLayerParameters,
-  activation: ActivationFunction? = SoftmaxBase(),
-  dropout: Double = 0.0
+  activation: ActivationFunction? = SoftmaxBase()
 ) : Layer<DenseNDArray>(
   inputArray = inputArrays[0],
   inputType = inputType,
   outputArray = AugmentedArray(inputArrays.size),
   params = params,
   activationFunction = activation,
-  dropout = dropout
+  dropout = 0.0
 ) {
 
   /**
@@ -49,32 +46,31 @@ internal class AttentionMechanismLayer(
   )
 
   /**
-   * The helper which executes the forward
+   * The helper which executes the forward.
    */
   override val forwardHelper = AttentionMechanismForwardHelper(layer = this)
 
   /**
-   * The helper which executes the backward
+   * The helper which executes the backward.
    */
   override val backwardHelper = AttentionMechanismBackwardHelper(layer = this)
 
   /**
-   * The helper which calculates the relevance
+   * The helper which calculates the relevance.
    */
   override val relevanceHelper: RelevanceHelper? = null
 
   /**
-   * Initialization: set the activation function of the outputArray
+   * Initialization: set the activation function of the output array.
    */
   init {
 
     require(this.inputArrays.isNotEmpty()) { "The attention sequence cannot be empty." }
     require(this.inputArrays.all { it.values.length == this.params.inputSize }) {
-      "The input arrays must have the expected size (%d).".format(this.params.inputSize)
+      "The input arrays must have the expected size (${this.params.inputSize})."
     }
 
-    if (activation != null) {
+    if (activation != null)
       this.outputArray.setActivation(activation)
-    }
   }
 }

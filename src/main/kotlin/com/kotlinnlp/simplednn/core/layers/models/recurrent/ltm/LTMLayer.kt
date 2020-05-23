@@ -24,8 +24,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
  * @property layersWindow the context window used for the forward and the backward
- * @property dropout the probability of dropout (default 0.0).
- *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
+ * @property dropout the probability of dropout
  */
 internal class LTMLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
@@ -33,7 +32,7 @@ internal class LTMLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: LTMLayerParameters,
   layersWindow: LayersWindow,
-  dropout: Double = 0.0
+  dropout: Double
 ) : GatedRecurrentLayer<InputNDArrayType>(
   inputArray = inputArray,
   inputType = inputType,

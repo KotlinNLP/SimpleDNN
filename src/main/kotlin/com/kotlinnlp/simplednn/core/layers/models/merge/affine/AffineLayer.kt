@@ -23,8 +23,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
  * @property activationFunction the activation function of the layer
- * @property dropout the probability of dropout (default 0.0).
- *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
+ * @property dropout the probability of dropout
  */
 internal class AffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArrays: List<AugmentedArray<InputNDArrayType>>,
@@ -32,7 +31,7 @@ internal class AffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: AffineLayerParameters,
   activationFunction: ActivationFunction? = null,
-  dropout: Double = 0.0
+  dropout: Double
 ) : MergeLayer<InputNDArrayType>(
   inputArrays = inputArrays,
   inputType = inputType,

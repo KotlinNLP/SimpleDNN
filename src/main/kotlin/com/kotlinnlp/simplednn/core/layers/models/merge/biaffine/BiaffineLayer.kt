@@ -26,8 +26,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
  * @property activationFunction the activation function of the layer
- * @property dropout the probability of dropout (default 0.0).
- *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
+ * @property dropout the probability of dropout
  */
 internal class BiaffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   internal val inputArray1: AugmentedArray<InputNDArrayType>,
@@ -36,7 +35,7 @@ internal class BiaffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: BiaffineLayerParameters,
   activationFunction: ActivationFunction? = null,
-  dropout: Double = 0.0
+  dropout: Double
 ) : MergeLayer<InputNDArrayType>(
   inputArrays = listOf(inputArray1, inputArray2),
   inputType = inputType,
@@ -49,15 +48,14 @@ internal class BiaffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Constructor by params.
    *
-   * @property params the parameters which connect the input to the output
-   * @property activationFunction the activation function of the layer
-   * @property dropout the probability of dropout (default 0.0).
-   *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
+   * @param params the parameters which connect the input to the output
+   * @param activationFunction the activation function of the layer
+   * @param dropout the probability of dropout
    */
   constructor(
     params: BiaffineLayerParameters,
     activationFunction: ActivationFunction? = null,
-    dropout: Double = 0.0
+    dropout: Double
   ): this(
     inputArray1 = AugmentedArray<InputNDArrayType>(size = params.inputSize1),
     inputArray2 = AugmentedArray<InputNDArrayType>(size = params.inputSize2),
