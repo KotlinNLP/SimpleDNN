@@ -16,7 +16,6 @@ import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.utils.ItemsPool
 
 /**
  * The Feedforward Layer Structure.
@@ -28,7 +27,6 @@ import com.kotlinnlp.utils.ItemsPool
  * @property lambda the partition factor for the reconstruction (default = 0.75)
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
- * @property id an identification number useful to track a specific layer (default: 0)
  */
 internal class NewRecirculationLayer(
   inputArray: AugmentedArray<DenseNDArray>,
@@ -36,17 +34,15 @@ internal class NewRecirculationLayer(
   override val params: NewRecirculationLayerParameters,
   activationFunction: ActivationFunction? = Sigmoid,
   val lambda: Double = 0.75,
-  dropout: Double = 0.0,
-  override val id: Int = 0
-) : ItemsPool.IDItem,
-  Layer<DenseNDArray>(
-    inputArray = inputArray,
-    inputType = LayerType.Input.Dense,
-    outputArray = outputArray,
-    params = params,
-    activationFunction = activationFunction,
-    dropout = dropout
-  ) {
+  dropout: Double = 0.0
+) : Layer<DenseNDArray>(
+  inputArray = inputArray,
+  inputType = LayerType.Input.Dense,
+  outputArray = outputArray,
+  params = params,
+  activationFunction = activationFunction,
+  dropout = dropout
+) {
 
   /**
    *

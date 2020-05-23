@@ -21,22 +21,19 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property inputType the input array type (default Dense)
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
- * @property id an identification number useful to track a specific [ConcatLayer]
  */
 internal class ConcatLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArrays: List<AugmentedArray<InputNDArrayType>>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
-  override val params: ConcatLayerParameters,
-  id: Int = 0
+  override val params: ConcatLayerParameters
 ) : MergeLayer<InputNDArrayType>(
   inputArrays = inputArrays,
   inputType = inputType,
   outputArray = outputArray,
   params = params,
   activationFunction = null,
-  dropout = 0.0,
-  id = id
+  dropout = 0.0
 ) {
 
   init { this.checkInputSize() }

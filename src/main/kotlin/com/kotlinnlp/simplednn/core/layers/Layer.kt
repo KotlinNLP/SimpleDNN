@@ -20,7 +20,6 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.utils.ItemsPool
 import java.lang.RuntimeException
 
 /**
@@ -33,7 +32,6 @@ import java.lang.RuntimeException
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
- * @property id an identification number useful to track a specific [Layer]
  */
 internal abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArray: AugmentedArray<InputNDArrayType>,
@@ -41,9 +39,8 @@ internal abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
   open val outputArray: AugmentedArray<DenseNDArray>,
   open val params: LayerParameters,
   val activationFunction: ActivationFunction? = null,
-  val dropout: Double = 0.0,
-  override val id: Int = 0
-) : ItemsPool.IDItem {
+  val dropout: Double = 0.0
+) {
 
   /**
    * The probability to keep an output value (= no dropout).

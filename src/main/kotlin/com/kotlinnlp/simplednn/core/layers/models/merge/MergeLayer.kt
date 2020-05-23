@@ -25,7 +25,6 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
- * @property id an identification number useful to track a specific [MergeLayer]
  */
 internal abstract class MergeLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArrays: List<AugmentedArray<InputNDArrayType>>,
@@ -33,16 +32,15 @@ internal abstract class MergeLayer<InputNDArrayType : NDArray<InputNDArrayType>>
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: MergeLayerParameters,
   activationFunction: ActivationFunction? = null,
-  dropout: Double = 0.0,
-  id: Int = 0
+  dropout: Double = 0.0
 ) : Layer<InputNDArrayType>(
   inputArray = inputArrays[0],
   inputType = inputType,
   outputArray = outputArray,
   params = params,
   activationFunction = activationFunction,
-  dropout = dropout,
-  id = id) {
+  dropout = dropout
+) {
 
   /**
    * Set the values of the inputArray at the given [index].

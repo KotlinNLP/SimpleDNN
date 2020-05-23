@@ -15,7 +15,6 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.utils.ItemsPool
 
 /**
  * The Attention Mechanism Layer Structure.
@@ -26,24 +25,21 @@ import com.kotlinnlp.utils.ItemsPool
  * @param activation the activation function of the layer (default SoftmaxBase)
  * @param dropout the probability of dropout (default 0.0).
  *                If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
- * @property id an identification number useful to track a specific layer (default: 0)
  */
 internal class AttentionMechanismLayer(
   val inputArrays: List<AugmentedArray<DenseNDArray>>,
   inputType: LayerType.Input,
   override val params: AttentionMechanismLayerParameters,
   activation: ActivationFunction? = SoftmaxBase(),
-  dropout: Double = 0.0,
-  override val id: Int = 0
-) : ItemsPool.IDItem,
-  Layer<DenseNDArray>(
-    inputArray = inputArrays[0],
-    inputType = inputType,
-    outputArray = AugmentedArray(inputArrays.size),
-    params = params,
-    activationFunction = activation,
-    dropout = dropout
-  ) {
+  dropout: Double = 0.0
+) : Layer<DenseNDArray>(
+  inputArray = inputArrays[0],
+  inputType = inputType,
+  outputArray = AugmentedArray(inputArrays.size),
+  params = params,
+  activationFunction = activation,
+  dropout = dropout
+) {
 
   /**
    * A matrix containing the attention arrays as rows.

@@ -13,31 +13,30 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.utils.ItemsPool
 
 /**
  * The Squared Layer Structure.
  *
  * @property inputArray the input array of the layer
+ * @property inputType the input array type (default Dense)
+ * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
- * @property id an identification number useful to track a specific [SquaredDistanceLayer]
+ * @property dropout the probability of dropout (default 0.0).
  */
 internal class SquaredDistanceLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: SquaredDistanceLayerParameters,
-  dropout: Double = 0.0,
-  override val id: Int = 0
-) : ItemsPool.IDItem,
-  Layer<InputNDArrayType>(
-    inputArray = inputArray,
-    inputType = inputType,
-    outputArray = outputArray,
-    params = params,
-    activationFunction = null,
-    dropout = dropout
-  ) {
+  dropout: Double = 0.0
+) : Layer<InputNDArrayType>(
+  inputArray = inputArray,
+  inputType = inputType,
+  outputArray = outputArray,
+  params = params,
+  activationFunction = null,
+  dropout = dropout
+) {
 
   /**
    * It is a support variable used during the calculations.

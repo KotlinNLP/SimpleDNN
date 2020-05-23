@@ -46,7 +46,8 @@ internal class TPRLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   params = params,
   layersWindow = layersWindow,
   activationFunction = null,
-  dropout = dropout) {
+  dropout = dropout
+) {
 
   /**
    * The attention Symbol vector

@@ -16,7 +16,6 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.utils.ItemsPool
 
 /**
  * The Biaffine Layer Structure.
@@ -29,28 +28,23 @@ import com.kotlinnlp.utils.ItemsPool
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
- * @property id an identification number useful to track a specific [BiaffineLayer]
- *
  */
-class BiaffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
+internal class BiaffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   internal val inputArray1: AugmentedArray<InputNDArrayType>,
   internal val inputArray2: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: BiaffineLayerParameters,
   activationFunction: ActivationFunction? = null,
-  dropout: Double = 0.0,
-  id: Int = 0
-) :
-  ItemsPool.IDItem,
-  MergeLayer<InputNDArrayType>(
-    inputArrays = listOf(inputArray1, inputArray2),
-    inputType = inputType,
-    outputArray = outputArray,
-    params = params,
-    activationFunction = activationFunction,
-    dropout = dropout,
-    id = id) {
+  dropout: Double = 0.0
+) : MergeLayer<InputNDArrayType>(
+  inputArrays = listOf(inputArray1, inputArray2),
+  inputType = inputType,
+  outputArray = outputArray,
+  params = params,
+  activationFunction = activationFunction,
+  dropout = dropout
+) {
 
   /**
    * Constructor by params.
@@ -59,20 +53,19 @@ class BiaffineLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * @property activationFunction the activation function of the layer
    * @property dropout the probability of dropout (default 0.0).
    *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
-   * @property id a unique id for this item (default = 0)
    */
-  constructor(params: BiaffineLayerParameters,
-              activationFunction: ActivationFunction? = null,
-              dropout: Double = 0.0,
-              id: Int = 0): this(
+  constructor(
+    params: BiaffineLayerParameters,
+    activationFunction: ActivationFunction? = null,
+    dropout: Double = 0.0
+  ): this(
     inputArray1 = AugmentedArray<InputNDArrayType>(size = params.inputSize1),
     inputArray2 = AugmentedArray<InputNDArrayType>(size = params.inputSize2),
     inputType = if (params.sparseInput) LayerType.Input.SparseBinary else LayerType.Input.Dense,
     outputArray = AugmentedArray.zeros(size = params.outputSize),
     params = params,
     activationFunction = activationFunction,
-    dropout = dropout,
-    id = id
+    dropout = dropout
   )
 
   /**

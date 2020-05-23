@@ -43,7 +43,8 @@ internal class IndRNNLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   params = params,
   layersWindow = layersWindow,
   activationFunction = activationFunction,
-  dropout = dropout) {
+  dropout = dropout
+) {
 
   /**
    * The helper which executes the forward

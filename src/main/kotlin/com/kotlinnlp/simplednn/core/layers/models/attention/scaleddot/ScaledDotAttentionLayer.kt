@@ -14,7 +14,6 @@ import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArrayMask
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.utils.ItemsPool
 import java.lang.Math.random
 
 /**
@@ -24,22 +23,19 @@ import java.lang.Math.random
  * @property params the parameters which connect the input to the output
  * @property dropout the probability of attention dropout (default 0.0)
  * @param attentionDropout the probability of attention dropout (default 0.0)
- * @property id an identification number useful to track a specific layer (default: 0)
  */
 internal class ScaledDotAttentionLayer(
   val inputArrays: List<AugmentedArray<DenseNDArray>>,
   override val params: ScaledDotAttentionLayerParameters,
-  private val attentionDropout: Double = 0.0,
-  override val id: Int = 0
-) : ItemsPool.IDItem,
-  Layer<DenseNDArray>(
-    inputArray = inputArrays[0],
-    inputType = LayerType.Input.Dense,
-    outputArray = AugmentedArray(inputArrays.size),
-    params = params,
-    activationFunction = null,
-    dropout = 0.0
-  ) {
+  private val attentionDropout: Double = 0.0
+) : Layer<DenseNDArray>(
+  inputArray = inputArrays[0],
+  inputType = LayerType.Input.Dense,
+  outputArray = AugmentedArray(inputArrays.size),
+  params = params,
+  activationFunction = null,
+  dropout = 0.0
+) {
 
   /**
    * The input matrix with the input arrays as rows.

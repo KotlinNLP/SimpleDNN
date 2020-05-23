@@ -14,7 +14,6 @@ import com.kotlinnlp.simplednn.core.layers.*
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.utils.ItemsPool
 
 /**
  * The Highway Layer Structure.
@@ -26,7 +25,6 @@ import com.kotlinnlp.utils.ItemsPool
  * @property activationFunction the activation function of the layer
  * @property dropout the probability of dropout (default 0.0).
  *                   If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
- * @property id an identification number useful to track a specific layer (default: 0)
  */
 internal class HighwayLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
@@ -34,17 +32,15 @@ internal class HighwayLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   outputArray: AugmentedArray<DenseNDArray>,
   override val params: HighwayLayerParameters,
   activationFunction: ActivationFunction? = null,
-  dropout: Double = 0.0,
-  override val id: Int = 0
-) : ItemsPool.IDItem,
-  Layer<InputNDArrayType>(
-    inputArray = inputArray,
-    inputType = inputType,
-    outputArray = outputArray,
-    params = params,
-    activationFunction = activationFunction,
-    dropout = dropout
-  ) {
+  dropout: Double = 0.0
+) : Layer<InputNDArrayType>(
+  inputArray = inputArray,
+  inputType = inputType,
+  outputArray = outputArray,
+  params = params,
+  activationFunction = activationFunction,
+  dropout = dropout
+) {
 
   /**
    * The input unit.

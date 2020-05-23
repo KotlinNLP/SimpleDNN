@@ -13,7 +13,6 @@ import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.core.layers.models.merge.MergeLayer
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
-import com.kotlinnlp.utils.ItemsPool
 
 /**
  * The Sub Layer Structure.
@@ -21,26 +20,21 @@ import com.kotlinnlp.utils.ItemsPool
  * @property inputArray the first input array of the layer
  * @property inputArray2 the second input array of the layer
  * @property params the parameters which connect the input to the output
- * @property id an identification number useful to track a specific [SubLayer]
  */
 internal class SubLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   internal val inputArray1: AugmentedArray<InputNDArrayType>,
   internal val inputArray2: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
-  override val params: SubLayerParameters,
-  id: Int = 0
-) :
-  ItemsPool.IDItem,
-  MergeLayer<InputNDArrayType>(
-    inputArrays = listOf(inputArray1, inputArray2),
-    inputType = inputType,
-    outputArray = outputArray,
-    params = params,
-    activationFunction = null,
-    dropout = 0.0,
-    id = id
-  ) {
+  override val params: SubLayerParameters
+) : MergeLayer<InputNDArrayType>(
+  inputArrays = listOf(inputArray1, inputArray2),
+  inputType = inputType,
+  outputArray = outputArray,
+  params = params,
+  activationFunction = null,
+  dropout = 0.0
+) {
 
   init { this.checkInputSize() }
 

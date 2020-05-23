@@ -24,14 +24,12 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property inputType the input array type (default Dense)
  * @property outputArray the output array of the layer
  * @property params the parameters which connect the input to the output
- * @property id an identification number useful to track a specific layer (default: 0)
  */
 internal class NormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArray: AugmentedArray<InputNDArrayType>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
-  override val params: NormLayerParameters,
-  override val id: Int = 0
+  override val params: NormLayerParameters
 ) : Layer<InputNDArrayType>(
   inputArray = inputArray,
   inputType = inputType,

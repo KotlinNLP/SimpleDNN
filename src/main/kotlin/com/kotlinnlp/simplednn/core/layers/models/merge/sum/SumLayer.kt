@@ -20,22 +20,20 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * @property inputArrays the input arrays of the layer
  * @property inputType the input array type (default Dense)
  * @property params the parameters which connect the input to the output
- * @property id an identification number useful to track a specific [SumLayer]
  */
 internal class SumLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputArrays: List<AugmentedArray<InputNDArrayType>>,
   inputType: LayerType.Input,
   outputArray: AugmentedArray<DenseNDArray>,
-  override val params: SumLayerParameters,
-  id: Int = 0
+  override val params: SumLayerParameters
 ) : MergeLayer<InputNDArrayType>(
   inputArrays = inputArrays,
   inputType = inputType,
   outputArray = outputArray,
   params = params,
   activationFunction = null,
-  dropout = 0.0,
-  id = id) {
+  dropout = 0.0
+) {
 
   init { this.checkInputSize() }
 

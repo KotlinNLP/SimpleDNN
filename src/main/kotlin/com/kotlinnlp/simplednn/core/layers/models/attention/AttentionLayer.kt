@@ -20,7 +20,6 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import com.kotlinnlp.utils.ItemsPool
 
 /**
  * The Attention Layer Structure.
@@ -31,7 +30,6 @@ import com.kotlinnlp.utils.ItemsPool
  * @param activation the activation function of the layer (default SoftmaxBase)
  * @param dropout the probability of dropout (default 0.0).
  *                If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
- * @property id an identification number useful to track a specific layer (default: 0)
  */
 internal class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArrays: List<AugmentedArray<InputNDArrayType>>,
@@ -39,17 +37,15 @@ internal class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val attentionArrays: List<AugmentedArray<DenseNDArray>>,
   params: LayerParameters,
   activation: ActivationFunction? = SoftmaxBase(),
-  dropout: Double = 0.0,
-  override val id: Int = 0
-) : ItemsPool.IDItem,
-  Layer<InputNDArrayType>(
-    inputArray = inputArrays[0],
-    inputType = inputType,
-    outputArray = AugmentedArray(values = DenseNDArrayFactory.zeros(Shape(inputArrays.first().size))),
-    params = params,
-    activationFunction = activation,
-    dropout = dropout
-  ) {
+  dropout: Double = 0.0
+) : Layer<InputNDArrayType>(
+  inputArray = inputArrays[0],
+  inputType = inputType,
+  outputArray = AugmentedArray(values = DenseNDArrayFactory.zeros(Shape(inputArrays.first().size))),
+  params = params,
+  activationFunction = activation,
+  dropout = dropout
+) {
 
   /**
    * The helper which executes the forward

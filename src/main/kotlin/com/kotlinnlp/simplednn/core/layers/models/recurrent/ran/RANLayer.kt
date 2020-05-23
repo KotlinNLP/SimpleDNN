@@ -45,7 +45,8 @@ internal class RANLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   params = params,
   layersWindow = layersWindow,
   activationFunction = activationFunction,
-  dropout = dropout) {
+  dropout = dropout
+) {
 
   /**
    *

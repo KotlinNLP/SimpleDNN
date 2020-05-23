@@ -44,7 +44,8 @@ internal class CFNLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   params = params,
   layersWindow = layersWindow,
   activationFunction = activationFunction,
-  dropout = dropout) {
+  dropout = dropout
+) {
 
   /**
    *

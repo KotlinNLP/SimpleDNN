@@ -41,7 +41,8 @@ internal abstract class GatedRecurrentLayer<InputNDArrayType : NDArray<InputNDAr
   params = params,
   layersWindow = layersWindow,
   activationFunction = activationFunction,
-  dropout = dropout) {
+  dropout = dropout
+) {
 
   /**
    * The helper which calculates the relevance

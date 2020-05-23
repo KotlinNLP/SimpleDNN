@@ -41,7 +41,8 @@ internal class LTMLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   params = params,
   layersWindow = layersWindow,
   activationFunction = null,
-  dropout = dropout) {
+  dropout = dropout
+) {
 
   /**
    * The input of the gates L1, L2, L3.
