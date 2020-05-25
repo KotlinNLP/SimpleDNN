@@ -17,7 +17,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 /**
  * The helper which calculates the importance scores of all the previous states of a given one, in a RAN neural network.
  */
-class RANImportanceHelper {
+internal class RANImportanceHelper {
 
   /**
    * The list of previous states structures.
@@ -50,7 +50,7 @@ class RANImportanceHelper {
 
     val scores: DenseNDArray = DenseNDArrayFactory.emptyArray(Shape(this.prevStates.size))
 
-    (0 until this.prevStates.size).reversed().forEach { i ->
+    this.prevStates.indices.reversed().forEach { i ->
 
       val layer: RANLayer<*> = this.getRANLayer(i)
 
