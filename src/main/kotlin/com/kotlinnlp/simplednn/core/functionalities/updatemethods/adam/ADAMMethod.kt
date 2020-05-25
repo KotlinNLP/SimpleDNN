@@ -58,7 +58,7 @@ open class ADAMMethod(
   /**
    * The current time step.
    */
-  protected var timeStep: Int = 1
+  protected var timeStep: Int = 0
 
   /**
    * Check requirements.
