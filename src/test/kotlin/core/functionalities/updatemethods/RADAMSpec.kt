@@ -34,6 +34,7 @@ class RADAMSpec : Spek({
           supportStructure.firstOrderMoments.assignValues(UpdateMethodsUtils.supportArray1())
           supportStructure.secondOrderMoments.assignValues(UpdateMethodsUtils.supportArray2())
 
+          updateHelper.newBatch()
           updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildDenseErrors())
 
           it("should match the expected updated array") {
@@ -57,6 +58,7 @@ class RADAMSpec : Spek({
           supportStructure.firstOrderMoments.assignValues(UpdateMethodsUtils.supportArray1())
           supportStructure.secondOrderMoments.assignValues(UpdateMethodsUtils.supportArray2())
 
+          updateHelper.newBatch()
           updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildSparseErrors())
 
           it("should match the expected updated array") {
@@ -85,6 +87,7 @@ class RADAMSpec : Spek({
 
           repeat(5) { updateHelper.newBatch() }
 
+          updateHelper.newBatch()
           updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildDenseErrors())
 
           it("should match the expected updated array") {
@@ -110,6 +113,7 @@ class RADAMSpec : Spek({
 
           repeat(5) { updateHelper.newBatch() }
 
+          updateHelper.newBatch()
           updateHelper.update(array = updatableArray, errors = UpdateMethodsUtils.buildSparseErrors())
 
           it("should match the expected updated array") {
