@@ -69,7 +69,7 @@ open class ADAMMethod(
   }
 
   /**
-   * Method to call every new example
+   * Method to call every new batch.
    */
   override fun newBatch() {
     this.timeStep++
