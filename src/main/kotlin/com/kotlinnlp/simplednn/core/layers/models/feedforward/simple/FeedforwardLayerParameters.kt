@@ -14,7 +14,7 @@ import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.LinearParams
 
 /**
- * The parameters of the layer of type Feedforward.
+ * The parameters of the Feed-forward layer.
  *
  * @property inputSize input size
  * @property outputSize output size
@@ -45,12 +45,9 @@ class FeedforwardLayerParameters(
   }
 
   /**
-   *
+   * The parameters for the linear transformation.
    */
-  val unit = LinearParams(
-    inputSize = this.inputSize,
-    outputSize = this.outputSize,
-    sparseInput = this.sparseInput)
+  val unit = LinearParams(inputSize = this.inputSize, outputSize = this.outputSize, sparseInput = this.sparseInput)
 
   /**
    * The list of weights parameters.
