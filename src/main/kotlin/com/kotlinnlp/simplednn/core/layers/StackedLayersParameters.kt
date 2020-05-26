@@ -114,4 +114,16 @@ class StackedLayersParameters(
    * @param outputStream the [OutputStream] in which to write this serialized [StackedLayersParameters]
    */
   fun dump(outputStream: OutputStream) = Serializer.serialize(this, outputStream)
+
+  /**
+   * @param index a stacked-layer index
+   *
+   * @return the parameters of the given layer, casted to the given type
+   */
+  inline fun <reified T : LayerParameters>getLayerParams(index: Int): T {
+
+    require(index >= 0 && index < this.numOfLayers) { "Layer index ($index) out of range ([0, ${numOfLayers - 1}])." }
+
+    return this.paramsPerLayer[index] as T
+  }
 }
