@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers.models.attention
 
 import com.kotlinnlp.simplednn.core.layers.helpers.BackwardHelper
-import com.kotlinnlp.simplednn.core.layers.models.attention.attentionmechanism.AttentionMechanismLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -39,7 +38,7 @@ internal class AttentionBackwardHelper<InputNDArrayType : NDArray<InputNDArrayTy
    *
    * @param propagateToInput whether to propagate the errors to the input array
    */
-  override fun execBackward(propagateToInput: Boolean) { this.layer.params as AttentionMechanismLayerParameters
+  override fun execBackward(propagateToInput: Boolean) {
 
     this.setAttentionErrors()
 
@@ -71,7 +70,9 @@ internal class AttentionBackwardHelper<InputNDArrayType : NDArray<InputNDArrayTy
   /**
    * Touch the context vector params so that it can be returned from the backward() method.
    */
-  private fun touchParamsErrors() { (this.layer.params as AttentionMechanismLayerParameters).contextVector.errors }
+  private fun touchParamsErrors() {
+    this.layer.params.contextVector.errors
+  }
 
   /**
    * Set the errors of each input array.

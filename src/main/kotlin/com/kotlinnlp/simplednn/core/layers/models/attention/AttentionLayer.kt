@@ -11,7 +11,6 @@ import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFunction
 import com.kotlinnlp.simplednn.core.functionalities.activations.SoftmaxBase
 import com.kotlinnlp.simplednn.core.layers.Layer
-import com.kotlinnlp.simplednn.core.layers.LayerParameters
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.helpers.RelevanceHelper
 import com.kotlinnlp.simplednn.core.layers.models.attention.attentionmechanism.AttentionMechanismLayer
@@ -34,7 +33,7 @@ internal class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   val inputArrays: List<AugmentedArray<InputNDArrayType>>,
   inputType: LayerType.Input,
   val attentionArrays: List<AugmentedArray<DenseNDArray>>,
-  params: LayerParameters,
+  override val params: AttentionMechanismLayerParameters,
   activation: ActivationFunction? = SoftmaxBase(),
   dropout: Double
 ) : Layer<InputNDArrayType>(
@@ -67,7 +66,7 @@ internal class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   internal val attentionMechanism = AttentionMechanismLayer(
     inputArrays = this.attentionArrays,
     inputType = inputType,
-    params = params as AttentionMechanismLayerParameters,
+    params = this.params,
     activation = SoftmaxBase()
   ).apply {
     setParamsErrorsCollector(this@AttentionLayer.getParamsErrorsCollector())
@@ -87,8 +86,6 @@ internal class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
    * Essential requirements.
    */
   init {
-
-    this.params as AttentionMechanismLayerParameters
 
     require(this.inputArrays.isNotEmpty()) { "The input array cannot be empty." }
     require(this.attentionArrays.isNotEmpty()) { "The attention array cannot be empty." }

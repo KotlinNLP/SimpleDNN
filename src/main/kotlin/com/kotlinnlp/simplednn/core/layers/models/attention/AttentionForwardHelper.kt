@@ -8,7 +8,6 @@
 package com.kotlinnlp.simplednn.core.layers.models.attention
 
 import com.kotlinnlp.simplednn.core.layers.helpers.ForwardHelper
-import com.kotlinnlp.simplednn.core.layers.models.attention.attentionmechanism.AttentionMechanismLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
@@ -28,7 +27,7 @@ internal class AttentionForwardHelper<InputNDArrayType : NDArray<InputNDArrayTyp
    *
    *   y = sum by { x_i * alpha_i }
    */
-  override fun forward() { this.layer.params as AttentionMechanismLayerParameters
+  override fun forward() {
 
     this.layer.attentionMechanism.forward()
 
