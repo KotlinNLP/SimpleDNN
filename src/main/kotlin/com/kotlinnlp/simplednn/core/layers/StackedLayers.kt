@@ -229,14 +229,16 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
         LayerFactory(
           inputConfiguration = config[0],
           outputConfiguration = config[1],
-          params = this.params.paramsPerLayer[0])
+          params = this.params.paramsPerLayer[0],
+          contextWindow = this as? LayersWindow)
       else
         LayerFactory(
           inputArrays = listOf(prevLayer!!.outputArray),
           inputType = LayerType.Input.Dense,
           outputConfiguration = config[i + 1],
           params = this.params.paramsPerLayer[i],
-          dropout = config[i].dropout)
+          dropout = config[i].dropout,
+          contextWindow = this as? LayersWindow)
 
       prevLayer = layer
 
