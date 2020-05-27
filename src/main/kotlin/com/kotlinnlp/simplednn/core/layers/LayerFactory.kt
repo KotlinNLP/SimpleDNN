@@ -61,27 +61,29 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 
 /**
- * Helper that builds a generic [Layer].
+ * The factory of a generic [Layer].
  */
 internal object LayerFactory {
 
   /**
-   * Base layer factory, given input and output configurations.
+   * Build a layer with an input and an output configuration.
    *
-   * @param inputConfiguration layers layersConfiguration of the input array
-   * @param outputConfiguration the layersConfiguration of the output array
+   * @param inputConfiguration layers configuration of the input arrays
+   * @param outputConfiguration the configuration of the output array
    * @param params the network parameters of the current layer
    * @param contextWindow the layers context window in case of recurrent layer
    *
    * @return a new Layer
    */
-  operator fun invoke(inputConfiguration: LayerInterface,
-                      outputConfiguration: LayerInterface,
-                      params: LayerParameters,
-                      contextWindow: LayersWindow? = null): Layer<*> {
+  operator fun invoke(
+    inputConfiguration: LayerInterface,
+    outputConfiguration: LayerInterface,
+    params: LayerParameters,
+    contextWindow: LayersWindow?
+  ): Layer<*> {
 
     require(outputConfiguration.connectionType != null) {
-      "Output layer configurations must have a not null connectionType"
+      "The output layer configuration cannot have a null connection type."
     }
 
     return when (inputConfiguration.type) {
@@ -119,16 +121,17 @@ internal object LayerFactory {
   }
 
   /**
-   * Layer factory used to concatenate two layers, given the input array (referenced from
-   * the previous layer) and the output layersConfiguration.
+   * Layer factory used to concatenate two layers, given the input arrays (referenced from the previous stacked layer)
+   * and the output layer configuration.
    *
-   * @param inputArrays a list of AugmentedArrays used as referenced input (to concatenate two layers)
+   * @param inputArrays the referenced input arrays
    * @param inputType the input type
    * @param outputConfiguration the layersConfiguration of the output array
    * @param params the parameters of the layer
    * @param dropout the probability of dropout
+   * @param contextWindow the layers context window in case of recurrent layer, otherwise `null`
    *
-   * @return a new Layer
+   * @return a new layer
    */
   operator fun <InputNDArrayType : NDArray<InputNDArrayType>> invoke(
     inputArrays: List<AugmentedArray<InputNDArrayType>>,
@@ -136,8 +139,8 @@ internal object LayerFactory {
     outputConfiguration: LayerInterface,
     params: LayerParameters,
     dropout: Double,
-    contextWindow: LayersWindow? = null
-  ) : Layer<InputNDArrayType> = LayerFactory(
+    contextWindow: LayersWindow?
+  ): Layer<InputNDArrayType> = LayerFactory(
     inputArrays = inputArrays,
     inputType = inputType,
     outputSize = outputConfiguration.size,
@@ -148,9 +151,11 @@ internal object LayerFactory {
     contextWindow = contextWindow)
 
   /**
-   * Build a new generic [Layer].
+   * Layer factory used to concatenate two layers, given the input arrays (referenced from the previous stacked layer)
+   * and all the other parameters explicitly.
    *
-   * @param inputArrays the list of input arrays (more then one only for Merge layers)
+   * @param inputArrays the referenced input arrays
+   * @param inputType the input type
    * @param outputSize the size of the output array
    * @param params the layer parameters
    * @param connectionType the type of connection from the input to the output
@@ -167,9 +172,9 @@ internal object LayerFactory {
     outputSize: Int,
     params: LayerParameters,
     connectionType: LayerType.Connection,
-    activationFunction: ActivationFunction? = null,
-    dropout: Double = 0.0,
-    contextWindow: LayersWindow? = null
+    activationFunction: ActivationFunction?,
+    dropout: Double,
+    contextWindow: LayersWindow?
   ) : Layer<InputNDArrayType> = when (connectionType) {
 
     LayerType.Connection.Feedforward -> FeedforwardLayer(
