@@ -52,23 +52,23 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
   var curLayerIndex: Int = 0
 
   /**
-   * The first layer
+   * The first layer.
    */
   @Suppress("UNCHECKED_CAST")
   val inputLayer: Layer<InputNDArrayType> get() = this.layers.first() as Layer<InputNDArrayType>
 
   /**
-   * The last layer
+   * The last layer.
    */
   @Suppress("UNCHECKED_CAST")
   val outputLayer: Layer<DenseNDArray> get() = this.layers.last() as Layer<DenseNDArray>
 
   /**
-   * Forward features.
+   * Execute the forward of the input to the output.
    *
    * @param input the input array
    *
-   * @return the output [NDArray]
+   * @return the output array
    */
   fun forward(input: InputNDArrayType): DenseNDArray {
 
@@ -83,12 +83,12 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward features, saving the contributions.
+   * Execute the forward of the input to the output, saving the contributions of the input respect to the output.
    *
-   * @param input the input to forward from the input to the output
+   * @param input the input array
    * @param contributions the support in which to save the contributions of the input respect to the related output
    *
-   * @return the output [NDArray]
+   * @return the output array
    */
   fun forward(input: InputNDArrayType, contributions: StackedLayersParameters): DenseNDArray {
 
@@ -103,11 +103,12 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward a list of features if the first layer is a Merge layer.
+   * Execute the forward of the input to the output.
+   * This method must be used only when the first layer is a [MergeLayer].
    *
    * @param input the input arrays
    *
-   * @return the output [NDArray]
+   * @return the output array
    */
   fun forward(input: List<InputNDArrayType>): DenseNDArray {
 
@@ -128,12 +129,13 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Forward a list of features if the first layer is a Merge layer, saving the contributions.
+   * Execute the forward of the input to the output, saving the contributions of the input respect to the output.
+   * This method must be used only when the first layer is a [MergeLayer].
    *
-   * @param input the input to forward from the input to the output
+   * @param input the input arrays
    * @param contributions the support in which to save the contributions of the input respect to the related output
    *
-   * @return the output [NDArray]
+   * @return the output array
    */
   fun forward(input: List<InputNDArrayType>, contributions: StackedLayersParameters): DenseNDArray {
 
@@ -154,15 +156,14 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
   }
 
   /**
-   * Propagate the output error using the gradient descent algorithm
+   * Propagate the output errors with a stochastic gradient descent (SGD) algorithm.
    *
    * @param outputErrors the errors to propagate from the output
    * @param propagateToInput whether to propagate the errors to the input
    *
    * @return the params errors
    */
-  fun backward(outputErrors: DenseNDArray,
-               propagateToInput: Boolean = false): ParamsErrorsList {
+  fun backward(outputErrors: DenseNDArray, propagateToInput: Boolean = false): ParamsErrorsList {
 
     this.outputLayer.setErrors(outputErrors)
 
