@@ -60,7 +60,7 @@ interface NeuralProcessor<
   /**
    * Return the params errors of the last backward.
    *
-   * @param copy a Boolean indicating whether the returned errors must be a copy or a reference (default true)
+   * @param copy whether the returned errors must be a copy or a reference (default true)
    *
    * @return the parameters errors
    */
@@ -73,7 +73,7 @@ interface NeuralProcessor<
    *
    * @param errors the output errors
    * @param optimizer the optimizer
-   * @param copy a Boolean indicating whether the errors must be a copy or a reference (default false)
+   * @param copy whether the returned errors must be a copy or a reference (default false)
    *
    * @return the input errors
    */

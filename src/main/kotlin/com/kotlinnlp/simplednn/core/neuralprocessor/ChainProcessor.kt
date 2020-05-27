@@ -42,8 +42,7 @@ class ChainProcessor<
   /**
    * Whether to propagate the errors to the input during the [backward] (if supported)
    */
-  override val propagateToInput: Boolean =
-    this.inputProcessor.propagateToInput
+  override val propagateToInput: Boolean = this.inputProcessor.propagateToInput
 
   /**
    * The Forward.
