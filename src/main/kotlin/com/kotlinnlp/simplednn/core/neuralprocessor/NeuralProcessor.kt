@@ -27,11 +27,6 @@ interface NeuralProcessor<
   object NoInputErrors
 
   /**
-   * Whether to apply the dropout during the [forward] (if supported).
-   */
-  val useDropout: Boolean
-
-  /**
    * Whether to propagate the errors to the input during the [backward] (if supported).
    */
   val propagateToInput: Boolean
@@ -86,7 +81,7 @@ interface NeuralProcessor<
 
     this.backward(errors)
 
-    optimizer.accumulate(getParamsErrors(copy = copy))
+    optimizer.accumulate(this.getParamsErrors(copy = copy))
 
     return getInputErrors(copy = copy)
   }

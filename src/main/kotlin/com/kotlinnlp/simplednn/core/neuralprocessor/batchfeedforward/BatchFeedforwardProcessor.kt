@@ -21,14 +21,13 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * The neural processor that acts on networks of stacked-layers, performing operations through with mini-batches.
  *
  * @property model the stacked-layers parameters
- * @property useDropout whether to apply the dropout during the [forward]
+ * @param dropouts the probability of dropout for each stacked layer
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
- * @property paramsErrorsCollector where to collect the local params errors during the [backward] (optional)
  * @property id an identification number useful to track a specific processor
  */
 class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
   val model: StackedLayersParameters,
-  override val useDropout: Boolean,
+  dropouts: List<Double>,
   override val propagateToInput: Boolean,
   override val id: Int = 0
 ) : NeuralProcessor<
@@ -37,6 +36,21 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
   List<DenseNDArray>, // ErrorsType
   List<DenseNDArray> // InputErrorsType
   > {
+
+  /**
+   * The neural processor that acts on networks of stacked-layers, performing operations through with mini-batches.
+   *
+   * @param model the stacked-layers parameters
+   * @param dropout the probability of dropout for each stacked layer (default 0.0)
+   * @param propagateToInput whether to propagate the errors to the input during the [backward]
+   * @param id an identification number useful to track a specific processor
+   */
+  constructor(model: StackedLayersParameters, dropout: Double = 0.0, propagateToInput: Boolean, id: Int = 0): this(
+    model = model,
+    dropouts = List(model.numOfLayers) { dropout },
+    propagateToInput = propagateToInput,
+    id = id
+  )
 
   /**
    * The errors of the parameters which will be filled at each [backward].
@@ -53,7 +67,7 @@ class BatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   private val processorsPool = FeedforwardNeuralProcessorsPool<InputNDArrayType>(
     model = this.model,
-    useDropout = this.useDropout,
+    dropouts = dropouts,
     propagateToInput = this.propagateToInput,
     paramsErrorsCollector = this.paramsErrorsCollector)
 

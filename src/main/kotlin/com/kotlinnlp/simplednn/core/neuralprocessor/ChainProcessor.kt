@@ -40,12 +40,6 @@ class ChainProcessor<
   > {
 
   /**
-   * True if at least one processor uses the dropout.
-   */
-  override val useDropout: Boolean =
-    this.inputProcessor.useDropout || this.hiddenProcessors.any { it.useDropout } || this.outputProcessor.useDropout
-
-  /**
    * Whether to propagate the errors to the input during the [backward] (if supported)
    */
   override val propagateToInput: Boolean =

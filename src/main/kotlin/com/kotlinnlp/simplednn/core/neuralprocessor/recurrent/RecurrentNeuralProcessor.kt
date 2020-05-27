@@ -30,14 +30,14 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
  * The neural processor that acts on networks of stacked-layers with recurrent connections.
  *
  * @property model the stacked-layers parameters
- * @property useDropout whether to apply the dropout during the [forward]
+ * @param dropouts the probability of dropout for each stacked layer
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
- * @property paramsErrorsCollector where to collect the local params errors during the [backward] (optional)
+ * @param paramsErrorsCollector where to collect the local params errors during the [backward] (optional)
  * @property id an identification number useful to track a specific processor
  */
 class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
   val model: StackedLayersParameters,
-  override val useDropout: Boolean,
+  private val dropouts: List<Double>,
   override val propagateToInput: Boolean,
   private val paramsErrorsCollector: ParamsErrorsCollector = ParamsErrorsCollector(),
   override val id: Int = 0
@@ -48,6 +48,29 @@ class RecurrentNeuralProcessor<InputNDArrayType : NDArray<InputNDArrayType>>(
     List<DenseNDArray>, // ErrorsType
     List<DenseNDArray> // InputErrorsType
     > {
+
+  /**
+   * The neural processor that acts on networks of stacked-layers with recurrent connections.
+   *
+   * @param model the stacked-layers parameters
+   * @param dropout the probability of dropout for each stacked layer (default 0.0)
+   * @param propagateToInput whether to propagate the errors to the input during the [backward]
+   * @param paramsErrorsCollector where to collect the local params errors during the [backward] (optional)
+   * @param id an identification number useful to track a specific processor
+   */
+  constructor(
+    model: StackedLayersParameters,
+    dropout: Double = 0.0,
+    propagateToInput: Boolean,
+    paramsErrorsCollector: ParamsErrorsCollector = ParamsErrorsCollector(),
+    id: Int = 0
+  ): this(
+    model = model,
+    dropouts = List(model.numOfLayers) { dropout },
+    propagateToInput = propagateToInput,
+    paramsErrorsCollector = paramsErrorsCollector,
+    id = id
+  )
 
   /**
    * The sequence of states.

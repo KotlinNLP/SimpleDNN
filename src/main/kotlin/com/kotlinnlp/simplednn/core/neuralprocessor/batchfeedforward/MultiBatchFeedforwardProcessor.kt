@@ -20,12 +20,13 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * sequence.
  *
  * @property model the parameters of more stacked-layers networks
- * @property useDropout whether to apply the dropout during the forward
+ * @param dropouts the probability of dropout for each stacked layer of each network
  * @property propagateToInput whether to propagate the errors to the input during the backward
+ * @property id an identification number useful to track a specific processor
  */
 class MultiBatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>>(
   val model: List<StackedLayersParameters>,
-  override val useDropout: Boolean,
+  dropouts: List<List<Double>>,
   override val propagateToInput: Boolean,
   override val id: Int = 0
 ) : NeuralProcessor<
@@ -36,14 +37,35 @@ class MultiBatchFeedforwardProcessor<InputNDArrayType: NDArray<InputNDArrayType>
   > {
 
   /**
+   * The neural processor that acts on networks of stacked-layers, performing operations through with mini-batches.
+   *
+   * @property model the parameters of more stacked-layers networks
+   * @param dropout the probability of dropout for each stacked layer of each network (default 0.0)
+   * @param propagateToInput whether to propagate the errors to the input during the [backward]
+   * @param id an identification number useful to track a specific processor
+   */
+  constructor(
+    model: List<StackedLayersParameters>,
+    dropout: Double = 0.0,
+    propagateToInput: Boolean,
+    id: Int = 0
+  ): this(
+    model = model,
+    dropouts = model.map { List(it.numOfLayers) { dropout } },
+    propagateToInput = propagateToInput,
+    id = id
+  )
+
+  /**
    * The feed-forward processors to encode each input batch.
    */
   private val encoders: List<BatchFeedforwardProcessor<InputNDArrayType>> =
-    this.model.map { BatchFeedforwardProcessor<InputNDArrayType>(
-      model = it,
-      useDropout = this.useDropout,
-      propagateToInput = this.propagateToInput
-    ) }
+    this.model.zip(dropouts).map { (params, processorDropouts) ->
+      BatchFeedforwardProcessor<InputNDArrayType>(
+        model = params,
+        dropouts = processorDropouts,
+        propagateToInput = this.propagateToInput)
+    }
 
   /**
    * @param copy whether the returned errors must be a copy or a reference (actually without effect, the errors are

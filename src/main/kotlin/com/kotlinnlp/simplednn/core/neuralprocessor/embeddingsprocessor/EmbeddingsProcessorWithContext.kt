@@ -41,6 +41,7 @@ class EmbeddingsProcessorWithContext<T>(
     model = StackedLayersParameters(
       LayerInterface(sizes = listOf(embeddingsMap.size, contextVector.values.length), type = LayerType.Input.Dense),
       LayerInterface(sizes = listOf(), connectionType = LayerType.Connection.Concat)),
+    dropout = 0.0,
     propagateToInput = true)
 
   /**

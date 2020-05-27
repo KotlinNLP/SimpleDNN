@@ -18,16 +18,38 @@ import com.kotlinnlp.utils.ItemsPool
  * It is useful to optimize the creation of new structures every time a processor is created.
  *
  * @param model the stacked-layers parameters
- * @param useDropout whether to apply the dropout during the forward
+ * @param dropouts the probability of dropout for each stacked layer
  * @param propagateToInput whether to propagate the errors to the input during the backward
- * @property paramsErrorsCollector where to collect the local params errors during the backward (optional)
+ * @param paramsErrorsCollector where to collect the local params errors during the backward (optional)
  */
 class FeedforwardNeuralProcessorsPool<InputNDArrayType : NDArray<InputNDArrayType>>(
   private val model: StackedLayersParameters,
-  private val useDropout: Boolean,
+  private val dropouts: List<Double>,
   private val propagateToInput: Boolean,
   private val paramsErrorsCollector: ParamsErrorsCollector = ParamsErrorsCollector()
-  ) : ItemsPool<FeedforwardNeuralProcessor<InputNDArrayType>>() {
+) : ItemsPool<FeedforwardNeuralProcessor<InputNDArrayType>>() {
+
+  /**
+   * A pool of [NeuralProcessor]s which allows to allocate and release processors when needed, without creating a new
+   * one.
+   * It is useful to optimize the creation of new structures every time a processor is created.
+   *
+   * @param model the stacked-layers parameters
+   * @param dropout the probability of dropout for each stacked layer (default 0.0)
+   * @param propagateToInput whether to propagate the errors to the input during the backward
+   * @param paramsErrorsCollector where to collect the local params errors during the backward (optional)
+   */
+  constructor(
+    model: StackedLayersParameters,
+    dropout: Double = 0.0,
+    propagateToInput: Boolean,
+    paramsErrorsCollector: ParamsErrorsCollector = ParamsErrorsCollector()
+  ): this(
+    model = model,
+    dropouts = List(model.numOfLayers) { dropout },
+    propagateToInput = propagateToInput,
+    paramsErrorsCollector = paramsErrorsCollector
+  )
 
   /**
    * The factory of a new processor
@@ -38,7 +60,7 @@ class FeedforwardNeuralProcessorsPool<InputNDArrayType : NDArray<InputNDArrayTyp
    */
   override fun itemFactory(id: Int) = FeedforwardNeuralProcessor<InputNDArrayType>(
     model = this.model,
-    useDropout = this.useDropout,
+    dropouts = this.dropouts,
     propagateToInput = this.propagateToInput,
     paramsErrorsCollector = this.paramsErrorsCollector,
     id = id
