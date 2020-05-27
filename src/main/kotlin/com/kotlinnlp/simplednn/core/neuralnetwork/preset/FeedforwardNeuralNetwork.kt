@@ -14,17 +14,15 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 
 /**
- * The Feedforward Neural Network factory.
+ * The Feed-forward neural network factory.
  */
 object FeedforwardNeuralNetwork {
 
   /**
    * @param inputSize the size of the input layer
    * @param inputType the type of the input layer (Dense -default-, Sparse, SparseBinary)
-   * @param inputDropout the dropout probability of the input (default 0.0). If applying it, the usual value is 0.25.
    * @param hiddenSize the size of the hidden layers
    * @param hiddenActivation the activation function of the hidden layers
-   * @param hiddenDropout the dropout probability of the hidden layers (default 0.0).
    * @param numOfHidden the number of hidden layers (must be >= 0, default 1)
    * @param outputSize the size of the output layer
    * @param outputActivation the activation function of the output layer
@@ -33,10 +31,8 @@ object FeedforwardNeuralNetwork {
    */
   operator fun invoke(inputSize: Int,
                       inputType: LayerType.Input = LayerType.Input.Dense,
-                      inputDropout: Double = 0.0,
                       hiddenSize: Int,
                       hiddenActivation: ActivationFunction?,
-                      hiddenDropout: Double = 0.0,
                       numOfHidden: Int = 1,
                       outputSize: Int,
                       outputActivation: ActivationFunction?,
@@ -45,10 +41,8 @@ object FeedforwardNeuralNetwork {
     GenericNeuralNetwork(
       inputSize = inputSize,
       inputType = inputType,
-      inputDropout = inputDropout,
       hiddenSize = hiddenSize,
       hiddenActivation = hiddenActivation,
-      hiddenDropout = hiddenDropout,
       hiddenConnection = LayerType.Connection.Feedforward,
       numOfHidden = numOfHidden,
       outputSize = outputSize,

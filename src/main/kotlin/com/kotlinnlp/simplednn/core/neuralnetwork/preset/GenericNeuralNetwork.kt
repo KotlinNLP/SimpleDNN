@@ -14,18 +14,17 @@ import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 
 /**
- * The factory of a generic neural network model, as stacked layers with a fixed output feed-forward.
+ * The factory of a generic preset neural network model, 3 stacked layers with custom hidden connections and a fixed
+ * output feed-forward.
  */
 object GenericNeuralNetwork {
 
   /**
    * @param inputSize the size of the input layer
    * @param inputType the type of the input layer (Dense, Sparse, SparseBinary)
-   * @param inputDropout the dropout probability of the input. If applying it, the usual value is 0.25.
    * @param hiddenSize the size of the hidden layers
    * @param hiddenActivation the activation function of the hidden layers
    * @param hiddenConnection the type of connection of the hidden layers
-   * @param hiddenDropout the dropout probability of the hidden layers
    * @param numOfHidden the number of hidden layers (must be >= 0)
    * @param outputSize the size of the output layer
    * @param outputActivation the activation function of the output layer
@@ -34,11 +33,9 @@ object GenericNeuralNetwork {
    */
   operator fun invoke(inputSize: Int,
                       inputType: LayerType.Input,
-                      inputDropout: Double,
                       hiddenSize: Int,
                       hiddenActivation: ActivationFunction?,
                       hiddenConnection: LayerType.Connection,
-                      hiddenDropout: Double,
                       numOfHidden: Int,
                       outputSize: Int,
                       outputActivation: ActivationFunction?,
@@ -49,22 +46,19 @@ object GenericNeuralNetwork {
 
     val layersConfiguration = mutableListOf<LayerInterface>().apply {
 
-      add(LayerInterface(size = inputSize, type = inputType, dropout = inputDropout))
+      add(LayerInterface(size = inputSize, type = inputType))
 
       repeat(numOfHidden) {
         add(LayerInterface(
           size = hiddenSize,
           activationFunction = hiddenActivation,
-          connectionType = hiddenConnection,
-          dropout = hiddenDropout
-        ))
+          connectionType = hiddenConnection))
       }
 
       add(LayerInterface(
         size = outputSize,
         activationFunction = outputActivation,
-        connectionType = LayerType.Connection.Feedforward
-      ))
+        connectionType = LayerType.Connection.Feedforward))
     }
 
     return StackedLayersParameters(
