@@ -17,15 +17,12 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
  * @property type the type of the arrays in this interface
  * @property connectionType the type of connection with the interface before (meaningless in case of input interface)
  * @property activationFunction the activation function (meaningless if this is an input interface)
- * @property dropout the probability of input dropout. If applying it, the usual value is 0.5 (better 0.25 if it's the
- *                   first layer).
  */
 data class LayerInterface(
   val sizes: List<Int>,
   val type: LayerType.Input = LayerType.Input.Dense,
   val connectionType: LayerType.Connection? = null,
-  val activationFunction: ActivationFunction? = null,
-  val dropout: Double = 0.0
+  val activationFunction: ActivationFunction? = null
 ) : Serializable {
 
   /**
@@ -35,21 +32,17 @@ data class LayerInterface(
    * @param type the type of the arrays in this interface
    * @param connectionType the type of connection with the interface before (meaningless in case of input interface)
    * @param activationFunction the activation function (meaningless if this is an input interface)
-   * @param dropout the probability of input dropout. If applying it, the usual value is 0.5 (better 0.25 if it's the
-   *                first layer).
    */
   constructor(
     size: Int,
     type: LayerType.Input = LayerType.Input.Dense,
     connectionType: LayerType.Connection? = null,
-    activationFunction: ActivationFunction? = null,
-    dropout: Double = 0.0
+    activationFunction: ActivationFunction? = null
   ): this(
     sizes = listOf(size),
     type = type,
     connectionType = connectionType,
-    activationFunction = activationFunction,
-    dropout = dropout
+    activationFunction = activationFunction
   )
 
   /**
