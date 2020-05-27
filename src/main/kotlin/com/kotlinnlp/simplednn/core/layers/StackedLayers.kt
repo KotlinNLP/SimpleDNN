@@ -52,18 +52,17 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward features.
    *
-   * @param input the input to forward from the input to the output
-   * @param useDropout whether to apply the dropout
+   * @param input the input array
    *
    * @return the output [NDArray]
    */
-  fun forward(input: InputNDArrayType, useDropout: Boolean = false): DenseNDArray {
+  fun forward(input: InputNDArrayType): DenseNDArray {
 
     this.inputLayer.setInput(input)
 
     for ((i, layer) in this.layers.withIndex()) {
       this.curLayerIndex = i
-      layer.forward(useDropout = useDropout)
+      layer.forward()
     }
 
     return this.outputLayer.outputArray.values
@@ -74,19 +73,16 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param input the input to forward from the input to the output
    * @param contributions the support in which to save the contributions of the input respect to the related output
-   * @param useDropout whether to apply the dropout
    *
    * @return the output [NDArray]
    */
-  fun forward(input: InputNDArrayType,
-              contributions: StackedLayersParameters,
-              useDropout: Boolean = false): DenseNDArray {
+  fun forward(input: InputNDArrayType, contributions: StackedLayersParameters): DenseNDArray {
 
     this.inputLayer.setInput(input)
 
     for ((i, layer) in this.layers.withIndex()) {
       this.curLayerIndex = i
-      layer.forward(contributions = contributions.paramsPerLayer[i], useDropout = useDropout)
+      layer.forward(contributions = contributions.paramsPerLayer[i])
     }
 
     return this.outputLayer.outputArray.values
@@ -95,12 +91,11 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * Forward a list of features if the first layer is a Merge layer.
    *
-   * @param input the input to forward from the input to the output
-   * @param useDropout whether to apply the dropout
+   * @param input the input arrays
    *
    * @return the output [NDArray]
    */
-  fun forward(input: List<InputNDArrayType>, useDropout: Boolean = false): DenseNDArray {
+  fun forward(input: List<InputNDArrayType>): DenseNDArray {
 
     require(this.inputLayer is MergeLayer<InputNDArrayType>) {
       "Cannot call the forward with multiple inputs if the first layer is not a Merge layer."
@@ -112,7 +107,7 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     for ((i, layer) in this.layers.withIndex()) {
       this.curLayerIndex = i
-      layer.forward(useDropout = useDropout)
+      layer.forward()
     }
 
     return this.outputLayer.outputArray.values
@@ -123,13 +118,10 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
    *
    * @param input the input to forward from the input to the output
    * @param contributions the support in which to save the contributions of the input respect to the related output
-   * @param useDropout whether to apply the dropout
    *
    * @return the output [NDArray]
    */
-  fun forward(input: List<InputNDArrayType>,
-              contributions: StackedLayersParameters,
-              useDropout: Boolean = false): DenseNDArray {
+  fun forward(input: List<InputNDArrayType>, contributions: StackedLayersParameters): DenseNDArray {
 
     require(this.inputLayer is MergeLayer<InputNDArrayType>) {
       "Cannot call the forward with multiple inputs if the first layer is not a Merge layer."
@@ -141,7 +133,7 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
 
     for ((i, layer) in this.layers.withIndex()) {
       this.curLayerIndex = i
-      layer.forward(contributions = contributions.paramsPerLayer[i], useDropout = useDropout)
+      layer.forward(contributions = contributions.paramsPerLayer[i])
     }
 
     return this.outputLayer.outputArray.values

@@ -127,27 +127,22 @@ internal abstract class Layer<InputNDArrayType : NDArray<InputNDArrayType>>(
 
   /**
    * Forward the input to the output combining it with the parameters.
-   * If [useDropout] is true apply the dropout to the input before.
-   *
-   * @param useDropout whether to apply the dropout
    */
-  fun forward(useDropout: Boolean = false) {
+  fun forward() {
 
-    this.dropoutApplied = useDropout && this.applyDropout()
+    this.dropoutApplied = this.applyDropout()
 
     this.forwardHelper.forward()
   }
 
   /**
    * Forward the input to the output combining it with the parameters, calculating its relevance respect of the output.
-   * If [useDropout] is true apply the dropout to the input before.
    *
    * @param contributions the support in which to save the contributions of the input respect to the output
-   * @param useDropout whether to apply the dropout
    */
-  fun forward(contributions: LayerParameters, useDropout: Boolean = false) {
+  fun forward(contributions: LayerParameters) {
 
-    this.dropoutApplied = useDropout && this.applyDropout()
+    this.dropoutApplied = this.applyDropout()
 
     this.forwardHelper.forward(contributions)
   }
