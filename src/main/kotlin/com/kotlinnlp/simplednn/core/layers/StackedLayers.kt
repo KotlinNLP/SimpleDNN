@@ -22,15 +22,29 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
  * This permits to optimize the forward and backward operations without duplicating values.
  *
  * @property params the layers parameters
+ * @param dropouts the probability of dropout for each stacked layer
  */
 internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
-  val params: StackedLayersParameters
+  val params: StackedLayersParameters,
+  dropouts: List<Double>
 ) {
+
+  /**
+   * A structure of stacked layers, in which the output array of a layer references the input array of the following.
+   * This permits to optimize the forward and backward operations without duplicating values.
+   *
+   * @param params the layers parameters
+   * @param dropout the probability of dropout for each stacked layer
+   */
+  constructor(params: StackedLayersParameters, dropout: Double): this(
+    params = params,
+    dropouts = List(params.numOfLayers) { dropout }
+  )
 
   /**
    * The stacked layers with the given [params].
    */
-  val layers: List<Layer<*>> = this.buildLayers()
+  val layers: List<Layer<*>> = this.buildLayers(dropouts)
 
   /**
    * Used to track the loop over the layers during the forward and the backward
@@ -202,16 +216,21 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
    * The resulting list of [Layer] will contain one element less the configuration interfaces and each layer is defined
    * by two consecutive configurations of input-output [x-y, y-z, ...].
    *
+   * @param dropouts the probability of dropout for each stacked layer
+   *
    * @return the stacked layers where the output of a layer references the input of the next
    */
-  protected fun buildLayers(): List<Layer<*>> = this.params.layersConfiguration.let { config ->
+  protected fun buildLayers(dropouts: List<Double>): List<Layer<*>> = this.params.layersConfiguration.let { config ->
 
     require(config.subList(1, config.size).all { it.type == LayerType.Input.Dense }) {
       "The layers except the first must be dense."
     }
-
     require(config.subList(2, config.size).all { it.connectionType!!.property != LayerType.Property.Merge }) {
       "Only the first layer can be a Merge layer."
+    }
+    require(dropouts.size == this.params.numOfLayers) {
+      "The number of dropout values (${dropouts.size}) must be equal to the number of layers " +
+        "(${this.params.numOfLayers})."
     }
 
     var prevLayer: Layer<*>? = null
@@ -223,6 +242,7 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
           inputConfiguration = config[0],
           outputConfiguration = config[1],
           params = this.params.paramsPerLayer[0],
+          dropout = dropouts[i],
           contextWindow = this as? LayersWindow)
       else
         LayerFactory(
@@ -230,7 +250,7 @@ internal open class StackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
           inputType = LayerType.Input.Dense,
           outputConfiguration = config[i + 1],
           params = this.params.paramsPerLayer[i],
-          dropout = config[i].dropout,
+          dropout = dropouts[i],
           contextWindow = this as? LayersWindow)
 
       prevLayer = layer

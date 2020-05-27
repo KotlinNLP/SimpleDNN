@@ -18,12 +18,36 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * This permits to optimize the forward and backward operations without duplicating values.
  *
  * @property params the parameters
+ * @param dropouts the probability of dropout for each stacked layer
  * @property statesWindow the context window to get the previous and the next state of the structure
  */
 internal class RecurrentStackedLayers<InputNDArrayType : NDArray<InputNDArrayType>>(
   params: StackedLayersParameters,
+  dropouts: List<Double>,
   val statesWindow: StatesWindow<InputNDArrayType>
-) : LayersWindow, StackedLayers<InputNDArrayType>(params = params) {
+) : LayersWindow, StackedLayers<InputNDArrayType>(
+  params = params,
+  dropouts = dropouts
+) {
+
+  /**
+   * A structure of stacked layers used in recurrent networks, in which the output array of a layer references the input
+   * array of the following.
+   * This permits to optimize the forward and backward operations without duplicating values.
+   *
+   * @param params the parameters
+   * @param dropout the probability of dropout for each stacked layer
+   * @param statesWindow the context window to get the previous and the next state of the structure
+   */
+  constructor(
+    params: StackedLayersParameters,
+    dropout: Double,
+    statesWindow: StatesWindow<InputNDArrayType>
+  ): this(
+    params = params,
+    dropouts = List(params.numOfLayers) { dropout },
+    statesWindow = statesWindow
+  )
 
   /**
    * A list of booleans indicating if the init hidden layers must be used in the next forward.
@@ -34,7 +58,7 @@ internal class RecurrentStackedLayers<InputNDArrayType : NDArray<InputNDArrayTyp
    * The initial hidden layers from which to take the previous hidden if the method [setInitHidden] is called before a
    * forward.
    */
-  private val initHiddenLayers: List<Layer<*>> = this.buildLayers()
+  private val initHiddenLayers: List<Layer<*>> = this.buildLayers(dropouts)
 
   /**
    * Set the initial hidden arrays of each layer. They will be used as previous hidden in the next forward.
