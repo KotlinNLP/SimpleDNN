@@ -34,15 +34,14 @@ internal class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputType: LayerType.Input,
   val attentionArrays: List<AugmentedArray<DenseNDArray>>,
   override val params: AttentionMechanismLayerParameters,
-  activation: ActivationFunction? = SoftmaxBase(),
-  dropout: Double
+  activation: ActivationFunction? = SoftmaxBase()
 ) : Layer<InputNDArrayType>(
   inputArray = inputArrays[0],
   inputType = inputType,
   outputArray = AugmentedArray(values = DenseNDArrayFactory.zeros(Shape(inputArrays.first().size))),
   params = params,
   activationFunction = activation,
-  dropout = dropout
+  dropout = 0.0
 ) {
 
   /**
