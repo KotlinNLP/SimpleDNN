@@ -329,6 +329,36 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   /**
    *
    */
+  override fun sumByRows(a: NDArray<*>): DenseNDArray = when (a) {
+    is DenseNDArray -> this.sumByRows(a)
+    is SparseNDArray -> TODO("not implemented")
+    is SparseBinaryNDArray -> TODO("not implemented")
+    else -> throw RuntimeException("Invalid NDArray type")
+  }
+
+  /**
+   *
+   */
+  private fun sumByRows(a: DenseNDArray): DenseNDArray = DenseNDArray(this.storage.addRowVector(a.storage))
+
+  /**
+   *
+   */
+  override fun sumByColumns(a: NDArray<*>): DenseNDArray = when (a) {
+    is DenseNDArray -> this.sumByColumns(a)
+    is SparseNDArray -> TODO("not implemented")
+    is SparseBinaryNDArray -> TODO("not implemented")
+    else -> throw RuntimeException("Invalid NDArray type")
+  }
+
+  /**
+   *
+   */
+  private fun sumByColumns(a: DenseNDArray): DenseNDArray = DenseNDArray(this.storage.addColumnVector(a.storage))
+
+  /**
+   *
+   */
   override fun assignSum(n: Double): DenseNDArray {
     this.storage.addi(n)
     return this
@@ -378,6 +408,20 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   override fun assignSum(a: DenseNDArray, b: DenseNDArray): DenseNDArray {
     a.storage.addi(b.storage, this.storage)
     return this
+  }
+
+  /**
+   *
+   */
+  fun assignSumByRows(a: DenseNDArray): DenseNDArray = this.apply {
+     storage.addiRowVector(a.storage)
+  }
+
+  /**
+   *
+   */
+  fun assignSumByColumns(a: DenseNDArray): DenseNDArray = this.apply {
+     storage.addiColumnVector(a.storage)
   }
 
   /**

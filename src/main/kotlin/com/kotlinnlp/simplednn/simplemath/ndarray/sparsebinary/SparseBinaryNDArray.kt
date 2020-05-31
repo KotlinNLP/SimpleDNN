@@ -391,6 +391,20 @@ class SparseBinaryNDArray(
   /**
    *
    */
+  override fun sumByRows(a: NDArray<*>): DenseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun sumByColumns(a: NDArray<*>): DenseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
   override fun assignSum(a: NDArray<*>): SparseBinaryNDArray {
     TODO("not implemented")
   }

@@ -174,6 +174,16 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   /**
    *
    */
+  fun sumByRows(a: NDArray<*>): DenseNDArray
+
+  /**
+   *
+   */
+  fun sumByColumns(a: NDArray<*>): DenseNDArray
+
+  /**
+   *
+   */
   fun assignSum(n: Double): SelfType
 
   /**
@@ -190,6 +200,7 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
    *
    */
   fun assignSum(a: SelfType, b: SelfType): SelfType
+
   /**
    *
    */

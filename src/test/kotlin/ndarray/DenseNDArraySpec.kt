@@ -552,6 +552,50 @@ class DenseNDArraySpec : Spek({
         }
       }
 
+      context("sumByRows(array) method") {
+
+        val matrix = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.1, 0.2, 0.3, 0.0),
+          doubleArrayOf(0.4, 0.5, 0.7, 0.9)
+        ))
+        val expectedRes = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.2, 0.4, 0.6, 0.0),
+          doubleArrayOf(0.5, 0.7, 1.0, 0.9)
+        ))
+        val res = matrix.sumByRows(array)
+
+        it("should return a new DenseNDArray") {
+          assertFalse { matrix === res }
+        }
+
+        it("should return the expected values") {
+          assertTrue { res.equals(expectedRes, tolerance = 1.0e-04) }
+        }
+      }
+
+
+      context("sumByColumns(array) method") {
+
+        val sumArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2))
+        val matrix = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.1, 0.2, 0.3, 0.0),
+          doubleArrayOf(0.4, 0.5, 0.7, 0.9)
+        ))
+        val expectedRes = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.2, 0.3, 0.4, 0.1),
+          doubleArrayOf(0.6, 0.7, 0.9, 1.1)
+        ))
+        val res = matrix.sumByColumns(sumArray)
+
+        it("should return a new DenseNDArray") {
+          assertFalse { matrix === res }
+        }
+
+        it("should return the expected values") {
+          assertTrue { res.equals(expectedRes, tolerance = 1.0e-04) }
+        }
+      }
+
       context("sub(number) method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.7, -0.6, -0.9))
@@ -939,6 +983,50 @@ class DenseNDArraySpec : Spek({
 
         it("should assign the expected values") {
           assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
+        }
+      }
+
+      context("assignSumByRows(array) method") {
+
+        val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
+        val matrix = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.1, 0.2, 0.3, 0.0),
+          doubleArrayOf(0.4, 0.5, 0.7, 0.9)
+        ))
+        val expectedRes = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.2, 0.4, 0.6, 0.0),
+          doubleArrayOf(0.5, 0.7, 1.0, 0.9)
+        ))
+        val res = matrix.assignSumByRows(array)
+
+        it("should return the same DenseNDArray") {
+          assertTrue { matrix === res }
+        }
+
+        it("should assign the expected values") {
+          assertTrue { matrix.equals(expectedRes, tolerance = 1.0e-04) }
+        }
+      }
+
+      context("assignSumByColumns(array) method") {
+
+        val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2))
+        val matrix = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.1, 0.2, 0.3, 0.0),
+          doubleArrayOf(0.4, 0.5, 0.7, 0.9)
+        ))
+        val expectedRes = DenseNDArrayFactory.arrayOf(listOf(
+          doubleArrayOf(0.2, 0.3, 0.4, 0.1),
+          doubleArrayOf(0.6, 0.7, 0.9, 1.1)
+        ))
+        val res = matrix.assignSumByColumns(array)
+
+        it("should return the same DenseNDArray") {
+          assertTrue { matrix === res }
+        }
+
+        it("should assign the expected values") {
+          assertTrue { matrix.equals(expectedRes, tolerance = 1.0e-04) }
         }
       }
 

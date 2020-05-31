@@ -362,6 +362,20 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   /**
    *
    */
+  override fun sumByRows(a: NDArray<*>): DenseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
+  override fun sumByColumns(a: NDArray<*>): DenseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   *
+   */
   override fun assignSum(n: Double): SparseNDArray {
 
     this.values.indices.forEach { i ->
