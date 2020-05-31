@@ -141,7 +141,8 @@ class BERTTrainer(
   /**
    * A Bidirectional Encoder Representations from Transformers.
    */
-  private val bert = BERT(model = this.model, propagateToInput = this.optimizeEmbeddings, masksEnabled = true)
+  private val bert =
+    BERT(model = this.model, autoPadding = true, propagateToInput = this.optimizeEmbeddings, masksEnabled = true)
 
   /**
    * A feed-forward layer trained to classify an encoded vector within the terms of the model vocabulary.

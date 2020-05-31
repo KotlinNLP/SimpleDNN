@@ -59,7 +59,7 @@ private class TextReconstructor(model: BERTModel) {
   /**
    * A BERT transformer.
    */
-  private val bert = BERT(model, masksEnabled = true)
+  private val bert = BERT(model = model, autoPadding = true, masksEnabled = true)
 
   /**
    * The terms classifier based on the BERT model dictionary.

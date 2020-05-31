@@ -26,6 +26,9 @@ import kotlin.math.sin
  * @param fineTuning whether to train the last layer only (default false)
  * @param masksEnabled whether to consider the token [BERTModel.FuncToken.MASK] as a functional token if present in a
  *                     sentence (default = false)
+ * @param autoPadding if `true` manage automatically the special padding tokens, if `false` (default) the [forward]
+ *                    method will return a sequence containing two encodings more (CLS at the start and SEP at the end)
+ *                    and the [backward] method will expect their errors too
  * @property propagateToInput whether to propagate the errors to the input word embeddings during the [backward]
  * @property id a unique ID
  */
@@ -33,6 +36,7 @@ class BERT(
   val model: BERTModel,
   fineTuning: Boolean = false,
   private val masksEnabled: Boolean = false,
+  private val autoPadding: Boolean = false,
   override val propagateToInput: Boolean = false,
   override val id: Int = 0
 ) : NeuralProcessor<
@@ -94,7 +98,7 @@ class BERT(
       encodings = it.forward(encodings)
     }
 
-    return encodings.subList(1, encodings.lastIndex) // remove the padding tokens
+    return if (this.autoPadding) encodings.subList(1, encodings.lastIndex) else encodings // remove padding tokens
   }
 
   /**
@@ -106,7 +110,10 @@ class BERT(
 
     this.errorsAccumulator.clear()
 
-    var errors: List<DenseNDArray> = listOf(this.zeroErrors) + outputErrors + listOf(this.zeroErrors)
+    var errors: List<DenseNDArray> = if (this.autoPadding)
+      listOf(this.zeroErrors) + outputErrors + listOf(this.zeroErrors) // add padding tokens
+    else
+      outputErrors
 
     this.trainableLayers.reversed().forEach {
 
