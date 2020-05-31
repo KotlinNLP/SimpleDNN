@@ -651,6 +651,24 @@ class SparseBinaryNDArray(
   }
 
   /**
+   * Natural exponential.
+   *
+   * @return a new [SparseBinaryNDArray] containing the results of the natural exponential function applied to this
+   */
+  override fun exp(): SparseBinaryNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   * In-place natural exponential.
+   *
+   * @return this [SparseBinaryNDArray] with the natural exponential function applied to its values
+   */
+  override fun assignExp(): SparseBinaryNDArray {
+    TODO("not implemented")
+  }
+
+  /**
    * Logarithm with base 10.
    *
    * @return a new [SparseBinaryNDArray] containing the element-wise logarithm with base 10 of this array

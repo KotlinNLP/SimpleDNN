@@ -840,6 +840,20 @@ class DenseNDArraySpec : Spek({
         }
       }
 
+      context("exp() method") {
+
+        val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(1.105171, 1.221403, 1.349859, 1.0))
+        val res = array.exp()
+
+        it("should return a new DenseNDArray") {
+          assertFalse { array === res }
+        }
+
+        it("should return the expected values") {
+          assertTrue { res.equals(expectedArray, tolerance = 1.0e-04) }
+        }
+      }
+
       context("log10() method") {
 
         val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.397940, -0.522879, -0.301030, -0.154902))
@@ -1285,6 +1299,21 @@ class DenseNDArraySpec : Spek({
 
         it("should assign the expected values") {
           assertTrue { array.equals(expectedArray, tolerance = 1.0e-04) }
+        }
+      }
+
+      context("assignExp(number) method") {
+
+        val array = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.2, 0.3, 0.0))
+        val expectedArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(1.105171, 1.221403, 1.349859, 1.0))
+        val res = array.assignExp()
+
+        it("should return the same DenseNDArray") {
+          assertTrue { array === res }
+        }
+
+        it("should assign the expected values") {
+          assertTrue { array.equals(expectedArray, tolerance = 1.0e-6) }
         }
       }
 

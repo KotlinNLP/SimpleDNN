@@ -860,6 +860,24 @@ class SparseNDArray(override val shape: Shape) : NDArray<SparseNDArray>, Iterabl
   }
 
   /**
+   * Natural exponential.
+   *
+   * @return a new [SparseNDArray] containing the results of the natural exponential function applied to this
+   */
+  override fun exp(): SparseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
+   * In-place natural exponential.
+   *
+   * @return this [SparseNDArray] with the natural exponential function applied to its values
+   */
+  override fun assignExp(): SparseNDArray {
+    TODO("not implemented")
+  }
+
+  /**
    * Logarithm with base 10.
    *
    * @return a new [SparseNDArray] containing the element-wise logarithm with base 10 of this array

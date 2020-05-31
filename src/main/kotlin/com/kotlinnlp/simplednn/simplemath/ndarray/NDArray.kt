@@ -362,6 +362,20 @@ interface NDArray<SelfType : NDArray<SelfType>> : Serializable {
   fun assignPow(power: Double): SelfType
 
   /**
+   * Natural exponential.
+   *
+   * @return a new [NDArray] containing the results of the natural exponential function applied to this
+   */
+  fun exp(): SelfType
+
+  /**
+   * In-place natural exponential.
+   *
+   * @return this [NDArray] with the natural exponential function applied to its values
+   */
+  fun assignExp(): SelfType
+
+  /**
    * Logarithm with base 10.
    *
    * @return a new [NDArray] containing the element-wise logarithm with base 10 of this array

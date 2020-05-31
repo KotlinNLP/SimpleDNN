@@ -891,6 +891,23 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
   }
 
   /**
+   * Natural exponential.
+   *
+   * @return a new [DenseNDArray] containing the results of the natural exponential function applied to this
+   */
+  override fun exp(): DenseNDArray = DenseNDArray(MatrixFunctions.exp(this.storage))
+
+  /**
+   * In-place natural exponential.
+   *
+   * @return this [DenseNDArray] with the natural exponential function applied to its values
+   */
+  override fun assignExp(): DenseNDArray {
+    MatrixFunctions.expi(this.storage)
+    return this
+  }
+
+  /**
    * Logarithm with base 10.
    *
    * @return a new [DenseNDArray] containing the element-wise logarithm with base 10 of this array
