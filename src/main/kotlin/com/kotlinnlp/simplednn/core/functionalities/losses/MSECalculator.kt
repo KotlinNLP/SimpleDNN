@@ -23,7 +23,7 @@ open class MSECalculator : LossCalculator {
    * @return the loss within [output] and [outputGold]
    */
   override fun calculateLoss(output: DenseNDArray, outputGold: DenseNDArray): DenseNDArray =
-    output.sub(outputGold).pow(2.0).prod(0.5)
+    output.sub(outputGold).assignPow(2.0).assignProd(0.5)
 
   /**
    * Calculate the errors between an output and its gold.
