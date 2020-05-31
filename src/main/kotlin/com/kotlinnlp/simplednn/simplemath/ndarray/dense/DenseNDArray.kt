@@ -18,7 +18,6 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.sparse.SparseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.sparsebinary.SparseBinaryNDArray
 import org.jblas.MatrixFunctions.abs
 import org.jblas.Singular
-import kotlin.math.exp
 import kotlin.math.sqrt
 
 /**
@@ -998,11 +997,6 @@ class DenseNDArray(private val storage: DoubleMatrix) : NDArray<DenseNDArray> {
 
     return Triple(DenseNDArray(usv[0]), DenseNDArray(usv[1]), DenseNDArray(usv[2]))
   }
-
-  /**
-   * @return the sum of the exponentials
-   */
-  fun sumExp(): Double = this.map { exp(it) }.sum()
 
   /**
    * Get the index of the highest value eventually skipping the element at the given [exceptIndex] when it is >= 0.
