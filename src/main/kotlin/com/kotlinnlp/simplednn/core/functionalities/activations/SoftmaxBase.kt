@@ -10,7 +10,6 @@ package com.kotlinnlp.simplednn.core.functionalities.activations
 import com.kotlinnlp.simplednn.simplemath.ndarray.Shape
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
-import kotlin.math.exp
 
 /**
  * The softmax function transforms the values of a vector in real numbers in the range [0.0, 1.0].
@@ -36,16 +35,8 @@ open class SoftmaxBase : ActivationFunction {
    */
   override fun f(array: DenseNDArray, out: DenseNDArray) {
 
-    val max: Double = array.max()
-    var sum = 0.0
-
-    for (i in 0 until array.length) {
-      val e: Double = exp(array[i] - max)
-      out[i] = e
-      sum += e
-    }
-
-    out.assignDiv(sum)
+    out.assignValues(array).assignSub(array.max()).assignExp()
+    out.assignDiv(out.sum())
   }
 
   /**
