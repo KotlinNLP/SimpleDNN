@@ -19,6 +19,7 @@ import com.kotlinnlp.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.Serializable
+import kotlin.math.roundToInt
 
 /**
  * The model of the Hierarchical Attention Networks.
@@ -36,7 +37,6 @@ import java.io.Serializable
  *                       the first factor is 2.0, the others 1.0.
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
- * @param dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.25.
  */
 class HAN(
   val hierarchySize: Int = 2,
@@ -49,8 +49,7 @@ class HAN(
   val outputActivation: ActivationFunction?,
   val gainFactors: List<Double> = List(size = hierarchySize, init = { i -> if (i == 0) 2.0 else 1.0 }),
   weightsInitializer: Initializer? = GlorotInitializer(),
-  biasesInitializer: Initializer? = GlorotInitializer(),
-  dropout: Double = 0.0
+  biasesInitializer: Initializer? = GlorotInitializer()
 ) : Serializable {
 
   companion object {
@@ -94,7 +93,6 @@ class HAN(
         inputSize = inputSize,
         hiddenSize = this.getBiRNNOutputSize(inputSize = inputSize, levelIndex = i) / 2,
         hiddenActivation = this.biRNNsActivation,
-        dropout = dropout,
         recurrentConnectionType = this.biRNNsConnectionType,
         weightsInitializer = weightsInitializer,
         biasesInitializer = biasesInitializer)
@@ -189,7 +187,7 @@ class HAN(
   private fun getBiRNNOutputSize(inputSize: Int, levelIndex: Int): Int {
 
     val gain: Double = this.gainFactors.reversed()[levelIndex]
-    val roughOutputSize = Math.round(gain * inputSize).toInt()
+    val roughOutputSize: Int = (gain * inputSize).roundToInt()
 
     return if (roughOutputSize % 2 == 0) roughOutputSize else roughOutputSize + 1
   }

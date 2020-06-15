@@ -7,7 +7,6 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attention.han
 
-import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
 import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
@@ -23,21 +22,25 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 /**
  * Encoder based on Hierarchical Attention Networks.
  *
- *   Reference:
- *   [Zichao Yang, Diyi Yang, Chris Dyer, Xiaodong He, Alex Smola, Eduard Hovy -
- *   Hierarchical Attention Networks for Document Classification](https://www.cs.cmu.edu/~diyiy/docs/naacl16.pdf)
+ * Reference:
+ *  [Zichao Yang, Diyi Yang, Chris Dyer, Xiaodong He, Alex Smola, Eduard Hovy - Hierarchical Attention Networks for
+ *  Document Classification](https://www.cs.cmu.edu/~diyiy/docs/naacl16.pdf)
  *
  * @property model the parameters of the model of the networks
- * @property useDropout whether to apply the dropout during the [forward]
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
+ * @param biRNNDropout the probability of dropout for the BiRNNs (default 0.0)
+ * @param attentionDropout the probability of attention dropout (default 0.0)
+ * @param outputDropout the probability of output dropout (default 0.0)
  * @param mePropK the k factor of the 'meProp' algorithm to propagate from the k (in percentage) output nodes with
  *                the top errors of the transform layers (ignored if null, the default)
  * @property id an identification number useful to track a specific [HANEncoder]
  */
 class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   val model: HAN,
-  override val useDropout: Boolean,
   override val propagateToInput: Boolean,
+  biRNNDropout: Double = 0.0,
+  attentionDropout: Double = 0.0,
+  outputDropout: Double = 0.0,
   private val mePropK: Double? = null,
   override val id: Int = 0
 ) : NeuralProcessor<
@@ -56,12 +59,14 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
       if (this.model.isInputLevel((i)))
         BiRNNEncodersPool<InputNDArrayType>(
           network = this.model.biRNNs[i],
-          useDropout = this.useDropout,
+          rnnDropout = biRNNDropout,
+          mergeDropout = biRNNDropout,
           propagateToInput = this.propagateToInput)
       else
         BiRNNEncodersPool<DenseNDArray>(
           network = this.model.biRNNs[i],
-          useDropout = this.useDropout,
+          rnnDropout = biRNNDropout,
+          mergeDropout = biRNNDropout,
           propagateToInput = true)
     }
   )
@@ -74,7 +79,9 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
     init = { i ->
       AttentionNetworksPool<DenseNDArray>(
         model = this.model.attentionNetworksParams[i],
-        inputType = LayerType.Input.Dense)
+        inputType = LayerType.Input.Dense,
+        propagateToInput = this.propagateToInput,
+        dropout = attentionDropout)
     }
   )
 
@@ -97,27 +104,20 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   /**
    * An array containing params errors accumulator for each BiRNN encoder.
    */
-  private val encodersParamsErrorsAccumulators: List<ParamsErrorsAccumulator> = List(
-    size = this.model.hierarchySize,
-    init = { ParamsErrorsAccumulator() }
-  )
+  private val encodersParamsErrorsAccumulators: List<ParamsErrorsAccumulator> =
+    List(this.model.hierarchySize) { ParamsErrorsAccumulator() }
 
   /**
    * An array containing params errors accumulator for each [AttentionNetwork].
    */
   private val attentionNetworksParamsErrorsAccumulators: List<ParamsErrorsAccumulator> =
-    List(
-      size = this.model.hierarchySize,
-      init = { ParamsErrorsAccumulator() }
-    )
+    List(this.model.hierarchySize) { ParamsErrorsAccumulator() }
 
   /**
    * The processor for the output Feedforward network (single layer).
    */
-  private val outputProcessor = FeedforwardNeuralProcessor<DenseNDArray>(
-    model = this.model.outputNetwork,
-    propagateToInput = true,
-    useDropout = false) // TODO: set dropout
+  private val outputProcessor: FeedforwardNeuralProcessor<DenseNDArray> =
+    FeedforwardNeuralProcessor(model = this.model.outputNetwork, propagateToInput = true, dropout = outputDropout)
 
   /**
    * Forward a sequences hierarchy encoding the sequence of each level through a [BiRNNEncoder] and an
@@ -233,7 +233,7 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
       (encoder as BiRNNEncoder<DenseNDArray>).forward(inputSequence as List<DenseNDArray>)
     }
 
-    return attentionNetwork.forward(inputSequence = encodedSequence.map { AugmentedArray(it) })
+    return attentionNetwork.forward(encodedSequence)
   }
 
   /**
@@ -290,9 +290,7 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   private fun backwardAttentionNetwork(outputErrors: DenseNDArray, levelIndex: Int, groupIndex: Int) {
 
     val accumulator = this.attentionNetworksParamsErrorsAccumulators[levelIndex]
-    val paramsErrors = this.usedAttentionNetworksPerLevel[levelIndex][groupIndex].backward(
-      outputErrors = outputErrors,
-      propagateToInput = true)
+    val paramsErrors = this.usedAttentionNetworksPerLevel[levelIndex][groupIndex].backward(outputErrors)
 
     accumulator.accumulate(paramsErrors)
   }
@@ -371,8 +369,8 @@ class HANEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   private fun buildImportanceScoreHierarchyItem(levelIndex: Int, groupIndex: Int, refScore: Double): HierarchyItem {
 
-    val importanceScores: DenseNDArray
-      = this.usedAttentionNetworksPerLevel[levelIndex][groupIndex].getImportanceScore(copy = false)
+    val importanceScores: DenseNDArray =
+      this.usedAttentionNetworksPerLevel[levelIndex][groupIndex].getImportanceScore(copy = false)
 
     return if (levelIndex == (this.model.hierarchySize - 1))
       HierarchySequence(
