@@ -14,6 +14,7 @@ import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedfo
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
+import com.kotlinnlp.utils.foldUp
 
 /**
  * A multi-head scaled-dot attention network.
@@ -117,28 +118,5 @@ class MultiHeadAttentionNetwork(
     }
 
     return inputErrors
-  }
-
-  /**
-   * Fold up these nested lists inverting the outer with the inner lists.
-   * All the inner lists must contain the same number of elements.
-   *
-   * If the outer list contains M inner lists and, in turn, each of them contains N elements, then a list
-   * with N inner lists will be given in output, each with M elements.
-   *
-   * @return the outer list folded up with the inner lists
-   */
-  private fun <T> List<List<T>>.foldUp(): List<List<T>> {
-
-    val outer = this
-    val ret: List<MutableList<T>> = List(outer.first().size) { mutableListOf<T>() }
-
-    outer.forEach { inner -> // i .. M
-      inner.forEachIndexed { j, elm -> // j .. N
-        ret[j].add(elm)
-      }
-    }
-
-    return ret.map { it.toList() }
   }
 }
