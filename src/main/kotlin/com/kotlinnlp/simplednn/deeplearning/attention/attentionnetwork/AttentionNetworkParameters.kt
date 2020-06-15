@@ -7,11 +7,12 @@
 
 package com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork
 
+import com.kotlinnlp.simplednn.core.functionalities.activations.Tanh
 import com.kotlinnlp.simplednn.core.functionalities.initializers.GlorotInitializer
 import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
-import com.kotlinnlp.simplednn.core.layers.LayerParametersFactory
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
 import com.kotlinnlp.simplednn.core.layers.LayerType
-import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
 import com.kotlinnlp.simplednn.core.layers.models.attention.attentionmechanism.AttentionMechanismLayerParameters
 import java.io.Serializable
 
@@ -20,14 +21,14 @@ import java.io.Serializable
  *
  * @property inputSize the size of the input arrays
  * @property attentionSize the size of the attention arrays
- * @property sparseInput whether the input arrays are sparse
- * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
- * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
+ * @param sparseInput `true` if the input arrays are sparse, `false` if they are dense
+ * @param weightsInitializer the initializer of the transform weights (zeros if null, default: Glorot)
+ * @param biasesInitializer the initializer of the transform biases (zeros if null, default: Glorot)
  */
 class AttentionNetworkParameters(
   val inputSize: Int,
   val attentionSize: Int,
-  val sparseInput: Boolean = false,
+  sparseInput: Boolean = false,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
 ) : Serializable {
@@ -47,21 +48,23 @@ class AttentionNetworkParameters(
   val outputSize: Int = this.inputSize
 
   /**
-   * The parameters of the transform layer.
+   * The parameters of the transform network.
    */
-  val transformParams: FeedforwardLayerParameters = LayerParametersFactory(
-    inputsSize = listOf(this.inputSize),
-    outputSize = this.attentionSize,
-    connectionType = LayerType.Connection.Feedforward,
-    sparseInput = this.sparseInput,
+  val transform = StackedLayersParameters(
+    LayerInterface(
+      size = this.inputSize,
+      type = if (sparseInput) LayerType.Input.Sparse else LayerType.Input.Dense),
+    LayerInterface(
+      size = this.attentionSize,
+      connectionType = LayerType.Connection.Feedforward,
+      activationFunction = Tanh),
     weightsInitializer = weightsInitializer,
-    biasesInitializer = biasesInitializer
-  ) as FeedforwardLayerParameters
+    biasesInitializer = biasesInitializer)
 
   /**
-   * The parameters of the attention layer.
+   * The parameters of the attention mechanism.
    */
-  val attentionParams = AttentionMechanismLayerParameters(
+  val attention = AttentionMechanismLayerParameters(
     inputSize = this.attentionSize,
     weightsInitializer = weightsInitializer)
 }
