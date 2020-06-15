@@ -10,8 +10,6 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig
 import com.kotlinnlp.simplednn.core.layers.LayerType
 
 /**
- * A data class that defines the configuration of a Concat layer.
- *
- * @property dropout the probability of dropout
+ * The Concat merge layer configuration.
  */
-class ConcatMerge(dropout: Double = 0.0) : MergeConfiguration(type = LayerType.Connection.Concat, dropout = dropout)
+class ConcatMerge : MergeConfiguration(type = LayerType.Connection.Concat)

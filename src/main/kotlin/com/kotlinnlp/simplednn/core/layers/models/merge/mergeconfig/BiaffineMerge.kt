@@ -11,19 +11,16 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.layers.LayerType
 
 /**
- * A data class that defines the configuration of a Biaffine layer.
+ * The Biaffine merge layer configuration.
  *
  * @property outputSize the size of the merged output
  * @property activationFunction the output activation function
- * @property dropout the probability of dropout
  */
 class BiaffineMerge(
   outputSize: Int,
-  activationFunction: ActivationFunction? = null,
-  dropout: Double = 0.0
-) : OpenOutputMerge(
+  activationFunction: ActivationFunction? = null
+) : VariableOutputMergeConfig(
   type = LayerType.Connection.Biaffine,
-  dropout = dropout,
   outputSize = outputSize,
   activationFunction = activationFunction
 )

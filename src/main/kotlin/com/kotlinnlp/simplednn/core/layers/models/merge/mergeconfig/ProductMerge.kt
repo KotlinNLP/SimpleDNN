@@ -10,8 +10,6 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig
 import com.kotlinnlp.simplednn.core.layers.LayerType
 
 /**
- * A data class that defines the configuration of a Product layer.
- *
- * @property dropout the probability of dropout
+ * The Product merge layer configuration.
  */
-class ProductMerge(dropout: Double = 0.0) : MergeConfiguration(type = LayerType.Connection.Product, dropout = dropout)
+class ProductMerge : MergeConfiguration(type = LayerType.Connection.Product)

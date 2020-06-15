@@ -69,7 +69,7 @@ class PointerNetworkModel(
       sizes = listOf(this.inputSize, this.vectorSize)),
     LayerInterface(
       size = this.mergeOutputSize,
-      activationFunction = (mergeConfig as? OpenOutputMerge)?.activationFunction,
+      activationFunction = (mergeConfig as? VariableOutputMergeConfig)?.activationFunction,
       connectionType = mergeConfig.type),
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)

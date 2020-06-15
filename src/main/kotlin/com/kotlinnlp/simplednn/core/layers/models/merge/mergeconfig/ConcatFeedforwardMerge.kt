@@ -11,19 +11,16 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.layers.LayerType
 
 /**
- * A data class that defines the configuration of a Concat layer followed by a feed-forward layer.
+ * The ConcatFeedforward merge layer configuration.
  *
  * @property outputSize the size of the merged output
  * @property activationFunction the output activation function
- * @property dropout the probability of dropout
  */
 class ConcatFeedforwardMerge(
   outputSize: Int,
-  activationFunction: ActivationFunction? = null,
-  dropout: Double = 0.0
-) : OpenOutputMerge(
+  activationFunction: ActivationFunction? = null
+) : VariableOutputMergeConfig(
   type = LayerType.Connection.ConcatFeedforward,
-  dropout = dropout,
   outputSize = outputSize,
   activationFunction = activationFunction
 )

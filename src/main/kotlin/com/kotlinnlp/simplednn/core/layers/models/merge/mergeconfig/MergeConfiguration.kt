@@ -10,15 +10,14 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig
 import com.kotlinnlp.simplednn.core.layers.LayerType
 
 /**
- * A class that defines the configuration of a Merge layer.
+ * The configuration of a merge layer.
  *
- * @property type the connection type of the output Merge layer
- * @property dropout the probability of dropout
+ * @property type the connection type
  */
-abstract class MergeConfiguration(val type: LayerType.Connection, val dropout: Double) {
+abstract class MergeConfiguration(val type: LayerType.Connection) {
 
   /**
-   * Check connection type.
+   * Check the connection type.
    */
   init {
     require(this.type.property == LayerType.Property.Merge)

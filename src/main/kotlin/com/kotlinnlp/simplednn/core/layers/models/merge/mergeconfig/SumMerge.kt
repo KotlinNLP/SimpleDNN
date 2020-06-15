@@ -10,8 +10,6 @@ package com.kotlinnlp.simplednn.core.layers.models.merge.mergeconfig
 import com.kotlinnlp.simplednn.core.layers.LayerType
 
 /**
- * A data class that defines the configuration of a Sum layer.
- *
- * @property dropout the probability of dropout
+ * The Sum merge layer configuration.
  */
-class SumMerge(dropout: Double = 0.0) : MergeConfiguration(type = LayerType.Connection.Sum, dropout = dropout)
+class SumMerge : MergeConfiguration(type = LayerType.Connection.Sum)

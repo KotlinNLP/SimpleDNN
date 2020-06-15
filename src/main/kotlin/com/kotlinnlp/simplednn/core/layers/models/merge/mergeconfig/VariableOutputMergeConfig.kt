@@ -11,16 +11,14 @@ import com.kotlinnlp.simplednn.core.functionalities.activations.ActivationFuncti
 import com.kotlinnlp.simplednn.core.layers.LayerType
 
 /**
- * A class that defines the configuration of the Merge layer has a configurable output size and activation.
+ * The configuration of a merge layer with a variable output size and and an optional activation function.
  *
- * @property type the connection type of the output Merge layer
- * @property dropout the probability of dropout
+ * @property type the connection type
  * @property outputSize the size of the merged output
  * @property activationFunction the output activation function
  */
-abstract class OpenOutputMerge(
+abstract class VariableOutputMergeConfig(
   type: LayerType.Connection,
-  dropout: Double,
   val outputSize: Int,
   val activationFunction: ActivationFunction?
-) : MergeConfiguration(type = type, dropout = dropout)
+) : MergeConfiguration(type)
