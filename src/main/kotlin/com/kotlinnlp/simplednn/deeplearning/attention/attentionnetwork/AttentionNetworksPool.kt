@@ -17,13 +17,14 @@ import com.kotlinnlp.utils.ItemsPool
  *
  * @property model the model of the [AttentionNetwork]s of the pool
  * @property inputType the type of the input arrays
- * @property dropout the probability of dropout (default 0.0) when generating the attention arrays for the Attention
- *                   Layer. If applying it, the usual value is 0.5 (better 0.25 if it's the first layer).
+ * @property dropout the probability of dropout (default 0.0)
+ * @param propagateToInput whether to propagate the errors to the input during the backward
  */
 class AttentionNetworksPool<InputNDArrayType : NDArray<InputNDArrayType>>(
-  val model: AttentionNetworkParameters,
-  val inputType: LayerType.Input,
-  val dropout: Double = 0.0
+  private val model: AttentionNetworkParameters,
+  private val inputType: LayerType.Input,
+  private val dropout: Double = 0.0,
+  private val propagateToInput: Boolean
 ) : ItemsPool<AttentionNetwork<InputNDArrayType>>() {
 
   /**
@@ -37,6 +38,7 @@ class AttentionNetworksPool<InputNDArrayType : NDArray<InputNDArrayType>>(
     model = this.model,
     inputType = this.inputType,
     dropout = this.dropout,
+    propagateToInput = this.propagateToInput,
     id = id
   )
 }
