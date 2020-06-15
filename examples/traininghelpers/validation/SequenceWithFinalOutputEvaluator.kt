@@ -49,10 +49,7 @@ class SequenceWithFinalOutputEvaluator<NDArrayType: NDArray<NDArrayType>>(
   /**
    * A recurrent neural processor.
    */
-  private val neuralProcessor = RecurrentNeuralProcessor<NDArrayType>(
-    model = model,
-    useDropout = false,
-    propagateToInput = false)
+  private val neuralProcessor = RecurrentNeuralProcessor<NDArrayType>(model = model, propagateToInput = false)
 
   /**
    * Evaluate the model with a single example.

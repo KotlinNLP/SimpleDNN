@@ -58,10 +58,7 @@ class SequenceWithFinalOutputTrainer<NDArrayType: NDArray<NDArrayType>>(
   /**
    * The neural processor that uses the model.
    */
-  private val neuralProcessor: RecurrentNeuralProcessor<NDArrayType> = RecurrentNeuralProcessor(
-    model = model,
-    useDropout = false,
-    propagateToInput = false)
+  private val neuralProcessor = RecurrentNeuralProcessor<NDArrayType>(model = model, propagateToInput = false)
 
   /**
    * Require softmax cross-entropy loss to be used with the softmax as output activation function and vice versa.

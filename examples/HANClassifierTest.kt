@@ -95,7 +95,7 @@ private class HANClassifierTrainer(
   /**
    * The [HANEncoder] used as classifier (Softmax output activation).
    */
-  private val classifier = HANEncoder<DenseNDArray>(model = model, useDropout = false, propagateToInput = false)
+  private val classifier = HANEncoder<DenseNDArray>(model = model, propagateToInput = false)
 
   /**
    * Learn from an example (forward + backward).
@@ -146,7 +146,7 @@ private class HANClassifierEvaluator(
   /**
    * The [HANEncoder] for the classification.
    */
-  private val classifier = HANEncoder<DenseNDArray>(model = model, propagateToInput = false, useDropout = false)
+  private val classifier = HANEncoder<DenseNDArray>(model = model, propagateToInput = false)
 
   /**
    * Evaluate the model with a single example.

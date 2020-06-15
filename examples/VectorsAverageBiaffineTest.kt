@@ -6,8 +6,10 @@
  * ------------------------------------------------------------------*/
 
 import com.kotlinnlp.simplednn.core.functionalities.updatemethods.radam.RADAMMethod
-import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayerParameters
-import com.kotlinnlp.simplednn.core.layers.models.merge.biaffine.BiaffineLayer
+import com.kotlinnlp.simplednn.core.layers.LayerInterface
+import com.kotlinnlp.simplednn.core.layers.LayerType
+import com.kotlinnlp.simplednn.core.layers.StackedLayersParameters
+import com.kotlinnlp.simplednn.core.neuralprocessor.feedforward.FeedforwardNeuralProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsOptimizer
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -42,11 +44,12 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
   /**
    *
    */
-  private val biaffineLayer = BiaffineLayer<DenseNDArray>(
-    params = BiaffineLayerParameters(
-      inputSize1 = 5,
-      inputSize2 = 5,
-      outputSize = 5))
+  private val biaffineProcessor = FeedforwardNeuralProcessor<DenseNDArray>(
+    model = StackedLayersParameters(
+      LayerInterface(sizes = listOf(5, 5)),
+      LayerInterface(size = 5, connectionType = LayerType.Connection.Biaffine)),
+    propagateToInput = false
+  )
 
   /**
    *
@@ -140,9 +143,9 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
     this.optimizer.newBatch()
     this.optimizer.newExample()
 
-    this.biaffineLayer.setErrors(errors = this.predict(example).sub(example.third))
+    this.biaffineProcessor.backward(outputErrors = this.predict(example).sub(example.third))
 
-    this.optimizer.accumulate(this.biaffineLayer.backward(propagateToInput = false))
+    this.optimizer.accumulate(this.biaffineProcessor.getParamsErrors(copy = false))
     this.optimizer.update()
   }
 
@@ -151,12 +154,9 @@ class VectorsAverageBiaffineTest(private val trainingSetPath: String) {
    */
   private fun predict(example: Example): DenseNDArray {
 
-    this.biaffineLayer.setInput(index = 0, values = example.first)
-    this.biaffineLayer.setInput(index = 1, values = example.second)
+    this.biaffineProcessor.forward(listOf(example.first, example.second))
 
-    this.biaffineLayer.forward()
-
-    return this.biaffineLayer.outputArray.values
+    return this.biaffineProcessor.getOutput()
   }
 
   /**

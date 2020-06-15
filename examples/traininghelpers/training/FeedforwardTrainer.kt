@@ -58,10 +58,7 @@ internal class FeedforwardTrainer<NDArrayType: NDArray<NDArrayType>>(
   /**
    * The neural processor that uses the model.
    */
-  private val neuralProcessor: FeedforwardNeuralProcessor<NDArrayType> = FeedforwardNeuralProcessor(
-    model = model,
-    useDropout = false,
-    propagateToInput = false)
+  private val neuralProcessor = FeedforwardNeuralProcessor<NDArrayType>(model = model, propagateToInput = false)
 
   /**
    * Require softmax cross-entropy loss to be used with the softmax as output activation function and vice versa.

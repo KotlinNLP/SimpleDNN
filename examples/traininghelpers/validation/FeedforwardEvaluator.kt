@@ -49,10 +49,7 @@ class FeedforwardEvaluator<NDArrayType: NDArray<NDArrayType>>(
   /**
    * A feed-forward neural processor.
    */
-  private val neuralProcessor = FeedforwardNeuralProcessor<NDArrayType>(
-    model = model,
-    useDropout = false,
-    propagateToInput = false)
+  private val neuralProcessor = FeedforwardNeuralProcessor<NDArrayType>(model = model, propagateToInput = false)
 
   /**
    * Evaluate the model with a single example.

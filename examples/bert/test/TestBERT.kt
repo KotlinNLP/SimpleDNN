@@ -64,8 +64,7 @@ private class TextReconstructor(model: BERTModel) {
   /**
    * The terms classifier based on the BERT model dictionary.
    */
-  private val classifier: FeedforwardNeuralProcessor<DenseNDArray> =
-    FeedforwardNeuralProcessor(model = model.classifier, propagateToInput = false, useDropout = false)
+  private val classifier = FeedforwardNeuralProcessor<DenseNDArray>(model = model.classifier, propagateToInput = false)
 
   /**
    * Reconstruct the masked tokens of a text.
