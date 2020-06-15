@@ -17,6 +17,7 @@ import com.kotlinnlp.utils.Serializer
 import java.io.InputStream
 import java.io.OutputStream
 import java.io.Serializable
+import kotlin.math.roundToInt
 
 /**
  * The DeepBiRNN.
@@ -64,7 +65,6 @@ class DeepBiRNN(val levels: List<BiRNN>) : Serializable {
      * @param inputSize the input size
      * @param inputType the input type
      * @param recurrentConnectionType the type of recurrent layers connection
-     * @param dropout the dropout of the recurrent layers
      * @param numberOfLevels the number of BiRNN levels
      * @param gainFactors the gain factors between the input size and the output size of each BiRNN
      * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
@@ -76,7 +76,6 @@ class DeepBiRNN(val levels: List<BiRNN>) : Serializable {
                        inputType: LayerType.Input,
                        recurrentConnectionType: LayerType.Connection,
                        hiddenActivation: ActivationFunction?,
-                       dropout: Double = 0.0,
                        numberOfLevels: Int,
                        gainFactors: List<Double> = List(
                          size = numberOfLevels,
@@ -108,7 +107,6 @@ class DeepBiRNN(val levels: List<BiRNN>) : Serializable {
             inputType = if (i == 0) inputType else LayerType.Input.Dense,
             hiddenSize = outputSize / 2,
             hiddenActivation = hiddenActivation,
-            dropout = dropout,
             recurrentConnectionType = recurrentConnectionType,
             outputMergeConfiguration = ConcatMerge(),
             weightsInitializer = weightsInitializer,
@@ -134,7 +132,7 @@ class DeepBiRNN(val levels: List<BiRNN>) : Serializable {
      */
     private fun getBiRNNOutputSize(inputSize: Int, gain: Double): Int {
 
-      val roughOutputSize = Math.round(gain * inputSize).toInt()
+      val roughOutputSize: Int = (gain * inputSize).roundToInt()
 
       return if (roughOutputSize % 2 == 0) roughOutputSize else roughOutputSize + 1
     }

@@ -14,23 +14,25 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 
 /**
- * Bidirectional Recursive Neural Network Encoder
+ * Bidirectional Recursive Neural Network Encoder.
  *
  * The BiRNNEncoder encodes a sequence (i.e., words) using a concatenation of two RNNs,
  * one processing from left-to-right and the other processing right-to-left.
  * The result is a vector representation for each element which captures information
  * of the element itself and an “infinite” window around it.
  *
- * This implementation support a sequence encoding at time.
+ * This implementation supports a sequence encoding at time.
  *
  * @property network the [BiRNN] of this encoder
- * @property useDropout whether to apply the dropout during the [forward]
+ * @param rnnDropout the probability of RNNs dropout
+ * @param mergeDropout the probability of output merge dropout
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
  * @property id an identification number useful to track a specific [BiRNNEncoder]
  */
 class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   val network: BiRNN,
-  override val useDropout: Boolean,
+  rnnDropout: Double,
+  mergeDropout: Double,
   override val propagateToInput: Boolean,
   override val id: Int = 0
 ) : NeuralProcessor<
@@ -41,11 +43,39 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   > {
 
   /**
+   * Bidirectional Recursive Neural Network Encoder.
+   *
+   * The BiRNNEncoder encodes a sequence (i.e., words) using a concatenation of two RNNs,
+   * one processing from left-to-right and the other processing right-to-left.
+   * The result is a vector representation for each element which captures information
+   * of the element itself and an “infinite” window around it.
+   *
+   * This implementation supports a sequence encoding at time.
+   *
+   * @param network the [BiRNN] of this encoder
+   * @param propagateToInput whether to propagate the errors to the input during the [backward]
+   * @param dropout the probability of dropout, the same for the RNNs and the output merge (default 0.0)
+   * @param id an identification number useful to track a specific [BiRNNEncoder]
+   */
+  constructor(
+    network: BiRNN,
+    propagateToInput: Boolean,
+    dropout: Double = 0.0,
+    id: Int = 0
+  ): this(
+    network = network,
+    rnnDropout = dropout,
+    mergeDropout = dropout,
+    propagateToInput = propagateToInput,
+    id = id
+  )
+
+  /**
    * The [RecurrentNeuralProcessor] which encodes the sequence left-to-right.
    */
   private val leftToRightProcessor = RecurrentNeuralProcessor<InputNDArrayType>(
     model = this.network.leftToRightNetwork,
-    useDropout = this.useDropout,
+    dropouts = List(this.network.leftToRightNetwork.numOfLayers) { rnnDropout },
     propagateToInput = this.propagateToInput)
 
   /**
@@ -53,15 +83,15 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    */
   private val rightToLeftProcessor = RecurrentNeuralProcessor<InputNDArrayType>(
     model = this.network.rightToLeftNetwork,
-    useDropout = this.useDropout,
+    dropouts = List(this.network.rightToLeftNetwork.numOfLayers) { rnnDropout },
     propagateToInput = this.propagateToInput)
 
   /**
    * The processor that merge the left-to-right and right-to-left encoded vectors.
    */
-  private val outputMergeProcessors = BatchFeedforwardProcessor<DenseNDArray>(
+  private val outputMergeProcessor = BatchFeedforwardProcessor<DenseNDArray>(
     model = this.network.outputMergeNetwork,
-    useDropout = this.useDropout,
+    dropouts = List(this.network.outputMergeNetwork.numOfLayers) { mergeDropout },
     propagateToInput = true)
 
   /**
@@ -80,7 +110,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
 
     this.sequence = input
 
-    return outputMergeProcessors.forward(this.biEncoding().map { it.toList() }.toTypedArray())
+    return outputMergeProcessor.forward(this.biEncoding().map { it.toList() }.toTypedArray())
   }
 
   /**
@@ -168,7 +198,7 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   override fun getParamsErrors(copy: Boolean) =
     this.leftToRightProcessor.getParamsErrors(copy = copy) +
       this.rightToLeftProcessor.getParamsErrors(copy = copy) +
-        this.outputMergeProcessors.getParamsErrors(copy = copy)
+      this.outputMergeProcessor.getParamsErrors(copy = copy)
 
 
   /**
@@ -209,7 +239,9 @@ class BiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
    *
    */
   private fun outputMergeBackward(outputErrorsSequence: List<DenseNDArray>): List<Pair<DenseNDArray, DenseNDArray>> {
-    this.outputMergeProcessors.backward(outputErrorsSequence)
-    return this.outputMergeProcessors.getInputsErrors(copy = false).map { Pair(it[0], it[1]) }
+
+    this.outputMergeProcessor.backward(outputErrorsSequence)
+
+    return this.outputMergeProcessor.getInputsErrors(copy = false).map { Pair(it[0], it[1]) }
   }
 }

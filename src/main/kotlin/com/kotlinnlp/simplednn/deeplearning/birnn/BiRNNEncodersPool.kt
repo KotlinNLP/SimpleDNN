@@ -14,13 +14,15 @@ import com.kotlinnlp.utils.ItemsPool
  * A pool of [BiRNNEncoder]s which allows to allocate and release one when needed, without creating a new one.
  * It is useful to optimize the creation of new structures every time a new encoder is created.
  *
- * @property network the [BiRNN] which the encoders of the pool will work with
- * @param useDropout whether to apply the dropout during the forward
+ * @param network the [BiRNN] which the encoders of the pool will work with
+ * @param rnnDropout the probability of RNNs dropout (default 0.0)
+ * @param mergeDropout the probability of output merge dropout (default 0.0)
  * @param propagateToInput whether to propagate the errors to the input during the backward
  */
 class BiRNNEncodersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
-  val network: BiRNN,
-  private val useDropout: Boolean,
+  private val network: BiRNN,
+  private val rnnDropout: Double = 0.0,
+  private val mergeDropout: Double = 0.0,
   private val propagateToInput: Boolean
 ) : ItemsPool<BiRNNEncoder<InputNDArrayType>>() {
 
@@ -33,7 +35,9 @@ class BiRNNEncodersPool<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun itemFactory(id: Int) = BiRNNEncoder<InputNDArrayType>(
     network = this.network,
-    useDropout = this.useDropout,
+    rnnDropout = this.rnnDropout,
+    mergeDropout = this.mergeDropout,
     propagateToInput = this.propagateToInput,
-    id = id)
+    id = id
+  )
 }

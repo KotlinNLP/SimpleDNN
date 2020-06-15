@@ -14,19 +14,21 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.NDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 
 /**
- * Deep Bidirectional Recursive Neural Network Encoder
+ * Deep Bidirectional Recursive Neural Network Encoder.
  *
  * For convenience, this class exposes methods as if there was a single [BiRNN].
  * In this way, it is possible to use a [BiRNNEncoder] and a [DeepBiRNNEncoder] almost interchangeably.
  *
  * @property network the [DeepBiRNN] of this encoder
- * @property useDropout whether to apply the dropout during the [forward]
+ * @param rnnDropout the probability of RNNs dropout
+ * @param mergeDropout the probability of output merge dropout
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
  * @property id an identification number useful to track a specific [DeepBiRNNEncoder]
  */
 class DeepBiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   val network: DeepBiRNN,
-  override val useDropout: Boolean,
+  rnnDropout: Double,
+  mergeDropout: Double,
   override val propagateToInput: Boolean,
   override val id: Int = 0
 ): NeuralProcessor<
@@ -37,13 +39,45 @@ class DeepBiRNNEncoder<InputNDArrayType: NDArray<InputNDArrayType>>(
   > {
 
   /**
+   * Deep Bidirectional Recursive Neural Network Encoder.
+   *
+   * For convenience, this class exposes methods as if there was a single [BiRNN].
+   * In this way, it is possible to use a [BiRNNEncoder] and a [DeepBiRNNEncoder] almost interchangeably.
+   *
+   * @param network the [DeepBiRNN] of this encoder
+   * @param dropout the probability of dropout, the same for the RNNs and the output merge (default 0.0)
+   * @param propagateToInput whether to propagate the errors to the input during the [backward]
+   * @param id an identification number useful to track a specific [DeepBiRNNEncoder]
+   */
+  constructor(
+    network: DeepBiRNN,
+    propagateToInput: Boolean,
+    dropout: Double = 0.0,
+    id: Int = 0
+  ): this(
+    network = network,
+    rnnDropout = dropout,
+    mergeDropout = dropout,
+    propagateToInput = propagateToInput,
+    id = id
+  )
+
+  /**
    * List of encoders for all the stacked [BiRNN] layers.
    */
   private val encoders = this.network.levels.mapIndexed { i, biRNN ->
     if (i == 0)
-      BiRNNEncoder<InputNDArrayType>(biRNN, useDropout = this.useDropout, propagateToInput = this.propagateToInput)
+      BiRNNEncoder<InputNDArrayType>(
+        network = biRNN,
+        rnnDropout = rnnDropout,
+        mergeDropout = mergeDropout,
+        propagateToInput = this.propagateToInput)
     else
-      BiRNNEncoder<DenseNDArray>(biRNN, useDropout = this.useDropout, propagateToInput = true)
+      BiRNNEncoder<DenseNDArray>(
+        network = biRNN,
+        rnnDropout = rnnDropout,
+        mergeDropout = mergeDropout,
+        propagateToInput = true)
   }
 
   /**

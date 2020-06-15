@@ -33,9 +33,6 @@ import java.io.Serializable
  * @property hiddenSize the size of the output layer of each RNN
  * @property hiddenActivation the activation function of the output layer
  * @property recurrentConnectionType type of recurrent neural network (e.g. LSTM, GRU, CFN, SimpleRNN)
- * @property dropout the probability of dropout (default 0.0). If applying it, the usual value is 0.25.
- * @property outputSize the size of the [BiRNN] output layer results from the concatenation
- *                      of the hidden layers of each RNN
  * @param outputMergeConfiguration the configuration of the output merge layer
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
@@ -45,7 +42,6 @@ class BiRNN(
   val inputSize: Int,
   val hiddenSize: Int,
   val hiddenActivation: ActivationFunction?,
-  val dropout: Double = 0.0,
   val recurrentConnectionType: LayerType.Connection,
   outputMergeConfiguration: MergeConfiguration = ConcatMerge(),
   weightsInitializer: Initializer? = GlorotInitializer(),
@@ -91,8 +87,7 @@ class BiRNN(
   val leftToRightNetwork = StackedLayersParameters(
     LayerInterface(
       size = this.inputSize,
-      type = this.inputType,
-      dropout = this.dropout),
+      type = this.inputType),
     LayerInterface(
       size = this.hiddenSize,
       activationFunction = this.hiddenActivation,
@@ -107,8 +102,7 @@ class BiRNN(
   val rightToLeftNetwork = StackedLayersParameters(
     LayerInterface(
       size = this.inputSize,
-      type = this.inputType,
-      dropout = this.dropout),
+      type = this.inputType),
     LayerInterface(
       size = this.hiddenSize,
       activationFunction = this.hiddenActivation,
@@ -124,7 +118,7 @@ class BiRNN(
   val outputMergeNetwork = StackedLayersParameters(
     if (outputMergeConfiguration is ConcatFeedforwardMerge)
       listOf(
-        LayerInterface(sizes = listOf(this.hiddenSize, this.hiddenSize), dropout = outputMergeConfiguration.dropout),
+        LayerInterface(sizes = listOf(this.hiddenSize, this.hiddenSize)),
         LayerInterface(size = 2 * this.hiddenSize, connectionType = LayerType.Connection.Concat),
         LayerInterface(
           size = outputMergeConfiguration.outputSize,
@@ -132,7 +126,7 @@ class BiRNN(
           connectionType = LayerType.Connection.Feedforward))
     else
       listOf(
-        LayerInterface(sizes = listOf(this.hiddenSize, this.hiddenSize), dropout = outputMergeConfiguration.dropout),
+        LayerInterface(sizes = listOf(this.hiddenSize, this.hiddenSize)),
         LayerInterface(size = this.outputSize, connectionType = outputMergeConfiguration.type)),
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
