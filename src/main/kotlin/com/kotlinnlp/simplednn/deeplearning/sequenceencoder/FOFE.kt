@@ -61,11 +61,6 @@ class FOFE(
   /**
    * TODO: write documentation
    */
-  override val useDropout: Boolean = false
-
-  /**
-   * TODO: write documentation
-   */
   private lateinit var matrix: DenseNDArray
 
   /**
