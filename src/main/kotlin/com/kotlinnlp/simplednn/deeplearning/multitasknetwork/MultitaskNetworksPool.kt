@@ -15,12 +15,10 @@ import com.kotlinnlp.utils.ItemsPool
  * It is useful to optimize the creation of new structures every time a new network is created.
  *
  * @property model the model of the [MultiTaskNetwork]s of the pool
- * @param useDropout whether to apply the dropout during the forward
  * @param propagateToInput whether to propagate the errors to the input during the backward
  */
 class MultitaskNetworksPool<InputNDArrayType : NDArray<InputNDArrayType>>(
   val model: MultiTaskNetworkModel,
-  private val useDropout: Boolean,
   private val propagateToInput: Boolean
 ) : ItemsPool<MultiTaskNetwork<InputNDArrayType>>() {
 
@@ -33,7 +31,6 @@ class MultitaskNetworksPool<InputNDArrayType : NDArray<InputNDArrayType>>(
    */
   override fun itemFactory(id: Int) = MultiTaskNetwork<InputNDArrayType>(
     model = this.model,
-    useDropout = this.useDropout,
     propagateToInput = this.propagateToInput,
     id = id
   )

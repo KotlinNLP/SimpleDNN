@@ -19,13 +19,15 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  * feed-forward layer.
  *
  * @property model the model of this network
- * @property useDropout whether to apply the dropout during the forward
+ * @param inputDropout the probability of dropout of the input processor
+ * @param outputsDropout the probability of dropout of the output processors
  * @property propagateToInput whether to propagate the errors to the input during the backward
  * @property id an identification number useful to track a specific [MultiTaskNetwork]
  */
 class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
   val model: MultiTaskNetworkModel,
-  override val useDropout: Boolean,
+  inputDropout: Double = 0.0,
+  outputsDropout: Double = 0.0,
   override val propagateToInput: Boolean,
   override val id: Int = 0
 ) : NeuralProcessor<
@@ -38,20 +40,22 @@ class MultiTaskNetwork<InputNDArrayType : NDArray<InputNDArrayType>>(
   /**
    * The neural processor of the input network.
    */
-  val inputProcessor = FeedforwardNeuralProcessor<InputNDArrayType>(
-    model = this.model.inputNetwork,
-    useDropout = this.useDropout,
-    propagateToInput = this.propagateToInput)
+  private val inputProcessor: FeedforwardNeuralProcessor<InputNDArrayType> =
+    FeedforwardNeuralProcessor(
+      model = this.model.inputNetwork,
+      dropout = inputDropout,
+      propagateToInput = this.propagateToInput)
 
   /**
    * The list of neural processors of the output networks.
    */
-  val outputProcessors: List<FeedforwardNeuralProcessor<DenseNDArray>> =
+  private val outputProcessors: List<FeedforwardNeuralProcessor<DenseNDArray>> =
     this.model.outputNetworks.map { network ->
       FeedforwardNeuralProcessor<DenseNDArray>(
         model = network,
-        useDropout = this.useDropout,
-        propagateToInput = true) }
+        dropout = outputsDropout,
+        propagateToInput = true)
+    }
 
   /**
    * @param copy a Boolean indicating whether the returned errors must be a copy or a reference

@@ -23,12 +23,8 @@ import java.io.Serializable
  *
  * @property inputSize the size of the input layer
  * @property inputType the type of the input array (default Dense)
- * @property inputDropout the probability of dropout of the input layer (default 0.0).
- *                        If applying it, the usual value is 0.25.
  * @property hiddenSize the size of the hidden layer
  * @property hiddenActivation the activation function of the hidden layer
- * @property hiddenDropout the probability of dropout of the hidden layer (default 0.0).
- *                         If applying it, the usual value is 0.5.
  * @property outputConfigurations a list of configurations of the output networks
  * @param weightsInitializer the initializer of the weights (zeros if null, default: Glorot)
  * @param biasesInitializer the initializer of the biases (zeros if null, default: Glorot)
@@ -36,10 +32,8 @@ import java.io.Serializable
 class MultiTaskNetworkModel(
   val inputSize: Int,
   val inputType: LayerType.Input = LayerType.Input.Dense,
-  val inputDropout: Double = 0.0,
   val hiddenSize: Int,
   val hiddenActivation: ActivationFunction?,
-  val hiddenDropout: Double = 0.0,
   val outputConfigurations: List<MultiTaskNetworkConfig>,
   weightsInitializer: Initializer? = GlorotInitializer(),
   biasesInitializer: Initializer? = GlorotInitializer()
@@ -69,15 +63,13 @@ class MultiTaskNetworkModel(
   val inputNetwork = StackedLayersParameters(
     LayerInterface(
       size = this.inputSize,
-      type = this.inputType,
-      dropout = this.inputDropout),
+      type = this.inputType),
     LayerInterface(
       size = this.hiddenSize,
       connectionType = LayerType.Connection.Feedforward,
       activationFunction = this.hiddenActivation),
     weightsInitializer = weightsInitializer,
-    biasesInitializer = biasesInitializer
-  )
+    biasesInitializer = biasesInitializer)
 
   /**
    * The list of output networks (each composed by a single layer).
@@ -86,15 +78,13 @@ class MultiTaskNetworkModel(
     StackedLayersParameters(
       LayerInterface(
         size = this.hiddenSize,
-        type = LayerType.Input.Dense,
-        dropout = this.hiddenDropout),
+        type = LayerType.Input.Dense),
       LayerInterface(
         size = it.outputSize,
         connectionType = LayerType.Connection.Feedforward,
         activationFunction = it.outputActivation),
       weightsInitializer = weightsInitializer,
-      biasesInitializer = biasesInitializer
-    )
+      biasesInitializer = biasesInitializer)
   }
 
   /**
