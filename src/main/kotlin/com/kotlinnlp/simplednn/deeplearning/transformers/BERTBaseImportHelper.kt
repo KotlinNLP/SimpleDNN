@@ -11,6 +11,7 @@ import com.kotlinnlp.simplednn.core.arrays.ParamsArray
 import com.kotlinnlp.simplednn.core.embeddings.EmbeddingsMap
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.norm.NormLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
+import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 import com.kotlinnlp.utils.DictionarySet
@@ -173,20 +174,16 @@ object BERTBaseImportHelper {
   private fun getAssignMap(model: BERTModel): Map<String, ParamsArray> {
 
     val assignMap: MutableMap<String, ParamsArray> = mutableMapOf(
-      "bert.embeddings.LayerNorm.weight" to (model.embNorm.paramsPerLayer.single() as NormLayerParameters).g,
-      "bert.embeddings.LayerNorm.bias" to (model.embNorm.paramsPerLayer.single() as NormLayerParameters).b,
+      "bert.embeddings.LayerNorm.weight" to model.embNorm.getLayerParams<NormLayerParameters>(0).g,
+      "bert.embeddings.LayerNorm.bias" to model.embNorm.getLayerParams<NormLayerParameters>(0).b,
       "cls.predictions.transform.dense.weight" to
-        (model.classifier.paramsPerLayer[0] as FeedforwardLayerParameters).unit.weights,
+        model.classifier.getLayerParams<FeedforwardLayerParameters>(0).unit.weights,
       "cls.predictions.transform.dense.bias" to
-        (model.classifier.paramsPerLayer[0] as FeedforwardLayerParameters).unit.biases,
-      "cls.predictions.transform.LayerNorm.weight" to
-        (model.classifier.paramsPerLayer[1] as NormLayerParameters).g,
-      "cls.predictions.transform.LayerNorm.bias" to
-        (model.classifier.paramsPerLayer[1] as NormLayerParameters).b,
-      "cls.predictions.decoder.weight" to
-        (model.classifier.paramsPerLayer[2] as FeedforwardLayerParameters).unit.weights,
-      "cls.predictions.decoder.bias" to
-        (model.classifier.paramsPerLayer[2] as FeedforwardLayerParameters).unit.biases
+        model.classifier.getLayerParams<FeedforwardLayerParameters>(0).unit.biases,
+      "cls.predictions.transform.LayerNorm.weight" to model.classifier.getLayerParams<NormLayerParameters>(1).g,
+      "cls.predictions.transform.LayerNorm.bias" to model.classifier.getLayerParams<NormLayerParameters>(1).b,
+      "cls.predictions.decoder.weight" to model.classifier.getLayerParams<FeedforwardLayerParameters>(2).unit.weights,
+      "cls.predictions.decoder.bias" to model.classifier.getLayerParams<FeedforwardLayerParameters>(2).unit.biases
     )
 
     model.layers.forEachIndexed { i, layerParams ->
@@ -219,24 +216,24 @@ object BERTBaseImportHelper {
     }
 
     assignMap += mapOf(
-      "bert.encoder.layer.$i.attention.output.dense.weight" to params.attention.merge.output.unit.weights,
-      "bert.encoder.layer.$i.attention.output.dense.bias" to params.attention.merge.output.unit.biases,
+      "bert.encoder.layer.$i.attention.output.dense.weight" to
+        params.attention.merge.getLayerParams<ConcatFFLayerParameters>(0).output.unit.weights,
+      "bert.encoder.layer.$i.attention.output.dense.bias" to
+        params.attention.merge.getLayerParams<ConcatFFLayerParameters>(0).output.unit.biases,
       "bert.encoder.layer.$i.attention.output.LayerNorm.weight" to
-        (params.multiHeadNorm.paramsPerLayer.single() as NormLayerParameters).g,
+        params.multiHeadNorm.getLayerParams<NormLayerParameters>(0).g,
       "bert.encoder.layer.$i.attention.output.LayerNorm.bias" to
-        (params.multiHeadNorm.paramsPerLayer.single() as NormLayerParameters).b,
+        params.multiHeadNorm.getLayerParams<NormLayerParameters>(0).b,
       "bert.encoder.layer.$i.intermediate.dense.weight" to
-        (params.outputFF.paramsPerLayer[0] as FeedforwardLayerParameters).unit.weights,
+        params.outputFF.getLayerParams<FeedforwardLayerParameters>(0).unit.weights,
       "bert.encoder.layer.$i.intermediate.dense.bias" to
-        (params.outputFF.paramsPerLayer[0] as FeedforwardLayerParameters).unit.biases,
+        params.outputFF.getLayerParams<FeedforwardLayerParameters>(0).unit.biases,
       "bert.encoder.layer.$i.output.dense.weight" to
-        (params.outputFF.paramsPerLayer[1] as FeedforwardLayerParameters).unit.weights,
+        params.outputFF.getLayerParams<FeedforwardLayerParameters>(1).unit.weights,
       "bert.encoder.layer.$i.output.dense.bias" to
-        (params.outputFF.paramsPerLayer[1] as FeedforwardLayerParameters).unit.biases,
-      "bert.encoder.layer.$i.output.LayerNorm.weight" to
-        (params.outputNorm.paramsPerLayer.single() as NormLayerParameters).g,
-      "bert.encoder.layer.$i.output.LayerNorm.bias" to
-        (params.outputNorm.paramsPerLayer.single() as NormLayerParameters).b
+        params.outputFF.getLayerParams<FeedforwardLayerParameters>(1).unit.biases,
+      "bert.encoder.layer.$i.output.LayerNorm.weight" to params.outputNorm.getLayerParams<NormLayerParameters>(0).g,
+      "bert.encoder.layer.$i.output.LayerNorm.bias" to params.outputNorm.getLayerParams<NormLayerParameters>(0).b
     )
 
     return assignMap
