@@ -30,22 +30,15 @@ class PointerNetworkProcessor(
   > {
 
   /**
-   * Propagate to the input by default
+   * Not used: always propagate to the input.
    */
   override val propagateToInput: Boolean = true
-
-  /**
-   * TODO: implement the dropout
-   */
-  override val useDropout: Boolean = false
 
   /**
    * @param inputSequenceErrors the list of errors of the input sequence
    * @param inputVectorsErrors The list of errors of the input vectors
    */
-  class InputErrors(
-    val inputSequenceErrors: List<DenseNDArray>,
-    val inputVectorsErrors: List<DenseNDArray>)
+  class InputErrors(val inputSequenceErrors: List<DenseNDArray>, val inputVectorsErrors: List<DenseNDArray>)
 
   /**
    * The input sequence that must be set using the [setInputSequence] method.
@@ -65,10 +58,8 @@ class PointerNetworkProcessor(
   /**
    * Batch processor for the merge network.
    */
-  internal val mergeProcessor = BatchFeedforwardProcessor<DenseNDArray>(
-    model = this.model.mergeNetwork,
-    useDropout = false,
-    propagateToInput = true)
+  internal val mergeProcessor: BatchFeedforwardProcessor<DenseNDArray> =
+    BatchFeedforwardProcessor(model = this.model.mergeNetwork, propagateToInput = true)
 
   /**
    * The list of attention mechanisms used during the last forward.
