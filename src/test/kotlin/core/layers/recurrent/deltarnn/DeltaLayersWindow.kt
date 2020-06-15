@@ -66,41 +66,35 @@ internal sealed class DeltaLayersWindow: LayersWindow {
 /**
  *
  */
-private fun buildPrevStateLayer(): DeltaRNNLayer<DenseNDArray> {
-
-  val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
-  outputArray.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
-  outputArray.setActivation(Tanh)
-  outputArray.activate()
-
-  return DeltaRNNLayer(
-    inputArray = AugmentedArray(size = 4),
-    inputType = LayerType.Input.Dense,
-    outputArray = outputArray,
-    params = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh,
-    layersWindow = DeltaLayersWindow.Empty)
-}
+private fun buildPrevStateLayer(): DeltaRNNLayer<DenseNDArray> = DeltaRNNLayer(
+  inputArray = AugmentedArray(size = 4),
+  inputType = LayerType.Input.Dense,
+  outputArray = RecurrentLayerUnit<DenseNDArray>(5).apply {
+    assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
+    setActivation(Tanh)
+    activate()
+  },
+  params = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5),
+  activationFunction = Tanh,
+  layersWindow = DeltaLayersWindow.Empty,
+  dropout = 0.0
+)
 
 /**
  *
  */
-private fun buildNextStateLayer(): DeltaRNNLayer<DenseNDArray> {
-
-  val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
-  outputArray.assignErrors(errors =  DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
-
-  val layer = DeltaRNNLayer(
-    inputArray = AugmentedArray<DenseNDArray>(size = 4),
-    inputType = LayerType.Input.Dense,
-    outputArray = outputArray,
-    params = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh,
-    layersWindow = DeltaLayersWindow.Empty)
-
-  layer.wx.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.7, -0.2, 0.8, -0.6)))
-  layer.partition.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, -0.1, 0.6, -0.8, 0.5)))
-  layer.candidate.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.6, -0.1, 0.3, 0.0)))
-
-  return layer
+private fun buildNextStateLayer(): DeltaRNNLayer<DenseNDArray> = DeltaRNNLayer(
+  inputArray = AugmentedArray<DenseNDArray>(size = 4),
+  inputType = LayerType.Input.Dense,
+  outputArray = RecurrentLayerUnit<DenseNDArray>(5).apply {
+    assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
+  },
+  params = DeltaRNNLayerParameters(inputSize = 4, outputSize = 5),
+  activationFunction = Tanh,
+  layersWindow = DeltaLayersWindow.Empty,
+  dropout = 0.0
+).apply {
+  wx.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.7, -0.2, 0.8, -0.6)))
+  partition.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, -0.1, 0.6, -0.8, 0.5)))
+  candidate.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.6, -0.1, 0.3, 0.0)))
 }

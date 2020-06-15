@@ -31,7 +31,6 @@ class NeuralProcessorsPoolSpec : Spek({
           hiddenActivation = null,
           outputSize = 2,
           outputActivation = null),
-        useDropout = false,
         propagateToInput = false)
 
       val processor1 = pool.getItem()
@@ -63,7 +62,6 @@ class NeuralProcessorsPoolSpec : Spek({
           hiddenActivation = null,
           outputSize = 2,
           outputActivation = null),
-        useDropout = false,
         propagateToInput = false)
 
       val processor1 = pool.getItem()
@@ -89,7 +87,6 @@ class NeuralProcessorsPoolSpec : Spek({
           hiddenActivation = null,
           outputSize = 2,
           outputActivation = null),
-        useDropout = false,
         propagateToInput = false)
 
       pool.getItem()
@@ -115,7 +112,6 @@ class NeuralProcessorsPoolSpec : Spek({
           hiddenActivation = null,
           outputSize = 2,
           outputActivation = null),
-        useDropout = false,
         propagateToInput = false)
 
       val processor1 = pool.getItem()

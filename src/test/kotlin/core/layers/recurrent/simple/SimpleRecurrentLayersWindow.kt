@@ -66,35 +66,31 @@ internal sealed class SimpleRecurrentLayersWindow: LayersWindow {
 /**
  *
  */
-private fun buildPrevStateLayer(): SimpleRecurrentLayer<DenseNDArray> {
-
-  val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
-  outputArray.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
-  outputArray.setActivation(Tanh)
-  outputArray.activate()
-
-  return SimpleRecurrentLayer(
-    inputArray = AugmentedArray(size = 4),
-    outputArray = outputArray,
-    inputType = LayerType.Input.Dense,
-    params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh,
-    layersWindow = SimpleRecurrentLayersWindow.Empty)
-}
+private fun buildPrevStateLayer(): SimpleRecurrentLayer<DenseNDArray> = SimpleRecurrentLayer(
+  inputArray = AugmentedArray(size = 4),
+  outputArray = RecurrentLayerUnit<DenseNDArray>(5).apply {
+    assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
+    setActivation(Tanh)
+    activate()
+  },
+  inputType = LayerType.Input.Dense,
+  params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5),
+  activationFunction = Tanh,
+  layersWindow = SimpleRecurrentLayersWindow.Empty,
+  dropout = 0.0
+)
 
 /**
  *
  */
-private fun buildNextStateLayer(): SimpleRecurrentLayer<DenseNDArray> {
-
-  val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
-  outputArray.assignErrors(errors =  DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
-
-  return SimpleRecurrentLayer(
-    inputArray = AugmentedArray(size = 4),
-    inputType = LayerType.Input.Dense,
-    outputArray = outputArray,
-    params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh,
-    layersWindow = SimpleRecurrentLayersWindow.Empty)
-}
+private fun buildNextStateLayer(): SimpleRecurrentLayer<DenseNDArray> = SimpleRecurrentLayer(
+  inputArray = AugmentedArray(size = 4),
+  inputType = LayerType.Input.Dense,
+  outputArray = RecurrentLayerUnit<DenseNDArray>(5).apply {
+    assignErrors(errors =  DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
+  },
+  params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5),
+  activationFunction = Tanh,
+  layersWindow = SimpleRecurrentLayersWindow.Empty,
+  dropout = 0.0
+)

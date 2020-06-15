@@ -29,46 +29,42 @@ internal object BiaffineLayerUtils {
     inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray(size = 2),
     params = buildParams(),
-    activationFunction = Tanh
+    activationFunction = Tanh,
+    dropout = 0.0
   )
 
   /**
    *
    */
-  fun buildParams(): BiaffineLayerParameters {
+  fun buildParams() = BiaffineLayerParameters(inputSize1 = 2, inputSize2 = 3, outputSize = 2).apply {
 
-    val params = BiaffineLayerParameters(inputSize1 = 2, inputSize2 = 3, outputSize = 2)
-
-    params.w1.values.assignValues(
+    w1.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.3, 0.8),
         doubleArrayOf(0.8, -0.7)
       )))
 
-    params.w2.values.assignValues(
+    w2.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.6, 0.5, -0.9),
         doubleArrayOf(0.3, -0.3, 0.3)
       )))
 
-    params.b.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.4)))
+    b.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.4)))
 
-    params.w[0].values.assignValues(
+    w[0].values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(-0.4, 0.2),
         doubleArrayOf(0.2, 0.4),
         doubleArrayOf(0.0, 0.5)
       )))
 
-    params.w[1].values.assignValues(
+    w[1].values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(-0.2, 0.9),
         doubleArrayOf(0.5, 0.0),
         doubleArrayOf(-0.1, -0.1)
       )))
-
-    return params
   }
 
   /**

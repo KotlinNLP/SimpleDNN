@@ -30,32 +30,28 @@ internal object AffineLayerUtils {
     inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray(size = 2),
     params = buildParams(),
-    activationFunction = Tanh
+    activationFunction = Tanh,
+    dropout = 0.0
   )
 
   /**
    *
    */
-  fun buildParams(): AffineLayerParameters {
+  fun buildParams() = AffineLayerParameters(inputsSize = listOf(2, 3), outputSize = 2).apply {
 
-    val params = AffineLayerParameters(inputsSize = listOf(2, 3), outputSize = 2)
-
-    params.w[0].values.assignValues(
+    w[0].values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.3, 0.8),
         doubleArrayOf(0.8, -0.7)
       )))
 
-    params.w[1].values.assignValues(
+    w[1].values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.6, 0.5, -0.9),
         doubleArrayOf(0.3, -0.3, 0.3)
       )))
 
-    params.b.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.4)))
-
-    return params
+    b.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.5, -0.4)))
   }
 
   /**

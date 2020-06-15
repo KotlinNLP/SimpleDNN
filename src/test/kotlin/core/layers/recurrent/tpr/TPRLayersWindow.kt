@@ -64,39 +64,34 @@ internal sealed class TPRLayersWindow: LayersWindow {
 /**
  *
  */
-private fun buildPrevStateLayer(): TPRLayer<DenseNDArray> {
-
-  val layer = TPRLayer(
-      inputArray = AugmentedArray<DenseNDArray>(size = 4),
-      inputType = LayerType.Input.Dense,
-      params = TPRLayerParameters(inputSize = 4, dRoles = 3, dSymbols = 2, nRoles = 3, nSymbols = 4),
-      layersWindow = TPRLayersWindow.Empty,
-      q = 0.001)
-
-  layer.outputArray.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.211, -0.451, 0.499, -1.333, -0.11645, 0.366)))
-
-  return layer
+private fun buildPrevStateLayer(): TPRLayer<DenseNDArray> = TPRLayer(
+  inputArray = AugmentedArray<DenseNDArray>(size = 4),
+  inputType = LayerType.Input.Dense,
+  params = TPRLayerParameters(inputSize = 4, dRoles = 3, dSymbols = 2, nRoles = 3, nSymbols = 4),
+  layersWindow = TPRLayersWindow.Empty,
+  q = 0.001,
+  dropout = 0.0
+).apply {
+  outputArray.values.assignValues(
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(0.211, -0.451, 0.499, -1.333, -0.11645, 0.366)))
 }
 
 /**
  *
  */
-private fun buildNextStateLayer(): TPRLayer<DenseNDArray> {
+private fun buildNextStateLayer(): TPRLayer<DenseNDArray> = TPRLayer(
+  inputArray = AugmentedArray<DenseNDArray>(size = 4),
+  inputType = LayerType.Input.Dense,
+  params = TPRLayerParameters(inputSize = 4, dRoles = 3, dSymbols = 2, nRoles = 3, nSymbols = 4),
+  layersWindow = TPRLayersWindow.Empty,
+  q = 0.001,
+  dropout = 0.0
+).apply {
 
-  val layer = TPRLayer(
-      inputArray = AugmentedArray<DenseNDArray>(size = 4),
-      inputType = LayerType.Input.Dense,
-      params = TPRLayerParameters(inputSize = 4, dRoles = 3, dSymbols = 2, nRoles = 3, nSymbols = 4),
-      layersWindow = TPRLayersWindow.Empty,
-      q = 0.001)
+  outputArray.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.711, -0.099, 0.459, -1.235, -0.9845, 0.9292)))
 
-  layer.outputArray.assignErrors(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.711, -0.099, 0.459, -1.235, -0.9845, 0.9292)))
-
-  layer.aS.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0)))
-  layer.aS.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, 0.3, 0.2, 0.3)))
-  layer.aR.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, -0.1, 0.6)))
-  layer.aR.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2)))
-
-
-  return layer
+  aS.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0)))
+  aS.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, 0.3, 0.2, 0.3)))
+  aR.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, -0.1, 0.6)))
+  aR.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2)))
 }

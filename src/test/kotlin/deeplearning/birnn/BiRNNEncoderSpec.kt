@@ -26,7 +26,7 @@ class BiRNNEncoderSpec : Spek({
 
     val inputSequence = BiRNNEncoderUtils.buildInputSequence()
     val birnn = BiRNNEncoderUtils.buildBiRNN()
-    val encoder = BiRNNEncoder<DenseNDArray>(birnn, useDropout = false, propagateToInput = true)
+    val encoder = BiRNNEncoder<DenseNDArray>(birnn, propagateToInput = true)
 
     val encodedSequence = encoder.forward(inputSequence)
 

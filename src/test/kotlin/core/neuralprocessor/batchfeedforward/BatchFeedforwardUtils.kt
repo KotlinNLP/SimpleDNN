@@ -18,7 +18,7 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 /**
  *
  */
-object BatchFeedforwardUtils {
+internal object BatchFeedforwardUtils {
 
   /**
    *
@@ -41,34 +41,19 @@ object BatchFeedforwardUtils {
   /**
    *
    */
-  fun buildParams(): StackedLayersParameters {
+  fun buildParams() = StackedLayersParameters(
+    LayerInterface(size = 3, type = LayerType.Input.Dense),
+    LayerInterface(size = 2, activationFunction = Tanh, connectionType = LayerType.Connection.Feedforward)
+  ).apply {
 
-    val network = StackedLayersParameters(
-      LayerInterface(
-        size = 3,
-        type = LayerType.Input.Dense),
-      LayerInterface(
-        size = 2,
-        activationFunction = Tanh,
-        connectionType = LayerType.Connection.Feedforward
-      ))
+    getLayerParams<FeedforwardLayerParameters>(0).apply {
 
-    initParameters(network.paramsPerLayer[0] as FeedforwardLayerParameters)
+      unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
+        doubleArrayOf(-0.7, 0.3, -1.0),
+        doubleArrayOf(0.8, -0.6, 0.4)
+      )))
 
-    return network
-  }
-
-
-  /**
-   *
-   */
-  private fun initParameters(params: FeedforwardLayerParameters) {
-
-    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
-      doubleArrayOf(-0.7, 0.3, -1.0),
-      doubleArrayOf(0.8, -0.6, 0.4)
-    )))
-
-    params.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, -0.9)))
+      unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.2, -0.9)))
+    }
   }
 }

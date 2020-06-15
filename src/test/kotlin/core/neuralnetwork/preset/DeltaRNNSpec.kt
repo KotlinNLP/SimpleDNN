@@ -30,8 +30,7 @@ class DeltaRNNSpec : Spek({
       hiddenSize = 5,
       hiddenActivation = hiddenActivation,
       outputSize = 4,
-      outputActivation = outputActivation,
-      hiddenDropout = 0.25)
+      outputActivation = outputActivation)
 
     context("initialization") {
 
@@ -50,10 +49,6 @@ class DeltaRNNSpec : Spek({
         it("should have a null connection type") {
           assertNull(inputLayerConfig.connectionType)
         }
-
-        it("should have a zero dropout") {
-          assertEquals(0.0, inputLayerConfig.dropout)
-        }
       }
 
       context("hidden layer configuration") {
@@ -71,10 +66,6 @@ class DeltaRNNSpec : Spek({
         it("should a DeltaRNN connection type") {
           assertEquals(LayerType.Connection.DeltaRNN, hiddenLayerConfig.connectionType)
         }
-
-        it("should have the expected dropout") {
-          assertEquals(0.25, hiddenLayerConfig.dropout)
-        }
       }
 
       context("output layer configuration") {
@@ -91,10 +82,6 @@ class DeltaRNNSpec : Spek({
 
         it("should a Feedforward connection type") {
           assertEquals(LayerType.Connection.Feedforward, outputLayerConfig.connectionType)
-        }
-
-        it("should have a zero dropout") {
-          assertEquals(0.0, outputLayerConfig.dropout)
         }
       }
     }

@@ -42,7 +42,7 @@ class FeedforwardNetworkStructureSpec : Spek({
 
         it("should throw an exception") {
           assertFailsWith<KotlinNullPointerException> {
-            StackedLayers<DenseNDArray>(params = StackedLayersParameters(wrongLayersConfiguration))
+            StackedLayers<DenseNDArray>(params = StackedLayersParameters(wrongLayersConfiguration), dropout = 0.0)
           }
         }
       }
@@ -57,7 +57,8 @@ class FeedforwardNetworkStructureSpec : Spek({
       ).toList()
 
       val structure = StackedLayers<DenseNDArray>(
-        params = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration))
+        params = FeedforwardNetworkStructureUtils.buildParams(layersConfiguration),
+        dropout = 0.0)
 
       context("architecture") {
 

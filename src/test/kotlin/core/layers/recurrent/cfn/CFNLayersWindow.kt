@@ -66,42 +66,35 @@ internal sealed class CFNLayersWindow: LayersWindow {
 /**
  *
  */
-private fun buildPrevStateLayer(): CFNLayer<DenseNDArray> {
-
-  val outputArray = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
-  outputArray.activate()
-
-  return CFNLayer(
-    inputArray = AugmentedArray(size = 4),
-    inputType = LayerType.Input.Dense,
-    outputArray = outputArray,
-    params = CFNLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh,
-    layersWindow = CFNLayersWindow.Empty
-  )
-}
+private fun buildPrevStateLayer(): CFNLayer<DenseNDArray> = CFNLayer(
+  inputArray = AugmentedArray(size = 4),
+  inputType = LayerType.Input.Dense,
+  outputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8))).apply {
+    activate()
+  },
+  params = CFNLayerParameters(inputSize = 4, outputSize = 5),
+  activationFunction = Tanh,
+  layersWindow = CFNLayersWindow.Empty,
+  dropout = 0.0
+)
 
 /**
  *
  */
-private fun buildNextStateLayer(currentLayerOutput: DenseNDArray): CFNLayer<DenseNDArray> {
-
-  val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(5)))
-  outputArray.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
-
-  val layer = CFNLayer(
-    inputArray = AugmentedArray<DenseNDArray>(size = 4),
-    inputType = LayerType.Input.Dense,
-    outputArray = outputArray,
-    params = CFNLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh,
-    layersWindow = CFNLayersWindow.Empty)
-
-  layer.inputGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0, 0.1)))
-  layer.inputGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))
-  layer.forgetGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, -0.1, 0.6, -0.8, 0.5)))
-  layer.forgetGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5, 1.0)))
-  layer.activatedPrevOutput = currentLayerOutput
-
-  return layer
+private fun buildNextStateLayer(currentLayerOutput: DenseNDArray): CFNLayer<DenseNDArray> = CFNLayer(
+  inputArray = AugmentedArray<DenseNDArray>(size = 4),
+  inputType = LayerType.Input.Dense,
+  outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))).apply {
+    assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
+  },
+  params = CFNLayerParameters(inputSize = 4, outputSize = 5),
+  activationFunction = Tanh,
+  layersWindow = CFNLayersWindow.Empty,
+  dropout = 0.0
+).apply {
+  inputGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0, 0.1)))
+  inputGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))
+  forgetGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, -0.1, 0.6, -0.8, 0.5)))
+  forgetGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5, 1.0)))
+  activatedPrevOutput = currentLayerOutput
 }

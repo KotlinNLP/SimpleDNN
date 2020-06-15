@@ -13,7 +13,6 @@ import com.kotlinnlp.simplednn.core.functionalities.initializers.Initializer
 import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayerParameters
 import com.kotlinnlp.simplednn.core.layers.models.feedforward.simple.FeedforwardLayer
-import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetworkParameters
 import com.kotlinnlp.simplednn.core.layers.models.attention.attentionmechanism.AttentionMechanismLayerParameters
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -21,123 +20,45 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
 /**
  *
  */
-object AttentionLayerUtils {
+internal object AttentionLayerUtils {
 
   /**
    *
    */
-  fun buildAttentionParams(initializer: Initializer? = null): AttentionMechanismLayerParameters {
-
-    val params = AttentionMechanismLayerParameters(inputSize = 2, weightsInitializer = initializer)
-
-    params.contextVector.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, -0.5)))
-
-    return params
+  fun buildAttentionParams(initializer: Initializer? = null) = AttentionMechanismLayerParameters(
+    inputSize = 2,
+    weightsInitializer = initializer
+  ).apply {
+    contextVector.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, -0.5)))
   }
 
   /**
    *
    */
-  fun buildInputSequence(): List<AugmentedArray<DenseNDArray>> = listOf(
-    AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.7, 0.9, 0.6))),
-    AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.5, 0.7, -0.7, 0.8))),
-    AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, -0.5, 0.0, 0.2)))
+  fun buildInputSequence(): List<DenseNDArray> = listOf(
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.7, 0.9, 0.6)),
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.5, 0.7, -0.7, 0.8)),
+    DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, -0.5, 0.0, 0.2))
   )
 
   /**
    *
    */
-  fun buildAttentionSequence(inputSequence: List<AugmentedArray<DenseNDArray>>): List<AugmentedArray<DenseNDArray>> {
+  fun buildAttentionSequence(inputSequence: List<DenseNDArray>): List<DenseNDArray> {
 
     val transformLayer: FeedforwardLayer<DenseNDArray> = buildTransformLayer()
 
-    return arrayListOf(*Array(
-      size = inputSequence.size,
-      init = { i ->
-        transformLayer.setInput(inputSequence[i].values)
-        transformLayer.forward()
-        AugmentedArray(transformLayer.outputArray.values.copy())
-      }
-    ))
+    return inputSequence.map {
+      transformLayer.setInput(it)
+      transformLayer.forward()
+      transformLayer.outputArray.values.copy()
+    }
   }
 
   /**
    *
    */
-  fun buildOutputErrors(): DenseNDArray = DenseNDArrayFactory.arrayOf(
-    doubleArrayOf(-0.2, 0.5, 0.1, -0.5)
-  )
-
-  /**
-   *
-   */
-  fun buildTransformLayerParams1(): FeedforwardLayerParameters {
-
-    val params = FeedforwardLayerParameters(inputSize = 4, outputSize = 2)
-
-    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
-      doubleArrayOf(0.3, 0.4, 0.2, -0.2),
-      doubleArrayOf(0.2, -0.1, 0.1, 0.6)
-    )))
-
-    params.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(
-      doubleArrayOf(0.3, -0.4)
-    ))
-
-    return params
-  }
-
-  /**
-   *
-   */
-  fun buildTransformLayerParams2(): FeedforwardLayerParameters {
-
-    val params = FeedforwardLayerParameters(inputSize = 4, outputSize = 2)
-
-    params.unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
-      doubleArrayOf(0.7, -0.8, 0.1, -0.6),
-      doubleArrayOf(0.8, 0.6, -0.9, -0.2)
-    )))
-
-    params.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(
-      doubleArrayOf(-0.9, 0.1)
-    ))
-
-    return params
-  }
-
-  /**
-   *
-   */
-  fun buildAttentionNetworkParams1(): AttentionNetworkParameters {
-
-    val params = AttentionNetworkParameters(inputSize = 4, attentionSize = 2, sparseInput = false)
-    val transformParams = buildTransformLayerParams1()
-    val attentionParams = buildAttentionParams() // [-0.3, -0.5]
-
-    params.transformParams.unit.weights.values.assignValues(transformParams.unit.weights.values)
-    params.transformParams.unit.biases.values.assignValues(transformParams.unit.biases.values)
-    params.attentionParams.contextVector.values.assignValues(attentionParams.contextVector.values)
-
-    return params
-  }
-
-  /**
-   *
-   */
-  fun buildAttentionNetworkParams2(): AttentionNetworkParameters {
-
-    val params = AttentionNetworkParameters(inputSize = 4, attentionSize = 2, sparseInput = false)
-    val transformParams = buildTransformLayerParams2()
-
-    params.transformParams.unit.weights.values.assignValues(transformParams.unit.weights.values)
-    params.transformParams.unit.biases.values.assignValues(transformParams.unit.biases.values)
-    params.attentionParams.contextVector.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.1, 0.4))
-    )
-
-    return params
-  }
+  fun buildOutputErrors(): DenseNDArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.5, 0.1, -0.5))
 
   /**
    *
@@ -146,7 +67,21 @@ object AttentionLayerUtils {
     inputArray = AugmentedArray(size = 4),
     inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray.zeros(2),
-    params = buildTransformLayerParams1(),
-    activationFunction = Tanh
+    params = buildTransformLayerParams(),
+    activationFunction = Tanh,
+    dropout = 0.0
   )
+
+  /**
+   *
+   */
+  fun buildTransformLayerParams() = FeedforwardLayerParameters(inputSize = 4, outputSize = 2).apply {
+
+    unit.weights.values.assignValues(DenseNDArrayFactory.arrayOf(listOf(
+      doubleArrayOf(0.3, 0.4, 0.2, -0.2),
+      doubleArrayOf(0.2, -0.1, 0.1, 0.6)
+    )))
+
+    unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, -0.4)))
+  }
 }

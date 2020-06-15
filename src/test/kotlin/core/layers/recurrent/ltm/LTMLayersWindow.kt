@@ -64,41 +64,34 @@ internal sealed class LTMLayersWindow: LayersWindow {
 /**
  *
  */
-private fun buildPrevStateLayer(): LTMLayer<DenseNDArray> {
-
-  val outputArray = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9)))
-  outputArray.activate()
-
-  val layer = LTMLayer(
-    inputArray = AugmentedArray<DenseNDArray>(size = 4),
-    inputType = LayerType.Input.Dense,
-    outputArray = outputArray,
-    params = LTMLayerParameters(inputSize = 4),
-    layersWindow = LTMLayersWindow.Empty)
-
-  layer.cell.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, -0.6, 1.0, 0.1)))
-  layer.cell.activate()
-
-  return layer
+private fun buildPrevStateLayer(): LTMLayer<DenseNDArray> = LTMLayer(
+  inputArray = AugmentedArray<DenseNDArray>(size = 4),
+  inputType = LayerType.Input.Dense,
+  outputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9))).apply {
+    activate()
+  },
+  params = LTMLayerParameters(inputSize = 4),
+  layersWindow = LTMLayersWindow.Empty,
+  dropout = 0.0
+).apply {
+  cell.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, -0.6, 1.0, 0.1)))
+  cell.activate()
 }
 
 /**
  *
  */
-private fun buildNextStateLayer(): LTMLayer<DenseNDArray> {
-
-  val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray.zeros(4)
-  outputArray.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7)))
-
-  val layer = LTMLayer(
-    inputArray = AugmentedArray.zeros(size = 4),
-    inputType = LayerType.Input.Dense,
-    outputArray = outputArray,
-    params = LTMLayerParameters(inputSize = 4),
-    layersWindow = LTMLayersWindow.Empty)
-
-  layer.inputArray.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3)))
-  layer.c.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5)))
-
-  return layer
+private fun buildNextStateLayer(): LTMLayer<DenseNDArray> = LTMLayer(
+  inputArray = AugmentedArray.zeros(size = 4),
+  inputType = LayerType.Input.Dense,
+  outputArray =
+  AugmentedArray.zeros(4).apply {
+    assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7)))
+  },
+  params = LTMLayerParameters(inputSize = 4),
+  layersWindow = LTMLayersWindow.Empty,
+  dropout = 0.0
+).apply {
+  inputArray.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3)))
+  c.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5)))
 }

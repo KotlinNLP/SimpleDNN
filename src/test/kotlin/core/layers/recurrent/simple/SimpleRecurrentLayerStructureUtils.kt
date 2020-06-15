@@ -30,16 +30,16 @@ internal object SimpleRecurrentLayerStructureUtils {
     outputArray = RecurrentLayerUnit(5),
     params = buildParams(),
     activationFunction = Tanh,
-    layersWindow = layersWindow)
+    layersWindow = layersWindow,
+    dropout = 0.0
+  )
 
   /**
    *
    */
-  fun buildParams(): SimpleRecurrentLayerParameters {
+  fun buildParams() = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5).apply {
 
-    val params = SimpleRecurrentLayerParameters(inputSize = 4, outputSize = 5)
-
-    params.unit.weights.values.assignValues(
+    unit.weights.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
@@ -48,11 +48,9 @@ internal object SimpleRecurrentLayerStructureUtils {
         doubleArrayOf(0.4, 1.0, -0.7, 0.8)
       )))
 
-    params.unit.biases.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
-    )
+    unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4)))
 
-    params.unit.recurrentWeights.values.assignValues(
+    unit.recurrentWeights.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.0, 0.8, 0.8, -1.0, -0.7),
         doubleArrayOf(-0.7, -0.8, 0.2, -0.7, 0.7),
@@ -60,8 +58,6 @@ internal object SimpleRecurrentLayerStructureUtils {
         doubleArrayOf(0.0, -0.1, 0.5, -0.2, -0.8),
         doubleArrayOf(-0.6, 0.6, 0.8, -0.1, -0.3)
       )))
-
-    return params
   }
 
   /**

@@ -66,42 +66,36 @@ internal sealed class RANLayersWindow: LayersWindow {
 /**
  *
  */
-private fun buildPrevStateLayer(): RANLayer<DenseNDArray> {
-
-  val outputArray = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
-  outputArray.setActivation(Tanh)
-  outputArray.activate()
-
-  return RANLayer(
-    inputArray = AugmentedArray(size = 4),
-    inputType = LayerType.Input.Dense,
-    outputArray = outputArray,
-    params = RANLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh,
-    layersWindow = RANLayersWindow.Empty
-  )
-}
+private fun buildPrevStateLayer(): RANLayer<DenseNDArray> = RANLayer(
+  inputArray = AugmentedArray(size = 4),
+  inputType = LayerType.Input.Dense,
+  outputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8))).apply {
+    setActivation(Tanh)
+    activate()
+  },
+  params = RANLayerParameters(inputSize = 4, outputSize = 5),
+  activationFunction = Tanh,
+  layersWindow = RANLayersWindow.Empty,
+  dropout = 0.0
+)
 
 /**
  *
  */
-private fun buildNextStateLayer(): RANLayer<DenseNDArray> {
-
-  val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(5)))
-  outputArray.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
-
-  val layer = RANLayer(
-    inputArray = AugmentedArray<DenseNDArray>(size = 4),
-    inputType = LayerType.Input.Dense,
-    outputArray = outputArray,
-    params = RANLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh,
-    layersWindow = RANLayersWindow.Empty)
-
-  layer.inputGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0, 0.1)))
-  layer.inputGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))
-  layer.forgetGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, -0.1, 0.6, -0.8, 0.5)))
-  layer.forgetGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5, 1.0)))
-
-  return layer
+private fun buildNextStateLayer(): RANLayer<DenseNDArray> = RANLayer(
+  inputArray = AugmentedArray<DenseNDArray>(size = 4),
+  inputType = LayerType.Input.Dense,
+  outputArray =
+  AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))).apply {
+    assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
+  },
+  params = RANLayerParameters(inputSize = 4, outputSize = 5),
+  activationFunction = Tanh,
+  layersWindow = RANLayersWindow.Empty,
+  dropout = 0.0
+).apply {
+  inputGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, 1.0, -0.8, 0.0, 0.1)))
+  inputGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))
+  forgetGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, -0.1, 0.6, -0.8, 0.5)))
+  forgetGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5, 1.0)))
 }

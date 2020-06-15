@@ -28,16 +28,16 @@ internal object HighwayLayerStructureUtils {
     inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray.zeros(4),
     params = buildParams(),
-    activationFunction = Tanh)
+    activationFunction = Tanh,
+    dropout = 0.0
+  )
 
   /**
    *
    */
-  fun buildParams(): HighwayLayerParameters {
+  fun buildParams() = HighwayLayerParameters(inputSize = 4).apply {
 
-    val params = HighwayLayerParameters(inputSize = 4)
-
-    params.input.weights.values.assignValues(
+    input.weights.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
@@ -45,7 +45,7 @@ internal object HighwayLayerStructureUtils {
         doubleArrayOf(0.8, -0.9, 0.0, -0.1)
       )))
 
-    params.transformGate.weights.values.assignValues(
+    transformGate.weights.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.1, 0.4, -1.0, 0.4),
         doubleArrayOf(0.7, -0.2, 0.1, 0.0),
@@ -53,15 +53,8 @@ internal object HighwayLayerStructureUtils {
         doubleArrayOf(-0.9, 0.9, -0.3, -0.3)
       )))
 
-    params.input.biases.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8))
-    )
-
-    params.transformGate.biases.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.9, 0.2, -0.9, 0.2))
-    )
-
-    return params
+    input.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8)))
+    transformGate.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.9, 0.2, -0.9, 0.2)))
   }
 
   /**

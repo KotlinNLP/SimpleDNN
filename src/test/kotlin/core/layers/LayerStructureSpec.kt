@@ -42,7 +42,7 @@ class LayerStructureSpec : Spek({
           activationFunction = Tanh,
           dropout = 0.25)
 
-        layer.forward(useDropout = true)
+        layer.forward()
 
         val zerosCount = (0 until inputArray.size).count { i -> inputArray.values[i] == 0.0 }
 
@@ -81,7 +81,7 @@ class LayerStructureSpec : Spek({
             unit.weights.values.assignValues(DenseNDArrayFactory.eye(4))
           })
 
-        layer.forward(useDropout = true)
+        layer.forward()
 
         val outputErrors: DenseNDArray = layer.outputArray.values.sub(origInput) // identity
         layer.setErrors(outputErrors)

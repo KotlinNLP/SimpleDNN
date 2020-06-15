@@ -28,17 +28,19 @@ class RecurrentNetworkStructureSpec : Spek({
 
   describe("a RecurrentStackedLayers") {
 
-    context("core.layers factory") {
+    val utils = RecurrentNetworkStructureUtils
+
+    context("factory") {
 
       val contextWindow = mock<StatesWindow<DenseNDArray>>()
-      val structure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+      val layers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
 
       it("should contain an input layer of the expected type") {
-        assertTrue { structure.inputLayer is SimpleRecurrentLayer<DenseNDArray> }
+        assertTrue { layers.inputLayer is SimpleRecurrentLayer<DenseNDArray> }
       }
 
       it("should contain an output layer of the expected type") {
-        assertTrue { structure.outputLayer is FeedforwardLayer<DenseNDArray> }
+        assertTrue { layers.outputLayer is FeedforwardLayer<DenseNDArray> }
       }
     }
 
@@ -47,38 +49,38 @@ class RecurrentNetworkStructureSpec : Spek({
       context("focus on the first layer") {
 
         val contextWindow = mock<StatesWindow<DenseNDArray>>()
-        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val curStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
 
         whenever(contextWindow.getPrevState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
         whenever(contextWindow.getNextState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
 
-        curStateStructure.curLayerIndex = 0
+        curStateLayers.curLayerIndex = 0
 
         it("should return null as previous context") {
-          assertNull(curStateStructure.getPrevState())
+          assertNull(curStateLayers.getPrevState())
         }
 
         it("should return null as next context") {
-          assertNull(curStateStructure.getNextState())
+          assertNull(curStateLayers.getNextState())
         }
       }
 
       context("focus on the second layer") {
 
         val contextWindow = mock<StatesWindow<DenseNDArray>>()
-        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val curStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
 
         whenever(contextWindow.getPrevState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
         whenever(contextWindow.getNextState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
 
-        curStateStructure.curLayerIndex = 1
+        curStateLayers.curLayerIndex = 1
 
         it("should return null as previous context") {
-          assertNull(curStateStructure.getPrevState())
+          assertNull(curStateLayers.getPrevState())
         }
 
         it("should return null as next context") {
-          assertNull(curStateStructure.getNextState())
+          assertNull(curStateLayers.getNextState())
         }
       }
     }
@@ -88,40 +90,40 @@ class RecurrentNetworkStructureSpec : Spek({
       context("focus on the first layer") {
 
         val contextWindow = mock<StatesWindow<DenseNDArray>>()
-        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
-        val prevStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val curStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
+        val prevStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
 
-        whenever(contextWindow.getPrevState()).thenReturn(prevStateStructure)
+        whenever(contextWindow.getPrevState()).thenReturn(prevStateLayers)
         whenever(contextWindow.getNextState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
 
-        curStateStructure.curLayerIndex = 0
+        curStateLayers.curLayerIndex = 0
 
         it("should return the expected layer as previous context") {
-          assertEquals(curStateStructure.getPrevState(), prevStateStructure.layers[0])
+          assertEquals(curStateLayers.getPrevState(), prevStateLayers.layers[0])
         }
 
         it("should return null as next context") {
-          assertNull(curStateStructure.getNextState())
+          assertNull(curStateLayers.getNextState())
         }
       }
 
       context("focus on the second layer") {
 
         val contextWindow = mock<StatesWindow<DenseNDArray>>()
-        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
-        val prevStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val curStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
+        val prevStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
 
-        whenever(contextWindow.getPrevState()).thenReturn(prevStateStructure)
+        whenever(contextWindow.getPrevState()).thenReturn(prevStateLayers)
         whenever(contextWindow.getNextState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
 
-        curStateStructure.curLayerIndex = 1
+        curStateLayers.curLayerIndex = 1
 
         it("should return the expected layer as previous context") {
-          assertEquals(curStateStructure.getPrevState(), prevStateStructure.layers[1])
+          assertEquals(curStateLayers.getPrevState(), prevStateLayers.layers[1])
         }
 
         it("should return null as next context") {
-          assertNull(curStateStructure.getNextState())
+          assertNull(curStateLayers.getNextState())
         }
       }
     }
@@ -131,40 +133,40 @@ class RecurrentNetworkStructureSpec : Spek({
       context("focus on the first layer") {
 
         val contextWindow = mock<StatesWindow<DenseNDArray>>()
-        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
-        val nextStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val curStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
+        val nextStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
 
         whenever(contextWindow.getPrevState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
-        whenever(contextWindow.getNextState()).thenReturn(nextStateStructure)
+        whenever(contextWindow.getNextState()).thenReturn(nextStateLayers)
 
-        curStateStructure.curLayerIndex = 0
+        curStateLayers.curLayerIndex = 0
 
         it("should return null as previous context") {
-          assertNull(curStateStructure.getPrevState())
+          assertNull(curStateLayers.getPrevState())
         }
 
         it("should return the expected layer as next context") {
-          assertEquals(curStateStructure.getNextState(), nextStateStructure.layers[0])
+          assertEquals(curStateLayers.getNextState(), nextStateLayers.layers[0])
         }
       }
 
       context("focus on the second layer") {
 
         val contextWindow = mock<StatesWindow<DenseNDArray>>()
-        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
-        val nextStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val curStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
+        val nextStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
 
         whenever(contextWindow.getPrevState()).thenReturn(null as RecurrentStackedLayers<DenseNDArray>?)
-        whenever(contextWindow.getNextState()).thenReturn(nextStateStructure)
+        whenever(contextWindow.getNextState()).thenReturn(nextStateLayers)
 
-        curStateStructure.curLayerIndex = 1
+        curStateLayers.curLayerIndex = 1
 
         it("should return null as previous context") {
-          assertNull(curStateStructure.getPrevState())
+          assertNull(curStateLayers.getPrevState())
         }
 
         it("should return the expected layer as next context") {
-          assertEquals(curStateStructure.getNextState(), nextStateStructure.layers[1])
+          assertEquals(curStateLayers.getNextState(), nextStateLayers.layers[1])
         }
       }
     }
@@ -174,42 +176,42 @@ class RecurrentNetworkStructureSpec : Spek({
       context("focus on the first layer") {
 
         val contextWindow = mock<StatesWindow<DenseNDArray>>()
-        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
-        val prevStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
-        val nextStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val curStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
+        val prevStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
+        val nextStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
 
-        whenever(contextWindow.getPrevState()).thenReturn(prevStateStructure)
-        whenever(contextWindow.getNextState()).thenReturn(nextStateStructure)
+        whenever(contextWindow.getPrevState()).thenReturn(prevStateLayers)
+        whenever(contextWindow.getNextState()).thenReturn(nextStateLayers)
 
-        curStateStructure.curLayerIndex = 0
+        curStateLayers.curLayerIndex = 0
 
         it("should return the expected layer as previous context") {
-          assertEquals(curStateStructure.getPrevState(), prevStateStructure.layers[0])
+          assertEquals(curStateLayers.getPrevState(), prevStateLayers.layers[0])
         }
 
         it("should return the expected layer as next context") {
-          assertEquals(curStateStructure.getNextState(), nextStateStructure.layers[0])
+          assertEquals(curStateLayers.getNextState(), nextStateLayers.layers[0])
         }
       }
 
       context("focus on the second layer") {
 
         val contextWindow = mock<StatesWindow<DenseNDArray>>()
-        val curStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
-        val prevStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
-        val nextStateStructure = RecurrentNetworkStructureUtils.buildStructure(contextWindow)
+        val curStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
+        val prevStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
+        val nextStateLayers: RecurrentStackedLayers<DenseNDArray> = utils.buildLayers(contextWindow)
 
-        whenever(contextWindow.getPrevState()).thenReturn(prevStateStructure)
-        whenever(contextWindow.getNextState()).thenReturn(nextStateStructure)
+        whenever(contextWindow.getPrevState()).thenReturn(prevStateLayers)
+        whenever(contextWindow.getNextState()).thenReturn(nextStateLayers)
 
-        curStateStructure.curLayerIndex = 1
+        curStateLayers.curLayerIndex = 1
 
         it("should return the expected layer as previous context") {
-          assertEquals(curStateStructure.getPrevState(), prevStateStructure.layers[1])
+          assertEquals(curStateLayers.getPrevState(), prevStateLayers.layers[1])
         }
 
         it("should return the expected layer as next context") {
-          assertEquals(curStateStructure.getNextState(), nextStateStructure.layers[1])
+          assertEquals(curStateLayers.getNextState(), nextStateLayers.layers[1])
         }
       }
     }

@@ -31,16 +31,16 @@ internal object IndRNNLayerStructureUtils {
     outputArray = RecurrentLayerUnit<DenseNDArray>(5),
     params = buildParams(),
     activationFunction = Tanh,
-    layersWindow = layersWindow)
+    layersWindow = layersWindow,
+    dropout = 0.0
+  )
 
   /**
    *
    */
-  fun buildParams(): IndRNNLayerParameters {
+  fun buildParams() = IndRNNLayerParameters(inputSize = 4, outputSize = 5).apply {
 
-    val params = IndRNNLayerParameters(inputSize = 4, outputSize = 5)
-
-    params.feedforwardUnit.weights.values.assignValues(
+    feedforwardUnit.weights.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
@@ -49,15 +49,8 @@ internal object IndRNNLayerStructureUtils {
         doubleArrayOf(0.4, 1.0, -0.7, 0.8)
       )))
 
-    params.feedforwardUnit.biases.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
-    )
-
-    params.recurrentWeights.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, -0.7, -0.9, 0.0, -0.6))
-    )
-
-    return params
+    feedforwardUnit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4)))
+    recurrentWeights.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, -0.7, -0.9, 0.0, -0.6)))
   }
 
   /**

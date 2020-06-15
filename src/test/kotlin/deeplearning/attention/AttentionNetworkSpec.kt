@@ -7,7 +7,6 @@
 
 package deeplearning.attention
 
-import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.deeplearning.attention.attentionnetwork.AttentionNetwork
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArrayFactory
@@ -25,10 +24,7 @@ class AttentionNetworkSpec : Spek({
 
     context("forward") {
 
-      val network = AttentionNetwork<DenseNDArray>(
-        inputType = LayerType.Input.Dense,
-        model = AttentionLayerUtils.buildAttentionNetworkParams1())
-
+      val network: AttentionNetwork<DenseNDArray> = AttentionNetworkUtils.buildNetwork()
       val output = network.forward(inputSequence = AttentionLayerUtils.buildInputSequence())
 
       it("should match the expected output") {
@@ -42,12 +38,8 @@ class AttentionNetworkSpec : Spek({
 
     context("forward with external attention arrays") {
 
-      val network = AttentionNetwork<DenseNDArray>(
-        inputType = LayerType.Input.Dense,
-        model = AttentionLayerUtils.buildAttentionNetworkParams1())
-
+      val network: AttentionNetwork<DenseNDArray> = AttentionNetworkUtils.buildNetwork()
       val inputSequence = AttentionLayerUtils.buildInputSequence()
-
       val output = network.forward(
         inputSequence = inputSequence,
         attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence))
@@ -63,14 +55,10 @@ class AttentionNetworkSpec : Spek({
 
     context("backward") {
 
-      val network = AttentionNetwork<DenseNDArray>(
-        inputType = LayerType.Input.Dense,
-        model = AttentionLayerUtils.buildAttentionNetworkParams1())
+      val network: AttentionNetwork<DenseNDArray> = AttentionNetworkUtils.buildNetwork()
 
       network.forward(inputSequence = AttentionLayerUtils.buildInputSequence())
-      network.backward(
-        outputErrors = AttentionLayerUtils.buildOutputErrors(),
-        propagateToInput = true)
+      network.backward(outputErrors = AttentionLayerUtils.buildOutputErrors())
 
       val inputErrors = network.getInputErrors()
 

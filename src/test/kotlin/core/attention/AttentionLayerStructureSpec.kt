@@ -24,18 +24,20 @@ class AttentionLayerStructureSpec : Spek({
 
   describe("an AttentionLayerStructure") {
 
+    val utils = AttentionLayerUtils
+
     context("wrong initialization") {
 
-      val inputSequence = AttentionLayerUtils.buildInputSequence()
-      val attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence)
-      val params = AttentionLayerUtils.buildAttentionParams()
+      val inputSequence: List<DenseNDArray> = utils.buildInputSequence()
+      val attentionSequence: List<DenseNDArray> = utils.buildAttentionSequence(inputSequence)
+      val params = utils.buildAttentionParams()
 
       it("should raise an Exception with an empty input sequence") {
         assertFails {
           AttentionLayer(
             inputArrays = mutableListOf<AugmentedArray<DenseNDArray>>(),
             inputType = LayerType.Input.Dense,
-            attentionArrays = attentionSequence,
+            attentionArrays = attentionSequence.map { AugmentedArray(it) },
             params = params)
         }
       }
@@ -43,7 +45,7 @@ class AttentionLayerStructureSpec : Spek({
       it("should raise an Exception with an empty attention sequence") {
         assertFails {
           AttentionLayer(
-            inputArrays = inputSequence,
+            inputArrays = inputSequence.map { AugmentedArray(it) },
             inputType = LayerType.Input.Dense,
             attentionArrays = mutableListOf(),
             params = params)
@@ -53,10 +55,10 @@ class AttentionLayerStructureSpec : Spek({
       it("should raise an Exception with input and attention sequences not compatible") {
         assertFails {
           AttentionLayer(
-            inputArrays = inputSequence,
+            inputArrays = inputSequence.map { AugmentedArray(it) },
             inputType = LayerType.Input.Dense,
             attentionArrays = attentionSequence.mapIndexed { i, elm ->
-              if (i == 1) AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.1, 0.3))) else elm
+              AugmentedArray(if (i == 1) DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.1, 0.3)) else elm)
             },
             params = params)
         }
@@ -65,10 +67,10 @@ class AttentionLayerStructureSpec : Spek({
       it("should raise an Exception with a attention arrays with a not expected size") {
         assertFails {
           AttentionLayer(
-            inputArrays = inputSequence,
+            inputArrays = inputSequence.map { AugmentedArray(it) },
             inputType = LayerType.Input.Dense,
             attentionArrays = attentionSequence.mapIndexed { i, elm ->
-              if (i == 1) AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.1, 0.3))) else elm
+              AugmentedArray(if (i == 1) DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.1, 0.3)) else elm)
             },
             params = params)
         }
@@ -77,21 +79,21 @@ class AttentionLayerStructureSpec : Spek({
 
     context("correct initialization") {
 
-      val inputSequence = AttentionLayerUtils.buildInputSequence()
-      val attentionSequence = AttentionLayerUtils.buildAttentionSequence(inputSequence)
+      val inputSequence: List<DenseNDArray> = utils.buildInputSequence()
+      val attentionSequence: List<DenseNDArray> = utils.buildAttentionSequence(inputSequence)
       val structure = AttentionLayer(
-        inputArrays = inputSequence,
+        inputArrays = inputSequence.map { AugmentedArray(it) },
         inputType = LayerType.Input.Dense,
-        attentionArrays = attentionSequence,
-        params = AttentionLayerUtils.buildAttentionParams())
+        attentionArrays = attentionSequence.map { AugmentedArray(it) },
+        params = utils.buildAttentionParams())
 
       it("should initialize the attention matrix correctly") {
         assertTrue {
           structure.attentionMatrix.values.equals(
             DenseNDArrayFactory.arrayOf(listOf(
-              attentionSequence[0].values.toDoubleArray(),
-              attentionSequence[1].values.toDoubleArray(),
-              attentionSequence[2].values.toDoubleArray()
+              attentionSequence[0].toDoubleArray(),
+              attentionSequence[1].toDoubleArray(),
+              attentionSequence[2].toDoubleArray()
             )),
             tolerance = 1.0e-06
           )
@@ -107,13 +109,13 @@ class AttentionLayerStructureSpec : Spek({
 
     context("forward") {
 
-      val inputSequence = AttentionLayerUtils.buildInputSequence()
+      val inputSequence: List<DenseNDArray> = utils.buildInputSequence()
+      val attentionSequence: List<DenseNDArray> = utils.buildAttentionSequence(inputSequence)
       val structure = AttentionLayer(
-        inputArrays = inputSequence,
+        inputArrays = inputSequence.map { AugmentedArray(it) },
         inputType = LayerType.Input.Dense,
-        attentionArrays = AttentionLayerUtils.buildAttentionSequence(inputSequence),
-        params = AttentionLayerUtils.buildAttentionParams()
-      )
+        attentionArrays = attentionSequence.map { AugmentedArray(it) },
+        params = utils.buildAttentionParams())
 
       structure.forward()
 
@@ -136,17 +138,17 @@ class AttentionLayerStructureSpec : Spek({
 
     context("backward") {
 
-      val inputSequence = AttentionLayerUtils.buildInputSequence()
+      val inputSequence: List<DenseNDArray> = utils.buildInputSequence()
+      val attentionSequence: List<DenseNDArray> = utils.buildAttentionSequence(inputSequence)
       val structure = AttentionLayer(
-        inputArrays = inputSequence,
+        inputArrays = inputSequence.map { AugmentedArray(it) },
         inputType = LayerType.Input.Dense,
-        attentionArrays = AttentionLayerUtils.buildAttentionSequence(inputSequence),
-        params = AttentionLayerUtils.buildAttentionParams()
-      )
+        attentionArrays = attentionSequence.map { AugmentedArray(it) },
+        params = utils.buildAttentionParams())
 
       structure.forward()
 
-      structure.outputArray.assignErrors(AttentionLayerUtils.buildOutputErrors())
+      structure.outputArray.assignErrors(utils.buildOutputErrors())
       structure.backward(propagateToInput = true)
 
       val attentionErrors: List<DenseNDArray> = structure.attentionArrays.map { it.errors }

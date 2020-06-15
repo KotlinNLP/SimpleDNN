@@ -82,63 +82,52 @@ internal sealed class LSTMLayersWindow: LayersWindow {
 /**
  *
  */
-private fun buildPrevStateLayer(): LSTMLayer<DenseNDArray> {
-
-  val outputArray = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
-  outputArray.activate()
-
-  val layer = LSTMLayer(
-    inputArray = AugmentedArray<DenseNDArray>(size = 4),
-    inputType = LayerType.Input.Dense,
-    outputArray = outputArray,
-    params = LSTMLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh,
-    layersWindow = LSTMLayersWindow.Empty)
-
-  layer.cell.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, -0.6, 1.0, 0.1, 0.1)))
-  layer.cell.activate()
-
-  return layer
+private fun buildPrevStateLayer(): LSTMLayer<DenseNDArray>  = LSTMLayer(
+  inputArray = AugmentedArray<DenseNDArray>(size = 4),
+  inputType = LayerType.Input.Dense,
+  outputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8))).apply {
+    activate()
+  },
+  params = LSTMLayerParameters(inputSize = 4, outputSize = 5),
+  activationFunction = Tanh,
+  layersWindow = LSTMLayersWindow.Empty,
+  dropout = 0.0
+).apply {
+  cell.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.8, -0.6, 1.0, 0.1, 0.1)))
+  cell.activate()
 }
 
 /**
  *
  */
-private fun buildInitHiddenLayer(refLayer: LSTMLayer<DenseNDArray>): LSTMLayer<DenseNDArray> {
-
-  val outputArray = AugmentedArray(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
-
-  return LSTMLayer(
-    inputArray = AugmentedArray(size = 4),
-    inputType = LayerType.Input.Dense,
-    outputArray = outputArray,
-    params = refLayer.params,
-    activationFunction = Tanh,
-    layersWindow = LSTMLayersWindow.Front(refLayer))
-}
+private fun buildInitHiddenLayer(refLayer: LSTMLayer<DenseNDArray>): LSTMLayer<DenseNDArray> = LSTMLayer(
+  inputArray = AugmentedArray(size = 4),
+  inputType = LayerType.Input.Dense,
+  outputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8))),
+  params = refLayer.params,
+  activationFunction = Tanh,
+  layersWindow = LSTMLayersWindow.Front(refLayer),
+  dropout = 0.0
+)
 
 /**
  *
  */
-private fun buildNextStateLayer(): LSTMLayer<DenseNDArray> {
-
-  val outputArray: AugmentedArray<DenseNDArray> = AugmentedArray(values = DenseNDArrayFactory.emptyArray(Shape(5)))
-  outputArray.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
-
-  val layer = LSTMLayer(
-    inputArray = AugmentedArray<DenseNDArray>(size = 4),
-    inputType = LayerType.Input.Dense,
-    outputArray = outputArray,
-    params = LSTMLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh,
-    layersWindow = LSTMLayersWindow.Empty)
-
-  layer.inputGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))
-  layer.outputGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5, 1.0)))
-  layer.forgetGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, -0.4, 0.9, -0.8, -0.4)))
-  layer.forgetGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.6, -0.1, 0.3, 0.0)))
-  layer.candidate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.2, -1.0, 0.7, -0.3)))
-  layer.cell.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, 0.8, 1.0, -0.4, 0.6)))
-
-  return layer
+private fun buildNextStateLayer(): LSTMLayer<DenseNDArray> = LSTMLayer(
+  inputArray = AugmentedArray<DenseNDArray>(size = 4),
+  inputType = LayerType.Input.Dense,
+  outputArray = AugmentedArray(DenseNDArrayFactory.emptyArray(Shape(5))).apply {
+    assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
+  },
+  params = LSTMLayerParameters(inputSize = 4, outputSize = 5),
+  activationFunction = Tanh,
+  layersWindow = LSTMLayersWindow.Empty,
+  dropout = 0.0
+).apply {
+  inputGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.7, -0.3, -0.2, 0.3, 0.6)))
+  outputGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.9, 0.2, -0.5, 1.0)))
+  forgetGate.assignValues(values = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, -0.4, 0.9, -0.8, -0.4)))
+  forgetGate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.6, -0.1, 0.3, 0.0)))
+  candidate.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, 0.2, -1.0, 0.7, -0.3)))
+  cell.assignErrors(errors = DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.3, 0.8, 1.0, -0.4, 0.6)))
 }

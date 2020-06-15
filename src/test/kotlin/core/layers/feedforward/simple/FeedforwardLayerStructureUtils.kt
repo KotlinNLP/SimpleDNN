@@ -27,24 +27,21 @@ internal object FeedforwardLayerStructureUtils {
   /**
    *
    */
-  fun buildLayer45(): FeedforwardLayer<DenseNDArray> {
-
-    return FeedforwardLayer(
-      inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
-      inputType = LayerType.Input.Dense,
-      outputArray = AugmentedArray.zeros(5),
-      params = getParams45(),
-      activationFunction = Tanh)
-  }
+  fun buildLayer45(): FeedforwardLayer<DenseNDArray> = FeedforwardLayer(
+    inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, -0.9, 1.0))),
+    inputType = LayerType.Input.Dense,
+    outputArray = AugmentedArray.zeros(5),
+    params = getParams45(),
+    activationFunction = Tanh,
+    dropout = 0.0
+  )
 
   /**
    *
    */
-  fun getParams45(): FeedforwardLayerParameters {
+  fun getParams45() = FeedforwardLayerParameters(inputSize = 4, outputSize = 5).apply {
 
-    val params = FeedforwardLayerParameters(inputSize = 4, outputSize = 5)
-
-    params.unit.weights.values.assignValues(
+    unit.weights.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
@@ -53,73 +50,59 @@ internal object FeedforwardLayerStructureUtils {
         doubleArrayOf(0.4, 1.0, -0.7, 0.8)
       )))
 
-    params.unit.biases.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4))
-    )
-
-    return params
+    unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.4, 0.0, -0.3, 0.8, -0.4)))
   }
 
   /**
    *
    */
-  fun getOutputGold5(): DenseNDArray =  DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.5, -0.4, -0.9, 0.9))
+  fun getOutputGold5(): DenseNDArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(0.0, 0.5, -0.4, -0.9, 0.9))
 
   /**
    *
    */
-  fun buildLayer53(): FeedforwardLayer<DenseNDArray> {
-
-    val inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.2)))
-
-    return FeedforwardLayer(
-      inputArray = inputArray,
-      inputType = LayerType.Input.Dense,
-      outputArray = AugmentedArray.zeros(3),
-      params = getParams53(),
-      activationFunction = Softmax())
-  }
+  fun buildLayer53(): FeedforwardLayer<DenseNDArray> = FeedforwardLayer(
+    inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.4, -0.8, 0.0, 0.7, -0.2))),
+    inputType = LayerType.Input.Dense,
+    outputArray = AugmentedArray.zeros(3),
+    params = getParams53(),
+    activationFunction = Softmax(),
+    dropout = 0.0
+  )
 
   /**
    *
    */
   fun buildLayer53SparseBinary(): FeedforwardLayer<SparseBinaryNDArray> {
 
-    val inputArray = AugmentedArray(SparseBinaryNDArrayFactory.arrayOf(
-      activeIndices = listOf(2, 4),
-      shape = Shape(5)))
-    inputArray.setActivation(Tanh)
+    val input: SparseBinaryNDArray = SparseBinaryNDArrayFactory.arrayOf(activeIndices = listOf(2, 4), shape = Shape(5))
 
     return FeedforwardLayer(
-      inputArray = inputArray,
+      inputArray = AugmentedArray(input).apply { setActivation(Tanh) },
       inputType = LayerType.Input.SparseBinary,
       outputArray = AugmentedArray.zeros(3),
       params = getParams53(),
-      activationFunction = Softmax())
+      activationFunction = Softmax(),
+      dropout = 0.0)
   }
 
   /**
    *
    */
-  fun getParams53(): FeedforwardLayerParameters {
+  fun getParams53() = FeedforwardLayerParameters(inputSize = 5, outputSize = 3).apply {
 
-    val params = FeedforwardLayerParameters(inputSize = 5, outputSize = 3)
-
-    params.unit.weights.values.assignValues(
+    unit.weights.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.8, -0.8, 0.9, -1.0, -0.1),
         doubleArrayOf(0.9, 0.6, 0.7, 0.6, 0.6),
         doubleArrayOf(-0.1, 0.0, 0.3, 0.0, 0.3)
       )))
 
-    params.unit.biases.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.5, 0.1, 0.2)))
-
-    return params
+    unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.5, 0.1, 0.2)))
   }
 
   /**
    *
    */
-  fun getOutputGold3(): DenseNDArray =  DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.0, 0.0))
+  fun getOutputGold3(): DenseNDArray = DenseNDArrayFactory.arrayOf(doubleArrayOf(1.0, 0.0, 0.0))
 }

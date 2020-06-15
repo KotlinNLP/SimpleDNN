@@ -32,7 +32,8 @@ internal object ConcatFFLayerUtils {
     inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray.zeros(3),
     params = buildParams(),
-    activationFunction = Tanh
+    activationFunction = Tanh,
+    dropout = 0.0
   )
 
   /**
@@ -44,6 +45,7 @@ internal object ConcatFFLayerUtils {
    *
    */
   private fun buildParams() = ConcatFFLayerParameters(inputsSize = listOf(4, 2, 3), outputSize = 3).apply {
+
     output.unit.weights.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(-0.1, -0.3, 0.5, 0.6, -0.6, 0.6, 0.4, -0.2, -0.9),
@@ -51,8 +53,7 @@ internal object ConcatFFLayerUtils {
         doubleArrayOf(0.7, 0.7, 0.0, -0.1, -0.9, 0.4, 0.2, 0.1, -0.4)
       ))
     )
-    output.unit.biases.values.assignValues(
-      DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.2, -0.7))
-    )
+
+    output.unit.biases.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.2, -0.7)))
   }
 }

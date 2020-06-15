@@ -25,71 +25,64 @@ internal object TPRLayerStructureUtils {
    *
    */
   fun buildLayer(layersWindow: LayersWindow): TPRLayer<DenseNDArray> = TPRLayer(
-      inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, 0.9, 0.1))),
-      inputType = LayerType.Input.Dense,
-      params = buildParams(),
-      layersWindow = layersWindow,
-      q = 0.001)
+    inputArray = AugmentedArray(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.8, -0.9, 0.9, 0.1))),
+    inputType = LayerType.Input.Dense,
+    params = buildParams(),
+    layersWindow = layersWindow,
+    q = 0.001,
+    dropout = 0.0
+  )
 
   /**
    *
    */
-  fun buildParams(): TPRLayerParameters {
+  fun buildParams() = TPRLayerParameters(inputSize = 4, dRoles = 2, dSymbols = 3, nRoles = 3, nSymbols = 4).apply {
 
-    val params = TPRLayerParameters(inputSize = 4, dRoles = 2, dSymbols = 3, nRoles = 3, nSymbols = 4)
+    wInS.values.assignValues(
+      DenseNDArrayFactory.arrayOf(listOf(
+        doubleArrayOf(0.2, 0.1, 0.3, -0.4),
+        doubleArrayOf(0.3, -0.1, 0.9, 0.3),
+        doubleArrayOf(0.4, 0.2, -0.3, 0.1),
+        doubleArrayOf(0.6, 0.5, -0.4, 0.5)
+      )))
 
-    params.wInS.values.assignValues(
-        DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.2, 0.1, 0.3, -0.4),
-            doubleArrayOf(0.3, -0.1, 0.9, 0.3),
-            doubleArrayOf(0.4, 0.2, -0.3, 0.1),
-            doubleArrayOf(0.6, 0.5, -0.4, 0.5)
-        )))
+    wInR.values.assignValues(
+      DenseNDArrayFactory.arrayOf(listOf(
+        doubleArrayOf(0.3, 0.5, -0.5, -0.5),
+        doubleArrayOf(0.5, 0.4, 0.1, 0.3),
+        doubleArrayOf(0.6, 0.7, 0.8, 0.6)
+      )))
 
-    params.wInR.values.assignValues(
-        DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.3, 0.5, -0.5, -0.5),
-            doubleArrayOf(0.5, 0.4, 0.1, 0.3),
-            doubleArrayOf(0.6, 0.7, 0.8, 0.6)
-        )))
+    wRecS.values.assignValues(
+      DenseNDArrayFactory.arrayOf(listOf(
+        doubleArrayOf(0.4, 0.2, -0.4, 0.5, 0.2, -0.5),
+        doubleArrayOf(-0.2, 0.7, 0.8, -0.5, 0.5, 0.7),
+        doubleArrayOf(0.4, -0.1, 0.1, 0.7, -0.1, 0.3),
+        doubleArrayOf(0.3, 0.2, -0.7, -0.8, -0.3, 0.6)
+      )))
 
-    params.wRecS.values.assignValues(
-        DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.4, 0.2, -0.4, 0.5, 0.2, -0.5),
-            doubleArrayOf(-0.2, 0.7, 0.8, -0.5, 0.5, 0.7),
-            doubleArrayOf(0.4, -0.1, 0.1, 0.7, -0.1, 0.3),
-            doubleArrayOf(0.3, 0.2, -0.7, -0.8, -0.3, 0.6)
-        )))
+    wRecR.values.assignValues(
+      DenseNDArrayFactory.arrayOf(listOf(
+        doubleArrayOf(0.4, 0.8, -0.4, 0.7, 0.2, -0.5),
+        doubleArrayOf(-0.2, 0.7, 0.8, -0.5, 0.3, 0.7),
+        doubleArrayOf(0.3, -0.1, 0.1, 0.3, -0.1, 0.2)
+      )))
 
-    params.wRecR.values.assignValues(
-        DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.4, 0.8, -0.4, 0.7, 0.2, -0.5),
-            doubleArrayOf(-0.2, 0.7, 0.8, -0.5, 0.3, 0.7),
-            doubleArrayOf(0.3, -0.1, 0.1, 0.3, -0.1, 0.2)
-        )))
+    bS.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.4, 0.8, 0.6)))
+    bR.values.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.2, -0.1)))
 
-    params.bS.values.assignValues(
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.4, 0.8, 0.6))
-    )
+    s.values.assignValues(
+      DenseNDArrayFactory.arrayOf(listOf(
+        doubleArrayOf(0.3, -0.2, -0.1, 0.5),
+        doubleArrayOf(0.6, 0.7, 0.5, -0.6),
+        doubleArrayOf(0.4, 0.2, 0.5, -0.6)
+      )))
 
-    params.bR.values.assignValues(
-        DenseNDArrayFactory.arrayOf(doubleArrayOf(0.3, 0.2, -0.1))
-    )
-
-    params.s.values.assignValues(
-        DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.3, -0.2, -0.1, 0.5),
-            doubleArrayOf(0.6, 0.7, 0.5, -0.6),
-            doubleArrayOf(0.4, 0.2, 0.5, -0.6)
-        )))
-
-    params.r.values.assignValues(
-        DenseNDArrayFactory.arrayOf(listOf(
-            doubleArrayOf(0.4, 0.3, 0.3),
-            doubleArrayOf(0.3, 0.2, 0.1)
-        )))
-
-    return params
+    r.values.assignValues(
+      DenseNDArrayFactory.arrayOf(listOf(
+        doubleArrayOf(0.4, 0.3, 0.3),
+        doubleArrayOf(0.3, 0.2, 0.1)
+      )))
   }
 
   /**

@@ -28,16 +28,16 @@ internal object LTMLayerStructureUtils {
     inputType = LayerType.Input.Dense,
     outputArray = AugmentedArray.zeros(4),
     params = buildParams(),
-    layersWindow = layersWindow)
+    layersWindow = layersWindow,
+    dropout = 0.0
+  )
 
   /**
    *
    */
-  fun buildParams(): LTMLayerParameters {
+  fun buildParams() = LTMLayerParameters(inputSize = 4).apply {
 
-    val params = LTMLayerParameters(inputSize = 4)
-
-    params.inputGate1.weights.values.assignValues(
+    inputGate1.weights.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.5, 0.6, -0.8, -0.6),
         doubleArrayOf(0.7, -0.4, 0.1, -0.8),
@@ -45,7 +45,7 @@ internal object LTMLayerStructureUtils {
         doubleArrayOf(0.8, -0.9, 0.0, -0.1)
       )))
 
-    params.inputGate2.weights.values.assignValues(
+    inputGate2.weights.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.1, 0.4, -1.0, 0.4),
         doubleArrayOf(0.7, -0.2, 0.1, 0.0),
@@ -53,7 +53,7 @@ internal object LTMLayerStructureUtils {
         doubleArrayOf(-0.9, 0.9, -0.3, -0.3)
       )))
 
-    params.inputGate3.weights.values.assignValues(
+    inputGate3.weights.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(-1.0, 0.2, 0.0, 0.2),
         doubleArrayOf(-0.7, 0.7, -0.3, -0.3),
@@ -61,15 +61,13 @@ internal object LTMLayerStructureUtils {
         doubleArrayOf(-1.0, -0.6, 0.9, 0.8)
       )))
 
-    params.cell.weights.values.assignValues(
+    cell.weights.values.assignValues(
       DenseNDArrayFactory.arrayOf(listOf(
         doubleArrayOf(0.2, 0.6, 0.0, 0.1),
-      doubleArrayOf(0.1, -0.3, -0.8, -0.5),
-      doubleArrayOf(-0.1, 0.0, 0.4, -0.4),
-      doubleArrayOf(-0.8, -0.3, -0.7, 0.3)
+        doubleArrayOf(0.1, -0.3, -0.8, -0.5),
+        doubleArrayOf(-0.1, 0.0, 0.4, -0.4),
+        doubleArrayOf(-0.8, -0.3, -0.7, 0.3)
       )))
-
-    return params
   }
 
   /**

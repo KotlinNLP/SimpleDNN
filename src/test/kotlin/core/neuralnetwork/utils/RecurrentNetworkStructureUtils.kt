@@ -28,34 +28,39 @@ internal object RecurrentNetworkStructureUtils {
   /**
    *
    */
-  fun buildParams(layersConfiguration: List<LayerInterface>): StackedLayersParameters {
+  fun buildParams(layersConfiguration: List<LayerInterface>) = StackedLayersParameters(layersConfiguration).apply {
 
-    val params = StackedLayersParameters(layersConfiguration)
-    val inputParams = (params.paramsPerLayer[0] as SimpleRecurrentLayerParameters)
-    val outputParams = (params.paramsPerLayer[1] as FeedforwardLayerParameters)
-    val recurrentParams = SimpleRecurrentLayerStructureUtils.buildParams()
-    val feedforwardParams = FeedforwardLayerStructureUtils.getParams53()
+    getLayerParams<SimpleRecurrentLayerParameters>(0).apply {
 
-    inputParams.unit.weights.values.assignValues(recurrentParams.unit.weights.values)
-    inputParams.unit.biases.values.assignValues(recurrentParams.unit.biases.values)
-    inputParams.unit.recurrentWeights.values.assignValues(recurrentParams.unit.recurrentWeights.values)
-    outputParams.unit.weights.values.assignValues(feedforwardParams.unit.weights.values)
-    outputParams.unit.biases.values.assignValues(feedforwardParams.unit.biases.values)
+      val recurrentParams = SimpleRecurrentLayerStructureUtils.buildParams()
 
-    return params
+      unit.weights.values.assignValues(recurrentParams.unit.weights.values)
+      unit.biases.values.assignValues(recurrentParams.unit.biases.values)
+      unit.recurrentWeights.values.assignValues(recurrentParams.unit.recurrentWeights.values)
+    }
+
+    getLayerParams<FeedforwardLayerParameters>(1).apply {
+
+      val feedforwardParams = FeedforwardLayerStructureUtils.getParams53()
+
+      unit.weights.values.assignValues(feedforwardParams.unit.weights.values)
+      unit.biases.values.assignValues(feedforwardParams.unit.biases.values)
+    }
   }
 
   /**
    *
    */
-  fun buildStructure(statesWindow: StatesWindow<DenseNDArray>): RecurrentStackedLayers<DenseNDArray> {
+  fun buildLayers(statesWindow: StatesWindow<DenseNDArray>): RecurrentStackedLayers<DenseNDArray> {
 
-    val layersConfiguration = arrayOf(
+    val layersConfiguration = listOf(
       LayerInterface(size = 4),
       LayerInterface(size = 5, activationFunction = Tanh, connectionType = LayerType.Connection.SimpleRecurrent),
-      LayerInterface(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward)
-    ).toList()
+      LayerInterface(size = 3, activationFunction = Softmax(), connectionType = LayerType.Connection.Feedforward))
 
-    return RecurrentStackedLayers(params = this.buildParams(layersConfiguration), statesWindow = statesWindow)
+    return RecurrentStackedLayers(
+      params = this.buildParams(layersConfiguration),
+      statesWindow = statesWindow,
+      dropout = 0.0)
   }
 }

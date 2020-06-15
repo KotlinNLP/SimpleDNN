@@ -66,35 +66,31 @@ internal sealed class IndRNNLayersWindow: LayersWindow {
 /**
  *
  */
-private fun buildPrevStateLayer(): IndRNNLayer<DenseNDArray> {
-
-  val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
-  outputArray.assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
-  outputArray.setActivation(Tanh)
-  outputArray.activate()
-
-  return IndRNNLayer(
-    inputArray = AugmentedArray(size = 4),
-    inputType = LayerType.Input.Dense,
-    outputArray = outputArray,
-    params = IndRNNLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh,
-    layersWindow = IndRNNLayersWindow.Empty)
-}
+private fun buildPrevStateLayer(): IndRNNLayer<DenseNDArray> = IndRNNLayer(
+  inputArray = AugmentedArray(size = 4),
+  inputType = LayerType.Input.Dense,
+  outputArray = RecurrentLayerUnit<DenseNDArray>(5).apply {
+    assignValues(DenseNDArrayFactory.arrayOf(doubleArrayOf(-0.2, 0.2, -0.3, -0.9, -0.8)))
+    setActivation(Tanh)
+    activate()
+  },
+  params = IndRNNLayerParameters(inputSize = 4, outputSize = 5),
+  activationFunction = Tanh,
+  layersWindow = IndRNNLayersWindow.Empty,
+  dropout = 0.0
+)
 
 /**
  *
  */
-private fun buildNextStateLayer(): IndRNNLayer<DenseNDArray> {
-
-  val outputArray = RecurrentLayerUnit<DenseNDArray>(5)
-  outputArray.assignErrors(errors =  DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
-
-  return IndRNNLayer(
-    inputArray = AugmentedArray(size = 4),
-    inputType = LayerType.Input.Dense,
-    outputArray = outputArray,
-    params = IndRNNLayerParameters(inputSize = 4, outputSize = 5),
-    activationFunction = Tanh,
-    layersWindow = IndRNNLayersWindow.Empty)
-}
+private fun buildNextStateLayer(): IndRNNLayer<DenseNDArray> = IndRNNLayer(
+  inputArray = AugmentedArray(size = 4),
+  inputType = LayerType.Input.Dense,
+  outputArray = RecurrentLayerUnit<DenseNDArray>(5).apply {
+    assignErrors(errors =  DenseNDArrayFactory.arrayOf(doubleArrayOf(0.1, 0.1, -0.5, 0.7, 0.2)))
+  },
+  params = IndRNNLayerParameters(inputSize = 4, outputSize = 5),
+  activationFunction = Tanh,
+  layersWindow = IndRNNLayersWindow.Empty,
+  dropout = 0.0
+)

@@ -26,11 +26,7 @@ class BatchFeedforwardProcessorSpec : Spek({
 
     val inputSequence = BatchFeedforwardUtils.buildInputBatch()
     val model = BatchFeedforwardUtils.buildParams()
-    val processor = BatchFeedforwardProcessor<DenseNDArray>(
-      model = model,
-      useDropout = false,
-      propagateToInput = true)
-
+    val processor = BatchFeedforwardProcessor<DenseNDArray>(model = model, propagateToInput = true)
     val output = processor.forward(inputSequence)
 
     it("should match the expected first output array") {
