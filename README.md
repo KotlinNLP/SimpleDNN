@@ -66,7 +66,7 @@ val network = StackedLayersParameters(
 <dependency>
     <groupId>com.kotlinnlp</groupId>
     <artifactId>simplednn</artifactId>
-    <version>0.13.3</version>
+    <version>0.14.0</version>
 </dependency>
 ```
 
