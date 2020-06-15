@@ -28,7 +28,7 @@ internal class BatchNormLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   inputType: LayerType.Input,
   override val params: BatchNormLayerParameters
 ) : Layer<InputNDArrayType>(
-  inputArray = inputArrays[0],
+  inputArray = AugmentedArray(params.inputSize), // empty array (it should not be used)
   inputType = inputType,
   outputArray = AugmentedArray(1),
   params = params,

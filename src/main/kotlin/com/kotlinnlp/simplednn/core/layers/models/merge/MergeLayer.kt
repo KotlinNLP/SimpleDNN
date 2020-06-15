@@ -33,7 +33,7 @@ internal abstract class MergeLayer<InputNDArrayType : NDArray<InputNDArrayType>>
   activationFunction: ActivationFunction? = null,
   dropout: Double
 ) : Layer<InputNDArrayType>(
-  inputArray = inputArrays[0],
+  inputArray = AugmentedArray(params.inputSize), // empty array (it should not be used)
   inputType = inputType,
   outputArray = outputArray,
   params = params,

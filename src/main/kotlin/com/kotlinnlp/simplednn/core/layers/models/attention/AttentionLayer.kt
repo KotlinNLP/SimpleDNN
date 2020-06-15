@@ -36,7 +36,7 @@ internal class AttentionLayer<InputNDArrayType : NDArray<InputNDArrayType>>(
   override val params: AttentionMechanismLayerParameters,
   activation: ActivationFunction? = SoftmaxBase()
 ) : Layer<InputNDArrayType>(
-  inputArray = inputArrays[0],
+  inputArray = AugmentedArray(params.inputSize), // empty array (it should not be used)
   inputType = inputType,
   outputArray = AugmentedArray(values = DenseNDArrayFactory.zeros(Shape(inputArrays.first().size))),
   params = params,
