@@ -8,11 +8,9 @@
 package com.kotlinnlp.simplednn.deeplearning.attention.multihead
 
 import com.kotlinnlp.simplednn.core.arrays.AugmentedArray
-import com.kotlinnlp.simplednn.core.layers.LayerType
 import com.kotlinnlp.simplednn.core.layers.models.attention.scaleddot.ScaledDotAttentionLayer
-import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayer
-import com.kotlinnlp.simplednn.core.layers.models.merge.concatff.ConcatFFLayersPool
 import com.kotlinnlp.simplednn.core.neuralprocessor.NeuralProcessor
+import com.kotlinnlp.simplednn.core.neuralprocessor.batchfeedforward.BatchFeedforwardProcessor
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsAccumulator
 import com.kotlinnlp.simplednn.core.optimizer.ParamsErrorsList
 import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
@@ -22,7 +20,6 @@ import com.kotlinnlp.simplednn.simplemath.ndarray.dense.DenseNDArray
  *
  * @property model the model parameters
  * @property propagateToInput whether to propagate the errors to the input during the [backward]
- * @property useDropout whether to apply the attention dropout during the [forward]
  * @property id a unique ID
  */
 class MultiHeadAttentionNetwork(
@@ -37,11 +34,6 @@ class MultiHeadAttentionNetwork(
   > {
 
   /**
-   * Dropout not available.
-   */
-  override val useDropout: Boolean = false
-
-  /**
    * Contains the errors accumulated from the processors during the forward.
    */
   private val errorsAccumulator = ParamsErrorsAccumulator()
@@ -52,15 +44,10 @@ class MultiHeadAttentionNetwork(
   private lateinit var attentionLayers: List<ScaledDotAttentionLayer>
 
   /**
-   * The pool of merge layers of the multi-head attention outputs.
+   * The processor that merges the attention outputs.
    */
-  private val mergePool: ConcatFFLayersPool<DenseNDArray> =
-    ConcatFFLayersPool(params = this.model.merge, inputType = LayerType.Input.Dense)
-
-  /**
-   * The merge layers of the attention outputs that have been used for the last forward.
-   */
-  private lateinit var mergeLayers: List<ConcatFFLayer<DenseNDArray>>
+  private val mergeProcessor: BatchFeedforwardProcessor<DenseNDArray> =
+    BatchFeedforwardProcessor(model = this.model.merge, propagateToInput = true)
 
   /**
    * Forward an input sequence.
@@ -71,20 +58,16 @@ class MultiHeadAttentionNetwork(
    */
   override fun forward(input: List<DenseNDArray>): List<DenseNDArray> {
 
-    this.initLayers(input)
-
-    this.attentionLayers.forEach { it.forward(useDropout = this.useDropout) }
-
-    return this.mergeLayers.mapIndexed { i, mergeLayer ->
-
-      mergeLayer.inputArrays.zip(this.attentionLayers).forEach { (mergeInput, attentionLayer) ->
-        mergeInput.assignValues(attentionLayer.outputArrays[i].values)
-      }
-
-      mergeLayer.forward()
-
-      mergeLayer.outputArray.values
+    this.attentionLayers = this.model.attention.map { params ->
+      ScaledDotAttentionLayer(inputArrays = input.map { AugmentedArray(it) }, params = params)
     }
+
+    val attentionOutputs: List<List<DenseNDArray>> = this.attentionLayers.map { layer ->
+      layer.forward()
+      layer.outputArrays.map { it.values }
+    }
+
+    return this.mergeProcessor.forward(attentionOutputs.foldUp().toTypedArray())
   }
 
   /**
@@ -96,17 +79,15 @@ class MultiHeadAttentionNetwork(
 
     this.errorsAccumulator.clear()
 
-    this.mergeLayers.zip(outputErrors).forEachIndexed { i, (mergeLayer, errors) ->
+    this.mergeProcessor.backward(outputErrors)
+    this.errorsAccumulator.accumulate(this.mergeProcessor.getParamsErrors(copy = false))
 
-      mergeLayer.setErrors(errors)
-      this.errorsAccumulator.accumulate(mergeLayer.backward(propagateToInput = true))
+    val attentionErrors: List<List<DenseNDArray>> = this.mergeProcessor.getInputsErrors(copy = false).foldUp()
 
-      this.attentionLayers.zip(mergeLayer.getInputErrors(copy = false)).forEach { (attentionLayer, mergeErrors) ->
-        attentionLayer.outputArrays[i].assignErrors(mergeErrors)
-      }
+    this.attentionLayers.zip(attentionErrors).forEach { (layer, attHeadErrors) ->
+      layer.outputArrays.zip(attHeadErrors).forEach { (array, errors) -> array.assignErrors(errors) }
+      this.errorsAccumulator.accumulate(layer.backward(this.propagateToInput), copy = false)
     }
-
-    this.attentionLayers.forEach { this.errorsAccumulator.accumulate(it.backward(this.propagateToInput), copy = false) }
   }
 
   /**
@@ -139,16 +120,25 @@ class MultiHeadAttentionNetwork(
   }
 
   /**
-   * Initialize the layers.
+   * Fold up these nested lists inverting the outer with the inner lists.
+   * All the inner lists must contain the same number of elements.
    *
-   * @param input the input sequence
+   * If the outer list contains M inner lists and, in turn, each of them contains N elements, then a list
+   * with N inner lists will be given in output, each with M elements.
+   *
+   * @return the outer list folded up with the inner lists
    */
-  private fun initLayers(input: List<DenseNDArray>) {
+  private fun <T> List<List<T>>.foldUp(): List<List<T>> {
 
-    this.attentionLayers = this.model.attention.map { params ->
-      ScaledDotAttentionLayer(inputArrays = input.map { AugmentedArray(it) }, params = params)
+    val outer = this
+    val ret: List<MutableList<T>> = List(outer.first().size) { mutableListOf<T>() }
+
+    outer.forEach { inner -> // i .. M
+      inner.forEachIndexed { j, elm -> // j .. N
+        ret[j].add(elm)
+      }
     }
 
-    this.mergeLayers = this.mergePool.releaseAndGetItems(input.size)
+    return ret.map { it.toList() }
   }
 }
