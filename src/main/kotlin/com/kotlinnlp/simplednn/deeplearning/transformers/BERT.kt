@@ -47,11 +47,6 @@ class BERT(
   > {
 
   /**
-   * Dropout not available.
-   */
-  override val useDropout: Boolean = false
-
-  /**
    * The errors accumulator.
    */
   private val errorsAccumulator = ParamsErrorsAccumulator()
@@ -73,7 +68,7 @@ class BERT(
    * The norm layer batch processor.
    */
   private val embNorm: BatchFeedforwardProcessor<DenseNDArray> =
-    BatchFeedforwardProcessor(model = this.model.embNorm, propagateToInput = true, useDropout = false)
+    BatchFeedforwardProcessor(model = this.model.embNorm, propagateToInput = true)
 
   /**
    * The input sequence as pairs of <form, encoding>.

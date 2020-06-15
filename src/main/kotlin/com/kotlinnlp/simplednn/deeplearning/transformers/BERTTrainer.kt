@@ -149,7 +149,7 @@ class BERTTrainer(
    * It is used only during the training phase.
    */
   private val classifier: FeedforwardNeuralProcessor<DenseNDArray> =
-    FeedforwardNeuralProcessor(model = this.model.classifier, propagateToInput = true, useDropout = false)
+    FeedforwardNeuralProcessor(model = this.model.classifier, propagateToInput = true)
 
   /**
    * The errors given when a term has not been dropped.

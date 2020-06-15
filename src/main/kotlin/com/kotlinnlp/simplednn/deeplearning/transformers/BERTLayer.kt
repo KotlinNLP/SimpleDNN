@@ -34,11 +34,6 @@ internal class BERTLayer(
   > {
 
   /**
-   * Dropout not available.
-   */
-  override val useDropout: Boolean = false
-
-  /**
    * The errors accumulator.
    */
   private val errorsAccumulator = ParamsErrorsAccumulator()
@@ -58,19 +53,19 @@ internal class BERTLayer(
    * The multi-head norm batch processor.
    */
   private val multiHeadNorm: BatchFeedforwardProcessor<DenseNDArray> =
-    BatchFeedforwardProcessor(model = this.params.multiHeadNorm, propagateToInput = true, useDropout = false)
+    BatchFeedforwardProcessor(model = this.params.multiHeadNorm, propagateToInput = true)
 
   /**
    * The batch of output feed-forward processors.
    */
   private val outputFF: BatchFeedforwardProcessor<DenseNDArray> =
-    BatchFeedforwardProcessor(model = this.params.outputFF, propagateToInput = true, useDropout = false)
+    BatchFeedforwardProcessor(model = this.params.outputFF, propagateToInput = true)
 
   /**
    * The output norm batch processor.
    */
   private val outputNorm: BatchFeedforwardProcessor<DenseNDArray> =
-    BatchFeedforwardProcessor(model = this.params.outputNorm, propagateToInput = true, useDropout = false)
+    BatchFeedforwardProcessor(model = this.params.outputNorm, propagateToInput = true)
 
   /**
    * @param input the input sequence
