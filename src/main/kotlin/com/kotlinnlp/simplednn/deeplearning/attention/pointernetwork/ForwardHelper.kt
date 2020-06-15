@@ -53,12 +53,9 @@ class ForwardHelper(private val networkProcessor: PointerNetworkProcessor) {
    *
    * @return the sequence of attention arrays
    */
-  private fun buildAttentionSequence(context: DenseNDArray): List<DenseNDArray> {
-
-    return this.networkProcessor.mergeProcessor.forward(
-      ArrayList(this.networkProcessor.inputSequence.map { inputArray -> listOf(inputArray, context) } )
-    )
-  }
+  private fun buildAttentionSequence(context: DenseNDArray): List<DenseNDArray> =
+    this.networkProcessor.mergeProcessor.forward(
+      input = this.networkProcessor.inputSequence.map { inputArray -> listOf(inputArray, context) }.toTypedArray())
 
   /**
    * Initialize the structures used during the forward.

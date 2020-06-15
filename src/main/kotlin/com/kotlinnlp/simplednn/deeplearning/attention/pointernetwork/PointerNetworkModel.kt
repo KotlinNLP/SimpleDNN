@@ -66,13 +66,11 @@ class PointerNetworkModel(
    */
   val mergeNetwork = StackedLayersParameters(
     LayerInterface(
-      sizes = listOf(this.inputSize, this.vectorSize)
-    ),
+      sizes = listOf(this.inputSize, this.vectorSize)),
     LayerInterface(
       size = this.mergeOutputSize,
       activationFunction = (mergeConfig as? OpenOutputMerge)?.activationFunction,
-      connectionType = mergeConfig.type
-    ),
+      connectionType = mergeConfig.type),
     weightsInitializer = weightsInitializer,
     biasesInitializer = biasesInitializer)
 
