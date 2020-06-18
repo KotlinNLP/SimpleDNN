@@ -18,7 +18,7 @@
         <klaxon.version>5.2</klaxon.version>
         <xenocom.version>0.0.5</xenocom.version>
         <argparser.version>2.0.7</argparser.version>
-        <simplednn.version>0.14.0</simplednn.version>
+        <simplednn.version>0.14.1</simplednn.version>
     </properties>
 
     <repositories>
